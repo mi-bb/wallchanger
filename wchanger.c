@@ -19,9 +19,9 @@
  *
  * Program to change wallpapers.
  *
- * @date November 3, 2019
+ * @date November 4, 2019
  *
- * @version 1.0
+ * @version 1.0.1
  * 
  * @author Michał Bąbik <michalb1981@o2.pl>
  */
@@ -945,15 +945,23 @@ create_tview (GtkWidget **gw_tview)
 }
 /*----------------------------------------------------------------------------*/
 /**
- * @brief  Make default preview image.
+ * @brief  Make default empty preview image.
  *
- * @param[out]  gw_img  Pointer to image
+ * @param[out]  gw_img  Pointer to image widget
  * @return      none
  */
 static void
 create_preview (GtkWidget **gw_img)
 {
-    *gw_img = gtk_image_new_from_file ("empty1.png");
+    GdkPixbuf *gp_prev = gdk_pixbuf_new (GDK_COLORSPACE_RGB,
+                                         TRUE,
+                                         8,
+                                         150,
+                                         150);
+    if (gp_prev != NULL) {
+        *gw_img = gtk_image_new_from_pixbuf (gp_prev);
+        g_object_unref (gp_prev);
+    }
 }
 /*----------------------------------------------------------------------------*/
 /**
@@ -1132,7 +1140,7 @@ activate (GtkApplication *app,
     GtkWidget     *gw_settings_widget;
 
     gw_window = gtk_application_window_new (app);
-    gtk_window_set_title (GTK_WINDOW (gw_window), "Wall Changer v1.0");
+    gtk_window_set_title (GTK_WINDOW (gw_window), "Wall Changer v1.0.1");
     gtk_window_set_default_size (GTK_WINDOW (gw_window), 1024, 768);
     g_signal_connect (gw_window, "delete-event",
                   G_CALLBACK (event_on_delete), dd_data);

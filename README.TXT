@@ -11,7 +11,7 @@ CONTENTS OF THIS FILE
 About
 ------
 
-Program is an automatic wallpaper changer.
+Wall Changer is an automatic wallpaper changer.
 User can select images that will be used as wallpapers,
 select command to set wallpaper, wallpaper change time interval.
 
@@ -46,7 +46,7 @@ Requirements
  * GTK+ 3 (3.24)
  * GLib (2.60)
 
-Program may work in previous versions, I just wrote on which I was compiling
+Program may work using previous versions, I just wrote on which I was compiling
 this program and there were no problems.
 
 
@@ -62,7 +62,7 @@ If compilation ends without problems, 2 executable files will be created:
     wchanger-cfg
     wchangerd
 
-wchangerd is a background working program to change wallpaper
+wchangerd works in background and changes wallpaper
 in specified time intervals
 
 wchanger-cfg is a configuration window to set wallpaper change time intervals,

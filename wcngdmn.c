@@ -19,9 +19,9 @@
  *
  * Program to change wallpapers.
  *
- * @date November 3, 2019
+ * @date November 4, 2019
  *
- * @version 1.0
+ * @version 1.0.1
  * 
  * @author Michał Bąbik <michalb1981@o2.pl>
  */
