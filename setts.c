@@ -31,10 +31,10 @@
 static char *
 get_config_path (void)
 {
-    char *s_path = NULL;
-    char *s_home = NULL;
-    char *s_sett = "wchanger.json";
-    char *s_cfg  = "/.config/";
+    char *s_path = NULL;            /* Result full config file name */
+    char *s_home = NULL;            /* Home path */
+    char *s_sett = "wchanger.json"; /* Settings file name */
+    char *s_cfg  = "/.config/";     /* Settings file path */
 
     if ((s_home = getenv ("HOME")) == NULL) {
         s_home = getpwuid (getuid ())->pw_dir;
@@ -89,7 +89,7 @@ check_config_file (const char *s_fname)
  * @param[in,out]  ws_sett    Program settings
  * @param[in]      s_wallnew  Wallpaper file path
  * @return         Wallpaper set status
- * @retval         0 OK
+ * @retval         0  OK
  */
 int
 settings_set_last_used_data (WallSett   *ws_sett,
@@ -147,14 +147,14 @@ int
 settings_init (WallSett *ws_sett)
 {
     int i_res = 0;
-    ws_sett->gsl_files = NULL;
-    ws_sett->i_chinterval = 30;
-    ws_sett->i_random = 0;
-    ws_sett->i_lastsett = 0;
-    ws_sett->s_lastused = NULL;
-    ws_sett->i_lastused = -1;
-    ws_sett->s_bgcmd = NULL;
-    ws_sett->i_hash = 0;
+    ws_sett->gsl_files    = NULL; /* Image file list */
+    ws_sett->i_chinterval = 30;   /* Wallpaper change interval */ 
+    ws_sett->i_random     = 0;    /* Random wallpaper change */
+    ws_sett->i_lastsett   = 0;    /* Last used wallpaper setting */
+    ws_sett->s_lastused   = NULL; /* Last used wallpaper file name */
+    ws_sett->i_lastused   = -1;   /* Index of last used wallpaper */
+    ws_sett->s_bgcmd      = NULL; /* Background set command */
+    ws_sett->i_hash       = 0;    /* Data hash variable */
 
     ws_sett->s_cfgfile = get_config_path ();
 
@@ -171,9 +171,9 @@ settings_init (WallSett *ws_sett)
  *
  * @param[in,out]  ws_sett  Program settings
  * @return         Reading settings status
- * @retval  0  OK
- * @retval  1  File error
- * @retval  2  Reading error
+ * @retval         0  OK
+ * @retval         1  File error
+ * @retval         2  Reading error
  */
 int
 settings_read (WallSett *ws_sett) 
@@ -186,10 +186,10 @@ settings_read (WallSett *ws_sett)
  *
  * @param[in,out]  ws_sett  Program settings
  * @return         Writting settings status
- * @retval   0  OK
- * @retval   1  File open error
- * @retval   2  Read error / Wrong size of written data
- * @retval  -1  No need to save
+ * @retval         0  OK
+ * @retval         1  File open error
+ * @retval         2  Read error / Wrong size of written data
+ * @retval        -1  No need to save
  */
 int
 settings_write (WallSett *ws_sett)
@@ -202,11 +202,11 @@ settings_write (WallSett *ws_sett)
  *
  * @param[in,out]  ws_sett  Program settings
  * @return         Updating settings status
- * @retval   0  OK
- * @retval   1  File error
- * @retval   2  Reading/writting error
- * @retval   3  Last used null
- * @retval  -1  No need to save
+ * @retval         0  OK
+ * @retval         1  File error
+ * @retval         2  Reading/writting error
+ * @retval         3  Last used null
+ * @retval        -1  No need to save
  */
 int
 settings_update_last_used (WallSett *ws_sett)
@@ -220,7 +220,7 @@ settings_update_last_used (WallSett *ws_sett)
  * @param[in,out]  ws_sett  Program settings
  * @return         Checking settings status
  * @retval         0  No change
- * @retval         -1 Settings changed 
+ * @retval        -1  Settings changed 
  * @retval         1  Error
  */
 int

@@ -150,7 +150,7 @@ js_settings_to_json_buff (WallSett  *ws_sett,
  * @param[in]      s_lu     Last used wallpaper file path
  * @param[in]      i_lu     Last used wallpaper position on list
  * @return         Updating data status
- * @retval 0   OK
+ * @retval         0  OK
  */
 static int
 js_json_buffer_update_last_used (char       **s_buff,
@@ -183,9 +183,9 @@ js_json_buffer_update_last_used (char       **s_buff,
  * @param[out] ws_sett  Settings data to write to
  * @param[in]  s_fname  Name of file with settings
  * @return     Writting status
- * @retval 0   OK
- * @retval 1   File error
- * @retval 2   Reading error
+ * @retval     0   OK
+ * @retval     1   File error
+ * @retval     2   Reading error
  */
 int
 js_settings_read (WallSett   *ws_sett,
@@ -241,11 +241,11 @@ js_settings_write (WallSett   *ws_sett,
  * @param[in,out]  ws_sett  Program settings
  * @param[in]      s_fname  Settings file name
  * @return         Updating data status
- * @retval 0   OK
- * @retval 1   File error
- * @retval 2   Reading/writting error
- * @retval 3   Last used null
- * @retval -1  No need to save
+ * @retval         0  OK
+ * @retval         1  File error
+ * @retval         2  Reading/writting error
+ * @retval         3  Last used null
+ * @retval        -1  No need to save
  */
 int
 js_settings_update_last_used (WallSett   *ws_sett,
@@ -290,7 +290,7 @@ js_settings_update_last_used (WallSett   *ws_sett,
  * @param[in,out]  ws_sett  Program settings
  * @return         Checking settings status
  * @retval         0  No change
- * @retval         -1 Settings changed 
+ * @retval        -1  Settings changed 
  * @retval         1  File error
  * @retval         2  Reading error
  */

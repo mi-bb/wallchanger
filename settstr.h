@@ -23,7 +23,7 @@
  */
 #ifndef SETTSTR_H
 #define SETTSTR_H
-#include <gmodule.h>
+#include <glib.h>
 #include <stdint.h>
 /*----------------------------------------------------------------------------*/
 /**

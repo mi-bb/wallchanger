@@ -41,7 +41,7 @@ compare_imageitems (const ImageInfo *ii_info1,
  * @brief  Free ImageInfo data.
  *
  * @param[out]  ii_info  Pointer to ImageInfo object
- * @return      None
+ * @return      none
  */
 void
 imageinfo_free (ImageInfo *ii_info)

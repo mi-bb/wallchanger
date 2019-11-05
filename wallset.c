@@ -29,7 +29,7 @@
  * @param[in]  s_cmd   Wallpaper set command
  * @param[in]  s_wall  Wallpaper file
  * @return     Wallpaper set status
- * @retval     0 OK
+ * @retval     0  OK
  */
 static int
 wallpaper_set_file (const char *s_cmd,

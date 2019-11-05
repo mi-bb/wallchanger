@@ -1,5 +1,5 @@
 /**
- * @file  miscfun.h
+ * @file  treev.h
  * @copyright Copyright (C) 2019 Michał Bąbik
  *
  * This file is part of Wall Changer.
@@ -17,27 +17,44 @@
  * You should have received a copy of the GNU General Public License
  * along with Wall Changer.  If not, see <https://www.gnu.org/licenses/>.
  *
- * @brief  Other functions
+ * @brief  TreeView related functions
  * 
  * @author Michał Bąbik <michalb1981@o2.pl>
  */
-#ifndef MISCFUN_H
-#define MISCFUN_H
-#include <stdio.h>
-#include <glib.h>
-#include "settstr.h"
+#ifndef TREEV_H
+#define TREEV_H
+#include <gtk/gtk.h>
+#include "iminfo.h"
 /*----------------------------------------------------------------------------*/
-uint64_t hash(const char *str);
+/**
+ * @brief  TreeView Columns
+ */
+enum {
+    COL_FULL_FILE_NAME,  /**< Full file name with path */
+    COL_FILE_NAME,       /**< Only file name */
+    COL_FILE_PATH,       /**< Only file path */
+    COL_WIDTH_HEIGHT,    /**< String with width x height */
+    COL_WIDTH,           /**< Image width */
+    COL_HEIGHT,          /**< Image height */
+    NUM_COLS             /**< Number of columns */
+};
 /*----------------------------------------------------------------------------*/
-int read_file_data (const char *s_fname, char **s_buff);
+void liststore_add_items (GtkWidget *gw_list, GSList *gsl_iinfo1);
 /*----------------------------------------------------------------------------*/
-int save_file_data (const char *s_fname, const char *s_buff);
+ImageInfo * treemodel_get_data (GtkTreeModel *gtm_model, GtkTreeIter gti_iter);
 /*----------------------------------------------------------------------------*/
-int compare_strings (const char *a, const char *b);
+void find_select_item (GtkWidget *gw_tview, const char *s_file);
 /*----------------------------------------------------------------------------*/
-int my_gslist_get_position (GSList *gsl_list, const char *s_what);
+void treeview_remove_selected (GtkWidget *gw_tview);
 /*----------------------------------------------------------------------------*/
-int read_file_data_hash (const char *s_fname, char **s_buff,
-                         uint64_t *i_hash);
+GSList *treeview_get_data (GtkWidget *gw_tview);
+/*----------------------------------------------------------------------------*/
+void treeview_sort_list (GtkWidget *gw_tview);
+/*----------------------------------------------------------------------------*/
+void treeview_move_up (GtkWidget *gw_tview);
+/*----------------------------------------------------------------------------*/
+void treeview_move_down (GtkWidget *gw_tview);
+/*----------------------------------------------------------------------------*/
+void create_tview (GtkWidget **gw_tview);
 /*----------------------------------------------------------------------------*/
 #endif

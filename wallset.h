@@ -24,7 +24,7 @@
 #ifndef WALLSET_H
 #define WALLSET_H
 #include <stdio.h>
-#include <gmodule.h>
+#include <glib.h>
 #include "settstr.h"
 #include "setts.h"
 /*----------------------------------------------------------------------------*/

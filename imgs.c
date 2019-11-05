@@ -409,7 +409,7 @@ static const struct {
  * @param[in]  ic_name  Name of Icon struct
  * @return     Pixbuf with icon
  */
-GdkPixbuf *
+static GdkPixbuf *
 make_icon (const Icon *ic_name)
 {
     return gdk_pixbuf_new_from_data (

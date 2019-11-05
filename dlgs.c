@@ -27,7 +27,7 @@
  * @brief  Select folder dialog.
  *
  * @param[in]  gw_parent  Dialog parent widget
- * @return  Foler path or NULL.
+ * @return     Foler path or NULL.
  */
 char *
 add_images_folder_dialog (GtkWindow *gw_parent)
@@ -57,7 +57,7 @@ add_images_folder_dialog (GtkWindow *gw_parent)
  * @brief  Select images dialog.
  *
  * @param[in]  gw_parent  Dialog parent widget
- * @return  List with images.
+ * @return     List with images.
  */
 GSList *
 add_images_dialog (GtkWindow *gw_parent)

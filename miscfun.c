@@ -48,9 +48,9 @@ hash(const char *str)
  * @param[in]  s_fname File name
  * @param[out] s_buff  Pointer to destination buffer
  * @return     Reading status
- * @retval 0   OK
- * @retval 1   File error
- * @retval 2   Reading error
+ * @retval     0  OK
+ * @retval     1  File error
+ * @retval     2  Reading error
  */
 int
 read_file_data (const char  *s_fname,
@@ -98,9 +98,9 @@ read_file_data (const char  *s_fname,
  * @param[out] s_buff  Pointer to destination buffer
  * @param[out] i_hash  Pointer to hash
  * @return     Reading status
- * @retval 0   OK
- * @retval 1   File error
- * @retval 2   Reading error
+ * @retval     0  OK
+ * @retval     1  File error
+ * @retval     2  Reading error
  */
 int read_file_data_hash (const char  *s_fname,
                          char       **s_buff,
@@ -123,9 +123,9 @@ int read_file_data_hash (const char  *s_fname,
  * @param[in]  s_fname File name
  * @param[in]  s_buff  Buffer with data
  * @return     Writting status
- * @retval 0   OK
- * @retval 1   File error
- * @retval 2   Writting error
+ * @retval     0  OK
+ * @retval     1  File error
+ * @retval     2  Writting error
  */
 int
 save_file_data (const char *s_fname,

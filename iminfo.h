@@ -24,7 +24,7 @@
 #ifndef IMINFO_H
 #define IMINFO_H
 #include <stdio.h>
-#include <gmodule.h>
+#include <glib.h>
 #include <gdk-pixbuf/gdk-pixbuf.h>
 #include "miscfun.h"
 /*----------------------------------------------------------------------------*/

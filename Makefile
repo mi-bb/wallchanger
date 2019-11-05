@@ -17,7 +17,7 @@ CFLAGS = -Wall -g
 LIBS = -ljson-c
 PACKAGE = $(shell pkg-config --cflags --libs gtk+-3.0)
 LDLIBS = $(shell pkg-config --libs gtk+-3.0)
-SRCSG = wchanger.c dlgs.c iminfo.c wallset.c setts.c jsfun.c miscfun.c imgs.c
+SRCSG = wchanger.c treev.c dlgs.c iminfo.c wallset.c setts.c jsfun.c miscfun.c imgs.c
 SRCSM = wcngdmn.c wallset.c setts.c jsfun.c miscfun.c
 OBJSG = $(SRCSG:.c=.o)
 OBJSM = $(SRCSM:.c=.o)
