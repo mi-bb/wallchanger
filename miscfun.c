@@ -43,6 +43,26 @@ hash(const char *str)
 }
 /*----------------------------------------------------------------------------*/
 /**
+ * @brief  Get file extenstion.
+ *
+ * @param[in] s_fn String with file path
+ * @return    String with file extension
+ */
+char *
+get_file_ext (char *s_fn)
+{
+    char *s_ext = NULL;
+    char *s_p   = NULL;
+
+    s_p = strrchr (s_fn, '.');
+    if (s_p != NULL) {
+        s_p++;
+        s_ext = g_strdup (s_p);
+    }
+    return s_ext;
+}
+/*----------------------------------------------------------------------------*/
+/**
  * @brief  Read some data from file.
  *
  * @param[in]  s_fname File name
@@ -204,6 +224,60 @@ my_gslist_get_position (GSList     *gsl_list,
         return -1;
     }
     return g_slist_position (gsl_list, gsl_fnd);
+}
+/*----------------------------------------------------------------------------*/
+/**
+ * @brief  Get directory content in GSList 
+ *
+ * @param[in]  s_path1  Path to directory
+ * @return     List of files in directory
+ */
+GSList *
+get_directory_content (const char *s_path1)
+{
+    GSList *gsl_files = NULL;
+    char   *s_pthfn   = NULL;
+    char   *s_path    = NULL;
+    char   *s_fn      = NULL;
+    char   *s_p       = NULL;
+    int     i_dlen    = 0;
+    int     i_pos     = 0;
+    DIR    *dr;
+    struct  dirent *de;
+
+    i_dlen = strlen (s_path1);
+    s_path = g_malloc0 ((i_dlen + 1) * sizeof (char));
+    strcpy (s_path, s_path1);
+    s_p = strrchr (s_path, '/');
+
+    if (s_p != NULL) {
+        i_pos = (int) (s_p - s_path);
+        if (i_pos != i_dlen - 1) {
+            i_dlen++;
+            s_path = g_realloc (s_path, (i_dlen + 1) * sizeof (char));
+            strcat (s_path, "/");
+        }
+    }
+    dr = opendir (s_path); 
+    if (dr == NULL) {
+        printf ("Could not open current directory\n"); 
+        g_free (s_path);
+        return NULL; 
+    } 
+    while ((de = readdir(dr)) != NULL) 
+        //if (de->d_type == DT_REG) {
+        if (de->d_type == 8) {
+            s_fn = g_strdup (de->d_name);
+            s_pthfn = g_malloc0 ( 
+                    (i_dlen + strlen (s_fn) + 1) * sizeof (char));
+            strcpy (s_pthfn, s_path);
+            strcat (s_pthfn, s_fn);
+            gsl_files = g_slist_append (gsl_files, s_pthfn);
+            g_free (s_fn);
+        }
+    g_free (s_path);
+    closedir(dr);     
+    return gsl_files;
 }
 /*----------------------------------------------------------------------------*/
 

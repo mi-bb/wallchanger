@@ -29,6 +29,7 @@
 #include <dirent.h> 
 #include <gtk/gtk.h>
 #include "setts.h"
+#include "settstr.h"
 #include "iminfo.h"
 #include "wallset.h"
 #include "imgs.h"
@@ -81,26 +82,6 @@ get_pbuf_extension_list (void)
 }
 /*----------------------------------------------------------------------------*/
 /**
- * @brief  Get file extenstion.
- *
- * @param[in] s_fn String with file path
- * @return    String with file extension
- */
-static char *
-get_file_ext (char *s_fn)
-{
-    char *s_ext = NULL;
-    char *s_p   = NULL;
-
-    s_p = strrchr (s_fn, '.');
-    if (s_p != NULL) {
-        s_p++;
-        s_ext = g_strdup (s_p);
-    }
-    return s_ext;
-}
-/*----------------------------------------------------------------------------*/
-/**
  * @brief  Check list with file names for GdkPixbuf images.
  *
  * @param[in] gsl_files1 List with files to proccess
@@ -133,60 +114,6 @@ check_files_for_pixbuf (GSList *gsl_files1)
     }
     g_slist_free_full (gsl_exts, g_free);
     return gsl_res;
-}
-/*----------------------------------------------------------------------------*/
-/**
- * @brief  Check list with file names for GdkPixbuf images.
- *
- * @param[in] s_path1 Path to directory
- * @return    List with files in directory
- */
-static GSList *
-get_directory_content (const char *s_path1)
-{
-    GSList *gsl_files = NULL;
-    char   *s_pthfn   = NULL;
-    char   *s_path    = NULL;
-    char   *s_fn      = NULL;
-    char   *s_p       = NULL;
-    int     i_dlen    = 0;
-    int     i_pos     = 0;
-    DIR    *dr;
-    struct  dirent *de;
-
-    i_dlen = strlen (s_path1);
-    s_path = g_malloc0 ((i_dlen + 1) * sizeof (char));
-    strcpy (s_path, s_path1);
-    s_p = strrchr (s_path, '/');
-
-    if (s_p != NULL) {
-        i_pos = (int) (s_p - s_path);
-        if (i_pos != i_dlen - 1) {
-            i_dlen++;
-            s_path = g_realloc (s_path, (i_dlen + 1) * sizeof (char));
-            strcat (s_path, "/");
-        }
-    }
-    dr = opendir (s_path); 
-    if (dr == NULL) {
-        printf ("Could not open current directory\n"); 
-        g_free (s_path);
-        return NULL; 
-    } 
-    while ((de = readdir(dr)) != NULL) 
-        //if (de->d_type == DT_REG) {
-        if (de->d_type == 8) {
-            s_fn = g_strdup (de->d_name);
-            s_pthfn = g_malloc0 ( 
-                    (i_dlen + strlen (s_fn) + 1) * sizeof (char));
-            strcpy (s_pthfn, s_path);
-            strcat (s_pthfn, s_fn);
-            gsl_files = g_slist_append (gsl_files, s_pthfn);
-            g_free (s_fn);
-        }
-    g_free (s_path);
-    closedir(dr);     
-    return gsl_files;
 }
 /*----------------------------------------------------------------------------*/
 /**
@@ -321,7 +248,6 @@ event_set_wallpaper_pressed (GtkWidget  *widget,
 
     if (gtk_tree_model_get_iter (gtm_model, &gti_iter, gl_list->data)) {
         ImageInfo *ii_info = treemodel_get_data (gtm_model, gti_iter);
-        printf ("%s\n", ii_info->s_full_path);
 
         if (wallpaper_dialog_set (dd_data->ws_sett,ii_info->s_full_path) > 0) {
             printf ("Some error occured\n");
