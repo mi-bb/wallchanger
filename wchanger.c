@@ -19,14 +19,13 @@
  *
  * Program to change wallpapers.
  *
- * @date November 4, 2019
+ * @date November 7, 2019
  *
- * @version 1.0.1
+ * @version 1.1
  * 
  * @author Michał Bąbik <michalb1981@o2.pl>
  */
 #include <stdio.h> 
-#include <dirent.h> 
 #include <gtk/gtk.h>
 #include "setts.h"
 #include "settstr.h"
@@ -114,6 +113,247 @@ check_files_for_pixbuf (GSList *gsl_files1)
     }
     g_slist_free_full (gsl_exts, g_free);
     return gsl_res;
+}
+/*----------------------------------------------------------------------------*/
+/**
+ * @brief  Get screen size.
+ *
+ * @param[out]  i_scr_w  Screen width
+ * @param[out]  i_scr_h  Screen height
+ * @return      none
+ */
+static void
+get_screen_size (int *i_scr_w,
+                 int *i_scr_h)
+{
+    GdkRectangle workarea = {0};
+
+    gdk_monitor_get_workarea (
+        gdk_display_get_primary_monitor (gdk_display_get_default ()),
+        &workarea);
+
+    *i_scr_w = workarea.width;
+    *i_scr_h = workarea.height;
+}
+/*----------------------------------------------------------------------------*/
+/**
+ * @brief  Paint a preview screen.
+ *
+ * @param[out]  gr_rect  GdkRectangle with area where preview image can be 
+ *                       painted
+ * @return      Pixbuf with preview screeen
+ */
+static GdkPixbuf *
+make_prev_screen_pbuf (GdkRectangle *gr_rect)
+{
+    GdkPixbuf *gp_bg;     /* Result whole preview image (screeb + wall) */
+    GdkPixbuf *gp_scr_1;  /* Preview (monitor) part 1 (top) image*/
+    GdkPixbuf *gp_scr_2;  /* Preview (monitor) part 1 (top) image*/
+    GdkPixbuf *gp_scr_3;  /* Preview (monitor) part 1 (top) image*/
+    int i_screen_w = 0;   /* Screen width */
+    int i_screen_h = 0;   /* Screen height */
+    int i_pr_scr_w = 138; /* Preview width (inside screen) */
+    int i_pr_scr_h = 0;   /* Preview height (inside screen) */
+    int i_img_w    = 0;   /* Preview (monitor) image width */
+    int i_img_1_h  = 0;   /* Preview (monitor) part 1 (top) image height */
+    int i_img_2_h  = 0;   /* Preview (monitor) part 2 (middle) image height */
+    int i_img_3_h  = 0;   /* Preview (monitor) part 3 (bottom) image height */
+
+    get_screen_size (&i_screen_w, &i_screen_h);
+
+    i_pr_scr_h = (int) ((double) i_screen_h /
+                        (double) i_screen_w * (double) i_pr_scr_w);
+
+    gr_rect->x = 7;               /* Preview left point (inside screen) */
+    gr_rect->y = 7;               /* Preview top point (inside screen) */
+    gr_rect->width = i_pr_scr_w;  /* Preview width (inside screen) */
+    gr_rect->height = i_pr_scr_h; /* Preview height (inside screen) */
+
+    gp_scr_1 = get_image (20);  /* top screen image (152x7) */
+    gp_scr_2 = get_image (21);  /* middle screen image (152x1) */
+    gp_scr_3 = get_image (22);  /* bottom screen image (152x45) */
+
+    i_img_w = gdk_pixbuf_get_width (gp_scr_1);
+    i_img_1_h = gdk_pixbuf_get_height (gp_scr_1);
+    i_img_2_h = gdk_pixbuf_get_height (gp_scr_2);
+    i_img_3_h = gdk_pixbuf_get_height (gp_scr_3);
+
+    gp_bg = gdk_pixbuf_new (GDK_COLORSPACE_RGB,
+                            TRUE,
+                            8,
+                            i_img_w,
+                            i_pr_scr_h + i_img_1_h + i_img_3_h);
+
+    gdk_pixbuf_scale (gp_scr_1,
+                      gp_bg,
+                      0,
+                      0,
+                      i_img_w,
+                      i_img_1_h,
+                      0.0,
+                      0.0,
+                      1.0,
+                      1.0,
+                      GDK_INTERP_HYPER);
+
+    for (int i = 0; i < i_pr_scr_h; ++i) {
+        gdk_pixbuf_scale (gp_scr_2,
+                          gp_bg,
+                          0,
+                          i_img_1_h + i,
+                          i_img_w,
+                          i_img_2_h,
+                          0.0,
+                          i_img_1_h + i,
+                          1.0,
+                          1.0,
+                          GDK_INTERP_HYPER);
+    }
+
+    gdk_pixbuf_scale (gp_scr_3,
+                      gp_bg,
+                      0,
+                      i_img_1_h + i_pr_scr_h,
+                      i_img_w,
+                      i_img_3_h,
+                      0.0,
+                      i_img_1_h + i_pr_scr_h,
+                      1.0,
+                      1.0,
+                      GDK_INTERP_HYPER);
+
+    g_object_unref (gp_scr_1);
+    g_object_unref (gp_scr_2);
+    g_object_unref (gp_scr_3);
+    return gp_bg;
+}
+/*----------------------------------------------------------------------------*/
+/**
+ * @brief  Paint pixbuf on another pixbuf.
+ *
+ * @param[out]  gp_dest  Destination pixpuf to paint on to
+ * @param[in]   gp_src   Source pixpuf to paint on destination one
+ * @param[in]   gr_area  GdkRectangle with area where preview image can be 
+ *                       painted
+ * @return      none
+ */
+static void
+paint_pbuf_on_pbuf (GdkPixbuf    *gp_dest,
+                    GdkPixbuf    *gp_src,
+                    GdkRectangle *gr_area)
+{
+    double d_sc_x = 0;  /* x direction scale factor */
+    double d_sc_y = 0;  /* y direction scale factor */
+
+    d_sc_x = (double) gr_area->width / (double) gdk_pixbuf_get_width (gp_src);
+    d_sc_y = (double) gr_area->height / (double) gdk_pixbuf_get_height (gp_src);
+
+    gdk_pixbuf_scale (gp_src,
+                      gp_dest,
+                      gr_area->x,
+                      gr_area->y,
+                      gr_area->width,
+                      gr_area->height,
+                      gr_area->x,
+                      gr_area->y,
+                      d_sc_x, 
+                      d_sc_y,
+                      GDK_INTERP_HYPER);
+}
+/*----------------------------------------------------------------------------*/
+/**
+ * @brief  Make pixbuf preview of image from path.
+ *
+ * @param[in]  s_fname   Image path
+ * @return     Pixbuf with preview image.
+ */
+static GdkPixbuf *
+make_image_preview (const char *s_fname)
+{
+    GdkPixbuf *gp_prev_screen = NULL; /* Preview image (screen) */
+    GdkPixbuf *gp_prev = NULL;        /* Wallpaper preview image */
+    GdkRectangle gr_area = {0};       /* Wallpaper preview area */
+
+    gp_prev_screen = make_prev_screen_pbuf (&gr_area);
+    if (s_fname != NULL) {
+        gp_prev = gdk_pixbuf_new_from_file (s_fname, NULL);
+        paint_pbuf_on_pbuf (gp_prev_screen,
+                            gp_prev,
+                            &gr_area);
+        g_object_unref (gp_prev);
+    }   
+    return gp_prev_screen;
+}
+/*----------------------------------------------------------------------------*/
+/**
+ * @brief  Make preview image widget of image (file path).
+ *
+ * @param[in]   s_file       File to make preview image
+ * @param[out]  gw_img_prev  Preview image widget
+ * @return      none
+ */
+static void
+preview_from_file (const char *s_file,
+                   GtkWidget  *gw_img_prev)
+{
+    GdkPixbuf *gp_prev = make_image_preview (s_file);
+    if (gp_prev != NULL) {
+        gtk_image_set_from_pixbuf (GTK_IMAGE (gw_img_prev), gp_prev);
+        g_object_unref (gp_prev);
+    }
+}
+/*----------------------------------------------------------------------------*/
+/**
+ * @brief  Loading data from DialogData object to program window.
+ *
+ * @param[in,out]  dd_data  DialogData object with settings and widget data
+ * @return         none
+ */
+static void
+load_settings (DialogData *dd_data)
+{
+    GSList *gsl_iinfo = file_paths_to_imageinfo (dd_data->ws_sett->gsl_files);
+
+    liststore_add_items (dd_data->gw_view, gsl_iinfo);
+
+    gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (dd_data->gw_random),
+                                  dd_data->ws_sett->i_random);
+
+    gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (dd_data->gw_lastused),
+                                  dd_data->ws_sett->i_lastsett);
+
+    gtk_spin_button_set_value (GTK_SPIN_BUTTON (dd_data->gw_interval),
+            (double) dd_data->ws_sett->i_chinterval);
+
+    gtk_entry_set_text (GTK_ENTRY (dd_data->gw_command),
+                        dd_data->ws_sett->s_bgcmd);
+
+    g_slist_free_full (gsl_iinfo, (GDestroyNotify) imageinfo_free);
+}
+/*----------------------------------------------------------------------------*/
+/**
+ * @brief  Read settings from widgets and store them in WallSett object.
+ *
+ * @param[in,out]  dd_data  DialogData object with settings and widget data
+ * @return         none
+ */
+static void
+gather_settings (DialogData *dd_data)
+{
+    GSList *gsl_iinfo1 = treeview_get_data (dd_data->gw_view);
+    g_slist_free_full (dd_data->ws_sett->gsl_files, g_free);
+    dd_data->ws_sett->gsl_files = imageinfo_to_file_paths (gsl_iinfo1);
+    g_slist_free_full (gsl_iinfo1, (GDestroyNotify) imageinfo_free);
+
+    dd_data->ws_sett->i_lastsett = (uint8_t) gtk_toggle_button_get_active (
+            GTK_TOGGLE_BUTTON (dd_data->gw_lastused));
+    dd_data->ws_sett->i_random = (uint8_t) gtk_toggle_button_get_active (
+            GTK_TOGGLE_BUTTON (dd_data->gw_random));
+    dd_data->ws_sett->i_chinterval = (uint32_t) gtk_spin_button_get_value (
+            GTK_SPIN_BUTTON (dd_data->gw_interval));
+
+    const char *s_cmd = gtk_entry_get_text (GTK_ENTRY (dd_data->gw_command));
+    settings_set_command (dd_data->ws_sett, s_cmd);
 }
 /*----------------------------------------------------------------------------*/
 /**
@@ -258,59 +498,6 @@ event_set_wallpaper_pressed (GtkWidget  *widget,
 }
 /*----------------------------------------------------------------------------*/
 /**
- * @brief  Loading data from DialogData object to program window.
- *
- * @param[in,out]  dd_data  DialogData object with settings and widget data
- * @return         none
- */
-static void
-load_settings (DialogData *dd_data)
-{
-    GSList *gsl_iinfo = file_paths_to_imageinfo (dd_data->ws_sett->gsl_files);
-
-    liststore_add_items (dd_data->gw_view, gsl_iinfo);
-
-    gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (dd_data->gw_random),
-                                  dd_data->ws_sett->i_random);
-
-    gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (dd_data->gw_lastused),
-                                  dd_data->ws_sett->i_lastsett);
-
-    gtk_spin_button_set_value (GTK_SPIN_BUTTON (dd_data->gw_interval),
-            (double) dd_data->ws_sett->i_chinterval);
-
-    gtk_entry_set_text (GTK_ENTRY (dd_data->gw_command),
-                        dd_data->ws_sett->s_bgcmd);
-
-    g_slist_free_full (gsl_iinfo, (GDestroyNotify) imageinfo_free);
-}
-/*----------------------------------------------------------------------------*/
-/**
- * @brief  Read settings from widgets and store them in WallSett object.
- *
- * @param[in,out]  dd_data  DialogData object with settings and widget data
- * @return         none
- */
-static void
-gather_settings (DialogData *dd_data)
-{
-    GSList *gsl_iinfo1 = treeview_get_data (dd_data->gw_view);
-    g_slist_free_full (dd_data->ws_sett->gsl_files, g_free);
-    dd_data->ws_sett->gsl_files = imageinfo_to_file_paths (gsl_iinfo1);
-    g_slist_free_full (gsl_iinfo1, (GDestroyNotify) imageinfo_free);
-
-    dd_data->ws_sett->i_lastsett = (uint8_t) gtk_toggle_button_get_active (
-            GTK_TOGGLE_BUTTON (dd_data->gw_lastused));
-    dd_data->ws_sett->i_random = (uint8_t) gtk_toggle_button_get_active (
-            GTK_TOGGLE_BUTTON (dd_data->gw_random));
-    dd_data->ws_sett->i_chinterval = (uint32_t) gtk_spin_button_get_value (
-            GTK_SPIN_BUTTON (dd_data->gw_interval));
-
-    const char *s_cmd = gtk_entry_get_text (GTK_ENTRY (dd_data->gw_command));
-    settings_set_command (dd_data->ws_sett, s_cmd);
-}
-/*----------------------------------------------------------------------------*/
-/**
  * @brief  Save settings button pressed.
  *
  * @param          widget   The object on which the signal is emitted
@@ -323,62 +510,6 @@ event_save_settings_pressed (GtkWidget  *widget,
 {
     gather_settings (dd_data);
     settings_write (dd_data->ws_sett);
-}
-/*----------------------------------------------------------------------------*/
-/**
- * @brief  Make pixbuf preview of image from path.
- *
- * @param[in]  s_fname   Image path
- * @param[in]  i_max_wh  Max preview width/height 
- * @return     Pixbuf with preview image.
- */
-static GdkPixbuf *
-make_image_preview (const char *s_fname,
-                    const int   i_max_wh)
-{
-    GdkPixbuf *gp_prev        = NULL;
-    GdkPixbuf *gp_prev_scaled = NULL;
-    float      f_w            = 0;
-    float      f_h            = 0;
-    float      f_nw           = 0;
-    float      f_nh           = 0;
-
-    gp_prev = gdk_pixbuf_new_from_file (s_fname, NULL);
-
-    if (gp_prev != NULL) {
-        f_w = (float) gdk_pixbuf_get_width (gp_prev);
-        f_h = (float) gdk_pixbuf_get_height (gp_prev);
-        if (f_w > f_h) {
-            f_nw = (float) i_max_wh; 
-            f_nh = f_h / f_w * f_nw;
-        }
-        else {
-            f_nh = (float) i_max_wh; 
-            f_nw = f_w / f_h * f_nh;
-        }
-        gp_prev_scaled = gdk_pixbuf_scale_simple (gp_prev,
-                (int) f_nw, (int) f_nh, GDK_INTERP_HYPER);
-    }
-    g_object_unref (gp_prev);
-    return gp_prev_scaled;
-}
-/*----------------------------------------------------------------------------*/
-/**
- * @brief  Make preview image widget of image (file path).
- *
- * @param[in]   s_file       File to make preview image
- * @param[out]  gw_img_prev  Preview image widget
- * @return      none
- */
-static void
-preview_from_file (const char *s_file,
-                   GtkWidget  *gw_img_prev)
-{
-    GdkPixbuf *gp_prev = make_image_preview (s_file, 150);
-    if (gp_prev != NULL) {
-        gtk_image_set_from_pixbuf (GTK_IMAGE (gw_img_prev), gp_prev);
-        g_object_unref (gp_prev);
-    }
 }
 /*----------------------------------------------------------------------------*/
 /**
@@ -509,13 +640,9 @@ create_image_button (const char *s_label,
  * @return      none
  */
 static void
-create_preview (GtkWidget **gw_img)
+create_default_preview (GtkWidget **gw_img)
 {
-    GdkPixbuf *gp_prev = gdk_pixbuf_new (GDK_COLORSPACE_RGB,
-                                         TRUE,
-                                         8,
-                                         150,
-                                         150);
+    GdkPixbuf *gp_prev = make_image_preview (NULL);
     if (gp_prev != NULL) {
         *gw_img = gtk_image_new_from_pixbuf (gp_prev);
         g_object_unref (gp_prev);
@@ -698,7 +825,7 @@ activate (GtkApplication *app,
     GtkWidget     *gw_settings_widget;
 
     gw_window = gtk_application_window_new (app);
-    gtk_window_set_title (GTK_WINDOW (gw_window), "Wall Changer v1.0.1");
+    gtk_window_set_title (GTK_WINDOW (gw_window), "Wall Changer v1.1");
     gtk_window_set_default_size (GTK_WINDOW (gw_window), 1024, 768);
     g_signal_connect (gw_window, "delete-event",
                   G_CALLBACK (event_on_delete), dd_data);
@@ -706,7 +833,7 @@ activate (GtkApplication *app,
 
     create_title_widget (&gw_title_widget);
 
-    create_preview (&gw_img_prev);
+    create_default_preview (&gw_img_prev);
 
     create_tview (&gw_tview);
     dd_data->gw_view = gw_tview;

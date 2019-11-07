@@ -191,8 +191,8 @@ int
 js_settings_read (WallSett   *ws_sett,
                   const char *s_fname)
 {
-    char *s_buff = NULL;
-    int   i_res  = 0;
+    char *s_buff = NULL; /* File data buffer */
+    int   i_res  = 0;    /* Function result */
 
     i_res = read_file_data_hash (s_fname, &s_buff, &ws_sett->i_hash);
     if (i_res)
@@ -216,8 +216,8 @@ int
 js_settings_write (WallSett   *ws_sett,
                    const char *s_fname)
 {
-    char     *s_buff = NULL;
-    int       i_res  = 0;
+    char *s_buff = NULL; /* File data buffer */
+    int   i_res  = 0;    /* Function result */
 
     i_res = read_file_data_hash (s_fname, &s_buff, &ws_sett->i_hash);
     if (i_res)
@@ -251,8 +251,8 @@ int
 js_settings_update_last_used (WallSett   *ws_sett,
                               const char *s_fname)
 {
-    char     *s_buff = NULL;
-    int       i_res  = 0;
+    char *s_buff = NULL; /* File data buffer */
+    int   i_res  = 0;    /* Function result */
 
     if (ws_sett->s_lastused == NULL) 
         return 3;
@@ -297,9 +297,9 @@ js_settings_update_last_used (WallSett   *ws_sett,
 int
 js_settings_check_changed (WallSett *ws_sett)
 {
-    char     *s_buff = NULL;
-    int       i_res  = 0;
-    uint64_t  i_hash = 0;
+    char     *s_buff = NULL; /* File data buffer */
+    int       i_res  = 0;    /* Function result */
+    uint64_t  i_hash = 0;    /* Hash value */
 
     i_res = read_file_data_hash (ws_sett->s_cfgfile, &s_buff, &i_hash);
     if (i_res) {

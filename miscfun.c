@@ -51,8 +51,8 @@ hash(const char *str)
 char *
 get_file_ext (char *s_fn)
 {
-    char *s_ext = NULL;
-    char *s_p   = NULL;
+    char *s_ext = NULL; /* Extension string */
+    char *s_p   = NULL; /* Pointer to first right . */
 
     s_p = strrchr (s_fn, '.');
     if (s_p != NULL) {
@@ -76,9 +76,9 @@ int
 read_file_data (const char  *s_fname,
                 char       **s_buff)
 {
-    FILE  *f_file;
-    long   l_size;
-    size_t st_res;
+    FILE  *f_file; /* Data file */
+    long   l_size; /* File size */
+    size_t st_res; /* Read data count */
 
     f_file = fopen (s_fname, "rb");
     //if (pFile==NULL) {fputs ("File error",stderr); exit (1);}
@@ -122,11 +122,12 @@ read_file_data (const char  *s_fname,
  * @retval     1  File error
  * @retval     2  Reading error
  */
-int read_file_data_hash (const char  *s_fname,
-                         char       **s_buff,
-                         uint64_t    *i_hash)
+int
+read_file_data_hash (const char  *s_fname,
+                     char       **s_buff,
+                     uint64_t    *i_hash)
 {
-    int i_res = 0;
+    int i_res = 0; /* Function result */
 
     i_res = read_file_data (s_fname, s_buff);
     if (i_res != 0) {
@@ -151,9 +152,9 @@ int
 save_file_data (const char *s_fname,
                 const char *s_buff)
 {
-    FILE   *f_file;
-    size_t  st_res;
-    size_t  st_size;
+    FILE   *f_file;  /* File to save data */
+    size_t  st_res;  /* Save data count */
+    size_t  st_size; /* Buffer size */
 
     f_file = fopen (s_fname, "wb");
     if (f_file == NULL) {
@@ -181,7 +182,7 @@ int
 compare_strings (const char *a,
                  const char *b)
 {
-    int i_res = 0;
+    int i_res = 0; /* Function result */
 
     if (a == NULL || b == NULL) {
         if (a == NULL && b == NULL)
@@ -210,7 +211,7 @@ int
 my_gslist_get_position (GSList     *gsl_list,
                         const char *s_what)
 {
-    GSList *gsl_fnd = NULL;
+    GSList *gsl_fnd = NULL; /* List of found elements */
 
     if (gsl_list == NULL)
         return -1;
@@ -235,15 +236,15 @@ my_gslist_get_position (GSList     *gsl_list,
 GSList *
 get_directory_content (const char *s_path1)
 {
-    GSList *gsl_files = NULL;
-    char   *s_pthfn   = NULL;
-    char   *s_path    = NULL;
-    char   *s_fn      = NULL;
-    char   *s_p       = NULL;
-    int     i_dlen    = 0;
-    int     i_pos     = 0;
-    DIR    *dr;
-    struct  dirent *de;
+    GSList *gsl_files = NULL; /* Return list of files in directory */
+    char   *s_pthfn   = NULL; /* Full file name with path */
+    char   *s_path    = NULL; /* File path */
+    char   *s_fn      = NULL; /* File name */
+    char   *s_p       = NULL; /* Pointer to right position of / */
+    int     i_dlen    = 0;    /* Path string length */
+    int     i_pos     = 0;    /* Position of / */
+    DIR    *dr;               /* Dirent directory */
+    struct  dirent *de;       /* Dirent struct */
 
     i_dlen = strlen (s_path1);
     s_path = g_malloc0 ((i_dlen + 1) * sizeof (char));

@@ -62,9 +62,9 @@ imageinfo_free (ImageInfo *ii_info)
 ImageInfo *
 imageinfo_get_info (const char *s_file_name)
 {
-    ImageInfo *ii_info = NULL;
-    char      *s_p     = NULL;
-    int        i_size  = 0;
+    ImageInfo *ii_info = NULL; /* Result ImageInfo */
+    char      *s_p     = NULL; /* Pointer to right position of / */
+    int        i_size  = 0;    /* Size of path string */
     
     ii_info = g_malloc (sizeof (ImageInfo));
 
@@ -102,8 +102,8 @@ imageinfo_get_info (const char *s_file_name)
 GSList *
 file_paths_to_imageinfo (GSList *gsl_files1)
 {
-    GSList *gsl_iinfo = NULL;
-    GSList *gsl_files = NULL;
+    GSList *gsl_iinfo = NULL; /* Result ImageInfo list */
+    GSList *gsl_files = NULL; /* Temp file list */
 
     gsl_files = g_slist_copy (gsl_files1);
 
@@ -126,8 +126,8 @@ file_paths_to_imageinfo (GSList *gsl_files1)
 GSList *
 imageinfo_to_file_paths (GSList *gsl_iinfo1)
 {
-    GSList *gsl_iinfo = NULL;
-    GSList *gsl_files = NULL;
+    GSList *gsl_files = NULL; /* Result full file path with name */
+    GSList *gsl_iinfo = NULL; /* Temp ImageInfo list */
 
     gsl_iinfo = g_slist_copy (gsl_iinfo1);
 

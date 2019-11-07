@@ -13,11 +13,16 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-2019-11-04  Michal Babik  <michalb1981@o2.pl>
+v1.1   2019-11-07  Michal Babik  <michalb1981@o2.pl>
+
+        * wchanger.c: Changed wallpaper preview.
+        * treev.c:    Moved treeview related functions
+
+v1.0.1 2019-11-04  Michal Babik  <michalb1981@o2.pl>
 
         * wchanger.c (create_preview): corrected making "empty" preview
 
-2019-11-03  Michal Babik  <michalb1981@o2.pl>
+v1.0   2019-11-03  Michal Babik  <michalb1981@o2.pl>
 
         * First relase.
-        
+

@@ -35,8 +35,8 @@ static int
 wallpaper_set_file (const char *s_cmd,
                     const char *s_wall)
 {
-    char *s_cmdn = NULL;
-    int   i_siz  = 0;
+    char *s_cmdn = NULL; /* Wallpaper set command */
+    int   i_siz  = 0;    /* Size of wallpeper set command */
 
     i_siz = strlen (s_cmd) + strlen (s_wall) + 4;
     s_cmdn = g_malloc0 (i_siz * sizeof (char));
@@ -55,10 +55,10 @@ wallpaper_set_file (const char *s_cmd,
 static int
 wallpaper_set_random (WallSett *ws_sett)
 {
-    GRand *gr_rand;
-    char  *s_fn  = NULL;
-    int    i_pos = 0;
-    int    i_cnt = 0;
+    GRand *gr_rand;      /* GLib pseudo-random number generator */
+    char  *s_fn  = NULL; /* Wallpaper file name */
+    int    i_pos = 0;    /* Random wallpaper position */
+    int    i_cnt = 0;    /* Length of wallpaper list */
 
     i_cnt = g_slist_length (ws_sett->gsl_files);
     if (i_cnt == 0)
@@ -85,8 +85,8 @@ wallpaper_set_random (WallSett *ws_sett)
 static int
 wallpaper_set_next_in_list (WallSett *ws_sett)
 {
-    char *s_next = NULL;
-    int   i_pos  = 0;
+    char *s_next = NULL; /* Next wallpaper file name */
+    int   i_pos  = 0;    /* Next wallpaper position in list */
 
     // check empty list
     if (g_slist_length (ws_sett->gsl_files) == 0) {

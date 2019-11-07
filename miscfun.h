@@ -25,6 +25,7 @@
 #define MISCFUN_H
 #include <stdio.h>
 #include <glib.h>
+#include <dirent.h> 
 #include "settstr.h"
 /*----------------------------------------------------------------------------*/
 uint64_t hash(const char *str);

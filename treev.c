@@ -84,8 +84,8 @@ treeview_replace_data (GtkWidget *gw_tview,
     GtkTreeModel *gtm_model;
     GtkListStore *gls_list;
     GtkTreeIter   gti_iter;
-    uint32_t      ui_icnt   = 0;
-    uint32_t      ui_mcnt   = 0;
+    uint32_t      ui_icnt   = 0; /* ItemInfo list items count */
+    uint32_t      ui_mcnt   = 0; /* TreeModel items count */
     gboolean      b_res     = FALSE;
 
     gsl_iinfo = g_slist_copy (gsl_iinfo1);
@@ -117,7 +117,7 @@ void
 liststore_add_items (GtkWidget  *gw_list,
                      GSList     *gsl_iinfo1)
 {
-    GSList *gsl_iinfo = NULL;
+    GSList *gsl_iinfo = NULL; /* Temp ItemInfo list */
 
     gsl_iinfo = g_slist_copy (gsl_iinfo1);
 
@@ -222,7 +222,7 @@ treeview_remove_selected (GtkWidget *gw_tview)
 GSList *
 treeview_get_data (GtkWidget *gw_tview)
 {
-    GSList       *gsl_iinfo = NULL;
+    GSList       *gsl_iinfo = NULL; /* ImageInfo return list */
     GtkTreeModel *gtm_model;
     GtkTreeIter   gti_iter;
     gboolean      b_res     = FALSE;
@@ -246,8 +246,8 @@ treeview_get_data (GtkWidget *gw_tview)
 void
 treeview_sort_list (GtkWidget *gw_tview)
 {
-    GSList *gsl_files1 = NULL;
-    GSList *gsl_files  = NULL;
+    GSList *gsl_files1 = NULL; /* TreeView item list */
+    GSList *gsl_files  = NULL; /* TreeView item list temp copy */
 
     gsl_files1 = treeview_get_data (gw_tview);
     gsl_files = g_slist_copy (gsl_files1);
@@ -266,8 +266,8 @@ treeview_sort_list (GtkWidget *gw_tview)
 void
 treeview_move_up (GtkWidget *gw_tview)
 {
-    GList            *gl_list  = NULL;
-    GList            *gl_list1 = NULL;
+    GList            *gl_list  = NULL; /* TreeView selected rows list */
+    GList            *gl_list1 = NULL; /* First selected / temp list */
     GtkTreeSelection *gts_sele;
     GtkTreeModel     *gtm_model;
     GtkTreeIter       gti_iter;
@@ -305,8 +305,8 @@ treeview_move_up (GtkWidget *gw_tview)
 void
 treeview_move_down (GtkWidget *gw_tview)
 {
-    GList            *gl_list  = NULL;
-    GList            *gl_list1 = NULL;
+    GList            *gl_list  = NULL; /* TreeView selected rows list */
+    GList            *gl_list1 = NULL; /* First selected / temp list */
     GtkTreeSelection *gts_sele;
     GtkTreeModel     *gtm_model;
     GtkTreeIter       gti_iter;
