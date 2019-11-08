@@ -825,7 +825,7 @@ activate (GtkApplication *app,
     GtkWidget     *gw_settings_widget; // Setings for wallpaper changing
 
     gw_window = gtk_application_window_new (app);
-    gtk_window_set_title (GTK_WINDOW (gw_window), "Wall Changer v1.1");
+    gtk_window_set_title (GTK_WINDOW (gw_window), "Wall Changer v1.1.1");
     gtk_window_set_default_size (GTK_WINDOW (gw_window), 1024, 768);
     g_signal_connect (gw_window, "delete-event",
                   G_CALLBACK (event_on_delete), dd_data);
