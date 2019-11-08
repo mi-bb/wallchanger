@@ -17,7 +17,7 @@
  *
  * @brief Wallpaper change dialog
  *
- * Program to change wallpapers.
+ * Wallpaper changing appliation.
  *
  * @date November 7, 2019
  *
@@ -585,13 +585,13 @@ event_on_delete (GtkWidget  *window,
 static void
 create_title_widget (GtkWidget **gw_title_widget)
 {
-    *gw_title_widget = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 4);
-
-    GtkWidget *gw_label = gtk_label_new (NULL);
-    const char *s_str = "Wall Changer - Program settings";
+    const char *s_str    = "Wall Changer - Program settings";
     const char *s_format = "<span size=\"20000\" weight=\"bold\" \
-                          foreground=\"#0099e6\" style=\"italic\">\%s</span>";
-    char *s_markup;
+                            foreground=\"#0099e6\" style=\"italic\">\%s</span>";
+    char       *s_markup = NULL;
+    GtkWidget  *gw_label = gtk_label_new (NULL);
+
+    *gw_title_widget = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 4);
     s_markup = g_markup_printf_escaped (s_format, s_str);
     gtk_label_set_markup (GTK_LABEL (gw_label), s_markup);
     g_free (s_markup);
@@ -814,15 +814,15 @@ static void
 activate (GtkApplication *app,
           DialogData     *dd_data)
 {
-    GtkWidget     *gw_window;
-    GtkWidget     *gw_title_widget;
-    GtkWidget     *gw_tview;
-    GtkWidget     *gw_scroll;
-    GtkWidget     *gw_buttons_widget;
-    GtkWidget     *gw_box_list_btns;
-    GtkWidget     *gw_box_prev;
-    GtkWidget     *gw_img_prev;
-    GtkWidget     *gw_settings_widget;
+    GtkWidget     *gw_window;          // Application window
+    GtkWidget     *gw_title_widget;    // Top title widget
+    GtkWidget     *gw_tview;           // Wallpaper list TreeView
+    GtkWidget     *gw_scroll;          // Scrolled window for wallpaper list
+    GtkWidget     *gw_buttons_widget;  // Buttons widget
+    GtkWidget     *gw_img_prev;        // Wallpaper preview widget
+    GtkWidget     *gw_box_prev;        // Widget for wallpaper preview
+    GtkWidget     *gw_box_list_btns;   // Widget for list, buttons, preview
+    GtkWidget     *gw_settings_widget; // Setings for wallpaper changing
 
     gw_window = gtk_application_window_new (app);
     gtk_window_set_title (GTK_WINDOW (gw_window), "Wall Changer v1.1");
@@ -854,6 +854,7 @@ activate (GtkApplication *app,
     gtk_box_pack_start (GTK_BOX (gw_box_prev),
                         gw_img_prev,
                         FALSE, FALSE, 4);
+
     gtk_box_pack_start (GTK_BOX (gw_box_list_btns),
                         gw_scroll,
                         TRUE, TRUE, 4);
