@@ -19,15 +19,17 @@
  *
  * Program to change wallpapers.
  *
- * @date November 7, 2019
+ * @date November 8, 2019
  *
- * @version 1.1
+ * @version 1.1.1
  * 
  * @author Michał Bąbik <michalb1981@o2.pl>
  */
 #include "setts.h"
 #include "settstr.h"
 #include "wallset.h"
+
+#include "miscfun.h"
 /*----------------------------------------------------------------------------*/
 int
 main (int    argc,
@@ -37,17 +39,21 @@ main (int    argc,
     uint32_t  i_cnt = 0;
 
     if (settings_init (&ws_sett)) {
+        free_wall_sett (&ws_sett);
         exit (1);
     }
     if (settings_read (&ws_sett) != 0) {
+        free_wall_sett (&ws_sett);
         exit (1);
     }
     if (g_slist_length (ws_sett.gsl_files) == 0) {
         fputs ("Empty file list\n", stderr);
+        free_wall_sett (&ws_sett);
         exit (1);
     }
 
     if (wallpaper_startup_set (&ws_sett) > 0) {
+        free_wall_sett (&ws_sett);
         exit (1);
     }
 
@@ -56,11 +62,13 @@ main (int    argc,
         i_cnt++;
         if (i_cnt >= ws_sett.i_chinterval) {
             if (wallpaper_change (&ws_sett) > 0) {
+                free_wall_sett (&ws_sett);
                 exit(1);
             }
             i_cnt = 0;
         }
     }
+    free_wall_sett (&ws_sett);
     return 0;
 }
 /*----------------------------------------------------------------------------*/

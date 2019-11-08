@@ -19,9 +19,9 @@
  *
  * Wallpaper changing appliation.
  *
- * @date November 7, 2019
+ * @date November 8, 2019
  *
- * @version 1.1
+ * @version 1.1.1
  * 
  * @author Michał Bąbik <michalb1981@o2.pl>
  */
@@ -909,21 +909,6 @@ activate (GtkApplication *app,
 }
 /*----------------------------------------------------------------------------*/
 /**
- * @brief  Free allocated memory.
- *
- * @param[out]  dd_data  Pointer to DialogData with all settings
- * @return      none
- */
-static void
-free_stuff (DialogData *dd_data)
-{
-    g_slist_free_full (dd_data->ws_sett->gsl_files, g_free);
-    g_free (dd_data->ws_sett->s_bgcmd);
-    g_free (dd_data->ws_sett->s_cfgfile);
-    g_free (dd_data->ws_sett->s_lastused);
-}
-/*----------------------------------------------------------------------------*/
-/**
  * @brief  Application shutdown signal.
  *
  * @param       app      Pointer to GtkApplication
@@ -934,7 +919,7 @@ static void
 shutdown (GtkApplication *app,
           DialogData     *dd_data)
 {
-    free_stuff (dd_data);
+    free_wall_sett (dd_data->ws_sett);
 }
 /*----------------------------------------------------------------------------*/
 /**

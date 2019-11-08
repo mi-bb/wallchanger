@@ -44,52 +44,43 @@ js_json_buff_to_settings (WallSett   *ws_sett,
 
     j_obj = json_tokener_parse (s_buff);
     if (json_object_object_get_ex (j_obj, "Backgrounds", &j_bgarray) &&
-        json_object_get_type(j_bgarray) == json_type_array) {
+        json_object_get_type (j_bgarray) == json_type_array) {
         int i_arlen = json_object_array_length (j_bgarray);
         for (int i = 0; i < i_arlen; ++i) {
             json_object *j_val;
             j_val = json_object_array_get_idx (j_bgarray, i);
             if (j_val != NULL) {
-                const char *s_str1 = json_object_get_string (j_val);
-                char *s_fn = g_strdup (s_str1);
+                char *s_fn = g_strdup (json_object_get_string (j_val));
                 ws_sett->gsl_files = g_slist_append (ws_sett->gsl_files, s_fn);
-                json_object_put (j_val);
             }
         }
     }
     if (json_object_object_get_ex (j_obj, "Random wallpaper", &j_val) &&
         json_object_get_type(j_val) == json_type_int) {
         ws_sett->i_random = json_object_get_int (j_val);
-        json_object_put (j_val);
     }
     if (json_object_object_get_ex (j_obj, "Set last used wallpaper", &j_val) &&
         json_object_get_type(j_val) == json_type_int) {
         ws_sett->i_lastsett = json_object_get_int (j_val);
-        json_object_put (j_val);
     }
     if (json_object_object_get_ex (j_obj, "Last used wallpaper pos", &j_val) &&
         json_object_get_type(j_val) == json_type_int) {
         ws_sett->i_lastused = json_object_get_int (j_val);
-        json_object_put (j_val);
     }
     if (json_object_object_get_ex (j_obj,
                                    "Wallpaper change interval", &j_val) &&
         json_object_get_type(j_val) == json_type_int) {
         ws_sett->i_chinterval = json_object_get_int (j_val);
-        json_object_put (j_val);
     }
     if (json_object_object_get_ex (j_obj, "Background set command", &j_val) &&
         json_object_get_type(j_val) == json_type_string) {
-        const char *s_str1 = json_object_get_string (j_val);
-        ws_sett->s_bgcmd = g_strdup (s_str1);
-        json_object_put (j_val);
+        ws_sett->s_bgcmd = g_strdup (json_object_get_string (j_val));
     }
     if (json_object_object_get_ex (j_obj, "Last used wallpaper file", &j_val) &&
         json_object_get_type(j_val) == json_type_string) {
-        const char *s_str1 = json_object_get_string (j_val);
-        ws_sett->s_lastused = g_strdup (s_str1);
-        json_object_put (j_val);
+        ws_sett->s_lastused = g_strdup (json_object_get_string (j_val));
     }
+    json_object_put (j_obj);
     return 0;
 }
 /*----------------------------------------------------------------------------*/
@@ -113,33 +104,33 @@ js_settings_to_json_buff (WallSett  *ws_sett,
 
     while (gsl_files1 != NULL) {
         char *s_fn = gsl_files1->data;
-        json_object *j_string = json_object_new_string (s_fn);
-        json_object_array_add (j_array, j_string);
+        json_object_array_add (j_array, json_object_new_string (s_fn));
         gsl_files1 = gsl_files1->next;
     }
     g_slist_free (gsl_files1);
 
-    json_object_object_add(j_obj, "Backgrounds", j_array);
+    json_object_object_add (j_obj, "Backgrounds", j_array);
 
-    json_object *j_int = json_object_new_int(ws_sett->i_random);
-    json_object_object_add(j_obj,"Random wallpaper", j_int);
-    j_int = json_object_new_int(ws_sett->i_lastsett);
-    json_object_object_add(j_obj,"Set last used wallpaper", j_int);
-    j_int = json_object_new_int(ws_sett->i_lastused);
-    json_object_object_add(j_obj,"Last used wallpaper pos", j_int);
+    json_object_object_add (j_obj, "Random wallpaper",
+                           json_object_new_int(ws_sett->i_random));
+    json_object_object_add (j_obj, "Set last used wallpaper",
+                            json_object_new_int(ws_sett->i_lastsett));
+    json_object_object_add (j_obj, "Last used wallpaper pos",
+                            json_object_new_int(ws_sett->i_lastused));
     if (ws_sett->s_lastused != NULL) {
-        json_object *j_string = json_object_new_string (ws_sett->s_lastused);
-        json_object_object_add(j_obj,"Last used wallpaper file", j_string);
+        json_object_object_add (j_obj, "Last used wallpaper file",
+                                json_object_new_string (ws_sett->s_lastused));
     }
     if (ws_sett->s_bgcmd != NULL) {
-        json_object *j_string = json_object_new_string (ws_sett->s_bgcmd);
-        json_object_object_add(j_obj,"Background set command", j_string);
+        json_object_object_add (j_obj, "Background set command",
+                                json_object_new_string (ws_sett->s_bgcmd));
     }
-    j_int = json_object_new_int(ws_sett->i_chinterval);
-    json_object_object_add(j_obj,"Wallpaper change interval", j_int);
+    json_object_object_add(j_obj, "Wallpaper change interval",
+                           json_object_new_int (ws_sett->i_chinterval));
     const char *s_tmp = json_object_to_json_string (j_obj);
     *s_buff = g_realloc (*s_buff, (strlen (s_tmp) + 1) * sizeof (char));
     strcpy (*s_buff, s_tmp);
+    json_object_put (j_obj);
     return 0;
 }
 /*----------------------------------------------------------------------------*/
@@ -164,16 +155,17 @@ js_json_buffer_update_last_used (char       **s_buff,
     else {
         j_obj = json_tokener_parse (*s_buff);
     }
-    json_object *j_string = json_object_new_string (s_lu);
-    json_object_object_add(j_obj,"Last used wallpaper file", j_string);
-    json_object *j_int = json_object_new_int(i_lu);
-    json_object_object_add(j_obj,"Last used wallpaper pos", j_int);
+    json_object_object_add(j_obj,"Last used wallpaper file", 
+                           json_object_new_string (s_lu));
+    json_object_object_add(j_obj,"Last used wallpaper pos",
+                           json_object_new_int(i_lu));
     const char *s_buff2 = json_object_to_json_string (j_obj);
     if (strlen (s_buff2) != strlen (*s_buff)) {
         *s_buff = g_realloc (*s_buff,
                 (strlen (s_buff2) + 1) * sizeof (char));
     }
     strcpy (*s_buff, s_buff2);
+    json_object_put (j_obj);
     return 0;
 }
 /*----------------------------------------------------------------------------*/
@@ -198,6 +190,8 @@ js_settings_read (WallSett   *ws_sett,
     if (i_res)
         return i_res;
     i_res =  js_json_buff_to_settings (ws_sett, s_buff);
+    if (s_buff != NULL)
+        g_free (s_buff);
     return i_res;
 }
 /*----------------------------------------------------------------------------*/

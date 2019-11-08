@@ -124,13 +124,17 @@ int
 settings_set_command (WallSett   *ws_sett,
                       const char *s_cmd)
 {
+    if (compare_strings (s_cmd, ws_sett->s_bgcmd) == 0)
+        return 0;
+    if (s_cmd == NULL)
+        return 0;
     if (ws_sett->s_bgcmd == NULL)
         ws_sett->s_bgcmd = g_malloc0 ((strlen (s_cmd) + 1) * sizeof (char));
-    if (strcmp (s_cmd, ws_sett->s_bgcmd) != 0) {
+    else {
         ws_sett->s_bgcmd = g_realloc (ws_sett->s_bgcmd,
               (strlen (s_cmd) + 1) * sizeof (char));
-        strcpy (ws_sett->s_bgcmd, s_cmd);
     }
+    strcpy (ws_sett->s_bgcmd, s_cmd);
     return 0;
 }
 /*----------------------------------------------------------------------------*/
