@@ -19,13 +19,14 @@
  *
  * Wallpaper changing appliation.
  *
- * @date November 8, 2019
+ * @date November 14, 2019
  *
- * @version 1.1.1
+ * @version 1.2
  * 
  * @author Michał Bąbik <michalb1981@o2.pl>
  */
 #include <stdio.h> 
+#include <dirent.h> 
 #include <gtk/gtk.h>
 #include "setts.h"
 #include "settstr.h"
@@ -34,6 +35,8 @@
 #include "imgs.h"
 #include "dlgs.h"
 #include "treev.h"
+#include "flist.h"
+#include "errs.h"
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Structore to pass widgets and settings to callback
@@ -48,6 +51,60 @@ DialogData {
     GtkWidget  *gw_interval;    /**< Set wallpaper command entry */
     WallSett   *ws_sett;        /**< Program settings */
 } DialogData;
+/*----------------------------------------------------------------------------*/
+/**
+ * @brief  Get directory content in GSList 
+ *
+ * @param[in]  s_path1  Path to directory
+ * @return     List of files in directory
+ */
+static GSList *
+get_directory_content (const char *s_path1)
+{
+    GSList *gsl_files = NULL; /* Return list of files in directory */
+    char   *s_pthfn   = NULL; /* Full file name with path */
+    char   *s_path    = NULL; /* File path */
+    size_t  i_dlen    = 0;    /* Path string length */
+    DIR    *dr;               /* Dirent directory */
+    struct  dirent *de;       /* Dirent struct */
+
+    i_dlen = strlen (s_path1);
+
+    /* Reserve 1 more maybe for a backslash later */
+    create_resize ((void**) &s_path, i_dlen + 2, sizeof (char));
+    strcpy (s_path, s_path1);
+    if (s_path[i_dlen-1] != '/') {
+        strcat (s_path, "/");
+        i_dlen++;
+    }
+
+    dr = opendir (s_path); 
+    if (dr == NULL) {
+        printf ("Could not open current directory\n"); 
+        g_free (s_path);
+        return NULL; 
+    } 
+    while ((de = readdir(dr)) != NULL) {
+        //if (de->d_type == DT_REG) {
+        if (de->d_type == 8) {
+            s_pthfn = calloc ((i_dlen + strlen (de->d_name)+1), sizeof (char));
+            if (s_pthfn == NULL) {
+                fputs ("Alloc error\n", stderr);
+                //return ERR_ALLOC;
+                exit (EXIT_FAILURE);
+            }
+            strcpy (s_pthfn, s_path);
+            strcat (s_pthfn, de->d_name);
+            gsl_files = g_slist_append (gsl_files, s_pthfn);
+        }
+    }
+    if (s_path != NULL)
+        free (s_path);
+
+    closedir(dr);
+
+    return gsl_files;
+}
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Get list of GdkPixbuf format extensions.
@@ -66,17 +123,19 @@ get_pbuf_extension_list (void)
 
     gsl_formats1 = gdk_pixbuf_get_formats();
     gsl_formats = g_slist_copy (gsl_formats1);
+
     while (gsl_formats != NULL) {
         gpf = gsl_formats->data;
         exts = gdk_pixbuf_format_get_extensions (gpf);
         for (it = exts; *it != NULL; it++) {
-            gsl_res = g_slist_append (gsl_res, g_strdup (*it));
+            gsl_res = g_slist_append (gsl_res, str_dup (*it));
         }
         g_strfreev (exts);
         gsl_formats = gsl_formats->next;
     }
     g_slist_free (gsl_formats1);
     g_slist_free (gsl_formats);
+
     return gsl_res;
 }
 /*----------------------------------------------------------------------------*/
@@ -92,26 +151,26 @@ check_files_for_pixbuf (GSList *gsl_files1)
     GSList  *gsl_res   = NULL;
     GSList  *gsl_files = NULL;
     GSList  *gsl_exts  = NULL;
-    char    *s_fn      = NULL;
-    char    *s_ext     = NULL;
+    char    *s_fn      = NULL; /* File name */
+    char    *s_ext     = NULL; /* Pointer to ext in s_fn */
 
     gsl_exts = get_pbuf_extension_list ();
     gsl_files = g_slist_copy (gsl_files1);
 
     while (gsl_files != NULL) {
-        s_fn = g_strdup ((char*) gsl_files->data);
+        s_fn = str_dup ((char*) gsl_files->data);
         s_ext = get_file_ext (s_fn);
         if (s_ext != NULL) {
             GSList *gsl_fnd = g_slist_find_custom (gsl_exts, s_ext, 
                     (GCompareFunc) compare_strings);
             if (gsl_fnd != NULL) {
                 gsl_res = g_slist_append (gsl_res, s_fn);
-            g_free (s_ext);
             }
         }
         gsl_files = gsl_files->next;
     }
     g_slist_free_full (gsl_exts, g_free);
+
     return gsl_res;
 }
 /*----------------------------------------------------------------------------*/
@@ -146,10 +205,10 @@ get_screen_size (int *i_scr_w,
 static GdkPixbuf *
 make_prev_screen_pbuf (GdkRectangle *gr_rect)
 {
-    GdkPixbuf *gp_bg;     /* Result whole preview image (screeb + wall) */
-    GdkPixbuf *gp_scr_1;  /* Preview (monitor) part 1 (top) image*/
-    GdkPixbuf *gp_scr_2;  /* Preview (monitor) part 1 (top) image*/
-    GdkPixbuf *gp_scr_3;  /* Preview (monitor) part 1 (top) image*/
+    GdkPixbuf *gp_bg    = NULL; /* Result preview image (screen + wall) */
+    GdkPixbuf *gp_scr_1 = NULL; /* Preview (monitor) part 1 (top) image*/
+    GdkPixbuf *gp_scr_2 = NULL; /* Preview (monitor) part 1 (top) image*/
+    GdkPixbuf *gp_scr_3 = NULL; /* Preview (monitor) part 1 (top) image*/
     int i_screen_w = 0;   /* Screen width */
     int i_screen_h = 0;   /* Screen height */
     int i_pr_scr_w = 138; /* Preview width (inside screen) */
@@ -225,6 +284,7 @@ make_prev_screen_pbuf (GdkRectangle *gr_rect)
     g_object_unref (gp_scr_1);
     g_object_unref (gp_scr_2);
     g_object_unref (gp_scr_3);
+
     return gp_bg;
 }
 /*----------------------------------------------------------------------------*/
@@ -271,10 +331,11 @@ static GdkPixbuf *
 make_image_preview (const char *s_fname)
 {
     GdkPixbuf *gp_prev_screen = NULL; /* Preview image (screen) */
-    GdkPixbuf *gp_prev = NULL;        /* Wallpaper preview image */
-    GdkRectangle gr_area = {0};       /* Wallpaper preview area */
+    GdkPixbuf *gp_prev        = NULL; /* Wallpaper preview image */
+    GdkRectangle gr_area      = {0};  /* Wallpaper preview area */
 
     gp_prev_screen = make_prev_screen_pbuf (&gr_area);
+
     if (s_fname != NULL) {
         gp_prev = gdk_pixbuf_new_from_file (s_fname, NULL);
         paint_pbuf_on_pbuf (gp_prev_screen,
@@ -288,15 +349,16 @@ make_image_preview (const char *s_fname)
 /**
  * @brief  Make preview image widget of image (file path).
  *
- * @param[in]   s_file       File to make preview image
  * @param[out]  gw_img_prev  Preview image widget
+ * @param[in]   s_file       File to make preview image
  * @return      none
  */
 static void
-preview_from_file (const char *s_file,
-                   GtkWidget  *gw_img_prev)
+preview_from_file (GtkWidget  *gw_img_prev,
+                   const char *s_file)
 {
     GdkPixbuf *gp_prev = make_image_preview (s_file);
+
     if (gp_prev != NULL) {
         gtk_image_set_from_pixbuf (GTK_IMAGE (gw_img_prev), gp_prev);
         g_object_unref (gp_prev);
@@ -312,21 +374,24 @@ preview_from_file (const char *s_file,
 static void
 load_settings (DialogData *dd_data)
 {
-    GSList *gsl_iinfo = file_paths_to_imageinfo (dd_data->ws_sett->gsl_files);
+    GSList *gsl_iinfo = NULL; /* list of ImageInfo items */
+
+    gsl_iinfo = flist_to_imageinfo (&dd_data->ws_sett->fl_files);
 
     liststore_add_items (dd_data->gw_view, gsl_iinfo);
 
     gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (dd_data->gw_random),
-                                  dd_data->ws_sett->i_random);
+                                  settings_get_random (dd_data->ws_sett));
 
     gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (dd_data->gw_lastused),
-                                  dd_data->ws_sett->i_lastsett);
+                          settings_get_last_used_setting (dd_data->ws_sett));
 
     gtk_spin_button_set_value (GTK_SPIN_BUTTON (dd_data->gw_interval),
-            (double) dd_data->ws_sett->i_chinterval);
+            (double) settings_get_interval (dd_data->ws_sett));
 
-    gtk_entry_set_text (GTK_ENTRY (dd_data->gw_command),
-                        dd_data->ws_sett->s_bgcmd);
+    if (settings_get_command (dd_data->ws_sett) != NULL)
+        gtk_entry_set_text (GTK_ENTRY (dd_data->gw_command),
+                            settings_get_command (dd_data->ws_sett));
 
     g_slist_free_full (gsl_iinfo, (GDestroyNotify) imageinfo_free);
 }
@@ -340,19 +405,28 @@ load_settings (DialogData *dd_data)
 static void
 gather_settings (DialogData *dd_data)
 {
+    const char *s_cmd = NULL; /* Set wallpaper command string */
+
     GSList *gsl_iinfo1 = treeview_get_data (dd_data->gw_view);
-    g_slist_free_full (dd_data->ws_sett->gsl_files, g_free);
-    dd_data->ws_sett->gsl_files = imageinfo_to_file_paths (gsl_iinfo1);
+
+    flist_clear (&dd_data->ws_sett->fl_files);
+    imageinfo_append_to_flist (gsl_iinfo1, &dd_data->ws_sett->fl_files);
+
     g_slist_free_full (gsl_iinfo1, (GDestroyNotify) imageinfo_free);
 
-    dd_data->ws_sett->i_lastsett = (uint8_t) gtk_toggle_button_get_active (
-            GTK_TOGGLE_BUTTON (dd_data->gw_lastused));
-    dd_data->ws_sett->i_random = (uint8_t) gtk_toggle_button_get_active (
-            GTK_TOGGLE_BUTTON (dd_data->gw_random));
-    dd_data->ws_sett->i_chinterval = (uint32_t) gtk_spin_button_get_value (
-            GTK_SPIN_BUTTON (dd_data->gw_interval));
+    settings_set_last_used_setting (dd_data->ws_sett,
+            (uint8_t) gtk_toggle_button_get_active (
+                GTK_TOGGLE_BUTTON (dd_data->gw_lastused)));
 
-    const char *s_cmd = gtk_entry_get_text (GTK_ENTRY (dd_data->gw_command));
+    settings_set_random (dd_data->ws_sett,
+            (uint8_t) gtk_toggle_button_get_active (
+                GTK_TOGGLE_BUTTON (dd_data->gw_random)));
+
+    settings_set_interval (dd_data->ws_sett,
+            (uint32_t) gtk_spin_button_get_value (
+                GTK_SPIN_BUTTON (dd_data->gw_interval)));
+
+    s_cmd = gtk_entry_get_text (GTK_ENTRY (dd_data->gw_command));
     settings_set_command (dd_data->ws_sett, s_cmd);
 }
 /*----------------------------------------------------------------------------*/
@@ -374,6 +448,7 @@ event_add_images_pressed (GtkWidget  *widget,
     gsl_iinfo = file_paths_to_imageinfo (gsl_files);
 
     liststore_add_items (dd_data->gw_view, gsl_iinfo);
+
     g_slist_free_full (gsl_files, g_free);
     g_slist_free_full (gsl_iinfo, (GDestroyNotify) imageinfo_free);
 }
@@ -389,18 +464,21 @@ static void
 event_add_images_folder_pressed (GtkWidget  *widget,
                                  DialogData *dd_data)
 {
-    GSList *gsl_files1 = NULL;
-    GSList *gsl_files2 = NULL;
-    char   *s_folder   = NULL;
+    GSList *gsl_files1   = NULL;
+    GSList *gsl_files2   = NULL;
+    char *s_folder       = NULL; /* Selecred directory name */
 
     s_folder = add_images_folder_dialog (dd_data->gw_window);
 
     if (s_folder != NULL) {
         gsl_files1 = get_directory_content (s_folder);
         gsl_files2 = check_files_for_pixbuf (gsl_files1);
-        g_slist_free_full (gsl_files1, g_free);
+
+        g_slist_free_full (gsl_files1, free);
+
         gsl_files1 = file_paths_to_imageinfo (gsl_files2);
         liststore_add_items (dd_data->gw_view, gsl_files1);
+
         g_slist_free_full (gsl_files1, (GDestroyNotify) imageinfo_free);
         g_slist_free_full (gsl_files2, g_free);
         g_free (s_folder);
@@ -489,8 +567,9 @@ event_set_wallpaper_pressed (GtkWidget  *widget,
     if (gtk_tree_model_get_iter (gtm_model, &gti_iter, gl_list->data)) {
         ImageInfo *ii_info = treemodel_get_data (gtm_model, gti_iter);
 
-        if (wallpaper_dialog_set (dd_data->ws_sett,ii_info->s_full_path) > 0) {
-            printf ("Some error occured\n");
+        if (wallpaper_dialog_set (dd_data->ws_sett,
+                                  ii_info->s_full_path) != ERR_OK) {
+            message_dialog_error (dd_data->gw_window, "Some error occured"); 
         }
         imageinfo_free (ii_info);
     }
@@ -509,7 +588,11 @@ event_save_settings_pressed (GtkWidget  *widget,
                              DialogData *dd_data)
 {
     gather_settings (dd_data);
-    settings_write (dd_data->ws_sett);
+    if (settings_write (dd_data->ws_sett) != ERR_OK) {
+        message_dialog_error (dd_data->gw_window,
+                              "Error while saving settings");
+        //g_application_quit (G_APPLICATION (dd_data));
+    }
 }
 /*----------------------------------------------------------------------------*/
 /**
@@ -535,7 +618,7 @@ event_img_list_activated (GtkTreeView       *tree_view,
 
     if (gtk_tree_model_get_iter (gtm_model, &gti_iter, path)) {
         ImageInfo *ii_info = treemodel_get_data (gtm_model, gti_iter);
-        preview_from_file (ii_info->s_full_path, gw_img_prev);
+        preview_from_file (gw_img_prev, ii_info->s_full_path);
         imageinfo_free (ii_info);
     }
 }
@@ -554,12 +637,18 @@ event_on_delete (GtkWidget  *window,
                  DialogData *dd_data)
 {
     GtkWidget *dialog;
-    int        i_res2 = 0;
-    int        i_res  = 0;
+    int        i_res2    = 0;
+    int        i_res     = 0;
+    uint8_t    i_changed = 0;
 
     gather_settings (dd_data);
-    i_res = settings_check_changed (dd_data->ws_sett);
-    if (i_res == -1) {
+
+    i_res = settings_check_changed (dd_data->ws_sett, &i_changed);
+    if (i_res != ERR_OK) {
+        message_dialog_error (dd_data->gw_window, "Some error occured"); 
+    }
+
+    if (i_changed) {
         dialog = gtk_message_dialog_new (GTK_WINDOW (window),
                                          GTK_DIALOG_DESTROY_WITH_PARENT,
                                          GTK_MESSAGE_QUESTION,
@@ -592,6 +681,7 @@ create_title_widget (GtkWidget **gw_title_widget)
     GtkWidget  *gw_label = gtk_label_new (NULL);
 
     *gw_title_widget = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 4);
+
     s_markup = g_markup_printf_escaped (s_format, s_str);
     gtk_label_set_markup (GTK_LABEL (gw_label), s_markup);
     g_free (s_markup);
@@ -662,6 +752,7 @@ create_buttons_widget (GtkWidget **gw_buttons_widget,
                        DialogData *dd_data)
 {
     GtkWidget *gw_button;
+
     *gw_buttons_widget = gtk_box_new (GTK_ORIENTATION_VERTICAL, 4);
 
     gw_button = create_image_button ("", "Add images", 2);
@@ -814,18 +905,18 @@ static void
 activate (GtkApplication *app,
           DialogData     *dd_data)
 {
-    GtkWidget     *gw_window;          // Application window
-    GtkWidget     *gw_title_widget;    // Top title widget
-    GtkWidget     *gw_tview;           // Wallpaper list TreeView
-    GtkWidget     *gw_scroll;          // Scrolled window for wallpaper list
-    GtkWidget     *gw_buttons_widget;  // Buttons widget
-    GtkWidget     *gw_img_prev;        // Wallpaper preview widget
-    GtkWidget     *gw_box_prev;        // Widget for wallpaper preview
-    GtkWidget     *gw_box_list_btns;   // Widget for list, buttons, preview
-    GtkWidget     *gw_settings_widget; // Setings for wallpaper changing
+    GtkWidget     *gw_window;          /* Application window */
+    GtkWidget     *gw_title_widget;    /* Top title widget */
+    GtkWidget     *gw_tview;           /* Wallpaper list TreeView */
+    GtkWidget     *gw_scroll;          /* Scrolled window for wallpaper list */
+    GtkWidget     *gw_buttons_widget;  /* Buttons widget */
+    GtkWidget     *gw_img_prev = NULL; /* Wallpaper preview widget */
+    GtkWidget     *gw_box_prev;        /* Widget for wallpaper preview */
+    GtkWidget     *gw_box_list_btns;   /* Widget for list, buttons, preview */
+    GtkWidget     *gw_settings_widget; /* Setings for wallpaper changing */
 
     gw_window = gtk_application_window_new (app);
-    gtk_window_set_title (GTK_WINDOW (gw_window), "Wall Changer v1.1.1");
+    gtk_window_set_title (GTK_WINDOW (gw_window), "Wall Changer v1.2");
     gtk_window_set_default_size (GTK_WINDOW (gw_window), 1024, 768);
     g_signal_connect (gw_window, "delete-event",
                   G_CALLBACK (event_on_delete), dd_data);
@@ -886,23 +977,24 @@ activate (GtkApplication *app,
     gtk_container_set_border_width (GTK_CONTAINER (gw_box_main), 10);
     gtk_container_add (GTK_CONTAINER (gw_window), gw_box_main);
 
-    if (settings_init (dd_data->ws_sett)) {
+    if (settings_init (dd_data->ws_sett) != ERR_OK) {
         g_application_quit (G_APPLICATION (app));
         return;
     }
 
-    if (settings_read (dd_data->ws_sett) != 0) {
+    if (settings_read (dd_data->ws_sett) != ERR_OK) {
         g_application_quit (G_APPLICATION (app));
         return;
     }
 
     load_settings (dd_data);
 
-    if (dd_data->ws_sett->s_lastused != NULL) {
-        preview_from_file (dd_data->ws_sett->s_lastused, gw_img_prev);
+    if (settings_get_last_used_fn (dd_data->ws_sett) != NULL) {
+        preview_from_file (gw_img_prev,
+                           settings_get_last_used_fn (dd_data->ws_sett));
     }
 
-    find_select_item (gw_tview, dd_data->ws_sett->s_lastused);
+    find_select_item (gw_tview, settings_get_last_used_fn (dd_data->ws_sett));
 
     gtk_window_set_application (GTK_WINDOW (gw_window), GTK_APPLICATION (app));
     gtk_widget_show_all (gw_window);
@@ -919,7 +1011,7 @@ static void
 shutdown (GtkApplication *app,
           DialogData     *dd_data)
 {
-    free_wall_sett (dd_data->ws_sett);
+    settings_free (dd_data->ws_sett);
 }
 /*----------------------------------------------------------------------------*/
 /**

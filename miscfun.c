@@ -25,9 +25,6 @@
 // -----------------------------------------------------------------------------
 /**
  * @brief  Hash function.
- *
- * @param[in]  str  String to count hash
- * @return     Hash value
  */
 uint64_t
 hash(const char *str)
@@ -44,49 +41,114 @@ hash(const char *str)
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Get file extenstion.
- *
- * @param[in] s_fn String with file path
- * @return    String with file extension
  */
 char *
-get_file_ext (char *s_fn)
+get_file_ext (const char *s_fn)
 {
     char *s_ext = NULL; /* Extension string */
     char *s_p   = NULL; /* Pointer to first right . */
 
     s_p = strrchr (s_fn, '.');
     if (s_p != NULL) {
-        s_p++;
-        s_ext = g_strdup (s_p);
+        s_ext = s_p+1;
+        //s_p++;
+        //s_ext = str_dup (s_p);
     }
     return s_ext;
 }
 /*----------------------------------------------------------------------------*/
 /**
+ * @brief  Create or resize dynamic array
+ */
+int
+create_resize (void        **v_ptr,
+               const size_t  num,
+               const size_t  size)
+{
+    void *s_tmp = NULL; /* Temp pointer for realloc */
+
+    if (size == 0 || num == 0) {
+        if (*v_ptr != NULL) {
+            free (*v_ptr);
+            *v_ptr = NULL;
+        }
+        return ERR_OK;
+    }
+    else {
+        if (*v_ptr == NULL) {
+            *v_ptr = calloc (num, size);
+            if (*v_ptr == NULL) {
+                fputs ("Alloc error\n", stderr);
+                //return ERR_ALLOC;
+                exit (EXIT_FAILURE);
+            }
+        }
+        else {
+            s_tmp = realloc (*v_ptr, num * size);
+            if (s_tmp == NULL) {
+                free (*v_ptr);
+                fputs ("Alloc error\n", stderr);
+                //return ERR_ALLOC;
+                exit (EXIT_FAILURE);
+            }
+            else {
+            *v_ptr = s_tmp;
+            }
+        }
+    }
+    return ERR_OK;
+}
+/*----------------------------------------------------------------------------*/
+/**
+ * @brief  Duplicate n bytes of string.
+ */
+char *
+str_ndup (const char *s_str,
+          size_t      st_len)
+{
+    char *s_res = NULL;
+
+    if (s_str == NULL)
+        return NULL;
+
+    create_resize ((void**) &s_res, st_len, sizeof (char));
+    //s_res = calloc (st_len, sizeof (char));
+    //if (s_res == NULL)
+    //    return NULL;
+
+    memcpy (s_res, s_str, st_len);
+
+    return s_res;
+}
+/*----------------------------------------------------------------------------*/
+/**
+ * @brief  Duplicate string.
+ */
+char *
+str_dup (const char *s_str)
+{
+    return str_ndup (s_str, strlen (s_str) + 1);
+}
+/*----------------------------------------------------------------------------*/
+/**
  * @brief  Read some data from file.
- *
- * @param[in]  s_fname File name
- * @param[out] s_buff  Pointer to destination buffer
- * @return     Reading status
- * @retval     0  OK
- * @retval     1  File error
- * @retval     2  Reading error
  */
 int
 read_file_data (const char  *s_fname,
                 char       **s_buff)
 {
-    FILE  *f_file; /* Data file */
-    long   l_size; /* File size */
-    size_t st_res; /* Read data count */
+    FILE  *f_file;     /* Data file */
+    long   l_size = 0; /* File size */
+    size_t st_res = 0; /* Read data count */
 
     f_file = fopen (s_fname, "rb");
-    //if (pFile==NULL) {fputs ("File error",stderr); exit (1);}
     if (f_file == NULL) {
         fputs ("File error\n", stderr);
-        return 1;
+        perror("Error occurred");
+        return ERR_FILE;
     }
-    // get file size:
+
+    /* get file size */
     fseek (f_file , 0 , SEEK_END);
     l_size = ftell (f_file);
     rewind (f_file);
@@ -97,37 +159,36 @@ read_file_data (const char  *s_fname,
         return 0;
     }
 
-    // allocate memory to contain the whole file:
-    *s_buff = g_malloc0_n (l_size+1, sizeof (char));
+    /* allocate memory to contain the whole file */
+    *s_buff = calloc (l_size+1, sizeof (char));
+    if (*s_buff == NULL) {
+        fputs ("Alloc error\n", stderr);
+        perror("Error occurred");
+        exit (EXIT_FAILURE);
+        //return ERR_ALLOC;
+    }
 
-    // copy the file into the buffer:
+    /* copy the file into the buffer */
     st_res = fread (*s_buff, 1, l_size, f_file);
     if (st_res != (size_t) l_size) {
         fputs ("File reading error\n", stderr);
-        return 2;
+        perror("Error occurred");
+        return ERR_FILE_RW;
     }
-    // terminate
     fclose (f_file);
-    return 0;
+
+    return ERR_OK;
 }
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Read some data from file and count hash.
- *
- * @param[in]  s_fname File name
- * @param[out] s_buff  Pointer to destination buffer
- * @param[out] i_hash  Pointer to hash
- * @return     Reading status
- * @retval     0  OK
- * @retval     1  File error
- * @retval     2  Reading error
  */
 int
 read_file_data_hash (const char  *s_fname,
                      char       **s_buff,
                      uint64_t    *i_hash)
 {
-    int i_res = 0; /* Function result */
+    int i_res = ERR_OK; /* Function result */
 
     i_res = read_file_data (s_fname, s_buff);
     if (i_res != 0) {
@@ -135,18 +196,12 @@ read_file_data_hash (const char  *s_fname,
         return i_res;
     }
     *i_hash = hash (*s_buff);
-    return 0;
+
+    return ERR_OK;
 }
 /*----------------------------------------------------------------------------*/
 /**
- * @brief  Save some data to file.
- *
- * @param[in]  s_fname File name
- * @param[in]  s_buff  Buffer with data
- * @return     Writting status
- * @retval     0  OK
- * @retval     1  File error
- * @retval     2  Writting error
+ * @brief  Save a bunch of data to file.
  */
 int
 save_file_data (const char *s_fname,
@@ -159,24 +214,22 @@ save_file_data (const char *s_fname,
     f_file = fopen (s_fname, "wb");
     if (f_file == NULL) {
         fputs ("File error\n", stderr);
-        return 1;
+        perror("Error occurred");
+        return ERR_FILE;
     }
     st_size = strlen(s_buff);
     st_res = fwrite (s_buff , sizeof(char), st_size, f_file);
     fclose (f_file);
     if (st_res != st_size) {
         fputs ("File writting error\n", stderr);
-        return 2;
+        perror("Error occurred");
+        return ERR_FILE_RW;
         }
-    return 0;
+    return ERR_OK;
 }
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  String compare function for getting string position function.
- *
- * @param[in]  a  String a 
- * @param[in]  b  String b
- * @return     Compare result
  */
 int
 compare_strings (const char *a,
@@ -195,90 +248,9 @@ compare_strings (const char *a,
         }
     }
     else {
-        i_res = g_utf8_collate (a, b);
+        i_res = strcmp (a, b);
     }
     return i_res;
-}
-/*----------------------------------------------------------------------------*/
-/**
- * @brief  Get string position in GSList. 
- *
- * @param[in]  gsl_list  List where should be the very string 
- * @param[in]  s_what   String which position is unknown
- * @return     String position or -1 if it was not found
- */
-int
-my_gslist_get_position (GSList     *gsl_list,
-                        const char *s_what)
-{
-    GSList *gsl_fnd = NULL; /* List of found elements */
-
-    if (gsl_list == NULL)
-        return -1;
-    if (s_what == NULL)
-        return -1;
-
-    gsl_fnd = g_slist_find_custom (gsl_list,
-                                   (void *) s_what,
-                                   (GCompareFunc) compare_strings);
-    if (gsl_fnd == NULL) {
-        return -1;
-    }
-    return g_slist_position (gsl_list, gsl_fnd);
-}
-/*----------------------------------------------------------------------------*/
-/**
- * @brief  Get directory content in GSList 
- *
- * @param[in]  s_path1  Path to directory
- * @return     List of files in directory
- */
-GSList *
-get_directory_content (const char *s_path1)
-{
-    GSList *gsl_files = NULL; /* Return list of files in directory */
-    char   *s_pthfn   = NULL; /* Full file name with path */
-    char   *s_path    = NULL; /* File path */
-    char   *s_fn      = NULL; /* File name */
-    char   *s_p       = NULL; /* Pointer to right position of / */
-    int     i_dlen    = 0;    /* Path string length */
-    int     i_pos     = 0;    /* Position of / */
-    DIR    *dr;               /* Dirent directory */
-    struct  dirent *de;       /* Dirent struct */
-
-    i_dlen = strlen (s_path1);
-    s_path = g_malloc0 ((i_dlen + 1) * sizeof (char));
-    strcpy (s_path, s_path1);
-    s_p = strrchr (s_path, '/');
-
-    if (s_p != NULL) {
-        i_pos = (int) (s_p - s_path);
-        if (i_pos != i_dlen - 1) {
-            i_dlen++;
-            s_path = g_realloc (s_path, (i_dlen + 1) * sizeof (char));
-            strcat (s_path, "/");
-        }
-    }
-    dr = opendir (s_path); 
-    if (dr == NULL) {
-        printf ("Could not open current directory\n"); 
-        g_free (s_path);
-        return NULL; 
-    } 
-    while ((de = readdir(dr)) != NULL) 
-        //if (de->d_type == DT_REG) {
-        if (de->d_type == 8) {
-            s_fn = g_strdup (de->d_name);
-            s_pthfn = g_malloc0 ( 
-                    (i_dlen + strlen (s_fn) + 1) * sizeof (char));
-            strcpy (s_pthfn, s_path);
-            strcat (s_pthfn, s_fn);
-            gsl_files = g_slist_append (gsl_files, s_pthfn);
-            g_free (s_fn);
-        }
-    g_free (s_path);
-    closedir(dr);     
-    return gsl_files;
 }
 /*----------------------------------------------------------------------------*/
 

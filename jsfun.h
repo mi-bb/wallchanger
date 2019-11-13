@@ -23,20 +23,50 @@
  */
 #ifndef JSFUN_H
 #define JSFUN_H
+
 #include <stdio.h>
 #include <stdint.h>
 #include <string.h>
 #include <json-c/json.h>
 #include "settstr.h"
 #include "miscfun.h"
+#include "errs.h"
 /*----------------------------------------------------------------------------*/
+/**
+ * @brief  Get settings data from file.
+ *
+ * @param[out] ws_sett  Settings data to write to
+ * @param[in]  s_fname  Name of file with settings
+ * @return     Writting status
+ */
 int js_settings_read (WallSett *ws_sett, const char *s_fname);
 /*----------------------------------------------------------------------------*/
+/**
+ * @brief  Saving program settings data in file. 
+ *
+ * @param[in]  ws_sett   Program settings
+ * @param[in]  s_fname  Settings file name
+ * @return     Saving data status
+ */
 int js_settings_write (WallSett *ws_sett, const char *s_fname);
 /*----------------------------------------------------------------------------*/
+/**
+ * @brief  Update last used wallpaper position in program settings. 
+ *
+ * @param[in,out]  ws_sett  Program settings
+ * @param[in]      s_fname  Settings file name
+ * @return         Updating data status
+ */
 int js_settings_update_last_used (WallSett *ws_sett, const char *s_fname);
 /*----------------------------------------------------------------------------*/
-int js_settings_check_changed (WallSett *ws_sett);
+/**
+ * @brief  Check if settings are different that saved ones.
+ *
+ * @param[in,out]  ws_sett    Program settings
+ * @param[out]     i_changed  Setting changed value, 1 if changed, 0 if not
+ * @return         Checking settings status
+ */
+int js_settings_check_changed (WallSett *ws_sett, uint8_t *i_changed);
 /*----------------------------------------------------------------------------*/
 #endif
 

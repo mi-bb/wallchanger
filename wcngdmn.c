@@ -19,56 +19,72 @@
  *
  * Program to change wallpapers.
  *
- * @date November 8, 2019
+ * @date November 14, 2019
  *
- * @version 1.1.1
+ * @version 1.2
  * 
  * @author Michał Bąbik <michalb1981@o2.pl>
  */
+#include <unistd.h>
+#include <stdlib.h>
 #include "setts.h"
 #include "settstr.h"
 #include "wallset.h"
-
 #include "miscfun.h"
+#include "flist.h"
+#include "randomm.h"
+#include "errs.h"
 /*----------------------------------------------------------------------------*/
+/**
+ * @brief Main function.
+ *
+ * @param[in] argc Arguments passed to the program from the environment in which
+ *                 the program is run
+ * @param[in] argv Pointer to the first element of an array of pointers that
+ *                 represent the arguments passed to the program
+ * @return         Return value
+ */  
 int
 main (int    argc,
       char **argv)
 {
     WallSett  ws_sett;
-    uint32_t  i_cnt = 0;
-
+    uint32_t  ui_cnt = 0;
+    
     if (settings_init (&ws_sett)) {
-        free_wall_sett (&ws_sett);
-        exit (1);
+        settings_free (&ws_sett);
+        exit (EXIT_FAILURE);
     }
-    if (settings_read (&ws_sett) != 0) {
-        free_wall_sett (&ws_sett);
-        exit (1);
+    if (settings_read (&ws_sett) != ERR_OK) {
+        settings_free (&ws_sett);
+        exit (EXIT_FAILURE);
     }
-    if (g_slist_length (ws_sett.gsl_files) == 0) {
+    if (flist_get_len (&ws_sett.fl_files) == 0) {
         fputs ("Empty file list\n", stderr);
-        free_wall_sett (&ws_sett);
-        exit (1);
+        settings_free (&ws_sett);
+        exit (EXIT_FAILURE);
     }
 
-    if (wallpaper_startup_set (&ws_sett) > 0) {
-        free_wall_sett (&ws_sett);
-        exit (1);
+    randomm_set_range (&ws_sett.rm_mem, flist_get_len (&ws_sett.fl_files));
+
+    if (wallpaper_startup_set (&ws_sett) != ERR_OK) {
+        settings_free (&ws_sett);
+        exit (EXIT_FAILURE);
     }
 
     while (1) {
-        g_usleep (G_USEC_PER_SEC * 60);
-        i_cnt++;
-        if (i_cnt >= ws_sett.i_chinterval) {
-            if (wallpaper_change (&ws_sett) > 0) {
-                free_wall_sett (&ws_sett);
-                exit(1);
+        sleep (60);
+        ui_cnt++;
+        if (ui_cnt >= ws_sett.i_chinterval) {
+            if (wallpaper_change (&ws_sett) != ERR_OK) {
+                settings_free (&ws_sett);
+                exit(EXIT_FAILURE);
             }
-            i_cnt = 0;
+            ui_cnt = 0;
         }
     }
-    free_wall_sett (&ws_sett);
+    settings_free (&ws_sett);
+
     return 0;
 }
 /*----------------------------------------------------------------------------*/

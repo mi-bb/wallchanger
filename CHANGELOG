@@ -13,13 +13,20 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+v1.2    2019-11-14  Michal Babik  <michalb1981@o2.pl>
+
+        * Changed random wallpaper select method
+        * Changed file list storing
+        * Background changing program (wchangerd) doesn't use glib now,
+          it is lighter
+        * Some other code updates
+
 v1.1.1  2019-11-08  Michal Babik  <michalb1981@o2.pl>
 
         * jsfun.c (js_settings_to_json_buff): Couple updates in putting data
           to json objects.
         * jsfun.c (js_settings_read): Corrected freeing buffer.
         * setts.c (settings_set_command): Comparing strings changed.
-        * wcngdmn.c: Free stuff functions on exit with error.
         * settstr.c (free_wall_sett): Moved function to free WallSett here.
 
 v1.1   2019-11-07  Michal Babik  <michalb1981@o2.pl>

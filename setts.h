@@ -23,26 +23,42 @@
  */
 #ifndef SETTS_H
 #define SETTS_H
-#include <stdio.h>
-#include <unistd.h>
-#include <sys/types.h>
-#include <pwd.h>
+
 #include "jsfun.h"
 #include "settstr.h"
-#include "miscfun.h"
 /*----------------------------------------------------------------------------*/
-int settings_set_last_used_data (WallSett *ws_sett, const char *ch_wallnew);
-/*----------------------------------------------------------------------------*/
-int settings_set_command (WallSett *ws_sett, const char *ch_cmd);
-/*----------------------------------------------------------------------------*/
-int settings_init (WallSett *ws_sett);
-/*----------------------------------------------------------------------------*/
+/**
+ * @brief  Read program settings. 
+ *
+ * @param[in,out]  ws_sett  Program settings
+ * @return         Reading settings status
+ */
 int settings_read (WallSett *ws_sett);
 /*----------------------------------------------------------------------------*/
+/**
+ * @brief  Save program settings. 
+ *
+ * @param[in,out]  ws_sett  Program settings
+ * @return         Writting settings status
+ */
 int settings_write (WallSett *ws_sett);
 /*----------------------------------------------------------------------------*/
+/**
+ * @brief  Update last used wallpaper position in program settings. 
+ *
+ * @param[in,out]  ws_sett  Program settings
+ * @return         Updating settings status
+ */
 int settings_update_last_used (WallSett *ws_sett);
 /*----------------------------------------------------------------------------*/
-int settings_check_changed (WallSett *ws_sett);
+/**
+ * @brief  Check if settings are different that saved ones.
+ *
+ * @param[in,out]  ws_sett    Program settings
+ * @param[out]     i_changed  Setting changed value, 1 if changed, 0 if not
+ * @return         Checking settings status
+ */
+int settings_check_changed (WallSett *ws_sett, uint8_t *i_changed);
 /*----------------------------------------------------------------------------*/
 #endif
+

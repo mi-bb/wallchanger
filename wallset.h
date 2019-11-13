@@ -24,14 +24,34 @@
 #ifndef WALLSET_H
 #define WALLSET_H
 #include <stdio.h>
-#include <glib.h>
 #include "settstr.h"
 #include "setts.h"
+#include "flist.h"
+#include "randomm.h"
 /*----------------------------------------------------------------------------*/
+/**
+ * @brief  Wallpaper change during program work.
+ *
+ * @param[in,out]  ws_sett  Program settings
+ * @return         Wallpaper change status
+ */
 int wallpaper_change (WallSett *ws_sett);
 /*----------------------------------------------------------------------------*/
+/**
+ * @brief  Setting wallpaper image at program startup.
+ *
+ * @param[in,out]  ws_sett  Program settings
+ * @return         Wallpaper set status
+ */
 int wallpaper_startup_set (WallSett *ws_sett);
 /*----------------------------------------------------------------------------*/
+/**
+ * @brief  Setting wallpaper out of settings dialog.
+ *
+ * @param[in,out]  ws_sett  Program settings
+ * @param[in]      s_file   Wallpaper file
+ * @return         Wallpaper set status
+ */
 int wallpaper_dialog_set (WallSett *ws_sett, const char *s_file);
 /*----------------------------------------------------------------------------*/
 #endif

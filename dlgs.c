@@ -25,14 +25,11 @@
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Select folder dialog.
- *
- * @param[in]  gw_parent  Dialog parent widget
- * @return     Foler path or NULL.
  */
 char *
 add_images_folder_dialog (GtkWindow *gw_parent)
 {
-    GtkWidget  *gw_dialog;
+    GtkWidget  *gw_dialog;        /* Directory choose dialog */
     char       *s_folder  = NULL; /* Result selected folder string */
     int         res       = 0;    /* Dialog run response */
 
@@ -44,20 +41,20 @@ add_images_folder_dialog (GtkWindow *gw_parent)
                                           "_Open",
                                           GTK_RESPONSE_ACCEPT,
                                           NULL);
+
     res = gtk_dialog_run (GTK_DIALOG (gw_dialog));
+
     if (res == GTK_RESPONSE_ACCEPT) {
         s_folder = gtk_file_chooser_get_filename (
                 GTK_FILE_CHOOSER (gw_dialog));
     }
     gtk_widget_destroy (gw_dialog);
+
     return s_folder;
 }
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Select images dialog.
- *
- * @param[in]  gw_parent  Dialog parent widget
- * @return     List with images.
  */
 GSList *
 add_images_dialog (GtkWindow *gw_parent)
@@ -68,13 +65,13 @@ add_images_dialog (GtkWindow *gw_parent)
     int            res       = 0;    /* Dialog run response */
 
     gw_dialog = gtk_file_chooser_dialog_new ("Select Files",
-                                          gw_parent,
-                                          GTK_FILE_CHOOSER_ACTION_OPEN,
-                                          "_Cancel",
-                                          GTK_RESPONSE_CANCEL,
-                                          "_Open",
-                                          GTK_RESPONSE_ACCEPT,
-                                          NULL);
+                                             gw_parent,
+                                             GTK_FILE_CHOOSER_ACTION_OPEN,
+                                             "_Cancel",
+                                             GTK_RESPONSE_CANCEL,
+                                             "_Open",
+                                             GTK_RESPONSE_ACCEPT,
+                                             NULL);
     gff_filter = gtk_file_filter_new ();
     gtk_file_filter_set_name (gff_filter, "Image files");
     gtk_file_filter_add_pixbuf_formats (gff_filter);
@@ -82,13 +79,33 @@ add_images_dialog (GtkWindow *gw_parent)
     gtk_file_chooser_set_select_multiple (GTK_FILE_CHOOSER (gw_dialog), TRUE);
 
     res = gtk_dialog_run (GTK_DIALOG (gw_dialog));
+
     if (res == GTK_RESPONSE_ACCEPT) {
         gsl_files = gtk_file_chooser_get_filenames (
                 GTK_FILE_CHOOSER (gw_dialog));
       }
 
     gtk_widget_destroy (gw_dialog);
+
     return gsl_files;
+}
+/*----------------------------------------------------------------------------*/
+/**
+ *  @brief  Error message dialog.
+ */
+void
+message_dialog_error (GtkWindow  *gw_parent,
+                      const char *s_message)
+{
+    GtkWidget *gw_dialog;
+    GtkDialogFlags flags = GTK_DIALOG_DESTROY_WITH_PARENT;
+    gw_dialog = gtk_message_dialog_new (gw_parent,
+                                        flags,
+                                        GTK_MESSAGE_ERROR,
+                                        GTK_BUTTONS_CLOSE,
+                                        s_message);
+    gtk_dialog_run (GTK_DIALOG (gw_dialog));
+    gtk_widget_destroy (gw_dialog);
 }
 /*----------------------------------------------------------------------------*/
 

@@ -25,10 +25,6 @@
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Function compares ImageInfo items by file name string.
- *
- * @param[in] ii_info1 First ImageInfo item
- * @param[in] ii_info2 Second ImageInfo item
- * @return    1 if a>b, -1 if a<b, 0 if a=b
  */
 int
 compare_imageitems (const ImageInfo *ii_info1,
@@ -39,9 +35,6 @@ compare_imageitems (const ImageInfo *ii_info1,
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Free ImageInfo data.
- *
- * @param[out]  ii_info  Pointer to ImageInfo object
- * @return      none
  */
 void
 imageinfo_free (ImageInfo *ii_info)
@@ -54,50 +47,61 @@ imageinfo_free (ImageInfo *ii_info)
 }
 /*----------------------------------------------------------------------------*/
 /**
+ * @brief  Init ImageInfo data.
+ */
+void
+imageinfo_init (ImageInfo *ii_info)
+{
+    ii_info->s_full_path    = NULL;
+    ii_info->s_file_name    = NULL;
+    ii_info->s_file_path    = NULL;
+    ii_info->s_width_height = NULL;
+    ii_info->i_height       = 0;
+    ii_info->i_width        = 0;
+}
+/*----------------------------------------------------------------------------*/
+/**
  * @brief  Get file info and put it in a ImageInfo object.
- *
- * @param[in]  s_file_name  String with file name
- * @return     File info in ImageInfo format, null if could not alloc memory
  */
 ImageInfo *
 imageinfo_get_info (const char *s_file_name)
 {
     ImageInfo *ii_info = NULL; /* Result ImageInfo */
     char      *s_p     = NULL; /* Pointer to right position of / */
-    int        i_size  = 0;    /* Size of path string */
     
-    ii_info = g_malloc (sizeof (ImageInfo));
+    if (s_file_name == NULL)
+        return NULL;
 
-    ii_info->s_full_path = g_strdup (s_file_name);
+    create_resize ((void**) &ii_info, 1, sizeof (ImageInfo));
+
+    imageinfo_init (ii_info);
+
+    ii_info->s_full_path = str_dup (s_file_name);
+
     s_p = strrchr (s_file_name, '/');
 
     if (s_p == NULL) {
-        ii_info->s_file_name = g_strdup (s_file_name);
-        ii_info->s_file_path = g_strdup ("");
+        ii_info->s_file_name = str_dup (s_file_name);
+        ii_info->s_file_path = str_dup ("");
     }
     else {
-        i_size = s_p - s_file_name;
-        ii_info->s_file_name = g_malloc0 ((strlen (s_p)+1) * sizeof (char));
-        ii_info->s_file_path = g_malloc0 ((i_size+1) * sizeof (char));
-        ii_info->s_width_height = g_malloc0 ((40) * sizeof (char));
         s_p++;
-        strcpy (ii_info->s_file_name, s_p);
-        strncpy (ii_info->s_file_path, s_file_name, s_p - s_file_name);
+        ii_info->s_file_name = str_dup (s_p);
+        ii_info->s_file_path = str_ndup (s_file_name, s_p - s_file_name);
     }
+    create_resize ((void**) &ii_info->s_width_height, 40, sizeof (char));
     gdk_pixbuf_get_file_info (s_file_name,
                               &ii_info->i_width,
                               &ii_info->i_height);
     sprintf (ii_info->s_width_height,
              "%dx%d",
              ii_info->i_width, ii_info->i_height);
+
     return ii_info;
 }
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Get image info of files in list and store it in ImageInfo list.
- *
- * @param[in] gsl_files1  File list to process
- * @return    List of ImageInfo items
  */
 GSList *
 file_paths_to_imageinfo (GSList *gsl_files1)
@@ -108,7 +112,7 @@ file_paths_to_imageinfo (GSList *gsl_files1)
     gsl_files = g_slist_copy (gsl_files1);
 
     while (gsl_files != NULL) {
-        ImageInfo *ii_info = imageinfo_get_info ( (char *) gsl_files->data);
+        ImageInfo *ii_info = imageinfo_get_info ((char *) gsl_files->data);
         if (ii_info->i_height > 0)
             gsl_iinfo = g_slist_append (gsl_iinfo, ii_info);
         gsl_files = gsl_files->next;
@@ -118,27 +122,44 @@ file_paths_to_imageinfo (GSList *gsl_files1)
 }
 /*----------------------------------------------------------------------------*/
 /**
- * @brief  Extract file paths list of ImageInfo list.
- *
- * @param[in] gsl_iinfo1  List with ImageInfo items
- * @return    List of file paths
+ * @brief  Get image info of files in list and store it in FList.
  */
 GSList *
-imageinfo_to_file_paths (GSList *gsl_iinfo1)
+flist_to_imageinfo (FList *fl_files)
 {
-    GSList *gsl_files = NULL; /* Result full file path with name */
+    GSList     *gsl_iinfo = NULL; /* Result ImageInfo list */
+    const char *s_fn      = NULL; /* File name string */
+    uint32_t    ui_cnt    = 0;    /* Number of items in file list */
+
+    ui_cnt = flist_get_len (fl_files);
+
+    for (uint32_t i = 0; i < ui_cnt; ++i) {
+        s_fn = flist_get_data (fl_files, i);
+        ImageInfo *ii_info = imageinfo_get_info (s_fn);
+        if (ii_info->i_height > 0)
+            gsl_iinfo = g_slist_append (gsl_iinfo, ii_info);
+    }
+    return gsl_iinfo;
+}
+/*----------------------------------------------------------------------------*/
+/**
+ * @brief  Extract file paths list of ImageInfo list and append to FList.
+ */
+int
+imageinfo_append_to_flist (GSList *gsl_iinfo1,
+                           FList  *fl_files)
+{
     GSList *gsl_iinfo = NULL; /* Temp ImageInfo list */
 
     gsl_iinfo = g_slist_copy (gsl_iinfo1);
 
     while (gsl_iinfo != NULL) {
         ImageInfo *ii_info = gsl_iinfo->data;
-        char *s_fn = g_strdup (ii_info->s_full_path);
-        gsl_files = g_slist_append (gsl_files, s_fn);
+        flist_insert_data (fl_files, (const char *) ii_info->s_full_path);
         gsl_iinfo = gsl_iinfo->next;
     }
     g_slist_free (gsl_iinfo);
-    return gsl_files;
+    return 0;
 }
 /*----------------------------------------------------------------------------*/
 

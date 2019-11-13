@@ -35,50 +35,62 @@ static int
 js_json_buff_to_settings (WallSett   *ws_sett,
                           const char *s_buff)
 {
-    json_object *j_obj;
-    json_object *j_bgarray;
-    json_object *j_val;
+    json_object *j_obj;       /* Json object of whole Json file */
+    json_object *j_bgarray;   /* Json object for files array */
+    json_object *j_val;       /* Json object for settings */
+    int          i_arlen = 0; /* Number of items in array */
 
     if (s_buff == NULL)
         return 0;
 
     j_obj = json_tokener_parse (s_buff);
+
     if (json_object_object_get_ex (j_obj, "Backgrounds", &j_bgarray) &&
         json_object_get_type (j_bgarray) == json_type_array) {
-        int i_arlen = json_object_array_length (j_bgarray);
+
+        flist_clear (&ws_sett->fl_files);
+
+        i_arlen = json_object_array_length (j_bgarray);
+
         for (int i = 0; i < i_arlen; ++i) {
             json_object *j_val;
             j_val = json_object_array_get_idx (j_bgarray, i);
             if (j_val != NULL) {
-                char *s_fn = g_strdup (json_object_get_string (j_val));
-                ws_sett->gsl_files = g_slist_append (ws_sett->gsl_files, s_fn);
+                flist_insert_data (&ws_sett->fl_files,
+                                   json_object_get_string (j_val));
             }
         }
     }
     if (json_object_object_get_ex (j_obj, "Random wallpaper", &j_val) &&
         json_object_get_type(j_val) == json_type_int) {
-        ws_sett->i_random = json_object_get_int (j_val);
+
+        settings_set_random (ws_sett, json_object_get_int (j_val));
     }
     if (json_object_object_get_ex (j_obj, "Set last used wallpaper", &j_val) &&
         json_object_get_type(j_val) == json_type_int) {
-        ws_sett->i_lastsett = json_object_get_int (j_val);
+        
+        settings_set_last_used_setting (ws_sett, json_object_get_int (j_val));
     }
     if (json_object_object_get_ex (j_obj, "Last used wallpaper pos", &j_val) &&
         json_object_get_type(j_val) == json_type_int) {
-        ws_sett->i_lastused = json_object_get_int (j_val);
+
+        settings_set_last_used_pos (ws_sett, json_object_get_int (j_val));
     }
     if (json_object_object_get_ex (j_obj,
                                    "Wallpaper change interval", &j_val) &&
         json_object_get_type(j_val) == json_type_int) {
-        ws_sett->i_chinterval = json_object_get_int (j_val);
+
+        settings_set_interval (ws_sett, json_object_get_int (j_val));
     }
     if (json_object_object_get_ex (j_obj, "Background set command", &j_val) &&
         json_object_get_type(j_val) == json_type_string) {
-        ws_sett->s_bgcmd = g_strdup (json_object_get_string (j_val));
+
+        settings_set_command (ws_sett, json_object_get_string (j_val));
     }
     if (json_object_object_get_ex (j_obj, "Last used wallpaper file", &j_val) &&
         json_object_get_type(j_val) == json_type_string) {
-        ws_sett->s_lastused = g_strdup (json_object_get_string (j_val));
+
+        settings_set_last_used_fn (ws_sett, json_object_get_string (j_val));
     }
     json_object_put (j_obj);
     return 0;
@@ -96,41 +108,59 @@ static int
 js_settings_to_json_buff (WallSett  *ws_sett,
                           char     **s_buff)
 {
-    GSList      *gsl_files1 = NULL;
-    json_object *j_obj      = json_object_new_object();
-    json_object *j_array    = json_object_new_array();
+    const char  *s_fn    = NULL; /* File name string */
+    const char  *s_tmp   = NULL; /* Temp string for json buffer */
+    uint32_t     ui_cnt  = 0;    /* Number of items in array */
+    json_object *j_obj   = json_object_new_object();
+    json_object *j_array = json_object_new_array();
 
-    gsl_files1 = g_slist_copy (ws_sett->gsl_files);
+    ui_cnt = flist_get_len (&ws_sett->fl_files);
 
-    while (gsl_files1 != NULL) {
-        char *s_fn = gsl_files1->data;
+    for (uint32_t i = 0; i < ui_cnt; ++i) {
+        s_fn = flist_get_data (&ws_sett->fl_files, i);
         json_object_array_add (j_array, json_object_new_string (s_fn));
-        gsl_files1 = gsl_files1->next;
     }
-    g_slist_free (gsl_files1);
 
     json_object_object_add (j_obj, "Backgrounds", j_array);
 
-    json_object_object_add (j_obj, "Random wallpaper",
-                           json_object_new_int(ws_sett->i_random));
-    json_object_object_add (j_obj, "Set last used wallpaper",
-                            json_object_new_int(ws_sett->i_lastsett));
-    json_object_object_add (j_obj, "Last used wallpaper pos",
-                            json_object_new_int(ws_sett->i_lastused));
-    if (ws_sett->s_lastused != NULL) {
-        json_object_object_add (j_obj, "Last used wallpaper file",
-                                json_object_new_string (ws_sett->s_lastused));
+    json_object_object_add (j_obj,
+                            "Random wallpaper",
+                            json_object_new_int (settings_get_random (ws_sett)));
+
+    json_object_object_add (j_obj,
+                            "Set last used wallpaper",
+                            json_object_new_int (
+                                settings_get_last_used_setting (ws_sett)));
+
+    json_object_object_add (j_obj,
+                            "Last used wallpaper pos",
+                            json_object_new_int(
+                                settings_get_last_used_pos (ws_sett)));
+
+    if (settings_get_last_used_fn (ws_sett) != NULL) {
+        json_object_object_add (j_obj,
+                                "Last used wallpaper file",
+                                json_object_new_string (
+                                    settings_get_last_used_fn (ws_sett)));
     }
     if (ws_sett->s_bgcmd != NULL) {
-        json_object_object_add (j_obj, "Background set command",
-                                json_object_new_string (ws_sett->s_bgcmd));
+        json_object_object_add (j_obj,
+                                "Background set command",
+                                json_object_new_string (
+                                    settings_get_command (ws_sett)));
     }
-    json_object_object_add(j_obj, "Wallpaper change interval",
-                           json_object_new_int (ws_sett->i_chinterval));
-    const char *s_tmp = json_object_to_json_string (j_obj);
-    *s_buff = g_realloc (*s_buff, (strlen (s_tmp) + 1) * sizeof (char));
+    json_object_object_add(j_obj,
+                           "Wallpaper change interval",
+                           json_object_new_int (settings_get_interval (ws_sett)));
+
+    s_tmp = json_object_to_json_string (j_obj);
+
+    create_resize ((void**) s_buff, strlen (s_tmp) + 1, sizeof (char));
+
     strcpy (*s_buff, s_tmp);
+
     json_object_put (j_obj);
+
     return 0;
 }
 /*----------------------------------------------------------------------------*/
@@ -141,7 +171,6 @@ js_settings_to_json_buff (WallSett  *ws_sett,
  * @param[in]      s_lu     Last used wallpaper file path
  * @param[in]      i_lu     Last used wallpaper position on list
  * @return         Updating data status
- * @retval         0  OK
  */
 static int
 js_json_buffer_update_last_used (char       **s_buff,
@@ -149,6 +178,8 @@ js_json_buffer_update_last_used (char       **s_buff,
                                  const int    i_lu)
 {
     json_object *j_obj;
+    const char  *s_buff2 = NULL; /* Temp buffer for json data */
+
     if (*s_buff == NULL) {
         j_obj = json_object_new_object();
     }
@@ -159,25 +190,21 @@ js_json_buffer_update_last_used (char       **s_buff,
                            json_object_new_string (s_lu));
     json_object_object_add(j_obj,"Last used wallpaper pos",
                            json_object_new_int(i_lu));
-    const char *s_buff2 = json_object_to_json_string (j_obj);
+
+    s_buff2 = json_object_to_json_string (j_obj);
+
     if (strlen (s_buff2) != strlen (*s_buff)) {
-        *s_buff = g_realloc (*s_buff,
-                (strlen (s_buff2) + 1) * sizeof (char));
+        create_resize ((void**) s_buff, strlen (s_buff2) + 1, sizeof (char));
     }
     strcpy (*s_buff, s_buff2);
+
     json_object_put (j_obj);
+
     return 0;
 }
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Get settings data from file.
- *
- * @param[out] ws_sett  Settings data to write to
- * @param[in]  s_fname  Name of file with settings
- * @return     Writting status
- * @retval     0   OK
- * @retval     1   File error
- * @retval     2   Reading error
  */
 int
 js_settings_read (WallSett   *ws_sett,
@@ -186,131 +213,136 @@ js_settings_read (WallSett   *ws_sett,
     char *s_buff = NULL; /* File data buffer */
     int   i_res  = 0;    /* Function result */
 
+    /* Read config data to buffer and check its hash */
     i_res = read_file_data_hash (s_fname, &s_buff, &ws_sett->i_hash);
     if (i_res)
         return i_res;
+
+    /* Make WallSett settings data of raw json buffer */
     i_res =  js_json_buff_to_settings (ws_sett, s_buff);
-    if (s_buff != NULL)
-        g_free (s_buff);
+    free (s_buff);
+
     return i_res;
 }
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Saving program settings data in file. 
- *
- * @param[in]  ws_sett   Program settings
- * @param[in]  s_fname  Settings file name
- * @return     Saving data status
- * @retval     0  OK
- * @retval     1  File open error
- * @retval     2  Read error / Wrong size of written data
- * @retval    -1  No need to save
  */
 int
 js_settings_write (WallSett   *ws_sett,
                    const char *s_fname)
 {
-    char *s_buff = NULL; /* File data buffer */
-    int   i_res  = 0;    /* Function result */
+    char   *s_buff = NULL; /* File data buffer */
+    int     i_res  = 0;    /* Function result */
+    int32_t i_pos  = 0;    /* Last used wallpaper position on list */
 
+    /* Checking last used wallpaper position correctness */
+    if (settings_get_last_used_fn (ws_sett) != NULL) {
+        i_pos = flist_get_pos (&ws_sett->fl_files,
+                               settings_get_last_used_fn (ws_sett));
+        if (i_pos >= 0) {
+            settings_set_last_used_pos (ws_sett, (uint32_t) i_pos);
+        }
+    }
+
+    /* Read config data to buffer and check its hash */
     i_res = read_file_data_hash (s_fname, &s_buff, &ws_sett->i_hash);
     if (i_res)
         return i_res;
 
+    /* Make json raw buffer of current settings */
     i_res = js_settings_to_json_buff (ws_sett, &s_buff);
     if (i_res)
         return i_res;
+
+    /* Compare saved file buffer hash and new one,
+     * if they are different save settings */
     if (hash (s_buff) != ws_sett->i_hash) {
         i_res = save_file_data (s_fname, s_buff);
     }
-    else {
-        i_res = -1;
-    }
+
     return i_res;
 }
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Update last used wallpaper position in program settings. 
- *
- * @param[in,out]  ws_sett  Program settings
- * @param[in]      s_fname  Settings file name
- * @return         Updating data status
- * @retval         0  OK
- * @retval         1  File error
- * @retval         2  Reading/writting error
- * @retval         3  Last used null
- * @retval        -1  No need to save
  */
 int
 js_settings_update_last_used (WallSett   *ws_sett,
                               const char *s_fname)
 {
-    char *s_buff = NULL; /* File data buffer */
-    int   i_res  = 0;    /* Function result */
+    char *s_buff = NULL;   /* File data buffer */
+    int   i_res  = ERR_OK; /* Function result */
 
-    if (ws_sett->s_lastused == NULL) 
-        return 3;
+    if (settings_get_last_used_fn(ws_sett) == NULL) 
+        return ERR_OK;
+
+    /* Read config data to buffer and check its hash */
     i_res = read_file_data_hash (s_fname, &s_buff, &ws_sett->i_hash);
     if (i_res) {
-        g_free (s_buff);
+        free (s_buff);
         return i_res;
     }
+    /* If nothing read make buffer of current settings */
     if (s_buff == NULL) {
         js_settings_to_json_buff (ws_sett, &s_buff);
     }
-    i_res = js_json_buffer_update_last_used (&s_buff, ws_sett->s_lastused,
-                                             ws_sett->i_lastused);
+    /* Update only last used wallpaper info in buffer */
+    i_res = js_json_buffer_update_last_used (&s_buff,
+            settings_get_last_used_fn (ws_sett),
+            settings_get_last_used_pos (ws_sett));
     if (i_res) {
-        g_free (s_buff);
+        free (s_buff);
         return i_res;
     }
+    /* Compare saved file buffer hash and new with changed last used wallpaper
+     * info, if they are different save settings */
     if (hash (s_buff) != ws_sett->i_hash) {
         i_res = save_file_data (s_fname, s_buff);
         if (i_res) {
-            g_free (s_buff);
+            free (s_buff);
             return i_res;
         }
     }
-    else {
-        i_res = 0;
-    }
-    g_free (s_buff);
+    free (s_buff);
+
     return i_res;
 }
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Check if settings are different that saved ones.
- *
- * @param[in,out]  ws_sett  Program settings
- * @return         Checking settings status
- * @retval         0  No change
- * @retval        -1  Settings changed 
- * @retval         1  File error
- * @retval         2  Reading error
  */
 int
-js_settings_check_changed (WallSett *ws_sett)
+js_settings_check_changed (WallSett *ws_sett,
+                           uint8_t  *i_changed)
 {
-    char     *s_buff = NULL; /* File data buffer */
-    int       i_res  = 0;    /* Function result */
-    uint64_t  i_hash = 0;    /* Hash value */
+    char *s_buff = NULL;   /* File data buffer */
+    int   i_res  = ERR_OK; /* Function result */
 
-    i_res = read_file_data_hash (ws_sett->s_cfgfile, &s_buff, &i_hash);
+    *i_changed = 0;
+
+    /* Read config data to buffer and check its hash */
+    i_res = read_file_data_hash (settings_get_cfg_fn (ws_sett),
+                                 &s_buff, &ws_sett->i_hash);
     if (i_res) {
-        g_free (s_buff);
+        free (s_buff);
         return i_res;
     }
-    js_settings_to_json_buff (ws_sett, &s_buff);
+    /* Get json raw buffer of current settings */
+    i_res = js_settings_to_json_buff (ws_sett, &s_buff);
     if (i_res) {
-        g_free (s_buff);
+        free (s_buff);
         return i_res;
     }
-    if (hash (s_buff) != i_hash) {
-        // settings changed
-        return -1;
+    /* Compare saved file buffer hash and new one,
+     * if they are different save settings */
+    if (hash (s_buff) != ws_sett->i_hash) {
+        /* settings changed */
+        *i_changed = 1;
     }
-    g_free (s_buff);
-    return 0;
+    free (s_buff);
+
+    return ERR_OK;
 }
 /*----------------------------------------------------------------------------*/
 

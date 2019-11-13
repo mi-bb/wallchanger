@@ -23,10 +23,13 @@
  */
 #ifndef IMINFO_H
 #define IMINFO_H
+
 #include <stdio.h>
 #include <glib.h>
+#include <string.h>
 #include <gdk-pixbuf/gdk-pixbuf.h>
 #include "miscfun.h"
+#include "flist.h"
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  ImageInfo data structure
@@ -41,16 +44,64 @@ ImageInfo {
     int   i_height;        /**< Image height in int */
 } ImageInfo;
 /*----------------------------------------------------------------------------*/
+/**
+ * @brief  Function compares ImageInfo items by file name string.
+ *
+ * @param[in] ii_info1 First ImageInfo item
+ * @param[in] ii_info2 Second ImageInfo item
+ * @return    1 if a>b, -1 if a<b, 0 if a=b
+ */
 int compare_imageitems (const ImageInfo *ii_info1,
                         const ImageInfo *ii_info2);
 /*----------------------------------------------------------------------------*/
+/**
+ * @brief  Free ImageInfo data.
+ *
+ * @param[out]  ii_info  Pointer to ImageInfo object
+ * @return      none
+ */
 void imageinfo_free (ImageInfo *ii_info);
 /*----------------------------------------------------------------------------*/
+/**
+ * @brief  Init ImageInfo data.
+ *
+ * @param[out]  ii_info  Pointer to ImageInfo object
+ * @return      none
+ */
+void imageinfo_init (ImageInfo *ii_info);
+/*----------------------------------------------------------------------------*/
+/**
+ * @brief  Get file info and put it in a ImageInfo object.
+ *
+ * @param[in]  s_file_name  String with file name
+ * @return     File info in ImageInfo format, null if could not alloc memory
+ */
 ImageInfo *imageinfo_get_info (const char *s_file_name);
 /*----------------------------------------------------------------------------*/
+/**
+ * @brief  Get image info of files in list and store it in ImageInfo list.
+ *
+ * @param[in] gsl_files1  File list to process
+ * @return    List of ImageInfo items
+ */
 GSList *file_paths_to_imageinfo (GSList *gsl_files1);
 /*----------------------------------------------------------------------------*/
-GSList *imageinfo_to_file_paths (GSList *gsl_iinfo1);
+/**
+ * @brief  Get image info of files in list and store it in FList.
+ *
+ * @param[in]  fl_files  File list to process
+ * @return     List of ImageInfo items
+ */
+GSList * flist_to_imageinfo (FList *fl_files);
+/*----------------------------------------------------------------------------*/
+/**
+ * @brief  Extract file paths list of ImageInfo list and append to FList.
+ *
+ * @param[in]  gsl_iinfo1  List with ImageInfo items
+ * @param[out] fl_files    FList to append data
+ * @return     Append result
+ */
+int imageinfo_append_to_flist (GSList *gsl_iinfo1, FList *fl_files);
 /*----------------------------------------------------------------------------*/
 #endif
 

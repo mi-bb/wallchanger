@@ -29,17 +29,21 @@
  * @param[in]  s_cmd   Wallpaper set command
  * @param[in]  s_wall  Wallpaper file
  * @return     Wallpaper set status
- * @retval     0  OK
  */
 static int
 wallpaper_set_file (const char *s_cmd,
                     const char *s_wall)
 {
-    char *s_cmdn = NULL; /* Wallpaper set command */
-    int   i_siz  = 0;    /* Size of wallpeper set command */
+    char  *s_cmdn = NULL; /* Wallpaper set command */
+    size_t i_siz  = 0;    /* Size of wallpeper set command */
 
     i_siz = strlen (s_cmd) + strlen (s_wall) + 4;
-    s_cmdn = g_malloc0 (i_siz * sizeof (char));
+    s_cmdn = calloc (i_siz, sizeof (char));
+    if (s_cmdn == NULL) {
+        fputs ("Alloc error\n", stderr);
+        //return 1;
+        exit (EXIT_FAILURE);
+    }
     sprintf (s_cmdn, "%s %s &", s_cmd, s_wall);
     system (s_cmdn);
     free (s_cmdn);
@@ -55,24 +59,23 @@ wallpaper_set_file (const char *s_cmd,
 static int
 wallpaper_set_random (WallSett *ws_sett)
 {
-    GRand *gr_rand;      /* GLib pseudo-random number generator */
-    char  *s_fn  = NULL; /* Wallpaper file name */
-    int    i_pos = 0;    /* Random wallpaper position */
-    int    i_cnt = 0;    /* Length of wallpaper list */
+    const char *s_fn  = NULL; /* Wallpaper file name */
+    int         i_pos = 0;    /* Random wallpaper position */
+    int         i_cnt = 0;    /* Length of wallpaper list */
 
-    i_cnt = g_slist_length (ws_sett->gsl_files);
+    i_cnt = flist_get_len (&ws_sett->fl_files);
     if (i_cnt == 0)
         return 0;
 
-    gr_rand = g_rand_new ();
+    i_pos = randomm_get_number (&ws_sett->rm_mem);
+    s_fn = flist_get_data (&ws_sett->fl_files, i_pos);
 
-    i_pos = g_rand_int_range (gr_rand, 0, i_cnt);
-    s_fn = g_slist_nth_data (ws_sett->gsl_files, i_pos);
     if (s_fn != NULL) {
-        settings_set_last_used_data (ws_sett, s_fn);
-        wallpaper_set_file (ws_sett->s_bgcmd, ws_sett->s_lastused);
+        settings_set_last_used_fn (ws_sett, s_fn);
+
+        wallpaper_set_file (settings_get_command (ws_sett),
+                            settings_get_last_used_fn (ws_sett));
     }
-    g_rand_free (gr_rand);
     return 0;
 }
 /*----------------------------------------------------------------------------*/
@@ -85,31 +88,37 @@ wallpaper_set_random (WallSett *ws_sett)
 static int
 wallpaper_set_next_in_list (WallSett *ws_sett)
 {
-    char *s_next = NULL; /* Next wallpaper file name */
-    int   i_pos  = 0;    /* Next wallpaper position in list */
+    const char *s_next = NULL; /* Next wallpaper file name */
+    int         i_pos  = 0;    /* Next wallpaper position in list */
 
-    // check empty list
-    if (g_slist_length (ws_sett->gsl_files) == 0) {
+    /* check empty list */
+    if (flist_get_len (&ws_sett->fl_files) == 0) {
         return 0;
     }
-    if (ws_sett->s_lastused == NULL) {
+    
+    if (settings_get_last_used_fn (ws_sett) == NULL) {
         i_pos = 0;
-        s_next = g_slist_nth_data (ws_sett->gsl_files, i_pos);
-        settings_set_last_used_data (ws_sett, s_next);
-        wallpaper_set_file (ws_sett->s_bgcmd, ws_sett->s_lastused);
+        s_next = flist_get_data (&ws_sett->fl_files, i_pos);
+
+        settings_set_last_used_fn (ws_sett, s_next);
+
+        wallpaper_set_file (settings_get_command (ws_sett),
+                            settings_get_last_used_fn (ws_sett));
         return 0;
     }
-    i_pos = my_gslist_get_position (ws_sett->gsl_files,
-                                    ws_sett->s_lastused) + 1;
+    i_pos = flist_get_pos (&ws_sett->fl_files,
+                           settings_get_last_used_fn (ws_sett)) + 1;
     if (i_pos >= 0) {
-        s_next = g_slist_nth_data (ws_sett->gsl_files, i_pos);
+        s_next = flist_get_data (&ws_sett->fl_files, i_pos);
         if (s_next == NULL) {
-            // lst one, get first
-            s_next = g_slist_nth_data (ws_sett->gsl_files, 0);
+            /* lst one, get first */
+            s_next = flist_get_data (&ws_sett->fl_files, 0);
         }
         if (s_next != NULL) {
-            settings_set_last_used_data (ws_sett, s_next);
-            wallpaper_set_file (ws_sett->s_bgcmd, ws_sett->s_lastused);
+            settings_set_last_used_fn (ws_sett, s_next);
+
+            wallpaper_set_file (settings_get_command (ws_sett),
+                                settings_get_last_used_fn (ws_sett));
         }
     }
     return 0;
@@ -117,14 +126,11 @@ wallpaper_set_next_in_list (WallSett *ws_sett)
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Wallpaper change during program work.
- *
- * @param[in,out]  ws_sett  Program settings
- * @return         Wallpaper change status
  */
 int
 wallpaper_change (WallSett *ws_sett)
 {
-    if (ws_sett->i_random) {
+    if (settings_get_random (ws_sett)) {
         wallpaper_set_random (ws_sett);
     }
     else {
@@ -136,16 +142,15 @@ wallpaper_change (WallSett *ws_sett)
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Setting wallpaper image at program startup.
- *
- * @param[in,out]  ws_sett  Program settings
- * @return         Wallpaper set status
  */
 int
 wallpaper_startup_set (WallSett *ws_sett)
 {
-    int i_res = 0;
-    if (ws_sett->i_lastsett) {
-        wallpaper_set_file (ws_sett->s_bgcmd, ws_sett->s_lastused);
+    int i_res = 0; /* Function result */
+
+    if (settings_get_last_used_setting (ws_sett)) {
+        wallpaper_set_file (settings_get_command (ws_sett),
+                            settings_get_last_used_fn (ws_sett));
     }
     else {
         i_res = wallpaper_change (ws_sett);
@@ -155,23 +160,23 @@ wallpaper_startup_set (WallSett *ws_sett)
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Setting wallpaper out of settings dialog.
- *
- * @param[in,out]  ws_sett  Program settings
- * @param[in]      s_file   Wallpaper file
- * @return         Wallpaper set status
  */
 int
 wallpaper_dialog_set (WallSett   *ws_sett,
                       const char *s_file)
 {
     int i_res = 0;
-    i_res = wallpaper_set_file (ws_sett->s_bgcmd, s_file);
+    
+    i_res = wallpaper_set_file (settings_get_command (ws_sett), s_file);
     if (i_res)
         return i_res;
-    i_res = settings_set_last_used_data (ws_sett, s_file);
+
+    i_res = settings_set_last_used_fn (ws_sett, s_file);
     if (i_res)
         return i_res;
+
     i_res = settings_update_last_used (ws_sett);
+
     return i_res;
 }
 /*----------------------------------------------------------------------------*/
