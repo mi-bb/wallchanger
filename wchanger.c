@@ -853,7 +853,7 @@ create_settings_widget (GtkWidget **gw_settings_widget,
     gw_command_entry = gtk_entry_new ();
     GtkWidget *gw_command_label = gtk_label_new ("Background set command : ");
 
-    ga_adjustment = gtk_adjustment_new (5.0, 1.0, 100.0, 1.0, 5.0, 0.0);
+    ga_adjustment = gtk_adjustment_new (5.0, 1.0, 6000.0, 1.0, 5.0, 0.0);
     gw_spinbutton = gtk_spin_button_new (ga_adjustment, 1.0, 0);
     GtkWidget *gw_interval_label = gtk_label_new (
             "Background change interval : ");
