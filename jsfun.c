@@ -274,7 +274,7 @@ js_settings_update_last_used (WallSett   *ws_sett,
     char *s_buff = NULL;   /* File data buffer */
     int   i_res  = ERR_OK; /* Function result */
 
-    if (settings_get_last_used_fn(ws_sett) == NULL) 
+    if (settings_get_last_used_fn (ws_sett) == NULL) 
         return ERR_OK;
 
     /* Read config data to buffer and check its hash */

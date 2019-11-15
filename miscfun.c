@@ -253,4 +253,54 @@ compare_strings (const char *a,
     return i_res;
 }
 /*----------------------------------------------------------------------------*/
+/**
+ * @brief  Get directory content in FList 
+ */
+void
+get_directory_content_append_to_flist (const char *s_path1,
+                                       FList      *fl_files)
+{
+    char   *s_pthfn   = NULL; /* Full file name with path */
+    char   *s_path    = NULL; /* File path */
+    size_t  i_dlen    = 0;    /* Path string length */
+    DIR    *dr;               /* Dirent directory */
+    struct  dirent *de;       /* Dirent struct */
+
+    i_dlen = strlen (s_path1);
+
+    /* Reserve 1 more for a slash later */
+    create_resize ((void**) &s_path, i_dlen + 2, sizeof (char));
+    strcpy (s_path, s_path1);
+    if (s_path[i_dlen-1] != '/') {
+        strcat (s_path, "/");
+        i_dlen++;
+    }
+
+    dr = opendir (s_path); 
+    if (dr == NULL) {
+        printf ("Could not open current directory\n"); 
+        free (s_path);
+        return; 
+    } 
+    while ((de = readdir(dr)) != NULL) {
+        //if (de->d_type == DT_REG) {
+        if (de->d_type == 8) {
+            s_pthfn = calloc ((i_dlen + strlen (de->d_name)+1), sizeof (char));
+            if (s_pthfn == NULL) {
+                fputs ("Alloc error\n", stderr);
+                //return ERR_ALLOC;
+                exit (EXIT_FAILURE);
+            }
+            strcpy (s_pthfn, s_path);
+            strcat (s_pthfn, de->d_name);
+            flist_insert_data (fl_files, s_pthfn);
+            free (s_pthfn);
+        }
+    }
+    if (s_path != NULL)
+        free (s_path);
+
+    closedir(dr);
+}
+/*----------------------------------------------------------------------------*/
 

@@ -13,6 +13,12 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+v1.2.1   2019-11-14  Michal Babik  <michalb1981@o2.pl>
+
+        * Added ComboBox with minutes and hours in wallpaper change
+          interval option
+        * Some code updates
+
 v1.2    2019-11-14  Michal Babik  <michalb1981@o2.pl>
 
         * Changed random wallpaper select method

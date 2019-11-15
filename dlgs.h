@@ -24,6 +24,7 @@
 #ifndef DLGS_H
 #define DLGS_H
 #include <gtk/gtk.h>
+#include "flist.h"
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Select folder dialog.

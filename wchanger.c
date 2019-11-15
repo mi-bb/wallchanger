@@ -19,14 +19,13 @@
  *
  * Wallpaper changing appliation.
  *
- * @date November 14, 2019
+ * @date November 15, 2019
  *
- * @version 1.2
+ * @version 1.2.1
  * 
  * @author Michał Bąbik <michalb1981@o2.pl>
  */
 #include <stdio.h> 
-#include <dirent.h> 
 #include <gtk/gtk.h>
 #include "setts.h"
 #include "settstr.h"
@@ -48,130 +47,71 @@ DialogData {
     GtkWidget  *gw_random;      /**< Random background select check box */
     GtkWidget  *gw_lastused;    /**< Set last used wallpaper check box */
     GtkWidget  *gw_command;     /**< Set wallpaper command entry */
-    GtkWidget  *gw_interval;    /**< Set wallpaper command entry */
+    GtkWidget  *gw_interval;    /**< Time interval check button */
+    GtkWidget  *gw_inter_combo; /**< Time interval combo box */
     WallSett   *ws_sett;        /**< Program settings */
 } DialogData;
 /*----------------------------------------------------------------------------*/
 /**
- * @brief  Get directory content in GSList 
- *
- * @param[in]  s_path1  Path to directory
- * @return     List of files in directory
- */
-static GSList *
-get_directory_content (const char *s_path1)
-{
-    GSList *gsl_files = NULL; /* Return list of files in directory */
-    char   *s_pthfn   = NULL; /* Full file name with path */
-    char   *s_path    = NULL; /* File path */
-    size_t  i_dlen    = 0;    /* Path string length */
-    DIR    *dr;               /* Dirent directory */
-    struct  dirent *de;       /* Dirent struct */
-
-    i_dlen = strlen (s_path1);
-
-    /* Reserve 1 more maybe for a backslash later */
-    create_resize ((void**) &s_path, i_dlen + 2, sizeof (char));
-    strcpy (s_path, s_path1);
-    if (s_path[i_dlen-1] != '/') {
-        strcat (s_path, "/");
-        i_dlen++;
-    }
-
-    dr = opendir (s_path); 
-    if (dr == NULL) {
-        printf ("Could not open current directory\n"); 
-        g_free (s_path);
-        return NULL; 
-    } 
-    while ((de = readdir(dr)) != NULL) {
-        //if (de->d_type == DT_REG) {
-        if (de->d_type == 8) {
-            s_pthfn = calloc ((i_dlen + strlen (de->d_name)+1), sizeof (char));
-            if (s_pthfn == NULL) {
-                fputs ("Alloc error\n", stderr);
-                //return ERR_ALLOC;
-                exit (EXIT_FAILURE);
-            }
-            strcpy (s_pthfn, s_path);
-            strcat (s_pthfn, de->d_name);
-            gsl_files = g_slist_append (gsl_files, s_pthfn);
-        }
-    }
-    if (s_path != NULL)
-        free (s_path);
-
-    closedir(dr);
-
-    return gsl_files;
-}
-/*----------------------------------------------------------------------------*/
-/**
  * @brief  Get list of GdkPixbuf format extensions.
  *
- * @return    List of strings with extensions for GdkPixbuf graphics.
+ * @param[out]  fl_exts  List to put extension in
+ * @return      none 
  */
-static GSList *
-get_pbuf_extension_list (void)
+/*----------------------------------------------------------------------------*/
+static void
+get_pbuf_extension_append_to_flist (FList *fl_exts)
 {
     GdkPixbufFormat  *gpf          = NULL;
-    GSList           *gsl_res      = NULL;
     GSList           *gsl_formats  = NULL;
-    GSList           *gsl_formats1 = NULL;
     char            **exts         = NULL;
     char            **it           = NULL;
 
-    gsl_formats1 = gdk_pixbuf_get_formats();
-    gsl_formats = g_slist_copy (gsl_formats1);
+    gsl_formats = gdk_pixbuf_get_formats();
 
     while (gsl_formats != NULL) {
         gpf = gsl_formats->data;
         exts = gdk_pixbuf_format_get_extensions (gpf);
         for (it = exts; *it != NULL; it++) {
-            gsl_res = g_slist_append (gsl_res, str_dup (*it));
+            flist_insert_data (fl_exts, *it);
         }
         g_strfreev (exts);
         gsl_formats = gsl_formats->next;
     }
-    g_slist_free (gsl_formats1);
     g_slist_free (gsl_formats);
-
-    return gsl_res;
 }
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Check list with file names for GdkPixbuf images.
  *
- * @param[in] gsl_files1 List with files to proccess
- * @return    List with files that may contain GdkPixbuf images
+ * @param[in]  fl_files      List with files to proccess
+ * @param[out] fl_files_new  List with files that may contain GdkPixbuf images
+ * @return     none
  */
-static GSList *
-check_files_for_pixbuf (GSList *gsl_files1)
+static void
+check_files_for_pixbuf_append_to_flist (FList *fl_files,
+                                        FList *fl_files_new)
 {
-    GSList  *gsl_res   = NULL;
-    GSList  *gsl_files = NULL;
-    GSList  *gsl_exts  = NULL;
-    char    *s_fn      = NULL; /* File name */
-    char    *s_ext     = NULL; /* Pointer to ext in s_fn */
+    const char *s_fn  = NULL;  /* File name */
+    char       *s_ext = NULL;  /* Pointer to ext in s_fn */
 
-    gsl_exts = get_pbuf_extension_list ();
-    gsl_files = g_slist_copy (gsl_files1);
+    FList fl_exts;
+    flist_init (&fl_exts);
 
-    while (gsl_files != NULL) {
-        s_fn = str_dup ((char*) gsl_files->data);
+    get_pbuf_extension_append_to_flist (&fl_exts);
+
+    uint32_t ui_cnt = flist_get_len (fl_files);
+
+    for (uint32_t i = 0; i < ui_cnt; ++i) {
+        s_fn = flist_get_data (fl_files, i);
         s_ext = get_file_ext (s_fn);
         if (s_ext != NULL) {
-            GSList *gsl_fnd = g_slist_find_custom (gsl_exts, s_ext, 
-                    (GCompareFunc) compare_strings);
-            if (gsl_fnd != NULL) {
-                gsl_res = g_slist_append (gsl_res, s_fn);
+            if (flist_get_pos (&fl_exts, s_ext) > 0) {
+                flist_insert_data (fl_files_new, s_fn);
             }
         }
-        gsl_files = gsl_files->next;
     }
-    g_slist_free_full (gsl_exts, g_free);
-
-    return gsl_res;
+    flist_free (&fl_exts);
 }
 /*----------------------------------------------------------------------------*/
 /**
@@ -220,6 +160,7 @@ make_prev_screen_pbuf (GdkRectangle *gr_rect)
 
     get_screen_size (&i_screen_w, &i_screen_h);
 
+    /* Count the height of a inside monitor preview screen */
     i_pr_scr_h = (int) ((double) i_screen_h /
                         (double) i_screen_w * (double) i_pr_scr_w);
 
@@ -232,17 +173,20 @@ make_prev_screen_pbuf (GdkRectangle *gr_rect)
     gp_scr_2 = get_image (21);  /* middle screen image (152x1) */
     gp_scr_3 = get_image (22);  /* bottom screen image (152x45) */
 
+    /* Get dimensions of monitor part images */
     i_img_w = gdk_pixbuf_get_width (gp_scr_1);
     i_img_1_h = gdk_pixbuf_get_height (gp_scr_1);
     i_img_2_h = gdk_pixbuf_get_height (gp_scr_2);
     i_img_3_h = gdk_pixbuf_get_height (gp_scr_3);
 
+    /* Create pixbuf for the whole preview image */
     gp_bg = gdk_pixbuf_new (GDK_COLORSPACE_RGB,
                             TRUE,
                             8,
                             i_img_w,
                             i_pr_scr_h + i_img_1_h + i_img_3_h);
 
+    /* Paint on the preview image upper first part of monitor */
     gdk_pixbuf_scale (gp_scr_1,
                       gp_bg,
                       0,
@@ -255,6 +199,7 @@ make_prev_screen_pbuf (GdkRectangle *gr_rect)
                       1.0,
                       GDK_INTERP_HYPER);
 
+    /* Paint on preview image middle parts of a monitor */
     for (int i = 0; i < i_pr_scr_h; ++i) {
         gdk_pixbuf_scale (gp_scr_2,
                           gp_bg,
@@ -269,6 +214,7 @@ make_prev_screen_pbuf (GdkRectangle *gr_rect)
                           GDK_INTERP_HYPER);
     }
 
+    /* Paint on the preview image bottom last part of monitor */
     gdk_pixbuf_scale (gp_scr_3,
                       gp_bg,
                       0,
@@ -290,6 +236,9 @@ make_prev_screen_pbuf (GdkRectangle *gr_rect)
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Paint pixbuf on another pixbuf.
+ *
+ * Paint GdkPixbuf image pointed by gp_src on GdkPixbuf pointed by gp_dest.
+ * Image will be painted in rectangle described in gr_area GdkRectangle.
  *
  * @param[out]  gp_dest  Destination pixpuf to paint on to
  * @param[in]   gp_src   Source pixpuf to paint on destination one
@@ -330,9 +279,9 @@ paint_pbuf_on_pbuf (GdkPixbuf    *gp_dest,
 static GdkPixbuf *
 make_image_preview (const char *s_fname)
 {
-    GdkPixbuf *gp_prev_screen = NULL; /* Preview image (screen) */
-    GdkPixbuf *gp_prev        = NULL; /* Wallpaper preview image */
-    GdkRectangle gr_area      = {0};  /* Wallpaper preview area */
+    GdkPixbuf   *gp_prev_screen = NULL; /* Preview image (screen) */
+    GdkPixbuf   *gp_prev        = NULL; /* Wallpaper preview image */
+    GdkRectangle gr_area        = {0};  /* Wallpaper preview area */
 
     gp_prev_screen = make_prev_screen_pbuf (&gr_area);
 
@@ -366,6 +315,51 @@ preview_from_file (GtkWidget  *gw_img_prev,
 }
 /*----------------------------------------------------------------------------*/
 /**
+ * @brief  Get wallpaper change interval value from widgets
+ *
+ * @param[in,out]  dd_data  DialogData object with settings and widget data
+ * @return         Change interval value
+ */
+static uint32_t
+get_wallpaper_change_interval (DialogData *dd_data)
+{
+    uint32_t ui_res = 0;
+    uint32_t ui_mul = 1;
+
+    ui_res = (uint32_t) gtk_spin_button_get_value (
+            GTK_SPIN_BUTTON (dd_data->gw_interval));
+
+    if (gtk_combo_box_get_active (GTK_COMBO_BOX (dd_data->gw_inter_combo)) == 1)
+        ui_mul = 60;
+
+    return ui_res * ui_mul;
+}
+/*----------------------------------------------------------------------------*/
+/**
+ * @brief  Set wallpaper change interval value to widgets
+ *
+ * @param[in,out]  dd_data  DialogData object with settings and widget data
+ * @param[in]      ui_val   Change interval value to set
+ * @return         none
+ */
+static void
+set_wallpaper_change_interval (DialogData    *dd_data,
+                               const uint32_t ui_val)
+{
+    uint32_t ui_tmp = ui_val;
+
+    if ((ui_tmp / 60 >= 1) && (ui_tmp % 60 == 0)) {
+        gtk_combo_box_set_active (GTK_COMBO_BOX (dd_data->gw_inter_combo), 1);
+        ui_tmp /= 60;
+    }
+    else {
+        gtk_combo_box_set_active (GTK_COMBO_BOX (dd_data->gw_inter_combo), 0);
+    }
+    gtk_spin_button_set_value (GTK_SPIN_BUTTON (dd_data->gw_interval),
+                               (double) ui_tmp);
+}
+/*----------------------------------------------------------------------------*/
+/**
  * @brief  Loading data from DialogData object to program window.
  *
  * @param[in,out]  dd_data  DialogData object with settings and widget data
@@ -386,8 +380,8 @@ load_settings (DialogData *dd_data)
     gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (dd_data->gw_lastused),
                           settings_get_last_used_setting (dd_data->ws_sett));
 
-    gtk_spin_button_set_value (GTK_SPIN_BUTTON (dd_data->gw_interval),
-            (double) settings_get_interval (dd_data->ws_sett));
+    set_wallpaper_change_interval (dd_data,
+            settings_get_interval (dd_data->ws_sett));
 
     if (settings_get_command (dd_data->ws_sett) != NULL)
         gtk_entry_set_text (GTK_ENTRY (dd_data->gw_command),
@@ -406,6 +400,7 @@ static void
 gather_settings (DialogData *dd_data)
 {
     const char *s_cmd = NULL; /* Set wallpaper command string */
+    uint32_t    ui_ci = 0;    /* Wallpaper change interval value */
 
     GSList *gsl_iinfo1 = treeview_get_data (dd_data->gw_view);
 
@@ -422,9 +417,8 @@ gather_settings (DialogData *dd_data)
             (uint8_t) gtk_toggle_button_get_active (
                 GTK_TOGGLE_BUTTON (dd_data->gw_random)));
 
-    settings_set_interval (dd_data->ws_sett,
-            (uint32_t) gtk_spin_button_get_value (
-                GTK_SPIN_BUTTON (dd_data->gw_interval)));
+    ui_ci = get_wallpaper_change_interval (dd_data);
+    settings_set_interval (dd_data->ws_sett, ui_ci);
 
     s_cmd = gtk_entry_get_text (GTK_ENTRY (dd_data->gw_command));
     settings_set_command (dd_data->ws_sett, s_cmd);
@@ -464,25 +458,29 @@ static void
 event_add_images_folder_pressed (GtkWidget  *widget,
                                  DialogData *dd_data)
 {
-    GSList *gsl_files1   = NULL;
-    GSList *gsl_files2   = NULL;
-    char *s_folder       = NULL; /* Selecred directory name */
+    GSList *gsl_files = NULL; /* List of ImageInfo items to liststore */
+    char   *s_folder  = NULL; /* Selecred directory name */
+    FList   fl_files;         /* Files in directory */
+    FList   fl_files_new;     /* Filtered files */
+
+    flist_init (&fl_files);
+    flist_init (&fl_files_new);
 
     s_folder = add_images_folder_dialog (dd_data->gw_window);
 
     if (s_folder != NULL) {
-        gsl_files1 = get_directory_content (s_folder);
-        gsl_files2 = check_files_for_pixbuf (gsl_files1);
+        get_directory_content_append_to_flist (s_folder, &fl_files);
 
-        g_slist_free_full (gsl_files1, free);
+        check_files_for_pixbuf_append_to_flist (&fl_files, &fl_files_new);
 
-        gsl_files1 = file_paths_to_imageinfo (gsl_files2);
-        liststore_add_items (dd_data->gw_view, gsl_files1);
+        gsl_files = flist_to_imageinfo (&fl_files_new);
+        liststore_add_items (dd_data->gw_view, gsl_files);
 
-        g_slist_free_full (gsl_files1, (GDestroyNotify) imageinfo_free);
-        g_slist_free_full (gsl_files2, g_free);
+        g_slist_free_full (gsl_files, (GDestroyNotify) imageinfo_free);
         g_free (s_folder);
     }
+    flist_free (&fl_files);
+    flist_free (&fl_files_new);
 }
 /*----------------------------------------------------------------------------*/
 /**
@@ -568,7 +566,7 @@ event_set_wallpaper_pressed (GtkWidget  *widget,
         ImageInfo *ii_info = treemodel_get_data (gtm_model, gti_iter);
 
         if (wallpaper_dialog_set (dd_data->ws_sett,
-                                  ii_info->s_full_path) != ERR_OK) {
+                                 imageinfo_get_full_name (ii_info)) != ERR_OK) {
             message_dialog_error (dd_data->gw_window, "Some error occured"); 
         }
         imageinfo_free (ii_info);
@@ -588,6 +586,7 @@ event_save_settings_pressed (GtkWidget  *widget,
                              DialogData *dd_data)
 {
     gather_settings (dd_data);
+
     if (settings_write (dd_data->ws_sett) != ERR_OK) {
         message_dialog_error (dd_data->gw_window,
                               "Error while saving settings");
@@ -618,7 +617,7 @@ event_img_list_activated (GtkTreeView       *tree_view,
 
     if (gtk_tree_model_get_iter (gtm_model, &gti_iter, path)) {
         ImageInfo *ii_info = treemodel_get_data (gtm_model, gti_iter);
-        preview_from_file (gw_img_prev, ii_info->s_full_path);
+        preview_from_file (gw_img_prev, imageinfo_get_full_name (ii_info));
         imageinfo_free (ii_info);
     }
 }
@@ -846,36 +845,57 @@ create_settings_widget (GtkWidget **gw_settings_widget,
     GtkWidget     *gw_command_entry;
     GtkWidget     *gw_spinbutton;
     GtkAdjustment *ga_adjustment;
+    GtkWidget     *gw_command_label;
+    GtkWidget     *gw_interval_label;
+    GtkWidget     *gw_time_combo;
 
+    /* Random wallpaper change button */
     gw_button_random = gtk_check_button_new ();
-    gw_button_selectlast = gtk_check_button_new ();
-
-    gw_command_entry = gtk_entry_new ();
-    GtkWidget *gw_command_label = gtk_label_new ("Background set command : ");
-
-    ga_adjustment = gtk_adjustment_new (5.0, 1.0, 6000.0, 1.0, 5.0, 0.0);
-    gw_spinbutton = gtk_spin_button_new (ga_adjustment, 1.0, 0);
-    GtkWidget *gw_interval_label = gtk_label_new (
-            "Background change interval : ");
-    GtkWidget *gw_interval_label2 = gtk_label_new ("minutes");
-
     gtk_button_set_label (GTK_BUTTON (gw_button_random),
                           "Random wallpaper change");
+
+    /* Select last used wallpaper button */
+    gw_button_selectlast = gtk_check_button_new ();
     gtk_button_set_label (GTK_BUTTON (gw_button_selectlast),
                           "Select last used wallpaper at start");
+
+    /* Wallpaper set command entry */
+    gw_command_entry = gtk_entry_new ();
+    gw_command_label = gtk_label_new ("Background set command : ");
+
+    /* Background change interval widgets */
+    ga_adjustment = gtk_adjustment_new (5.0, 1.0, 6000.0, 1.0, 5.0, 0.0);
+    gw_spinbutton = gtk_spin_button_new (ga_adjustment, 1.0, 0);
+    gw_interval_label = gtk_label_new ("Background change interval : ");
+    gw_time_combo = gtk_combo_box_text_new ();
+    gtk_combo_box_text_append (GTK_COMBO_BOX_TEXT (gw_time_combo),
+                               NULL,
+                               "minutes");
+    gtk_combo_box_text_append (GTK_COMBO_BOX_TEXT (gw_time_combo),
+                               NULL,
+                               "hours");
+    gtk_combo_box_set_active (GTK_COMBO_BOX (gw_time_combo), 0);
+
+    /* Setting pointers in DialogData */
     dd_data->gw_random = gw_button_random;
     dd_data->gw_lastused = gw_button_selectlast;
     dd_data->gw_command = gw_command_entry;
     dd_data->gw_interval = gw_spinbutton;
+    dd_data->gw_inter_combo = gw_time_combo;
 
+    /* Container for settings widgets */
     *gw_settings_widget = gtk_grid_new ();
     gtk_grid_set_column_spacing (GTK_GRID (*gw_settings_widget), 8);
     gtk_grid_set_row_spacing (GTK_GRID (*gw_settings_widget), 8);
-    gtk_grid_attach (GTK_GRID (*gw_settings_widget), gw_button_random, 0, 0, 1, 1);
+
+    /* Packing button for random change */
+    gtk_grid_attach (GTK_GRID (*gw_settings_widget),
+                     gw_button_random, 0, 0, 1, 1);
     gtk_grid_attach_next_to (GTK_GRID (*gw_settings_widget),
                              gw_button_selectlast, gw_button_random,
                              GTK_POS_BOTTOM, 1, 1);
 
+    /* Packing background set command */
     gtk_grid_attach_next_to (GTK_GRID (*gw_settings_widget),
                              gw_command_label, gw_button_random,
                              GTK_POS_RIGHT, 1, 1);
@@ -883,6 +903,7 @@ create_settings_widget (GtkWidget **gw_settings_widget,
                              gw_command_entry, gw_command_label,
                              GTK_POS_RIGHT, 1, 1);
 
+    /* Packing time interval widgets */
     gtk_grid_attach_next_to (GTK_GRID (*gw_settings_widget),
                              gw_interval_label, gw_button_selectlast,
                              GTK_POS_RIGHT, 1, 1);
@@ -890,7 +911,7 @@ create_settings_widget (GtkWidget **gw_settings_widget,
                              gw_spinbutton, gw_interval_label,
                              GTK_POS_RIGHT, 1, 1);
     gtk_grid_attach_next_to (GTK_GRID (*gw_settings_widget),
-                             gw_interval_label2, gw_spinbutton,
+                             gw_time_combo, gw_spinbutton,
                              GTK_POS_RIGHT, 1, 1);
 }
 /*----------------------------------------------------------------------------*/
@@ -916,7 +937,7 @@ activate (GtkApplication *app,
     GtkWidget     *gw_settings_widget; /* Setings for wallpaper changing */
 
     gw_window = gtk_application_window_new (app);
-    gtk_window_set_title (GTK_WINDOW (gw_window), "Wall Changer v1.2");
+    gtk_window_set_title (GTK_WINDOW (gw_window), "Wall Changer v1.2.1");
     gtk_window_set_default_size (GTK_WINDOW (gw_window), 1024, 768);
     g_signal_connect (gw_window, "delete-event",
                   G_CALLBACK (event_on_delete), dd_data);

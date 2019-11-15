@@ -40,12 +40,12 @@ liststore_set_item (GtkListStore    *gls_list,
                     const ImageInfo *ii_info)
 {
     gtk_list_store_set (gls_list, gti_iter,
-                        COL_FULL_FILE_NAME, ii_info->s_full_path,
-                        COL_FILE_NAME,      ii_info->s_file_name,
-                        COL_FILE_PATH,      ii_info->s_file_path,
-                        COL_WIDTH_HEIGHT,   ii_info->s_width_height,
-                        COL_WIDTH,          ii_info->i_width,
-                        COL_HEIGHT,         ii_info->i_height,
+                        COL_FULL_FILE_NAME, imageinfo_get_full_name (ii_info),
+                        COL_FILE_NAME,      imageinfo_get_file_name (ii_info),
+                        COL_FILE_PATH,      imageinfo_get_file_path (ii_info),
+                        COL_WIDTH_HEIGHT,   imageinfo_get_wxh (ii_info),
+                        COL_WIDTH,          imageinfo_get_width (ii_info),
+                        COL_HEIGHT,         imageinfo_get_height (ii_info),
                         -1);
 }
 /*----------------------------------------------------------------------------*/
@@ -88,7 +88,7 @@ treeview_replace_data (GtkWidget *gw_tview,
     uint32_t      ui_mcnt   = 0; /* TreeModel items count */
     gboolean      b_res     = FALSE;
 
-    gsl_iinfo = g_slist_copy (gsl_iinfo1);
+    gsl_iinfo = gsl_iinfo1;
 
     gtm_model = gtk_tree_view_get_model (GTK_TREE_VIEW (gw_tview));
     gls_list = GTK_LIST_STORE (gtm_model);
@@ -104,7 +104,6 @@ treeview_replace_data (GtkWidget *gw_tview,
             b_res = gtk_tree_model_iter_next (gtm_model, &gti_iter);
         }
     }
-    g_slist_free (gsl_iinfo);
 }
 /*----------------------------------------------------------------------------*/
 /**
@@ -116,13 +115,12 @@ liststore_add_items (GtkWidget  *gw_list,
 {
     GSList *gsl_iinfo = NULL; /* Temp ItemInfo list */
 
-    gsl_iinfo = g_slist_copy (gsl_iinfo1);
+    gsl_iinfo = gsl_iinfo1;
 
     while (gsl_iinfo != NULL) {
         liststore_add_item (gw_list, gsl_iinfo->data);
         gsl_iinfo = gsl_iinfo->next;
     }
-    g_slist_free (gsl_iinfo);
 }
 /*----------------------------------------------------------------------------*/
 /**
@@ -141,8 +139,8 @@ treemodel_get_data (GtkTreeModel *gtm_model,
             COL_FILE_NAME,      &ii_info->s_file_name,
             COL_FILE_PATH,      &ii_info->s_file_path,
             COL_WIDTH_HEIGHT,   &ii_info->s_width_height,
-            COL_WIDTH,          &ii_info->i_width,
-            COL_HEIGHT,         &ii_info->i_height, -1);
+            COL_WIDTH,          &ii_info->ui_width,
+            COL_HEIGHT,         &ii_info->ui_height, -1);
     return ii_info;
 }
 /*----------------------------------------------------------------------------*/
@@ -158,6 +156,7 @@ find_select_item (GtkWidget  *gw_tview,
     GtkTreeIter       gti_iter;
     gboolean          b_res     = FALSE;
     GValue            value     = {0,};
+    const char       *s_val     = NULL;
 
     gtm_model = gtk_tree_view_get_model (GTK_TREE_VIEW (gw_tview));
 
@@ -165,7 +164,7 @@ find_select_item (GtkWidget  *gw_tview,
     while (b_res) {
         gtk_tree_model_get_value(gtm_model, &gti_iter,
                                  COL_FULL_FILE_NAME, &value);
-        const char *s_val = (const char*) g_value_get_string(&value);
+        s_val = (const char*) g_value_get_string(&value);
         if (compare_strings (s_file, s_val) == 0) {
             gts_sele = gtk_tree_view_get_selection (GTK_TREE_VIEW (gw_tview));
             gtk_tree_selection_select_iter (gts_sele, &gti_iter);
@@ -201,7 +200,6 @@ treeview_remove_selected (GtkWidget *gw_tview)
         gl_list1 = gl_list1->prev;
     }
     g_list_free_full (gl_list, (GDestroyNotify) gtk_tree_path_free);
-    g_list_free (gl_list1);
 }
 /*----------------------------------------------------------------------------*/
 /**
@@ -232,17 +230,15 @@ treeview_get_data (GtkWidget *gw_tview)
 void
 treeview_sort_list (GtkWidget *gw_tview)
 {
-    GSList *gsl_files1 = NULL; /* TreeView item list */
-    GSList *gsl_files  = NULL; /* TreeView item list temp copy */
+    GSList *gsl_iinfo = NULL; /* TreeView item list */
 
-    gsl_files1 = treeview_get_data (gw_tview);
-    gsl_files = g_slist_copy (gsl_files1);
+    gsl_iinfo = treeview_get_data (gw_tview);
 
-    gsl_files = g_slist_sort (gsl_files, (GCompareFunc) compare_imageitems);
-    treeview_replace_data (gw_tview, gsl_files);
+    gsl_iinfo = imageinfo_sort (gsl_iinfo);
 
-    g_slist_free_full (gsl_files1, (GDestroyNotify) imageinfo_free);
-    g_slist_free (gsl_files);
+    treeview_replace_data (gw_tview, gsl_iinfo);
+
+    g_slist_free_full (gsl_iinfo, (GDestroyNotify) imageinfo_free);
 }
 /*----------------------------------------------------------------------------*/
 /**

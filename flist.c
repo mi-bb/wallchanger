@@ -32,8 +32,8 @@
 static char *
 str_dup (const char *s_str)
 {
-    char *s_res = NULL;
-    size_t st_len = 0;
+    char   *s_res  = NULL;
+    size_t  st_len = 0;
 
     if (s_str == NULL)
         return NULL;
@@ -69,7 +69,7 @@ flist_reserve (FList       *fl_list,
 {
     /* No need to resie */
     if (fl_list->i_cnt == i_size)
-        return 0;
+        return ERR_OK;
 
     /* if larger free rest */
     while (i_size < fl_list->i_cnt) {
@@ -79,8 +79,8 @@ flist_reserve (FList       *fl_list,
     /* If size 0 clear list */
     if (i_size == 0) {
         free (fl_list->s_file);
-        fl_list->s_file = NULL;
-        return 0;
+        flist_init (fl_list);
+        return ERR_OK; 
     }
 
     if (fl_list->s_file == NULL) {
@@ -104,7 +104,7 @@ flist_reserve (FList       *fl_list,
         //return ERR_ALLOC;
     }
     fl_list->i_cnt = i_size;
-    return 0;
+    return ERR_OK;
 }
 /*----------------------------------------------------------------------------*/
 /**

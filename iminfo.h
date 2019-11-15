@@ -36,23 +36,13 @@
  */
 typedef struct
 ImageInfo {
-    char *s_full_path;     /**< Full file name with path */
-    char *s_file_name;     /**< File name only */
-    char *s_file_path;     /**< File path */
-    char *s_width_height;  /**< Width x Height in string */
-    int   i_width;         /**< Image width in int */
-    int   i_height;        /**< Image height in int */
+    char    *s_full_path;     /**< Full file name with path */
+    char    *s_file_name;     /**< File name only */
+    char    *s_file_path;     /**< File path */
+    char    *s_width_height;  /**< Width x Height in string */
+    uint16_t ui_width;        /**< Image width in uint */
+    uint16_t ui_height;       /**< Image height in uint */
 } ImageInfo;
-/*----------------------------------------------------------------------------*/
-/**
- * @brief  Function compares ImageInfo items by file name string.
- *
- * @param[in] ii_info1 First ImageInfo item
- * @param[in] ii_info2 Second ImageInfo item
- * @return    1 if a>b, -1 if a<b, 0 if a=b
- */
-int compare_imageitems (const ImageInfo *ii_info1,
-                        const ImageInfo *ii_info2);
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Free ImageInfo data.
@@ -69,6 +59,14 @@ void imageinfo_free (ImageInfo *ii_info);
  * @return      none
  */
 void imageinfo_init (ImageInfo *ii_info);
+/*----------------------------------------------------------------------------*/
+/**
+ * @brief  Sort ImageInfo list.
+ *
+ * @param[in, out]  gsl_iinfo  Pointer to ImageInfo list to sort
+ * @return          Sorted     ImageInfo list
+ */
+GSList * imageinfo_sort (GSList *gsl_iinfo);
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Get file info and put it in a ImageInfo object.
@@ -102,6 +100,99 @@ GSList * flist_to_imageinfo (FList *fl_files);
  * @return     Append result
  */
 int imageinfo_append_to_flist (GSList *gsl_iinfo1, FList *fl_files);
+/*----------------------------------------------------------------------------*/
+/**
+ * @brief  Set the full file name string (path + file name)
+ *
+ * @param[out]  ii_info  ImageInfo object to set data
+ * @param[in]   s_name   String to set as full file name
+ * @return      none
+ */
+void imageinfo_set_full_name (ImageInfo *ii_info, const char *s_name);
+/*----------------------------------------------------------------------------*/
+/**
+ * @brief  Get the full file name string (path + file name)
+ *
+ * @param[out]  ii_info  ImageInfo object with data to get
+ * @return      Full file name string
+ */
+const char *imageinfo_get_full_name (const ImageInfo *ii_info);
+/*----------------------------------------------------------------------------*/
+/**
+ * @brief  Set the file name string
+ *
+ * @param[out]  ii_info  ImageInfo object to set data
+ * @param[in]   s_name   String to set as file name
+ * @return      none
+ */
+void imageinfo_set_file_name (ImageInfo *ii_info, const char *s_name);
+/*----------------------------------------------------------------------------*/
+/**
+ * @brief  Get the file name string
+ *
+ * @param[out]  ii_info  ImageInfo object with data to get
+ * @return      File name string
+ */
+const char *imageinfo_get_file_name (const ImageInfo *ii_info);
+/*----------------------------------------------------------------------------*/
+/**
+ * @brief  Set the file path string
+ *
+ * @param[out]  ii_info  ImageInfo object to set data
+ * @param[in]   s_name   String to set as file path
+ * @return      none
+ */
+void imageinfo_set_file_path (ImageInfo *ii_info, const char *s_name);
+/*----------------------------------------------------------------------------*/
+/**
+ * @brief  Get the file path string
+ *
+ * @param[out]  ii_info  ImageInfo object with data to get
+ * @return      File path string
+ */
+const char *imageinfo_get_file_path (const ImageInfo *ii_info);
+/*----------------------------------------------------------------------------*/
+/**
+ * @brief  Set image width information
+ *
+ * @param[out]  ii_info  ImageInfo object to set data
+ * @param[in]   ui_val   Image width value
+ * @return      none
+ */
+void imageinfo_set_width (ImageInfo *ii_info, uint16_t ui_val);
+/*----------------------------------------------------------------------------*/
+/**
+ * @brief  Get image width value
+ *
+ * @param[out]  ii_info  ImageInfo object with data to get
+ * @return      Width of an image
+ */
+int imageinfo_get_width (const ImageInfo *ii_info);
+/*----------------------------------------------------------------------------*/
+/**
+ * @brief  Set image height information
+ *
+ * @param[out]  ii_info  ImageInfo object to set data
+ * @param[in]   ui_val   Image height value
+ * @return      none
+ */
+void imageinfo_set_height (ImageInfo *ii_info, uint16_t ui_val);
+/*----------------------------------------------------------------------------*/
+/**
+ * @brief  Get image height value
+ *
+ * @param[out]  ii_info  ImageInfo object with data to get
+ * @return      Height of an image
+ */
+int imageinfo_get_height (const ImageInfo *ii_info);
+/*----------------------------------------------------------------------------*/
+/**
+ * @brief  Get string with image dimensions (width x height)
+ *
+ * @param[out]  ii_info  ImageInfo object with data to get
+ * @return      String with image dimensions
+ */
+const char *imageinfo_get_wxh (const ImageInfo *ii_info);
 /*----------------------------------------------------------------------------*/
 #endif
 

@@ -403,6 +403,9 @@ static const struct {
   "\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000",
 };
 /*----------------------------------------------------------------------------*/
+/**
+ * @brief  Top part of monitor screen
+ */
 static const struct {
   guint  	 width;
   guint  	 height;
@@ -626,6 +629,9 @@ static const struct {
   "\377\246\246\246\377\377\377\377\000",
 };
 /*----------------------------------------------------------------------------*/
+/**
+ * @brief  Middle part of monitor screen
+ */
 static const struct {
   guint  	 width;
   guint  	 height;
@@ -657,6 +663,9 @@ static const struct {
   "\300\377\300\300\300\377\246\246\246\377\377\377\377\000",
 };
 /*----------------------------------------------------------------------------*/
+/**
+ * @brief  Bottom part of monitor screen
+ */
 static const struct {
   guint  	 width;
   guint  	 height;

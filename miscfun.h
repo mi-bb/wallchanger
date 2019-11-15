@@ -25,11 +25,13 @@
 #define MISCFUN_H
 
 #include <stdio.h>
+#include <dirent.h> 
 #include <string.h>
 #include <stdint.h>
 #include <stdlib.h>
 #include <errno.h>
 #include "errs.h"
+#include "flist.h"
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Hash function.
@@ -111,6 +113,16 @@ int save_file_data (const char *s_fname, const char *s_buff);
  * @return     Compare result
  */
 int compare_strings (const char *a, const char *b);
+/*----------------------------------------------------------------------------*/
+/**
+ * @brief  Get directory content in FList 
+ *
+ * @param[in]   s_path1   Path to directory
+ * @param[out]  fl_files  List of files in directory
+ * @return      none
+ */
+void get_directory_content_append_to_flist (const char *s_path1,
+                                            FList *fl_files);
 /*----------------------------------------------------------------------------*/
 #endif
 
