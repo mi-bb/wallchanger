@@ -2057,9 +2057,6 @@ make_icon (const Icon *ic_name)
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Get image from stored data.
- *
- * @param[in]  i_img  Image number
- * @return     Pixbuf with image
  */
 GdkPixbuf *
 get_image (const IconImg i_img)

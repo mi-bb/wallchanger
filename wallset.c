@@ -96,6 +96,7 @@ wallpaper_set_next_in_list (WallSett *ws_sett)
         return 0;
     }
     
+    /* If last used wallpaper is null get first one on list */
     if (settings_get_last_used_fn (ws_sett) == NULL) {
         i_pos = 0;
         s_next = flist_get_data (&ws_sett->fl_files, i_pos);
@@ -106,6 +107,8 @@ wallpaper_set_next_in_list (WallSett *ws_sett)
                             settings_get_last_used_fn (ws_sett));
         return 0;
     }
+    /* Get from the file list position of the last used wallpaper
+     * and increment it */
     i_pos = flist_get_pos (&ws_sett->fl_files,
                            settings_get_last_used_fn (ws_sett)) + 1;
     if (i_pos >= 0) {

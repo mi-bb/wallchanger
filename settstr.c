@@ -28,6 +28,7 @@
  * @brief  Check permissions, existence of file or directory. 
  *
  * @param[in]  s_name  Name of file / directory to check
+ * @param[in]  i_mode  Permissions to check
  * @return     Checking status
  */
 static int
@@ -37,7 +38,6 @@ check_permissions (const char *s_name,
     /* check if file/dir exists */
     if (access (s_name, F_OK) == 0) {
         /* check permissions */
-        //if (access (s_dir, W_OK | R_OK | X_OK) != 0) {
         if (access (s_name, i_mode) != 0) {
             fputs ("Bad permissions\n", stderr);
             return ERR_FILE_RW;

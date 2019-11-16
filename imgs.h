@@ -26,6 +26,9 @@
 #include <gdk-pixbuf/gdk-pixbuf.h>
 #include <stdint.h>
 /*----------------------------------------------------------------------------*/
+/**
+ * @brief  enum for icons and images
+ */
 typedef enum IconImg {
     W_ICON_ADD,
     W_ICON_ADD_DIR,
@@ -42,6 +45,12 @@ typedef enum IconImg {
     W_IMG_SCREEN_3
 } IconImg;
 /*----------------------------------------------------------------------------*/
+/**
+ * @brief  Get image from stored data.
+ *
+ * @param[in]  i_img  Image number
+ * @return     Pixbuf with image
+ */
 GdkPixbuf *get_image (IconImg i_img);
 /*----------------------------------------------------------------------------*/
 #endif
