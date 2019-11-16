@@ -51,6 +51,9 @@ int settings_write (WallSett *ws_sett);
  */
 int settings_update_last_used (WallSett *ws_sett);
 /*----------------------------------------------------------------------------*/
+int settings_update_window_size (WallSett *ws_sett,
+                                 const int i_w, const int i_h);
+/*----------------------------------------------------------------------------*/
 /**
  * @brief  Check if settings are different that saved ones.
  *

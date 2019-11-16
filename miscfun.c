@@ -111,11 +111,12 @@ str_ndup (const char *s_str,
     if (s_str == NULL)
         return NULL;
 
-    create_resize ((void**) &s_res, st_len, sizeof (char));
+    create_resize ((void**) &s_res, st_len+1, sizeof (char));
     //s_res = calloc (st_len, sizeof (char));
     //if (s_res == NULL)
     //    return NULL;
 
+    //strcpy (s_res, s_str);
     memcpy (s_res, s_str, st_len);
 
     return s_res;
@@ -127,7 +128,7 @@ str_ndup (const char *s_str,
 char *
 str_dup (const char *s_str)
 {
-    return str_ndup (s_str, strlen (s_str) + 1);
+    return str_ndup (s_str, strlen (s_str));
 }
 /*----------------------------------------------------------------------------*/
 /**

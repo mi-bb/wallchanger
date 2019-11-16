@@ -129,11 +129,20 @@ uint32_t flist_get_len (FList *fl_list);
 int32_t flist_get_pos (FList *fl_list, const char *s_fn);
 /*----------------------------------------------------------------------------*/
 /**
- * @brief  Print FList data
- *
- * @param[in] fl_list  FList object
- * @return    none
- */
+* @brief  Print FList data
+*
+* @param[in] fl_list  FList object
+* @return    none
+*/
 void flist_print_data (FList *fl_list);
 /*----------------------------------------------------------------------------*/
+/**
+* @brief  Remove duplicates from list.
+*
+* @param[in,out] fl_list  FList object
+* @return        none
+*/
+void flist_remove_duplicates (FList *fl_list);
+/*----------------------------------------------------------------------------*/
 #endif
+

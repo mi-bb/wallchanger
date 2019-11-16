@@ -19,9 +19,9 @@
  *
  * Program to change wallpapers.
  *
- * @date November 15, 2019
+ * @date November 16, 2019
  *
- * @version 1.2.1
+ * @version 1.2.2
  * 
  * @author Michał Bąbik <michalb1981@o2.pl>
  */
@@ -50,8 +50,8 @@ main (int    argc,
 {
     WallSett  ws_sett;
     uint32_t  ui_cnt = 0;
-    
-    if (settings_init (&ws_sett)) {
+
+    if (settings_init (&ws_sett) != ERR_OK) {
         settings_free (&ws_sett);
         exit (EXIT_FAILURE);
     }
@@ -72,8 +72,10 @@ main (int    argc,
         exit (EXIT_FAILURE);
     }
 
-    while (1) {
-        sleep (60);
+    for (int i = 0; i < 4; ++i) {
+    //while (1) {
+    //    sleep (60);
+        sleep (2);
         ui_cnt++;
         if (ui_cnt >= ws_sett.i_chinterval) {
             if (wallpaper_change (&ws_sett) != ERR_OK) {

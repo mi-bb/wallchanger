@@ -26,6 +26,7 @@
 
 #include <stdint.h>
 #include <unistd.h>
+#include <sys/stat.h>
 #include <sys/types.h>
 #include <pwd.h>
 #include "flist.h"
@@ -46,8 +47,10 @@ WallSett {
     uint8_t   i_random;      /**< Random background change */
     uint32_t  i_chinterval;  /**< Background change interval */
     uint8_t   i_lastsett;    /**< Remember last used wallpeper */
-    uint32_t  i_lastused;    /**< Last used wallpaper index */
+    int32_t   i_lastused;    /**< Last used wallpaper index */
     uint64_t  i_hash;        /**< Last data hash */
+    uint16_t  ui_win_width;  /**< Application window width */
+    uint16_t  ui_win_height; /**< Application window width */
 } WallSett;
 /*----------------------------------------------------------------------------*/
 /**
@@ -81,7 +84,7 @@ const char *settings_get_cfg_fn (WallSett *ws_sett);
  * @param[in]   ui_val   Last used position value to set
  * @return      none
  */
-void settings_set_last_used_pos (WallSett *ws_sett, uint32_t ui_val);
+void settings_set_last_used_pos (WallSett *ws_sett, int32_t ui_val);
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Get last used position value.
@@ -89,7 +92,7 @@ void settings_set_last_used_pos (WallSett *ws_sett, uint32_t ui_val);
  * @param[in]  ws_sett  WallSett object
  * @return     Last used position value
  */
-uint32_t settings_get_last_used_pos (WallSett *ws_sett);
+int32_t settings_get_last_used_pos (WallSett *ws_sett);
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Set using last used wallpaper on start.
@@ -175,6 +178,42 @@ int settings_set_command (WallSett *ws_sett, const char *s_cmd);
  * @return     Wallpaper set command
  */
 const char *settings_get_command (WallSett *ws_sett);
+/*----------------------------------------------------------------------------*/
+/**
+ * @brief  Set application window width.
+ *
+ * @param[out]  ws_sett   WallSett object
+ * @param[in]   ui_width  Window width value
+ */
+void
+settings_set_window_width (WallSett *ws_sett, const uint16_t ui_width);
+/*----------------------------------------------------------------------------*/
+/**
+ * @brief  Get application window width value.
+ *
+ * @param[in]  ws_sett   WallSett object
+ * @return     Window width value
+ */
+int
+settings_get_window_width (WallSett *ws_sett);
+/*----------------------------------------------------------------------------*/
+/**
+ * @brief  Set application window width.
+ *
+ * @param[out]  ws_sett    WallSett object
+ * @param[in]   ui_height  Window height value
+ */
+void
+settings_set_window_height (WallSett *ws_sett, const uint16_t ui_height);
+/*----------------------------------------------------------------------------*/
+/**
+ * @brief  Get application window height value.
+ *
+ * @param[in]  ws_sett   WallSett object
+ * @return     Window height value
+ */
+int
+settings_get_window_height (WallSett *ws_sett);
 /*----------------------------------------------------------------------------*/
 #endif
 

@@ -60,8 +60,8 @@ static int
 wallpaper_set_random (WallSett *ws_sett)
 {
     const char *s_fn  = NULL; /* Wallpaper file name */
-    int         i_pos = 0;    /* Random wallpaper position */
-    int         i_cnt = 0;    /* Length of wallpaper list */
+    uint32_t    i_pos = 0;    /* Random wallpaper position */
+    uint32_t    i_cnt = 0;    /* Length of wallpaper list */
 
     i_cnt = flist_get_len (&ws_sett->fl_files);
     if (i_cnt == 0)

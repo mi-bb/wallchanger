@@ -103,7 +103,7 @@ message_dialog_error (GtkWindow  *gw_parent,
                                         flags,
                                         GTK_MESSAGE_ERROR,
                                         GTK_BUTTONS_CLOSE,
-                                        s_message);
+                                        "%s", s_message);
     gtk_dialog_run (GTK_DIALOG (gw_dialog));
     gtk_widget_destroy (gw_dialog);
 }

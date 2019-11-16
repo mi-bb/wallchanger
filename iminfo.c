@@ -73,6 +73,33 @@ GSList * imageinfo_sort (GSList *gsl_iinfo)
 }
 /*----------------------------------------------------------------------------*/
 /**
+ * @brief  Remove duplicates from ImageInfo list.
+ */
+GSList * imageinfo_remove_duplicates (GSList *gsl_iinfo)
+{
+    GSList *gsl_itr = NULL;
+    GSList *gsl_nxt = NULL;
+    GSList *gsl_act = NULL;
+
+    for (gsl_itr = gsl_iinfo; gsl_itr; gsl_itr = gsl_itr->next) {
+        gsl_nxt = gsl_itr->next;
+
+        while (gsl_nxt) {
+
+            gsl_act = gsl_nxt;
+
+            gsl_nxt = gsl_nxt->next;
+
+            if (compare_imageitems (gsl_itr->data, gsl_act->data) == 0) {
+                gsl_iinfo = g_slist_remove_link (gsl_iinfo, gsl_act);
+                imageinfo_free (gsl_act->data);
+            }
+        }
+    }
+    return gsl_iinfo;
+}
+/*----------------------------------------------------------------------------*/
+/**
  * @brief  Get file info and put it in a ImageInfo object.
  */
 ImageInfo *
@@ -275,7 +302,7 @@ imageinfo_get_height (const ImageInfo *ii_info)
  * @brief  Get string with image dimensions (width x height)
  */
 const char *
-imageinfo_get_wxh (const ImageInfo *ii_info)
+imageinfo_get_wxh (ImageInfo *ii_info)
 {
 
     char s_tmp[40]; /* Temp string, I think it is long enough */
@@ -291,6 +318,7 @@ imageinfo_get_wxh (const ImageInfo *ii_info)
     strcpy (ii_info->s_width_height, s_tmp);
 
     return (const char*) ii_info->s_width_height;       
+    //return (const char*) s_tmp;       
 }
 /*----------------------------------------------------------------------------*/
 

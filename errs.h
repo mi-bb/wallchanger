@@ -29,6 +29,7 @@ enum {
     ERR_FILE,    /**< File error (cannot access / bad permissions */
     ERR_FILE_RW, /**< File read / write error */
     ERR_FILE_CR, /**< File can not be created */
+    ERR_FILE_EX, /**< File does not exist */
     ERR_ALLOC    /**< Alloc error */
 };
 

@@ -26,6 +26,7 @@
 
 #include <gtk/gtk.h>
 #include "iminfo.h"
+#include "miscfun.h"
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  TreeView Columns
@@ -65,12 +66,12 @@ ImageInfo * treemodel_get_data (GtkTreeModel *gtm_model, GtkTreeIter gti_iter);
  * @param[in]   s_file    File path to find
  * @return      none
  */
-void find_select_item (GtkWidget *gw_tview, const char *s_file);
+void treeview_find_select_item (GtkWidget *gw_tview, const char *s_file);
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Remove selected items from TreeView
  *
- * @param[out]  gw_tview  GtkTreeView from which data whould be removed
+ * @param[out]  gw_tview  GtkTreeView with items to remove
  * @return      none
  */
 void treeview_remove_selected (GtkWidget *gw_tview);
@@ -86,10 +87,18 @@ GSList *treeview_get_data (GtkWidget *gw_tview);
 /**
  * @brief  Sort data in TreeView.
  *
- * @param[in,out]  gw_tview  TreeView in which data should be sorted
+ * @param[in,out]  gw_tview  TreeView to process
  * @return         none
  */
 void treeview_sort_list (GtkWidget *gw_tview);
+/*----------------------------------------------------------------------------*/
+/**
+ * @brief  Remove duplicates from TreeView file list.
+ *
+ * @param[in,out]  gw_tview  TreeView to process
+ * @return         none
+ */
+void treeview_remove_duplicates (GtkWidget *gw_tview);
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Move up selected items in TreeView.

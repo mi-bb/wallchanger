@@ -60,6 +60,17 @@ int js_settings_write (WallSett *ws_sett, const char *s_fname);
 int js_settings_update_last_used (WallSett *ws_sett, const char *s_fname);
 /*----------------------------------------------------------------------------*/
 /**
+ * @brief  Update information about main window dimensions in config file.
+ *
+ * @param[in]  s_fname  Settings file name
+ * @param[in]  i_w      window width
+ * @param[in]  i_h      window height
+ * @return     Updating data status
+ */
+int js_settings_update_window_size (const char *s_fname, const int i_w,
+                                    const int i_h);
+/*----------------------------------------------------------------------------*/
+/**
  * @brief  Check if settings are different that saved ones.
  *
  * @param[in,out]  ws_sett    Program settings

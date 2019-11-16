@@ -19,9 +19,9 @@
  *
  * Wallpaper changing appliation.
  *
- * @date November 15, 2019
+ * @date November 16, 2019
  *
- * @version 1.2.1
+ * @version 1.2.2
  * 
  * @author Michał Bąbik <michalb1981@o2.pl>
  */
@@ -51,6 +51,10 @@ DialogData {
     GtkWidget  *gw_inter_combo; /**< Time interval combo box */
     WallSett   *ws_sett;        /**< Program settings */
 } DialogData;
+/*----------------------------------------------------------------------------*/
+static inline const char *get_win_title (void) {
+    return "Wall Changer v1.2.2";
+}
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Get list of GdkPixbuf format extensions.
@@ -106,7 +110,7 @@ check_files_for_pixbuf_append_to_flist (FList *fl_files,
         s_fn = flist_get_data (fl_files, i);
         s_ext = get_file_ext (s_fn);
         if (s_ext != NULL) {
-            if (flist_get_pos (&fl_exts, s_ext) > 0) {
+            if (flist_get_pos (&fl_exts, s_ext) >= 0) {
                 flist_insert_data (fl_files_new, s_fn);
             }
         }
@@ -169,9 +173,9 @@ make_prev_screen_pbuf (GdkRectangle *gr_rect)
     gr_rect->width = i_pr_scr_w;  /* Preview width (inside screen) */
     gr_rect->height = i_pr_scr_h; /* Preview height (inside screen) */
 
-    gp_scr_1 = get_image (20);  /* top screen image (152x7) */
-    gp_scr_2 = get_image (21);  /* middle screen image (152x1) */
-    gp_scr_3 = get_image (22);  /* bottom screen image (152x45) */
+    gp_scr_1 = get_image (W_IMG_SCREEN_1);  /* top screen image (152x7) */
+    gp_scr_2 = get_image (W_IMG_SCREEN_2);  /* middle screen image (152x1) */
+    gp_scr_3 = get_image (W_IMG_SCREEN_3);  /* bottom screen image (152x45) */
 
     /* Get dimensions of monitor part images */
     i_img_w = gdk_pixbuf_get_width (gp_scr_1);
@@ -291,7 +295,7 @@ make_image_preview (const char *s_fname)
                             gp_prev,
                             &gr_area);
         g_object_unref (gp_prev);
-    }   
+    }
     return gp_prev_screen;
 }
 /*----------------------------------------------------------------------------*/
@@ -540,6 +544,20 @@ event_sort_list_pressed (GtkWidget *widget,
 }
 /*----------------------------------------------------------------------------*/
 /**
+ * @brief  Remove duplicates button pressed.
+ *
+ * @param          widget    The object on which the signal is emitted
+ * @param[in,out]  gw_tview  TreeView to remove duplicates
+ * @return         none
+ */
+static void
+event_remove_duplicates_pressed (GtkWidget *widget,
+                                 GtkWidget *gw_tview)
+{
+    treeview_remove_duplicates (gw_tview);
+}
+/*----------------------------------------------------------------------------*/
+/**
  * @brief  Set wallpaper button pressed.
  *
  * @param          widget   The object on which the signal is emitted
@@ -640,6 +658,12 @@ event_on_delete (GtkWidget  *window,
     int        i_res     = 0;
     uint8_t    i_changed = 0;
 
+    int i_w = 0;
+    int i_h = 0;
+
+    gtk_window_get_size (GTK_WINDOW (window), &i_w, &i_h);
+    printf ("w:%d h:%d\n", i_w, i_h);
+
     gather_settings (dd_data);
 
     i_res = settings_check_changed (dd_data->ws_sett, &i_changed);
@@ -661,6 +685,13 @@ event_on_delete (GtkWidget  *window,
             settings_write (dd_data->ws_sett);
         } 
     }
+
+    /* If window dimensions changed */
+    if ((settings_get_window_width (dd_data->ws_sett) != i_w) ||
+        (settings_get_window_height (dd_data->ws_sett) != i_h)) {
+        printf ("dim changed\n");
+        settings_update_window_size (dd_data->ws_sett, i_w, i_h);
+    }
     return FALSE;
 }
 /*----------------------------------------------------------------------------*/
@@ -675,7 +706,7 @@ create_title_widget (GtkWidget **gw_title_widget)
 {
     const char *s_str    = "Wall Changer - Program settings";
     const char *s_format = "<span size=\"20000\" weight=\"bold\" \
-                            foreground=\"#0099e6\" style=\"italic\">\%s</span>";
+                            foreground=\"#0099e6\" style=\"italic\">%s</span>";
     char       *s_markup = NULL;
     GtkWidget  *gw_label = gtk_label_new (NULL);
 
@@ -699,22 +730,24 @@ create_title_widget (GtkWidget **gw_title_widget)
  * @return     Button
  */
 static GtkWidget *
-create_image_button (const char *s_label,
-                     const char *s_hint,
-                     const int   i_but)
+create_image_button (const char    *s_label,
+                     const char    *s_hint,
+                     const IconImg i_but)
 {
     GtkWidget *gw_btn;
     GtkWidget *gw_img;
-    GdkPixbuf *gd_pix;
+    GdkPixbuf *gd_pix = NULL;
 
     gw_btn = gtk_button_new ();
 
     if (strcmp (s_label, "") != 0)
         gtk_button_set_label (GTK_BUTTON (gw_btn), s_label);
+
     if (strcmp (s_hint, "") != 0)
         gtk_widget_set_tooltip_text (gw_btn, s_hint);
-    if (i_but > 0) {
-        gd_pix = get_image (i_but);
+
+    gd_pix = get_image (i_but);
+    if (gd_pix != NULL) {
         gw_img = gtk_image_new_from_pixbuf (gd_pix);
         gtk_button_set_image (GTK_BUTTON (gw_btn), gw_img);
         g_object_unref (gd_pix);
@@ -732,6 +765,7 @@ static void
 create_default_preview (GtkWidget **gw_img)
 {
     GdkPixbuf *gp_prev = make_image_preview (NULL);
+
     if (gp_prev != NULL) {
         *gw_img = gtk_image_new_from_pixbuf (gp_prev);
         g_object_unref (gp_prev);
@@ -754,7 +788,7 @@ create_buttons_widget (GtkWidget **gw_buttons_widget,
 
     *gw_buttons_widget = gtk_box_new (GTK_ORIENTATION_VERTICAL, 4);
 
-    gw_button = create_image_button ("", "Add images", 2);
+    gw_button = create_image_button ("", "Add images", W_ICON_ADD);
     gtk_box_pack_start (GTK_BOX (*gw_buttons_widget),
                         gw_button,
                         FALSE, FALSE, 4);
@@ -762,7 +796,8 @@ create_buttons_widget (GtkWidget **gw_buttons_widget,
                       "clicked",
                       G_CALLBACK (event_add_images_pressed),
                       dd_data);
-    gw_button = create_image_button ("", "Add images from folder", 3);
+    gw_button = create_image_button ("", "Add images from folder",
+                                     W_ICON_ADD_DIR);
     g_signal_connect (gw_button,
                       "clicked",
                       G_CALLBACK (event_add_images_folder_pressed),
@@ -770,7 +805,7 @@ create_buttons_widget (GtkWidget **gw_buttons_widget,
     gtk_box_pack_start (GTK_BOX (*gw_buttons_widget),
                         gw_button,
                         FALSE, FALSE, 4);
-    gw_button = create_image_button ("", "Remove images", 4);
+    gw_button = create_image_button ("", "Remove images", W_ICON_REMOVE);
     gtk_box_pack_start (GTK_BOX (*gw_buttons_widget),
                         gw_button,
                         FALSE, FALSE, 4);
@@ -778,7 +813,7 @@ create_buttons_widget (GtkWidget **gw_buttons_widget,
                       "clicked",
                       G_CALLBACK (event_remove_from_list_pressed),
                       dd_data->gw_view);
-    gw_button = create_image_button ("", "Move up", 5);
+    gw_button = create_image_button ("", "Move up", W_ICON_UP);
     gtk_box_pack_start (GTK_BOX (*gw_buttons_widget),
                         gw_button,
                         FALSE, FALSE, 4);
@@ -786,7 +821,7 @@ create_buttons_widget (GtkWidget **gw_buttons_widget,
                       "clicked",
                       G_CALLBACK (event_move_up_pressed),
                       dd_data->gw_view);
-    gw_button = create_image_button ("", "Move down", 6);
+    gw_button = create_image_button ("", "Move down", W_ICON_DOWN);
     gtk_box_pack_start (GTK_BOX (*gw_buttons_widget),
                         gw_button,
                         FALSE, FALSE, 4);
@@ -794,7 +829,7 @@ create_buttons_widget (GtkWidget **gw_buttons_widget,
                       "clicked",
                       G_CALLBACK (event_move_down_pressed),
                       dd_data->gw_view);
-    gw_button = create_image_button ("", "Sort images", 7);
+    gw_button = create_image_button ("", "Sort images", W_ICON_SORT);
     gtk_box_pack_start (GTK_BOX (*gw_buttons_widget),
                         gw_button,
                         FALSE, FALSE, 4);
@@ -802,7 +837,15 @@ create_buttons_widget (GtkWidget **gw_buttons_widget,
                       "clicked",
                       G_CALLBACK (event_sort_list_pressed),
                       dd_data->gw_view);
-    gw_button = create_image_button ("", "Set wallpaper", 8);
+    gw_button = create_image_button ("", "Remove duplicates", W_ICON_DUPL);
+    gtk_box_pack_start (GTK_BOX (*gw_buttons_widget),
+                        gw_button,
+                        FALSE, FALSE, 4);
+    g_signal_connect (gw_button,
+                      "clicked",
+                      G_CALLBACK (event_remove_duplicates_pressed),
+                      dd_data->gw_view);
+    gw_button = create_image_button ("", "Set wallpaper", W_ICON_SCREEN);
     gtk_box_pack_start (GTK_BOX (*gw_buttons_widget),
                         gw_button,
                         FALSE, FALSE, 4);
@@ -810,7 +853,7 @@ create_buttons_widget (GtkWidget **gw_buttons_widget,
                       "clicked",
                       G_CALLBACK (event_set_wallpaper_pressed),
                       dd_data);
-    gw_button = create_image_button ("", "Save settings", 9);
+    gw_button = create_image_button ("", "Save settings", W_ICON_FLOPPY);
     gtk_box_pack_start (GTK_BOX (*gw_buttons_widget),
                         gw_button,
                         FALSE, FALSE, 4);
@@ -818,7 +861,7 @@ create_buttons_widget (GtkWidget **gw_buttons_widget,
                       "clicked",
                       G_CALLBACK (event_save_settings_pressed),
                       dd_data);
-    gw_button = create_image_button ("", "Exit app", 1);
+    gw_button = create_image_button ("", "Exit app", W_ICON_EXIT);
     g_signal_connect_swapped (gw_button,
                               "clicked",
                               G_CALLBACK (gtk_window_close),
@@ -936,9 +979,9 @@ activate (GtkApplication *app,
     GtkWidget     *gw_box_list_btns;   /* Widget for list, buttons, preview */
     GtkWidget     *gw_settings_widget; /* Setings for wallpaper changing */
 
+    /* Create main window */
     gw_window = gtk_application_window_new (app);
-    gtk_window_set_title (GTK_WINDOW (gw_window), "Wall Changer v1.2.1");
-    gtk_window_set_default_size (GTK_WINDOW (gw_window), 1024, 768);
+    gtk_window_set_title (GTK_WINDOW (gw_window), get_win_title ());
     g_signal_connect (gw_window, "delete-event",
                   G_CALLBACK (event_on_delete), dd_data);
     dd_data->gw_window = GTK_WINDOW (gw_window);
@@ -1010,12 +1053,17 @@ activate (GtkApplication *app,
 
     load_settings (dd_data);
 
+    gtk_window_set_default_size (GTK_WINDOW (gw_window), 
+            settings_get_window_width (dd_data->ws_sett),
+            settings_get_window_height (dd_data->ws_sett));
+
     if (settings_get_last_used_fn (dd_data->ws_sett) != NULL) {
         preview_from_file (gw_img_prev,
                            settings_get_last_used_fn (dd_data->ws_sett));
+        treeview_find_select_item (gw_tview,
+                settings_get_last_used_fn (dd_data->ws_sett));
     }
 
-    find_select_item (gw_tview, settings_get_last_used_fn (dd_data->ws_sett));
 
     gtk_window_set_application (GTK_WINDOW (gw_window), GTK_APPLICATION (app));
     gtk_widget_show_all (gw_window);

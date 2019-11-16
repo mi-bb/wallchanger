@@ -63,10 +63,18 @@ void imageinfo_init (ImageInfo *ii_info);
 /**
  * @brief  Sort ImageInfo list.
  *
- * @param[in, out]  gsl_iinfo  Pointer to ImageInfo list to sort
- * @return          Sorted     ImageInfo list
+ * @param[in, out]  gsl_iinfo  Pointer to ImageInfo list
+ * @return          Sorted ImageInfo list
  */
 GSList * imageinfo_sort (GSList *gsl_iinfo);
+/*----------------------------------------------------------------------------*/
+/**
+ * @brief  Remove duplicates from ImageInfo list.
+ *
+ * @param[in, out]  gsl_iinfo  Pointer to ImageInfo list
+ * @return          Result ImageInfo list
+ */
+GSList * imageinfo_remove_duplicates (GSList *gsl_iinfo);
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Get file info and put it in a ImageInfo object.
@@ -192,7 +200,7 @@ int imageinfo_get_height (const ImageInfo *ii_info);
  * @param[out]  ii_info  ImageInfo object with data to get
  * @return      String with image dimensions
  */
-const char *imageinfo_get_wxh (const ImageInfo *ii_info);
+const char *imageinfo_get_wxh (ImageInfo *ii_info);
 /*----------------------------------------------------------------------------*/
 #endif
 

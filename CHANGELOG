@@ -13,6 +13,13 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+v1.2.2   2019-11-16  Michal Babik  <michalb1981@o2.pl>
+
+        * Added removing duplicates from list button
+        * Added saving width and height of configuration window
+        * Some code updates
+        * dlgs.c (message_dialog_error): Corrected string passing.
+
 v1.2.1   2019-11-14  Michal Babik  <michalb1981@o2.pl>
 
         * Added ComboBox with minutes and hours in wallpaper change

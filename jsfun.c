@@ -38,7 +38,7 @@ js_json_buff_to_settings (WallSett   *ws_sett,
     json_object *j_obj;       /* Json object of whole Json file */
     json_object *j_bgarray;   /* Json object for files array */
     json_object *j_val;       /* Json object for settings */
-    int          i_arlen = 0; /* Number of items in array */
+    size_t       i_arlen = 0; /* Number of items in array */
 
     if (s_buff == NULL)
         return 0;
@@ -52,12 +52,12 @@ js_json_buff_to_settings (WallSett   *ws_sett,
 
         i_arlen = json_object_array_length (j_bgarray);
 
-        for (int i = 0; i < i_arlen; ++i) {
-            json_object *j_val;
-            j_val = json_object_array_get_idx (j_bgarray, i);
-            if (j_val != NULL) {
+        for (size_t i = 0; i < i_arlen; ++i) {
+            json_object *j_val1;
+            j_val1 = json_object_array_get_idx (j_bgarray, i);
+            if (j_val1 != NULL) {
                 flist_insert_data (&ws_sett->fl_files,
-                                   json_object_get_string (j_val));
+                                   json_object_get_string (j_val1));
             }
         }
     }
@@ -92,6 +92,16 @@ js_json_buff_to_settings (WallSett   *ws_sett,
 
         settings_set_last_used_fn (ws_sett, json_object_get_string (j_val));
     }
+    if (json_object_object_get_ex (j_obj, "Window width", &j_val) &&
+        json_object_get_type(j_val) == json_type_int) {
+
+        settings_set_window_width (ws_sett, json_object_get_int (j_val));
+    }
+    if (json_object_object_get_ex (j_obj, "Window height", &j_val) &&
+        json_object_get_type(j_val) == json_type_int) {
+
+        settings_set_window_height (ws_sett, json_object_get_int (j_val));
+    }
     json_object_put (j_obj);
     return 0;
 }
@@ -123,35 +133,35 @@ js_settings_to_json_buff (WallSett  *ws_sett,
 
     json_object_object_add (j_obj, "Backgrounds", j_array);
 
-    json_object_object_add (j_obj,
-                            "Random wallpaper",
+    json_object_object_add (j_obj, "Random wallpaper",
                             json_object_new_int (settings_get_random (ws_sett)));
 
-    json_object_object_add (j_obj,
-                            "Set last used wallpaper",
+    json_object_object_add (j_obj, "Set last used wallpaper",
                             json_object_new_int (
                                 settings_get_last_used_setting (ws_sett)));
 
-    json_object_object_add (j_obj,
-                            "Last used wallpaper pos",
+    json_object_object_add (j_obj, "Last used wallpaper pos",
                             json_object_new_int(
                                 settings_get_last_used_pos (ws_sett)));
 
     if (settings_get_last_used_fn (ws_sett) != NULL) {
-        json_object_object_add (j_obj,
-                                "Last used wallpaper file",
+        json_object_object_add (j_obj, "Last used wallpaper file",
                                 json_object_new_string (
                                     settings_get_last_used_fn (ws_sett)));
     }
     if (ws_sett->s_bgcmd != NULL) {
-        json_object_object_add (j_obj,
-                                "Background set command",
+        json_object_object_add (j_obj, "Background set command",
                                 json_object_new_string (
                                     settings_get_command (ws_sett)));
     }
-    json_object_object_add(j_obj,
-                           "Wallpaper change interval",
-                           json_object_new_int (settings_get_interval (ws_sett)));
+    json_object_object_add (j_obj, "Wallpaper change interval",
+            json_object_new_int (settings_get_interval (ws_sett)));
+
+    json_object_object_add (j_obj, "Window width",
+            json_object_new_int (settings_get_window_width (ws_sett)));
+
+    json_object_object_add (j_obj, "Window height",
+            json_object_new_int (settings_get_window_height (ws_sett)));
 
     s_tmp = json_object_to_json_string (j_obj);
 
@@ -190,6 +200,42 @@ js_json_buffer_update_last_used (char       **s_buff,
                            json_object_new_string (s_lu));
     json_object_object_add(j_obj,"Last used wallpaper pos",
                            json_object_new_int(i_lu));
+
+    s_buff2 = json_object_to_json_string (j_obj);
+
+    if (strlen (s_buff2) != strlen (*s_buff)) {
+        create_resize ((void**) s_buff, strlen (s_buff2) + 1, sizeof (char));
+    }
+    strcpy (*s_buff, s_buff2);
+
+    json_object_put (j_obj);
+
+    return 0;
+}
+/*----------------------------------------------------------------------------*/
+/**
+ * @brief  Update information about main window dimensions in config file.
+ */
+static int
+js_json_buffer_update_window_size (char     **s_buff,
+                                   const int  i_w,
+                                   const int  i_h)
+{
+    json_object *j_obj;
+    const char  *s_buff2 = NULL; /* Temp buffer for json data */
+
+    if (*s_buff == NULL) {
+        j_obj = json_object_new_object();
+    }
+    else {
+        j_obj = json_tokener_parse (*s_buff);
+    }
+
+    json_object_object_add (j_obj, "Window width",
+            json_object_new_int (i_w));
+
+    json_object_object_add (j_obj, "Window height",
+            json_object_new_int (i_h));
 
     s_buff2 = json_object_to_json_string (j_obj);
 
@@ -245,7 +291,7 @@ js_settings_write (WallSett   *ws_sett,
         }
     }
 
-    /* Read config data to buffer and check its hash */
+    /* Read config data to buffer and calculate hash */
     i_res = read_file_data_hash (s_fname, &s_buff, &ws_sett->i_hash);
     if (i_res)
         return i_res;
@@ -277,7 +323,7 @@ js_settings_update_last_used (WallSett   *ws_sett,
     if (settings_get_last_used_fn (ws_sett) == NULL) 
         return ERR_OK;
 
-    /* Read config data to buffer and check its hash */
+    /* Read config data to buffer and calculate hash */
     i_res = read_file_data_hash (s_fname, &s_buff, &ws_sett->i_hash);
     if (i_res) {
         free (s_buff);
@@ -309,6 +355,40 @@ js_settings_update_last_used (WallSett   *ws_sett,
     return i_res;
 }
 /*----------------------------------------------------------------------------*/
+int
+js_settings_update_window_size (const char *s_fname,
+                                const int   i_w,
+                                const int   i_h)
+{
+    char *s_buff = NULL;   /* File data buffer */
+    int   i_res  = ERR_OK; /* Function result */
+
+    /* Read config data to buffer */
+    i_res = read_file_data (s_fname, &s_buff);
+    if (i_res) {
+        free (s_buff);
+        return i_res;
+    }
+
+    /* Update information about main window size in buffer */
+    i_res = js_json_buffer_update_window_size (&s_buff, i_w, i_h);
+    if (i_res) {
+        free (s_buff);
+        return i_res;
+    }
+
+    /* Save config file */
+    i_res = save_file_data (s_fname, s_buff);
+    if (i_res) {
+        free (s_buff);
+        return i_res;
+    }
+
+    free (s_buff);
+
+    return i_res;
+}
+/*----------------------------------------------------------------------------*/
 /**
  * @brief  Check if settings are different that saved ones.
  */
@@ -321,7 +401,7 @@ js_settings_check_changed (WallSett *ws_sett,
 
     *i_changed = 0;
 
-    /* Read config data to buffer and check its hash */
+    /* Read config data to buffer and calculate hash */
     i_res = read_file_data_hash (settings_get_cfg_fn (ws_sett),
                                  &s_buff, &ws_sett->i_hash);
     if (i_res) {

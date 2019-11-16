@@ -38,9 +38,9 @@ str_dup (const char *s_str)
     if (s_str == NULL)
         return NULL;
 
-    st_len = strlen (s_str) + 1;
+    st_len = strlen (s_str);
 
-    s_res = calloc (st_len, sizeof (char));
+    s_res = calloc (st_len+1, sizeof (char));
 
     if (s_res == NULL)
         return NULL;
@@ -219,7 +219,7 @@ flist_get_pos (FList *fl_list,
     if (fl_list->i_cnt == 0)
         return -1;
 
-    for (uint32_t i=0; i<fl_list->i_cnt; ++i) {
+    for (uint32_t i = 0; i < fl_list->i_cnt; ++i) {
         if (strcmp (s_fn, flist_get_data (fl_list, i)) == 0) {
             i_pos = i; 
             break;
@@ -237,6 +237,50 @@ flist_print_data (FList *fl_list)
     for (uint32_t i = 0; i < fl_list->i_cnt; ++i) {
         printf ("%s\n", fl_list->s_file[i]);
     }
+}
+/*----------------------------------------------------------------------------*/
+/**
+* @brief  Swap content from one list to another.
+*
+* @param[in,out] fl_list1  FList object
+* @param[in,out] fl_list2  FList object
+* @return        none
+*/
+static void
+flist_swap_lists (FList *fl_list1,
+                  FList *fl_list2)
+{
+    char   **s_tmp   = fl_list1->s_file;
+    uint32_t ui_tmp  = fl_list1->i_cnt;
+    fl_list1->s_file = fl_list2->s_file;
+    fl_list1->i_cnt  = fl_list2->i_cnt;
+    fl_list2->s_file = s_tmp;
+    fl_list2->i_cnt  = ui_tmp;
+}
+/*----------------------------------------------------------------------------*/
+/**
+* @brief  Remove duplicates from list.
+*/
+void
+flist_remove_duplicates (FList *fl_list)
+{
+    FList fl_filtered;  /* List without duplicates */
+
+    flist_init (&fl_filtered);
+
+    uint32_t ui_len = flist_get_len (fl_list);
+
+    for (uint32_t i = 0; i < ui_len; ++i) {
+        /* Get value from unfiltered list */
+        const char *s_val = flist_get_data (fl_list, i);
+        /* If it is not on filtered list add it there */
+        if (flist_get_pos (&fl_filtered, s_val) == -1) {
+            flist_insert_data (&fl_filtered, s_val);
+        }
+    }
+    /* Swap filtered and unfiltered and free the old one */
+    flist_swap_lists (fl_list, &fl_filtered);
+    flist_free (&fl_filtered);
 }
 /*----------------------------------------------------------------------------*/
 

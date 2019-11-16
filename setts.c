@@ -52,6 +52,18 @@ settings_update_last_used (WallSett *ws_sett)
 }
 /*----------------------------------------------------------------------------*/
 /**
+ * @brief  Update window size in program settings. 
+ */
+int
+settings_update_window_size (WallSett *ws_sett,
+                             const int i_w,
+                             const int i_h)
+{
+    return js_settings_update_window_size (settings_get_cfg_fn (ws_sett),
+                                           i_w, i_h);
+}
+/*----------------------------------------------------------------------------*/
+/**
  * @brief  Check if settings are different that saved ones.
  */
 int

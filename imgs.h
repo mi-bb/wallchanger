@@ -26,6 +26,22 @@
 #include <gdk-pixbuf/gdk-pixbuf.h>
 #include <stdint.h>
 /*----------------------------------------------------------------------------*/
-GdkPixbuf *get_image (const uint8_t i_img);
+typedef enum IconImg {
+    W_ICON_ADD,
+    W_ICON_ADD_DIR,
+    W_ICON_REMOVE,
+    W_ICON_SORT,
+    W_ICON_UP,
+    W_ICON_DOWN,
+    W_ICON_FLOPPY,
+    W_ICON_SCREEN,
+    W_ICON_DUPL,
+    W_ICON_EXIT,
+    W_IMG_SCREEN_1,
+    W_IMG_SCREEN_2,
+    W_IMG_SCREEN_3
+} IconImg;
+/*----------------------------------------------------------------------------*/
+GdkPixbuf *get_image (IconImg i_img);
 /*----------------------------------------------------------------------------*/
 #endif

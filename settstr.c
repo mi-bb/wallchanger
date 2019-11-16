@@ -25,58 +25,112 @@
 
 /*----------------------------------------------------------------------------*/
 /**
- * @brief  Get config file path
+ * @brief  Check permissions, existence of file or directory. 
  *
- * @return  Config full path
- */
-static char *
-get_config_path (void)
-{
-    char  *s_path = NULL;            /* Result full config file name */
-    char  *s_home = NULL;            /* Home path */
-    char  *s_sett = "wchanger.json"; /* Settings file name */
-    char  *s_cfg  = "/.config/";     /* Settings file path */
-    size_t i_len  = 0;               /* Config path length */
-
-    /* Getting user's HOME path */
-    if ((s_home = getenv ("HOME")) == NULL) {
-        s_home = getpwuid (getuid ())->pw_dir;
-    }
-
-    i_len = strlen (s_home) + strlen (s_cfg) + strlen (s_sett);
-
-    create_resize ((void**) &s_path, (i_len + 1), sizeof (char));
-
-    strcpy (s_path, s_home);
-    strcat (s_path, s_cfg);
-    strcat (s_path, s_sett);
-
-    return s_path;
-}
-/*----------------------------------------------------------------------------*/
-/**
- * @brief  Check if config file exists, have read/write permissions. 
- *
- * @param[in]  s_fname  Config file name
+ * @param[in]  s_name  Name of file / directory to check
  * @return     Checking status
  */
 static int
-check_config_file (const char *s_fname)
+check_permissions (const char *s_name,
+                   int         i_mode)
 {
-    /* check if file exists */
-    if (access (s_fname, F_OK) == 0) {
+    /* check if file/dir exists */
+    if (access (s_name, F_OK) == 0) {
         /* check permissions */
-        if (access (s_fname, W_OK | R_OK) != 0) {
-            fputs ("Bad config file permissions\n", stderr);
+        //if (access (s_dir, W_OK | R_OK | X_OK) != 0) {
+        if (access (s_name, i_mode) != 0) {
+            fputs ("Bad permissions\n", stderr);
             return ERR_FILE_RW;
         }
         else {
+            /* Permissions OK */
             return ERR_OK;
         }
     }
     else {
-        /* file does not exist, try to create it */
-        FILE *f_file = fopen(s_fname, "a+");
+        /* File/dir does not exist */
+        return ERR_FILE_EX;
+    }
+    return ERR_OK;
+}
+/*----------------------------------------------------------------------------*/
+/**
+ * @brief  Check file permissions (read write), existence. 
+ *
+ * @param[in]  s_file  File name to check
+ * @return     Checking status
+ */
+static int
+check_file_permissions (const char *s_file)
+{
+    return check_permissions (s_file, W_OK | R_OK);
+}
+/*----------------------------------------------------------------------------*/
+/**
+ * @brief  Check directory permissions (read, write, execute), existence. 
+ *
+ * @param[in]  s_dir  Directory name to check
+ * @return     Checking status
+ */
+static int
+check_dir_permissions (const char *s_dir)
+{
+    return check_permissions (s_dir, W_OK | R_OK | X_OK);
+}
+/*----------------------------------------------------------------------------*/
+/**
+ * @brief  Check directory permissions, existence and create if needed. 
+ *
+ * @param[in]  s_dir  Directory name to check / create
+ * @return     Checking / creating status
+ */
+static int
+check_dir_premissions_create (const char *s_dir)
+{
+    int i_res = ERR_OK;
+
+    i_res = check_dir_permissions (s_dir);
+
+    /* Everything OK */
+    if (i_res == ERR_OK) {
+        return i_res;
+    }
+    /* If directory does not exist */
+    else if (i_res == ERR_FILE_EX) {
+        /* try to create it */
+        int i_res2 = mkdir (s_dir, 0700);
+        if (i_res2 == 0) {
+            return ERR_OK;
+        }
+        else {
+            fputs ("Directory can not be created\n", stderr);
+            return ERR_FILE_CR;
+        }
+    }
+    return i_res;
+}
+/*----------------------------------------------------------------------------*/
+/**
+ * @brief  Check file permissions, existence and maybe create it. 
+ *
+ * @param[in]  s_file  Name of file to check / create
+ * @return     Checking / creating status
+ */
+int
+check_file_premissions_create (const char *s_file)
+{
+    int i_res = ERR_OK;
+
+    i_res = check_file_permissions (s_file);
+
+    /* Everything OK */
+    if (i_res == ERR_OK) {
+        return i_res;
+    }
+    /* If file does not exist */
+    else if (i_res == ERR_FILE_EX) {
+        /* try to create it */
+        FILE *f_file = fopen(s_file, "a+");
         if (f_file == NULL) {
             fputs ("File can not be created\n", stderr);
             return ERR_FILE_CR;
@@ -84,9 +138,71 @@ check_config_file (const char *s_fname)
         else {
             /* file created */
             fclose (f_file);
+            return ERR_OK;
         }
     }
-    return ERR_OK;
+    return i_res;
+}
+/*----------------------------------------------------------------------------*/
+/**
+ * @brief  Check if config file and path exists, check read/write permissions. 
+ *
+ * Checks config path and file existence, creates them if needed. Function
+ * returns checking/creating status and writes config file path to s_file if
+ * process completed succefully.
+ *
+ * @param[out]  s_file  Config file name
+ * @return      Checking / creating status
+ */
+/*----------------------------------------------------------------------------*/
+static int
+check_config_path_file (char **s_file)
+{
+    const char *s_sett = "wchanger.json"; /* Settings file name */
+    const char *s_cfg  = "/.config/";     /* Settings file path */
+    char       *s_path = NULL;            /* Result full config file name */
+    char       *s_home = NULL;            /* Home path */
+    size_t      i_len  = 0;               /* Config path length */
+    int         i_res  = 0;               /* Function result */
+
+    /* Getting user's HOME path */
+    if ((s_home = getenv ("HOME")) == NULL) {
+        s_home = getpwuid (getuid ())->pw_dir;
+    }
+
+    /* Total config file path and name length */
+    i_len = strlen (s_home) + strlen (s_cfg) + strlen (s_sett);
+
+    /* Create string for config file path and name */
+    create_resize ((void**) &s_path, (i_len + 1), sizeof (char));
+
+    /* Copy config file path */
+    strcpy (s_path, s_home);
+    strcat (s_path, s_cfg);
+
+    /* Check config path existence and permissions,
+     * create directory if needed */
+    i_res = check_dir_premissions_create (s_path);
+    if (i_res != ERR_OK) {
+        free (s_path);
+        return i_res;
+    }
+
+    /* Append file name to config path */
+    strcat (s_path, s_sett);
+
+    /* Check config file existence and permissions,
+     * create file if needed */
+    i_res = check_file_premissions_create (s_path);
+    if (i_res != ERR_OK) {
+        free (s_path);
+        return i_res;
+    }
+
+    /* Everything went ok I suppose, assign config file string pointer */
+    *s_file = s_path;
+
+    return i_res;
 }
 /*----------------------------------------------------------------------------*/
 /**
@@ -95,21 +211,24 @@ check_config_file (const char *s_fname)
 int
 settings_init (WallSett *ws_sett)
 {
-    int i_res             = 0;    /* Return result value */
-    ws_sett->i_chinterval = 30;   /* Wallpaper change interval */ 
-    ws_sett->i_random     = 0;    /* Random wallpaper change */
-    ws_sett->i_lastsett   = 0;    /* Last used wallpaper setting */
-    ws_sett->s_lastused   = NULL; /* Last used wallpaper file name */
-    ws_sett->i_lastused   = -1;   /* Index of last used wallpaper */
-    ws_sett->s_bgcmd      = NULL; /* Background set command */
-    ws_sett->i_hash       = 0;    /* Data hash variable */
+    int   i_res            = 0;    /* Return result value */
+    char *s_cfg_file       = NULL; /* Config file temp string pointer */
+    ws_sett->i_chinterval  = 30;   /* Wallpaper change interval */ 
+    ws_sett->i_random      = 0;    /* Random wallpaper change */
+    ws_sett->i_lastsett    = 0;    /* Last used wallpaper setting */
+    ws_sett->s_lastused    = NULL; /* Last used wallpaper file name */
+    ws_sett->i_lastused    = -1;   /* Index of last used wallpaper */
+    ws_sett->s_bgcmd       = NULL; /* Background set command */
+    ws_sett->i_hash        = 0;    /* Data hash variable */
+    ws_sett->ui_win_width  = 1024; /* Application window width */
+    ws_sett->ui_win_height = 768;  /* Application window height */
 
     flist_init (&ws_sett->fl_files);
     randomm_init (&ws_sett->rm_mem);
+    
+    i_res = check_config_path_file (&s_cfg_file);
 
-    ws_sett->s_cfgfile = get_config_path ();
-
-    i_res = check_config_file (ws_sett->s_cfgfile);
+    ws_sett->s_cfgfile = s_cfg_file;
 
     return i_res;
 }
@@ -143,7 +262,7 @@ settings_get_cfg_fn (WallSett *ws_sett)
  */
 void
 settings_set_last_used_pos (WallSett *ws_sett,
-                            uint32_t  ui_val)
+                            int32_t   ui_val)
 {
     ws_sett->i_lastused = ui_val;
 }
@@ -151,7 +270,7 @@ settings_set_last_used_pos (WallSett *ws_sett,
 /**
  * @brief  Get last used position value.
  */
-uint32_t
+int32_t
 settings_get_last_used_pos (WallSett *ws_sett)
 {
     return ws_sett->i_lastused;
@@ -279,6 +398,44 @@ const char *
 settings_get_command (WallSett *ws_sett)
 {
     return (const char*) ws_sett->s_bgcmd;
+}
+/*----------------------------------------------------------------------------*/
+/**
+ * @brief  Set application window width and height value.
+ */
+void
+settings_set_window_width (WallSett      *ws_sett,
+                           const uint16_t ui_width)
+{
+    ws_sett->ui_win_width  = ui_width;
+}
+/*----------------------------------------------------------------------------*/
+/**
+ * @brief  Get application window width and height value.
+ */
+int
+settings_get_window_width (WallSett *ws_sett)
+{
+    return ws_sett->ui_win_width;
+}
+/*----------------------------------------------------------------------------*/
+/**
+ * @brief  Set application window width and height value.
+ */
+void
+settings_set_window_height (WallSett     *ws_sett,
+                           const uint16_t ui_height)
+{
+    ws_sett->ui_win_height  = ui_height;
+}
+/*----------------------------------------------------------------------------*/
+/**
+ * @brief  Get application window width and height value.
+ */
+int
+settings_get_window_height (WallSett *ws_sett)
+{
+    return ws_sett->ui_win_height;
 }
 /*----------------------------------------------------------------------------*/
 
