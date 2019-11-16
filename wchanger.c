@@ -662,7 +662,6 @@ event_on_delete (GtkWidget  *window,
     int i_h = 0;
 
     gtk_window_get_size (GTK_WINDOW (window), &i_w, &i_h);
-    printf ("w:%d h:%d\n", i_w, i_h);
 
     gather_settings (dd_data);
 
@@ -689,7 +688,6 @@ event_on_delete (GtkWidget  *window,
     /* If window dimensions changed */
     if ((settings_get_window_width (dd_data->ws_sett) != i_w) ||
         (settings_get_window_height (dd_data->ws_sett) != i_h)) {
-        printf ("dim changed\n");
         settings_update_window_size (dd_data->ws_sett, i_w, i_h);
     }
     return FALSE;
