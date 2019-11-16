@@ -37,16 +37,22 @@ wallpaper_set_file (const char *s_cmd,
     char  *s_cmdn = NULL; /* Wallpaper set command */
     size_t i_siz  = 0;    /* Size of wallpeper set command */
 
+    /* Count length for background set command, background file name and & */
     i_siz = strlen (s_cmd) + strlen (s_wall) + 4;
+    /* Alloc string for command and file name and & */
     s_cmdn = calloc (i_siz, sizeof (char));
     if (s_cmdn == NULL) {
         fputs ("Alloc error\n", stderr);
         //return 1;
         exit (EXIT_FAILURE);
     }
+    /* Print command, file name and & to string */
     sprintf (s_cmdn, "%s %s &", s_cmd, s_wall);
+    /* Execute background set */
     system (s_cmdn);
+    /* Free alloced string */
     free (s_cmdn);
+
     return 0;
 }
 /*----------------------------------------------------------------------------*/
@@ -63,16 +69,21 @@ wallpaper_set_random (WallSett *ws_sett)
     uint32_t    i_pos = 0;    /* Random wallpaper position */
     uint32_t    i_cnt = 0;    /* Length of wallpaper list */
 
+    /* Get wallpaper list length */
     i_cnt = flist_get_len (&ws_sett->fl_files);
     if (i_cnt == 0)
         return 0;
 
+    /* Get random number */
     i_pos = randomm_get_number (&ws_sett->rm_mem);
+    /* Get the file name at the random position */
     s_fn = flist_get_data (&ws_sett->fl_files, i_pos);
 
     if (s_fn != NULL) {
+        /* Save wallpaper as last used in settings */
         settings_set_last_used_fn (ws_sett, s_fn);
 
+        /* Set wallpaper */
         wallpaper_set_file (settings_get_command (ws_sett),
                             settings_get_last_used_fn (ws_sett));
     }
@@ -101,8 +112,10 @@ wallpaper_set_next_in_list (WallSett *ws_sett)
         i_pos = 0;
         s_next = flist_get_data (&ws_sett->fl_files, i_pos);
 
+        /* Save wallpaper as last used in settings */
         settings_set_last_used_fn (ws_sett, s_next);
 
+        /* Set wallpaper */
         wallpaper_set_file (settings_get_command (ws_sett),
                             settings_get_last_used_fn (ws_sett));
         return 0;
@@ -112,14 +125,17 @@ wallpaper_set_next_in_list (WallSett *ws_sett)
     i_pos = flist_get_pos (&ws_sett->fl_files,
                            settings_get_last_used_fn (ws_sett)) + 1;
     if (i_pos >= 0) {
+        /* Get next wallpaper from list */
         s_next = flist_get_data (&ws_sett->fl_files, i_pos);
+        /* If last used wallpaper was the last one get first one */
         if (s_next == NULL) {
-            /* lst one, get first */
             s_next = flist_get_data (&ws_sett->fl_files, 0);
         }
         if (s_next != NULL) {
+            /* Save wallpaper as last used in settings */
             settings_set_last_used_fn (ws_sett, s_next);
 
+            /* Set wallpaper */
             wallpaper_set_file (settings_get_command (ws_sett),
                                 settings_get_last_used_fn (ws_sett));
         }
