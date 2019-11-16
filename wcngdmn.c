@@ -72,10 +72,8 @@ main (int    argc,
         exit (EXIT_FAILURE);
     }
 
-    for (int i = 0; i < 4; ++i) {
-    //while (1) {
-    //    sleep (60);
-        sleep (2);
+    while (1) {
+        sleep (60);
         ui_cnt++;
         if (ui_cnt >= ws_sett.i_chinterval) {
             if (wallpaper_change (&ws_sett) != ERR_OK) {
