@@ -201,7 +201,6 @@ const char *
 flist_get_data (FList          *fl_list,
                 const uint32_t  i_pos)
 {
-    /* Position to insert greater then number of items in list */
     if (i_pos >= fl_list->i_cnt)
         return NULL;
 
@@ -295,15 +294,17 @@ flist_swap_lists (FList *fl_list1,
 void
 flist_remove_duplicates (FList *fl_list)
 {
-    FList fl_filtered;  /* Temporary list without duplicates */
+    FList       fl_filtered;  /* Temporary list without duplicates */
+    const char *s_val = NULL; /* Name from list */
+    uint32_t    ui_len = 0;   /* List length */
 
     flist_init (&fl_filtered);
 
-    uint32_t ui_len = flist_get_len (fl_list);
+    ui_len = flist_get_len (fl_list);
 
     for (uint32_t i = 0; i < ui_len; ++i) {
         /* Get value from unfiltered list */
-        const char *s_val = flist_get_data (fl_list, i);
+        s_val = flist_get_data (fl_list, i);
 
         /* If it is not on filtered list add it there */
         if (flist_get_pos (&fl_filtered, s_val) == -1) {
