@@ -42,14 +42,6 @@
 uint64_t hash(const char *str);
 /*----------------------------------------------------------------------------*/
 /**
- * @brief  Get file extenstion.
- *
- * @param[in] s_fn String with file path
- * @return    String with file extension
- */
-char *get_file_ext (const char *s_fn);
-/*----------------------------------------------------------------------------*/
-/**
  * @brief  Create or resize dynamic array
  *
  * @param[out] v_ptr Pointer to data to create or resize

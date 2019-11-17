@@ -213,6 +213,7 @@ settings_init (WallSett *ws_sett)
 {
     int   i_res            = 0;    /* Return result value */
     char *s_cfg_file       = NULL; /* Config file temp string pointer */
+
     ws_sett->i_chinterval  = 30;   /* Wallpaper change interval */ 
     ws_sett->i_random      = 0;    /* Random wallpaper change */
     ws_sett->i_lastsett    = 0;    /* Last used wallpaper setting */

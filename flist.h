@@ -18,6 +18,8 @@
  * along with Wall Changer.  If not, see <https://www.gnu.org/licenses/>.
  *
  * @brief  File list FList structure and functions
+ *
+ * Simple structure and functions to manipulate list of files.
  * 
  * @author Michał Bąbik <michalb1981@o2.pl>
  */
@@ -143,6 +145,16 @@ void flist_print_data (FList *fl_list);
 * @return        none
 */
 void flist_remove_duplicates (FList *fl_list);
+/*----------------------------------------------------------------------------*/
+/**
+ * @brief  Remove from file list files that are not on provided extensions
+ *         list.
+ *
+ * @param[in,out]  fl_files  List with files to proccess
+ * @param[in]      fl_exts   List of extensions
+ * @return         none
+ */
+void flist_filter_by_extensions_list (FList *fl_files, FList *fl_exts);
 /*----------------------------------------------------------------------------*/
 #endif
 

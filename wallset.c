@@ -156,7 +156,6 @@ wallpaper_change (WallSett *ws_sett)
         wallpaper_set_next_in_list (ws_sett);
     }
     return settings_update_last_used (ws_sett);
-    //return 0;
 }
 /*----------------------------------------------------------------------------*/
 /**

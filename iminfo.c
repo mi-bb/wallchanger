@@ -304,7 +304,6 @@ imageinfo_get_height (const ImageInfo *ii_info)
 const char *
 imageinfo_get_wxh (ImageInfo *ii_info)
 {
-
     char s_tmp[40]; /* Temp string, I think it is long enough */
 
     memset (s_tmp, 0, sizeof(s_tmp));
@@ -318,7 +317,6 @@ imageinfo_get_wxh (ImageInfo *ii_info)
     strcpy (ii_info->s_width_height, s_tmp);
 
     return (const char*) ii_info->s_width_height;       
-    //return (const char*) s_tmp;       
 }
 /*----------------------------------------------------------------------------*/
 

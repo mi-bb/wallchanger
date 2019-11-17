@@ -65,7 +65,9 @@ liststore_add_item (GtkWidget       *gw_list,
 
     gls_store = GTK_LIST_STORE (gtk_tree_view_get_model (
                 GTK_TREE_VIEW (gw_list)));
+
     gtk_list_store_append (gls_store, &gti_iter);
+
     liststore_set_item (gls_store, &gti_iter, ii_info);
 }
 /*----------------------------------------------------------------------------*/
@@ -161,10 +163,13 @@ treeview_find_select_item (GtkWidget  *gw_tview,
     gtm_model = gtk_tree_view_get_model (GTK_TREE_VIEW (gw_tview));
 
     b_res = gtk_tree_model_get_iter_first (gtm_model, &gti_iter);
+
     while (b_res) {
         gtk_tree_model_get_value(gtm_model, &gti_iter,
                                  COL_FULL_FILE_NAME, &value);
+
         s_val = (const char*) g_value_get_string(&value);
+
         if (compare_strings (s_file, s_val) == 0) {
             gts_sele = gtk_tree_view_get_selection (GTK_TREE_VIEW (gw_tview));
             gtk_tree_selection_select_iter (gts_sele, &gti_iter);
@@ -216,6 +221,7 @@ treeview_get_data (GtkWidget *gw_tview)
     gtm_model = gtk_tree_view_get_model (GTK_TREE_VIEW (gw_tview));
 
     b_res = gtk_tree_model_get_iter_first (gtm_model, &gti_iter);
+
     while (b_res) {
         ImageInfo *ii_info = treemodel_get_data (gtm_model, gti_iter);
         gsl_iinfo = g_slist_append (gsl_iinfo, ii_info);
@@ -267,27 +273,26 @@ treeview_remove_duplicates (GtkWidget *gw_tview)
         gti_next = gti_iter;
         b_res2 = gtk_tree_model_iter_next (gtm_model, &gti_next);
 
+        gtk_tree_model_get_value(gtm_model, &gti_iter,
+                                 COL_FULL_FILE_NAME, &value);
+        s_val = (const char*) g_value_get_string(&value);
+
         while (b_res2) {
 
             gti_act = gti_next;
-        
             b_res2 = gtk_tree_model_iter_next (gtm_model, &gti_next);
-
-            gtk_tree_model_get_value(gtm_model, &gti_iter,
-                                     COL_FULL_FILE_NAME, &value);
-            s_val = (const char*) g_value_get_string(&value);
 
             gtk_tree_model_get_value(gtm_model, &gti_act,
                                      COL_FULL_FILE_NAME, &value2);
             s_val2 = (const char*) g_value_get_string(&value2);
 
             if (compare_strings (s_val, s_val2) == 0) {
-                
+
                 gtk_list_store_remove (GTK_LIST_STORE (gtm_model), &gti_act);
             }
-            g_value_unset(&value);
             g_value_unset(&value2);
         }
+        g_value_unset(&value);
         b_res = gtk_tree_model_iter_next (gtm_model, &gti_iter);
     }
 }

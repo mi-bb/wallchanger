@@ -13,7 +13,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 CC = gcc
-CFLAGS = -Wall -Os
+CFLAGS = -Os
 LIBS = -ljson-c
 PACKAGE = $(shell pkg-config --cflags --libs gtk+-3.0)
 LDLIBS = $(shell pkg-config --libs gtk+-3.0)

@@ -18,6 +18,12 @@
  * along with Wall Changer.  If not, see <https://www.gnu.org/licenses/>.
  *
  * @brief  Random without repeated values
+ *
+ * Structure and functions for a random number generator without repeating
+ * values in a serie of randoming.
+ * It gets random numbers until the range of numbers reached, resets memory
+ * and starts getting random values again.
+ * Maximum available range can be set with RMMAX, it will be RMMAX * 32.
  * 
  * @author Michał Bąbik <michalb1981@o2.pl>
  */
@@ -75,6 +81,14 @@ void randomm_reset_cnt (RandMem *rm_mem);
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Get random number
+ *
+ * Function gets random number using standard rand function, later checks if
+ * this number was already returned in this series of "randoms".
+ * If number was previously returned it runs random again untit it gets a fresh
+ * value.
+ * When count of returned random numbers reaches the range that was previously
+ * set it resets the memory of returned numbers, sets number counter to zero
+ * and starts getting random numbers from the beginning.
  *
  * @param[out] rm_mem  RandMem object
  * @return     Ranom number

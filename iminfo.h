@@ -18,6 +18,9 @@
  * along with Wall Changer.  If not, see <https://www.gnu.org/licenses/>.
  *
  * @brief  ImageInfo structure and functions
+ *
+ * ImageInfo structure and functions I made to work with images.
+ * It contains information about image file name, path, dimensions.
  * 
  * @author Michał Bąbik <michalb1981@o2.pl>
  */

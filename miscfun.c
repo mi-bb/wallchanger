@@ -40,24 +40,6 @@ hash(const char *str)
 }
 /*----------------------------------------------------------------------------*/
 /**
- * @brief  Get file extenstion.
- */
-char *
-get_file_ext (const char *s_fn)
-{
-    char *s_ext = NULL; /* Extension string */
-    char *s_p   = NULL; /* Pointer to first right . */
-
-    s_p = strrchr (s_fn, '.');
-    if (s_p != NULL) {
-        s_ext = s_p+1;
-        //s_p++;
-        //s_ext = str_dup (s_p);
-    }
-    return s_ext;
-}
-/*----------------------------------------------------------------------------*/
-/**
  * @brief  Create or resize dynamic array
  */
 int

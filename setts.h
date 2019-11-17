@@ -44,13 +44,21 @@ int settings_read (WallSett *ws_sett);
 int settings_write (WallSett *ws_sett);
 /*----------------------------------------------------------------------------*/
 /**
- * @brief  Update last used wallpaper position in program settings. 
+ * @brief  Update last used wallpaper position in config file. 
  *
  * @param[in,out]  ws_sett  Program settings
- * @return         Updating settings status
+ * @return         Updating data in settings file status
  */
 int settings_update_last_used (WallSett *ws_sett);
 /*----------------------------------------------------------------------------*/
+/**
+ * @brief  Update window size in config file. 
+ *
+ * @param[in,out]  ws_sett  Program settings
+ * @param[in]      i_w      Window width value
+ * @param[in]      i_h      Window height value
+ * @return         Updating data in settings file status
+ */
 int settings_update_window_size (WallSett *ws_sett,
                                  const int i_w, const int i_h);
 /*----------------------------------------------------------------------------*/

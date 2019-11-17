@@ -18,6 +18,8 @@
  * along with Wall Changer.  If not, see <https://www.gnu.org/licenses/>.
  *
  * @brief  Json functions
+ *
+ * Functions to get and store application settings in JSON database.
  * 
  * @author Michał Bąbik <michalb1981@o2.pl>
  */
@@ -51,7 +53,7 @@ int js_settings_read (WallSett *ws_sett, const char *s_fname);
 int js_settings_write (WallSett *ws_sett, const char *s_fname);
 /*----------------------------------------------------------------------------*/
 /**
- * @brief  Update last used wallpaper position in program settings. 
+ * @brief  Update last used wallpaper position in config file. 
  *
  * @param[in,out]  ws_sett  Program settings
  * @param[in]      s_fname  Settings file name
@@ -72,6 +74,9 @@ int js_settings_update_window_size (const char *s_fname, const int i_w,
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Check if settings are different that saved ones.
+ *
+ * Calculates hash of the settings file and current settings,
+ * checks if they differ.
  *
  * @param[in,out]  ws_sett    Program settings
  * @param[out]     i_changed  Setting changed value, 1 if changed, 0 if not

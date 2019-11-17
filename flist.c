@@ -51,6 +51,27 @@ str_dup (const char *s_str)
 }
 /*----------------------------------------------------------------------------*/
 /**
+ * @brief  Get file extenstion.
+ *
+ * @param[in] s_fn String with file path
+ * @return    String with file extension
+ */
+static char *
+get_file_ext (const char *s_fn)
+{
+    char *s_ext = NULL; /* Extension string */
+    char *s_p   = NULL; /* Pointer to first right . */
+
+    s_p = strrchr (s_fn, '.');
+    if (s_p != NULL) {
+        s_ext = s_p+1;
+        //s_p++;
+        //s_ext = str_dup (s_p);
+    }
+    return s_ext;
+}
+/*----------------------------------------------------------------------------*/
+/**
  * @brief  FList init
  */
 void
@@ -83,6 +104,7 @@ flist_reserve (FList       *fl_list,
         return ERR_OK; 
     }
 
+    /* Malloc if null, realloc if not null */
     if (fl_list->s_file == NULL) {
         fl_list->s_file = calloc (i_size, sizeof (char*));
     }
@@ -98,12 +120,16 @@ flist_reserve (FList       *fl_list,
             fl_list->s_file = s_tmp;
         }
     }
+
     if (i_size != 0 && fl_list->s_file == NULL) {
         fputs ("Alloc error\n", stderr);
         exit (EXIT_FAILURE);
         //return ERR_ALLOC;
     }
+
+    /* Update file list count */
     fl_list->i_cnt = i_size;
+
     return ERR_OK;
 }
 /*----------------------------------------------------------------------------*/
@@ -135,9 +161,11 @@ flist_insert_data (FList      *fl_list,
     if (s_fn == NULL)
         return ERR_OK;
 
+    /* Resize file list by one */
     if (flist_reserve (fl_list, fl_list->i_cnt+1))
         return ERR_ALLOC;
 
+    /* Set last item with s_fn copy */
     fl_list->s_file[fl_list->i_cnt-1] = str_dup (s_fn);
 
     return ERR_OK;
@@ -158,9 +186,11 @@ flist_set_data (FList          *fl_list,
     if (s_fn == NULL)
         return;
 
-    /* Realloc space and copy new string */
+    /* Realloc space */
     fl_list->s_file[i_pos] = realloc (fl_list->s_file[i_pos],
                                       (strlen (s_fn) + 1) * sizeof(char));
+
+    /* Set file name on i_pos position with s_fn */
     strcpy (fl_list->s_file[i_pos], s_fn);
 }
 /*----------------------------------------------------------------------------*/
@@ -175,6 +205,7 @@ flist_get_data (FList          *fl_list,
     if (i_pos >= fl_list->i_cnt)
         return NULL;
 
+    /* Return pointer to file name */
     return (const char *) fl_list->s_file[i_pos];
 }
 /*----------------------------------------------------------------------------*/
@@ -208,7 +239,7 @@ flist_get_len (FList *fl_list)
  * @brief  Get position of given name in FList
  */
 int32_t
-flist_get_pos (FList *fl_list,
+flist_get_pos (FList      *fl_list,
                const char *s_fn)
 {
     int32_t i_pos = -1; /* Item position to return */
@@ -264,7 +295,7 @@ flist_swap_lists (FList *fl_list1,
 void
 flist_remove_duplicates (FList *fl_list)
 {
-    FList fl_filtered;  /* List without duplicates */
+    FList fl_filtered;  /* Temporary list without duplicates */
 
     flist_init (&fl_filtered);
 
@@ -273,6 +304,7 @@ flist_remove_duplicates (FList *fl_list)
     for (uint32_t i = 0; i < ui_len; ++i) {
         /* Get value from unfiltered list */
         const char *s_val = flist_get_data (fl_list, i);
+
         /* If it is not on filtered list add it there */
         if (flist_get_pos (&fl_filtered, s_val) == -1) {
             flist_insert_data (&fl_filtered, s_val);
@@ -280,7 +312,49 @@ flist_remove_duplicates (FList *fl_list)
     }
     /* Swap filtered and unfiltered and free the old one */
     flist_swap_lists (fl_list, &fl_filtered);
+
+    /* Free the temporary list */
     flist_free (&fl_filtered);
+}
+/*----------------------------------------------------------------------------*/
+/**
+ * @brief  Remove from file list files that are not on provided extensions
+ *         list.
+ */
+void
+flist_filter_by_extensions_list (FList *fl_files,
+                                 FList *fl_exts)
+{
+    const char *s_fn   = NULL; /* File name */
+    char       *s_ext  = NULL; /* Pointer to ext in s_fn */
+    uint32_t    ui_cnt = 0;    /* Length of file list */
+    FList       fl_new;        /* Temporary filtered file list */
+
+    flist_init (&fl_new);
+
+    /* Get file list length */
+    ui_cnt = flist_get_len (fl_files);
+
+    /* Iterate over file list to filter */
+    for (uint32_t i = 0; i < ui_cnt; ++i) {
+        /* Get file name from list */
+        s_fn = flist_get_data (fl_files, i);
+
+        /* Get file extension */
+        s_ext = get_file_ext (s_fn);
+
+        if (s_ext != NULL) {
+            /* Check if file extension list add it to new list if it is */
+            if (flist_get_pos (fl_exts, s_ext) >= 0) {
+                flist_insert_data (&fl_new, s_fn);
+            }
+        }
+    }
+    /* Swap content of old file list and filetered one */
+    flist_swap_lists (fl_files, &fl_new);
+
+    /* Free the temporary list */
+    flist_free (&fl_new);
 }
 /*----------------------------------------------------------------------------*/
 

@@ -130,11 +130,13 @@ randomm_get_number (RandMem *rm_mem)
     if (rm_mem->ui_range == 0)
         return 0;
 
+    /* Get random number and check if it is in memory */
     do {
         ui_ret = rand () % rm_mem->ui_range;
     }
     while (randomm_check_number (rm_mem, ui_ret));
 
+    /* set number in memory */
     randomm_set_number (rm_mem, ui_ret);
 
     randomm_increment_cnt (rm_mem);

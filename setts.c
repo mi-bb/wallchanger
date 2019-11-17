@@ -42,7 +42,7 @@ settings_write (WallSett *ws_sett)
 }
 /*----------------------------------------------------------------------------*/
 /**
- * @brief  Update last used wallpaper position in program settings. 
+ * @brief  Update last used wallpaper position in config file. 
  */
 int
 settings_update_last_used (WallSett *ws_sett)
@@ -52,7 +52,7 @@ settings_update_last_used (WallSett *ws_sett)
 }
 /*----------------------------------------------------------------------------*/
 /**
- * @brief  Update window size in program settings. 
+ * @brief  Update window size in config file. 
  */
 int
 settings_update_window_size (WallSett *ws_sett,

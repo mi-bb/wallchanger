@@ -29,9 +29,9 @@
 char *
 add_images_folder_dialog (GtkWindow *gw_parent)
 {
-    GtkWidget  *gw_dialog;        /* Directory choose dialog */
-    char       *s_folder  = NULL; /* Result selected folder string */
-    int         res       = 0;    /* Dialog run response */
+    GtkWidget *gw_dialog;        /* Directory choose dialog */
+    char      *s_folder  = NULL; /* Result selected folder string */
+    int        res       = 0;    /* Dialog run response */
 
     gw_dialog = gtk_file_chooser_dialog_new ("Select Folder",
                                           gw_parent,
@@ -59,9 +59,9 @@ add_images_folder_dialog (GtkWindow *gw_parent)
 GSList *
 add_images_dialog (GtkWindow *gw_parent)
 {
-    GSList        *gsl_files = NULL; /* Result file list */
     GtkFileFilter *gff_filter;
     GtkWidget     *gw_dialog;
+    GSList        *gsl_files = NULL; /* Result file list */
     int            res       = 0;    /* Dialog run response */
 
     gw_dialog = gtk_file_chooser_dialog_new ("Select Files",

@@ -19,7 +19,7 @@
  *
  * Program to change wallpapers.
  *
- * @date November 16, 2019
+ * @date November 17, 2019
  *
  * @version 1.2.2
  * 
@@ -65,6 +65,7 @@ main (int    argc,
         exit (EXIT_FAILURE);
     }
 
+    /* Set the maximun random range to the length of the file list */
     randomm_set_range (&ws_sett.rm_mem, flist_get_len (&ws_sett.fl_files));
 
     if (wallpaper_startup_set (&ws_sett) != ERR_OK) {

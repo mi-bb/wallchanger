@@ -415,9 +415,8 @@ js_settings_check_changed (WallSett *ws_sett,
         return i_res;
     }
     /* Compare saved file buffer hash and new one,
-     * if they are different save settings */
+     * if they are different set i_changed to 1 */
     if (hash (s_buff) != ws_sett->i_hash) {
-        /* settings changed */
         *i_changed = 1;
     }
     free (s_buff);
