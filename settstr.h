@@ -25,10 +25,6 @@
 #define SETTSTR_H
 
 #include <stdint.h>
-#include <unistd.h>
-#include <sys/stat.h>
-#include <sys/types.h>
-#include <pwd.h>
 #include "flist.h"
 #include "randomm.h"
 #include "miscfun.h"
@@ -48,9 +44,6 @@ WallSett {
     uint32_t  i_chinterval;  /**< Background change interval */
     uint8_t   i_lastsett;    /**< Remember last used wallpeper */
     int32_t   i_lastused;    /**< Last used wallpaper index */
-    uint64_t  i_hash;        /**< Last data hash */
-    uint16_t  ui_win_width;  /**< Application window width */
-    uint16_t  ui_win_height; /**< Application window width */
 } WallSett;
 /*----------------------------------------------------------------------------*/
 /**
@@ -59,7 +52,7 @@ WallSett {
  * @param[in,out]  ws_sett  Program settings
  * @return         Setting status
  */
-int settings_init (WallSett *ws_sett);
+int wallset_init (WallSett *ws_sett);
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Free allocated memory.
@@ -67,7 +60,7 @@ int settings_init (WallSett *ws_sett);
  * @param[out]  ws_sett  Pointer to WallSett with all settings
  * @return      none
  */
-void settings_free (WallSett *ws_sett);
+void wallset_free (WallSett *ws_sett);
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Get config file name.
@@ -75,7 +68,7 @@ void settings_free (WallSett *ws_sett);
  * @param[in]  ws_sett  WallSett object
  * @return     Config file name
  */
-const char *settings_get_cfg_fn (WallSett *ws_sett);
+const char * wallset_get_cfg_fn (WallSett *ws_sett);
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Set last used wallpaper position on list.
@@ -84,7 +77,8 @@ const char *settings_get_cfg_fn (WallSett *ws_sett);
  * @param[in]   ui_val   Last used position value to set
  * @return      none
  */
-void settings_set_last_used_pos (WallSett *ws_sett, int32_t ui_val);
+void wallset_set_last_used_pos (WallSett *ws_sett,
+                                int32_t   ui_val);
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Get last used position value.
@@ -92,7 +86,7 @@ void settings_set_last_used_pos (WallSett *ws_sett, int32_t ui_val);
  * @param[in]  ws_sett  WallSett object
  * @return     Last used position value
  */
-int32_t settings_get_last_used_pos (WallSett *ws_sett);
+int32_t wallset_get_last_used_pos (WallSett *ws_sett);
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Set using last used wallpaper on start.
@@ -101,7 +95,8 @@ int32_t settings_get_last_used_pos (WallSett *ws_sett);
  * @param[in]   ui_val   Set last used wallpaper value
  * @return      none
  */
-void settings_set_last_used_setting (WallSett *ws_sett, uint8_t ui_val);
+void wallset_set_last_used_setting (WallSett *ws_sett,
+                                    uint8_t   ui_val);
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Get using last used wallpaper on start.
@@ -109,7 +104,7 @@ void settings_set_last_used_setting (WallSett *ws_sett, uint8_t ui_val);
  * @param[in]  ws_sett  WallSett object
  * @return     Last used setting
  */
-uint8_t settings_get_last_used_setting (WallSett *ws_sett);
+uint8_t wallset_get_last_used_setting (WallSett *ws_sett);
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Set random wallpaper select value.
@@ -118,7 +113,8 @@ uint8_t settings_get_last_used_setting (WallSett *ws_sett);
  * @param[in]   ui_val   Random wallpaper setting to set
  * @return      none
  */
-void settings_set_random (WallSett *ws_sett, uint8_t ui_val);
+void wallset_set_random (WallSett *ws_sett,
+                         uint8_t   ui_val);
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Get random wallpaper select value.
@@ -126,7 +122,7 @@ void settings_set_random (WallSett *ws_sett, uint8_t ui_val);
  * @param[in]  ws_sett  WallSett object
  * @return     Random wallpaper setting value
  */
-uint8_t settings_get_random (WallSett *ws_sett);
+uint8_t wallset_get_random (WallSett *ws_sett);
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Set wallpaper change interval value.
@@ -135,7 +131,8 @@ uint8_t settings_get_random (WallSett *ws_sett);
  * @param[in]   ui_val   Wallpaper change interval value to set
  * @return      none
  */
-void settings_set_interval (WallSett *ws_sett, uint32_t ui_val);
+void wallset_set_interval (WallSett *ws_sett,
+                           uint32_t  ui_val);
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Get wallpaper change interval value.
@@ -143,7 +140,7 @@ void settings_set_interval (WallSett *ws_sett, uint32_t ui_val);
  * @param[in]  ws_sett  WallSett object
  * @return     Wallpaper change interval value
  */
-uint32_t settings_get_interval (WallSett *ws_sett);
+uint32_t wallset_get_interval (WallSett *ws_sett);
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Change last used wallpaper file name in program settings. 
@@ -152,7 +149,8 @@ uint32_t settings_get_interval (WallSett *ws_sett);
  * @param[in]      s_fn     Wallpaper file path
  * @return         Wallpaper set status
  */
-int settings_set_last_used_fn (WallSett *ws_sett, const char *s_fn);
+int wallset_set_last_used_fn (WallSett   *ws_sett,
+                              const char *s_fn);
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Get last used wallpaper file name.
@@ -160,7 +158,7 @@ int settings_set_last_used_fn (WallSett *ws_sett, const char *s_fn);
  * @param[in]  ws_sett  WallSett object
  * @return     Last used wallpaper file name
  */
-const char *settings_get_last_used_fn (WallSett *ws_sett);
+const char * wallset_get_last_used_fn (WallSett *ws_sett);
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Sets command for setting wallpaper. 
@@ -169,7 +167,8 @@ const char *settings_get_last_used_fn (WallSett *ws_sett);
  * @param[in]   s_cmd    New set wallpaper command
  * @return      Change status
  */
-int settings_set_command (WallSett *ws_sett, const char *s_cmd);
+int wallset_set_command (WallSett   *ws_sett,
+                         const char *s_cmd);
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Get wallpaper set command.
@@ -177,43 +176,7 @@ int settings_set_command (WallSett *ws_sett, const char *s_cmd);
  * @param[in]  ws_sett  WallSett object
  * @return     Wallpaper set command
  */
-const char *settings_get_command (WallSett *ws_sett);
-/*----------------------------------------------------------------------------*/
-/**
- * @brief  Set application window width.
- *
- * @param[out]  ws_sett   WallSett object
- * @param[in]   ui_width  Window width value
- */
-void
-settings_set_window_width (WallSett *ws_sett, const uint16_t ui_width);
-/*----------------------------------------------------------------------------*/
-/**
- * @brief  Get application window width value.
- *
- * @param[in]  ws_sett   WallSett object
- * @return     Window width value
- */
-int
-settings_get_window_width (WallSett *ws_sett);
-/*----------------------------------------------------------------------------*/
-/**
- * @brief  Set application window width.
- *
- * @param[out]  ws_sett    WallSett object
- * @param[in]   ui_height  Window height value
- */
-void
-settings_set_window_height (WallSett *ws_sett, const uint16_t ui_height);
-/*----------------------------------------------------------------------------*/
-/**
- * @brief  Get application window height value.
- *
- * @param[in]  ws_sett   WallSett object
- * @return     Window height value
- */
-int
-settings_get_window_height (WallSett *ws_sett);
+const char * wallset_get_command (WallSett *ws_sett);
 /*----------------------------------------------------------------------------*/
 #endif
 

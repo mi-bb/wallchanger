@@ -13,12 +13,22 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+v1.3.0   2019-11-25  Michal Babik  <michalb1981@o2.pl>
+
+        * Changed setting manage method
+        * Some code updates
+
+v1.2.3   2019-11-19  Michal Babik  <michalb1981@o2.pl>
+
+        * wchanger.c (create_settings_widget): added hints to settings
+          widgets
+
 v1.2.2   2019-11-16  Michal Babik  <michalb1981@o2.pl>
 
         * Added removing duplicates from list button
         * Added saving width and height of configuration window
         * Some code updates
-        * dlgs.c (message_dialog_error): Corrected string passing.
+        * dlgs.c (message_dialog_error): Corrected string passing
 
 v1.2.1   2019-11-14  Michal Babik  <michalb1981@o2.pl>
 

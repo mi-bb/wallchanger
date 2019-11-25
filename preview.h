@@ -1,5 +1,5 @@
 /**
- * @file  dlgs.h
+ * @file  preview.h
  * @copyright Copyright (C) 2019 Michał Bąbik
  *
  * This file is part of Wall Changer.
@@ -17,40 +17,38 @@
  * You should have received a copy of the GNU General Public License
  * along with Wall Changer.  If not, see <https://www.gnu.org/licenses/>.
  *
- * @brief  Application dialogs
+ * @brief  Wallpaper preview
  * 
  * @author Michał Bąbik <michalb1981@o2.pl>
  */
-#ifndef DLGS_H
-#define DLGS_H
+#ifndef PREVIEW_H
+#define PREVIEW_H
+
+#include <gdk/gdk.h>
 #include <gtk/gtk.h>
-#include "flist.h"
+#include "imgs.h"
 /*----------------------------------------------------------------------------*/
 /**
- * @fn  char * add_images_folder_dialog (GtkWindow *gw_parent)
- * @brief     Select folder dialog.
- * @param[in] gw_parent  Dialog parent widget
- * @return    Foler path or NULL.
+ * @fn  void get_screen_size (int *i_scr_w,
+ *                            int *i_scr_h)
+ * @brief      Get screen size.
+ * @param[out] i_scr_w  Screen width
+ * @param[out] i_scr_h  Screen height
+ * @return     none
  *
- * @fn  GSList * add_images_dialog (GtkWindow *gw_parent)
- * @brief     Select images dialog.
- * @param[in] gw_parent  Dialog parent widget
- * @return    List with images.
- *
- * @fn  void message_dialog_error (GtkWindow  *gw_parent,
- *                                 const char *s_message)
- * @brief     Error message dialog.
- * @param[in] gw_parent  Dialog parent widget
- * @param[in] s_message  Message to show
- * @return    none
+ * @fn  void preview_from_file (GtkWidget  *gw_img_prev,
+ *                              const char *s_file)
+ * @brief      Make preview image widget of image (file path).
+ * @param[out] gw_img_prev  Preview image widget
+ * @param[in]  s_file       File to make preview image
+ * @return     none
  */
 /*----------------------------------------------------------------------------*/
-char   * add_images_folder_dialog (GtkWindow  *gw_parent);
+void get_screen_size   (int        *i_scr_w,
+                        int        *i_scr_h);
 /*----------------------------------------------------------------------------*/
-GSList * add_images_dialog        (GtkWindow  *gw_parent);
-/*----------------------------------------------------------------------------*/
-void     message_dialog_error     (GtkWindow  *gw_parent,
-                                   const char *s_message);
+void preview_from_file (GtkWidget  *gw_img_prev,
+                        const char *s_file);
 /*----------------------------------------------------------------------------*/
 #endif
 

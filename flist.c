@@ -29,6 +29,29 @@
  * @param[in]  s_str  String to duplicate
  * @return     Duplicated string or null pointer
  */
+static char * str_dup (const char *s_str);
+/*----------------------------------------------------------------------------*/
+/**
+ * @brief  Get file extenstion.
+ *
+ * @param[in] s_fn String with file path
+ * @return    String with file extension
+ */
+static char * get_file_ext (const char *s_fn);
+/*----------------------------------------------------------------------------*/
+/**
+* @brief  Swap content from one list to another.
+*
+* @param[in,out] fl_list1  FList object
+* @param[in,out] fl_list2  FList object
+* @return        none
+*/
+static void flist_swap_lists (FList *fl_list1,
+                              FList *fl_list2);
+/*----------------------------------------------------------------------------*/
+/**
+ * @brief  Duplicate string.
+ */
 static char *
 str_dup (const char *s_str)
 {
@@ -52,9 +75,6 @@ str_dup (const char *s_str)
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Get file extenstion.
- *
- * @param[in] s_fn String with file path
- * @return    String with file extension
  */
 static char *
 get_file_ext (const char *s_fn)
@@ -65,8 +85,8 @@ get_file_ext (const char *s_fn)
     s_p = strrchr (s_fn, '.');
     if (s_p != NULL) {
         s_ext = s_p+1;
-        //s_p++;
-        //s_ext = str_dup (s_p);
+        /* s_p++; */
+        /* s_ext = str_dup (s_p); */
     }
     return s_ext;
 }
@@ -88,7 +108,10 @@ int
 flist_reserve (FList       *fl_list,
                const size_t i_size)
 {
-    /* No need to resie */
+    char     **s_tmp = NULL;
+    uint32_t   i     = 0;
+
+    /* No need to resize */
     if (fl_list->i_cnt == i_size)
         return ERR_OK;
 
@@ -109,12 +132,12 @@ flist_reserve (FList       *fl_list,
         fl_list->s_file = calloc (i_size, sizeof (char*));
     }
     else {
-        char **s_tmp = realloc (fl_list->s_file, (i_size) * sizeof(char*));
+        s_tmp = realloc (fl_list->s_file, (i_size) * sizeof (char*));
         if (s_tmp == NULL) {
-            for (uint32_t i = 0; i < fl_list->i_cnt; ++i)
+            for (i = 0; i < fl_list->i_cnt; ++i)
                 free (fl_list->s_file[i]);
             free (fl_list->s_file);
-            //return ERR_ALLOC;
+            /*return ERR_ALLOC;*/
         }
         else {
             fl_list->s_file = s_tmp;
@@ -124,7 +147,7 @@ flist_reserve (FList       *fl_list,
     if (i_size != 0 && fl_list->s_file == NULL) {
         fputs ("Alloc error\n", stderr);
         exit (EXIT_FAILURE);
-        //return ERR_ALLOC;
+        /*return ERR_ALLOC;*/
     }
 
     /* Update file list count */
@@ -212,8 +235,8 @@ flist_get_data (FList          *fl_list,
  * @brief  Gat data from FList as a new string
  */
 char *
-flist_get_data2 (FList         *fl_list,
-                const uint32_t  i_pos)
+flist_get_data_new (FList         *fl_list,
+                    const uint32_t  i_pos)
 {
     char *s_res = NULL; /* Name string to return */
 
@@ -241,7 +264,8 @@ int32_t
 flist_get_pos (FList      *fl_list,
                const char *s_fn)
 {
-    int32_t i_pos = -1; /* Item position to return */
+    int32_t  i_pos = -1; /* Item position to return */
+    uint32_t i     =  0;
 
     if (s_fn == NULL)
         return -1;
@@ -249,7 +273,7 @@ flist_get_pos (FList      *fl_list,
     if (fl_list->i_cnt == 0)
         return -1;
 
-    for (uint32_t i = 0; i < fl_list->i_cnt; ++i) {
+    for (i = 0; i < fl_list->i_cnt; ++i) {
         if (strcmp (s_fn, flist_get_data (fl_list, i)) == 0) {
             i_pos = i; 
             break;
@@ -264,24 +288,23 @@ flist_get_pos (FList      *fl_list,
 void
 flist_print_data (FList *fl_list)
 {
-    for (uint32_t i = 0; i < fl_list->i_cnt; ++i) {
+    uint32_t i = 0;
+
+    for (i = 0; i < fl_list->i_cnt; ++i) {
         printf ("%s\n", fl_list->s_file[i]);
     }
 }
 /*----------------------------------------------------------------------------*/
 /**
 * @brief  Swap content from one list to another.
-*
-* @param[in,out] fl_list1  FList object
-* @param[in,out] fl_list2  FList object
-* @return        none
 */
 static void
 flist_swap_lists (FList *fl_list1,
                   FList *fl_list2)
 {
-    char   **s_tmp   = fl_list1->s_file;
-    uint32_t ui_tmp  = fl_list1->i_cnt;
+    char     **s_tmp   = fl_list1->s_file;
+    uint32_t   ui_tmp  = fl_list1->i_cnt;
+
     fl_list1->s_file = fl_list2->s_file;
     fl_list1->i_cnt  = fl_list2->i_cnt;
     fl_list2->s_file = s_tmp;
@@ -294,15 +317,16 @@ flist_swap_lists (FList *fl_list1,
 void
 flist_remove_duplicates (FList *fl_list)
 {
-    FList       fl_filtered;  /* Temporary list without duplicates */
-    const char *s_val = NULL; /* Name from list */
-    uint32_t    ui_len = 0;   /* List length */
+    FList       fl_filtered;   /* Temporary list without duplicates */
+    const char *s_val  = NULL; /* Name from list */
+    uint32_t    ui_len = 0;    /* List length */
+    uint32_t    i      = 0;
 
     flist_init (&fl_filtered);
 
     ui_len = flist_get_len (fl_list);
 
-    for (uint32_t i = 0; i < ui_len; ++i) {
+    for (i = 0; i < ui_len; ++i) {
         /* Get value from unfiltered list */
         s_val = flist_get_data (fl_list, i);
 
@@ -329,6 +353,7 @@ flist_filter_by_extensions_list (FList *fl_files,
     const char *s_fn   = NULL; /* File name */
     char       *s_ext  = NULL; /* Pointer to ext in s_fn */
     uint32_t    ui_cnt = 0;    /* Length of file list */
+    uint32_t    i      = 0;
     FList       fl_new;        /* Temporary filtered file list */
 
     flist_init (&fl_new);
@@ -337,7 +362,7 @@ flist_filter_by_extensions_list (FList *fl_files,
     ui_cnt = flist_get_len (fl_files);
 
     /* Iterate over file list to filter */
-    for (uint32_t i = 0; i < ui_cnt; ++i) {
+    for (i = 0; i < ui_cnt; ++i) {
         /* Get file name from list */
         s_fn = flist_get_data (fl_files, i);
 

@@ -33,56 +33,63 @@
 #include "settstr.h"
 #include "miscfun.h"
 #include "errs.h"
+#include "setting.h"
+#include "settlist.h"
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Get settings data from file.
  *
- * @param[out] ws_sett  Settings data to write to
- * @param[in]  s_fname  Name of file with settings
- * @return     Writting status
+ * @param[in]  s_fname  Config file name
+ * @param[out] i_err    Pointer to integer for error output
+ * @return     SettList list of settings
  */
-int js_settings_read (WallSett *ws_sett, const char *s_fname);
+/*----------------------------------------------------------------------------*/
+SettList * js_settings_read (const char *s_fname,
+                             int        *i_err);
 /*----------------------------------------------------------------------------*/
 /**
- * @brief  Saving program settings data in file. 
+ * @brief  Check if settings in SettList are an update to settings
+ *         stored in settings file.
  *
- * @param[in]  ws_sett   Program settings
- * @param[in]  s_fname  Settings file name
- * @return     Saving data status
+ * Function converts SettList list of settings to Json object, reads Json
+ * data from file s_fname, inserts the converted data to read Json data
+ * and finally checks if the changed Json data differs in content.
+ * If there is no difference s_out_buff is set to null pointer, if they are
+ * different, the new config Json raw data is written to s_out_buff.
+ * Function returns ERR_OK if there is no error or appropriate error code.
+ *
+ * @param[in]  st_list     List of settings
+ * @param[in]  s_fname     Config file name
+ * @param[out] s_out_buff  Buffer to write data
+ * @return     ERR_OK or error code
  */
-int js_settings_write (WallSett *ws_sett, const char *s_fname);
+int js_settings_check_for_update (SettList    *st_list,
+                                  const char  *s_fname,
+                                  char       **s_out_buff);
 /*----------------------------------------------------------------------------*/
 /**
- * @brief  Update last used wallpaper position in config file. 
+ * @brief  Update file with new data
  *
- * @param[in,out]  ws_sett  Program settings
- * @param[in]      s_fname  Settings file name
- * @return         Updating data status
+ * @param[in]  s_buff   String with data to save
+ * @param[in]  s_fname  File name to save data
+ * @return     Saving file status, ERR_OK or error code
  */
-int js_settings_update_last_used (WallSett *ws_sett, const char *s_fname);
+int js_settings_update_file (const char *s_buff,
+                             const char *s_fname);
 /*----------------------------------------------------------------------------*/
 /**
- * @brief  Update information about main window dimensions in config file.
+ * @brief  Check if settings are an update and update file with new data
+ *         if they are.
  *
- * @param[in]  s_fname  Settings file name
- * @param[in]  i_w      window width
- * @param[in]  i_h      window height
- * @return     Updating data status
+ * Function runs js_settings_check_for_update and js_settings_update_file
+ * if settings are an update.
+ *
+ * @param[in]  st_list  List of settings
+ * @param[in]  s_fname  File name to save data
+ * @return     Saving file status, ERR_OK or error code
  */
-int js_settings_update_window_size (const char *s_fname, const int i_w,
-                                    const int i_h);
-/*----------------------------------------------------------------------------*/
-/**
- * @brief  Check if settings are different that saved ones.
- *
- * Calculates hash of the settings file and current settings,
- * checks if they differ.
- *
- * @param[in,out]  ws_sett    Program settings
- * @param[out]     i_changed  Setting changed value, 1 if changed, 0 if not
- * @return         Checking settings status
- */
-int js_settings_check_changed (WallSett *ws_sett, uint8_t *i_changed);
+int js_settings_check_update_file (SettList   *st_list,
+                                   const char *s_fname);
 /*----------------------------------------------------------------------------*/
 #endif
 

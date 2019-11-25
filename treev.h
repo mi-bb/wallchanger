@@ -42,79 +42,79 @@ enum {
 };
 /*----------------------------------------------------------------------------*/
 /**
- * @brief  Insert multiple data items to GtkListStore.
+ * @fn  void liststore_add_items (GtkWidget *gw_list, GSList *gsl_iinfo1)
+ * @brief      Insert multiple data items to GtkListStore.
+ * @param[out] gw_list     GtkWidget with GtkListStore to insert items
+ * @param[in]  gsl_iinfo1  GSList list with data in ImageInfo format
+ * @return     none
  *
- * @param[out]  gw_list     GtkWidget with GtkListStore to insert items
- * @param[in]   gsl_iinfo1  GSList list with data in ImageInfo format
- * @return      none
+ * @fn  ImageInfo * treemodel_get_data (GtkTreeModel *gtm_model,
+ *                                      GtkTreeIter gti_iter)
+ * @brief     Get data from GtkTreeModel to ImageInfo object.
+ * @param[in] gtm_model  GtkTreeModel with data to get
+ * @param[in] gti_iter   GtkTreeIter with row adress
+ * @return    ImageInfo item with readed data
+ *
+ * @fn  GSList *treeview_get_data (GtkWidget *gw_tview)
+ * @brief     Get data out of TreeView.
+ * @param[in] gw_tview   TreeView from which data should be taken
+ * @return    List with  ImageInfo data of TreeView's TreeModel items
  */
-void liststore_add_items (GtkWidget *gw_list, GSList *gsl_iinfo1);
+/*----------------------------------------------------------------------------*/
+void        liststore_add_items (GtkWidget    *gw_list,
+                                 GSList       *gsl_iinfo1);
+/*----------------------------------------------------------------------------*/
+ImageInfo * treemodel_get_data  (GtkTreeModel *gtm_model,
+                                 GtkTreeIter   gti_iter);
+/*----------------------------------------------------------------------------*/
+GSList    * treeview_get_data   (GtkWidget    *gw_tview);
 /*----------------------------------------------------------------------------*/
 /**
- * @brief  Get data from GtkTreeModel to ImageInfo object.
+ * @fn  void treeview_sort_list (GtkWidget *gw_tview)
+ * @brief         Sort data in TreeView.
+ * @param[in,out] gw_tview  TreeView to process
+ * @return        none
  *
- * @param[in]  gtm_model GtkTreeModel with data to get
- * @param[in]  gti_iter  GtkTreeIter with row adress
- * @return     ImageInfo item with readed data
+ * @fn  void treeview_remove_duplicates (GtkWidget *gw_tview)
+ * @brief         Remove duplicates from TreeView file list.
+ * @param[in,out] gw_tview  TreeView to process
+ * @return        none
+ *
+ * @fn  void treeview_move_up (GtkWidget *gw_tview)
+ * @brief         Move up selected items in TreeView.
+ * @param[in,out] gw_tview  TreeView to move data up
+ * @return        none
+ *
+ * @fn  void treeview_move_down (GtkWidget *gw_tview)
+ * @brief         Move down selected items in TreeView.
+ * @param[in,out] gw_tview  TreeView to move data down
+ * @return        none
+ *
+ * @fn  void treeview_remove_selected (GtkWidget *gw_tview)
+ * @brief      Remove selected items from TreeView
+ * @param[out] gw_tview  GtkTreeView with items to remove
+ * @return     none
+ *
+ * @fn  void treeview_find_select_item (GtkWidget *gw_tview,
+ *                                      const char *s_file)
+ * @brief     Find file on list and select it
+ * @param[in] gw_tview  GtkTreeView on which data should be selected
+ * @param[in] s_file    File path to find
+ * @return    none
  */
-ImageInfo * treemodel_get_data (GtkTreeModel *gtm_model, GtkTreeIter gti_iter);
 /*----------------------------------------------------------------------------*/
-/**
- * @brief  Find file on list and select it
- *
- * @param[in]   gw_tview  GtkTreeView on which data should be selected
- * @param[in]   s_file    File path to find
- * @return      none
- */
-void treeview_find_select_item (GtkWidget *gw_tview, const char *s_file);
+void treeview_sort_list         (GtkWidget  *gw_tview);
 /*----------------------------------------------------------------------------*/
-/**
- * @brief  Remove selected items from TreeView
- *
- * @param[out]  gw_tview  GtkTreeView with items to remove
- * @return      none
- */
-void treeview_remove_selected (GtkWidget *gw_tview);
+void treeview_remove_duplicates (GtkWidget  *gw_tview);
 /*----------------------------------------------------------------------------*/
-/**
- * @brief  Get data out of TreeView.
- *
- * @param[in]  gw_tview   TreeView from which data should be taken
- * @return     List with ImageInfo data of TreeView's TreeModel items
- */
-GSList *treeview_get_data (GtkWidget *gw_tview);
+void treeview_move_up           (GtkWidget  *gw_tview);
 /*----------------------------------------------------------------------------*/
-/**
- * @brief  Sort data in TreeView.
- *
- * @param[in,out]  gw_tview  TreeView to process
- * @return         none
- */
-void treeview_sort_list (GtkWidget *gw_tview);
+void treeview_move_down         (GtkWidget  *gw_tview);
 /*----------------------------------------------------------------------------*/
-/**
- * @brief  Remove duplicates from TreeView file list.
- *
- * @param[in,out]  gw_tview  TreeView to process
- * @return         none
- */
-void treeview_remove_duplicates (GtkWidget *gw_tview);
+void treeview_remove_selected   (GtkWidget  *gw_tview);
 /*----------------------------------------------------------------------------*/
-/**
- * @brief  Move up selected items in TreeView.
- *
- * @param[in,out]  gw_tview  TreeView to move data up
- * @return         none
- */
-void treeview_move_up (GtkWidget *gw_tview);
-/*----------------------------------------------------------------------------*/
-/**
- * @brief  Move down selected items in TreeView.
- *
- * @param[in,out]  gw_tview  TreeView to move data down
- * @return         none
- */
-void treeview_move_down (GtkWidget *gw_tview);
+void treeview_find_select_item  (GtkWidget  *gw_tview,
+                                 const char *s_file);
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Create treeview for image list.

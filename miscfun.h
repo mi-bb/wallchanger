@@ -29,9 +29,14 @@
 #include <string.h>
 #include <stdint.h>
 #include <stdlib.h>
+#include <unistd.h>
+#include <sys/stat.h>
+#include <sys/types.h>
+#include <pwd.h>
 #include <errno.h>
 #include "errs.h"
 #include "flist.h"
+#define FN_LEN 1000
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Hash function.
@@ -39,7 +44,7 @@
  * @param[in]  str  String to count hash
  * @return     Hash value
  */
-uint64_t hash(const char *str);
+uint64_t hash (const char *str);
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Create or resize dynamic array
@@ -49,62 +54,55 @@ uint64_t hash(const char *str);
  * @param[in]  size  Size of each element
  * @return     Result of operation
  */
-int create_resize (void **v_ptr, const size_t num, const size_t size);
+int create_resize (void         **v_ptr,
+                   const size_t   num, 
+                   const size_t   size);
 /*----------------------------------------------------------------------------*/
 /**
- * @brief  Duplicate n bytes of string.
+ * @brief  Check if config file and path exists, check read/write permissions. 
  *
- * @param[in]  s_str   String to duplicate
- * @param[in]  st_len  Number of bytes to duplicate
- * @return     Duplicated string or null pointer
+ * Checks config path and file existence, creates them if needed. Function
+ * returns checking/creating status and writes config file path to s_file if
+ * process completed succefully.
+ *
+ * @param[out]  i_err  Error output
+ * @return      Config file path
  */
-char *str_ndup (const char *s_str, size_t st_len);
+/*----------------------------------------------------------------------------*/
+char * check_config_path_file (int *i_err);
 /*----------------------------------------------------------------------------*/
 /**
- * @brief  Duplicate string.
- *
- * @param[in]  s_str  String to duplicate
- * @return     Duplicated string or null pointer
- */
-char *str_dup (const char *s_str);
-/*----------------------------------------------------------------------------*/
-/**
- * @brief  Read some data from file.
- *
+ * @fn  int read_file_data (const char *s_fname, char **s_buff)
+ * @brief      Read some data from file.
  * @param[in]  s_fname File name
- * @param[out] s_buff  Pointer to destination buffer
+ * @param[out] s_buff  Pointer to buffer to write data
  * @return     Reading status
- */
-int read_file_data (const char *s_fname, char **s_buff);
-/*----------------------------------------------------------------------------*/
-/**
- * @brief  Read some data from file and count hash.
  *
+ * @fn  int read_file_data_hash (const char  *s_fname,
+ *                               char       **s_buff,
+ *                               uint64_t    *i_hash)
+ * @brief      Read some data from file and count hash.
  * @param[in]  s_fname File name
  * @param[out] s_buff  Pointer to destination buffer
  * @param[out] i_hash  Pointer to hash
  * @return     Reading status
- */
-int read_file_data_hash (const char *s_fname, char **s_buff,
-                         uint64_t *i_hash);
-/*----------------------------------------------------------------------------*/
-/**
- * @brief  Save a bunch of data to file.
  *
+ * @fn  int save_file_data (const char *s_fname, const char *s_buff)
+ * @brief      Save a bunch of data to file.
  * @param[in]  s_fname File name
  * @param[in]  s_buff  Buffer with data
  * @return     Writting status
  */
-int save_file_data (const char *s_fname, const char *s_buff);
 /*----------------------------------------------------------------------------*/
-/**
- * @brief  String compare function for getting string position function.
- *
- * @param[in]  a  String a 
- * @param[in]  b  String b
- * @return     Compare result
- */
-int compare_strings (const char *a, const char *b);
+int read_file_data      (const char   *s_fname,
+                         char        **s_buff);
+/*----------------------------------------------------------------------------*/
+int read_file_data_hash (const char   *s_fname,
+                         char        **s_buff,
+                         uint64_t     *i_hash);
+/*----------------------------------------------------------------------------*/
+int save_file_data      (const char   *s_fname,
+                         const char   *s_buff);
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Get directory content in FList 
@@ -114,7 +112,75 @@ int compare_strings (const char *a, const char *b);
  * @return      none
  */
 void get_directory_content_append_to_flist (const char *s_path1,
-                                            FList *fl_files);
+                                            FList      *fl_files);
+/*----------------------------------------------------------------------------*/
+/**
+ * @fn  int compare_strings (const char *a, const char *b)
+ * @brief     String compare function for getting string position function.
+ * @param[in] a  String a 
+ * @param[in] b  String b
+ * @return    Compare result
+ *
+ * @fn  char * string_name_with_number (const char   *s_name,
+ *                                      const size_t  i_no)
+ * @brief      Creates string with name made of s_name string and number
+ *             i_no at the end.
+ * @param[in]  s_name  Input string
+ * @param[out] i_no    Number to append
+ * @return     String with name and number to null if could not alloc memory
+ *
+ * @fn  char * string_replace_in (const char *src_dest,
+ *                                const char *s_fr, const char *s_to)
+ * @brief  Replace one string with another in a given src_dest string.
+ *
+ * Function searches in src_dest string for s_fr and replaces it with s_to
+ * string.
+ * Return value is the final result.
+ *
+ * @param[in] src_dest Pointer to source string to examine
+ * @param[in] s_fr     Pointer to string with "change from" text
+ * @param[in] s_to     Pointer to string with "change to" text
+ * @return    New string
+ *
+ * @fn  char *str_ndup (const char *s_str, size_t st_len)
+ * @brief     Duplicate n bytes of string.
+ * @param[in] s_str   String to duplicate
+ * @param[in] st_len  Number of bytes to duplicate
+ * @return    Duplicated string or null pointer
+ *
+ * @fn  char *str_dup (const char *s_str)
+ * @brief     Duplicate string.
+ * @param[in] s_str  String to duplicate
+ * @return    Duplicated string or null pointer
+ *
+ * @fn  char * set_up_wallpaper_command (const char *s_cmd,
+                                         const char *s_fname,
+                                         const char *s_sign)
+ * @brief     Make wallpapet set command.
+ * @param[in] s_cmd    Wallpaper set command 
+ * @param[in] s_fname  Wallpaper file name 
+ * @param[in] s_sign   String to swap with wallpapet name
+ * @return    String with command
+ */
+/*----------------------------------------------------------------------------*/
+int    compare_strings          (const char   *a,
+                                 const char   *b);
+/*----------------------------------------------------------------------------*/
+char * string_name_with_number  (const char   *s_name,
+                                 const size_t  i_no);
+/*----------------------------------------------------------------------------*/
+char * string_replace_in        (const char   *src_dest,
+                                 const char   *s_fr,
+                                 const char   *s_to);
+/*----------------------------------------------------------------------------*/
+char * str_ndup                 (const char   *s_str,
+                                 size_t        st_len);
+/*----------------------------------------------------------------------------*/
+char * str_dup                  (const char   *s_str);
+/*----------------------------------------------------------------------------*/
+char * set_up_wallpaper_command (const char *s_cmd,
+                                 const char *s_fname,
+                                 const char *s_sign);
 /*----------------------------------------------------------------------------*/
 #endif
 

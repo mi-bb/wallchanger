@@ -32,6 +32,33 @@
  */
 static uint8_t
 randomm_check_number (RandMem *rm_mem,
+                      uint32_t ui_no);
+/*----------------------------------------------------------------------------*/
+/**
+ * @brief  Store number in random numbers memory
+ *
+ * @param[out] rm_mem  RandMem object
+ * @param[in]  ui_no   Number to check
+ * @return     none
+ */
+static void
+randomm_set_number (RandMem *rm_mem,
+                    uint32_t ui_no);
+/*----------------------------------------------------------------------------*/
+/**
+ * @brief  Increment random number counts value
+ *
+ * @param[out] rm_mem  RandMem object
+ * @return     none
+ */
+static void
+randomm_increment_cnt (RandMem *rm_mem);
+/*----------------------------------------------------------------------------*/
+/**
+ * @brief  Check if number is in random numbers memory
+ */
+static uint8_t
+randomm_check_number (RandMem *rm_mem,
                       uint32_t ui_no)
 {
     uint8_t  ui_res = 0;          /* Result of number check */
@@ -48,10 +75,6 @@ randomm_check_number (RandMem *rm_mem,
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Store number in random numbers memory
- *
- * @param[out] rm_mem  RandMem object
- * @param[in]  ui_no   Number to check
- * @return     none
  */
 static void
 randomm_set_number (RandMem *rm_mem,
@@ -67,9 +90,6 @@ randomm_set_number (RandMem *rm_mem,
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Increment random number counts value
- *
- * @param[out] rm_mem  RandMem object
- * @return     none
  */
 static void
 randomm_increment_cnt (RandMem *rm_mem)
@@ -83,7 +103,9 @@ randomm_increment_cnt (RandMem *rm_mem)
 void
 randomm_clear (RandMem *rm_mem)
 {
-    for (int i = 0; i < RMMAX; ++i)
+    int i = 0;
+
+    for (i = 0; i < RMMAX; ++i)
         rm_mem->ui_rand[i] = 0;
     rm_mem->ui_cnt = 0;
 }

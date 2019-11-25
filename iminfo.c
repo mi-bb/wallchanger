@@ -24,17 +24,106 @@
 #include "iminfo.h"
 /*----------------------------------------------------------------------------*/
 /**
- * @brief  Function compares ImageInfo items by file name string.
- *
+ * @fn  static int compare_imageitems (const ImageInfo *ii_info1,
+ *                                     const ImageInfo *ii_info2)
+ * @brief     Function compares ImageInfo items by file name string.
  * @param[in] ii_info1 First ImageInfo item
  * @param[in] ii_info2 Second ImageInfo item
  * @return    1 if a>b, -1 if a<b, 0 if a=b
+ *
+ * @fn  static void imageinfo_init (ImageInfo *ii_info)
+ * @brief      Init ImageInfo data.
+ * @param[out] ii_info  Pointer to ImageInfo object
+ * @return     none
+ */
+static int  compare_imageitems (const ImageInfo *ii_info1,
+                                const ImageInfo *ii_info2);
+/*----------------------------------------------------------------------------*/
+static void imageinfo_init     (ImageInfo       *ii_info);
+/*----------------------------------------------------------------------------*/
+/**
+ * @brief  Function compares ImageInfo items by file name string.
  */
 static int
 compare_imageitems (const ImageInfo *ii_info1,
                     const ImageInfo *ii_info2)
 {
     return compare_strings (ii_info1->s_file_name, ii_info2->s_file_name);
+}
+/*----------------------------------------------------------------------------*/
+/**
+ * @brief  Init ImageInfo data.
+ */
+static void
+imageinfo_init (ImageInfo *ii_info)
+{
+    ii_info->s_full_path    = NULL;
+    ii_info->s_file_name    = NULL;
+    ii_info->s_file_path    = NULL;
+    ii_info->s_width_height = NULL;
+    ii_info->ui_height      = 0;
+    ii_info->ui_width       = 0;
+}
+/*----------------------------------------------------------------------------*/
+/**
+ * @brief  Create new empty ImageInfo object.
+ */
+ImageInfo *
+imageinfo_new (void)
+{
+    ImageInfo *ii_res;
+
+    ii_res = calloc (1, sizeof (ImageInfo));
+
+    if (ii_res == NULL)
+        return NULL;
+
+    imageinfo_init (ii_res);
+
+    return ii_res;
+}
+/*----------------------------------------------------------------------------*/
+/**
+ * @brief  Create new ImageInfo object with data gathered from file s_fname
+ */
+ImageInfo *
+imageinfo_new_from_file (const char *s_fname)
+{
+    ImageInfo *ii_info = NULL; /* Result ImageInfo */
+    char      *s_path  = NULL; /* String for file path */
+    char      *s_p     = NULL; /* Pointer to right position of / */
+    int        i_w     = 0;    /* Image width */
+    int        i_h     = 0;    /* Image height */
+    
+    if (s_fname == NULL)
+        return NULL;
+
+    ii_info = imageinfo_new ();
+
+    imageinfo_set_full_name (ii_info, s_fname);
+
+    s_p = strrchr (s_fname, '/');
+
+    if (s_p == NULL) {
+        imageinfo_set_file_name (ii_info, s_fname);
+        imageinfo_set_file_path (ii_info, "");
+    }
+    else {
+        s_p++;
+        imageinfo_set_file_name (ii_info, s_p);
+        s_path = str_ndup (s_fname, s_p - s_fname);
+        imageinfo_set_file_path (ii_info, s_path);
+        free (s_path);
+    }
+
+    gdk_pixbuf_get_file_info (s_fname,
+                              &i_w,
+                              &i_h);
+
+    imageinfo_set_width (ii_info, i_w);
+    imageinfo_set_height (ii_info, i_h);
+
+    return ii_info;
 }
 /*----------------------------------------------------------------------------*/
 /**
@@ -48,20 +137,6 @@ imageinfo_free (ImageInfo *ii_info)
     g_free (ii_info->s_file_path);
     g_free (ii_info->s_width_height);
     g_free (ii_info);
-}
-/*----------------------------------------------------------------------------*/
-/**
- * @brief  Init ImageInfo data.
- */
-void
-imageinfo_init (ImageInfo *ii_info)
-{
-    ii_info->s_full_path    = NULL;
-    ii_info->s_file_name    = NULL;
-    ii_info->s_file_path    = NULL;
-    ii_info->s_width_height = NULL;
-    ii_info->ui_height      = 0;
-    ii_info->ui_width       = 0;
 }
 /*----------------------------------------------------------------------------*/
 /**
@@ -100,62 +175,19 @@ GSList * imageinfo_remove_duplicates (GSList *gsl_iinfo)
 }
 /*----------------------------------------------------------------------------*/
 /**
- * @brief  Get file info and put it in a ImageInfo object.
- */
-ImageInfo *
-imageinfo_get_info (const char *s_file_name)
-{
-    ImageInfo *ii_info = NULL; /* Result ImageInfo */
-    char      *s_p     = NULL; /* Pointer to right position of / */
-    int        i_w     = 0;    /* Image width */
-    int        i_h     = 0;    /* Image height */
-    
-    if (s_file_name == NULL)
-        return NULL;
-
-    create_resize ((void**) &ii_info, 1, sizeof (ImageInfo));
-
-    imageinfo_init (ii_info);
-
-    imageinfo_set_full_name (ii_info, s_file_name);
-
-    s_p = strrchr (s_file_name, '/');
-
-    if (s_p == NULL) {
-        imageinfo_set_file_name (ii_info, s_file_name);
-        imageinfo_set_file_path (ii_info, "");
-    }
-    else {
-        s_p++;
-        imageinfo_set_file_name (ii_info, s_p);
-        char *s_path = str_ndup (s_file_name, s_p - s_file_name);
-        imageinfo_set_file_path (ii_info, s_path);
-        free (s_path);
-    }
-
-    gdk_pixbuf_get_file_info (s_file_name,
-                              &i_w,
-                              &i_h);
-
-    imageinfo_set_width (ii_info, i_w);
-    imageinfo_set_height (ii_info, i_h);
-
-    return ii_info;
-}
-/*----------------------------------------------------------------------------*/
-/**
  * @brief  Get image info of files in list and store it in ImageInfo list.
  */
 GSList *
 file_paths_to_imageinfo (GSList *gsl_files1)
 {
-    GSList *gsl_iinfo = NULL; /* Result ImageInfo list */
-    GSList *gsl_files = NULL; /* Pointer to file list */
+    GSList    *gsl_iinfo = NULL; /* Result ImageInfo list */
+    GSList    *gsl_files = NULL; /* Pointer to file list */
+    ImageInfo *ii_info;
 
     gsl_files = gsl_files1;
 
     while (gsl_files != NULL) {
-        ImageInfo *ii_info = imageinfo_get_info ((char *) gsl_files->data);
+        ii_info = imageinfo_new_from_file ((char *) gsl_files->data);
         if (imageinfo_get_height (ii_info) > 0)
             gsl_iinfo = g_slist_append (gsl_iinfo, ii_info);
         gsl_files = gsl_files->next;
@@ -169,15 +201,17 @@ file_paths_to_imageinfo (GSList *gsl_files1)
 GSList *
 flist_to_imageinfo (FList *fl_files)
 {
+    ImageInfo  *ii_info;
     GSList     *gsl_iinfo = NULL; /* Result ImageInfo list */
     const char *s_fn      = NULL; /* File name string */
     uint32_t    ui_cnt    = 0;    /* Number of items in file list */
+    uint32_t    i         = 0;
 
     ui_cnt = flist_get_len (fl_files);
 
-    for (uint32_t i = 0; i < ui_cnt; ++i) {
+    for (i = 0; i < ui_cnt; ++i) {
         s_fn = flist_get_data (fl_files, i);
-        ImageInfo *ii_info = imageinfo_get_info (s_fn);
+        ii_info = imageinfo_new_from_file (s_fn);
         if (imageinfo_get_height (ii_info) > 0)
             gsl_iinfo = g_slist_append (gsl_iinfo, ii_info);
     }
@@ -191,12 +225,13 @@ int
 imageinfo_append_to_flist (GSList *gsl_iinfo1,
                            FList  *fl_files)
 {
-    GSList *gsl_iinfo = NULL; /* Pointer to ImageInfo list */
+    GSList    *gsl_iinfo = NULL; /* Pointer to ImageInfo list */
+    ImageInfo *ii_info;
 
     gsl_iinfo = gsl_iinfo1;
 
     while (gsl_iinfo != NULL) {
-        ImageInfo *ii_info = gsl_iinfo->data;
+        ii_info = gsl_iinfo->data;
         flist_insert_data (fl_files, imageinfo_get_full_name (ii_info));
         gsl_iinfo = gsl_iinfo->next;
     }

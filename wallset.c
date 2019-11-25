@@ -24,33 +24,44 @@
 #include "wallset.h"
 /*----------------------------------------------------------------------------*/
 /**
- * @brief  Set particular file as a wallpaper. 
+ * @fn  static int wallpaper_set_file (const char *s_cmd,
+ *                                     const char *s_wall)
+ * @brief         Set particular file as a wallpaper. 
+ * @param[in]     s_cmd   Wallpaper set command
+ * @param[in]     s_wall  Wallpaper file
+ * @return        Wallpaper set status
  *
- * @param[in]  s_cmd   Wallpaper set command
- * @param[in]  s_wall  Wallpaper file
- * @return     Wallpaper set status
+ * @fn  static int wallpaper_set_random (WallSett *ws_sett)
+ * @brief         Set random image from list as a wallpaper.
+ * @param[in,out] ws_sett  Program settings
+ * @return        Wallpaper set status
+ *
+ * @fn  static int wallpaper_set_next_in_list (WallSett *ws_sett)
+ * @brief         Set next wallpaper from list.
+ * @param[in,out] ws_sett  Program settings
+ * @return        Wallpaper change status
+ */
+/*----------------------------------------------------------------------------*/
+static int wallpaper_set_file         (const char *s_cmd,
+                                       const char *s_wall);
+/*----------------------------------------------------------------------------*/
+static int wallpaper_set_random       (WallSett   *ws_sett);
+/*----------------------------------------------------------------------------*/
+static int wallpaper_set_next_in_list (WallSett   *ws_sett);
+/*----------------------------------------------------------------------------*/
+/**
+ * @brief  Set particular file as a wallpaper. 
  */
 static int
 wallpaper_set_file (const char *s_cmd,
                     const char *s_wall)
 {
-    char  *s_cmdn = NULL; /* Wallpaper set command */
-    size_t i_siz  = 0;    /* Size of wallpeper set command */
+    char *s_cmdn = NULL; /* Wallpaper set command */
 
-    /* Count length for background set command, background file name and & */
-    i_siz = strlen (s_cmd) + strlen (s_wall) + 4;
-    /* Alloc string for command and file name and & */
-    s_cmdn = calloc (i_siz, sizeof (char));
-    if (s_cmdn == NULL) {
-        fputs ("Alloc error\n", stderr);
-        //return 1;
-        exit (EXIT_FAILURE);
-    }
-    /* Print command, file name and & to string */
-    sprintf (s_cmdn, "%s %s &", s_cmd, s_wall);
-    /* Execute background set */
+    s_cmdn = set_up_wallpaper_command (s_cmd, s_wall, "[F]");
+
     system (s_cmdn);
-    /* Free alloced string */
+
     free (s_cmdn);
 
     return 0;
@@ -58,9 +69,6 @@ wallpaper_set_file (const char *s_cmd,
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Set random image from list as a wallpaper.
- *
- * @param[in,out]  ws_sett  Program settings
- * @return         Wallpaper set status
  */
 static int
 wallpaper_set_random (WallSett *ws_sett)
@@ -81,20 +89,17 @@ wallpaper_set_random (WallSett *ws_sett)
 
     if (s_fn != NULL) {
         /* Save wallpaper as last used in settings */
-        settings_set_last_used_fn (ws_sett, s_fn);
+        wallset_set_last_used_fn (ws_sett, s_fn);
 
         /* Set wallpaper */
-        wallpaper_set_file (settings_get_command (ws_sett),
-                            settings_get_last_used_fn (ws_sett));
+        wallpaper_set_file (wallset_get_command (ws_sett),
+                            wallset_get_last_used_fn (ws_sett));
     }
     return 0;
 }
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Set next wallpaper from list.
- *
- * @param[in,out]  ws_sett  Program settings
- * @return         Wallpaper change status
  */
 static int
 wallpaper_set_next_in_list (WallSett *ws_sett)
@@ -108,22 +113,22 @@ wallpaper_set_next_in_list (WallSett *ws_sett)
     }
     
     /* If last used wallpaper is null get first one on list */
-    if (settings_get_last_used_fn (ws_sett) == NULL) {
+    if (wallset_get_last_used_fn (ws_sett) == NULL) {
         i_pos = 0;
         s_next = flist_get_data (&ws_sett->fl_files, i_pos);
 
         /* Save wallpaper as last used in settings */
-        settings_set_last_used_fn (ws_sett, s_next);
+        wallset_set_last_used_fn (ws_sett, s_next);
 
         /* Set wallpaper */
-        wallpaper_set_file (settings_get_command (ws_sett),
-                            settings_get_last_used_fn (ws_sett));
+        wallpaper_set_file (wallset_get_command (ws_sett),
+                            wallset_get_last_used_fn (ws_sett));
         return 0;
     }
     /* Get from the file list position of the last used wallpaper
      * and increment it */
     i_pos = flist_get_pos (&ws_sett->fl_files,
-                           settings_get_last_used_fn (ws_sett)) + 1;
+                           wallset_get_last_used_fn (ws_sett)) + 1;
     if (i_pos >= 0) {
         /* Get next wallpaper from list */
         s_next = flist_get_data (&ws_sett->fl_files, i_pos);
@@ -131,13 +136,13 @@ wallpaper_set_next_in_list (WallSett *ws_sett)
         if (s_next == NULL) {
             s_next = flist_get_data (&ws_sett->fl_files, 0);
         }
-        if (s_next != NULL) {
+        else  {
             /* Save wallpaper as last used in settings */
-            settings_set_last_used_fn (ws_sett, s_next);
+            wallset_set_last_used_fn (ws_sett, s_next);
 
             /* Set wallpaper */
-            wallpaper_set_file (settings_get_command (ws_sett),
-                                settings_get_last_used_fn (ws_sett));
+            wallpaper_set_file (wallset_get_command (ws_sett),
+                                wallset_get_last_used_fn (ws_sett));
         }
     }
     return 0;
@@ -149,13 +154,14 @@ wallpaper_set_next_in_list (WallSett *ws_sett)
 int
 wallpaper_change (WallSett *ws_sett)
 {
-    if (settings_get_random (ws_sett)) {
+    if (wallset_get_random (ws_sett)) {
         wallpaper_set_random (ws_sett);
     }
     else {
         wallpaper_set_next_in_list (ws_sett);
     }
-    return settings_update_last_used (ws_sett);
+    return settings_update_last_used (ws_sett->s_lastused,
+                                      ws_sett->s_cfgfile);
 }
 /*----------------------------------------------------------------------------*/
 /**
@@ -166,9 +172,9 @@ wallpaper_startup_set (WallSett *ws_sett)
 {
     int i_res = 0; /* Function result */
 
-    if (settings_get_last_used_setting (ws_sett)) {
-        wallpaper_set_file (settings_get_command (ws_sett),
-                            settings_get_last_used_fn (ws_sett));
+    if (wallset_get_last_used_setting (ws_sett)) {
+        wallpaper_set_file (wallset_get_command (ws_sett),
+                            wallset_get_last_used_fn (ws_sett));
     }
     else {
         i_res = wallpaper_change (ws_sett);
@@ -180,20 +186,17 @@ wallpaper_startup_set (WallSett *ws_sett)
  * @brief  Setting wallpaper out of settings dialog.
  */
 int
-wallpaper_dialog_set (WallSett   *ws_sett,
-                      const char *s_file)
+wallpaper_dialog_set (const char *s_cmd,
+                      const char *s_file,
+                      const char *s_cfg_file)
 {
     int i_res = 0;
-    
-    i_res = wallpaper_set_file (settings_get_command (ws_sett), s_file);
+
+    i_res = wallpaper_set_file (s_cmd, s_file);
     if (i_res)
         return i_res;
 
-    i_res = settings_set_last_used_fn (ws_sett, s_file);
-    if (i_res)
-        return i_res;
-
-    i_res = settings_update_last_used (ws_sett);
+    i_res = settings_update_last_used (s_file, s_cfg_file);
 
     return i_res;
 }

@@ -56,7 +56,8 @@ void flist_init (FList *fl_list);
  * @param[in]  i_size   Size to reserve
  * @return     Reserve result 0 if OK, 1 if error occurred
  */
-int flist_reserve (FList *fl_list, const size_t i_size);
+int flist_reserve (FList        *fl_list,
+                   const size_t  i_size);
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Clear items in FList object
@@ -75,42 +76,53 @@ void flist_clear (FList *fl_list);
 void flist_free (FList *fl_list);
 /*----------------------------------------------------------------------------*/
 /**
- * @brief  Insert data to FList
- *
+ * @fn  int flist_insert_data (FList      *fl_list,
+                               const char *s_fn);
+ * @brief      Insert data to FList
  * @param[out] fl_list  FList object
  * @param[in]  s_fn     String to insert
  * @return     Clear result 0 if OK, 1 if error occurred
- */
-int flist_insert_data (FList *fl_list, const char *s_fn);
-/*----------------------------------------------------------------------------*/
-/**
- * @brief  Set data on i_pos position in FList
  *
+ * @fn  void flist_set_data (FList          *fl_list,
+                             const uint32_t  i_pos, 
+                             const char     *s_fn);
+ * @brief      Set data on i_pos position in FList
  * @param[out] fl_list  FList object
  * @param[in]  i_pos    Position of data to set
  * @param[in]  s_fn     Data to set
  * @return     none
  */
-void flist_set_data (FList *fl_list, const uint32_t i_pos, const char *s_fn);
+/*----------------------------------------------------------------------------*/
+int  flist_insert_data (FList          *fl_list,
+                        const char     *s_fn);
+/*----------------------------------------------------------------------------*/
+void flist_set_data    (FList          *fl_list,
+                        const uint32_t  i_pos, 
+                        const char     *s_fn);
 /*----------------------------------------------------------------------------*/
 /**
- * @brief  Gat data from FList
  *
+ * @fn  const char * flist_get_data (FList          *fl_list,
+ *                                   const uint32_t  i_pos)
+ * @brief     Gat data from FList
  * @param[in] fl_list  FList object
  * @param[in] i_pos    Position of name to get
  * @return    Name string or null pointer if position is not in list
- */
-const char *flist_get_data (FList *fl_list, const uint32_t i_pos);
-/*----------------------------------------------------------------------------*/
-/**
- * @brief  Gat data from FList as a new string
  *
+ * @fn  char * flist_get_data_new (FList          *fl_list,
+ *                                 const uint32_t  i_pos)
+ * @brief     Gat data from FList as a new string
  * @param[in] fl_list  FList object
  * @param[in] i_pos    Position of name to get
  * @return    Name string or null pointer if position is not in list,
  *            this name shoule be later freed
  */
-char *flist_get_data2 (FList *fl_list, const uint32_t i_pos);
+/*----------------------------------------------------------------------------*/
+const char * flist_get_data     (FList          *fl_list,
+                                 const uint32_t  i_pos);
+/*----------------------------------------------------------------------------*/
+char       * flist_get_data_new (FList          *fl_list,
+                                 const uint32_t  i_pos);
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Gat number of items in FList
@@ -128,7 +140,8 @@ uint32_t flist_get_len (FList *fl_list);
  * @return    Position of item in list or -1 if not found, empty list or
  *            item to find if null
  */
-int32_t flist_get_pos (FList *fl_list, const char *s_fn);
+int32_t flist_get_pos (FList      *fl_list,
+                       const char *s_fn);
 /*----------------------------------------------------------------------------*/
 /**
 * @brief  Print FList data
@@ -139,22 +152,24 @@ int32_t flist_get_pos (FList *fl_list, const char *s_fn);
 void flist_print_data (FList *fl_list);
 /*----------------------------------------------------------------------------*/
 /**
-* @brief  Remove duplicates from list.
-*
-* @param[in,out] fl_list  FList object
-* @return        none
-*/
-void flist_remove_duplicates (FList *fl_list);
-/*----------------------------------------------------------------------------*/
-/**
- * @brief  Remove from file list files that are not on provided extensions
- *         list.
+ * @fn  void flist_remove_duplicates (FList *fl_list)
+ * @brief         Remove duplicates from list.
+ * @param[in,out] fl_list  FList object
+ * @return        none
  *
- * @param[in,out]  fl_files  List with files to proccess
- * @param[in]      fl_exts   List of extensions
- * @return         none
+ * @fn  void flist_filter_by_extensions_list (FList *fl_files,
+                                              FList *fl_exts)
+ * @brief         Remove from file list files that are not on provided
+ *                extensions list.
+ * @param[in,out] fl_files  List with files to proccess
+ * @param[in]     fl_exts   List of extensions
+ * @return        none
  */
-void flist_filter_by_extensions_list (FList *fl_files, FList *fl_exts);
+/*----------------------------------------------------------------------------*/
+void flist_remove_duplicates         (FList *fl_list);
+/*----------------------------------------------------------------------------*/
+void flist_filter_by_extensions_list (FList *fl_files,
+                                      FList *fl_exts);
 /*----------------------------------------------------------------------------*/
 #endif
 

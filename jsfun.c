@@ -24,404 +24,362 @@
 #include "jsfun.h"
 /*----------------------------------------------------------------------------*/
 /**
- * @brief  Set settings based on json data in buffer.
+ * @fn  static void js_json_array_to_stlist (json_object *j_array,
+                                             SettList    *st_list,
+                                             const char  *s_array_name)
+ * @brief      Get items from Json array and add them to SettList object.
+ * @param[in]  j_array       Array of Json objects
+ * @param[in]  st_list       SettList list to add elements
+ * @param[in]  s_array_name  Name of array for the elements
+ * @return     none
  *
- * @param[out]  ws_sett  Program settings
- * @param[in]   s_buff   Pointer to buffer with data
- * @return      Convert status
- * @retval      0  OK
+ * @fn  static void js_stlist_array_to_json (SettList    *st_list,
+                                             Setting     *st_sett,
+                                             json_object *j_array)
+ * @brief      Get items from Setting array and save them in Json array object.
+ * @param[in]  st_list  List of all settings
+ * @param[in]  st_sett  Array Setting to process
+ * @param[out] j_array  Json aray object to insert data
+ * @return     None
  */
-static int
-js_json_buff_to_settings (WallSett   *ws_sett,
-                          const char *s_buff)
+/*----------------------------------------------------------------------------*/
+static void js_json_array_to_stlist (json_object *j_array,
+                                     SettList    *st_list,
+                                     const char  *s_array_name);
+/*----------------------------------------------------------------------------*/
+static void js_stlist_array_to_json (SettList    *st_list,
+                                     Setting     *st_sett,
+                                     json_object *j_array);
+/*----------------------------------------------------------------------------*/
+/**
+ * @fn  static Setting * js_json_object_to_setting (json_object *val,
+ *                                                  const char  *s_name,
+ *                                                  SettList    *st_list)
+ * @brief      Convert Json object to Setting object
+ * @param[in]  val      Json object to process
+ * @param[in]  s_name   Destination Setting name
+ * @param[out] st_list  SettList to insert settings
+ * @return     Setting object
+ *
+ * @fn  static json_object * js_setting_to_json_object (SettList *st_list,
+ *                                                      Setting  *st_sett)
+ * @brief      Convert Setting object to Json object
+ * @param[in]  st_list   List of all settings
+ * @param[in]  st_sett   Setting to examine
+ * @return     Json object
+ */
+/*----------------------------------------------------------------------------*/
+static Setting     * js_json_object_to_setting (json_object *val,
+                                                const char  *s_name,
+                                                SettList    *st_list);
+/*----------------------------------------------------------------------------*/
+static json_object * js_setting_to_json_object (SettList    *st_list,
+                                                Setting     *st_sett);
+/*----------------------------------------------------------------------------*/
+/**
+ * @brief  Convert raw Json data string to SettList list of Setting objects.
+ *
+ * @param[in]  s_buff  String with Json data
+ * @return     SettList list
+ */
+static SettList * js_json_string_to_settlist (const char *s_buff);
+/*----------------------------------------------------------------------------*/
+/**
+ * @brief  Convert Setting items from SettList and put them in Json object
+ *
+ * @param[in]  st_list  List of Setting items
+ * @param[out] j_obj    Json object to insert data
+ * @return     none
+ */
+static void js_settlist_append_to_json_object (SettList    *st_list,
+                                               json_object *j_obj);
+/*----------------------------------------------------------------------------*/
+/**
+ * @brief  Get items from Json array and add them to SettList object.
+ */
+static void
+js_json_array_to_stlist (json_object *j_array,
+                         SettList    *st_list,
+                         const char  *s_array_name)
 {
-    json_object *j_obj;       /* Json object of whole Json file */
-    json_object *j_bgarray;   /* Json object for files array */
-    json_object *j_val;       /* Json object for settings */
-    size_t       i_arlen = 0; /* Number of items in array */
+    json_object *j_val;
+    Setting     *st_set;
+    char        *s_name = NULL;
+    size_t       ui_cnt = 0;
+    size_t       i      = 0;
+
+    ui_cnt = json_object_array_length (j_array);
+
+    for (i = 0; i < ui_cnt; ++i) {
+
+        j_val = json_object_array_get_idx (j_array, i);
+
+        if (j_val != NULL) {
+            s_name = string_name_with_number (s_array_name, i);
+            st_set = js_json_object_to_setting (j_val, s_name, st_list);
+            free (s_name);
+            if (st_set != NULL)
+                stlist_insert_setting_to_array (st_list, st_set, s_array_name);
+        }
+    }
+}
+/*----------------------------------------------------------------------------*/
+/**
+ * @brief  Convert Json object to Setting object
+ */
+static Setting *
+js_json_object_to_setting (json_object *val,
+                           const char  *s_name,
+                           SettList    *st_list)
+{
+    Setting *st_set;
+    int      i_val_type = 0;
+
+    i_val_type = json_object_get_type (val);
+
+    switch (i_val_type) {
+        case json_type_null:
+            return NULL;
+        case json_type_boolean:
+            st_set = setting_new_int8 (json_object_get_int (val), s_name);
+            return st_set;
+        case json_type_double:
+            st_set = setting_new_double (json_object_get_double (val), s_name);
+            return st_set;
+        case json_type_int:
+            st_set = setting_new_uint32 (json_object_get_int (val), s_name);
+            return st_set;
+        case json_type_string:
+            st_set = setting_new_string (json_object_get_string (val), s_name);
+            return st_set;
+        case json_type_object:
+            return NULL;
+        case json_type_array:
+            st_set = setting_new_array (s_name);
+            stlist_insert_setting (st_list, st_set);
+            js_json_array_to_stlist (val, st_list, s_name);
+            return NULL;
+        default:
+            break;
+    }
+    return NULL;
+}
+/*----------------------------------------------------------------------------*/
+/**
+ * @brief  Convert raw Json data string to SettList list of Setting objects.
+ */
+static SettList *
+js_json_string_to_settlist (const char *s_buff)
+{
+    json_object *j_obj;
+    SettList    *st_list;
+    Setting     *st_set;
 
     if (s_buff == NULL)
-        return 0;
+        return NULL;
+
+    st_list = stlist_new_list ();
 
     j_obj = json_tokener_parse (s_buff);
 
-    if (json_object_object_get_ex (j_obj, "Backgrounds", &j_bgarray) &&
-        json_object_get_type (j_bgarray) == json_type_array) {
-
-        flist_clear (&ws_sett->fl_files);
-
-        i_arlen = json_object_array_length (j_bgarray);
-
-        for (size_t i = 0; i < i_arlen; ++i) {
-            json_object *j_val1;
-            j_val1 = json_object_array_get_idx (j_bgarray, i);
-            if (j_val1 != NULL) {
-                flist_insert_data (&ws_sett->fl_files,
-                                   json_object_get_string (j_val1));
-            }
-        }
-    }
-    if (json_object_object_get_ex (j_obj, "Random wallpaper", &j_val) &&
-        json_object_get_type(j_val) == json_type_int) {
-
-        settings_set_random (ws_sett, json_object_get_int (j_val));
-    }
-    if (json_object_object_get_ex (j_obj, "Set last used wallpaper", &j_val) &&
-        json_object_get_type(j_val) == json_type_int) {
-        
-        settings_set_last_used_setting (ws_sett, json_object_get_int (j_val));
-    }
-    if (json_object_object_get_ex (j_obj, "Last used wallpaper pos", &j_val) &&
-        json_object_get_type(j_val) == json_type_int) {
-
-        settings_set_last_used_pos (ws_sett, json_object_get_int (j_val));
-    }
-    if (json_object_object_get_ex (j_obj,
-                                   "Wallpaper change interval", &j_val) &&
-        json_object_get_type(j_val) == json_type_int) {
-
-        settings_set_interval (ws_sett, json_object_get_int (j_val));
-    }
-    if (json_object_object_get_ex (j_obj, "Background set command", &j_val) &&
-        json_object_get_type(j_val) == json_type_string) {
-
-        settings_set_command (ws_sett, json_object_get_string (j_val));
-    }
-    if (json_object_object_get_ex (j_obj, "Last used wallpaper file", &j_val) &&
-        json_object_get_type(j_val) == json_type_string) {
-
-        settings_set_last_used_fn (ws_sett, json_object_get_string (j_val));
-    }
-    if (json_object_object_get_ex (j_obj, "Window width", &j_val) &&
-        json_object_get_type(j_val) == json_type_int) {
-
-        settings_set_window_width (ws_sett, json_object_get_int (j_val));
-    }
-    if (json_object_object_get_ex (j_obj, "Window height", &j_val) &&
-        json_object_get_type(j_val) == json_type_int) {
-
-        settings_set_window_height (ws_sett, json_object_get_int (j_val));
+    json_object_object_foreach(j_obj, key, val) {
+        st_set = js_json_object_to_setting (val, key, st_list);
+        if (st_set != NULL)
+            stlist_insert_setting (st_list, st_set);
     }
     json_object_put (j_obj);
-    return 0;
+    return st_list;
 }
 /*----------------------------------------------------------------------------*/
 /**
- * @brief  Make a json format buffer of WallSet settings object.
- *
- * @param[in]   ws_sett  Program settings
- * @param[out]  s_buff   Pointer to output buffer
- * @return      Convert status
- * @retval      0  OK
+ * @brief  Get items from Setting array and save them in Json array object.
  */
-static int
-js_settings_to_json_buff (WallSett  *ws_sett,
-                          char     **s_buff)
+static void
+js_stlist_array_to_json (SettList    *st_list,
+                               Setting     *st_sett,
+                               json_object *j_array)
 {
-    const char  *s_fn    = NULL; /* File name string */
-    const char  *s_tmp   = NULL; /* Temp string for json buffer */
-    uint32_t     ui_cnt  = 0;    /* Number of items in array */
-    json_object *j_obj   = json_object_new_object();
-    json_object *j_array = json_object_new_array();
+    Setting     *st_val;
+    json_object *j_obj;
+    SettList    *st_array_list = stlist_get_settings_in_array_obj (st_list,
+                                                                   st_sett);
+    uint32_t     ui_cnt = 0;
+    uint32_t     i      = 0;
 
-    ui_cnt = flist_get_len (&ws_sett->fl_files);
+    ui_cnt = stlist_get_length (st_array_list);
 
-    for (uint32_t i = 0; i < ui_cnt; ++i) {
-        s_fn = flist_get_data (&ws_sett->fl_files, i);
-        json_object_array_add (j_array, json_object_new_string (s_fn));
+    for (i = 0; i < ui_cnt; ++i) {
+        st_val = stlist_get_setting_at_pos (st_array_list, i);
+
+        j_obj = js_setting_to_json_object (st_list, st_val);
+
+        json_object_array_add (j_array, j_obj);
     }
-
-    json_object_object_add (j_obj, "Backgrounds", j_array);
-
-    json_object_object_add (j_obj, "Random wallpaper",
-                            json_object_new_int (settings_get_random (ws_sett)));
-
-    json_object_object_add (j_obj, "Set last used wallpaper",
-                            json_object_new_int (
-                                settings_get_last_used_setting (ws_sett)));
-
-    json_object_object_add (j_obj, "Last used wallpaper pos",
-                            json_object_new_int(
-                                settings_get_last_used_pos (ws_sett)));
-
-    if (settings_get_last_used_fn (ws_sett) != NULL) {
-        json_object_object_add (j_obj, "Last used wallpaper file",
-                                json_object_new_string (
-                                    settings_get_last_used_fn (ws_sett)));
-    }
-    if (ws_sett->s_bgcmd != NULL) {
-        json_object_object_add (j_obj, "Background set command",
-                                json_object_new_string (
-                                    settings_get_command (ws_sett)));
-    }
-    json_object_object_add (j_obj, "Wallpaper change interval",
-            json_object_new_int (settings_get_interval (ws_sett)));
-
-    json_object_object_add (j_obj, "Window width",
-            json_object_new_int (settings_get_window_width (ws_sett)));
-
-    json_object_object_add (j_obj, "Window height",
-            json_object_new_int (settings_get_window_height (ws_sett)));
-
-    s_tmp = json_object_to_json_string (j_obj);
-
-    create_resize ((void**) s_buff, strlen (s_tmp) + 1, sizeof (char));
-
-    strcpy (*s_buff, s_tmp);
-
-    json_object_put (j_obj);
-
-    return 0;
+    stlist_free (st_array_list);
 }
 /*----------------------------------------------------------------------------*/
 /**
- * @brief  Update last used wallpaper string in json buffer. 
- *
- * @param[in,out]  s_buff   Json buffer
- * @param[in]      s_lu     Last used wallpaper file path
- * @param[in]      i_lu     Last used wallpaper position on list
- * @return         Updating data status
+ * @brief  Convert Setting object to Json object
  */
-static int
-js_json_buffer_update_last_used (char       **s_buff,
-                                 const char  *s_lu,
-                                 const int    i_lu)
+static json_object *
+js_setting_to_json_object (SettList *st_list,
+                           Setting  *st_sett)
 {
     json_object *j_obj;
-    const char  *s_buff2 = NULL; /* Temp buffer for json data */
+    SetValType   i_type = 0;
 
-    if (*s_buff == NULL) {
-        j_obj = json_object_new_object();
+    i_type = setting_get_type (st_sett);
+
+    switch (i_type) {
+        case SET_VAL_DOUBLE:
+            j_obj = json_object_new_double (setting_get_double (st_sett));
+            return j_obj;
+        case SET_VAL_INT:
+            j_obj = json_object_new_int (setting_get_int (st_sett));
+            return j_obj;
+        case SET_VAL_UINT32:
+            j_obj = json_object_new_int (setting_get_uint32 (st_sett));
+            return j_obj;
+        case SET_VAL_STRING:
+            j_obj = json_object_new_string (setting_get_string (st_sett));
+            return j_obj;
+        case SET_VAL_ARRAY:
+            j_obj = json_object_new_array();
+            js_stlist_array_to_json (st_list, st_sett, j_obj);
+            return j_obj;
+        default:
+            break;
     }
-    else {
-        j_obj = json_tokener_parse (*s_buff);
-    }
-    json_object_object_add(j_obj,"Last used wallpaper file", 
-                           json_object_new_string (s_lu));
-    json_object_object_add(j_obj,"Last used wallpaper pos",
-                           json_object_new_int(i_lu));
-
-    s_buff2 = json_object_to_json_string (j_obj);
-
-    if (strlen (s_buff2) != strlen (*s_buff)) {
-        create_resize ((void**) s_buff, strlen (s_buff2) + 1, sizeof (char));
-    }
-    strcpy (*s_buff, s_buff2);
-
-    json_object_put (j_obj);
-
-    return 0;
+    return NULL;
 }
 /*----------------------------------------------------------------------------*/
 /**
- * @brief  Update information about main window dimensions in config file.
+ * @brief  Convert Setting items from SettList and put them in Json object
  */
-static int
-js_json_buffer_update_window_size (char     **s_buff,
-                                   const int  i_w,
-                                   const int  i_h)
+static void
+js_settlist_append_to_json_object (SettList    *st_list,
+                                   json_object *j_obj)
 {
-    json_object *j_obj;
-    const char  *s_buff2 = NULL; /* Temp buffer for json data */
+    json_object *j_val;
+    SettList    *st_main;
+    Setting     *st_sett;
+    uint32_t     ui_cnt   = 0;
+    uint32_t     i        = 0;
 
-    if (*s_buff == NULL) {
-        j_obj = json_object_new_object();
+    if (j_obj == NULL || st_list == NULL)
+        return;
+
+    st_main  = stlist_get_settings_main (st_list);
+
+    ui_cnt = stlist_get_length (st_main);
+
+    for (i = 0; i < ui_cnt; ++i) {
+        st_sett = stlist_get_setting_at_pos (st_main, i);
+        j_val = js_setting_to_json_object (st_list, st_sett);
+        json_object_object_add (j_obj, setting_get_name (st_sett), j_val);
     }
-    else {
-        j_obj = json_tokener_parse (*s_buff);
-    }
-
-    json_object_object_add (j_obj, "Window width",
-            json_object_new_int (i_w));
-
-    json_object_object_add (j_obj, "Window height",
-            json_object_new_int (i_h));
-
-    s_buff2 = json_object_to_json_string (j_obj);
-
-    if (strlen (s_buff2) != strlen (*s_buff)) {
-        create_resize ((void**) s_buff, strlen (s_buff2) + 1, sizeof (char));
-    }
-    strcpy (*s_buff, s_buff2);
-
-    json_object_put (j_obj);
-
-    return 0;
+    stlist_free (st_main);
 }
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Get settings data from file.
  */
-int
-js_settings_read (WallSett   *ws_sett,
-                  const char *s_fname)
+SettList *
+js_settings_read (const char *s_fname,
+                  int        *i_err)
 {
-    char *s_buff = NULL; /* File data buffer */
-    int   i_res  = 0;    /* Function result */
+    SettList *st_list;
+    char     *s_buff = NULL; /* File data buffer */
 
-    /* Read config data to buffer and check its hash */
-    i_res = read_file_data_hash (s_fname, &s_buff, &ws_sett->i_hash);
-    if (i_res)
-        return i_res;
+    *i_err = read_file_data (s_fname, &s_buff);
+    if (*i_err)
+        return NULL;
 
-    /* Make WallSett settings data of raw json buffer */
-    i_res =  js_json_buff_to_settings (ws_sett, s_buff);
+    if (s_buff == NULL)
+        return NULL;
+
+    st_list = js_json_string_to_settlist (s_buff);
+
     free (s_buff);
 
-    return i_res;
+    return st_list;
 }
 /*----------------------------------------------------------------------------*/
 /**
- * @brief  Saving program settings data in file. 
+ * @brief  Check if settings in SettList are an update to settings
+ *         stored in settings file.
  */
 int
-js_settings_write (WallSett   *ws_sett,
-                   const char *s_fname)
+js_settings_check_for_update (SettList    *st_list,
+                              const char  *s_fname,
+                              char       **s_out_buff)
 {
-    char   *s_buff = NULL; /* File data buffer */
-    int     i_res  = 0;    /* Function result */
-    int32_t i_pos  = 0;    /* Last used wallpaper position on list */
+    json_object *j_obj;
+    const char  *s_jbuff = NULL;   /* Json object as string */
+    char        *s_buff  = NULL;   /* File data buffer */
+    uint64_t     i_hash  = 0;      /* File read hash */
+    int          i_res   = ERR_OK; /* Function result */
 
-    /* Checking last used wallpaper position correctness */
-    if (settings_get_last_used_fn (ws_sett) != NULL) {
-        i_pos = flist_get_pos (&ws_sett->fl_files,
-                               settings_get_last_used_fn (ws_sett));
-        if (i_pos >= 0) {
-            settings_set_last_used_pos (ws_sett, (uint32_t) i_pos);
-        }
-    }
-
-    /* Read config data to buffer and calculate hash */
-    i_res = read_file_data_hash (s_fname, &s_buff, &ws_sett->i_hash);
-    if (i_res)
-        return i_res;
-
-    /* Make json raw buffer of current settings */
-    i_res = js_settings_to_json_buff (ws_sett, &s_buff);
-    if (i_res)
-        return i_res;
-
-    /* Compare saved file buffer hash and new one,
-     * if they are different save settings */
-    if (hash (s_buff) != ws_sett->i_hash) {
-        i_res = save_file_data (s_fname, s_buff);
-    }
-
-    return i_res;
-}
-/*----------------------------------------------------------------------------*/
-/**
- * @brief  Update last used wallpaper position in program settings. 
- */
-int
-js_settings_update_last_used (WallSett   *ws_sett,
-                              const char *s_fname)
-{
-    char *s_buff = NULL;   /* File data buffer */
-    int   i_res  = ERR_OK; /* Function result */
-
-    if (settings_get_last_used_fn (ws_sett) == NULL) 
-        return ERR_OK;
-
-    /* Read config data to buffer and calculate hash */
-    i_res = read_file_data_hash (s_fname, &s_buff, &ws_sett->i_hash);
+    i_res = read_file_data_hash (s_fname, &s_buff, &i_hash);
     if (i_res) {
         free (s_buff);
         return i_res;
     }
-    /* If nothing read make buffer of current settings */
+
     if (s_buff == NULL) {
-        js_settings_to_json_buff (ws_sett, &s_buff);
+        j_obj = json_object_new_object();
     }
-    /* Update only last used wallpaper info in buffer */
-    i_res = js_json_buffer_update_last_used (&s_buff,
-            settings_get_last_used_fn (ws_sett),
-            settings_get_last_used_pos (ws_sett));
-    if (i_res) {
-        free (s_buff);
-        return i_res;
-    }
-    /* Compare saved file buffer hash and new with changed last used wallpaper
-     * info, if they are different save settings */
-    if (hash (s_buff) != ws_sett->i_hash) {
-        i_res = save_file_data (s_fname, s_buff);
-        if (i_res) {
-            free (s_buff);
-            return i_res;
-        }
-    }
-    free (s_buff);
-
-    return i_res;
-}
-/*----------------------------------------------------------------------------*/
-int
-js_settings_update_window_size (const char *s_fname,
-                                const int   i_w,
-                                const int   i_h)
-{
-    char *s_buff = NULL;   /* File data buffer */
-    int   i_res  = ERR_OK; /* Function result */
-
-    /* Read config data to buffer */
-    i_res = read_file_data (s_fname, &s_buff);
-    if (i_res) {
-        free (s_buff);
-        return i_res;
-    }
-
-    /* Update information about main window size in buffer */
-    i_res = js_json_buffer_update_window_size (&s_buff, i_w, i_h);
-    if (i_res) {
-        free (s_buff);
-        return i_res;
-    }
-
-    /* Save config file */
-    i_res = save_file_data (s_fname, s_buff);
-    if (i_res) {
-        free (s_buff);
-        return i_res;
+    else {
+        j_obj = json_tokener_parse (s_buff);
     }
 
     free (s_buff);
 
+    js_settlist_append_to_json_object (st_list, j_obj);
+
+    s_jbuff = json_object_to_json_string (j_obj);
+
+    /* Compare saved file buffer hash and new one,
+     * if they are different update output buffer */
+    if (hash (s_jbuff) != i_hash) {
+        *s_out_buff = str_dup (s_jbuff);
+    }
+    else {
+        *s_out_buff = NULL;
+    }
+
+    json_object_put (j_obj);
     return i_res;
 }
 /*----------------------------------------------------------------------------*/
 /**
- * @brief  Check if settings are different that saved ones.
+ * @brief  Update file with new data
  */
 int
-js_settings_check_changed (WallSett *ws_sett,
-                           uint8_t  *i_changed)
+js_settings_update_file (const char *s_buff,
+                         const char *s_fname)
 {
-    char *s_buff = NULL;   /* File data buffer */
-    int   i_res  = ERR_OK; /* Function result */
+    return save_file_data (s_fname, s_buff);
+}
+/*----------------------------------------------------------------------------*/
+/**
+ * @brief  Check if settings are an update and update file with new data
+ *         if they are.
+ */
+int
+js_settings_check_update_file (SettList   *st_list,
+                               const char *s_fname)
+{
+    char *s_buff = NULL;
+    int   i_res  = 0;
+    
+    i_res = js_settings_check_for_update (st_list, s_fname, &s_buff);
 
-    *i_changed = 0;
-
-    /* Read config data to buffer and calculate hash */
-    i_res = read_file_data_hash (settings_get_cfg_fn (ws_sett),
-                                 &s_buff, &ws_sett->i_hash);
-    if (i_res) {
+    if (s_buff != NULL) {
+        js_settings_update_file (s_buff, s_fname);
         free (s_buff);
-        return i_res;
     }
-    /* Get json raw buffer of current settings */
-    i_res = js_settings_to_json_buff (ws_sett, &s_buff);
-    if (i_res) {
-        free (s_buff);
-        return i_res;
-    }
-    /* Compare saved file buffer hash and new one,
-     * if they are different set i_changed to 1 */
-    if (hash (s_buff) != ws_sett->i_hash) {
-        *i_changed = 1;
-    }
-    free (s_buff);
-
-    return ERR_OK;
+    return i_res;
 }
 /*----------------------------------------------------------------------------*/
 

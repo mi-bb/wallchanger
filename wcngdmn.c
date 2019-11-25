@@ -17,11 +17,11 @@
  *
  * @brief Wallpaper changer
  *
- * Program to change wallpapers.
+ * Automatic wallpaper changer
  *
- * @date November 17, 2019
+ * @date November 25, 2019
  *
- * @version 1.2.2
+ * @version 1.3.0
  * 
  * @author Michał Bąbik <michalb1981@o2.pl>
  */
@@ -37,9 +37,8 @@
 /*----------------------------------------------------------------------------*/
 /**
  * @brief Main function.
- *
- * @param[in] argc Arguments passed to the program from the environment in which
- *                 the program is run
+ * @param[in] argc Arguments passed to the program from the environment in
+ *                 which the program is run
  * @param[in] argv Pointer to the first element of an array of pointers that
  *                 represent the arguments passed to the program
  * @return         Return value
@@ -48,20 +47,29 @@ int
 main (int    argc,
       char **argv)
 {
+    SettList *st_list;
     WallSett  ws_sett;
     uint32_t  ui_cnt = 0;
+    int       i_err  = 0;
 
-    if (settings_init (&ws_sett) != ERR_OK) {
-        settings_free (&ws_sett);
+    if (wallset_init (&ws_sett) != ERR_OK) {
+        wallset_free (&ws_sett);
         exit (EXIT_FAILURE);
     }
-    if (settings_read (&ws_sett) != ERR_OK) {
-        settings_free (&ws_sett);
+
+    st_list = settings_read (ws_sett.s_cfgfile, &i_err);
+    if (i_err != ERR_OK) {
+        stlist_free (st_list);
+        wallset_free (&ws_sett);
         exit (EXIT_FAILURE);
     }
+
+    settlist_to_wallset (st_list, &ws_sett);
+    stlist_free (st_list);
+
     if (flist_get_len (&ws_sett.fl_files) == 0) {
         fputs ("Empty file list\n", stderr);
-        settings_free (&ws_sett);
+        wallset_free (&ws_sett);
         exit (EXIT_FAILURE);
     }
 
@@ -69,7 +77,7 @@ main (int    argc,
     randomm_set_range (&ws_sett.rm_mem, flist_get_len (&ws_sett.fl_files));
 
     if (wallpaper_startup_set (&ws_sett) != ERR_OK) {
-        settings_free (&ws_sett);
+        wallset_free (&ws_sett);
         exit (EXIT_FAILURE);
     }
 
@@ -78,13 +86,13 @@ main (int    argc,
         ui_cnt++;
         if (ui_cnt >= ws_sett.i_chinterval) {
             if (wallpaper_change (&ws_sett) != ERR_OK) {
-                settings_free (&ws_sett);
+                wallset_free (&ws_sett);
                 exit(EXIT_FAILURE);
             }
             ui_cnt = 0;
         }
     }
-    settings_free (&ws_sett);
+    wallset_free (&ws_sett);
 
     return 0;
 }
