@@ -27,9 +27,7 @@
 #define FLIST_H
 
 #include <stdint.h>
-#include <stdlib.h>
-#include <stdio.h>
-#include <string.h>
+#include <stddef.h>
 #include "errs.h"
 /*----------------------------------------------------------------------------*/
 /**

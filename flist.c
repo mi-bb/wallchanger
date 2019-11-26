@@ -21,6 +21,9 @@
  * 
  * @author Michał Bąbik <michalb1981@o2.pl>
  */
+#include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
 #include "flist.h"
 /*----------------------------------------------------------------------------*/
 /**

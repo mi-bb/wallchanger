@@ -24,9 +24,7 @@
 #ifndef SETTS_H
 #define SETTS_H
 
-#include "jsfun.h"
 #include "settstr.h"
-#include "setting.h"
 #include "settlist.h"
 /*----------------------------------------------------------------------------*/
 /**

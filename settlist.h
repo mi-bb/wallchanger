@@ -28,7 +28,7 @@
 #ifndef SETTLIST_H
 #define SETTLIST_H
 
-#include <stdlib.h>
+#include <stdint.h>
 #include "setting.h"
 
 /*----------------------------------------------------------------------------*/

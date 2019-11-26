@@ -24,7 +24,6 @@
 #ifndef PREVIEW_H
 #define PREVIEW_H
 
-#include <gdk/gdk.h>
 #include <gtk/gtk.h>
 #include "imgs.h"
 /*----------------------------------------------------------------------------*/

@@ -21,7 +21,13 @@
  * 
  * @author Michał Bąbik <michalb1981@o2.pl>
  */
+#include <stdio.h>
+#include <stdlib.h>
+#include "setts.h"
+#include "flist.h"
+#include "randomm.h"
 #include "wallset.h"
+#include "miscfun.h"
 /*----------------------------------------------------------------------------*/
 /**
  * @fn  static int wallpaper_set_file (const char *s_cmd,

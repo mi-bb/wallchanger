@@ -21,6 +21,10 @@
 * 
 * @author Michał Bąbik <michalb1981@o2.pl>
 */
+#include <string.h>
+#include <stdlib.h>
+#include "miscfun.h"
+#include "errs.h"
 #include "settstr.h"
 /*----------------------------------------------------------------------------*/
 /**

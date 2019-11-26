@@ -37,6 +37,7 @@
 #include "preview.h"
 #include "flist.h"
 #include "errs.h"
+#include "miscfun.h"
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Structore to pass widgets and settings to callback

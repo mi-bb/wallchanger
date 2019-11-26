@@ -21,6 +21,13 @@
  * 
  * @author Michał Bąbik <michalb1981@o2.pl>
  */
+#include <stdio.h>
+#include <stdint.h>
+#include <string.h>
+#include <json-c/json.h>
+#include "errs.h"
+#include "setting.h"
+#include "miscfun.h"
 #include "jsfun.h"
 /*----------------------------------------------------------------------------*/
 /**

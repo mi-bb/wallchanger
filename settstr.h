@@ -27,8 +27,6 @@
 #include <stdint.h>
 #include "flist.h"
 #include "randomm.h"
-#include "miscfun.h"
-#include "errs.h"
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Structore with settings for wallpaper changing

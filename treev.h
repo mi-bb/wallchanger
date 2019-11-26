@@ -26,7 +26,6 @@
 
 #include <gtk/gtk.h>
 #include "iminfo.h"
-#include "miscfun.h"
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  TreeView Columns

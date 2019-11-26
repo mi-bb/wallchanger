@@ -24,11 +24,7 @@
 #ifndef WALLSET_H
 #define WALLSET_H
 
-#include <stdio.h>
 #include "settstr.h"
-#include "setts.h"
-#include "flist.h"
-#include "randomm.h"
 /*----------------------------------------------------------------------------*/
 /**
  * @fn  int wallpaper_change (WallSett *ws_sett)

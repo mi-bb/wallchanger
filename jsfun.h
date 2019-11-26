@@ -26,14 +26,6 @@
 #ifndef JSFUN_H
 #define JSFUN_H
 
-#include <stdio.h>
-#include <stdint.h>
-#include <string.h>
-#include <json-c/json.h>
-#include "settstr.h"
-#include "miscfun.h"
-#include "errs.h"
-#include "setting.h"
 #include "settlist.h"
 /*----------------------------------------------------------------------------*/
 /**

@@ -21,6 +21,8 @@
  * 
  * @author Michał Bąbik <michalb1981@o2.pl>
  */
+#include "jsfun.h"
+#include "setting.h"
 #include "setts.h"
 /*----------------------------------------------------------------------------*/
 /**

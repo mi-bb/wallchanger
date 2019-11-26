@@ -30,8 +30,6 @@
 #ifndef RANDOMM_H
 #define RANDOMM_H
 
-#include <stdlib.h>
-#include <time.h>
 #include <stdint.h>
 
 #define RMMAX 200  /**< RMMAX * 32 maximum random number range */

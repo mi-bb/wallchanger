@@ -21,6 +21,10 @@
  * 
  * @author Michał Bąbik <michalb1981@o2.pl>
  */
+#include <stdio.h>
+#include <string.h>
+#include <gdk-pixbuf/gdk-pixbuf.h>
+#include "miscfun.h"
 #include "iminfo.h"
 /*----------------------------------------------------------------------------*/
 /**

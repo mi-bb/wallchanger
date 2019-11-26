@@ -21,6 +21,17 @@
  * 
  * @author Michał Bąbik <michalb1981@o2.pl>
  */
+#include <stdio.h>
+#include <dirent.h> 
+#include <string.h>
+#include <stdint.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <sys/stat.h>
+#include <sys/types.h>
+#include <pwd.h>
+#include <errno.h>
+#include "errs.h"
 #include "miscfun.h"
 /*----------------------------------------------------------------------------*/
 /**
