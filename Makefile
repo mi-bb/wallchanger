@@ -13,15 +13,15 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 CC = gcc
-CFLAGS = -Os -std=gnu99
+CFLAGS = -Os -std=gnu11
 LIBS = -ljson-c
 PACKAGE = $(shell pkg-config --cflags --libs gtk+-3.0)
 LDLIBS = $(shell pkg-config --libs gtk+-3.0)
-SRCSG = wchanger.c treev.c dlgs.c iminfo.c wallset.c setts.c jsfun.c \
-	miscfun.c imgs.c flist.c randomm.c settstr.c preview.c setting.c \
+SRCSG = wchanger.c treev.c dlgs.c iminfo.c wpset.c setts.c jsfun.c \
+	miscfun.c imgs.c flist.c randomm.c wallsett.c preview.c setting.c \
 	settlist.c
-SRCSM = wcngdmn.c wallset.c setts.c jsfun.c miscfun.c flist.c randomm.c \
-	settstr.c setting.c settlist.c
+SRCSM = wcngdmn.c wpset.c setts.c jsfun.c miscfun.c flist.c randomm.c \
+	wallsett.c setting.c settlist.c
 OBJSG = $(SRCSG:.c=.o)
 OBJSM = $(SRCSM:.c=.o)
 WGUI = wchanger-cfg

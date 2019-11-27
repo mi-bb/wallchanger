@@ -21,16 +21,17 @@
  *
  * @date November 25, 2019
  *
- * @version 1.3.0
+ * @version 1.3.1
  * 
  * @author Michał Bąbik <michalb1981@o2.pl>
  */
 #include <unistd.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include <stdint.h>
 #include "setts.h"
-#include "settstr.h"
-#include "wallset.h"
+#include "wallsett.h"
+#include "wpset.h"
 #include "miscfun.h"
 #include "flist.h"
 #include "randomm.h"

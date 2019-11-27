@@ -23,7 +23,6 @@
  */
 #include <stdlib.h>
 #include <time.h>
-#include <stdint.h>
 #include "randomm.h"
 /*----------------------------------------------------------------------------*/
 /**

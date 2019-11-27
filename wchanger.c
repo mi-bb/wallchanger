@@ -21,16 +21,17 @@
  *
  * @date November 25, 2019
  *
- * @version 1.3.0
+ * @version 1.3.1
  * 
  * @author Michał Bąbik <michalb1981@o2.pl>
  */
 #include <stdio.h> 
+#include <stdint.h> 
 #include <gtk/gtk.h>
+#include "settlist.h"
 #include "setts.h"
-#include "settstr.h"
 #include "iminfo.h"
-#include "wallset.h"
+#include "wpset.h"
 #include "imgs.h"
 #include "dlgs.h"
 #include "treev.h"
@@ -268,6 +269,9 @@ static void        event_set_wallpaper_pressed (GtkWidget         *widget,
 static void        event_save_settings_pressed (GtkWidget         *widget,
                                                 DialogData        *dd_data);
 /*----------------------------------------------------------------------------*/
+static void        event_about_app_pressed     (GtkWidget         *widget,
+                                                DialogData        *dd_data);
+/*----------------------------------------------------------------------------*/
 static void        event_img_list_activated    (GtkTreeView       *tree_view,
                                                 GtkTreePath       *path,
                                                 GtkTreeViewColumn *column,
@@ -297,7 +301,7 @@ static void        shutdown                    (GtkApplication    *app,
 /*----------------------------------------------------------------------------*/
 static inline const char *
 get_win_title (void) {
-    return "Wall Changer v1.3.0";
+    return "Wall Changer v1.3.1";
 }
 /*----------------------------------------------------------------------------*/
 static inline const char *
@@ -365,7 +369,7 @@ get_wallpaper_ch_interval (DialogData *dd_data)
  */
 static void
 set_wallpaper_ch_interval (DialogData    *dd_data,
-                               const uint32_t ui_val)
+                           const uint32_t ui_val)
 {
     uint32_t ui_tmp = ui_val; /* Temp inteval value */
 
@@ -742,6 +746,16 @@ event_save_settings_pressed (GtkWidget  *widget,
 }
 /*----------------------------------------------------------------------------*/
 /**
+ * @brief  About Wall Changer
+ */
+static void
+event_about_app_pressed (GtkWidget  *widget,
+                         DialogData *dd_data)
+{
+    about_app_dialog ();
+}
+/*----------------------------------------------------------------------------*/
+/**
  * @brief  Make preview image widget of image (file path).
  */
 static void
@@ -949,6 +963,14 @@ create_buttons_widget (GtkWidget  **gw_widget,
                       "clicked",
                       G_CALLBACK (event_save_settings_pressed),
                       dd_data);
+    gw_button = create_image_button ("", "About Wall Changer", W_ICON_INFO);
+    gtk_box_pack_start (GTK_BOX (*gw_widget),
+                        gw_button,
+                        FALSE, FALSE, 4);
+    g_signal_connect (gw_button,
+                      "clicked",
+                      G_CALLBACK (event_about_app_pressed),
+                      dd_data);
     gw_button = create_image_button ("", "Exit app", W_ICON_EXIT);
     g_signal_connect_swapped (gw_button,
                               "clicked",
@@ -979,8 +1001,8 @@ create_settings_widget (GtkWidget **gw_widget,
     /* Random wallpaper change button */
     s_markup = "When <b>enabled</b> wallpaper images will be selected "
         "randomly.\n"
-        "When <b>disabled</b> wallpapers will be set in the same order that "
-        "they appear in the list";
+        "When <b>disabled</b> wallpapers will be set in the same order as "
+        "they appear on the list";
     gw_button_random = gtk_check_button_new ();
     gtk_widget_set_tooltip_markup (gw_button_random, s_markup);
     gtk_button_set_label (GTK_BUTTON (gw_button_random),
@@ -1103,6 +1125,12 @@ activate (GtkApplication *app,
     g_signal_connect (gw_tview, "row-activated",
                       G_CALLBACK (event_img_list_activated), gw_img_prev);
 
+    GdkPixbuf *gd_pix = NULL;
+    gd_pix = get_image (W_ICON_ABOUT);
+    if (gd_pix != NULL) {
+        gtk_window_set_default_icon (gd_pix);
+        g_object_unref (gd_pix);
+    }
     create_title_widget (&gw_title_widget);
 
     create_buttons_widget (&gw_buttons_widget, dd_data);
@@ -1213,6 +1241,7 @@ main (int    argc,
                                G_APPLICATION_FLAGS_NONE);
     g_signal_connect (app, "activate", G_CALLBACK (activate), &dd_data);
     g_signal_connect (app, "shutdown", G_CALLBACK (shutdown), &dd_data);
+    g_set_application_name ("Wall Changer");
     status = g_application_run (G_APPLICATION (app), argc, argv);
     g_object_unref (app);
 

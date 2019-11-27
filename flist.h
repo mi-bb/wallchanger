@@ -28,7 +28,6 @@
 
 #include <stdint.h>
 #include <stddef.h>
-#include "errs.h"
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  File list structure

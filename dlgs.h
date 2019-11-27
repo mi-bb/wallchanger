@@ -24,7 +24,6 @@
 #ifndef DLGS_H
 #define DLGS_H
 #include <gtk/gtk.h>
-#include "flist.h"
 /*----------------------------------------------------------------------------*/
 /**
  * @fn  char * add_images_folder_dialog (GtkWindow *gw_parent)
@@ -43,6 +42,10 @@
  * @param[in] gw_parent  Dialog parent widget
  * @param[in] s_message  Message to show
  * @return    none
+ *
+ * @fn  void about_app_dialog (void);
+ * @brief     Dialog with information about application.
+ * @return    none
  */
 /*----------------------------------------------------------------------------*/
 char   * add_images_folder_dialog (GtkWindow  *gw_parent);
@@ -51,6 +54,8 @@ GSList * add_images_dialog        (GtkWindow  *gw_parent);
 /*----------------------------------------------------------------------------*/
 void     message_dialog_error     (GtkWindow  *gw_parent,
                                    const char *s_message);
+/*----------------------------------------------------------------------------*/
+void     about_app_dialog         (void);
 /*----------------------------------------------------------------------------*/
 #endif
 

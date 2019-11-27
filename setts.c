@@ -21,9 +21,11 @@
  * 
  * @author Michał Bąbik <michalb1981@o2.pl>
  */
+#include <stdint.h>
 #include "jsfun.h"
 #include "setting.h"
 #include "setts.h"
+#include "errs.h"
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Get name of setting in config file, based on enum value.

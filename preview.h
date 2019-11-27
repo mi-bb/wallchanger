@@ -25,7 +25,6 @@
 #define PREVIEW_H
 
 #include <gtk/gtk.h>
-#include "imgs.h"
 /*----------------------------------------------------------------------------*/
 /**
  * @fn  void get_screen_size (int *i_scr_w,

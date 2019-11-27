@@ -1,5 +1,5 @@
 /**
- * @file  wallset.h
+ * @file  wpset.h
  * @copyright Copyright (C) 2019 Michał Bąbik
  *
  * This file is part of Wall Changer.
@@ -21,10 +21,10 @@
  * 
  * @author Michał Bąbik <michalb1981@o2.pl>
  */
-#ifndef WALLSET_H
-#define WALLSET_H
+#ifndef WPSET_H
+#define WPSET_H
 
-#include "settstr.h"
+#include "wallsett.h"
 /*----------------------------------------------------------------------------*/
 /**
  * @fn  int wallpaper_change (WallSett *ws_sett)

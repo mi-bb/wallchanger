@@ -21,6 +21,7 @@
  * 
  * @author Michał Bąbik <michalb1981@o2.pl>
  */
+#include "imgs.h"
 #include "dlgs.h"
 /*----------------------------------------------------------------------------*/
 /**
@@ -104,6 +105,31 @@ message_dialog_error (GtkWindow  *gw_parent,
                                         GTK_MESSAGE_ERROR,
                                         GTK_BUTTONS_CLOSE,
                                         "%s", s_message);
+    gtk_dialog_run (GTK_DIALOG (gw_dialog));
+    gtk_widget_destroy (gw_dialog);
+}
+/*----------------------------------------------------------------------------*/
+void
+about_app_dialog (void)
+{
+    GtkWidget *gw_dialog;
+    const char *s_authors[] = {"Michal Babik <michalb1981@o2.pl> "
+                               "http://init6.pomorze.pl/index-en.html", NULL};
+    const char *s_art[]     = {
+        "https://fr.wikisource.org/wiki/Le_Tour_de_la_France_par_deux_enfants",
+        NULL};
+    gw_dialog = gtk_about_dialog_new ();
+    gtk_about_dialog_set_version (GTK_ABOUT_DIALOG (gw_dialog), "1.3.1");
+    gtk_about_dialog_set_copyright (GTK_ABOUT_DIALOG (gw_dialog), 
+            "Copyright (C) 2019 Michal Babik");
+    gtk_about_dialog_set_comments (GTK_ABOUT_DIALOG (gw_dialog),
+            "Wall Changer is an automatic wallpaper changer.");
+    gtk_about_dialog_set_license_type (GTK_ABOUT_DIALOG (gw_dialog),
+                                       GTK_LICENSE_GPL_3_0);
+    gtk_about_dialog_set_website (GTK_ABOUT_DIALOG (gw_dialog),
+            "https://savannah.nongnu.org/projects/wallchanger/");
+    gtk_about_dialog_set_authors (GTK_ABOUT_DIALOG (gw_dialog), s_authors);
+    gtk_about_dialog_set_artists (GTK_ABOUT_DIALOG (gw_dialog), s_art);
     gtk_dialog_run (GTK_DIALOG (gw_dialog));
     gtk_widget_destroy (gw_dialog);
 }

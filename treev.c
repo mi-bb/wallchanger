@@ -21,6 +21,7 @@
  * 
  * @author Michał Bąbik <michalb1981@o2.pl>
  */
+#include <stdint.h>
 #include "miscfun.h"
 #include "treev.h"
 /*----------------------------------------------------------------------------*/

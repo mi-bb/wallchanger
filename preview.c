@@ -22,6 +22,7 @@
  * @author Michał Bąbik <michalb1981@o2.pl>
  */
 #include <gdk/gdk.h>
+#include "imgs.h"
 #include "preview.h"
 /*----------------------------------------------------------------------------*/
 /**

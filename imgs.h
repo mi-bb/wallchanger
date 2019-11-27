@@ -24,7 +24,6 @@
 #ifndef IMGS_H
 #define IMGS_H
 #include <gdk-pixbuf/gdk-pixbuf.h>
-#include <stdint.h>
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  enum for icons and images
@@ -39,7 +38,9 @@ typedef enum IconImg {
     W_ICON_FLOPPY,
     W_ICON_SCREEN,
     W_ICON_DUPL,
+    W_ICON_INFO,
     W_ICON_EXIT,
+    W_ICON_ABOUT,
     W_IMG_SCREEN_1,
     W_IMG_SCREEN_2,
     W_IMG_SCREEN_3

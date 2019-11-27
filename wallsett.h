@@ -1,5 +1,5 @@
 /**
-* @file  settstr.h
+* @file  wallsett.h
 * @copyright Copyright (C) 2019 Michał Bąbik
 *
 * This file is part of Wall Changer.
@@ -21,8 +21,8 @@
 * 
 * @author Michał Bąbik <michalb1981@o2.pl>
 */
-#ifndef SETTSTR_H
-#define SETTSTR_H
+#ifndef WALLSETT_H
+#define WALLSETT_H
 
 #include <stdint.h>
 #include "flist.h"

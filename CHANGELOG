@@ -13,6 +13,11 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+v1.3.1   2019-11-27  Michal Babik  <michalb1981@o2.pl>
+
+        * Added application information dialog
+        * Some code updates
+
 v1.3.0   2019-11-25  Michal Babik  <michalb1981@o2.pl>
 
         * Changed setting manage method

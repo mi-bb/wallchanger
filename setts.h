@@ -24,7 +24,7 @@
 #ifndef SETTS_H
 #define SETTS_H
 
-#include "settstr.h"
+#include "wallsett.h"
 #include "settlist.h"
 /*----------------------------------------------------------------------------*/
 /**

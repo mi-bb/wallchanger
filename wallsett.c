@@ -1,5 +1,5 @@
 /**
-* @file  settstr.c
+* @file  wallsett.c
 * @copyright Copyright (C) 2019 Michał Bąbik
 *
 * This file is part of Wall Changer.
@@ -25,7 +25,7 @@
 #include <stdlib.h>
 #include "miscfun.h"
 #include "errs.h"
-#include "settstr.h"
+#include "wallsett.h"
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Sets default program settings. 

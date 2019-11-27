@@ -118,7 +118,7 @@ void get_directory_content_append_to_flist (const char *s_path1,
  * @param[out] i_no    Number to append
  * @return     String with name and number to null if could not alloc memory
  *
- * @fn  char * string_replace_in (const char *src_dest,
+ * @fn  char * string_replace_in (const char *s_src,
  *                                const char *s_fr, const char *s_to)
  * @brief  Replace one string with another in a given src_dest string.
  *
@@ -126,9 +126,9 @@ void get_directory_content_append_to_flist (const char *s_path1,
  * string.
  * Return value is the final result.
  *
- * @param[in] src_dest Pointer to source string to examine
- * @param[in] s_fr     Pointer to string with "change from" text
- * @param[in] s_to     Pointer to string with "change to" text
+ * @param[in] s_src  Pointer to source string to examine
+ * @param[in] s_fr   Pointer to string with "change from" text
+ * @param[in] s_to   Pointer to string with "change to" text
  * @return    New string
  *
  * @fn  char *str_ndup (const char *s_str, size_t st_len)
@@ -158,7 +158,7 @@ int    compare_strings          (const char   *a,
 char * string_name_with_number  (const char   *s_name,
                                  const size_t  i_no);
 /*----------------------------------------------------------------------------*/
-char * string_replace_in        (const char   *src_dest,
+char * string_replace_in        (const char   *s_src,
                                  const char   *s_fr,
                                  const char   *s_to);
 /*----------------------------------------------------------------------------*/
