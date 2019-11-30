@@ -167,9 +167,9 @@ char * str_ndup                 (const char   *s_str,
 /*----------------------------------------------------------------------------*/
 char * str_dup                  (const char   *s_str);
 /*----------------------------------------------------------------------------*/
-char * set_up_wallpaper_command (const char *s_cmd,
-                                 const char *s_fname,
-                                 const char *s_sign);
+char * set_up_wallpaper_command (const char   *s_cmd,
+                                 const char   *s_fname,
+                                 const char   *s_sign);
 /*----------------------------------------------------------------------------*/
 #endif
 

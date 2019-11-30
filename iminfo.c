@@ -115,8 +115,10 @@ imageinfo_new_from_file (const char *s_fname)
     else {
         s_p++;
         imageinfo_set_file_name (ii_info, s_p);
+
         s_path = str_ndup (s_fname, s_p - s_fname);
         imageinfo_set_file_path (ii_info, s_path);
+
         free (s_path);
     }
 
@@ -166,11 +168,12 @@ GSList * imageinfo_remove_duplicates (GSList *gsl_iinfo)
         while (gsl_nxt) {
 
             gsl_act = gsl_nxt;
-
             gsl_nxt = gsl_nxt->next;
 
             if (compare_imageitems (gsl_itr->data, gsl_act->data) == 0) {
+
                 gsl_iinfo = g_slist_remove_link (gsl_iinfo, gsl_act);
+
                 imageinfo_free (gsl_act->data);
             }
         }
@@ -191,9 +194,12 @@ file_paths_to_imageinfo (GSList *gsl_files1)
     gsl_files = gsl_files1;
 
     while (gsl_files != NULL) {
+
         ii_info = imageinfo_new_from_file ((char *) gsl_files->data);
+
         if (imageinfo_get_height (ii_info) > 0)
             gsl_iinfo = g_slist_append (gsl_iinfo, ii_info);
+
         gsl_files = gsl_files->next;
     }
     return gsl_iinfo;
@@ -214,8 +220,10 @@ flist_to_imageinfo (FList *fl_files)
     ui_cnt = flist_get_len (fl_files);
 
     for (i = 0; i < ui_cnt; ++i) {
+
         s_fn = flist_get_data (fl_files, i);
         ii_info = imageinfo_new_from_file (s_fn);
+
         if (imageinfo_get_height (ii_info) > 0)
             gsl_iinfo = g_slist_append (gsl_iinfo, ii_info);
     }
@@ -235,8 +243,11 @@ imageinfo_append_to_flist (GSList *gsl_iinfo1,
     gsl_iinfo = gsl_iinfo1;
 
     while (gsl_iinfo != NULL) {
+
         ii_info = gsl_iinfo->data;
+
         flist_insert_data (fl_files, imageinfo_get_full_name (ii_info));
+
         gsl_iinfo = gsl_iinfo->next;
     }
     return 0;

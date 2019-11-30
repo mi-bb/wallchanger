@@ -91,10 +91,12 @@ wallpaper_set_random (WallSett *ws_sett)
 
     /* Get random number */
     i_pos = randomm_get_number (&ws_sett->rm_mem);
+
     /* Get the file name at the random position */
     s_fn = flist_get_data (&ws_sett->fl_files, i_pos);
 
     if (s_fn != NULL) {
+
         /* Save wallpaper as last used in settings */
         wallset_set_last_used_fn (ws_sett, s_fn);
 
@@ -121,6 +123,7 @@ wallpaper_set_next_in_list (WallSett *ws_sett)
     
     /* If last used wallpaper is null get first one on list */
     if (wallset_get_last_used_fn (ws_sett) == NULL) {
+
         i_pos = 0;
         s_next = flist_get_data (&ws_sett->fl_files, i_pos);
 
@@ -137,8 +140,10 @@ wallpaper_set_next_in_list (WallSett *ws_sett)
     i_pos = flist_get_pos (&ws_sett->fl_files,
                            wallset_get_last_used_fn (ws_sett)) + 1;
     if (i_pos >= 0) {
+
         /* Get next wallpaper from list */
         s_next = flist_get_data (&ws_sett->fl_files, i_pos);
+
         /* If last used wallpaper was the last one get first one */
         if (s_next == NULL) {
             s_next = flist_get_data (&ws_sett->fl_files, 0);
@@ -180,6 +185,7 @@ wallpaper_startup_set (WallSett *ws_sett)
     int i_res = 0; /* Function result */
 
     if (wallset_get_last_used_setting (ws_sett)) {
+
         wallpaper_set_file (wallset_get_command (ws_sett),
                             wallset_get_last_used_fn (ws_sett));
     }

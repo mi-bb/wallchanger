@@ -41,8 +41,8 @@ static void stlist_init (SettList *st_list);
  * @param[in]   i_size   Size to reserve
  * @return      Reserve result 0 if OK, 1 if error occurred
  */
-static int stlist_reserve (SettList    *st_list,
-                           const size_t i_size);
+static int stlist_reserve (SettList     *st_list,
+                           const size_t  i_size);
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Get list of Setting objects owned by array with owner id ui_oid
@@ -51,8 +51,8 @@ static int stlist_reserve (SettList    *st_list,
  * @param[in]   ui_oid   Id of owner array
  * @return      SettList list of Setting objects
  */
-static SettList * stlist_get_settings_owned_by (SettList      *st_list,
-                                                const uint64_t ui_oid);
+static SettList * stlist_get_settings_owned_by (SettList       *st_list,
+                                                const uint64_t  ui_oid);
 /*----------------------------------------------------------------------------*/
 static void
 stlist_init (SettList *st_list)
@@ -89,8 +89,8 @@ stlist_get_length (SettList *st_list)
  * @brief  Reserve space for Setting objects in SettList
  */
 static int
-stlist_reserve (SettList    *st_list,
-                const size_t i_size)
+stlist_reserve (SettList     *st_list,
+                const size_t  i_size)
 {
     Setting **s_tmp = NULL;
     uint32_t  i     = 0;
@@ -131,7 +131,7 @@ stlist_reserve (SettList    *st_list,
         }
     }
 
-    if (i_size != 0 && st_list->st_setting == NULL) {
+    if (st_list->st_setting == NULL && i_size != 0) {
         fputs ("Alloc error\n", stderr);
         exit (EXIT_FAILURE);
         /*return ERR_ALLOC;*/
@@ -199,10 +199,10 @@ stlist_insert_setting_to_array (SettList   *st_list,
     Setting *st_array;
     int      i_res = SET_ER_OK;
 
-    if (st_list == NULL || st_val == NULL || s_array_name == NULL)
+    if (st_list == NULL || st_val == NULL)
         return SET_ER_OK;
 
-    if (strcmp (s_array_name, "") == 0) {
+    if (s_array_name == NULL || strcmp (s_array_name, "") == 0) {
         i_res = stlist_insert_setting (st_list, st_val);
     }
     else {

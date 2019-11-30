@@ -55,7 +55,7 @@ GSList * add_images_dialog        (GtkWindow  *gw_parent);
 void     message_dialog_error     (GtkWindow  *gw_parent,
                                    const char *s_message);
 /*----------------------------------------------------------------------------*/
-void     about_app_dialog         (void);
+void     about_app_dialog         (const char *s_ver);
 /*----------------------------------------------------------------------------*/
 #endif
 

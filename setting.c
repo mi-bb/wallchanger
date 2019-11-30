@@ -133,6 +133,7 @@ setting_free (Setting *st_set)
         return;
 
     free (st_set->s_name);
+
     if (setting_get_type (st_set) == SET_VAL_STRING) {
         setting_free_string (st_set);
     }

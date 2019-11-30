@@ -109,8 +109,8 @@ flist_init (FList *fl_list)
  * @brief  Reserve space for items in FList object
  */
 int
-flist_reserve (FList       *fl_list,
-               const size_t i_size)
+flist_reserve (FList        *fl_list,
+               const size_t  i_size)
 {
     char     **s_tmp = NULL;
     uint32_t   i     = 0;
@@ -148,7 +148,7 @@ flist_reserve (FList       *fl_list,
         }
     }
 
-    if (i_size != 0 && fl_list->s_file == NULL) {
+    if (fl_list->s_file == NULL && i_size != 0) {
         fputs ("Alloc error\n", stderr);
         exit (EXIT_FAILURE);
         /*return ERR_ALLOC;*/

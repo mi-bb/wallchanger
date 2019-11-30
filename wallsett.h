@@ -41,7 +41,6 @@ WallSett {
     uint8_t   i_random;      /**< Random background change */
     uint32_t  i_chinterval;  /**< Background change interval */
     uint8_t   i_lastsett;    /**< Remember last used wallpeper */
-    int32_t   i_lastused;    /**< Last used wallpaper index */
 } WallSett;
 /*----------------------------------------------------------------------------*/
 /**
@@ -67,24 +66,6 @@ void wallset_free (WallSett *ws_sett);
  * @return     Config file name
  */
 const char * wallset_get_cfg_fn (WallSett *ws_sett);
-/*----------------------------------------------------------------------------*/
-/**
- * @brief  Set last used wallpaper position on list.
- *
- * @param[out]  ws_sett  WallSett object
- * @param[in]   ui_val   Last used position value to set
- * @return      none
- */
-void wallset_set_last_used_pos (WallSett *ws_sett,
-                                int32_t   ui_val);
-/*----------------------------------------------------------------------------*/
-/**
- * @brief  Get last used position value.
- *
- * @param[in]  ws_sett  WallSett object
- * @return     Last used position value
- */
-int32_t wallset_get_last_used_pos (WallSett *ws_sett);
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Set using last used wallpaper on start.

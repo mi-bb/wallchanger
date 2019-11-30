@@ -207,6 +207,7 @@ make_image_preview (const char *s_fname)
     if (s_fname != NULL) {
         /* Load wallpaper image to pixbuf */
         gp_prev = gdk_pixbuf_new_from_file (s_fname, NULL);
+
         /* Paint wallpaper preview on the background (monitor) pixbuf */
         paint_pbuf_on_pbuf (gp_prev_screen,
                             gp_prev,

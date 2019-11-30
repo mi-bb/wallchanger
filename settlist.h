@@ -37,8 +37,8 @@
  */
 typedef struct
 SettList {
-    Setting **st_setting; /**< List of settings */
-    uint32_t i_cnt;       /**< Number of elements in list */
+    Setting  **st_setting;  /**< List of settings */
+    uint32_t   i_cnt;       /**< Number of elements in list */
 } SettList;
 /*----------------------------------------------------------------------------*/
 /**

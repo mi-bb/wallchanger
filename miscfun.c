@@ -108,7 +108,9 @@ create_resize (void        **v_ptr,
     }
     else {
         if (*v_ptr == NULL) {
+
             *v_ptr = calloc (num, size);
+
             if (*v_ptr == NULL) {
                 fputs ("Alloc error\n", stderr);
                 /*return ERR_ALLOC;*/
@@ -117,6 +119,7 @@ create_resize (void        **v_ptr,
         }
         else {
             s_tmp = realloc (*v_ptr, num * size);
+
             if (s_tmp == NULL) {
                 free (*v_ptr);
                 fputs ("Alloc error\n", stderr);
@@ -192,6 +195,7 @@ check_dir_premissions_create (const char *s_dir)
     }
     /* If directory does not exist */
     else if (i_res == ERR_FILE_EX) {
+
         /* try to create it */
         i_res2 = mkdir (s_dir, 0700);
         if (i_res2 == 0) {
@@ -222,6 +226,7 @@ check_file_premissions_create (const char *s_file)
     }
     /* If file does not exist */
     else if (i_res == ERR_FILE_EX) {
+
         /* try to create it */
         f_file = fopen(s_file, "a+");
         if (f_file == NULL) {
@@ -351,6 +356,7 @@ read_file_data_hash (const char  *s_fname,
         *i_hash = 0;
         return i_res;
     }
+
     *i_hash = hash (*s_buff);
 
     return ERR_OK;
@@ -374,8 +380,11 @@ save_file_data (const char *s_fname,
         return ERR_FILE;
     }
     st_size = strlen(s_buff);
+
     st_res = fwrite (s_buff , sizeof(char), st_size, f_file);
+
     fclose (f_file);
+
     if (st_res != st_size) {
         fputs ("File writting error\n", stderr);
         perror("Error occurred");
@@ -401,7 +410,9 @@ get_directory_content_append_to_flist (const char *s_path1,
 
     /* Reserve 1 more for a slash later */
     create_resize ((void**) &s_path, i_dlen + 2, sizeof (char));
+
     strcpy (s_path, s_path1);
+
     if (s_path[i_dlen-1] != '/') {
         strcat (s_path, "/");
         i_dlen++;
@@ -414,8 +425,10 @@ get_directory_content_append_to_flist (const char *s_path1,
         return; 
     } 
     while ((de = readdir(dr)) != NULL) {
+
         /*if (de->d_type == DT_REG) {*/
         if (de->d_type == 8) {
+
             s_pthfn = calloc ((i_dlen + strlen (de->d_name)+1), sizeof (char));
             if (s_pthfn == NULL) {
                 fputs ("Alloc error\n", stderr);
@@ -424,7 +437,9 @@ get_directory_content_append_to_flist (const char *s_path1,
             }
             strcpy (s_pthfn, s_path);
             strcat (s_pthfn, de->d_name);
+
             flist_insert_data (fl_files, s_pthfn);
+
             free (s_pthfn);
         }
     }
@@ -500,6 +515,7 @@ string_replace_in (const char *s_src,
     srcdst = s_src; 
 
     ui_len = strlen (s_src) + 1;
+
     create_resize ((void**) &s_res, ui_len, sizeof (char));
 
     /* find the first occurence of "replace from" */
@@ -507,12 +523,16 @@ string_replace_in (const char *s_src,
 
     /* while there are "replace from" in source string */
     while (pn != NULL) {
+
         ui_len += (strlen (s_to) - strlen (s_fr));
+
         create_resize ((void**) &s_res, ui_len, sizeof (char));
+
         /* append original text from last found up to new found */
         strncat (s_res, srcdst, pn - srcdst);
         /* append "replace to" */
         strcat (s_res, s_to);
+
         /* change source pointer to "after found" */
         srcdst = pn + strlen (s_fr); 
         /* find another "replace from" str in src */
@@ -570,15 +590,18 @@ set_up_wallpaper_command (const char *s_cmd,
     if (strstr (s_cmd, s_sign) == NULL) {
 
         ui_siz = strlen (s_cmd) + strlen (s_fname) + 4;
+
         create_resize ((void**) &s_res, ui_siz, sizeof (char));
 
-        /* Print command, file name and & to string */
         sprintf (s_res, "%s %s &", s_cmd, s_fname);
     }
     else {
         s_res = string_replace_in (s_cmd, s_sign, s_fname);
+
         ui_siz = strlen (s_res) + 3;
+
         create_resize ((void**) &s_res, ui_siz, sizeof (char));
+
         strcat (s_res, " &");
     }
     return s_res;

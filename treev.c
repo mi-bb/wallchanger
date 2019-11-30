@@ -123,9 +123,13 @@ treeview_replace_data (GtkWidget *gw_tview,
     ui_mcnt = gtk_tree_model_iter_n_children (GTK_TREE_MODEL (gls_list), NULL);
     
     if (ui_icnt == ui_mcnt) {
+
         b_res = gtk_tree_model_get_iter_first (gtm_model, &gti_iter);
+
         while (b_res && gsl_iinfo != NULL) {
+
             liststore_set_item (gls_list, &gti_iter, gsl_iinfo->data);
+
             gsl_iinfo = gsl_iinfo->next;
             b_res = gtk_tree_model_iter_next (gtm_model, &gti_iter);
         }
@@ -184,8 +188,10 @@ treeview_get_data (GtkWidget *gw_tview)
     b_res = gtk_tree_model_get_iter_first (gtm_model, &gti_iter);
 
     while (b_res) {
+
         ii_info = treemodel_get_data (gtm_model, gti_iter);
         gsl_iinfo = g_slist_append (gsl_iinfo, ii_info);
+
         b_res = gtk_tree_model_iter_next (gtm_model, &gti_iter);
     }
     return gsl_iinfo;
@@ -315,8 +321,11 @@ treeview_move_up (GtkWidget *gw_tview)
     gl_list1 = g_list_first (gl_list);
 
     while (gl_list1 != NULL) {
+
         if (gtk_tree_model_get_iter (gtm_model, &gti_iter, gl_list1->data)) {
+
             gti_itern = gti_iter;
+
             if (gtk_tree_model_iter_previous (gtm_model, &gti_itern)) {
                 gtk_list_store_swap (GTK_LIST_STORE (gtm_model),
                                      &gti_iter, &gti_itern);
@@ -351,8 +360,11 @@ treeview_move_down (GtkWidget *gw_tview)
     gl_list1 = g_list_last (gl_list);
 
     while (gl_list1 != NULL) {
+
         if (gtk_tree_model_get_iter (gtm_model, &gti_iter, gl_list1->data)) {
+
             gti_itern = gti_iter;
+
             if (gtk_tree_model_iter_next (gtm_model, &gti_itern)) {
                 gtk_list_store_swap (GTK_LIST_STORE (gtm_model),
                                      &gti_iter, &gti_itern);

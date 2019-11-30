@@ -39,6 +39,9 @@
 #include "flist.h"
 #include "errs.h"
 #include "miscfun.h"
+#define WCAPP_NAME "Wall Changer"
+#define WCAPP_SEP  " v"
+#define WCAPP_VER  "1.3.1"
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Structore to pass widgets and settings to callback
@@ -269,8 +272,7 @@ static void        event_set_wallpaper_pressed (GtkWidget         *widget,
 static void        event_save_settings_pressed (GtkWidget         *widget,
                                                 DialogData        *dd_data);
 /*----------------------------------------------------------------------------*/
-static void        event_about_app_pressed     (GtkWidget         *widget,
-                                                DialogData        *dd_data);
+static void        event_about_app_pressed     (GtkWidget         *widget);
 /*----------------------------------------------------------------------------*/
 static void        event_img_list_activated    (GtkTreeView       *tree_view,
                                                 GtkTreePath       *path,
@@ -298,11 +300,6 @@ static void        activate                    (GtkApplication    *app,
 /*----------------------------------------------------------------------------*/
 static void        shutdown                    (GtkApplication    *app,
                                                 DialogData        *dd_data);
-/*----------------------------------------------------------------------------*/
-static inline const char *
-get_win_title (void) {
-    return "Wall Changer v1.3.1";
-}
 /*----------------------------------------------------------------------------*/
 static inline const char *
 get_default_bg_cmd (void) {
@@ -711,11 +708,14 @@ event_set_wallpaper_pressed (GtkWidget  *widget,
         return;
 
     if (gtk_tree_model_get_iter (gtm_model, &gti_iter, gl_list->data)) {
+
         ii_info = treemodel_get_data (gtm_model, gti_iter);
         s_cmd = get_wallpaper_command (dd_data->gw_command);
+
         if (wallpaper_dialog_set (s_cmd,
                                   imageinfo_get_full_name (ii_info),
                                   dd_data->s_cfg_file) != ERR_OK) {
+
             message_dialog_error (dd_data->gw_window, "Some error occured"); 
         }
         imageinfo_free (ii_info);
@@ -749,10 +749,9 @@ event_save_settings_pressed (GtkWidget  *widget,
  * @brief  About Wall Changer
  */
 static void
-event_about_app_pressed (GtkWidget  *widget,
-                         DialogData *dd_data)
+event_about_app_pressed (GtkWidget  *widget)
 {
-    about_app_dialog ();
+    about_app_dialog (WCAPP_VER);
 }
 /*----------------------------------------------------------------------------*/
 /**
@@ -767,10 +766,13 @@ event_img_list_activated (GtkTreeView       *tree_view,
     GtkTreeModel *gtm_model;
     ImageInfo    *ii_info;
     GtkTreeIter   gti_iter;
+
     gtm_model = gtk_tree_view_get_model (tree_view);
 
     if (gtk_tree_model_get_iter (gtm_model, &gti_iter, path)) {
+
         ii_info = treemodel_get_data (gtm_model, gti_iter);
+
         preview_from_file (gw_img_prev, imageinfo_get_full_name (ii_info));
         imageinfo_free (ii_info);
     }
@@ -969,8 +971,7 @@ create_buttons_widget (GtkWidget  **gw_widget,
                         FALSE, FALSE, 4);
     g_signal_connect (gw_button,
                       "clicked",
-                      G_CALLBACK (event_about_app_pressed),
-                      dd_data);
+                      G_CALLBACK (event_about_app_pressed), NULL);
     gw_button = create_image_button ("", "Exit app", W_ICON_EXIT);
     g_signal_connect_swapped (gw_button,
                               "clicked",
@@ -1115,7 +1116,8 @@ activate (GtkApplication *app,
 
     /* Main window */
     gw_window = gtk_application_window_new (app);
-    gtk_window_set_title (GTK_WINDOW (gw_window), get_win_title ());
+    gtk_window_set_title (GTK_WINDOW (gw_window),
+                          WCAPP_NAME WCAPP_SEP WCAPP_VER);
     g_signal_connect (gw_window, "delete-event",
                   G_CALLBACK (event_on_delete), dd_data);
     dd_data->gw_window = GTK_WINDOW (gw_window);
@@ -1239,10 +1241,14 @@ main (int    argc,
 
     app = gtk_application_new ("pl.pomorze.init6.wallchanger",
                                G_APPLICATION_FLAGS_NONE);
+
     g_signal_connect (app, "activate", G_CALLBACK (activate), &dd_data);
     g_signal_connect (app, "shutdown", G_CALLBACK (shutdown), &dd_data);
-    g_set_application_name ("Wall Changer");
+
+    g_set_application_name (WCAPP_NAME);
+
     status = g_application_run (G_APPLICATION (app), argc, argv);
+
     g_object_unref (app);
 
     return status;

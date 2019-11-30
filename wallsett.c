@@ -38,7 +38,6 @@ wallset_init (WallSett *ws_sett)
     ws_sett->i_random      = 0;    /* Random wallpaper change */
     ws_sett->i_lastsett    = 0;    /* Last used wallpaper setting */
     ws_sett->s_lastused    = NULL; /* Last used wallpaper file name */
-    ws_sett->i_lastused    = -1;   /* Index of last used wallpaper */
     ws_sett->s_bgcmd       = NULL; /* Background set command */
 
     flist_init (&ws_sett->fl_files);
@@ -74,30 +73,11 @@ wallset_get_cfg_fn (WallSett *ws_sett)
 }
 /*----------------------------------------------------------------------------*/
 /**
- * @brief  Set last used wallpaper position on list.
- */
-void
-wallset_set_last_used_pos (WallSett *ws_sett,
-                            int32_t   ui_val)
-{
-    ws_sett->i_lastused = ui_val;
-}
-/*----------------------------------------------------------------------------*/
-/**
- * @brief  Get last used position value.
- */
-int32_t
-wallset_get_last_used_pos (WallSett *ws_sett)
-{
-    return ws_sett->i_lastused;
-}
-/*----------------------------------------------------------------------------*/
-/**
  * @brief  Set using last used wallpaper on start.
  */
 void
 wallset_set_last_used_setting (WallSett *ws_sett,
-                                uint8_t   ui_val)
+                               uint8_t   ui_val)
 {
     ws_sett->i_lastsett = ui_val;
 }
@@ -116,7 +96,7 @@ wallset_get_last_used_setting (WallSett *ws_sett)
  */
 void
 wallset_set_random (WallSett *ws_sett,
-                     uint8_t   ui_val)
+                    uint8_t   ui_val)
 {
     ws_sett->i_random = ui_val;
 }
@@ -135,7 +115,7 @@ wallset_get_random (WallSett *ws_sett)
  */
 void
 wallset_set_interval (WallSett *ws_sett,
-                       uint32_t  ui_val)
+                      uint32_t  ui_val)
 {
     ws_sett->i_chinterval = ui_val;
 }
@@ -154,9 +134,9 @@ wallset_get_interval (WallSett *ws_sett)
  */
 int
 wallset_set_last_used_fn (WallSett   *ws_sett,
-                           const char *s_fn)
+                          const char *s_fn)
 {
-    int i_pos = 0; /* Last used data position in list */
+    //int i_pos = 0; /* Last used data position in list */
 
     if (s_fn == NULL)
         return ERR_OK;
@@ -169,10 +149,8 @@ wallset_set_last_used_fn (WallSett   *ws_sett,
                    sizeof (char));
 
     if (ws_sett->s_lastused != NULL) {
-        strcpy (ws_sett->s_lastused, s_fn);
 
-        i_pos = flist_get_pos (&ws_sett->fl_files, ws_sett->s_lastused);
-        wallset_set_last_used_pos (ws_sett, i_pos);
+        strcpy (ws_sett->s_lastused, s_fn);
     }
     return ERR_OK;
 }
@@ -191,7 +169,7 @@ wallset_get_last_used_fn (WallSett *ws_sett)
  */
 int
 wallset_set_command (WallSett   *ws_sett,
-                      const char *s_cmd)
+                     const char *s_cmd)
 {
     if (s_cmd == NULL)
         return ERR_OK;
@@ -202,6 +180,7 @@ wallset_set_command (WallSett   *ws_sett,
     create_resize ((void**) &ws_sett->s_bgcmd,
                    strlen (s_cmd) + 1,
                    sizeof (char));
+
     strcpy (ws_sett->s_bgcmd, s_cmd);
 
     return ERR_OK;

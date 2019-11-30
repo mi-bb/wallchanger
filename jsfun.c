@@ -122,9 +122,13 @@ js_json_array_to_stlist (json_object *j_array,
         j_val = json_object_array_get_idx (j_array, i);
 
         if (j_val != NULL) {
+
             s_name = string_name_with_number (s_array_name, i);
+
             st_set = js_json_object_to_setting (j_val, s_name, st_list);
+
             free (s_name);
+
             if (st_set != NULL)
                 stlist_insert_setting_to_array (st_list, st_set, s_array_name);
         }
@@ -190,7 +194,9 @@ js_json_string_to_settlist (const char *s_buff)
     j_obj = json_tokener_parse (s_buff);
 
     json_object_object_foreach(j_obj, key, val) {
+
         st_set = js_json_object_to_setting (val, key, st_list);
+
         if (st_set != NULL)
             stlist_insert_setting (st_list, st_set);
     }
@@ -216,6 +222,7 @@ js_stlist_array_to_json (SettList    *st_list,
     ui_cnt = stlist_get_length (st_array_list);
 
     for (i = 0; i < ui_cnt; ++i) {
+
         st_val = stlist_get_setting_at_pos (st_array_list, i);
 
         j_obj = js_setting_to_json_object (st_list, st_val);
@@ -240,9 +247,6 @@ js_setting_to_json_object (SettList *st_list,
     switch (i_type) {
         case SET_VAL_DOUBLE:
             j_obj = json_object_new_double (setting_get_double (st_sett));
-            return j_obj;
-        case SET_VAL_INT:
-            j_obj = json_object_new_int (setting_get_int (st_sett));
             return j_obj;
         case SET_VAL_UINT32:
             j_obj = json_object_new_int (setting_get_uint32 (st_sett));
@@ -281,8 +285,11 @@ js_settlist_append_to_json_object (SettList    *st_list,
     ui_cnt = stlist_get_length (st_main);
 
     for (i = 0; i < ui_cnt; ++i) {
+
         st_sett = stlist_get_setting_at_pos (st_main, i);
+
         j_val = js_setting_to_json_object (st_list, st_sett);
+
         json_object_object_add (j_obj, setting_get_name (st_sett), j_val);
     }
     stlist_free (st_main);

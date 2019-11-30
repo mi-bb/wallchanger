@@ -48,10 +48,6 @@ get_setting_name (int i_val)
             s_res = "Last used wallpaper file";
             break;
 
-        case SETTING_LAST_USED_POS:
-            s_res = "Last used wallpaper pos";
-            break;
-
         case SETTING_WIN_WIDTH:
             s_res = "Window width";
             break;
@@ -167,8 +163,11 @@ settings_update_last_used (const char *s_last_used,
     st_list = stlist_new_list ();
     st_sett = setting_new_string (s_last_used,
                                   get_setting_name (SETTING_LAST_USED_STR));
+
     stlist_insert_setting (st_list, st_sett);
+
     i_res = js_settings_check_update_file (st_list, s_fname);
+
     stlist_free (st_list);
 
     return i_res;
@@ -188,10 +187,15 @@ settings_update_window_size (const int   i_w,
 
     st_list = stlist_new_list ();
     st_sett = setting_new_uint32 (i_w, get_setting_name (SETTING_WIN_WIDTH));
+
     stlist_insert_setting (st_list, st_sett);
+
     st_sett = setting_new_uint32 (i_h, get_setting_name (SETTING_WIN_HEIGHT));
+
     stlist_insert_setting (st_list, st_sett);
+
     i_res = js_settings_check_update_file (st_list, s_cfg_file);
+
     stlist_free (st_list);
 
     return i_res;
