@@ -115,10 +115,10 @@ void flist_set_data    (FList          *fl_list,
  *            this name shoule be later freed
  */
 /*----------------------------------------------------------------------------*/
-const char * flist_get_data     (FList          *fl_list,
+const char * flist_get_data     (const FList    *fl_list,
                                  const uint32_t  i_pos);
 /*----------------------------------------------------------------------------*/
-char       * flist_get_data_new (FList          *fl_list,
+char       * flist_get_data_new (const FList    *fl_list,
                                  const uint32_t  i_pos);
 /*----------------------------------------------------------------------------*/
 /**
@@ -127,7 +127,7 @@ char       * flist_get_data_new (FList          *fl_list,
  * @param[in] fl_list  FList object
  * @return    FList length
  */
-uint32_t flist_get_len (FList *fl_list);
+uint32_t flist_get_len (const FList *fl_list);
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Get position of given name in FList
@@ -137,8 +137,8 @@ uint32_t flist_get_len (FList *fl_list);
  * @return    Position of item in list or -1 if not found, empty list or
  *            item to find if null
  */
-int32_t flist_get_pos (FList      *fl_list,
-                       const char *s_fn);
+int32_t flist_get_pos (const FList *fl_list,
+                       const char  *s_fn);
 /*----------------------------------------------------------------------------*/
 /**
 * @brief  Print FList data
@@ -146,7 +146,7 @@ int32_t flist_get_pos (FList      *fl_list,
 * @param[in] fl_list  FList object
 * @return    none
 */
-void flist_print_data (FList *fl_list);
+void flist_print_data (const FList *fl_list);
 /*----------------------------------------------------------------------------*/
 /**
  * @fn  void flist_remove_duplicates (FList *fl_list)

@@ -35,7 +35,7 @@
 #include "miscfun.h"
 /*----------------------------------------------------------------------------*/
 /**
- * @fn  static int check_permissions (const char *s_name, int i_mode)
+ * @fn  static int check_permissions (const char *s_name, const int i_mode)
  * @brief     Check permissions, existence of file or directory. 
  * @param[in] s_name  Name of file / directory to check
  * @param[in] i_mode  Permissions to check
@@ -63,7 +63,7 @@
  */
 /*----------------------------------------------------------------------------*/
 static int check_permissions             (const char *s_name,
-                                          int         i_mode);
+                                          const int   i_mode);
 /*----------------------------------------------------------------------------*/
 static int check_file_permissions        (const char *s_file);
 /*----------------------------------------------------------------------------*/
@@ -139,7 +139,7 @@ create_resize (void        **v_ptr,
  */
 static int
 check_permissions (const char *s_name,
-                   int         i_mode)
+                   const int   i_mode)
 {
     /* check if file/dir exists */
     if (access (s_name, F_OK) == 0) {
@@ -321,7 +321,7 @@ read_file_data (const char  *s_fname,
     }
 
     /* allocate memory to contain the whole file */
-    *s_buff = calloc (l_size+1, sizeof (char));
+    *s_buff = calloc ((size_t) l_size+1, sizeof (char));
     if (*s_buff == NULL) {
         fputs ("Alloc error\n", stderr);
         perror("Error occurred");
@@ -330,7 +330,7 @@ read_file_data (const char  *s_fname,
     }
 
     /* copy the file into the buffer */
-    st_res = fread (*s_buff, 1, l_size, f_file);
+    st_res = fread (*s_buff, 1, (size_t) l_size, f_file);
     if (st_res != (size_t) l_size) {
         fputs ("File reading error\n", stderr);
         perror("Error occurred");
@@ -507,38 +507,44 @@ string_replace_in (const char *s_src,
                    const char *s_fr,
                    const char *s_to)
 {
-    const char *srcdst = NULL; /* copy s_src pointer */
-    const char *pn     = NULL; /* find string pointer */
-    char       *s_res  = NULL; /* result string */
-    size_t      ui_len = 0;    /* length to allocate */
+    const char *sp      = NULL; /* copy s_src pointer */
+    const char *pn      = NULL; /* find string pointer */
+    char       *s_res   = NULL; /* result string */
+    size_t      ui_len  = 0;    /* length to allocate */
+    size_t      ui_flen = 0;    /* length of s_fr */
+    size_t      ui_tlen = 0;    /* length if s_to */
 
-    srcdst = s_src; 
+    sp = s_src; 
 
-    ui_len = strlen (s_src) + 1;
+    ui_flen = strlen (s_fr);
+    ui_tlen = strlen (s_to);
+    ui_len  = strlen (s_src) + 1;
 
     create_resize ((void**) &s_res, ui_len, sizeof (char));
 
     /* find the first occurence of "replace from" */
-    pn = strstr (srcdst, s_fr); 
+    pn = strstr (sp, s_fr); 
 
     /* while there are "replace from" in source string */
     while (pn != NULL) {
 
-        ui_len += (strlen (s_to) - strlen (s_fr));
+        ui_len += ui_tlen;
+        ui_len -= ui_flen;
 
         create_resize ((void**) &s_res, ui_len, sizeof (char));
 
         /* append original text from last found up to new found */
-        strncat (s_res, srcdst, pn - srcdst);
+        strncat (s_res, sp, pn - sp);
         /* append "replace to" */
         strcat (s_res, s_to);
 
         /* change source pointer to "after found" */
-        srcdst = pn + strlen (s_fr); 
+        sp = pn + ui_flen; 
         /* find another "replace from" str in src */
-        pn = strstr (srcdst, s_fr);  
+        pn = strstr (sp, s_fr);  
     }
-    strcat (s_res, srcdst);
+    strcat (s_res, sp);
+    printf ("%ld %ld %s\n", ui_len, strlen (s_res), s_res);
     return s_res;
 }
 /*----------------------------------------------------------------------------*/
@@ -546,8 +552,8 @@ string_replace_in (const char *s_src,
  * @brief  Duplicate n bytes of string.
  */
 char *
-str_ndup (const char *s_str,
-          size_t      st_len)
+str_ndup (const char   *s_str,
+          const size_t  st_len)
 {
     char *s_res = NULL;
 

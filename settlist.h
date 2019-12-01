@@ -68,7 +68,7 @@ SettList * stlist_new_list (void);
  * @param[in]  st_list  SettList list of settings
  * @return     Number of settings in list
  */
-uint32_t stlist_get_length (SettList *st_list);
+uint32_t stlist_get_length (const SettList *st_list);
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Free SettList list
@@ -118,40 +118,40 @@ int stlist_insert_setting_to_array (SettList   *st_list,
                                     const char *s_array_name);
 /*----------------------------------------------------------------------------*/
 /**
- * @fn  int32_t stlist_get_setting_pos (SettList   *st_list,
- *                                      const char *s_name)
+ * @fn  int32_t stlist_get_setting_pos (const SettList *st_list,
+ *                                      const char     *s_name)
  * @brief     Get position of setting with name s_name on list
  * @param[in] st_list  SettList list of settings
  * @param[in] s_name   Name of setting
  * @return    Position in list or -1 if not found
  *
- * @fn  Setting * stlist_get_setting_at_pos (SettList       *st_list,
+ * @fn  Setting * stlist_get_setting_at_pos (const SettList *st_list,
  *                                           const uint32_t  ui_pos)
  * @brief     Get Setting object at given position in SettList
  * @param[in] st_list  SettList list of settings
  * @param[in] ui_pos   Position of setting to get
  * @return    Setting object or null
  *
- * @fn  Setting * stlist_get_setting_with_name (SettList   *st_list,
- *                                              const char *s_name)
+ * @fn  Setting * stlist_get_setting_with_name (const SettList *st_list,
+ *                                              const char     *s_name)
  * @brief     Get Setting object with name provided in s_name
  * @param[in] st_list  SettList list of settings
  * @param[in] s_name   Name of setting to get
  * @return    Setting object or null
  */
 /*----------------------------------------------------------------------------*/
-int32_t   stlist_get_setting_pos       (SettList       *st_list,
+int32_t   stlist_get_setting_pos       (const SettList *st_list,
                                         const char     *s_name);
 /*----------------------------------------------------------------------------*/
-Setting * stlist_get_setting_at_pos    (SettList       *st_list,
+Setting * stlist_get_setting_at_pos    (const SettList *st_list,
                                         const uint32_t  ui_pos);
-/*----------------------------------------------------------------------------*/
-Setting * stlist_get_setting_with_name (SettList       *st_list,
+
+Setting * stlist_get_setting_with_name (const SettList *st_list,
                                         const char     *s_name);
 /*----------------------------------------------------------------------------*/
 /**
- * @fn  SettList * stlist_get_settings_in_array_name (SettList   *st_list,
- *                                                    const char *s_name)
+ * @fn  SettList * stlist_get_settings_in_array_name (const SettList *st_list,
+ *                                                    const char     *s_name)
  * @brief  Get SettList list of Setting objects stored in array setting.
  *
  * Functions returns list of Setting objects assigned to an array with
@@ -164,8 +164,8 @@ Setting * stlist_get_setting_with_name (SettList       *st_list,
  * @param[in]  s_name   Name of array to get objects
  * @return     SettList list or null
  *
- * @fn  SettList * stlist_get_settings_in_array_obj (SettList *st_list,
- *                                                   Setting  *st_array)
+ * @fn  SettList * stlist_get_settings_in_array_obj (const SettList *st_list,
+ *                                                   const Setting  *st_array)
  * @brief  Get SettList list of Setting objects stored in array setting.
  *
  * Function works like the previous one, only difference is that an array is
@@ -176,7 +176,7 @@ Setting * stlist_get_setting_with_name (SettList       *st_list,
  * @param[in]  st_array Array type Setting to get objects
  * @return     SettList list or null
  *
- * @fn  SettList * stlist_get_settings_main (SettList *st_list)
+ * @fn  SettList * stlist_get_settings_main (const SettList *st_list)
  * @brief  Get Setting objects (vals and arrays) stord in SettList top level.
  *
  * Function returns list of settings (values and arrays) from st_list
@@ -189,13 +189,13 @@ Setting * stlist_get_setting_with_name (SettList       *st_list,
  * @return     SettList list or null
  */
 /*----------------------------------------------------------------------------*/
-SettList * stlist_get_settings_in_array_name (SettList   *st_list,
-                                              const char *s_name);
+SettList * stlist_get_settings_in_array_name (const SettList *st_list,
+                                              const char     *s_name);
+
+SettList * stlist_get_settings_in_array_obj  (const SettList *st_list,
+                                              const Setting  *st_array);
 /*----------------------------------------------------------------------------*/
-SettList * stlist_get_settings_in_array_obj  (SettList   *st_list,
-                                              Setting    *st_array);
-/*----------------------------------------------------------------------------*/
-SettList * stlist_get_settings_main          (SettList   *st_list);
+SettList * stlist_get_settings_main          (const SettList *st_list);
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Print content of SettList list
@@ -203,7 +203,7 @@ SettList * stlist_get_settings_main          (SettList   *st_list);
  * @param[in]  st_list  SettList list of Setting objects
  * @return     None
  */
-void stlist_print_content (SettList *st_list);
+void stlist_print_content (const SettList *st_list);
 /*----------------------------------------------------------------------------*/
 #endif
 

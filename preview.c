@@ -35,9 +35,9 @@
  *                      painted
  * @return     Pixbuf with preview screeen
  *
- * @fn  static void paint_pbuf_on_pbuf (GdkPixbuf    *gp_dest,
- *                                      GdkPixbuf    *gp_src,
- *                                      GdkRectangle *gr_area)
+ * @fn  static void paint_pbuf_on_pbuf (GdkPixbuf          *gp_dest,
+ *                                      const GdkPixbuf    *gp_src,
+ *                                      const GdkRectangle *gr_area)
  * @brief       Paint pixbuf on another pixbuf.
  *
  * Paint GdkPixbuf image pointed by gp_src on GdkPixbuf pointed by gp_dest.
@@ -60,13 +60,13 @@
  * @return     Pixbuf with preview image.
  */
 /*----------------------------------------------------------------------------*/
-static GdkPixbuf * make_prev_screen_pbuf (GdkRectangle *gr_rect);
+static GdkPixbuf * make_prev_screen_pbuf (GdkRectangle       *gr_rect);
 /*----------------------------------------------------------------------------*/
-static void        paint_pbuf_on_pbuf    (GdkPixbuf    *gp_dest,
-                                          GdkPixbuf    *gp_src,
-                                          GdkRectangle *gr_area);
+static void        paint_pbuf_on_pbuf    (GdkPixbuf          *gp_dest,
+                                          const GdkPixbuf    *gp_src,
+                                          const GdkRectangle *gr_area);
 /*----------------------------------------------------------------------------*/
-static GdkPixbuf * make_image_preview    (const char   *s_fname);
+static GdkPixbuf * make_image_preview    (const char         *s_fname);
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Paint a preview screen.
@@ -168,9 +168,9 @@ make_prev_screen_pbuf (GdkRectangle *gr_rect)
  * @brief  Paint pixbuf on another pixbuf.
  */
 static void
-paint_pbuf_on_pbuf (GdkPixbuf    *gp_dest,
-                    GdkPixbuf    *gp_src,
-                    GdkRectangle *gr_area)
+paint_pbuf_on_pbuf (GdkPixbuf          *gp_dest,
+                    const GdkPixbuf    *gp_src,
+                    const GdkRectangle *gr_area)
 {
     double d_sc_x = 0;  /* x direction scale factor */
     double d_sc_y = 0;  /* y direction scale factor */

@@ -31,7 +31,7 @@
  * @brief  Get name of setting in config file, based on enum value.
  */
 const char *
-get_setting_name (int i_val)
+get_setting_name (const int i_val)
 {
     const char *s_res = NULL;
 
@@ -88,8 +88,8 @@ settings_read (const char *s_fname,
  * @brief  Convert settings in SettList format to WallSett format.
  */
 void
-settlist_to_wallset (SettList *st_list,
-                     WallSett *ws_sett)
+settlist_to_wallset (const SettList *st_list,
+                     WallSett       *ws_sett)
 {
     Setting    *st_sett;
     SettList   *sl_walls;
@@ -161,6 +161,7 @@ settings_update_last_used (const char *s_last_used,
     int       i_res = ERR_OK;
 
     st_list = stlist_new_list ();
+
     st_sett = setting_new_string (s_last_used,
                                   get_setting_name (SETTING_LAST_USED_STR));
 
@@ -186,11 +187,14 @@ settings_update_window_size (const int   i_w,
     int       i_res = ERR_OK;
 
     st_list = stlist_new_list ();
-    st_sett = setting_new_uint32 (i_w, get_setting_name (SETTING_WIN_WIDTH));
+
+    st_sett = setting_new_uint32 ((uint32_t) i_w,
+                                  get_setting_name (SETTING_WIN_WIDTH));
 
     stlist_insert_setting (st_list, st_sett);
 
-    st_sett = setting_new_uint32 (i_h, get_setting_name (SETTING_WIN_HEIGHT));
+    st_sett = setting_new_uint32 ((uint32_t) i_h,
+                                  get_setting_name (SETTING_WIN_HEIGHT));
 
     stlist_insert_setting (st_list, st_sett);
 
@@ -206,9 +210,9 @@ settings_update_window_size (const int   i_w,
  *         stored in settings file.
  */
 int
-settings_check_update (SettList    *st_list,
-                       const char  *s_fname,
-                       char       **s_out_buff)
+settings_check_update (const SettList  *st_list,
+                       const char      *s_fname,
+                       char           **s_out_buff)
 {
     return  js_settings_check_for_update (st_list, s_fname, s_out_buff);
 }
@@ -228,8 +232,8 @@ settings_update_file (const char *s_buff,
  *         if they are.
  */
 int
-settings_check_update_file (SettList   *st_list,
-                            const char *s_fname)
+settings_check_update_file (const SettList *st_list,
+                            const char     *s_fname)
 {
     return js_settings_check_update_file (st_list, s_fname);
 }

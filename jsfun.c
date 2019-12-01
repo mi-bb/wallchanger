@@ -31,83 +31,84 @@
 #include "jsfun.h"
 /*----------------------------------------------------------------------------*/
 /**
- * @fn  static void js_json_array_to_stlist (json_object *j_array,
-                                             SettList    *st_list,
-                                             const char  *s_array_name)
+ * @fn  static void js_json_array_to_stlist (const json_object *j_array,
+ *                                           SettList          *st_list,
+ *                                           const char        *s_array_name)
  * @brief      Get items from Json array and add them to SettList object.
  * @param[in]  j_array       Array of Json objects
  * @param[in]  st_list       SettList list to add elements
  * @param[in]  s_array_name  Name of array for the elements
  * @return     none
  *
- * @fn  static void js_stlist_array_to_json (SettList    *st_list,
-                                             Setting     *st_sett,
-                                             json_object *j_array)
+ * @fn  static void js_stlist_array_to_json (const SettList *st_list,
+ *                                           const Setting  *st_sett,
+ *                                           json_object    *j_array)
  * @brief      Get items from Setting array and save them in Json array object.
  * @param[in]  st_list  List of all settings
  * @param[in]  st_sett  Array Setting to process
  * @param[out] j_array  Json aray object to insert data
  * @return     None
- */
-/*----------------------------------------------------------------------------*/
-static void js_json_array_to_stlist (json_object *j_array,
-                                     SettList    *st_list,
-                                     const char  *s_array_name);
-/*----------------------------------------------------------------------------*/
-static void js_stlist_array_to_json (SettList    *st_list,
-                                     Setting     *st_sett,
-                                     json_object *j_array);
-/*----------------------------------------------------------------------------*/
-/**
- * @fn  static Setting * js_json_object_to_setting (json_object *val,
- *                                                  const char  *s_name,
- *                                                  SettList    *st_list)
+ *
+ * @fn  static Setting * js_json_obj_to_setting (json_object *val,
+ *                                               const char  *s_name,
+ *                                               SettList    *st_list)
  * @brief      Convert Json object to Setting object
  * @param[in]  val      Json object to process
  * @param[in]  s_name   Destination Setting name
  * @param[out] st_list  SettList to insert settings
  * @return     Setting object
  *
- * @fn  static json_object * js_setting_to_json_object (SettList *st_list,
- *                                                      Setting  *st_sett)
+ * @fn  static json_object * js_setting_to_json_obj (const SettList *st_list,
+ *                                                   const Setting  *st_sett)
  * @brief      Convert Setting object to Json object
  * @param[in]  st_list   List of all settings
  * @param[in]  st_sett   Setting to examine
  * @return     Json object
- */
-/*----------------------------------------------------------------------------*/
-static Setting     * js_json_object_to_setting (json_object *val,
-                                                const char  *s_name,
-                                                SettList    *st_list);
-/*----------------------------------------------------------------------------*/
-static json_object * js_setting_to_json_object (SettList    *st_list,
-                                                Setting     *st_sett);
-/*----------------------------------------------------------------------------*/
-/**
- * @brief  Convert raw Json data string to SettList list of Setting objects.
  *
- * @param[in]  s_buff  String with Json data
- * @return     SettList list
  */
-static SettList * js_json_string_to_settlist (const char *s_buff);
+/*----------------------------------------------------------------------------*/
+static void          js_json_array_to_stlist (const json_object  *j_array,
+                                              SettList           *st_list,
+                                              const char         *s_array_name);
+/*----------------------------------------------------------------------------*/
+static void          js_stlist_array_to_json (const SettList     *st_list,
+                                              const Setting      *st_sett,
+                                              json_object        *j_array);
+/*----------------------------------------------------------------------------*/
+static Setting     * js_json_obj_to_setting  (json_object        *val,
+                                              const char         *s_name,
+                                              SettList           *st_list);
+/*----------------------------------------------------------------------------*/
+static json_object * js_setting_to_json_obj  (const SettList     *st_list,
+                                              const Setting      *st_sett);
 /*----------------------------------------------------------------------------*/
 /**
+ * @fn  static SettList * js_json_string_to_stlist (const char *s_buff)
+ * @brief     Convert raw Json data string to SettList list of Setting objects.
+ * @param[in] s_buff  String with Json data
+ * @return    SettList list
+ *
+ * @fn  static void js_stlist_add_to_json_obj (const SettList *st_list,
+ *                                             json_object    *j_obj)
  * @brief  Convert Setting items from SettList and put them in Json object
  *
  * @param[in]  st_list  List of Setting items
  * @param[out] j_obj    Json object to insert data
  * @return     none
  */
-static void js_settlist_append_to_json_object (SettList    *st_list,
-                                               json_object *j_obj);
+/*----------------------------------------------------------------------------*/
+static SettList * js_json_string_to_stlist  (const char     *s_buff);
+/*----------------------------------------------------------------------------*/
+static void       js_stlist_add_to_json_obj (const SettList *st_list,
+                                             json_object    *j_obj);
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Get items from Json array and add them to SettList object.
  */
 static void
-js_json_array_to_stlist (json_object *j_array,
-                         SettList    *st_list,
-                         const char  *s_array_name)
+js_json_array_to_stlist (const json_object *j_array,
+                         SettList          *st_list,
+                         const char        *s_array_name)
 {
     json_object *j_val;
     Setting     *st_set;
@@ -125,7 +126,7 @@ js_json_array_to_stlist (json_object *j_array,
 
             s_name = string_name_with_number (s_array_name, i);
 
-            st_set = js_json_object_to_setting (j_val, s_name, st_list);
+            st_set = js_json_obj_to_setting (j_val, s_name, st_list);
 
             free (s_name);
 
@@ -139,9 +140,9 @@ js_json_array_to_stlist (json_object *j_array,
  * @brief  Convert Json object to Setting object
  */
 static Setting *
-js_json_object_to_setting (json_object *val,
-                           const char  *s_name,
-                           SettList    *st_list)
+js_json_obj_to_setting (json_object *val,
+                        const char  *s_name,
+                        SettList    *st_list)
 {
     Setting *st_set;
     int      i_val_type = 0;
@@ -149,27 +150,35 @@ js_json_object_to_setting (json_object *val,
     i_val_type = json_object_get_type (val);
 
     switch (i_val_type) {
+
         case json_type_null:
             return NULL;
+
         case json_type_boolean:
             st_set = setting_new_int8 (json_object_get_int (val), s_name);
             return st_set;
+
         case json_type_double:
             st_set = setting_new_double (json_object_get_double (val), s_name);
             return st_set;
+
         case json_type_int:
             st_set = setting_new_uint32 (json_object_get_int (val), s_name);
             return st_set;
+
         case json_type_string:
             st_set = setting_new_string (json_object_get_string (val), s_name);
             return st_set;
+
         case json_type_object:
             return NULL;
+
         case json_type_array:
             st_set = setting_new_array (s_name);
             stlist_insert_setting (st_list, st_set);
             js_json_array_to_stlist (val, st_list, s_name);
             return NULL;
+
         default:
             break;
     }
@@ -180,7 +189,7 @@ js_json_object_to_setting (json_object *val,
  * @brief  Convert raw Json data string to SettList list of Setting objects.
  */
 static SettList *
-js_json_string_to_settlist (const char *s_buff)
+js_json_string_to_stlist (const char *s_buff)
 {
     json_object *j_obj;
     SettList    *st_list;
@@ -195,7 +204,7 @@ js_json_string_to_settlist (const char *s_buff)
 
     json_object_object_foreach(j_obj, key, val) {
 
-        st_set = js_json_object_to_setting (val, key, st_list);
+        st_set = js_json_obj_to_setting (val, key, st_list);
 
         if (st_set != NULL)
             stlist_insert_setting (st_list, st_set);
@@ -208,9 +217,9 @@ js_json_string_to_settlist (const char *s_buff)
  * @brief  Get items from Setting array and save them in Json array object.
  */
 static void
-js_stlist_array_to_json (SettList    *st_list,
-                               Setting     *st_sett,
-                               json_object *j_array)
+js_stlist_array_to_json (const SettList *st_list,
+                         const Setting  *st_sett,
+                         json_object    *j_array)
 {
     Setting     *st_val;
     json_object *j_obj;
@@ -225,7 +234,7 @@ js_stlist_array_to_json (SettList    *st_list,
 
         st_val = stlist_get_setting_at_pos (st_array_list, i);
 
-        j_obj = js_setting_to_json_object (st_list, st_val);
+        j_obj = js_setting_to_json_obj (st_list, st_val);
 
         json_object_array_add (j_array, j_obj);
     }
@@ -236,8 +245,8 @@ js_stlist_array_to_json (SettList    *st_list,
  * @brief  Convert Setting object to Json object
  */
 static json_object *
-js_setting_to_json_object (SettList *st_list,
-                           Setting  *st_sett)
+js_setting_to_json_obj (const SettList *st_list,
+                        const Setting  *st_sett)
 {
     json_object *j_obj;
     SetValType   i_type = 0;
@@ -245,19 +254,24 @@ js_setting_to_json_object (SettList *st_list,
     i_type = setting_get_type (st_sett);
 
     switch (i_type) {
+
         case SET_VAL_DOUBLE:
             j_obj = json_object_new_double (setting_get_double (st_sett));
             return j_obj;
+
         case SET_VAL_UINT32:
             j_obj = json_object_new_int (setting_get_uint32 (st_sett));
             return j_obj;
+
         case SET_VAL_STRING:
             j_obj = json_object_new_string (setting_get_string (st_sett));
             return j_obj;
+
         case SET_VAL_ARRAY:
             j_obj = json_object_new_array();
             js_stlist_array_to_json (st_list, st_sett, j_obj);
             return j_obj;
+
         default:
             break;
     }
@@ -268,8 +282,8 @@ js_setting_to_json_object (SettList *st_list,
  * @brief  Convert Setting items from SettList and put them in Json object
  */
 static void
-js_settlist_append_to_json_object (SettList    *st_list,
-                                   json_object *j_obj)
+js_stlist_add_to_json_obj (const SettList *st_list,
+                           json_object    *j_obj)
 {
     json_object *j_val;
     SettList    *st_main;
@@ -288,7 +302,7 @@ js_settlist_append_to_json_object (SettList    *st_list,
 
         st_sett = stlist_get_setting_at_pos (st_main, i);
 
-        j_val = js_setting_to_json_object (st_list, st_sett);
+        j_val = js_setting_to_json_obj (st_list, st_sett);
 
         json_object_object_add (j_obj, setting_get_name (st_sett), j_val);
     }
@@ -312,7 +326,7 @@ js_settings_read (const char *s_fname,
     if (s_buff == NULL)
         return NULL;
 
-    st_list = js_json_string_to_settlist (s_buff);
+    st_list = js_json_string_to_stlist (s_buff);
 
     free (s_buff);
 
@@ -324,9 +338,9 @@ js_settings_read (const char *s_fname,
  *         stored in settings file.
  */
 int
-js_settings_check_for_update (SettList    *st_list,
-                              const char  *s_fname,
-                              char       **s_out_buff)
+js_settings_check_for_update (const SettList  *st_list,
+                              const char      *s_fname,
+                              char           **s_out_buff)
 {
     json_object *j_obj;
     const char  *s_jbuff = NULL;   /* Json object as string */
@@ -349,7 +363,7 @@ js_settings_check_for_update (SettList    *st_list,
 
     free (s_buff);
 
-    js_settlist_append_to_json_object (st_list, j_obj);
+    js_stlist_add_to_json_obj (st_list, j_obj);
 
     s_jbuff = json_object_to_json_string (j_obj);
 
@@ -381,8 +395,8 @@ js_settings_update_file (const char *s_buff,
  *         if they are.
  */
 int
-js_settings_check_update_file (SettList   *st_list,
-                               const char *s_fname)
+js_settings_check_update_file (const SettList *st_list,
+                               const char     *s_fname)
 {
     char *s_buff = NULL;
     int   i_res  = 0;

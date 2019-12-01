@@ -44,118 +44,110 @@ WallSett {
 } WallSett;
 /*----------------------------------------------------------------------------*/
 /**
- * @brief  Sets default program settings. 
+ * @fn  int wallset_init (WallSett *ws_sett)
+ * @brief         Sets default program settings. 
+ * @param[in,out] ws_sett  Program settings
+ * @return        Setting status
  *
- * @param[in,out]  ws_sett  Program settings
- * @return         Setting status
+ * @fn  void wallset_free (WallSett *ws_sett)
+ * @brief      Free allocated memory.
+ * @param[out] ws_sett  Pointer to WallSett with all settings
+ * @return     none
  */
+/*----------------------------------------------------------------------------*/
+void wallset_free (WallSett *ws_sett);
+/*----------------------------------------------------------------------------*/
 int wallset_init (WallSett *ws_sett);
 /*----------------------------------------------------------------------------*/
 /**
- * @brief  Free allocated memory.
+ * @fn  void wallset_set_last_used_setting (WallSett      *ws_sett,
+ *                                          const uint8_t  ui_val)
+ * @brief      Set using last used wallpaper on start.
+ * @param[out] ws_sett  WallSett object
+ * @param[in]  ui_val   Set last used wallpaper value
+ * @return     none
  *
- * @param[out]  ws_sett  Pointer to WallSett with all settings
- * @return      none
+ * @fn  uint8_t wallset_get_last_used_setting (const WallSett *ws_sett)
+ * @brief     Get using last used wallpaper on start.
+ * @param[in] ws_sett  WallSett object
+ * @return    Last used setting
+ *
+ * @fn  void wallset_set_random (WallSett *ws_sett, const uint8_t  ui_val)
+ * @brief      Set random wallpaper select value.
+ * @param[out] ws_sett  WallSett object
+ * @param[in]  ui_val   Random wallpaper setting to set
+ * @return     none
+ *
+ * @fn  uint8_t wallset_get_random (const WallSett *ws_sett)
+ * @brief     Get random wallpaper value.
+ * @param[in] ws_sett  WallSett object
+ * @return    Random wallpaper setting value
+ *
+ * @fn  void wallset_set_interval (WallSett *ws_sett, const uint32_t ui_val)
+ * @brief      Set wallpaper change interval value.
+ * @param[out] ws_sett  WallSett object
+ * @param[in]  ui_val   Wallpaper change interval value to set
+ * @return     none
+ *
+ * @fn  uint32_t wallset_get_interval (const WallSett *ws_sett)
+ * @brief     Get wallpaper change interval value.
+ * @param[in] ws_sett  WallSett object
+ * @return    Wallpaper change interval value
+ * @fn  int wallset_set_last_used_fn (WallSett *ws_sett, const char *s_fn)
+ *
+ * @brief         Change last used wallpaper file name in program settings. 
+ * @param[in,out] ws_sett  Program settings
+ * @param[in]     s_fn     Wallpaper file path
+ * @return        Wallpaper set status
+ *
+ * @fn  const char * wallset_get_last_used_fn (const WallSett *ws_sett)
+ * @brief     Get last used wallpaper file name.
+ * @param[in] ws_sett  WallSett object
+ * @return    Last used wallpaper file name
+ *
+ * @fn  int wallset_set_command (WallSett *ws_sett, const char *s_cmd)
+ * @brief      Sets command for setting wallpaper. 
+ * @param[out] ws_sett  Program settings
+ * @param[in]  s_cmd    New set wallpaper command
+ * @return     Change status
+ *
+ * @fn  const char * wallset_get_command (const WallSett *ws_sett)
+ * @brief     Get wallpaper set command.
+ * @param[in] ws_sett  WallSett object
+ * @return    Wallpaper set command
+ *
+ * @fn  const char * wallset_get_cfg_fn (const WallSett *ws_sett)
+ * @brief     Get config file name.
+ * @param[in] ws_sett  WallSett object
+ * @return    Config file name
  */
-void wallset_free (WallSett *ws_sett);
 /*----------------------------------------------------------------------------*/
-/**
- * @brief  Get config file name.
- *
- * @param[in]  ws_sett  WallSett object
- * @return     Config file name
- */
-const char * wallset_get_cfg_fn (WallSett *ws_sett);
+const char * wallset_get_cfg_fn            (const WallSett *ws_sett);
 /*----------------------------------------------------------------------------*/
-/**
- * @brief  Set using last used wallpaper on start.
- *
- * @param[out]  ws_sett  WallSett object
- * @param[in]   ui_val   Set last used wallpaper value
- * @return      none
- */
-void wallset_set_last_used_setting (WallSett *ws_sett,
-                                    uint8_t   ui_val);
+void         wallset_set_last_used_setting (WallSett       *ws_sett,
+                                            const uint8_t   ui_val);
+
+uint8_t      wallset_get_last_used_setting (const WallSett *ws_sett);
 /*----------------------------------------------------------------------------*/
-/**
- * @brief  Get using last used wallpaper on start.
- *
- * @param[in]  ws_sett  WallSett object
- * @return     Last used setting
- */
-uint8_t wallset_get_last_used_setting (WallSett *ws_sett);
+void         wallset_set_random            (WallSett       *ws_sett,
+                                            const uint8_t   ui_val);
+
+uint8_t      wallset_get_random            (const WallSett *ws_sett);
 /*----------------------------------------------------------------------------*/
-/**
- * @brief  Set random wallpaper select value.
- *
- * @param[out]  ws_sett  WallSett object
- * @param[in]   ui_val   Random wallpaper setting to set
- * @return      none
- */
-void wallset_set_random (WallSett *ws_sett,
-                         uint8_t   ui_val);
+void         wallset_set_interval          (WallSett       *ws_sett,
+                                            const uint32_t  ui_val);
+
+uint32_t     wallset_get_interval          (const WallSett *ws_sett);
 /*----------------------------------------------------------------------------*/
-/**
- * @brief  Get random wallpaper select value.
- *
- * @param[in]  ws_sett  WallSett object
- * @return     Random wallpaper setting value
- */
-uint8_t wallset_get_random (WallSett *ws_sett);
+int          wallset_set_last_used_fn      (WallSett       *ws_sett,
+                                            const char     *s_fn);
+
+const char * wallset_get_last_used_fn      (const WallSett *ws_sett);
 /*----------------------------------------------------------------------------*/
-/**
- * @brief  Set wallpaper change interval value.
- *
- * @param[out]  ws_sett  WallSett object
- * @param[in]   ui_val   Wallpaper change interval value to set
- * @return      none
- */
-void wallset_set_interval (WallSett *ws_sett,
-                           uint32_t  ui_val);
-/*----------------------------------------------------------------------------*/
-/**
- * @brief  Get wallpaper change interval value.
- *
- * @param[in]  ws_sett  WallSett object
- * @return     Wallpaper change interval value
- */
-uint32_t wallset_get_interval (WallSett *ws_sett);
-/*----------------------------------------------------------------------------*/
-/**
- * @brief  Change last used wallpaper file name in program settings. 
- *
- * @param[in,out]  ws_sett  Program settings
- * @param[in]      s_fn     Wallpaper file path
- * @return         Wallpaper set status
- */
-int wallset_set_last_used_fn (WallSett   *ws_sett,
-                              const char *s_fn);
-/*----------------------------------------------------------------------------*/
-/**
- * @brief  Get last used wallpaper file name.
- *
- * @param[in]  ws_sett  WallSett object
- * @return     Last used wallpaper file name
- */
-const char * wallset_get_last_used_fn (WallSett *ws_sett);
-/*----------------------------------------------------------------------------*/
-/**
- * @brief  Sets command for setting wallpaper. 
- *
- * @param[out]  ws_sett  Program settings
- * @param[in]   s_cmd    New set wallpaper command
- * @return      Change status
- */
-int wallset_set_command (WallSett   *ws_sett,
-                         const char *s_cmd);
-/*----------------------------------------------------------------------------*/
-/**
- * @brief  Get wallpaper set command.
- *
- * @param[in]  ws_sett  WallSett object
- * @return     Wallpaper set command
- */
-const char * wallset_get_command (WallSett *ws_sett);
+int          wallset_set_command           (WallSett       *ws_sett,
+                                            const char     *s_cmd);
+
+const char * wallset_get_command           (const WallSett *ws_sett);
 /*----------------------------------------------------------------------------*/
 #endif
 

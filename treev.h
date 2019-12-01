@@ -79,6 +79,11 @@ GSList    * treeview_get_data   (GtkWidget    *gw_tview);
  * @param[in,out] gw_tview  TreeView to process
  * @return        none
  *
+ * @fn  void treeview_remove_selected (GtkWidget *gw_tview)
+ * @brief      Remove selected items from TreeView
+ * @param[out] gw_tview  GtkTreeView with items to remove
+ * @return     none
+ *
  * @fn  void treeview_move_up (GtkWidget *gw_tview)
  * @brief         Move up selected items in TreeView.
  * @param[in,out] gw_tview  TreeView to move data up
@@ -88,11 +93,6 @@ GSList    * treeview_get_data   (GtkWidget    *gw_tview);
  * @brief         Move down selected items in TreeView.
  * @param[in,out] gw_tview  TreeView to move data down
  * @return        none
- *
- * @fn  void treeview_remove_selected (GtkWidget *gw_tview)
- * @brief      Remove selected items from TreeView
- * @param[out] gw_tview  GtkTreeView with items to remove
- * @return     none
  *
  * @fn  void treeview_find_select_item (GtkWidget *gw_tview,
  *                                      const char *s_file)
@@ -106,11 +106,11 @@ void treeview_sort_list         (GtkWidget  *gw_tview);
 /*----------------------------------------------------------------------------*/
 void treeview_remove_duplicates (GtkWidget  *gw_tview);
 /*----------------------------------------------------------------------------*/
-void treeview_move_up           (GtkWidget  *gw_tview);
-/*----------------------------------------------------------------------------*/
-void treeview_move_down         (GtkWidget  *gw_tview);
-/*----------------------------------------------------------------------------*/
 void treeview_remove_selected   (GtkWidget  *gw_tview);
+/*----------------------------------------------------------------------------*/
+void treeview_move_up           (GtkWidget  *gw_tview);
+
+void treeview_move_down         (GtkWidget  *gw_tview);
 /*----------------------------------------------------------------------------*/
 void treeview_find_select_item  (GtkWidget  *gw_tview,
                                  const char *s_file);

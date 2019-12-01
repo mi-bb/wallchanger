@@ -51,7 +51,7 @@ static int stlist_reserve (SettList     *st_list,
  * @param[in]   ui_oid   Id of owner array
  * @return      SettList list of Setting objects
  */
-static SettList * stlist_get_settings_owned_by (SettList       *st_list,
+static SettList * stlist_get_settings_owned_by (const SettList *st_list,
                                                 const uint64_t  ui_oid);
 /*----------------------------------------------------------------------------*/
 static void
@@ -77,7 +77,7 @@ stlist_new_list (void)
 }
 /*----------------------------------------------------------------------------*/
 uint32_t
-stlist_get_length (SettList *st_list)
+stlist_get_length (const SettList *st_list)
 {
     if (st_list == NULL)
         return 0;
@@ -138,7 +138,7 @@ stlist_reserve (SettList     *st_list,
     }
 
     /* Update file list count */
-    st_list->i_cnt = i_size;
+    st_list->i_cnt = (uint32_t) i_size;
 
     return SET_ER_OK;
 }
@@ -150,6 +150,7 @@ stlist_free (SettList *st_list)
         return;
 
     stlist_reserve (st_list, 0);
+
     free (st_list);
 }
 /*----------------------------------------------------------------------------*/
@@ -177,6 +178,7 @@ stlist_insert_setting (SettList *st_list,
     if (i_pos >= 0) {
         /* Remove old and assing new setting */
         setting_free (st_list->st_setting[i_pos]);
+
         st_list->st_setting[i_pos] = st_val;
     }
     else {
@@ -222,8 +224,8 @@ stlist_insert_setting_to_array (SettList   *st_list,
 }
 /*----------------------------------------------------------------------------*/
 int32_t
-stlist_get_setting_pos (SettList   *st_list,
-                        const char *s_name)
+stlist_get_setting_pos (const SettList *st_list,
+                        const char     *s_name)
 {
     Setting  *st_act;
     int32_t   i_pos   = -1;
@@ -240,7 +242,7 @@ stlist_get_setting_pos (SettList   *st_list,
     for (i = 0; i < ui_cnt; ++i) {
         st_act = stlist_get_setting_at_pos (st_list, i);
         if (st_act != NULL && setting_get_id (st_act) == ui_hash) {
-            i_pos = i;
+            i_pos = (int32_t) i;
             break;   
         }
     }
@@ -248,8 +250,8 @@ stlist_get_setting_pos (SettList   *st_list,
 }
 /*----------------------------------------------------------------------------*/
 Setting *
-stlist_get_setting_at_pos (SettList      *st_list,
-                           const uint32_t ui_pos)
+stlist_get_setting_at_pos (const SettList *st_list,
+                           const uint32_t  ui_pos)
 {
     if (st_list == NULL)
         return NULL;
@@ -261,8 +263,8 @@ stlist_get_setting_at_pos (SettList      *st_list,
 }
 /*----------------------------------------------------------------------------*/
 Setting *
-stlist_get_setting_with_name (SettList   *st_list,
-                              const char *s_name)
+stlist_get_setting_with_name (const SettList *st_list,
+                              const char     *s_name)
 {
     Setting *st_ret;
     int32_t  i_pos = 0;
@@ -285,8 +287,8 @@ stlist_get_setting_with_name (SettList   *st_list,
 }
 /*----------------------------------------------------------------------------*/
 static SettList *
-stlist_get_settings_owned_by (SettList      *st_list,
-                              const uint64_t ui_oid) 
+stlist_get_settings_owned_by (const SettList *st_list,
+                              const uint64_t  ui_oid) 
 {
     SettList *st_res;
     Setting *st_val;
@@ -300,7 +302,9 @@ stlist_get_settings_owned_by (SettList      *st_list,
     ui_cnt = stlist_get_length (st_list);
 
     for (i = 0; i < ui_cnt; ++i) {
+
         ui_set_oid = setting_get_owner_id (st_list->st_setting[i]);
+
         if (ui_set_oid == ui_oid) {
 
             st_val = setting_copy (st_list->st_setting[i]);
@@ -316,8 +320,8 @@ stlist_get_settings_owned_by (SettList      *st_list,
 }
 /*----------------------------------------------------------------------------*/
 SettList *
-stlist_get_settings_in_array_name (SettList   *st_list,
-                                   const char *s_name) 
+stlist_get_settings_in_array_name (const SettList *st_list,
+                                   const char     *s_name) 
 {
     SettList *st_res;
     Setting  *st_array;
@@ -346,8 +350,8 @@ stlist_get_settings_in_array_name (SettList   *st_list,
 }
 /*----------------------------------------------------------------------------*/
 SettList *
-stlist_get_settings_in_array_obj (SettList *st_list,
-                                  Setting  *st_array)
+stlist_get_settings_in_array_obj (const SettList *st_list,
+                                  const Setting  *st_array)
 {
     SettList *st_res;
 
@@ -363,7 +367,7 @@ stlist_get_settings_in_array_obj (SettList *st_list,
 }
 /*----------------------------------------------------------------------------*/
 SettList *
-stlist_get_settings_main (SettList *st_list) 
+stlist_get_settings_main (const SettList *st_list) 
 {
     return stlist_get_settings_owned_by (st_list, 0);
 }
@@ -372,7 +376,7 @@ stlist_get_settings_main (SettList *st_list)
  * @brief  Print content of SettList list
  */
 void
-stlist_print_content (SettList *st_list)
+stlist_print_content (const SettList *st_list)
 {
     uint32_t ui_cnt = 0;
     uint32_t i      = 0;

@@ -19,9 +19,9 @@
  *
  * Automatic wallpaper changer
  *
- * @date November 25, 2019
+ * @date December 2, 2019
  *
- * @version 1.3.1
+ * @version 1.3.2
  * 
  * @author Michał Bąbik <michalb1981@o2.pl>
  */
@@ -39,9 +39,8 @@
 #include "flist.h"
 #include "errs.h"
 #include "miscfun.h"
-#define WCAPP_NAME "Wall Changer"
-#define WCAPP_SEP  " v"
-#define WCAPP_VER  "1.3.1"
+#define APP_NAME "Wall Changer"
+#define APP_VER  "1.3.2"
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Structore to pass widgets and settings to callback
@@ -64,7 +63,7 @@ DialogData {
  * @param[out] fl_exts  List to put extension in
  * @return     none 
  *
- * @fn  static uint32_t get_wallpaper_ch_interval (DialogData *dd_data)
+ * @fn  static uint32_t get_wallpaper_ch_interval (const DialogData *dd_data)
  * @brief         Get wallpaper change minutes interval from widgets
  * @param[in,out] dd_data  DialogData object with settings and widget data
  * @return        Change interval value
@@ -76,25 +75,26 @@ DialogData {
  * @param[in]     ui_val   Change interval value to set
  * @return        none
  *
- * @fn  static void get_wallpaper_list (GtkWidget *gw_view, SettList  *sl_list)
+ * @fn  static void get_wallpaper_list (GtkWidget *gw_view, SettList  *st_list)
  * @brief      Insert list of wallpapers from treeview to SettList array.
  * @param[in]  gw_view  TreeView to read file list
- * @param[out] sl_list  List with settings to insert file list
+ * @param[out] st_list  List with settings to insert file list
  * @return     none
  *
- * @fn  static void set_wallpaper_list (SettList *sl_walls, GtkWidget *gw_view)
+ * @fn  static void set_wallpaper_list (const SettList *sl_walls,
+ *                                      GtkWidget      *gw_view)
  * @brief      Insert list of wallpapers from SettList array to treeview.
  * @param[in]  sl_walls List with wallpaper file paths
  * @param[out] gw_view  TreeView to insert file list
  * @return     none
  *
- * @fn  static SettList widgets_get_settings (DialogData *dd_data)
+ * @fn  static SettList widgets_get_settings (const DialogData *dd_data)
  * @brief         Read settings from widgets and store them in WallSett object.
  * @param[in,out] dd_data  DialogData object with settings and widget data
  * @return        none
  *
- * @fn  static void widgets_set_settings (DialogData *dd_data,
- *                                        SettList   *st_list)
+ * @fn  static void widgets_set_settings (DialogData     *dd_data,
+ *                                        const SettList *st_list)
  * @brief         Loading data from SettList list of settings to program window.
  * @param[in,out] dd_data  DialogData object with settings and widget data
  * @param[in]     st_list  List with settings
@@ -229,49 +229,49 @@ DialogData {
 /*----------------------------------------------------------------------------*/
 static void        get_pbuf_exts_add_to_flist  (FList             *fl_exts);
 /*----------------------------------------------------------------------------*/
-static uint32_t    get_wallpaper_ch_interval   (DialogData        *dd_data);
-/*----------------------------------------------------------------------------*/
+static uint32_t    get_wallpaper_ch_interval   (const DialogData  *dd_data);
+
 static void        set_wallpaper_ch_interval   (DialogData        *dd_data,
                                                 const uint32_t     ui_val);
 /*----------------------------------------------------------------------------*/
 static void        get_wallpaper_list          (GtkWidget         *gw_view,
-                                                SettList          *sl_list);
-/*----------------------------------------------------------------------------*/
-static void        set_wallpaper_list          (SettList          *sl_walls,
+                                                SettList          *st_list);
+
+static void        set_wallpaper_list          (const SettList    *sl_walls,
                                                 GtkWidget         *gw_view);
 /*----------------------------------------------------------------------------*/
-static SettList  * widgets_get_settings        (DialogData        *dd_data);
-/*----------------------------------------------------------------------------*/
+static SettList  * widgets_get_settings        (const DialogData  *dd_data);
+
 static void        widgets_set_settings        (DialogData        *dd_data,
-                                                SettList          *st_list);
+                                                const SettList    *st_list);
 /*----------------------------------------------------------------------------*/
 static void        event_add_img_pressed       (GtkWidget         *widget,
                                                 DialogData        *dd_data);
-/*----------------------------------------------------------------------------*/
+
 static void        event_add_img_dir_pressed   (GtkWidget         *widget,
                                                 DialogData        *dd_data);
-/*----------------------------------------------------------------------------*/
+
 static void        event_rem_from_list_pressed (GtkWidget         *widget,
                                                 GtkWidget         *gw_tview);
-/*----------------------------------------------------------------------------*/
+
 static void        event_move_up_pressed       (GtkWidget         *widget,
                                                 GtkWidget         *gw_tview);
-/*----------------------------------------------------------------------------*/
+
 static void        event_move_down_pressed     (GtkWidget         *widget,
                                                 GtkWidget         *gw_tview);
-/*----------------------------------------------------------------------------*/
+
 static void        event_sort_list_pressed     (GtkWidget         *widget,
                                                 GtkWidget         *gw_tview);
-/*----------------------------------------------------------------------------*/
+
 static void        event_rem_dupl_pressed      (GtkWidget         *widget,
                                                 GtkWidget         *gw_tview);
-/*----------------------------------------------------------------------------*/
+
 static void        event_set_wallpaper_pressed (GtkWidget         *widget,
                                                 DialogData        *dd_data);
-/*----------------------------------------------------------------------------*/
+
 static void        event_save_settings_pressed (GtkWidget         *widget,
                                                 DialogData        *dd_data);
-/*----------------------------------------------------------------------------*/
+
 static void        event_about_app_pressed     (GtkWidget         *widget);
 /*----------------------------------------------------------------------------*/
 static void        event_img_list_activated    (GtkTreeView       *tree_view,
@@ -284,14 +284,14 @@ static gboolean    event_on_delete             (GtkWidget         *window,
                                                 DialogData        *dd_data);
 /*----------------------------------------------------------------------------*/
 static void        create_title_widget         (GtkWidget        **gw_widget);
-/*----------------------------------------------------------------------------*/
+
 static GtkWidget * create_image_button         (const char        *s_label,
                                                 const char        *s_hint,
                                                 const IconImg      i_but);
-/*----------------------------------------------------------------------------*/
+
 static void        create_buttons_widget       (GtkWidget        **gw_widget,
                                                 DialogData        *dd_data);
-/*----------------------------------------------------------------------------*/
+
 static void        create_settings_widget      (GtkWidget        **gw_widget,
                                                 DialogData        *dd_data);
 /*----------------------------------------------------------------------------*/
@@ -304,12 +304,6 @@ static void        shutdown                    (GtkApplication    *app,
 static inline const char *
 get_default_bg_cmd (void) {
     return "feh --bg-fill";
-}
-/*----------------------------------------------------------------------------*/
-static inline const char *
-get_wallpaper_command (GtkWidget *gw_entry)
-{
-    return gtk_entry_get_text (GTK_ENTRY (gw_entry));
 }
 /*----------------------------------------------------------------------------*/
 /**
@@ -345,7 +339,7 @@ get_pbuf_exts_add_to_flist (FList *fl_exts)
  * @brief  Get wallpaper change minutes interval from widgets
  */
 static uint32_t
-get_wallpaper_ch_interval (DialogData *dd_data)
+get_wallpaper_ch_interval (const DialogData *dd_data)
 {
     uint32_t ui_res = 0; /* Wallpaper change interval in minutes */
 
@@ -391,7 +385,7 @@ set_wallpaper_ch_interval (DialogData    *dd_data,
  */
 static void
 get_wallpaper_list (GtkWidget *gw_view,
-                    SettList  *sl_list)
+                    SettList  *st_list)
 {
     ImageInfo  *ii_info;
     GSList     *gsl_iinfo;
@@ -408,17 +402,22 @@ get_wallpaper_list (GtkWidget *gw_view,
 
     if (gsl_iinfo != NULL) {
         st_sett = setting_new_array (get_setting_name (SETTING_WALL_ARRAY));
-        stlist_insert_setting (sl_list, st_sett);
+        stlist_insert_setting (st_list, st_sett);
     }
 
     while (gsl_iinfo != NULL) {
+
         ii_info = gsl_iinfo->data;
+
         s_val = ii_info->s_full_path;
         s_name = string_name_with_number (get_setting_name (SETTING_WALL_ARRAY),
                                           ui_no++);
+
         st_sett = setting_new_string (s_val, s_name);
+
         free (s_name);
-        stlist_insert_setting_to_array (sl_list, st_sett,
+
+        stlist_insert_setting_to_array (st_list, st_sett,
                                         get_setting_name (SETTING_WALL_ARRAY));
         gsl_iinfo = gsl_iinfo->next;
     }
@@ -429,8 +428,8 @@ get_wallpaper_list (GtkWidget *gw_view,
  * @brief  Insert list of wallpapers from SettList array to treeview.
  */
 static void
-set_wallpaper_list (SettList  *sl_walls,
-                    GtkWidget *gw_view)
+set_wallpaper_list (const SettList *sl_walls,
+                    GtkWidget      *gw_view)
 {
     Setting    *st_wall;
     ImageInfo  *ii_info;
@@ -447,6 +446,7 @@ set_wallpaper_list (SettList  *sl_walls,
     for (i = 0; i < ui_cnt; ++i) {
 
         st_wall = stlist_get_setting_at_pos (sl_walls, i);
+
         s_fn = setting_get_string (st_wall);
         if (s_fn != NULL) {
 
@@ -458,6 +458,7 @@ set_wallpaper_list (SettList  *sl_walls,
     }
     /* Add ImageInfo list file data to TreeView */
     liststore_add_items (gw_view, gsl_iinfo);
+
     g_slist_free_full (gsl_iinfo, (GDestroyNotify) imageinfo_free);
 }
 /*----------------------------------------------------------------------------*/
@@ -465,58 +466,58 @@ set_wallpaper_list (SettList  *sl_walls,
  * @brief  Read settings from widgets and store them in WallSett object.
  */
 static SettList *
-widgets_get_settings (DialogData *dd_data)
+widgets_get_settings (const DialogData *dd_data)
 {
-    SettList   *sl_list;
+    SettList   *st_list;
     Setting    *st_sett;
     const char *s_val = NULL;
     uint32_t    i_val = 0;
 
-    sl_list = stlist_new_list ();
+    st_list = stlist_new_list ();
 
     /* Get wallpaper list from treeview and add to settlist */
-    get_wallpaper_list (dd_data->gw_view, sl_list);
+    get_wallpaper_list (dd_data->gw_view, st_list);
 
-    /* Get random wallpapet setting */
+    /* Get random wallpaper setting */
     i_val = (uint32_t) gtk_toggle_button_get_active (
                 GTK_TOGGLE_BUTTON (dd_data->gw_random));
     st_sett = setting_new_uint32 (
             i_val, get_setting_name (SETTING_RANDOM_OPT));
-    stlist_insert_setting (sl_list, st_sett);
+    stlist_insert_setting (st_list, st_sett);
 
     /* Get last used wallpaper on start setting */
     i_val = (uint32_t) gtk_toggle_button_get_active (
                 GTK_TOGGLE_BUTTON (dd_data->gw_lastused));
     st_sett = setting_new_uint32 (
             i_val, get_setting_name (SETTING_LAST_USED_OPT));
-    stlist_insert_setting (sl_list, st_sett);
+    stlist_insert_setting (st_list, st_sett);
 
     /* Get wallpaper change interval setting */
     i_val = get_wallpaper_ch_interval (dd_data);
     st_sett = setting_new_uint32 (
             i_val, get_setting_name (SETTING_INTERVAL_VAL));
-    stlist_insert_setting (sl_list, st_sett);
+    stlist_insert_setting (st_list, st_sett);
 
     /* Get wallpaper set command */
     s_val = gtk_entry_get_text (GTK_ENTRY (dd_data->gw_command));
     st_sett = setting_new_string (
             s_val, get_setting_name (SETTING_BG_CMD));
-    stlist_insert_setting (sl_list, st_sett);
+    stlist_insert_setting (st_list, st_sett);
 
-    return sl_list;
+    return st_list;
 }
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Loading data from SettList list of settings to program window.
  */
 static void
-widgets_set_settings (DialogData *dd_data,
-                      SettList   *st_list)
+widgets_set_settings (DialogData     *dd_data,
+                      const SettList *st_list)
 {
     Setting  *st_sett;
     SettList *sl_walls;
-    uint32_t  i_w = 1024;
-    uint32_t  i_h = 768;
+    int       i_w = 1024;
+    int       i_h = 768;
 
     /* Set background set command */
     st_sett = stlist_get_setting_with_name (
@@ -534,7 +535,7 @@ widgets_set_settings (DialogData *dd_data,
             st_list, get_setting_name (SETTING_LAST_USED_OPT));
     if (st_sett != NULL) {
         gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (dd_data->gw_lastused),
-                                      setting_get_uint32 (st_sett));
+                                      (gboolean) setting_get_uint32 (st_sett));
     }
     /* Set minutes/hours of wallpaper change interval */
     st_sett = stlist_get_setting_with_name (
@@ -547,23 +548,23 @@ widgets_set_settings (DialogData *dd_data,
             st_list, get_setting_name (SETTING_RANDOM_OPT));
     if (st_sett != NULL) {
         gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (dd_data->gw_random),
-                                      setting_get_uint32 (st_sett));
+                                      (gboolean) setting_get_uint32 (st_sett));
     }
     /* Get wallpaper list and add to treeview */
     sl_walls = stlist_get_settings_in_array_name (st_list,
             get_setting_name (SETTING_WALL_ARRAY));
-    
+
     set_wallpaper_list (sl_walls, dd_data->gw_view);
 
     /* Set window dimensions */
     st_sett = stlist_get_setting_with_name (
             st_list, get_setting_name (SETTING_WIN_WIDTH));
     if (st_sett != NULL) {
-        i_w = setting_get_uint32 (st_sett);
+        i_w = (int) setting_get_uint32 (st_sett);
         st_sett = stlist_get_setting_with_name (
                 st_list, get_setting_name (SETTING_WIN_HEIGHT));
         if (st_sett != NULL) {
-            i_h = setting_get_uint32 (st_sett);
+            i_h = (int) setting_get_uint32 (st_sett);
         }
     }
     gtk_window_set_default_size (GTK_WINDOW (dd_data->gw_window), i_w, i_h);
@@ -710,7 +711,7 @@ event_set_wallpaper_pressed (GtkWidget  *widget,
     if (gtk_tree_model_get_iter (gtm_model, &gti_iter, gl_list->data)) {
 
         ii_info = treemodel_get_data (gtm_model, gti_iter);
-        s_cmd = get_wallpaper_command (dd_data->gw_command);
+        s_cmd = gtk_entry_get_text (GTK_ENTRY (dd_data->gw_command));
 
         if (wallpaper_dialog_set (s_cmd,
                                   imageinfo_get_full_name (ii_info),
@@ -734,7 +735,9 @@ event_save_settings_pressed (GtkWidget  *widget,
     int       i_res = 0;
 
     st_list = widgets_get_settings (dd_data);
+
     i_res = settings_check_update_file (st_list, dd_data->s_cfg_file);
+
     stlist_free (st_list);
 
     /* Save setting to config file */
@@ -751,7 +754,7 @@ event_save_settings_pressed (GtkWidget  *widget,
 static void
 event_about_app_pressed (GtkWidget  *widget)
 {
-    about_app_dialog (WCAPP_VER);
+    about_app_dialog (APP_VER);
 }
 /*----------------------------------------------------------------------------*/
 /**
@@ -812,12 +815,17 @@ event_on_delete (GtkWidget  *window,
                                          GTK_MESSAGE_QUESTION,
                                          GTK_BUTTONS_YES_NO,
             "Settings changed, do you want to save them ?");
+
         gtk_window_set_title (GTK_WINDOW (dialog), "Settings changed");
+
         i_res2 = gtk_dialog_run (GTK_DIALOG (dialog));
+
         gtk_widget_destroy (dialog);
 
         if (i_res2 == GTK_RESPONSE_YES) {
+
             i_res = settings_update_file (s_buff, dd_data->s_cfg_file);
+
             if (i_res != ERR_OK) {
                 message_dialog_error (dd_data->gw_window, "Some error occured"); 
             }
@@ -835,9 +843,9 @@ event_on_delete (GtkWidget  *window,
 static void
 create_title_widget (GtkWidget **gw_widget)
 {
-    const char *s_str    = "Wall Changer - Program settings";
-    const char *s_format = "<span size=\"20000\" weight=\"bold\" \
-                            foreground=\"#0099e6\" style=\"italic\">%s</span>";
+    const char *s_str    = APP_NAME " - Program settings";
+    const char *s_format = "<span size=\"20000\" weight=\"bold\" "
+                           "foreground=\"#0099e6\" style=\"italic\">%s</span>";
     char       *s_markup = NULL;
     GtkWidget  *gw_label = gtk_label_new (NULL);
 
@@ -1101,9 +1109,9 @@ activate (GtkApplication *app,
     GtkWidget  *gw_box_main;        /* Main box to pack everything */
     SettList   *st_list;
     Setting    *st_sett;
-    const char *s_lastused = NULL;
-    int         i_err      = 0;
-    
+    const char *s_lastused = NULL;  /* Last used wallpaper path */
+    int         i_err      = 0;     /* For error output */
+
     dd_data->s_cfg_file = NULL;
 
     dd_data->s_cfg_file = check_config_path_file (&i_err);
@@ -1117,7 +1125,7 @@ activate (GtkApplication *app,
     /* Main window */
     gw_window = gtk_application_window_new (app);
     gtk_window_set_title (GTK_WINDOW (gw_window),
-                          WCAPP_NAME WCAPP_SEP WCAPP_VER);
+                          APP_NAME " v" APP_VER);
     g_signal_connect (gw_window, "delete-event",
                   G_CALLBACK (event_on_delete), dd_data);
     dd_data->gw_window = GTK_WINDOW (gw_window);
@@ -1230,7 +1238,7 @@ shutdown (GtkApplication *app,
  * @param[in] argv Pointer to the first element of an array of pointers that
  *                 represent the arguments passed to the program
  * @return         Return value
- */  
+ */
 int
 main (int    argc,
       char **argv)
@@ -1245,7 +1253,7 @@ main (int    argc,
     g_signal_connect (app, "activate", G_CALLBACK (activate), &dd_data);
     g_signal_connect (app, "shutdown", G_CALLBACK (shutdown), &dd_data);
 
-    g_set_application_name (WCAPP_NAME);
+    g_set_application_name (APP_NAME);
 
     status = g_application_run (G_APPLICATION (app), argc, argv);
 

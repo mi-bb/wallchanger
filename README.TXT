@@ -63,10 +63,12 @@ If compilation ends without problems, 2 executable files will be created:
     wchangerd
 
 wchangerd works in background and changes wallpaper
-in specified time intervals
+in specified time intervals.
 
 wchanger-cfg is a configuration window to set wallpaper change time intervals,
-images on wallpaper list and a way wallpapers change
+images on wallpaper list and a way wallpapers change.
+
+Afer changing settings using wchanger-cfg, wchangerd needs to be restarted.
 
 Application configuration is stored in ~/.config/wchanger.json
 

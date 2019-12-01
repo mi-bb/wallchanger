@@ -39,8 +39,8 @@ ImageInfo {
     char    *s_file_name;     /**< File name only */
     char    *s_file_path;     /**< File path */
     char    *s_width_height;  /**< Width x Height in string */
-    uint16_t ui_width;        /**< Image width in uint */
-    uint16_t ui_height;       /**< Image height in uint */
+    int      i_width;         /**< Image width in uint */
+    int      i_height;        /**< Image height in uint */
 } ImageInfo;
 /*----------------------------------------------------------------------------*/
 /**
@@ -55,7 +55,7 @@ ImageInfo {
  */
 /*----------------------------------------------------------------------------*/
 ImageInfo * imageinfo_new           (void);
-/*----------------------------------------------------------------------------*/
+
 ImageInfo * imageinfo_new_from_file (const char *s_fname);
 /*----------------------------------------------------------------------------*/
 /**
@@ -100,12 +100,12 @@ GSList * imageinfo_remove_duplicates  (GSList  *gsl_iinfo);
  * @return     List of ImageInfo items
  */
 /*----------------------------------------------------------------------------*/
-int      imageinfo_append_to_flist (GSList  *gsl_iinfo1,
-                                    FList   *fl_files);
+int      imageinfo_append_to_flist (GSList      *gsl_iinfo1,
+                                    FList       *fl_files);
 /*----------------------------------------------------------------------------*/
-GSList * file_paths_to_imageinfo   (GSList  *gsl_files1);
+GSList * file_paths_to_imageinfo   (GSList      *gsl_files1);
 /*----------------------------------------------------------------------------*/
-GSList * flist_to_imageinfo        (FList   *fl_files);
+GSList * flist_to_imageinfo        (const FList *fl_files);
 /*----------------------------------------------------------------------------*/
 /**
  * @fn  void imageinfo_set_full_name (ImageInfo *ii_info, const char *s_name)
@@ -171,30 +171,34 @@ GSList * flist_to_imageinfo        (FList   *fl_files);
 /*----------------------------------------------------------------------------*/
 void         imageinfo_set_full_name  (ImageInfo        *ii_info,
                                        const char       *s_name);
-/*----------------------------------------------------------------------------*/
+
 const char * imageinfo_get_full_name  (const ImageInfo  *ii_info);
 /*----------------------------------------------------------------------------*/
 void         imageinfo_set_file_name  (ImageInfo        *ii_info,
                                        const char       *s_name);
-/*----------------------------------------------------------------------------*/
+
 const char * imageinfo_get_file_name  (const ImageInfo  *ii_info);
 /*----------------------------------------------------------------------------*/
 void         imageinfo_set_file_path  (ImageInfo        *ii_info,
                                        const char       *s_name);
-/*----------------------------------------------------------------------------*/
+
 const char * imageinfo_get_file_path  (const ImageInfo  *ii_info);
 /*----------------------------------------------------------------------------*/
 void         imageinfo_set_width      (ImageInfo        *ii_info,
-                                       uint16_t          ui_val);
-/*----------------------------------------------------------------------------*/
+                                       const int         i_val);
+
 int          imageinfo_get_width      (const ImageInfo  *ii_info);
 /*----------------------------------------------------------------------------*/
 void         imageinfo_set_height     (ImageInfo        *ii_info,
-                                       uint16_t          ui_val);
-/*----------------------------------------------------------------------------*/
+                                       const int         i_val);
+
 int          imageinfo_get_height     (const ImageInfo  *ii_info);
 /*----------------------------------------------------------------------------*/
-const char * imageinfo_get_wxh        (ImageInfo        *ii_info);
+void         imageinfo_set_wxh        (ImageInfo        *ii_info,
+                                       const int         i_w,
+                                       const int         i_h);
+
+const char * imageinfo_get_wxh        (const ImageInfo  *ii_info);
 /*----------------------------------------------------------------------------*/
 #endif
 

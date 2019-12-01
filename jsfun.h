@@ -44,8 +44,7 @@ SettList * js_settings_read (const char *s_fname,
  *         stored in settings file.
  *
  * Function converts SettList list of settings to Json object, reads Json
- * data from file s_fname, inserts the converted data to read Json data
- * and finally checks if the changed Json data differs in content.
+ * data from file s_fname, and checks if they differ in content.
  * If there is no difference s_out_buff is set to null pointer, if they are
  * different, the new config Json raw data is written to s_out_buff.
  * Function returns ERR_OK if there is no error or appropriate error code.
@@ -55,9 +54,9 @@ SettList * js_settings_read (const char *s_fname,
  * @param[out] s_out_buff  Buffer to write data
  * @return     ERR_OK or error code
  */
-int js_settings_check_for_update (SettList    *st_list,
-                                  const char  *s_fname,
-                                  char       **s_out_buff);
+int js_settings_check_for_update (const SettList  *st_list,
+                                  const char      *s_fname,
+                                  char           **s_out_buff);
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Update file with new data
@@ -80,8 +79,8 @@ int js_settings_update_file (const char *s_buff,
  * @param[in]  s_fname  File name to save data
  * @return     Saving file status, ERR_OK or error code
  */
-int js_settings_check_update_file (SettList   *st_list,
-                                   const char *s_fname);
+int js_settings_check_update_file (const SettList *st_list,
+                                   const char     *s_fname);
 /*----------------------------------------------------------------------------*/
 #endif
 

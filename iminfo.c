@@ -65,8 +65,8 @@ imageinfo_init (ImageInfo *ii_info)
     ii_info->s_file_name    = NULL;
     ii_info->s_file_path    = NULL;
     ii_info->s_width_height = NULL;
-    ii_info->ui_height      = 0;
-    ii_info->ui_width       = 0;
+    ii_info->i_height       = 0;
+    ii_info->i_width        = 0;
 }
 /*----------------------------------------------------------------------------*/
 /**
@@ -98,7 +98,7 @@ imageinfo_new_from_file (const char *s_fname)
     char      *s_p     = NULL; /* Pointer to right position of / */
     int        i_w     = 0;    /* Image width */
     int        i_h     = 0;    /* Image height */
-    
+
     if (s_fname == NULL)
         return NULL;
 
@@ -128,6 +128,8 @@ imageinfo_new_from_file (const char *s_fname)
 
     imageinfo_set_width (ii_info, i_w);
     imageinfo_set_height (ii_info, i_h);
+
+    imageinfo_set_wxh (ii_info, i_w, i_h);
 
     return ii_info;
 }
@@ -209,7 +211,7 @@ file_paths_to_imageinfo (GSList *gsl_files1)
  * @brief  Get image info of files in list and store it in FList.
  */
 GSList *
-flist_to_imageinfo (FList *fl_files)
+flist_to_imageinfo (const FList *fl_files)
 {
     ImageInfo  *ii_info;
     GSList     *gsl_iinfo = NULL; /* Result ImageInfo list */
@@ -260,6 +262,9 @@ void
 imageinfo_set_full_name (ImageInfo  *ii_info, 
                          const char *s_name)
 {
+    if (ii_info->s_full_path != NULL)
+        free (ii_info->s_full_path);
+
     ii_info->s_full_path = str_dup (s_name);
 }
 /*----------------------------------------------------------------------------*/
@@ -279,6 +284,9 @@ void
 imageinfo_set_file_name (ImageInfo  *ii_info, 
                          const char *s_name)
 {
+    if (ii_info->s_file_name != NULL)
+        free (ii_info->s_file_name);
+
     ii_info->s_file_name = str_dup (s_name);
 }
 /*----------------------------------------------------------------------------*/
@@ -298,6 +306,9 @@ void
 imageinfo_set_file_path (ImageInfo  *ii_info, 
                          const char *s_name)
 {
+    if (ii_info->s_file_path != NULL)
+        free (ii_info->s_file_path);
+
     ii_info->s_file_path = str_dup (s_name);
 }
 /*----------------------------------------------------------------------------*/
@@ -314,10 +325,10 @@ imageinfo_get_file_path (const ImageInfo *ii_info)
  * @brief  Set image width information
  */
 void
-imageinfo_set_width (ImageInfo  *ii_info, 
-                     uint16_t    ui_val)
+imageinfo_set_width (ImageInfo *ii_info, 
+                     const int  i_val)
 {
-    ii_info->ui_width = ui_val; 
+    ii_info->i_width = i_val; 
 }
 /*----------------------------------------------------------------------------*/
 /**
@@ -326,17 +337,17 @@ imageinfo_set_width (ImageInfo  *ii_info,
 int
 imageinfo_get_width (const ImageInfo *ii_info)
 {
-    return ii_info->ui_width;
+    return ii_info->i_width;
 }
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Set image height information
  */
 void
-imageinfo_set_height (ImageInfo  *ii_info, 
-                      uint16_t    ui_val)
+imageinfo_set_height (ImageInfo *ii_info, 
+                      const int  i_val)
 {
-    ii_info->ui_height = ui_val; 
+    ii_info->i_height = i_val; 
 }
 /*----------------------------------------------------------------------------*/
 /**
@@ -345,27 +356,35 @@ imageinfo_set_height (ImageInfo  *ii_info,
 int
 imageinfo_get_height (const ImageInfo *ii_info)
 {
-    return ii_info->ui_height;
+    return ii_info->i_height;
+}
+/*----------------------------------------------------------------------------*/
+/**
+ * @brief  Get string with image dimensions (width x height)
+ */
+void
+imageinfo_set_wxh (ImageInfo *ii_info,
+                   const int  i_w,
+                   const int  i_h)
+{
+    char s_tmp[40]; /* Temp string, I think it is long enough */
+
+    memset (s_tmp, 0, sizeof(s_tmp));
+
+    sprintf (s_tmp, "%dx%d", i_w, i_h);
+
+    create_resize ((void**) &ii_info->s_width_height, strlen (s_tmp)+1,
+                   sizeof (char));
+
+    strcpy (ii_info->s_width_height, s_tmp);
 }
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Get string with image dimensions (width x height)
  */
 const char *
-imageinfo_get_wxh (ImageInfo *ii_info)
+imageinfo_get_wxh (const ImageInfo *ii_info)
 {
-    char s_tmp[40]; /* Temp string, I think it is long enough */
-
-    memset (s_tmp, 0, sizeof(s_tmp));
-
-    sprintf (s_tmp, "%dx%d",
-             imageinfo_get_width (ii_info), imageinfo_get_height (ii_info));
-
-    create_resize ((void**) &ii_info->s_width_height, strlen (s_tmp)+1,
-                   sizeof (char));
-
-    strcpy (ii_info->s_width_height, s_tmp);
-
     return (const char*) ii_info->s_width_height;       
 }
 /*----------------------------------------------------------------------------*/

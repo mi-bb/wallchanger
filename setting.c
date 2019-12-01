@@ -51,8 +51,8 @@ setting_hashfun (const char *s_str)
 }
 /*----------------------------------------------------------------------------*/
 static void
-setting_set_type (Setting    *st_set,
-                  SetValType  i_type)
+setting_set_type (Setting          *st_set,
+                  const SetValType  i_type)
 {
     if (st_set == NULL)
         return;
@@ -61,7 +61,7 @@ setting_set_type (Setting    *st_set,
 }
 /*----------------------------------------------------------------------------*/
 SetValType
-setting_get_type (Setting *st_set)
+setting_get_type (const Setting *st_set)
 {
     if (st_set == NULL)
         return 0;
@@ -70,8 +70,8 @@ setting_get_type (Setting *st_set)
 }
 /*----------------------------------------------------------------------------*/
 static void
-setting_set_id (Setting       *st_set,
-                const uint64_t i_val)
+setting_set_id (Setting        *st_set,
+                const uint64_t  i_val)
 {
     if (st_set == NULL)
         return;
@@ -80,7 +80,7 @@ setting_set_id (Setting       *st_set,
 }
 /*----------------------------------------------------------------------------*/
 uint64_t
-setting_get_id (Setting *st_set)
+setting_get_id (const Setting *st_set)
 {
     if (st_set == NULL)
         return 0;
@@ -89,8 +89,8 @@ setting_get_id (Setting *st_set)
 }
 /*----------------------------------------------------------------------------*/
 static void
-setting_set_owner_id (Setting       *st_set,
-                      const uint64_t i_val)
+setting_set_owner_id (Setting        *st_set,
+                      const uint64_t  i_val)
 {
     if (st_set == NULL)
         return;
@@ -99,7 +99,7 @@ setting_set_owner_id (Setting       *st_set,
 }
 /*----------------------------------------------------------------------------*/
 uint64_t
-setting_get_owner_id (Setting *st_set)
+setting_get_owner_id (const Setting *st_set)
 {
     if (st_set == NULL)
         return 0;
@@ -141,18 +141,19 @@ setting_free (Setting *st_set)
 }
 /*----------------------------------------------------------------------------*/
 static void
-setting_set_int (Setting      *st_set,
-                 const int64_t i_val)
+setting_set_int (Setting       *st_set,
+                 const int64_t  i_val)
 {
     if (st_set == NULL)
         return;
 
     setting_set_type (st_set, SET_VAL_INT);
+
     st_set->data.i_val = i_val;
 }
 /*----------------------------------------------------------------------------*/
 int64_t
-setting_get_int (Setting *st_set)
+setting_get_int (const Setting *st_set)
 {
     if (st_set == NULL)
         return 0;
@@ -164,18 +165,19 @@ setting_get_int (Setting *st_set)
 }
 /*----------------------------------------------------------------------------*/
 static void
-setting_set_int64 (Setting      *st_set,
-                   const int64_t i_val)
+setting_set_int64 (Setting       *st_set,
+                   const int64_t  i_val)
 {
     if (st_set == NULL)
         return;
 
     setting_set_type (st_set, SET_VAL_INT64);
+
     st_set->data.i64_val = i_val;
 }
 /*----------------------------------------------------------------------------*/
 int64_t
-setting_get_int64 (Setting *st_set)
+setting_get_int64 (const Setting *st_set)
 {
     if (st_set == NULL)
         return 0;
@@ -187,18 +189,19 @@ setting_get_int64 (Setting *st_set)
 }
 /*----------------------------------------------------------------------------*/
 static void
-setting_set_int32 (Setting      *st_set,
-                   const int32_t i_val)
+setting_set_int32 (Setting       *st_set,
+                   const int32_t  i_val)
 {
     if (st_set == NULL)
         return;
 
     setting_set_type (st_set, SET_VAL_INT32);
+
     st_set->data.i32_val = i_val;
 }
 /*----------------------------------------------------------------------------*/
 int32_t
-setting_get_int32 (Setting *st_set)
+setting_get_int32 (const Setting *st_set)
 {
     if (st_set == NULL)
         return 0;
@@ -210,18 +213,19 @@ setting_get_int32 (Setting *st_set)
 }
 /*----------------------------------------------------------------------------*/
 static void
-setting_set_int16 (Setting      *st_set,
-                   const int16_t i_val)
+setting_set_int16 (Setting       *st_set,
+                   const int16_t  i_val)
 {
     if (st_set == NULL)
         return;
 
     setting_set_type (st_set, SET_VAL_INT16);
+
     st_set->data.i16_val = i_val;
 }
 /*----------------------------------------------------------------------------*/
 int16_t
-setting_get_int16 (Setting *st_set)
+setting_get_int16 (const Setting *st_set)
 {
     if (st_set == NULL)
         return 0;
@@ -233,18 +237,19 @@ setting_get_int16 (Setting *st_set)
 }
 /*----------------------------------------------------------------------------*/
 static void
-setting_set_int8 (Setting     *st_set,
-                  const int8_t i_val)
+setting_set_int8 (Setting      *st_set,
+                  const int8_t  i_val)
 {
     if (st_set == NULL)
         return;
 
     setting_set_type (st_set, SET_VAL_INT8);
+
     st_set->data.i8_val = i_val;
 }
 /*----------------------------------------------------------------------------*/
 int8_t
-setting_get_int8 (Setting *st_set)
+setting_get_int8 (const Setting *st_set)
 {
     if (st_set == NULL)
         return 0;
@@ -256,18 +261,19 @@ setting_get_int8 (Setting *st_set)
 }
 /*----------------------------------------------------------------------------*/
 static void
-setting_set_uint (Setting       *st_set,
-                  const uint64_t i_val)
+setting_set_uint (Setting        *st_set,
+                  const uint64_t  i_val)
 {
     if (st_set == NULL)
         return;
 
     setting_set_type (st_set, SET_VAL_UINT);
+
     st_set->data.ui_val = i_val;
 }
 /*----------------------------------------------------------------------------*/
 uint64_t
-setting_get_uint (Setting *st_set)
+setting_get_uint (const Setting *st_set)
 {
     if (st_set == NULL)
         return 0;
@@ -279,18 +285,19 @@ setting_get_uint (Setting *st_set)
 }
 /*----------------------------------------------------------------------------*/
 static void
-setting_set_uint64 (Setting       *st_set,
-                    const uint64_t i_val)
+setting_set_uint64 (Setting        *st_set,
+                    const uint64_t  i_val)
 {
     if (st_set == NULL)
         return;
 
     setting_set_type (st_set, SET_VAL_UINT64);
+
     st_set->data.ui64_val = i_val;
 }
 /*----------------------------------------------------------------------------*/
 uint64_t
-setting_get_uint64 (Setting *st_set)
+setting_get_uint64 (const Setting *st_set)
 {
     if (st_set == NULL)
         return 0;
@@ -302,18 +309,19 @@ setting_get_uint64 (Setting *st_set)
 }
 /*----------------------------------------------------------------------------*/
 static void
-setting_set_uint32 (Setting       *st_set,
-                    const uint32_t i_val)
+setting_set_uint32 (Setting        *st_set,
+                    const uint32_t  i_val)
 {
     if (st_set == NULL)
         return;
 
     setting_set_type (st_set, SET_VAL_UINT32);
+
     st_set->data.ui32_val = i_val;
 }
 /*----------------------------------------------------------------------------*/
 uint32_t
-setting_get_uint32 (Setting *st_set)
+setting_get_uint32 (const Setting *st_set)
 {
     if (st_set == NULL)
         return 0;
@@ -325,18 +333,19 @@ setting_get_uint32 (Setting *st_set)
 }
 /*----------------------------------------------------------------------------*/
 static void
-setting_set_uint16 (Setting       *st_set,
-                    const uint16_t i_val)
+setting_set_uint16 (Setting        *st_set,
+                    const uint16_t  i_val)
 {
     if (st_set == NULL)
         return;
 
     setting_set_type (st_set, SET_VAL_UINT16);
+
     st_set->data.ui16_val = i_val;
 }
 /*----------------------------------------------------------------------------*/
 uint16_t
-setting_get_uint16 (Setting *st_set)
+setting_get_uint16 (const Setting *st_set)
 {
     if (st_set == NULL)
         return 0;
@@ -348,18 +357,19 @@ setting_get_uint16 (Setting *st_set)
 }
 /*----------------------------------------------------------------------------*/
 static void
-setting_set_uint8 (Setting      *st_set,
-                   const uint8_t i_val)
+setting_set_uint8 (Setting       *st_set,
+                   const uint8_t  i_val)
 {
     if (st_set == NULL)
         return;
 
     setting_set_type (st_set, SET_VAL_UINT8);
+
     st_set->data.ui8_val = i_val;
 }
 /*----------------------------------------------------------------------------*/
 uint8_t
-setting_get_uint8 (Setting *st_set)
+setting_get_uint8 (const Setting *st_set)
 {
     if (st_set == NULL)
         return 0;
@@ -371,18 +381,19 @@ setting_get_uint8 (Setting *st_set)
 }
 /*----------------------------------------------------------------------------*/
 static void
-setting_set_double (Setting     *st_set,
-                    const double d_val)
+setting_set_double (Setting      *st_set,
+                    const double  d_val)
 {
     if (st_set == NULL)
         return;
 
     setting_set_type (st_set, SET_VAL_DOUBLE);
+
     st_set->data.d_val = d_val;
 }
 /*----------------------------------------------------------------------------*/
 double
-setting_get_double (Setting *st_set)
+setting_get_double (const Setting *st_set)
 {
     if (st_set == NULL)
         return 0;
@@ -401,11 +412,12 @@ setting_set_string (Setting    *st_set,
         return;
 
     setting_set_type (st_set, SET_VAL_STRING);
+
     st_set->data.s_val = strdup(s_str);
 }
 /*----------------------------------------------------------------------------*/
 const char *
-setting_get_string (Setting *st_set)
+setting_get_string (const Setting *st_set)
 {
     if (st_set == NULL)
         return NULL;
@@ -427,7 +439,7 @@ setting_set_name (Setting    *st_set,
 }
 /*----------------------------------------------------------------------------*/
 const char *
-setting_get_name (Setting *st_set)
+setting_get_name (const Setting *st_set)
 {
     if (st_set == NULL)
         return NULL;
@@ -467,8 +479,8 @@ setting_remove_from_array (Setting *st_set)
 }
 /*----------------------------------------------------------------------------*/
 static void
-setting_copy2 (Setting *st_dest,
-               Setting *st_src)
+setting_copy2 (Setting       *st_dest,
+               const Setting *st_src)
 {
     if (st_dest == NULL || st_src == NULL)
         return;
@@ -480,51 +492,65 @@ setting_copy2 (Setting *st_dest,
     st_dest->v_type     = st_src->v_type;
 
     switch (st_src->v_type) {
+
         case SET_VAL_INT:
             st_dest->data.i_val = st_src->data.i_val;
             break;
+
         case SET_VAL_UINT:
             st_dest->data.ui_val = st_src->data.ui_val;
             break;
+
         case SET_VAL_INT64:
             st_dest->data.i64_val = st_src->data.i64_val;
             break;
+
         case SET_VAL_UINT64:
             st_dest->data.ui64_val = st_src->data.ui64_val;
             break;
+
         case SET_VAL_INT32:
             st_dest->data.i32_val = st_src->data.i32_val;
             break;
+
         case SET_VAL_UINT32:
             st_dest->data.ui32_val = st_src->data.ui32_val;
             break;
+
         case SET_VAL_INT16:
             st_dest->data.i16_val = st_src->data.i16_val;
             break;
+
         case SET_VAL_UINT16:
             st_dest->data.ui16_val = st_src->data.ui16_val;
             break;
+
         case SET_VAL_INT8:
             st_dest->data.i8_val = st_src->data.i8_val;
             break;
+
         case SET_VAL_UINT8:
             st_dest->data.ui8_val = st_src->data.ui8_val;
             break;
+
         case SET_VAL_DOUBLE:
             st_dest->data.d_val = st_src->data.d_val;
             break;
+
         case SET_VAL_STRING:
             st_dest->data.s_val = strdup (st_src->data.s_val);
             break;
+
         case SET_VAL_ARRAY:
             break;
+
         default:
             break;
     }
 }
 /*----------------------------------------------------------------------------*/
 Setting *
-setting_copy (Setting *st_src)
+setting_copy (const Setting *st_src)
 {
     Setting *st_ret;
 
@@ -544,7 +570,7 @@ setting_copy (Setting *st_src)
 }
 /*----------------------------------------------------------------------------*/
 void
-setting_print (Setting *st_set)
+setting_print (const Setting *st_set)
 {
     if (st_set == NULL)
         return;

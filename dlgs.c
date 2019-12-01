@@ -31,7 +31,7 @@ char *
 add_images_folder_dialog (GtkWindow *gw_parent)
 {
     GtkWidget *gw_dialog;        /* Directory choose dialog */
-    char      *s_folder  = NULL; /* Result selected folder string */
+    char      *s_folder  = NULL; /* Selected folder name */
     int        res       = 0;    /* Dialog run response */
 
     gw_dialog = gtk_file_chooser_dialog_new ("Select Folder",
@@ -99,13 +99,17 @@ message_dialog_error (GtkWindow  *gw_parent,
                       const char *s_message)
 {
     GtkWidget *gw_dialog;
+
     GtkDialogFlags flags = GTK_DIALOG_DESTROY_WITH_PARENT;
+
     gw_dialog = gtk_message_dialog_new (gw_parent,
                                         flags,
                                         GTK_MESSAGE_ERROR,
                                         GTK_BUTTONS_CLOSE,
                                         "%s", s_message);
+
     gtk_dialog_run (GTK_DIALOG (gw_dialog));
+
     gtk_widget_destroy (gw_dialog);
 }
 /*----------------------------------------------------------------------------*/

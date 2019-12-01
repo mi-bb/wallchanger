@@ -67,7 +67,7 @@ wallset_free (WallSett *ws_sett)
  * @brief  Get config file name.
  */
 const char *
-wallset_get_cfg_fn (WallSett *ws_sett)
+wallset_get_cfg_fn (const WallSett *ws_sett)
 {
     return (const char*) ws_sett->s_cfgfile;
 }
@@ -76,8 +76,8 @@ wallset_get_cfg_fn (WallSett *ws_sett)
  * @brief  Set using last used wallpaper on start.
  */
 void
-wallset_set_last_used_setting (WallSett *ws_sett,
-                               uint8_t   ui_val)
+wallset_set_last_used_setting (WallSett      *ws_sett,
+                               const uint8_t  ui_val)
 {
     ws_sett->i_lastsett = ui_val;
 }
@@ -86,7 +86,7 @@ wallset_set_last_used_setting (WallSett *ws_sett,
  * @brief  Get using last used wallpaper on start.
  */
 uint8_t
-wallset_get_last_used_setting (WallSett *ws_sett)
+wallset_get_last_used_setting (const WallSett *ws_sett)
 {
     return ws_sett->i_lastsett;
 }
@@ -95,8 +95,8 @@ wallset_get_last_used_setting (WallSett *ws_sett)
  * @brief  Set random wallpaper select value.
  */
 void
-wallset_set_random (WallSett *ws_sett,
-                    uint8_t   ui_val)
+wallset_set_random (WallSett      *ws_sett,
+                    const uint8_t  ui_val)
 {
     ws_sett->i_random = ui_val;
 }
@@ -105,7 +105,7 @@ wallset_set_random (WallSett *ws_sett,
  * @brief  Get random wallpaper select value.
  */
 uint8_t
-wallset_get_random (WallSett *ws_sett)
+wallset_get_random (const WallSett *ws_sett)
 {
     return ws_sett->i_random;
 }
@@ -114,8 +114,8 @@ wallset_get_random (WallSett *ws_sett)
  * @brief  Set wallpaper change interval value.
  */
 void
-wallset_set_interval (WallSett *ws_sett,
-                      uint32_t  ui_val)
+wallset_set_interval (WallSett       *ws_sett,
+                      const uint32_t  ui_val)
 {
     ws_sett->i_chinterval = ui_val;
 }
@@ -124,7 +124,7 @@ wallset_set_interval (WallSett *ws_sett,
  * @brief  Get wallpaper change interval value.
  */
 uint32_t
-wallset_get_interval (WallSett *ws_sett)
+wallset_get_interval (const WallSett *ws_sett)
 {
     return ws_sett->i_chinterval;
 }
@@ -136,8 +136,6 @@ int
 wallset_set_last_used_fn (WallSett   *ws_sett,
                           const char *s_fn)
 {
-    //int i_pos = 0; /* Last used data position in list */
-
     if (s_fn == NULL)
         return ERR_OK;
 
@@ -159,7 +157,7 @@ wallset_set_last_used_fn (WallSett   *ws_sett,
  * @brief  Get last used wallpaper file name.
  */
 const char *
-wallset_get_last_used_fn (WallSett *ws_sett)
+wallset_get_last_used_fn (const WallSett *ws_sett)
 {
     return (const char*) ws_sett->s_lastused;
 }
@@ -190,7 +188,7 @@ wallset_set_command (WallSett   *ws_sett,
  * @brief  Get wallpaper set command.
  */
 const char *
-wallset_get_command (WallSett *ws_sett)
+wallset_get_command (const WallSett *ws_sett)
 {
     return (const char*) ws_sett->s_bgcmd;
 }

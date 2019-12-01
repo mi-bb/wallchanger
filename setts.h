@@ -47,7 +47,7 @@ enum {
  * @param[in]  i_val  Setting enum value
  * @return     String with setting name
  */
-const char * get_setting_name (int i_val);
+const char * get_setting_name (const int i_val);
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Read program settings. 
@@ -66,8 +66,8 @@ SettList * settings_read (const char *s_fname,
  * @param[out] ws_sett  WallSet settings output
  * @return     none
  */
-void settlist_to_wallset (SettList *st_list,
-                          WallSett *ws_sett);
+void settlist_to_wallset (const SettList *st_list,
+                          WallSett       *ws_sett);
 /*----------------------------------------------------------------------------*/
 /**
  * @fn  int settings_update_last_used (const char *s_last_used,
@@ -94,9 +94,9 @@ int settings_update_window_size (const int   i_w,
                                  const char *s_cfg_file);
 /*----------------------------------------------------------------------------*/
 /**
- * @fn  int settings_check_update (SettList    *st_list,
- *                                 const char  *s_fname,
- *                                 char       **s_out_buff)
+ * @fn  int settings_check_update (const SettList  *st_list,
+ *                                 const char      *s_fname,
+ *                                 char           **s_out_buff)
  * @brief      Check if settings in SettList are an update to settings
  *             stored in settings file.
  * @param[in]  st_list     List of settings
@@ -111,8 +111,8 @@ int settings_update_window_size (const int   i_w,
  * @param[in] s_fname  File name to save data
  * @return    Saving file status, ERR_OK or error code
  *
- * @fn  int settings_check_update_file (SettList   *st_list,
- *                                      const char *s_fname)
+ * @fn  int settings_check_update_file (const SettList *st_list,
+ *                                      const char     *s_fname)
  * @brief     Check if settings are an update and update file with new data
  *            if they are.
  * @param[in] st_list  List of settings
@@ -120,15 +120,15 @@ int settings_update_window_size (const int   i_w,
  * @return    Saving file status, ERR_OK or error code
  */
 /*----------------------------------------------------------------------------*/
-int settings_check_update      (SettList    *st_list,
-                                const char  *s_fname,
-                                char       **s_out_buff);
+int settings_check_update      (const SettList   *st_list,
+                                const char       *s_fname,
+                                char            **s_out_buff);
 /*----------------------------------------------------------------------------*/
-int settings_update_file       (const char  *s_buff,
-                                const char  *s_fname);
+int settings_update_file       (const char       *s_buff,
+                                const char       *s_fname);
 /*----------------------------------------------------------------------------*/
-int settings_check_update_file (SettList    *st_list,
-                                const char  *s_fname);
+int settings_check_update_file (const SettList   *st_list,
+                                const char       *s_fname);
 /*----------------------------------------------------------------------------*/
 #endif
 

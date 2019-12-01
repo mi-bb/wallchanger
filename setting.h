@@ -96,37 +96,37 @@ uint64_t setting_hashfun (const char *s_str);
 void setting_free (Setting *st_set);
 /*----------------------------------------------------------------------------*/
 /**
- * @fn  const char * setting_get_name (Setting *st_set)
+ * @fn  const char * setting_get_name (const Setting *st_set)
  * @brief      Get Setting object's name string
  * @param[in]  st_set  Setting object
  * @return     Name string or null if wrong data passed to function
  *
- * @fn  SetValType setting_get_type (Setting *st_set)
+ * @fn  SetValType setting_get_type (const Setting *st_set)
  * @brief      Get type of Setting object value
  * @param[in]  st_set  Setting object
  * @return     Type of Setting value
  *
- * @fn  uint64_t setting_get_id (Setting *st_set)
+ * @fn  uint64_t setting_get_id (const Setting *st_set)
  * @brief      Get Setting object's id number
  * @param[in]  st_set  Setting object
  * @return     Id number
  *
- * @fn  uint64_t setting_get_owner_id (Setting *st_set)
+ * @fn  uint64_t setting_get_owner_id (const Setting *st_set)
  * @brief      Get Setting object's owner id number
  * @param[in]  st_set  Setting object
  * @return     Owner id number
  */
 /*----------------------------------------------------------------------------*/
-const char * setting_get_name     (Setting *st_set);
+const char * setting_get_name     (const Setting *st_set);
 /*----------------------------------------------------------------------------*/
-SetValType   setting_get_type     (Setting *st_set);
+SetValType   setting_get_type     (const Setting *st_set);
 /*----------------------------------------------------------------------------*/
-uint64_t     setting_get_id       (Setting *st_set);
+uint64_t     setting_get_id       (const Setting *st_set);
 /*----------------------------------------------------------------------------*/
-uint64_t     setting_get_owner_id (Setting *st_set);
+uint64_t     setting_get_owner_id (const Setting *st_set);
 /*----------------------------------------------------------------------------*/
 /**
- * @fn  int64_t setting_get_int (Setting *st_set)
+ * @fn  int64_t setting_get_int (const Setting *st_set)
  * @brief      Get integer value stored in Setting object
  *
  * Function gets standard integer value, without type.
@@ -135,85 +135,85 @@ uint64_t     setting_get_owner_id (Setting *st_set);
  * @param[in]  st_set  Setting object
  * @return     64 bit integer or 0 if incorrect type to get
  *
- * @fn  int64_t setting_get_int64 (Setting *st_set)
+ * @fn  int64_t setting_get_int64 (const Setting *st_set)
  * @brief      Get 64 bit integer value stored in Setting object
  * @param[in]  st_set  Setting object
  * @return     64 bit integer or 0 if incorrect type to get
  *
- * @fn  int32_t setting_get_int32 (Setting *st_set)
+ * @fn  int32_t setting_get_int32 (const Setting *st_set)
  * @brief      Get 32 bit integer value stored in Setting object
  * @param[in]  st_set  Setting object
  * @return     32 bit integer or 0 if incorrect type to get
  *
- * @fn  int16_t setting_get_int16 (Setting *st_set)
+ * @fn  int16_t setting_get_int16 (const Setting *st_set)
  * @brief      Get 16 bit integer value stored in Setting object
  * @param[in]  st_set  Setting object
  * @return     16 bit integer or 0 if incorrect type to get
  *
- * @fn  int8_t setting_get_int8 (Setting *st_set)
+ * @fn  int8_t setting_get_int8 (const Setting *st_set)
  * @brief      Get 8 bit integer value stored in Setting object
  * @param[in]  st_set  Setting object
  * @return     8 bit integer or 0 if incorrect type to get
  *
- * @fn  uint64_t setting_get_uint (Setting *st_set)
+ * @fn  uint64_t setting_get_uint (const Setting *st_set)
  * @brief      Get unsigned integer (64 bit) value stored in Setting object
  * @param[in]  st_set  Setting object
  * @return     Unsigned integer (64 bit) or 0 if incorrect type to get
  *
- * @fn  uint64_t setting_get_uint64 (Setting *st_set)
+ * @fn  uint64_t setting_get_uint64 (const Setting *st_set)
  * @brief      Get 64 bit unsigned integer value stored in Setting object
  * @param[in]  st_set  Setting object
  * @return     64 bit unsigned integer or 0 if incorrect type to get
  *
- * @fn  uint32_t setting_get_uint32 (Setting *st_set)
+ * @fn  uint32_t setting_get_uint32 (const Setting *st_set)
  * @brief      Get 32 bit unsigned integer value stored in Setting object
  * @param[in]  st_set  Setting object
  * @return     32 bit unsigned integer or 0 if incorrect type to get
  *
- * @fn  uint16_t setting_get_uint16 (Setting *st_set)
+ * @fn  uint16_t setting_get_uint16 (const Setting *st_set)
  * @brief      Get 16 bit unsigned integer value stored in Setting object
  * @param[in]  st_set  Setting object
  * @return     16 bit unsigned integer or 0 if incorrect type to get
  *
- * @fn  uint8_t setting_get_uint8 (Setting *st_set)
+ * @fn  uint8_t setting_get_uint8 (const Setting *st_set)
  * @brief      Get 8 bit unsigned integer value stored in Setting object
  * @param[in]  st_set  Setting object
  * @return     8 bit unsigned integer or 0 if incorrect type to get
  *
- * @fn  double setting_get_double (Setting *st_set)
+ * @fn  double setting_get_double (const Setting *st_set)
  * @brief      Get double type value stored in Setting object
  * @param[in]  st_set  Setting object
  * @return     Double value or 0 if incorrect type to get
  *
- * @fn  const char * setting_get_string (Setting *st_set)
+ * @fn  const char * setting_get_string (const Setting *st_set)
  * @brief      Get text string stored in Setting object
  * @param[in]  st_set  Setting object
  * @return     String or null if incorrect type to get
  */
 /*----------------------------------------------------------------------------*/
-int64_t      setting_get_int    (Setting *st_set);
-/*----------------------------------------------------------------------------*/
-int64_t      setting_get_int64  (Setting *st_set);
-/*----------------------------------------------------------------------------*/
-int32_t      setting_get_int32  (Setting *st_set);
-/*----------------------------------------------------------------------------*/
-int16_t      setting_get_int16  (Setting *st_set);
-/*----------------------------------------------------------------------------*/
-int8_t       setting_get_int8   (Setting *st_set);
-/*----------------------------------------------------------------------------*/
-uint64_t     setting_get_uint   (Setting *st_set);
-/*----------------------------------------------------------------------------*/
-uint64_t     setting_get_uint64 (Setting *st_set);
-/*----------------------------------------------------------------------------*/
-uint32_t     setting_get_uint32 (Setting *st_set);
-/*----------------------------------------------------------------------------*/
-uint16_t     setting_get_uint16 (Setting *st_set);
-/*----------------------------------------------------------------------------*/
-uint8_t      setting_get_uint8  (Setting *st_set);
-/*----------------------------------------------------------------------------*/
-double       setting_get_double (Setting *st_set);
-/*----------------------------------------------------------------------------*/
-const char * setting_get_string (Setting *st_set);
+int64_t      setting_get_int    (const Setting *st_set);
+
+int64_t      setting_get_int64  (const Setting *st_set);
+
+int32_t      setting_get_int32  (const Setting *st_set);
+
+int16_t      setting_get_int16  (const Setting *st_set);
+
+int8_t       setting_get_int8   (const Setting *st_set);
+
+uint64_t     setting_get_uint   (const Setting *st_set);
+
+uint64_t     setting_get_uint64 (const Setting *st_set);
+
+uint32_t     setting_get_uint32 (const Setting *st_set);
+
+uint16_t     setting_get_uint16 (const Setting *st_set);
+
+uint8_t      setting_get_uint8  (const Setting *st_set);
+
+double       setting_get_double (const Setting *st_set);
+
+const char * setting_get_string (const Setting *st_set);
 /*----------------------------------------------------------------------------*/
 /**
  * @fn  void setting_assign_to_array (Setting *st_set, const char *s_name)
@@ -328,40 +328,40 @@ void setting_remove_from_array (Setting    *st_set);
 /*----------------------------------------------------------------------------*/
 Setting * setting_new_int    (const int64_t    i_val,
                               const char      *s_name);
-/*----------------------------------------------------------------------------*/
+
 Setting * setting_new_uint   (const uint64_t   i_val,
                               const char      *s_name);
-/*----------------------------------------------------------------------------*/
+
 Setting * setting_new_int64  (const int64_t    i_val,
                               const char      *s_name);
-/*----------------------------------------------------------------------------*/
+
 Setting * setting_new_uint64 (const uint64_t   i_val,
                               const char      *s_name);
-/*----------------------------------------------------------------------------*/
+
 Setting * setting_new_int32  (const int32_t    i_val,
                               const char      *s_name);
-/*----------------------------------------------------------------------------*/
+
 Setting * setting_new_uint32 (const uint32_t   i_val,
                               const char      *s_name);
-/*----------------------------------------------------------------------------*/
+
 Setting * setting_new_int16  (const int16_t    i_val,
                               const char      *s_name);
-/*----------------------------------------------------------------------------*/
+
 Setting * setting_new_uint16 (const uint16_t   i_val,
                               const char      *s_name);
-/*----------------------------------------------------------------------------*/
+
 Setting * setting_new_int8   (const int8_t     i_val,
                               const char      *s_name);
-/*----------------------------------------------------------------------------*/
+
 Setting * setting_new_uint8  (const uint8_t    i_val,
                               const char      *s_name);
-/*----------------------------------------------------------------------------*/
+
 Setting * setting_new_double (const double     d_val,
                               const char      *s_name);
-/*----------------------------------------------------------------------------*/
+
 Setting * setting_new_string (const char      *s_val,
                               const char      *s_name);
-/*----------------------------------------------------------------------------*/
+
 Setting * setting_new_array  (const char      *s_name);
 /*----------------------------------------------------------------------------*/
 /**
@@ -371,7 +371,7 @@ Setting * setting_new_array  (const char      *s_name);
  * @return      Duplicated setting or null if could not allocate or wrong
  *              data passed
  */
-Setting * setting_copy (Setting *st_src);
+Setting * setting_copy (const Setting *st_src);
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Print setting info
@@ -379,7 +379,7 @@ Setting * setting_copy (Setting *st_src);
  * @param[out]  st_set  Setting object
  * @return      none
  */
-void setting_print (Setting *st_set);
+void setting_print (const Setting *st_set);
 /*----------------------------------------------------------------------------*/
 #endif
 

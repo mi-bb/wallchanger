@@ -155,7 +155,7 @@ flist_reserve (FList        *fl_list,
     }
 
     /* Update file list count */
-    fl_list->i_cnt = i_size;
+    fl_list->i_cnt = (uint32_t) i_size;
 
     return ERR_OK;
 }
@@ -225,7 +225,7 @@ flist_set_data (FList          *fl_list,
  * @brief  Gat data from FList
  */
 const char *
-flist_get_data (FList          *fl_list,
+flist_get_data (const FList    *fl_list,
                 const uint32_t  i_pos)
 {
     if (i_pos >= fl_list->i_cnt)
@@ -239,7 +239,7 @@ flist_get_data (FList          *fl_list,
  * @brief  Gat data from FList as a new string
  */
 char *
-flist_get_data_new (FList         *fl_list,
+flist_get_data_new (const FList    *fl_list,
                     const uint32_t  i_pos)
 {
     char *s_res = NULL; /* Name string to return */
@@ -256,7 +256,7 @@ flist_get_data_new (FList         *fl_list,
  * @brief  Gat number of items in FList
  */
 uint32_t
-flist_get_len (FList *fl_list)
+flist_get_len (const FList *fl_list)
 {
     return fl_list->i_cnt;
 }
@@ -265,8 +265,8 @@ flist_get_len (FList *fl_list)
  * @brief  Get position of given name in FList
  */
 int32_t
-flist_get_pos (FList      *fl_list,
-               const char *s_fn)
+flist_get_pos (const FList *fl_list,
+               const char  *s_fn)
 {
     int32_t  i_pos = -1; /* Item position to return */
     uint32_t i     =  0;
@@ -279,7 +279,7 @@ flist_get_pos (FList      *fl_list,
 
     for (i = 0; i < fl_list->i_cnt; ++i) {
         if (strcmp (s_fn, flist_get_data (fl_list, i)) == 0) {
-            i_pos = i; 
+            i_pos = (int32_t) i; 
             break;
         }
     }
@@ -290,7 +290,7 @@ flist_get_pos (FList      *fl_list,
  * @brief  Print FList data
  */
 void
-flist_print_data (FList *fl_list)
+flist_print_data (const FList *fl_list)
 {
     uint32_t i = 0;
 
