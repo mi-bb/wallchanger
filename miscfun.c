@@ -544,7 +544,7 @@ string_replace_in (const char *s_src,
         pn = strstr (sp, s_fr);  
     }
     strcat (s_res, sp);
-    printf ("%ld %ld %s\n", ui_len, strlen (s_res), s_res);
+
     return s_res;
 }
 /*----------------------------------------------------------------------------*/
