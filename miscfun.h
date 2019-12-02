@@ -85,23 +85,23 @@ char * check_config_path_file (int *i_err);
 /*----------------------------------------------------------------------------*/
 int read_file_data      (const char   *s_fname,
                          char        **s_buff);
-/*----------------------------------------------------------------------------*/
+
 int read_file_data_hash (const char   *s_fname,
                          char        **s_buff,
                          uint64_t     *i_hash);
-/*----------------------------------------------------------------------------*/
+
 int save_file_data      (const char   *s_fname,
                          const char   *s_buff);
 /*----------------------------------------------------------------------------*/
 /**
- * @brief  Get directory content in FList 
+ * @brief  Get directory content, add it to FList 
  *
  * @param[in]   s_path1   Path to directory
  * @param[out]  fl_files  List of files in directory
  * @return      none
  */
-void get_directory_content_append_to_flist (const char *s_path1,
-                                            FList      *fl_files);
+void get_directory_content_add_to_flist (const char *s_path1,
+                                         FList      *fl_files);
 /*----------------------------------------------------------------------------*/
 /**
  * @fn  int compare_strings (const char *a, const char *b)
@@ -143,8 +143,8 @@ void get_directory_content_append_to_flist (const char *s_path1,
  * @return    Duplicated string or null pointer
  *
  * @fn  char * set_up_wallpaper_command (const char *s_cmd,
-                                         const char *s_fname,
-                                         const char *s_sign)
+ *                                       const char *s_fname,
+ *                                       const char *s_sign)
  * @brief     Make wallpapet set command.
  * @param[in] s_cmd    Wallpaper set command 
  * @param[in] s_fname  Wallpaper file name 
@@ -154,19 +154,19 @@ void get_directory_content_append_to_flist (const char *s_path1,
 /*----------------------------------------------------------------------------*/
 int    compare_strings          (const char   *a,
                                  const char   *b);
-/*----------------------------------------------------------------------------*/
+
 char * string_name_with_number  (const char   *s_name,
                                  const size_t  i_no);
-/*----------------------------------------------------------------------------*/
+
 char * string_replace_in        (const char   *s_src,
                                  const char   *s_fr,
                                  const char   *s_to);
-/*----------------------------------------------------------------------------*/
+
 char * str_ndup                 (const char   *s_str,
                                  const size_t  st_len);
-/*----------------------------------------------------------------------------*/
+
 char * str_dup                  (const char   *s_str);
-/*----------------------------------------------------------------------------*/
+
 char * set_up_wallpaper_command (const char   *s_cmd,
                                  const char   *s_fname,
                                  const char   *s_sign);

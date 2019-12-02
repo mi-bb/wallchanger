@@ -618,7 +618,7 @@ event_add_img_dir_pressed (GtkWidget  *widget,
 
     if (s_folder != NULL) {
         /* Scan directory for files and append them to file list */
-        get_directory_content_append_to_flist (s_folder, &fl_files);
+        get_directory_content_add_to_flist (s_folder, &fl_files);
 
         /* Filter file list of files with extensions that are not
          * supported by GdkPixbuf */

@@ -55,9 +55,9 @@ WallSett {
  * @return     none
  */
 /*----------------------------------------------------------------------------*/
+int  wallset_init (WallSett *ws_sett);
+
 void wallset_free (WallSett *ws_sett);
-/*----------------------------------------------------------------------------*/
-int wallset_init (WallSett *ws_sett);
 /*----------------------------------------------------------------------------*/
 /**
  * @fn  void wallset_set_last_used_setting (WallSett      *ws_sett,

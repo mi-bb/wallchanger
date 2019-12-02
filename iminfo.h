@@ -52,18 +52,18 @@ ImageInfo {
  * @brief     Create new ImageInfo object with data gathered from file s_fname
  * @param[in] s_fname  String with file name
  * @return    File info in ImageInfo format, null if could not alloc memory
+ *
+ * @fn void imageinfo_free  (ImageInfo *ii_info)
+ * @brief      Free ImageInfo data.
+ * @param[out] ii_info  Pointer to ImageInfo object
+ * @return     none
  */
 /*----------------------------------------------------------------------------*/
 ImageInfo * imageinfo_new           (void);
 
 ImageInfo * imageinfo_new_from_file (const char *s_fname);
-/*----------------------------------------------------------------------------*/
-/**
- * @brief      Free ImageInfo data.
- * @param[out] ii_info  Pointer to ImageInfo object
- * @return     none
- */
-void  imageinfo_free  (ImageInfo *ii_info);
+
+void        imageinfo_free          (ImageInfo  *ii_info);
 /*----------------------------------------------------------------------------*/
 /**
  * @fn  GSList * imageinfo_sort (GSList *gsl_iinfo)
@@ -78,7 +78,7 @@ void  imageinfo_free  (ImageInfo *ii_info);
  */
 /*----------------------------------------------------------------------------*/
 GSList * imageinfo_sort               (GSList  *gsl_iinfo);
-/*----------------------------------------------------------------------------*/
+
 GSList * imageinfo_remove_duplicates  (GSList  *gsl_iinfo);
 /*----------------------------------------------------------------------------*/
 /**
@@ -102,9 +102,9 @@ GSList * imageinfo_remove_duplicates  (GSList  *gsl_iinfo);
 /*----------------------------------------------------------------------------*/
 int      imageinfo_append_to_flist (GSList      *gsl_iinfo1,
                                     FList       *fl_files);
-/*----------------------------------------------------------------------------*/
+
 GSList * file_paths_to_imageinfo   (GSList      *gsl_files1);
-/*----------------------------------------------------------------------------*/
+
 GSList * flist_to_imageinfo        (const FList *fl_files);
 /*----------------------------------------------------------------------------*/
 /**

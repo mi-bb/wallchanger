@@ -86,9 +86,10 @@ void settlist_to_wallset (const SettList *st_list,
  * @param[in] s_cfg_file  Config file path
  * @return    Updating data in settings file status
  */
+/*----------------------------------------------------------------------------*/
 int settings_update_last_used   (const char *s_last_used,
                                  const char *s_fname);
-/*----------------------------------------------------------------------------*/
+
 int settings_update_window_size (const int   i_w,
                                  const int   i_h,
                                  const char *s_cfg_file);
@@ -123,10 +124,10 @@ int settings_update_window_size (const int   i_w,
 int settings_check_update      (const SettList   *st_list,
                                 const char       *s_fname,
                                 char            **s_out_buff);
-/*----------------------------------------------------------------------------*/
+
 int settings_update_file       (const char       *s_buff,
                                 const char       *s_fname);
-/*----------------------------------------------------------------------------*/
+
 int settings_check_update_file (const SettList   *st_list,
                                 const char       *s_fname);
 /*----------------------------------------------------------------------------*/

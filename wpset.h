@@ -48,9 +48,9 @@
  */
 /*----------------------------------------------------------------------------*/
 int wallpaper_change      (WallSett   *ws_sett);
-/*----------------------------------------------------------------------------*/
+
 int wallpaper_startup_set (WallSett   *ws_sett);
-/*----------------------------------------------------------------------------*/
+
 int wallpaper_dialog_set  (const char *s_cmd,
                            const char *s_file,
                            const char *s_cfg_file);

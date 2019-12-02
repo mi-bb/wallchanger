@@ -40,9 +40,10 @@
  * @param[out] ii_info  Pointer to ImageInfo object
  * @return     none
  */
+/*----------------------------------------------------------------------------*/
 static int  compare_imageitems (const ImageInfo *ii_info1,
                                 const ImageInfo *ii_info2);
-/*----------------------------------------------------------------------------*/
+
 static void imageinfo_init     (ImageInfo       *ii_info);
 /*----------------------------------------------------------------------------*/
 /**

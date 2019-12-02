@@ -61,11 +61,11 @@
  */
 /*----------------------------------------------------------------------------*/
 static GdkPixbuf * make_prev_screen_pbuf (GdkRectangle       *gr_rect);
-/*----------------------------------------------------------------------------*/
+
 static void        paint_pbuf_on_pbuf    (GdkPixbuf          *gp_dest,
                                           const GdkPixbuf    *gp_src,
                                           const GdkRectangle *gr_area);
-/*----------------------------------------------------------------------------*/
+
 static GdkPixbuf * make_image_preview    (const char         *s_fname);
 /*----------------------------------------------------------------------------*/
 /**

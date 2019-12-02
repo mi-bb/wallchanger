@@ -52,6 +52,7 @@ enum {
 };
 /*----------------------------------------------------------------------------*/
 /**
+ * @fn  SettList * stlist_new_list (void)
  * @brief  Create new empty list for settings
  *
  * Function returns new empty list for settings, settings can be added using
@@ -59,32 +60,23 @@ enum {
  * Function should be freed using stlist_free () function.
  *
  * @return  New empty list
+ *
+ * @fn  void stlist_free (SettList *st_list)
+ * @brief      Free SettList list
+ * @param[out] st_list  SettList list of settings
+ * @return     None
+ *
+ * @fn  void stlist_clear (SettList *st_list)
+ * @brief      Clear SettList list of Setting items
+ * @param[out] st_list  SettList list of settings
+ * @return     None
  */
+/*----------------------------------------------------------------------------*/
 SettList * stlist_new_list (void);
-/*----------------------------------------------------------------------------*/
-/**
- * @brief  Get number of settings in list
- *
- * @param[in]  st_list  SettList list of settings
- * @return     Number of settings in list
- */
-uint32_t stlist_get_length (const SettList *st_list);
-/*----------------------------------------------------------------------------*/
-/**
- * @brief  Free SettList list
- *
- * @param[out]  st_list  SettList list of settings
- * @return      None
- */
-void stlist_free (SettList *st_list);
-/*----------------------------------------------------------------------------*/
-/**
- * @brief  Clear SettList list of Setting items
- *
- * @param[out]  st_list  SettList list of settings
- * @return      None
- */
-void stlist_clear (SettList *st_list);
+
+void       stlist_free     (SettList *st_list);
+
+void       stlist_clear    (SettList *st_list);
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Inserts Settings object to settings list
@@ -112,12 +104,17 @@ void stlist_clear (SettList *st_list);
 /*----------------------------------------------------------------------------*/
 int stlist_insert_setting          (SettList   *st_list,
                                     Setting    *st_val);
-/*----------------------------------------------------------------------------*/
+
 int stlist_insert_setting_to_array (SettList   *st_list,
                                     Setting    *st_val,
                                     const char *s_array_name);
 /*----------------------------------------------------------------------------*/
 /**
+ * @fn  uint32_t stlist_get_length (const SettList *st_list)
+ * @brief     Get number of settings in list
+ * @param[in] st_list  SettList list of settings
+ * @return    Number of settings in list
+ *
  * @fn  int32_t stlist_get_setting_pos (const SettList *st_list,
  *                                      const char     *s_name)
  * @brief     Get position of setting with name s_name on list
@@ -140,9 +137,11 @@ int stlist_insert_setting_to_array (SettList   *st_list,
  * @return    Setting object or null
  */
 /*----------------------------------------------------------------------------*/
+uint32_t  stlist_get_length            (const SettList *st_list);
+
 int32_t   stlist_get_setting_pos       (const SettList *st_list,
                                         const char     *s_name);
-/*----------------------------------------------------------------------------*/
+
 Setting * stlist_get_setting_at_pos    (const SettList *st_list,
                                         const uint32_t  ui_pos);
 
@@ -194,7 +193,7 @@ SettList * stlist_get_settings_in_array_name (const SettList *st_list,
 
 SettList * stlist_get_settings_in_array_obj  (const SettList *st_list,
                                               const Setting  *st_array);
-/*----------------------------------------------------------------------------*/
+
 SettList * stlist_get_settings_main          (const SettList *st_list);
 /*----------------------------------------------------------------------------*/
 /**

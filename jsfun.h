@@ -53,22 +53,15 @@ SettList * js_settings_read (const char *s_fname,
  * @param[in]  s_fname     Config file name
  * @param[out] s_out_buff  Buffer to write data
  * @return     ERR_OK or error code
- */
-int js_settings_check_for_update (const SettList  *st_list,
-                                  const char      *s_fname,
-                                  char           **s_out_buff);
-/*----------------------------------------------------------------------------*/
-/**
- * @brief  Update file with new data
  *
+ * @fn  int js_settings_update_file (const char *s_buff, const char *s_fname);
+ * @brief      Update file with new data
  * @param[in]  s_buff   String with data to save
  * @param[in]  s_fname  File name to save data
  * @return     Saving file status, ERR_OK or error code
- */
-int js_settings_update_file (const char *s_buff,
-                             const char *s_fname);
-/*----------------------------------------------------------------------------*/
-/**
+ *
+ * @fn  int js_settings_check_update_file (const SettList *st_list,
+ *                                         const char     *s_fname);
  * @brief  Check if settings are an update and update file with new data
  *         if they are.
  *
@@ -79,8 +72,16 @@ int js_settings_update_file (const char *s_buff,
  * @param[in]  s_fname  File name to save data
  * @return     Saving file status, ERR_OK or error code
  */
-int js_settings_check_update_file (const SettList *st_list,
-                                   const char     *s_fname);
+/*----------------------------------------------------------------------------*/
+int js_settings_check_for_update  (const SettList  *st_list,
+                                   const char      *s_fname,
+                                   char           **s_out_buff);
+
+int js_settings_update_file       (const char      *s_buff,
+                                   const char      *s_fname);
+
+int js_settings_check_update_file (const SettList  *st_list,
+                                   const char      *s_fname);
 /*----------------------------------------------------------------------------*/
 #endif
 

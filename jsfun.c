@@ -70,15 +70,15 @@
 static void          js_json_array_to_stlist (const json_object  *j_array,
                                               SettList           *st_list,
                                               const char         *s_array_name);
-/*----------------------------------------------------------------------------*/
+
 static void          js_stlist_array_to_json (const SettList     *st_list,
                                               const Setting      *st_sett,
                                               json_object        *j_array);
-/*----------------------------------------------------------------------------*/
+
 static Setting     * js_json_obj_to_setting  (json_object        *val,
                                               const char         *s_name,
                                               SettList           *st_list);
-/*----------------------------------------------------------------------------*/
+
 static json_object * js_setting_to_json_obj  (const SettList     *st_list,
                                               const Setting      *st_sett);
 /*----------------------------------------------------------------------------*/
@@ -98,7 +98,7 @@ static json_object * js_setting_to_json_obj  (const SettList     *st_list,
  */
 /*----------------------------------------------------------------------------*/
 static SettList * js_json_string_to_stlist  (const char     *s_buff);
-/*----------------------------------------------------------------------------*/
+
 static void       js_stlist_add_to_json_obj (const SettList *st_list,
                                              json_object    *j_obj);
 /*----------------------------------------------------------------------------*/

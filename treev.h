@@ -62,10 +62,10 @@ enum {
 /*----------------------------------------------------------------------------*/
 void        liststore_add_items (GtkWidget    *gw_list,
                                  GSList       *gsl_iinfo1);
-/*----------------------------------------------------------------------------*/
+
 ImageInfo * treemodel_get_data  (GtkTreeModel *gtm_model,
                                  GtkTreeIter   gti_iter);
-/*----------------------------------------------------------------------------*/
+
 GSList    * treeview_get_data   (GtkWidget    *gw_tview);
 /*----------------------------------------------------------------------------*/
 /**
@@ -103,15 +103,15 @@ GSList    * treeview_get_data   (GtkWidget    *gw_tview);
  */
 /*----------------------------------------------------------------------------*/
 void treeview_sort_list         (GtkWidget  *gw_tview);
-/*----------------------------------------------------------------------------*/
+
 void treeview_remove_duplicates (GtkWidget  *gw_tview);
-/*----------------------------------------------------------------------------*/
+
 void treeview_remove_selected   (GtkWidget  *gw_tview);
-/*----------------------------------------------------------------------------*/
+
 void treeview_move_up           (GtkWidget  *gw_tview);
 
 void treeview_move_down         (GtkWidget  *gw_tview);
-/*----------------------------------------------------------------------------*/
+
 void treeview_find_select_item  (GtkWidget  *gw_tview,
                                  const char *s_file);
 /*----------------------------------------------------------------------------*/

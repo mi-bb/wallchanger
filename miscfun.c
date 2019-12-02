@@ -64,13 +64,13 @@
 /*----------------------------------------------------------------------------*/
 static int check_permissions             (const char *s_name,
                                           const int   i_mode);
-/*----------------------------------------------------------------------------*/
+
 static int check_file_permissions        (const char *s_file);
-/*----------------------------------------------------------------------------*/
+
 static int check_dir_permissions         (const char *s_dir);
-/*----------------------------------------------------------------------------*/
+
 static int check_dir_premissions_create  (const char *s_dir);
-/*----------------------------------------------------------------------------*/
+
 static int check_file_premissions_create (const char *s_file);
 /*----------------------------------------------------------------------------*/
 /**
@@ -394,11 +394,11 @@ save_file_data (const char *s_fname,
 }
 /*----------------------------------------------------------------------------*/
 /**
- * @brief  Get directory content in FList 
+ * @brief  Get directory content, add it to FList 
  */
 void
-get_directory_content_append_to_flist (const char *s_path1,
-                                       FList      *fl_files)
+get_directory_content_add_to_flist (const char *s_path1,
+                                    FList      *fl_files)
 {
     char   *s_pthfn   = NULL; /* Full file name with path */
     char   *s_path    = NULL; /* File path */

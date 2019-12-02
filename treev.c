@@ -57,10 +57,10 @@
 static void liststore_set_item    (GtkListStore    *gls_list,
                                    GtkTreeIter     *gti_iter,
                                    const ImageInfo *ii_info);
-/*----------------------------------------------------------------------------*/
+
 static void liststore_add_item    (GtkWidget       *gw_list,
                                    const ImageInfo *ii_info);
-/*----------------------------------------------------------------------------*/
+
 static void treeview_replace_data (GtkWidget       *gw_tview,
                                    GSList          *gsl_iinfo1);
 /*----------------------------------------------------------------------------*/

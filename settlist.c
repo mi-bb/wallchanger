@@ -76,15 +76,6 @@ stlist_new_list (void)
     return st_list;
 }
 /*----------------------------------------------------------------------------*/
-uint32_t
-stlist_get_length (const SettList *st_list)
-{
-    if (st_list == NULL)
-        return 0;
-
-    return st_list->i_cnt;
-}
-/*----------------------------------------------------------------------------*/
 /**
  * @brief  Reserve space for Setting objects in SettList
  */
@@ -158,6 +149,15 @@ void
 stlist_clear (SettList *st_list)
 {
     stlist_reserve (st_list, 0);
+}
+/*----------------------------------------------------------------------------*/
+uint32_t
+stlist_get_length (const SettList *st_list)
+{
+    if (st_list == NULL)
+        return 0;
+
+    return st_list->i_cnt;
 }
 /*----------------------------------------------------------------------------*/
 int
