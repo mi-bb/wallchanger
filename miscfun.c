@@ -22,7 +22,6 @@
  * @author Michał Bąbik <michalb1981@o2.pl>
  */
 #include <stdio.h>
-#include <dirent.h> 
 #include <string.h>
 #include <stdint.h>
 #include <stdlib.h>
@@ -94,12 +93,12 @@ hash(const char *str)
  */
 int
 create_resize (void        **v_ptr,
-               const size_t  num,
-               const size_t  size)
+               const size_t  ul_num,
+               const size_t  ul_size)
 {
     void *s_tmp = NULL; /* Temp pointer for realloc */
 
-    if (size == 0 || num == 0) {
+    if (ul_size == 0 || ul_num == 0) {
         if (*v_ptr != NULL) {
             free (*v_ptr);
             *v_ptr = NULL;
@@ -109,7 +108,7 @@ create_resize (void        **v_ptr,
     else {
         if (*v_ptr == NULL) {
 
-            *v_ptr = calloc (num, size);
+            *v_ptr = calloc (ul_num, ul_size);
 
             if (*v_ptr == NULL) {
                 fputs ("Alloc error\n", stderr);
@@ -118,7 +117,7 @@ create_resize (void        **v_ptr,
             }
         }
         else {
-            s_tmp = realloc (*v_ptr, num * size);
+            s_tmp = realloc (*v_ptr, ul_num * ul_size);
 
             if (s_tmp == NULL) {
                 free (*v_ptr);
@@ -252,7 +251,7 @@ check_config_path_file (int *i_err)
     const char *s_cfg  = "/.config/";     /* Settings file path */
     char       *s_path = NULL;            /* Result full config file name */
     char       *s_home = NULL;            /* Home path */
-    size_t      i_len  = 0;               /* Config path length */
+    size_t      ul_len = 0;               /* Config path length */
 
     /* Getting user's HOME path */
     if ((s_home = getenv ("HOME")) == NULL) {
@@ -260,10 +259,10 @@ check_config_path_file (int *i_err)
     }
 
     /* Total config file path and name length */
-    i_len = strlen (s_home) + strlen (s_cfg) + strlen (s_sett);
+    ul_len = strlen (s_home) + strlen (s_cfg) + strlen (s_sett);
 
     /* Create string for config file path and name */
-    create_resize ((void**) &s_path, (i_len + 1), sizeof (char));
+    create_resize ((void**) &s_path, (ul_len + 1), sizeof (char));
 
     /* Copy config file path */
     strcpy (s_path, s_home);
@@ -300,7 +299,7 @@ read_file_data (const char  *s_fname,
 {
     FILE  *f_file;     /* Data file */
     long   l_size = 0; /* File size */
-    size_t st_res = 0; /* Read data count */
+    size_t ul_res = 0; /* Read data count */
 
     f_file = fopen (s_fname, "rb");
     if (f_file == NULL) {
@@ -330,8 +329,8 @@ read_file_data (const char  *s_fname,
     }
 
     /* copy the file into the buffer */
-    st_res = fread (*s_buff, 1, (size_t) l_size, f_file);
-    if (st_res != (size_t) l_size) {
+    ul_res = fread (*s_buff, 1, (size_t) l_size, f_file);
+    if (ul_res != (size_t) l_size) {
         fputs ("File reading error\n", stderr);
         perror("Error occurred");
         return ERR_FILE_RW;
@@ -370,8 +369,8 @@ save_file_data (const char *s_fname,
                 const char *s_buff)
 {
     FILE   *f_file;  /* File to save data */
-    size_t  st_res;  /* Save data count */
-    size_t  st_size; /* Buffer size */
+    size_t  ul_res;  /* Save data count */
+    size_t  ul_size; /* Buffer size */
 
     f_file = fopen (s_fname, "wb");
     if (f_file == NULL) {
@@ -379,74 +378,18 @@ save_file_data (const char *s_fname,
         perror("Error occurred");
         return ERR_FILE;
     }
-    st_size = strlen(s_buff);
+    ul_size = strlen(s_buff);
 
-    st_res = fwrite (s_buff , sizeof(char), st_size, f_file);
+    ul_res = fwrite (s_buff , sizeof(char), ul_size, f_file);
 
     fclose (f_file);
 
-    if (st_res != st_size) {
+    if (ul_res != ul_size) {
         fputs ("File writting error\n", stderr);
         perror("Error occurred");
         return ERR_FILE_RW;
         }
     return ERR_OK;
-}
-/*----------------------------------------------------------------------------*/
-/**
- * @brief  Get directory content, add it to FList 
- */
-void
-get_directory_content_add_to_flist (const char *s_path1,
-                                    FList      *fl_files)
-{
-    char   *s_pthfn   = NULL; /* Full file name with path */
-    char   *s_path    = NULL; /* File path */
-    size_t  i_dlen    = 0;    /* Path string length */
-    DIR    *dr;               /* Dirent directory */
-    struct  dirent *de;       /* Dirent struct */
-
-    i_dlen = strlen (s_path1);
-
-    /* Reserve 1 more for a slash later */
-    create_resize ((void**) &s_path, i_dlen + 2, sizeof (char));
-
-    strcpy (s_path, s_path1);
-
-    if (s_path[i_dlen-1] != '/') {
-        strcat (s_path, "/");
-        i_dlen++;
-    }
-
-    dr = opendir (s_path); 
-    if (dr == NULL) {
-        printf ("Could not open current directory\n"); 
-        free (s_path);
-        return; 
-    } 
-    while ((de = readdir(dr)) != NULL) {
-
-        /*if (de->d_type == DT_REG) {*/
-        if (de->d_type == 8) {
-
-            s_pthfn = calloc ((i_dlen + strlen (de->d_name)+1), sizeof (char));
-            if (s_pthfn == NULL) {
-                fputs ("Alloc error\n", stderr);
-                /*return ERR_ALLOC;*/
-                exit (EXIT_FAILURE);
-            }
-            strcpy (s_pthfn, s_path);
-            strcat (s_pthfn, de->d_name);
-
-            flist_insert_data (fl_files, s_pthfn);
-
-            free (s_pthfn);
-        }
-    }
-    if (s_path != NULL)
-        free (s_path);
-
-    closedir(dr);
 }
 /*----------------------------------------------------------------------------*/
 /**
@@ -479,23 +422,23 @@ compare_strings (const char *a,
  */ 
 char *
 string_name_with_number (const char   *s_name,
-                         const size_t  i_no)
+                         const size_t  ul_no)
 {
-    char   *s_res = NULL;
-    size_t  i_tmp = i_no;
-    size_t  i_l = 0;
+    char   *s_res  = NULL;
+    size_t  ul_tmp = ul_no;
+    size_t  ul_l   = 0;
 
     do {
-        i_tmp /= 10;
-        i_l++;
+        ul_tmp /= 10;
+        ul_l++;
     }
-    while (i_tmp);
+    while (ul_tmp);
 
-    s_res = calloc (strlen (s_name) + i_l + 1, sizeof (char));
+    s_res = calloc (strlen (s_name) + ul_l + 1, sizeof (char));
     if (s_res == NULL)
         return NULL;
 
-    sprintf (s_res, "%s%ld", s_name, i_no);
+    sprintf (s_res, "%s%ld", s_name, ul_no);
     return s_res;
 }
 /*----------------------------------------------------------------------------*/
@@ -510,17 +453,17 @@ string_replace_in (const char *s_src,
     const char *sp      = NULL; /* copy s_src pointer */
     const char *pn      = NULL; /* find string pointer */
     char       *s_res   = NULL; /* result string */
-    size_t      ui_len  = 0;    /* length to allocate */
-    size_t      ui_flen = 0;    /* length of s_fr */
-    size_t      ui_tlen = 0;    /* length if s_to */
+    size_t      ul_len  = 0;    /* length to allocate */
+    size_t      ul_flen = 0;    /* length of s_fr */
+    size_t      ul_tlen = 0;    /* length if s_to */
 
     sp = s_src; 
 
-    ui_flen = strlen (s_fr);
-    ui_tlen = strlen (s_to);
-    ui_len  = strlen (s_src) + 1;
+    ul_flen = strlen (s_fr);
+    ul_tlen = strlen (s_to);
+    ul_len  = strlen (s_src) + 1;
 
-    create_resize ((void**) &s_res, ui_len, sizeof (char));
+    create_resize ((void**) &s_res, ul_len, sizeof (char));
 
     /* find the first occurence of "replace from" */
     pn = strstr (sp, s_fr); 
@@ -528,10 +471,10 @@ string_replace_in (const char *s_src,
     /* while there are "replace from" in source string */
     while (pn != NULL) {
 
-        ui_len += ui_tlen;
-        ui_len -= ui_flen;
+        ul_len += ul_tlen;
+        ul_len -= ul_flen;
 
-        create_resize ((void**) &s_res, ui_len, sizeof (char));
+        create_resize ((void**) &s_res, ul_len, sizeof (char));
 
         /* append original text from last found up to new found */
         strncat (s_res, sp, pn - sp);
@@ -539,47 +482,13 @@ string_replace_in (const char *s_src,
         strcat (s_res, s_to);
 
         /* change source pointer to "after found" */
-        sp = pn + ui_flen; 
+        sp = pn + ul_flen; 
         /* find another "replace from" str in src */
         pn = strstr (sp, s_fr);  
     }
     strcat (s_res, sp);
 
     return s_res;
-}
-/*----------------------------------------------------------------------------*/
-/**
- * @brief  Duplicate n bytes of string.
- */
-char *
-str_ndup (const char   *s_str,
-          const size_t  st_len)
-{
-    char *s_res = NULL;
-
-    if (s_str == NULL)
-        return NULL;
-
-    create_resize ((void**) &s_res, st_len+1, sizeof (char));
-    /*
-    s_res = calloc (st_len, sizeof (char));
-    if (s_res == NULL)
-        return NULL;
-
-    strcpy (s_res, s_str);
-    */
-    memcpy (s_res, s_str, st_len);
-
-    return s_res;
-}
-/*----------------------------------------------------------------------------*/
-/**
- * @brief  Duplicate string.
- */
-char *
-str_dup (const char *s_str)
-{
-    return str_ndup (s_str, strlen (s_str));
 }
 /*----------------------------------------------------------------------------*/
 /**
@@ -591,22 +500,22 @@ set_up_wallpaper_command (const char *s_cmd,
                           const char *s_sign)
 {
     char   *s_res  = NULL;
-    size_t  ui_siz = 0;
+    size_t  ul_siz = 0;
     
     if (strstr (s_cmd, s_sign) == NULL) {
 
-        ui_siz = strlen (s_cmd) + strlen (s_fname) + 4;
+        ul_siz = strlen (s_cmd) + strlen (s_fname) + 4;
 
-        create_resize ((void**) &s_res, ui_siz, sizeof (char));
+        create_resize ((void**) &s_res, ul_siz, sizeof (char));
 
         sprintf (s_res, "%s %s &", s_cmd, s_fname);
     }
     else {
         s_res = string_replace_in (s_cmd, s_sign, s_fname);
 
-        ui_siz = strlen (s_res) + 3;
+        ul_siz = strlen (s_res) + 3;
 
-        create_resize ((void**) &s_res, ui_siz, sizeof (char));
+        create_resize ((void**) &s_res, ul_siz, sizeof (char));
 
         strcat (s_res, " &");
     }

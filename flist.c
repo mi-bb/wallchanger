@@ -24,6 +24,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include <dirent.h> 
 #include "errs.h"
 #include "flist.h"
 /*----------------------------------------------------------------------------*/
@@ -60,19 +61,19 @@ static char *
 str_dup (const char *s_str)
 {
     char   *s_res  = NULL;
-    size_t  st_len = 0;
+    size_t  ul_len = 0;
 
     if (s_str == NULL)
         return NULL;
 
-    st_len = strlen (s_str);
+    ul_len = strlen (s_str);
 
-    s_res = calloc (st_len+1, sizeof (char));
+    s_res = calloc (ul_len + 1, sizeof (char));
 
     if (s_res == NULL)
         return NULL;
 
-    memcpy (s_res, s_str, st_len);
+    memcpy (s_res, s_str, ul_len);
 
     return s_res;
 }
@@ -110,22 +111,22 @@ flist_init (FList *fl_list)
  */
 int
 flist_reserve (FList        *fl_list,
-               const size_t  i_size)
+               const size_t  ul_size)
 {
     char     **s_tmp = NULL;
     uint32_t   i     = 0;
 
     /* No need to resize */
-    if (fl_list->i_cnt == i_size)
+    if (fl_list->i_cnt == ul_size)
         return ERR_OK;
 
     /* if larger free rest */
-    while (i_size < fl_list->i_cnt) {
+    while (ul_size < fl_list->i_cnt) {
         free (fl_list->s_file[--fl_list->i_cnt]);
     }
 
     /* If size 0 clear list */
-    if (i_size == 0) {
+    if (ul_size == 0) {
         free (fl_list->s_file);
         flist_init (fl_list);
         return ERR_OK; 
@@ -133,10 +134,10 @@ flist_reserve (FList        *fl_list,
 
     /* Malloc if null, realloc if not null */
     if (fl_list->s_file == NULL) {
-        fl_list->s_file = calloc (i_size, sizeof (char*));
+        fl_list->s_file = calloc (ul_size, sizeof (char*));
     }
     else {
-        s_tmp = realloc (fl_list->s_file, (i_size) * sizeof (char*));
+        s_tmp = realloc (fl_list->s_file, (ul_size) * sizeof (char*));
         if (s_tmp == NULL) {
             for (i = 0; i < fl_list->i_cnt; ++i)
                 free (fl_list->s_file[i]);
@@ -148,14 +149,14 @@ flist_reserve (FList        *fl_list,
         }
     }
 
-    if (fl_list->s_file == NULL && i_size != 0) {
+    if (fl_list->s_file == NULL && ul_size != 0) {
         fputs ("Alloc error\n", stderr);
         exit (EXIT_FAILURE);
         /*return ERR_ALLOC;*/
     }
 
     /* Update file list count */
-    fl_list->i_cnt = (uint32_t) i_size;
+    fl_list->i_cnt = (uint32_t) ul_size;
 
     return ERR_OK;
 }
@@ -385,6 +386,69 @@ flist_filter_by_extensions_list (FList *fl_files,
 
     /* Free the temporary list */
     flist_free (&fl_new);
+}
+/*----------------------------------------------------------------------------*/
+/**
+ * @brief  Get directory content, add it to FList 
+ */
+void
+get_directory_content_add_to_flist (const char *s_path1,
+                                    FList      *fl_files)
+{
+    char   *s_pthfn   = NULL; /* Full file name with path */
+    char   *s_path    = NULL; /* File path */
+    size_t  ul_dlen   = 0;    /* Path string length */
+    DIR    *dr;               /* Dirent directory */
+    struct  dirent *de;       /* Dirent struct */
+
+    ul_dlen = strlen (s_path1);
+
+    /* Reserve 1 more for a slash later */
+    s_path = calloc (ul_dlen + 2, sizeof (char));
+
+    if (s_path == NULL) {
+        fputs ("Alloc error\n", stderr);
+        /*return ERR_ALLOC;*/
+        exit (EXIT_FAILURE);
+    }
+
+    strcpy (s_path, s_path1);
+
+    if (s_path[ul_dlen-1] != '/') {
+        strcat (s_path, "/");
+        ul_dlen++;
+    }
+
+    dr = opendir (s_path); 
+    if (dr == NULL) {
+        printf ("Could not open current directory\n"); 
+        free (s_path);
+        return; 
+    } 
+
+    while ((de = readdir(dr)) != NULL) {
+
+        /*if (de->d_type == DT_REG) {*/
+        if (de->d_type == 8) {
+
+            s_pthfn = calloc ((ul_dlen + strlen (de->d_name)+1), sizeof (char));
+            if (s_pthfn == NULL) {
+                fputs ("Alloc error\n", stderr);
+                /*return ERR_ALLOC;*/
+                exit (EXIT_FAILURE);
+            }
+            strcpy (s_pthfn, s_path);
+            strcat (s_pthfn, de->d_name);
+
+            flist_insert_data (fl_files, s_pthfn);
+
+            free (s_pthfn);
+        }
+    }
+    if (s_path != NULL)
+        free (s_path);
+
+    closedir(dr);
 }
 /*----------------------------------------------------------------------------*/
 

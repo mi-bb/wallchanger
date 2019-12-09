@@ -137,7 +137,7 @@ about_app_dialog (const char *s_ver)
                                        GTK_LICENSE_GPL_3_0);
 
     gtk_about_dialog_set_website (GTK_ABOUT_DIALOG (gw_dialog),
-            "https://savannah.nongnu.org/projects/wallchanger/");
+            "https://www.nongnu.org/wallchanger/");
 
     gtk_about_dialog_set_authors (GTK_ABOUT_DIALOG (gw_dialog), s_authors);
 

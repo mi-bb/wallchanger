@@ -19,9 +19,9 @@
  *
  * Automatic wallpaper changer
  *
- * @date December 2, 2019
+ * @date December 9, 2019
  *
- * @version 1.3.2
+ * @version 1.3.4
  * 
  * @author Michał Bąbik <michalb1981@o2.pl>
  */
@@ -40,7 +40,7 @@
 #include "errs.h"
 #include "miscfun.h"
 #define APP_NAME "Wall Changer"
-#define APP_VER  "1.3.2"
+#define APP_VER  "1.3.4"
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Structore to pass widgets and settings to callback
@@ -321,15 +321,19 @@ get_pbuf_exts_add_to_flist (FList *fl_exts)
     gsl_formats = gdk_pixbuf_get_formats();
 
     while (gsl_formats != NULL) {
+
         gpf = gsl_formats->data;
+
         /* Get extension list for current format */
         exts = gdk_pixbuf_format_get_extensions (gpf);
+
         for (it = exts; *it != NULL; it++) {
             /* Insert extension to list */
             flist_insert_data (fl_exts, *it);
         }
         /* Free extensions list */
         g_strfreev (exts);
+
         gsl_formats = gsl_formats->next;
     }
     g_slist_free (gsl_formats);
@@ -366,8 +370,10 @@ set_wallpaper_ch_interval (DialogData    *dd_data,
 
     /* Check if minutes value can be displayed as hours */
     if ((ui_tmp / 60 >= 1) && (ui_tmp % 60 == 0)) {
+
         /* If value can be hours set combobox to hours */
         gtk_combo_box_set_active (GTK_COMBO_BOX (dd_data->gw_inter_combo), 1);
+
         /* Divide inteval value to display by 60 */
         ui_tmp /= 60;
     }
@@ -393,7 +399,7 @@ get_wallpaper_list (GtkWidget *gw_view,
     GSList     *gsl_iinfo1 = NULL; /* List of ImageInfo data */
     const char *s_val      = NULL; /* Full file path */
     char       *s_name     = NULL; /* Unique name for background file */
-    size_t      ui_no      = 0;    /* Number to append to name */
+    size_t      ul_no      = 0;    /* Number to append to name */
 
     /* get ImageInfo list of TreeView files */
     gsl_iinfo1 = treeview_get_data (gw_view);
@@ -411,7 +417,7 @@ get_wallpaper_list (GtkWidget *gw_view,
 
         s_val = ii_info->s_full_path;
         s_name = string_name_with_number (get_setting_name (SETTING_WALL_ARRAY),
-                                          ui_no++);
+                                          ul_no++);
 
         st_sett = setting_new_string (s_val, s_name);
 
@@ -1247,7 +1253,7 @@ main (int    argc,
     int             status;
     DialogData      dd_data;
 
-    app = gtk_application_new ("pl.pomorze.init6.wallchanger",
+    app = gtk_application_new ("org.nongnu.WallChanger",
                                G_APPLICATION_FLAGS_NONE);
 
     g_signal_connect (app, "activate", G_CALLBACK (activate), &dd_data);

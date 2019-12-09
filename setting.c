@@ -25,6 +25,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include "setting.h"
+#include "strfun.h"
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Hash function.
@@ -413,7 +414,7 @@ setting_set_string (Setting    *st_set,
 
     setting_set_type (st_set, SET_VAL_STRING);
 
-    st_set->data.s_val = strdup(s_str);
+    st_set->data.s_val = str_dup (s_str);
 }
 /*----------------------------------------------------------------------------*/
 const char *
@@ -435,7 +436,7 @@ setting_set_name (Setting    *st_set,
     if (st_set == NULL || s_str == NULL)
         return;
 
-    st_set->s_name = strdup (s_str);
+    st_set->s_name = str_dup (s_str);
 }
 /*----------------------------------------------------------------------------*/
 const char *
@@ -486,7 +487,7 @@ setting_copy2 (Setting       *st_dest,
         return;
 
     setting_init (st_dest);
-    st_dest->s_name     = strdup (st_src->s_name);
+    st_dest->s_name     = str_dup (st_src->s_name);
     st_dest->i_id       = st_src->i_id;
     st_dest->i_owner_id = st_src->i_owner_id;
     st_dest->v_type     = st_src->v_type;
@@ -538,7 +539,7 @@ setting_copy2 (Setting       *st_dest,
             break;
 
         case SET_VAL_STRING:
-            st_dest->data.s_val = strdup (st_src->data.s_val);
+            st_dest->data.s_val = str_dup (st_src->data.s_val);
             break;
 
         case SET_VAL_ARRAY:

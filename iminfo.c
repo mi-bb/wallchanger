@@ -26,6 +26,7 @@
 #include <gdk-pixbuf/gdk-pixbuf.h>
 #include "miscfun.h"
 #include "iminfo.h"
+#include "strfun.h"
 /*----------------------------------------------------------------------------*/
 /**
  * @fn  static int compare_imageitems (const ImageInfo *ii_info1,

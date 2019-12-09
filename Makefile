@@ -19,12 +19,12 @@ PACKAGE = $(shell pkg-config --cflags --libs gtk+-3.0)
 LDLIBS = $(shell pkg-config --libs gtk+-3.0)
 SRCSG = wchanger.c treev.c dlgs.c iminfo.c wpset.c setts.c jsfun.c \
 	miscfun.c imgs.c flist.c randomm.c wallsett.c preview.c setting.c \
-	settlist.c
+	settlist.c strfun.c
 SRCSM = wcngdmn.c wpset.c setts.c jsfun.c miscfun.c flist.c randomm.c \
-	wallsett.c setting.c settlist.c
+	wallsett.c setting.c settlist.c strfun.c
 OBJSG = $(SRCSG:.c=.o)
 OBJSM = $(SRCSM:.c=.o)
-WGUI = wchanger-cfg
+WGUI = wchangercfg
 MAIN = wchangerd
 
 .PHONY: all clean

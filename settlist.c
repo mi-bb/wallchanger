@@ -38,11 +38,11 @@ static void stlist_init (SettList *st_list);
  * @brief  Reserve space for Setting objects in SettList
  *
  * @param[out]  st_list  SettList list of settings
- * @param[in]   i_size   Size to reserve
+ * @param[in]   ul_size  Size to reserve
  * @return      Reserve result 0 if OK, 1 if error occurred
  */
 static int stlist_reserve (SettList     *st_list,
-                           const size_t  i_size);
+                           const size_t  ul_size);
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Get list of Setting objects owned by array with owner id ui_oid
@@ -81,7 +81,7 @@ stlist_new_list (void)
  */
 static int
 stlist_reserve (SettList     *st_list,
-                const size_t  i_size)
+                const size_t  ul_size)
 {
     Setting **s_tmp = NULL;
     uint32_t  i     = 0;
@@ -90,16 +90,16 @@ stlist_reserve (SettList     *st_list,
         return SET_ER_OK;
 
     /* No need to resie */
-    if (st_list->i_cnt == i_size)
+    if (st_list->i_cnt == ul_size)
         return SET_ER_OK;
 
     /* if larger free rest */
-    while (i_size < st_list->i_cnt) {
+    while (ul_size < st_list->i_cnt) {
         setting_free (st_list->st_setting[--st_list->i_cnt]);
     }
 
     /* If size 0 clear list */
-    if (i_size == 0) {
+    if (ul_size == 0) {
         free (st_list->st_setting);
         stlist_init (st_list);
         return SET_ER_OK; 
@@ -107,10 +107,10 @@ stlist_reserve (SettList     *st_list,
 
     /* Malloc if null, realloc if not null */
     if (st_list->st_setting == NULL) {
-        st_list->st_setting = calloc (i_size, sizeof (Setting*));
+        st_list->st_setting = calloc (ul_size, sizeof (Setting*));
     }
     else {
-        s_tmp = realloc (st_list->st_setting, (i_size) * sizeof (Setting*));
+        s_tmp = realloc (st_list->st_setting, (ul_size) * sizeof (Setting*));
         if (s_tmp == NULL) {
             for (i = 0; i < st_list->i_cnt; ++i)
                 setting_free (st_list->st_setting[i]);
@@ -122,14 +122,14 @@ stlist_reserve (SettList     *st_list,
         }
     }
 
-    if (st_list->st_setting == NULL && i_size != 0) {
+    if (st_list->st_setting == NULL && ul_size != 0) {
         fputs ("Alloc error\n", stderr);
         exit (EXIT_FAILURE);
         /*return ERR_ALLOC;*/
     }
 
     /* Update file list count */
-    st_list->i_cnt = (uint32_t) i_size;
+    st_list->i_cnt = (uint32_t) ul_size;
 
     return SET_ER_OK;
 }

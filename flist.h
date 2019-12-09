@@ -44,7 +44,7 @@ FList {
  * @param[out] fl_list  FList object
  * @return     none
  *
- * @fn         int flist_reserve (FList *fl_list, const size_t i_size)
+ * @fn         int flist_reserve (FList *fl_list, const size_t ul_size)
  * @brief      Reserve space for items in FList object
  * @param[out] fl_list  FList object
  * @param[in]  i_size   Size to reserve
@@ -64,7 +64,7 @@ FList {
 void flist_init    (FList        *fl_list);
 
 int  flist_reserve (FList        *fl_list,
-                    const size_t  i_size);
+                    const size_t  ul_size);
 
 void flist_clear   (FList        *fl_list);
 
@@ -164,6 +164,16 @@ void flist_filter_by_extensions_list (FList *fl_files,
 * @return    none
 */
 void flist_print_data (const FList *fl_list);
+/*----------------------------------------------------------------------------*/
+/**
+ * @brief  Get directory content, add it to FList 
+ *
+ * @param[in]   s_path1   Path to directory
+ * @param[out]  fl_files  List of files in directory
+ * @return      none
+ */
+void get_directory_content_add_to_flist (const char *s_path1,
+                                         FList      *fl_files);
 /*----------------------------------------------------------------------------*/
 #endif
 

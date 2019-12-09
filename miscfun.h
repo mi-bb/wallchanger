@@ -44,8 +44,8 @@ uint64_t hash (const char *str);
  * @return     Result of operation
  */
 int create_resize (void         **v_ptr,
-                   const size_t   num, 
-                   const size_t   size);
+                   const size_t   ul_num, 
+                   const size_t   ul_size);
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Check if config file and path exists, check read/write permissions. 
@@ -94,16 +94,6 @@ int save_file_data      (const char   *s_fname,
                          const char   *s_buff);
 /*----------------------------------------------------------------------------*/
 /**
- * @brief  Get directory content, add it to FList 
- *
- * @param[in]   s_path1   Path to directory
- * @param[out]  fl_files  List of files in directory
- * @return      none
- */
-void get_directory_content_add_to_flist (const char *s_path1,
-                                         FList      *fl_files);
-/*----------------------------------------------------------------------------*/
-/**
  * @fn  int compare_strings (const char *a, const char *b)
  * @brief     String compare function for getting string position function.
  * @param[in] a  String a 
@@ -131,17 +121,6 @@ void get_directory_content_add_to_flist (const char *s_path1,
  * @param[in] s_to   Pointer to string with "change to" text
  * @return    New string
  *
- * @fn  char *str_ndup (const char *s_str, size_t st_len)
- * @brief     Duplicate n bytes of string.
- * @param[in] s_str   String to duplicate
- * @param[in] st_len  Number of bytes to duplicate
- * @return    Duplicated string or null pointer
- *
- * @fn  char *str_dup (const char *s_str)
- * @brief     Duplicate string.
- * @param[in] s_str  String to duplicate
- * @return    Duplicated string or null pointer
- *
  * @fn  char * set_up_wallpaper_command (const char *s_cmd,
  *                                       const char *s_fname,
  *                                       const char *s_sign)
@@ -156,16 +135,11 @@ int    compare_strings          (const char   *a,
                                  const char   *b);
 
 char * string_name_with_number  (const char   *s_name,
-                                 const size_t  i_no);
+                                 const size_t  ul_no);
 
 char * string_replace_in        (const char   *s_src,
                                  const char   *s_fr,
                                  const char   *s_to);
-
-char * str_ndup                 (const char   *s_str,
-                                 const size_t  st_len);
-
-char * str_dup                  (const char   *s_str);
 
 char * set_up_wallpaper_command (const char   *s_cmd,
                                  const char   *s_fname,

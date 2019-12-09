@@ -1,0 +1,150 @@
+Copyright (C) 2019 Michał Bąbik
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
+2019-12-09  Michal Babik  <michalb1981@o2.pl>
+
+	* strfun.c: New file with functions to duplicate string.
+	* strfun.h: New file with functions to duplicate string.
+	* miscfun.c: Removed str_dup and str_ndup function.
+	* miscfun.h: Removed str_dup and str_ndup function.
+	* miscfun.c: Renamed some values for better readability.
+	* miscfun.h: Renamed some values for better readability.
+	* settlist.c: Renamed some values for better readability.
+	* settlist.h: Renamed some values for better readability.
+	* jsfun.c: Renamed some values for better readability.
+	* setting.c (setting_set_string, setting_set_name, setting_copy2):
+	  strdup function call changed to str_dup.
+	* dlgs.c (about_app_dialog): Changed app website url.
+
+2019-12-07  Michal Babik  <michalb1981@o2.pl>
+
+	* jsfun.c (js_json_array_to_stlist): Removed const from
+	  json_object parameter for compatibility with json-c functions
+	* wchangercfg: renamed from wchanger-cfg
+
+2019-12-02  Michal Babik  <michalb1981@o2.pl>
+
+	* dlgs.c (about_app_dialog): added s_ver argument to pass
+	  string with application version
+	* wallsett.h: Removed i_lastused from WallSett structure
+	  and functions to set, get and work with this value
+	* wallsett.c: Removed i_lastused from WallSett structure
+	  and functions to set, get and work with this value
+	* Added some cont qualifiers in functions
+
+2019-11-27  Michal Babik  <michalb1981@o2.pl>
+
+	* dlgs.c (about_app_dialog): New function with info dialog
+	* dlgs.h (about_app_dialog): New function with info dialog
+	* wchanger.c: Updates to show application info dialog
+	* wpset.c: Renamed from wallset.c
+	* wpset.h: Renamed from wallset.h
+	* wallsett.c: Renamed from settstr.c
+	* wallsett.h: Renamed from settstr.h
+
+2019-11-25  Michal Babik  <michalb1981@o2.pl>
+
+	* settlist.c: New file with functions to manage settings
+	* settlist.h: New file with functions to manage settings
+	* setting.c: New file with functions to manage settings
+	* setting.h: New file with functions to manage settings
+	* preview.c: Wallpaper preview related functions moved here
+	* preview.h: Wallpaper preview related functions moved here
+	* setts.c (get_setting_name): New function that returns
+	  setting name based on enum int value
+	* setts.c (settings_update_last_used): Changed updating of
+	  last used wallpaper setting
+	* setts.c (settings_update_window_size): Changed updating of
+	  window size setting
+	* setts.c (settings_check_update): New function to check if
+	  settings are an update
+	* setts.c (settings_update_file): New function for updating
+	  settings file
+	* setts.c (settings_check_update_file): New function to
+	  check if settings are an update and update if they are
+	* jsfun.c (js_json_array_to_stlist): Function converts SettList
+	  to json array
+	* jsfun.c (js_stlist_array_to_json): Converts SettList to json array
+	* jsfun.c (js_json_object_to_setting): Converts json object to Setting
+	* jsfun.c (js_setting_to_json_object): Converts Setting to json object
+	* jsfun.c (js_json_string_to_settlist): Coverts string with json data to
+	  SettList list of Setting objects
+	* jsfun.c (js_settlist_append_to_json_object): Converts SettList to json
+	  objects and adds it to json object
+	* jsfun.c (js_settings_check_update): New function to check if
+	  settings are an update
+	* jsfun.c (js_settings_update_file): New function for updating
+	  settings file
+	* jsfun.c (js_settings_check_update_file): New function to
+	  check if settings are an update and update if they are
+
+2019-11-19  Michal Babik  <michalb1981@o2.pl>
+
+	* wchanger.c (create_settings_widget): added hints to settings
+	  widgets
+
+2019-11-16  Michal Babik  <michalb1981@o2.pl>
+
+	* wchanger.c: Functions to handle removing duplicates from list
+	* treev.c (treeview_remove_duplicates): New function to remove
+	  duplicates in treeview
+	* New functions for saving width and height of configuration window
+	* dlgs.c (message_dialog_error): Corrected string passing
+
+2019-11-14  Michal Babik  <michalb1981@o2.pl>
+
+	* wchanger.c (get_wallpaper_change_interval): New function to get
+	  change interval based on spin value and combobox
+	* wchanger.c (set_wallpaper_change_interval): New function to set
+	  change interval
+	* wchanger.c (create_settings_widget): New combobox to set change
+	  interval minutes or hours
+	* wchanger.c (get_directory_content): Function removed, changed to
+	  other one
+	* iminfo.c (imageinfo_set_full_name, imageinfo_get_full_name,
+	  imageinfo_set_file_name, imageinfo_get_file_name,
+	  imageinfo_set_file_path, imageinfo_get_file_path,
+	  imageinfo_set_width, imageinfo_get_width, imageinfo_set_height,
+	  imageinfo_get_height, imageinfo_get_wxh): New functions to set
+	  and get values in ImageInfo structure.
+	* miscfun.c (get_directory_content_append_to_flist): Function
+	  to get directory content and add to FList
+
+2019-11-14  Michal Babik  <michalb1981@o2.pl>
+
+	* randomm.c: New file with functions for random wallpaper select
+	* randomm.h: New file with Functions for random wallpaper select
+
+2019-11-08  Michal Babik  <michalb1981@o2.pl>
+
+	* jsfun.c (js_settings_to_json_buff): Couple updates in putting data
+	  to json objects
+	* jsfun.c (js_settings_read): Corrected freeing buffer
+	* setts.c (settings_set_command): Comparing strings changed
+	* settstr.c (free_wall_sett): Moved function to free WallSett here
+
+2019-11-07  Michal Babik  <michalb1981@o2.pl>
+
+	* wchanger.c: Changed wallpaper preview.
+	* treev.c:    Moved treeview related functions
+
+2019-11-04  Michal Babik  <michalb1981@o2.pl>
+
+	* wchanger.c (create_preview): corrected making "empty" preview
+
+2019-11-03  Michal Babik  <michalb1981@o2.pl>
+
+	* First relase
+

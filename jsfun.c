@@ -29,11 +29,12 @@
 #include "setting.h"
 #include "miscfun.h"
 #include "jsfun.h"
+#include "strfun.h"
 /*----------------------------------------------------------------------------*/
 /**
- * @fn  static void js_json_array_to_stlist (const json_object *j_array,
- *                                           SettList          *st_list,
- *                                           const char        *s_array_name)
+ * @fn  static void js_json_array_to_stlist (json_object *j_array,
+ *                                           SettList    *st_list,
+ *                                           const char  *s_array_name)
  * @brief      Get items from Json array and add them to SettList object.
  * @param[in]  j_array       Array of Json objects
  * @param[in]  st_list       SettList list to add elements
@@ -67,9 +68,9 @@
  *
  */
 /*----------------------------------------------------------------------------*/
-static void          js_json_array_to_stlist (const json_object  *j_array,
-                                              SettList           *st_list,
-                                              const char         *s_array_name);
+static void          js_json_array_to_stlist (json_object  *j_array,
+                                              SettList     *st_list,
+                                              const char   *s_array_name);
 
 static void          js_stlist_array_to_json (const SettList     *st_list,
                                               const Setting      *st_sett,
@@ -106,19 +107,19 @@ static void       js_stlist_add_to_json_obj (const SettList *st_list,
  * @brief  Get items from Json array and add them to SettList object.
  */
 static void
-js_json_array_to_stlist (const json_object *j_array,
-                         SettList          *st_list,
-                         const char        *s_array_name)
+js_json_array_to_stlist (json_object *j_array,
+                         SettList    *st_list,
+                         const char  *s_array_name)
 {
     json_object *j_val;
     Setting     *st_set;
     char        *s_name = NULL;
-    size_t       ui_cnt = 0;
+    size_t       ul_cnt = 0;
     size_t       i      = 0;
 
-    ui_cnt = json_object_array_length (j_array);
+    ul_cnt = json_object_array_length (j_array);
 
-    for (i = 0; i < ui_cnt; ++i) {
+    for (i = 0; i < ul_cnt; ++i) {
 
         j_val = json_object_array_get_idx (j_array, i);
 
@@ -345,10 +346,10 @@ js_settings_check_for_update (const SettList  *st_list,
     json_object *j_obj;
     const char  *s_jbuff = NULL;   /* Json object as string */
     char        *s_buff  = NULL;   /* File data buffer */
-    uint64_t     i_hash  = 0;      /* File read hash */
+    uint64_t     ui_hash = 0;      /* File read hash */
     int          i_res   = ERR_OK; /* Function result */
 
-    i_res = read_file_data_hash (s_fname, &s_buff, &i_hash);
+    i_res = read_file_data_hash (s_fname, &s_buff, &ui_hash);
     if (i_res) {
         free (s_buff);
         return i_res;
@@ -369,7 +370,7 @@ js_settings_check_for_update (const SettList  *st_list,
 
     /* Compare saved file buffer hash and new one,
      * if they are different update output buffer */
-    if (hash (s_jbuff) != i_hash) {
+    if (hash (s_jbuff) != ui_hash) {
         *s_out_buff = str_dup (s_jbuff);
     }
     else {
