@@ -99,10 +99,9 @@ main (int    argc,
     stlist_free (st_list);
     wallset_free (&ws_sett);
 
-    int k = 35;
-    while (k--) {
+    while (1) {
 
-        sleep (5);
+        sleep (60);
         ui_cnt++;
 
         if (ui_cnt >= ws_sett.i_chinterval) {
