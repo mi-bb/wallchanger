@@ -1,0 +1,97 @@
+/**
+ * @file  strfun.h
+ * @copyright Copyright (C) 2019 Michał Bąbik
+ *
+ * This file is part of Wall Changer.
+ *
+ * Wall Changer is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Wall Changer is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Wall Changer.  If not, see <https://www.gnu.org/licenses/>.
+ *
+ * @brief  String operations 
+ * 
+ * @author Michał Bąbik <michalb1981@o2.pl>
+ */
+#ifndef STRFUN_H
+#define STRFUN_H
+#include <stddef.h>
+/*----------------------------------------------------------------------------*/
+/**
+ * @fn        char *str_dup (const char *s_str)
+ * @brief     Duplicate string.
+ * @param[in] s_str  String to duplicate
+ * @return    Duplicated string or null pointer
+ *
+ * @fn        char *str_ndup (const char *s_str, size_t st_len)
+ * @brief     Duplicate n bytes of string.
+ * @param[in] s_str   String to duplicate
+ * @param[in] ul_len  Number of bytes to duplicate
+ * @return    Duplicated string or null pointer
+ *
+ * @fn        int str_compare (const char *a, const char *b)
+ * @brief     String compare function for getting string position function.
+ * @param[in] a  String a 
+ * @param[in] b  String b
+ * @return    Compare result
+ *
+ * @fn         char * str_name_with_number (const char   *s_name,
+ *                                          const size_t  ul_no)
+ * @brief      Creates string with name made of s_name string and number
+ *             ul_no at the end.
+ * @param[in]  s_name  Input string
+ * @param[out] ul_no   Number to append
+ * @return     String with name and number to null if could not alloc memory
+ *
+ * @fn  char * str_replace_in (const char *s_src,
+ *                             const char *s_fr, const char *s_to)
+ * @brief  Replace one string with another in a given src_dest string.
+ *
+ * Function searches in src_dest string for s_fr and replaces it with s_to
+ * string.
+ * Return value is the final result.
+ *
+ * @param[in] s_src  Pointer to source string to examine
+ * @param[in] s_fr   Pointer to string with "change from" text
+ * @param[in] s_to   Pointer to string with "change to" text
+ * @return    New string
+ *
+ * @fn  char * str_set_up_wallpaper_command (const char *s_cmd,
+ *                                           const char *s_fname,
+ *                                           const char *s_sign)
+ * @brief     Make wallpapet set command.
+ * @param[in] s_cmd    Wallpaper set command 
+ * @param[in] s_fname  Wallpaper file name 
+ * @param[in] s_sign   String to swap with wallpapet name
+ * @return    String with command
+ */
+/*----------------------------------------------------------------------------*/
+char * str_dup                      (const char   *s_str);
+
+char * str_ndup                     (const char   *s_str,
+                                     const size_t  ul_len);
+
+int    str_compare                  (const char   *a,
+                                     const char   *b);
+
+char * str_name_with_number         (const char   *s_name,
+                                     const size_t  ul_no);
+
+char * str_replace_in               (const char   *s_src,
+                                     const char   *s_fr,
+                                     const char   *s_to);
+
+char * str_set_up_wallpaper_command (const char   *s_cmd,
+                                     const char   *s_fname,
+                                     const char   *s_sign);
+/*----------------------------------------------------------------------------*/
+#endif
+

@@ -1,0 +1,105 @@
+Copyright (C) 2019 Michał Bąbik
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
+----------------------------------------------------------------------
+v1.3.5                                                      2019-12-22
+
+    * Application should work in FreeBSD too.
+    * Slimmed wallpaper changing program wchangerd.
+    * There is no need to restart wchangerd after settings change with
+      wchangercfg, Settings are loaded before every wallpaper change.
+    * Couple improvements for faster loading and saving list of
+      wallpapers.
+    * Source code updates.
+
+----------------------------------------------------------------------
+v1.3.4                                                      2019-12-09
+
+    * Some code updates for better compatibility with Clang.
+    * Source code updates.
+
+----------------------------------------------------------------------
+v1.3.3                                                      2019-12-07
+
+    * Renamed wchanger-cfg to wchangercfg.
+    * Added scripts to configure and build app.
+
+----------------------------------------------------------------------
+v1.3.2                                                      2019-12-02
+
+    * Some code updates.
+
+----------------------------------------------------------------------
+v1.3.1                                                      2019-11-27
+
+    * Added application information dialog.
+    * Some code updates.
+
+----------------------------------------------------------------------
+v1.3.0                                                      2019-11-25
+
+    * Changed setting manage method.
+    * Some code updates.
+
+----------------------------------------------------------------------
+v1.2.3                                                      2019-11-19
+
+    * Small code updates.
+
+----------------------------------------------------------------------
+v1.2.2                                                      2019-11-16
+
+    * Added removing duplicates from list button.
+    * Added saving width and height of configuration window.
+    * Some code updates.
+
+----------------------------------------------------------------------
+v1.2.1                                                      2019-11-14
+
+    * Added ComboBox with minutes and hours in wallpaper change
+      interval option.
+    * Some code updates.
+
+----------------------------------------------------------------------
+v1.2.0                                                      2019-11-14
+
+    * Changed random wallpaper select method.
+    * Changed file list storing.
+    * Background changing program (wchangerd) doesn't use glib now,
+      it is lighter.
+    * Some other code updates.
+
+----------------------------------------------------------------------
+v1.1.1                                                      2019-11-08
+
+    * Some code updates.
+
+----------------------------------------------------------------------
+v1.1.0                                                      2019-11-07
+
+    * Changed wallpaper preview.
+
+----------------------------------------------------------------------
+v1.0.1                                                      2019-11-04
+
+    * Code updates.
+
+----------------------------------------------------------------------
+v1.0                                                        2019-11-03
+
+    * First relase.
+
+----------------------------------------------------------------------
+

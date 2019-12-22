@@ -35,13 +35,13 @@ Wall Changer is an automatic wallpaper changer.
 User can select images that will be used as wallpapers,
 select command to set wallpaper, wallpaper change time interval.
 
-Program works in GNU/Linux.
+Program works in GNU/Linux, FreeBSD.
 
 
 Requirements
 -------------
 
- * GNU/Linux
+ * GNU/Linux, FreeBSD
  * GCC / Clang
  * json-c (0.12.1)
  * GTK+ 3 (3.22)
@@ -50,9 +50,7 @@ Requirements
 Installation and running
 -------------------------
 
-Go to sources directory and type:
-
-    make
+For installation instructions see INSTALL file.
 
 If compilation ends without problems, 2 executable files will be created:
 
@@ -65,7 +63,8 @@ in specified time intervals.
 wchangercfg is a configuration window to set wallpaper change time intervals,
 images on wallpaper list and a way wallpapers change.
 
-Afer changing settings using wchangercfg, wchangerd needs to be restarted.
+Afer changing settings using wchangercfg, there is no need to restart wchangerd,
+settings are loaded before every wallpaper change.
 
 Application configuration is stored in ~/.config/wchanger.json
 

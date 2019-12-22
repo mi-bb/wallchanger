@@ -13,6 +13,74 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+2019-12-22  Michal Babik  <michalb1981@o2.pl>
+
+	* flist.c: File removed from project.
+	* flist.h: File removed from project.
+	* hashfun.c: Hash function moved to this file.
+	* defs.h: New file with program defines.
+	* fdops.c: New file with file and directory load operations.
+	* errs.c: New file with function to generate error messages.
+	* cfgfile.c: New file with functions to get config file path (moved from
+	  miscfun.c).
+	* rwdt.c: New file, renamed from miscfun.c.
+	* cfgfile.c (set_config_file_path): New function to write program settings
+	  file path to array of chars.
+	* setting.c (setting_remove_from_array): Function renamed to
+	  setting_reset_array.
+	* setting.h: Added to errors enum SET_ER_WRONG for wrong input data.
+	* settlist.c (stlist_free_p): New function to free list of pointers.
+	* settlist.c (stlist_get_setting_with_id_pos): New function to return
+	  position of setting with specific id.
+	* settlist.c (stlist_get_setting_pos): Changed equivalent code to
+	  stlist_get_setting_with_id_pos function.
+	* settlist.c (stlist_get_setting_val_str_pos): New function for getting
+	  position of setting with particulat string value.
+	* settlist.c (stlist_get_settings_owned_by_p): New function to return list
+	  of pointers to settings owned by setting with specific id.
+	* settlist.c (stlist_get_settings_in_array_name_p): New function to return
+	  list of pointers to settings in array with given name.
+	* settlist.c (stlist_get_settings_in_array_obj_p): New function to return
+	  list of pointers to settings in array.
+	* settlist.c (stlist_get_settings_main_p): New function to return list
+	  of pointers to top level settings.
+	* settlist.c (stlist_remove_setting_at_pos, stlist_remove_setting,
+	  stlist_remove_setting_with_name): New function to remove settings from
+	  list.
+	* setts.c (settlist_check_defaults): New function to check default setting
+	  values.
+	* wpset.c (wallpaper_set_file, wallpaper_set_random,
+	  wallpaper_set_next_in_list): Changed function return value type from int
+	  to void.
+	* wpset.c (wallpaper_set_random, wallpaper_set_next_in_list): Operating on
+	  SettList instead of FList.
+	* wpset.c (wallpaper_set_next_in_list): Merged some code in function.
+	* wallsett.h: In WallSett structure wallpapet list from FList to SettList
+	  and s_cfgfile from dynamic char string to fixed table.
+	* wallsett.c (wallset_init): Removed flist_init and changed set config
+	  file path from check_config_path_file to set_config_file_path.
+	* wallsett.c (wallset_free): Removed flist_free added stlist_free_p.
+	* wallsett.c (wallset_set_last_used_fn, wallset_set_command): Function
+	  stores pointer to string instead of string.
+	* wchanger.c: Structure DialogData s_cfg_file changed from dynamic string
+	  to fixed table string.
+	* wchanger.c (widgets_set_settings): Changed
+	  stlist_get_settings_in_array_name to stlist_get_settings_in_array_name_p
+	  and stlist_free to stlist_free_p
+	* wchanger.c (event_add_img_dir_pressed): flist_free changed to
+	  flist_clear
+	* wchanger.c (activate): Changed config file path set to set fixed char
+	  table instead of previous dynamic char string.
+	* wchanger.c (activate, event_on_delete, event_save_settings_pressed,
+	  event_set_wallpaper_pressed): Changed displaying error message dialog,
+	  it shows more concrete error message.
+	* wchanger.c (shutdown): Removed freeing config file path string.
+	* wchanger.c (get_default_bg_cmd): Function removed.
+	* wcngdmn.c: Removed FList dependency. Wallpaper changing works directly
+	  on SettList instead of creating FList and working on it.
+	* wcngdmn.c: Settings are loaded dynamically at every wallpaper change and
+	  freed after change.
+
 2019-12-09  Michal Babik  <michalb1981@o2.pl>
 
 	* strfun.c: New file with functions to duplicate string.
@@ -31,88 +99,88 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 2019-12-07  Michal Babik  <michalb1981@o2.pl>
 
 	* jsfun.c (js_json_array_to_stlist): Removed const from
-	  json_object parameter for compatibility with json-c functions
-	* wchangercfg: renamed from wchanger-cfg
+	  json_object parameter for compatibility with json-c functions.
+	* wchangercfg: renamed from wchanger-cfg.
 
 2019-12-02  Michal Babik  <michalb1981@o2.pl>
 
 	* dlgs.c (about_app_dialog): added s_ver argument to pass
-	  string with application version
+	  string with application version.
 	* wallsett.h: Removed i_lastused from WallSett structure
-	  and functions to set, get and work with this value
+	  and functions to set, get and work with this value.
 	* wallsett.c: Removed i_lastused from WallSett structure
-	  and functions to set, get and work with this value
-	* Added some cont qualifiers in functions
+	  and functions to set, get and work with this value.
+	* Added some cont qualifiers in functions.
 
 2019-11-27  Michal Babik  <michalb1981@o2.pl>
 
-	* dlgs.c (about_app_dialog): New function with info dialog
-	* dlgs.h (about_app_dialog): New function with info dialog
-	* wchanger.c: Updates to show application info dialog
-	* wpset.c: Renamed from wallset.c
-	* wpset.h: Renamed from wallset.h
-	* wallsett.c: Renamed from settstr.c
-	* wallsett.h: Renamed from settstr.h
+	* dlgs.c (about_app_dialog): New function with info dialog.
+	* dlgs.h (about_app_dialog): New function with info dialog.
+	* wchanger.c: Updates to show application info dialog.
+	* wpset.c: Renamed from wallset.c.
+	* wpset.h: Renamed from wallset.h.
+	* wallsett.c: Renamed from settstr.c.
+	* wallsett.h: Renamed from settstr.h.
 
 2019-11-25  Michal Babik  <michalb1981@o2.pl>
 
-	* settlist.c: New file with functions to manage settings
-	* settlist.h: New file with functions to manage settings
-	* setting.c: New file with functions to manage settings
-	* setting.h: New file with functions to manage settings
-	* preview.c: Wallpaper preview related functions moved here
-	* preview.h: Wallpaper preview related functions moved here
+	* settlist.c: New file with functions to manage settings.
+	* settlist.h: New file with functions to manage settings.
+	* setting.c: New file with functions to manage settings.
+	* setting.h: New file with functions to manage settings.
+	* preview.c: Wallpaper preview related functions moved here.
+	* preview.h: Wallpaper preview related functions moved here.
 	* setts.c (get_setting_name): New function that returns
-	  setting name based on enum int value
+	  setting name based on enum int value.
 	* setts.c (settings_update_last_used): Changed updating of
-	  last used wallpaper setting
+	  last used wallpaper setting.
 	* setts.c (settings_update_window_size): Changed updating of
-	  window size setting
+	  window size setting.
 	* setts.c (settings_check_update): New function to check if
-	  settings are an update
+	  settings are an update.
 	* setts.c (settings_update_file): New function for updating
-	  settings file
+	  settings file.
 	* setts.c (settings_check_update_file): New function to
-	  check if settings are an update and update if they are
+	  check if settings are an update and update if they are.
 	* jsfun.c (js_json_array_to_stlist): Function converts SettList
-	  to json array
-	* jsfun.c (js_stlist_array_to_json): Converts SettList to json array
-	* jsfun.c (js_json_object_to_setting): Converts json object to Setting
-	* jsfun.c (js_setting_to_json_object): Converts Setting to json object
+	  to json array.
+	* jsfun.c (js_stlist_array_to_json): Converts SettList to json array.
+	* jsfun.c (js_json_object_to_setting): Converts json object to Setting.
+	* jsfun.c (js_setting_to_json_object): Converts Setting to json object.
 	* jsfun.c (js_json_string_to_settlist): Coverts string with json data to
-	  SettList list of Setting objects
+	  SettList list of Setting objects.
 	* jsfun.c (js_settlist_append_to_json_object): Converts SettList to json
-	  objects and adds it to json object
+	  objects and adds it to json object.
 	* jsfun.c (js_settings_check_update): New function to check if
-	  settings are an update
+	  settings are an update.
 	* jsfun.c (js_settings_update_file): New function for updating
-	  settings file
+	  settings file.
 	* jsfun.c (js_settings_check_update_file): New function to
-	  check if settings are an update and update if they are
+	  check if settings are an update and update if they are.
 
 2019-11-19  Michal Babik  <michalb1981@o2.pl>
 
 	* wchanger.c (create_settings_widget): added hints to settings
-	  widgets
+	  widgets.
 
 2019-11-16  Michal Babik  <michalb1981@o2.pl>
 
-	* wchanger.c: Functions to handle removing duplicates from list
+	* wchanger.c: Functions to handle removing duplicates from list.
 	* treev.c (treeview_remove_duplicates): New function to remove
-	  duplicates in treeview
+	  duplicates in treeview.
 	* New functions for saving width and height of configuration window
-	* dlgs.c (message_dialog_error): Corrected string passing
+	* dlgs.c (message_dialog_error): Corrected string passing.
 
 2019-11-14  Michal Babik  <michalb1981@o2.pl>
 
 	* wchanger.c (get_wallpaper_change_interval): New function to get
-	  change interval based on spin value and combobox
+	  change interval based on spin value and combobox.
 	* wchanger.c (set_wallpaper_change_interval): New function to set
-	  change interval
+	  change interval.
 	* wchanger.c (create_settings_widget): New combobox to set change
-	  interval minutes or hours
+	  interval minutes or hours.
 	* wchanger.c (get_directory_content): Function removed, changed to
-	  other one
+	  other one.
 	* iminfo.c (imageinfo_set_full_name, imageinfo_get_full_name,
 	  imageinfo_set_file_name, imageinfo_get_file_name,
 	  imageinfo_set_file_path, imageinfo_get_file_path,
@@ -120,29 +188,29 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 	  imageinfo_get_height, imageinfo_get_wxh): New functions to set
 	  and get values in ImageInfo structure.
 	* miscfun.c (get_directory_content_append_to_flist): Function
-	  to get directory content and add to FList
+	  to get directory content and add to FList.
 
 2019-11-14  Michal Babik  <michalb1981@o2.pl>
 
-	* randomm.c: New file with functions for random wallpaper select
-	* randomm.h: New file with Functions for random wallpaper select
+	* randomm.c: New file with functions for random wallpaper select.
+	* randomm.h: New file with Functions for random wallpaper select.
 
 2019-11-08  Michal Babik  <michalb1981@o2.pl>
 
 	* jsfun.c (js_settings_to_json_buff): Couple updates in putting data
-	  to json objects
-	* jsfun.c (js_settings_read): Corrected freeing buffer
-	* setts.c (settings_set_command): Comparing strings changed
-	* settstr.c (free_wall_sett): Moved function to free WallSett here
+	  to json objects.
+	* jsfun.c (js_settings_read): Corrected freeing buffer.
+	* setts.c (settings_set_command): Comparing strings changed.
+	* settstr.c (free_wall_sett): Moved function to free WallSett here.
 
 2019-11-07  Michal Babik  <michalb1981@o2.pl>
 
 	* wchanger.c: Changed wallpaper preview.
-	* treev.c:    Moved treeview related functions
+	* treev.c:    Moved treeview related functions.
 
 2019-11-04  Michal Babik  <michalb1981@o2.pl>
 
-	* wchanger.c (create_preview): corrected making "empty" preview
+	* wchanger.c (create_preview): corrected making "empty" preview.
 
 2019-11-03  Michal Babik  <michalb1981@o2.pl>
 
