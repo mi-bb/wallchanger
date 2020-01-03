@@ -32,8 +32,8 @@
  * @param[in]  ul_size  Size of each element
  * @return     Result of operation
  */
-int create_resize (void         **v_ptr,
-                   const size_t   ul_num, 
-                   const size_t   ul_size);
+void create_resize (void         **v_ptr,
+                    const size_t   ul_num, 
+                    const size_t   ul_size);
 /*----------------------------------------------------------------------------*/
 

@@ -1,6 +1,6 @@
 /**
  * @file  cfgfile.c
- * @copyright Copyright (C) 2019 Michał Bąbik
+ * @copyright Copyright (C) 2019-2020 Michał Bąbik
  *
  * This file is part of Wall Changer.
  *
@@ -61,15 +61,20 @@
  */
 /*----------------------------------------------------------------------------*/
 static int check_permissions             (const char *s_name,
-                                          const int   i_mode);
+                                          const int   i_mode)
+                                          __attribute__ ((nonnull (1)));
 
-static int check_file_permissions        (const char *s_file);
+static int check_file_permissions        (const char *s_file)
+                                          __attribute__ ((nonnull (1)));
 
-static int check_dir_permissions         (const char *s_dir);
+static int check_dir_permissions         (const char *s_dir)
+                                          __attribute__ ((nonnull (1)));
 
-static int check_dir_premissions_create  (const char *s_dir);
+static int check_dir_premissions_create  (const char *s_dir)
+                                          __attribute__ ((nonnull (1)));
 
-static int check_file_premissions_create (const char *s_file);
+static int check_file_premissions_create (const char *s_file)
+                                          __attribute__ ((nonnull (1)));
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Check permissions, existence of file or directory. 

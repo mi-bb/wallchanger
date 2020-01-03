@@ -1,6 +1,6 @@
 /**
  * @file  hashfun.h
- * @copyright Copyright (C) 2019 Michał Bąbik
+ * @copyright Copyright (C) 2019-2020 Michał Bąbik
  *
  * This file is part of Wall Changer.
  *
@@ -35,7 +35,7 @@
  * @param[in]  str  String to count hash
  * @return     Hash value
  */
-uint32_t hash (const char *str);
+uint32_t hash (const char * __restrict str) __attribute__ ((pure, nonnull (1)));
 /*----------------------------------------------------------------------------*/
 #endif
 

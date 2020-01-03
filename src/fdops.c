@@ -1,6 +1,6 @@
 /**
  * @file  fdops.c
- * @copyright Copyright (C) 2019 Michał Bąbik
+ * @copyright Copyright (C) 2019-2020 Michał Bąbik
  *
  * This file is part of Wall Changer.
  *
@@ -27,6 +27,8 @@
 #include "strfun.h"
 #include "fdops.h"
 /*----------------------------------------------------------------------------*/
+static const char * get_file_ext (const char *s_fn);
+                    //__attribute__ ((pure, nonnull (1)));
 /**
  * @brief     Get file extenstion.
  * @param[in] s_fn String with file path
@@ -82,7 +84,7 @@ get_pbuf_exts_to_ghash (void)
             printf ("%s ", *it);
             #endif
             /* Insert extension to hash table */
-            g_hash_table_add (gh_res, str_dup (*it));
+            g_hash_table_add (gh_res, strdup (*it));
         }
         /* Free extensions list */
         g_strfreev (exts);
@@ -110,9 +112,6 @@ get_directory_content_glist (const char *s_dir)
     size_t  ul_dlen   = 0;    /* Path string length */
     DIR    *dr;               /* Dirent directory */
     struct  dirent *de;       /* Dirent struct */
-
-    if (s_dir == NULL)
-        return NULL;
 
     ul_dlen = strlen (s_dir);
 
@@ -184,8 +183,8 @@ glist_filter_by_extensions_list (GList      *gl_files,
         GList *next = gl_fl->next;
 
         s_fn = (char*) gl_fl->data;
-        s_ext = get_file_ext (s_fn);
 
+        s_ext = get_file_ext (s_fn);
 
         if (s_ext == NULL || g_hash_table_lookup (gh_exts, s_ext) == NULL) {
 

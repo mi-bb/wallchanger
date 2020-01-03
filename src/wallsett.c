@@ -1,6 +1,6 @@
 /**
 * @file  wallsett.c
-* @copyright Copyright (C) 2019 Michał Bąbik
+* @copyright Copyright (C) 2019-2020 Michał Bąbik
 *
 * This file is part of Wall Changer.
 *
@@ -33,13 +33,13 @@
 int
 wallset_init (WallSett *ws_sett)
 {
+    int i_err              = ERR_OK; /* Return result value */
     ws_sett->i_chinterval  = 30;     /* Wallpaper change interval */ 
     ws_sett->i_random      = 0;      /* Random wallpaper change */
     ws_sett->i_lastsett    = 0;      /* Last used wallpaper setting */
     ws_sett->s_lastused    = NULL;   /* Last used wallpaper file name */
     ws_sett->s_bgcmd       = NULL;   /* Background set command */
     ws_sett->sl_walls      = NULL;   /* Wallpaper list */
-    int i_err              = ERR_OK; /* Return result value */
 
     memset (ws_sett->s_cfgfile, 0, sizeof (ws_sett->s_cfgfile));
 

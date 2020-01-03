@@ -31,7 +31,7 @@
 /**
  * @brief  Create or resize dynamic array
  */
-int
+void
 create_resize (void        **v_ptr,
                const size_t  ul_num,
                const size_t  ul_size)
@@ -45,7 +45,7 @@ create_resize (void        **v_ptr,
             free (*v_ptr);
             *v_ptr = NULL;
         }
-        return ERR_OK;
+        return;
     }
     else {
         if (*v_ptr == NULL) {
@@ -55,7 +55,6 @@ create_resize (void        **v_ptr,
             if (*v_ptr == NULL) {
 
                 fputs ("Alloc error\n", stderr);
-                /*return ERR_ALLOC;*/
                 exit (EXIT_FAILURE);
             }
         }
@@ -67,7 +66,6 @@ create_resize (void        **v_ptr,
                 free (*v_ptr);
 
                 fputs ("Alloc error\n", stderr);
-                /*return ERR_ALLOC;*/
                 exit (EXIT_FAILURE);
             }
             else {
@@ -77,7 +75,6 @@ create_resize (void        **v_ptr,
             }
         }
     }
-    return ERR_OK;
 }
 /*----------------------------------------------------------------------------*/
 

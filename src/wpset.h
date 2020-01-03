@@ -1,6 +1,6 @@
 /**
  * @file  wpset.h
- * @copyright Copyright (C) 2019 Michał Bąbik
+ * @copyright Copyright (C) 2019-2020 Michał Bąbik
  *
  * This file is part of Wall Changer.
  *
@@ -53,7 +53,8 @@ int wallpaper_startup_set (WallSett   *ws_sett);
 
 int wallpaper_dialog_set  (const char *s_cmd,
                            const char *s_file,
-                           const char *s_cfg_file);
+                           const char *s_cfg_file)
+                           __attribute__ ((nonnull (1, 2, 3)));
 /*----------------------------------------------------------------------------*/
 #endif
 

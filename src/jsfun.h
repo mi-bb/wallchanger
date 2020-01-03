@@ -1,6 +1,6 @@
 /**
  * @file  jsfun.h
- * @copyright Copyright (C) 2019 Michał Bąbik
+ * @copyright Copyright (C) 2019-2020 Michał Bąbik
  *
  * This file is part of Wall Changer.
  *
@@ -40,7 +40,8 @@
  */
 /*----------------------------------------------------------------------------*/
 SettList * js_settings_read (const char *s_fname,
-                             int        *i_err);
+                             int        *i_err)
+                             __attribute__ ((nonnull (1)));
 /*----------------------------------------------------------------------------*/
 /**
  * @fn  char * js_settings_check_for_update (const SettList *st_list,
@@ -84,13 +85,16 @@ SettList * js_settings_read (const char *s_fname,
 /*----------------------------------------------------------------------------*/
 char * js_settings_check_for_update  (const SettList  *st_list,
                                       const char      *s_fname,
-                                      int             *i_err);
+                                      int             *i_err)
+                                      __attribute__ ((nonnull (2)));
 
 int    js_settings_update_file       (const char      *s_buff,
-                                      const char      *s_fname);
+                                      const char      *s_fname)
+                                      __attribute__ ((nonnull (1, 2)));
 
 int    js_settings_check_update_file (const SettList  *st_list,
-                                      const char      *s_fname);
+                                      const char      *s_fname)
+                                      __attribute__ ((nonnull (2)));
 /*----------------------------------------------------------------------------*/
 #endif
 

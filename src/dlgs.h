@@ -1,6 +1,6 @@
 /**
  * @file  dlgs.h
- * @copyright Copyright (C) 2019 Michał Bąbik
+ * @copyright Copyright (C) 2019-2020 Michał Bąbik
  *
  * This file is part of Wall Changer.
  *
@@ -54,9 +54,11 @@ char   * add_images_folder_dialog (GtkWindow  *gw_parent);
 GSList * add_images_dialog        (GtkWindow  *gw_parent);
 
 void     message_dialog_error     (GtkWindow  *gw_parent,
-                                   const char *s_message);
+                                   const char *s_message)
+                                   __attribute__ ((nonnull (2)));
 
-void     about_app_dialog         (const char *s_ver);
+void     about_app_dialog         (const char *s_ver)
+                                   __attribute__ ((nonnull (1)));
 /*----------------------------------------------------------------------------*/
 #endif
 

@@ -1,6 +1,6 @@
 /**
  * @file  fdops.h
- * @copyright Copyright (C) 2019 Michał Bąbik
+ * @copyright Copyright (C) 2019-2020 Michał Bąbik
  *
  * This file is part of Wall Changer.
  *
@@ -49,7 +49,8 @@
 /*----------------------------------------------------------------------------*/
 GHashTable * get_pbuf_exts_to_ghash          (void);
 
-GList      * get_directory_content_glist     (const char *s_dir);
+GList      * get_directory_content_glist     (const char *s_dir)
+                                              __attribute__ ((nonnull (1)));
 
 GList      * glist_filter_by_extensions_list (GList      *gl_files,
                                               GHashTable *gh_exts);

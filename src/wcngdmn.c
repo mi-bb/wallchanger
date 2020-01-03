@@ -1,6 +1,6 @@
 /** 
  * @file  wcngdmn.c
- * @copyright Copyright (C) 2019 Michał Bąbik
+ * @copyright Copyright (C) 2019-2020 Michał Bąbik
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -46,8 +46,8 @@
  * @return         Return value
  */  
 int
-main (int    argc,
-      char **argv)
+main (int    argc __attribute__ ((unused)),
+      char **argv __attribute__ ((unused)))
 {
     SettList *st_list;
     WallSett  ws_sett;

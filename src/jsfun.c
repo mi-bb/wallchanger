@@ -1,6 +1,6 @@
 /**
  * @file  jsfun.c
- * @copyright Copyright (C) 2019 Michał Bąbik
+ * @copyright Copyright (C) 2019-2020 Michał Bąbik
  *
  * This file is part of Wall Changer.
  *
@@ -78,7 +78,8 @@
 /*----------------------------------------------------------------------------*/
 static void          js_json_array_to_stlist (json_object        *j_array,
                                               SettList           *st_list,
-                                              const char         *s_array_name);
+                                              const char         *s_array_name)
+                                              __attribute__ ((nonnull (3)));
 
 static void          js_stlist_array_to_json (const SettList     *st_list,
                                               const Setting      *st_sett,
@@ -86,7 +87,8 @@ static void          js_stlist_array_to_json (const SettList     *st_list,
 
 static Setting     * js_json_obj_to_setting  (json_object        *val,
                                               const char         *s_name,
-                                              SettList           *st_list);
+                                              SettList           *st_list)
+                                              __attribute__ ((nonnull (2)));
 
 static json_object * js_setting_to_json_obj  (const SettList     *st_list,
                                               const Setting      *st_sett);
@@ -106,7 +108,8 @@ static json_object * js_setting_to_json_obj  (const SettList     *st_list,
  * @return     none
  */
 /*----------------------------------------------------------------------------*/
-static SettList * js_json_string_to_stlist  (const char     *s_buff);
+static SettList * js_json_string_to_stlist  (const char     *s_buff)
+                                             __attribute__ ((nonnull (1)));
 
 static void       js_stlist_add_to_json_obj (const SettList *st_list,
                                              json_object    *j_obj);
@@ -122,12 +125,10 @@ js_json_array_to_stlist (json_object *j_array,
     json_object *j_val;
     Setting     *st_set;
     char        *s_name = NULL;
-    size_t       ul_cnt = 0;
-    size_t       i      = 0;
 
-    ul_cnt = json_object_array_length (j_array);
+    size_t ul_cnt = json_object_array_length (j_array);
 
-    for (i = 0; i < ul_cnt; ++i) {
+    for (size_t i = 0; i < ul_cnt; ++i) {
 
         j_val = json_object_array_get_idx (j_array, i);
 
@@ -154,9 +155,8 @@ js_json_obj_to_setting (json_object *val,
                         SettList    *st_list)
 {
     Setting *st_set;
-    int      i_val_type = 0;
 
-    i_val_type = json_object_get_type (val);
+    int i_val_type = json_object_get_type (val);
 
     switch (i_val_type) {
 
@@ -164,7 +164,8 @@ js_json_obj_to_setting (json_object *val,
             return NULL;
 
         case json_type_boolean:
-            st_set = setting_new_int8 (json_object_get_int (val), s_name);
+            st_set = setting_new_int8 ((int8_t) json_object_get_int (val),
+                                       s_name);
             return st_set;
 
         case json_type_double:
@@ -172,7 +173,8 @@ js_json_obj_to_setting (json_object *val,
             return st_set;
 
         case json_type_int:
-            st_set = setting_new_uint32 (json_object_get_int (val), s_name);
+            st_set = setting_new_uint32 ((uint32_t) json_object_get_int (val),
+                                         s_name);
             return st_set;
 
         case json_type_string:
@@ -232,13 +234,12 @@ js_stlist_array_to_json (const SettList *st_list,
     json_object *j_obj;
     SettList    *st_array_list;
     uint32_t     ui_cnt = 0;
-    uint32_t     i      = 0;
 
     st_array_list = stlist_get_settings_in_array_obj_p (st_list, st_sett);
 
     ui_cnt = stlist_get_length (st_array_list);
 
-    for (i = 0; i < ui_cnt; ++i) {
+    for (uint32_t i = 0; i < ui_cnt; ++i) {
 
         st_val = stlist_get_setting_at_pos (st_array_list, i);
 
@@ -257,9 +258,8 @@ js_setting_to_json_obj (const SettList *st_list,
                         const Setting  *st_sett)
 {
     json_object *j_obj;
-    SetValType   i_type = 0;
 
-    i_type = setting_get_type (st_sett);
+    SetValType i_type = setting_get_type (st_sett);
 
     switch (i_type) {
 
@@ -268,7 +268,7 @@ js_setting_to_json_obj (const SettList *st_list,
             return j_obj;
 
         case SET_VAL_UINT32:
-            j_obj = json_object_new_int (setting_get_uint32 (st_sett));
+            j_obj = json_object_new_int ((int) setting_get_uint32 (st_sett));
             return j_obj;
 
         case SET_VAL_STRING:
@@ -297,13 +297,12 @@ js_stlist_add_to_json_obj (const SettList *st_list,
     SettList    *st_main;
     Setting     *st_sett;
     uint32_t     ui_cnt   = 0;
-    uint32_t     i        = 0;
 
     st_main  = stlist_get_settings_main_p (st_list);
 
     ui_cnt = stlist_get_length (st_main);
 
-    for (i = 0; i < ui_cnt; ++i) {
+    for (uint32_t i = 0; i < ui_cnt; ++i) {
 
         st_sett = stlist_get_setting_at_pos (st_main, i);
 
@@ -380,7 +379,7 @@ js_settings_check_for_update (const SettList  *st_list,
     /* Compare saved file buffer hash and new one,
      * if they are different update output buffer */
     if (hash (s_jbuff) != ui_hash) {
-        s_res_buff = str_dup (s_jbuff);
+        s_res_buff = strdup (s_jbuff);
     }
     else {
         s_res_buff = NULL;

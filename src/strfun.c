@@ -1,6 +1,6 @@
 /**
  * @file  strfun.c
- * @copyright Copyright (C) 2019 Michał Bąbik
+ * @copyright Copyright (C) 2019-2020 Michał Bąbik
  *
  * This file is part of Wall Changer.
  *
@@ -28,55 +28,6 @@
 #include "strfun.h"
 /*----------------------------------------------------------------------------*/
 /**
- * @brief  Duplicate string.
- */
-char *
-str_dup (const char *s_str)
-{
-    char   *s_res  = NULL;
-    size_t  ul_len = 0;
-
-    if (s_str == NULL)
-        return NULL;
-
-    ul_len = strlen (s_str);
-
-    if (ul_len == 0)
-        return NULL;
-
-    s_res = calloc (ul_len+1, sizeof (char));
-
-    if (s_res == NULL)
-        return NULL;
-
-    memcpy (s_res, s_str, ul_len);
-
-    return s_res;
-}
-/*----------------------------------------------------------------------------*/
-/**
- * @brief  Duplicate n bytes of string.
- */
-char *
-str_ndup (const char   *s_str,
-          const size_t  ul_len)
-{
-    char *s_res = NULL;
-
-    if (s_str == NULL || ul_len == 0)
-        return NULL;
-
-    s_res = calloc (ul_len + 1, sizeof (char));
-
-    if (s_res == NULL)
-        return NULL;
-
-    memcpy (s_res, s_str, ul_len);
-
-    return s_res;
-}
-/*----------------------------------------------------------------------------*/
-/**
  * @brief  String compare function for getting string position function.
  */
 int
@@ -86,13 +37,16 @@ str_compare (const char *a,
     int i_res = 0; /* Function result */
 
     if (a == NULL || b == NULL) {
-        if (a == NULL && b == NULL)
+        if (a == NULL && b == NULL) {
             i_res = 0;
+        }
         else {
-            if (a == NULL)
+            if (a == NULL) {
                 i_res = -1;
-            else
+            }
+            else {
                 i_res = 1;
+            }
         }
     }
     else {
@@ -115,9 +69,7 @@ str_name_with_number (const char   *s_name,
     while (ul_tmp /= 10)
         ul_l++;
 
-    s_res = calloc (strlen (s_name) + ul_l + 1, sizeof (char));
-    if (s_res == NULL)
-        return NULL;
+    create_resize ((void**) &s_res, strlen (s_name) + ul_l + 1, sizeof (char));
 
     sprintf (s_res, "%s%ld", s_name, ul_no);
 
@@ -132,14 +84,12 @@ str_replace_in (const char *s_src,
                 const char *s_fr,
                 const char *s_to)
 {
-    const char *sp      = NULL; /* copy s_src pointer */
-    const char *pn      = NULL; /* find string pointer */
-    char       *s_res   = NULL; /* result string */
-    size_t      ul_len  = 0;    /* length to allocate */
-    size_t      ul_flen = 0;    /* length of s_fr */
-    size_t      ul_tlen = 0;    /* length if s_to */
-
-    sp = s_src; 
+    const char *sp      = s_src; /* copy s_src pointer */
+    const char *pn      = NULL;  /* find string pointer */
+    char       *s_res   = NULL;  /* result string */
+    size_t      ul_len  = 0;     /* length to allocate */
+    size_t      ul_flen = 0;     /* length of s_fr */
+    size_t      ul_tlen = 0;     /* length if s_to */
 
     ul_flen = strlen (s_fr);
     ul_tlen = strlen (s_to);

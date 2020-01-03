@@ -1,6 +1,6 @@
 /**
  * @file  strfun.h
- * @copyright Copyright (C) 2019 Michał Bąbik
+ * @copyright Copyright (C) 2019-2020 Michał Bąbik
  *
  * This file is part of Wall Changer.
  *
@@ -26,17 +26,6 @@
 #include <stddef.h>
 /*----------------------------------------------------------------------------*/
 /**
- * @fn        char *str_dup (const char *s_str)
- * @brief     Duplicate string.
- * @param[in] s_str  String to duplicate
- * @return    Duplicated string or null pointer
- *
- * @fn        char *str_ndup (const char *s_str, size_t st_len)
- * @brief     Duplicate n bytes of string.
- * @param[in] s_str   String to duplicate
- * @param[in] ul_len  Number of bytes to duplicate
- * @return    Duplicated string or null pointer
- *
  * @fn        int str_compare (const char *a, const char *b)
  * @brief     String compare function for getting string position function.
  * @param[in] a  String a 
@@ -74,24 +63,24 @@
  * @return    String with command
  */
 /*----------------------------------------------------------------------------*/
-char * str_dup                      (const char   *s_str);
-
-char * str_ndup                     (const char   *s_str,
-                                     const size_t  ul_len);
-
 int    str_compare                  (const char   *a,
-                                     const char   *b);
+                                     const char   *b)
+                                     __attribute__ ((pure));
 
 char * str_name_with_number         (const char   *s_name,
-                                     const size_t  ul_no);
+                                     const size_t  ul_no)
+       __attribute__ ((nonnull (1), returns_nonnull));
 
 char * str_replace_in               (const char   *s_src,
                                      const char   *s_fr,
-                                     const char   *s_to);
+                                     const char   *s_to)
+       __attribute__ ((nonnull (1,2,3), returns_nonnull));
+
 
 char * str_set_up_wallpaper_command (const char   *s_cmd,
                                      const char   *s_fname,
-                                     const char   *s_sign);
+                                     const char   *s_sign)
+                                     __attribute__ ((nonnull (1,2,3)));
 /*----------------------------------------------------------------------------*/
 #endif
 

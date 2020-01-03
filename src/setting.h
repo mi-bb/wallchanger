@@ -1,6 +1,6 @@
 /**
  * @file  setting.h
- * @copyright Copyright (C) 2019 Michał Bąbik
+ * @copyright Copyright (C) 2019-2020 Michał Bąbik
  *
  * This file is part of Wall Changer.
  *
@@ -124,14 +124,6 @@ Setting {
         char     *s_val;
     } data; 
 } Setting;
-/*----------------------------------------------------------------------------*/
-/**
- * @brief  Calls hash function djb2
- *
- * @param[in]  str  String to count hash
- * @return     Calculated hash value
- */
-uint32_t setting_hashfun (const char *str);
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Free Setting object
@@ -277,7 +269,8 @@ const char * setting_get_string (const Setting *st_set);
  */
 /*----------------------------------------------------------------------------*/
 void setting_assign_to_array  (Setting    *st_set,
-                               const char *s_name);
+                               const char *s_name)
+                               __attribute__ ((nonnull (2)));
 
 void setting_reset_array      (Setting    *st_set);
 /*----------------------------------------------------------------------------*/
@@ -374,42 +367,55 @@ void setting_reset_array      (Setting    *st_set);
  */
 /*----------------------------------------------------------------------------*/
 Setting * setting_new_int    (const int64_t    i_val,
-                              const char      *s_name);
+                              const char      *s_name)
+                              __attribute__ ((nonnull (2), returns_nonnull));
 
 Setting * setting_new_uint   (const uint64_t   i_val,
-                              const char      *s_name);
+                              const char      *s_name)
+                              __attribute__ ((nonnull (2), returns_nonnull));
 
 Setting * setting_new_int64  (const int64_t    i_val,
-                              const char      *s_name);
+                              const char      *s_name)
+                              __attribute__ ((nonnull (2), returns_nonnull));
 
 Setting * setting_new_uint64 (const uint64_t   i_val,
-                              const char      *s_name);
+                              const char      *s_name)
+                              __attribute__ ((nonnull (2), returns_nonnull));
 
 Setting * setting_new_int32  (const int32_t    i_val,
-                              const char      *s_name);
+                              const char      *s_name)
+                              __attribute__ ((nonnull (2), returns_nonnull));
 
 Setting * setting_new_uint32 (const uint32_t   i_val,
-                              const char      *s_name);
+                              const char      *s_name)
+                              __attribute__ ((nonnull (2), returns_nonnull));
 
 Setting * setting_new_int16  (const int16_t    i_val,
-                              const char      *s_name);
+                              const char      *s_name)
+                              __attribute__ ((nonnull (2), returns_nonnull));
 
 Setting * setting_new_uint16 (const uint16_t   i_val,
-                              const char      *s_name);
+                              const char      *s_name)
+                              __attribute__ ((nonnull (2), returns_nonnull));
 
 Setting * setting_new_int8   (const int8_t     i_val,
-                              const char      *s_name);
+                              const char      *s_name)
+                              __attribute__ ((nonnull (2), returns_nonnull));
 
 Setting * setting_new_uint8  (const uint8_t    i_val,
-                              const char      *s_name);
+                              const char      *s_name)
+                              __attribute__ ((nonnull (2), returns_nonnull));
 
 Setting * setting_new_double (const double     d_val,
-                              const char      *s_name);
+                              const char      *s_name)
+                              __attribute__ ((nonnull (2), returns_nonnull));
 
 Setting * setting_new_string (const char      *s_val,
-                              const char      *s_name);
+                              const char      *s_name)
+                              __attribute__ ((nonnull (2), returns_nonnull));
 
-Setting * setting_new_array  (const char      *s_name);
+Setting * setting_new_array  (const char      *s_name)
+                              __attribute__ ((nonnull (1), returns_nonnull));
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Duplicates a Setting
@@ -417,7 +423,8 @@ Setting * setting_new_array  (const char      *s_name);
  * @param[in]  st_src  Source Setting object
  * @return     New copy of Setting or null
  */
-Setting * setting_copy (const Setting *st_src);
+Setting * setting_copy (const Setting *st_src)
+          __attribute__ ((returns_nonnull));
 #ifdef DEBUG
 /*----------------------------------------------------------------------------*/
 /**

@@ -1,6 +1,6 @@
 /**
  * @file  settlist.c
- * @copyright Copyright (C) 2019 Michał Bąbik
+ * @copyright Copyright (C) 2019-2020 Michał Bąbik
  *
  * This file is part of Wall Changer.
  *
@@ -25,6 +25,7 @@
 #include <stdio.h>
 #include <string.h>
 #include "settlist.h"
+#include "hashfun.h"
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  SettList initialization
@@ -39,10 +40,10 @@ static void stlist_init (SettList *st_list);
  *
  * @param[out]  st_list  SettList list of settings
  * @param[in]   ul_size  Size to reserve
- * @return      Reserve result
+ * @return      none
  */
-static int stlist_reserve (SettList     *st_list,
-                           const size_t  ul_size);
+static void stlist_reserve (SettList     *st_list,
+                            const size_t  ul_size);
 /*----------------------------------------------------------------------------*/
 /**
  * @brief     Get position of setting with specified id
@@ -98,8 +99,10 @@ stlist_new_list (void)
 
     st_list = calloc (1, sizeof (SettList));
 
-    if (st_list == NULL)
-        return NULL;
+    if (st_list == NULL) {
+        fputs ("Alloc error\n", stderr);
+        exit (EXIT_FAILURE);
+    }
 
     stlist_init (st_list);
 
@@ -109,7 +112,7 @@ stlist_new_list (void)
 /**
  * @brief      Reserve space for Setting objects in SettList
  */
-static int
+static void
 stlist_reserve (SettList     *st_list,
                 const size_t  ul_size)
 {
@@ -118,7 +121,7 @@ stlist_reserve (SettList     *st_list,
 
     /* No need to resie */
     if (st_list->i_cnt == ul_size)
-        return SET_ER_OK;
+        return;
 
     /* if larger free rest */
     while (ul_size < st_list->i_cnt) {
@@ -129,7 +132,7 @@ stlist_reserve (SettList     *st_list,
     if (ul_size == 0) {
         free (st_list->st_setting);
         stlist_init (st_list);
-        return SET_ER_OK; 
+        return; 
     }
 
     /* Malloc if null, realloc if not null */
@@ -152,13 +155,10 @@ stlist_reserve (SettList     *st_list,
     if (st_list->st_setting == NULL && ul_size != 0) {
         fputs ("Alloc error\n", stderr);
         exit (EXIT_FAILURE);
-        /*return ERR_ALLOC;*/
     }
 
     /* Update file list count */
     st_list->i_cnt = (uint32_t) ul_size;
-
-    return SET_ER_OK;
 }
 /*----------------------------------------------------------------------------*/
 /**
@@ -199,11 +199,10 @@ stlist_get_length (const SettList *st_list)
 /**
  * @brief  Inserts Settings object to settings list
  */
-int
+void
 stlist_insert_setting (SettList *st_list,
                        Setting  *st_val)
 {
-    int     i_res = SET_ER_OK;
     int32_t i_pos = 0;
 
     i_pos = stlist_get_setting_pos (st_list,
@@ -216,14 +215,10 @@ stlist_insert_setting (SettList *st_list,
     }
     else {
         /* Resize list and append new one */
-        i_res = stlist_reserve (st_list, st_list->i_cnt+1);
-        if (i_res)
-            return i_res;
+        stlist_reserve (st_list, st_list->i_cnt+1);
 
         st_list->st_setting[st_list->i_cnt-1] = st_val;
     }
-
-    return i_res;
 }
 /*----------------------------------------------------------------------------*/
 /**
@@ -238,7 +233,7 @@ stlist_insert_setting_to_array (SettList   *st_list,
     int      i_res = SET_ER_OK;
 
     if (s_array_name == NULL || strcmp (s_array_name, "") == 0) {
-        i_res = stlist_insert_setting (st_list, st_val);
+        stlist_insert_setting (st_list, st_val);
     }
     else {
 
@@ -251,7 +246,7 @@ stlist_insert_setting_to_array (SettList   *st_list,
 
         setting_assign_to_array (st_val, s_array_name);
 
-        i_res = stlist_insert_setting (st_list, st_val);
+        stlist_insert_setting (st_list, st_val);
     }
     return i_res;
 }
@@ -292,7 +287,7 @@ stlist_get_setting_pos (const SettList *st_list,
     int32_t   i_pos   = -1;
     uint32_t  ui_hash = 0;
 
-    ui_hash = setting_hashfun (s_name);
+    ui_hash = hash (s_name);
 
     i_pos = stlist_get_setting_with_id_pos (st_list, ui_hash);
 
@@ -372,7 +367,6 @@ stlist_get_settings_owned_by_p (const SettList *st_list,
     Setting  *st_val;
     uint32_t  ui_cnt     = 0;
     uint32_t  ui_set_oid = 0;
-    int       i_res      = 0;
     uint32_t  i          = 0;
 
     st_res = stlist_new_list ();
@@ -387,11 +381,7 @@ stlist_get_settings_owned_by_p (const SettList *st_list,
 
             st_val = st_list->st_setting[i];
 
-            i_res = stlist_insert_setting (st_res, st_val);
-            if (i_res != SET_ER_OK) {
-                stlist_free (st_res);
-                return NULL;
-            }
+            stlist_insert_setting (st_res, st_val);
         }
     }
     return st_res;
@@ -408,7 +398,6 @@ stlist_get_settings_owned_by (const SettList *st_list,
     Setting  *st_val;
     uint32_t  ui_cnt     = 0;
     uint32_t  ui_set_oid = 0;
-    int       i_res      = 0;
     uint32_t  i          = 0;
 
     st_res = stlist_new_list ();
@@ -423,11 +412,7 @@ stlist_get_settings_owned_by (const SettList *st_list,
 
             st_val = setting_copy (st_list->st_setting[i]);
 
-            i_res = stlist_insert_setting (st_res, st_val);
-            if (i_res != SET_ER_OK) {
-                stlist_free (st_res);
-                return NULL;
-            }
+            stlist_insert_setting (st_res, st_val);
         }
     }
     return st_res;
@@ -550,18 +535,17 @@ stlist_get_settings_main_p (const SettList *st_list)
 /**
  * @brief  Remove Settings from list at specified position
  */
-int
+void
 stlist_remove_setting_at_pos (SettList *st_list,
                               uint32_t  ui_pos)
 {
-    int      i_res = SET_ER_OK;
     uint32_t ui_len = 0;
     Setting *st_set;
 
     ui_len = stlist_get_length (st_list);
 
     if (ui_pos >= ui_len)
-        return SET_ER_NO_SET;
+        return;
 
     st_set = stlist_get_setting_at_pos (st_list, ui_pos);
 
@@ -571,19 +555,16 @@ stlist_remove_setting_at_pos (SettList *st_list,
 
     st_list->st_setting[ui_len - 1] = st_set;
 
-    i_res = stlist_reserve (st_list, ui_len - 1);
-
-    return i_res;
+    stlist_reserve (st_list, ui_len - 1);
 }
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Remove Settings from list 
  */
-int
+void
 stlist_remove_setting (SettList *st_list,
                        Setting  *st_val)
 {
-    int      i_res   = SET_ER_OK;
     int32_t  i_pos   = 0;
     uint32_t ui_hash = 0;
 
@@ -592,34 +573,29 @@ stlist_remove_setting (SettList *st_list,
     i_pos = stlist_get_setting_with_id_pos (st_list, ui_hash);
 
     if (i_pos == -1)
-        return SET_ER_NO_SET;
+        return;
 
-    i_res = stlist_remove_setting_at_pos (st_list, (uint32_t) i_pos);
-
-    return i_res;
+    stlist_remove_setting_at_pos (st_list, (uint32_t) i_pos);
 }
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Remove Settings with specified name from list 
  */
-int
+void
 stlist_remove_setting_with_name (SettList   *st_list,
                                  const char *s_name)
 {
-    int      i_res   = SET_ER_OK;
     int32_t  i_pos   = 0;
     uint32_t ui_hash = 0;
 
-    ui_hash = setting_hashfun (s_name);
+    ui_hash = hash (s_name);
 
     i_pos = stlist_get_setting_with_id_pos (st_list, ui_hash);
 
     if (i_pos == -1)
-        return SET_ER_NO_SET;
+        return;
 
-    i_res = stlist_remove_setting_at_pos (st_list, (uint32_t) i_pos);
-
-    return i_res;
+    stlist_remove_setting_at_pos (st_list, (uint32_t) i_pos);
 }
 /*----------------------------------------------------------------------------*/
 #ifdef DEBUG

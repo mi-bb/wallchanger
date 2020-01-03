@@ -1,6 +1,6 @@
 /**
  * @file  wpset.c
- * @copyright Copyright (C) 2019 Michał Bąbik
+ * @copyright Copyright (C) 2019-2020 Michał Bąbik
  *
  * This file is part of Wall Changer.
  *
@@ -51,7 +51,8 @@
  */
 /*----------------------------------------------------------------------------*/
 static void wallpaper_set_file         (const char *s_cmd,
-                                        const char *s_wall);
+                                        const char *s_wall)
+                                        __attribute__ ((nonnull (1, 2)));
 
 static void wallpaper_set_random       (WallSett   *ws_sett);
 

@@ -1,6 +1,6 @@
 /**
  * @file  treev.c
- * @copyright Copyright (C) 2019 Michał Bąbik
+ * @copyright Copyright (C) 2019-2020 Michał Bąbik
  *
  * This file is part of Wall Changer.
  *
@@ -39,10 +39,10 @@
  * @param[in]  ii_info  Data in ImageInfo object
  * @return     none
  *
- * @fn  static void liststore_add_item (GtkWidget       *gw_list,
- *                                      const ImageInfo *ii_info)
+ * @fn  static void treeview_add_item     (GtkWidget       *gw_tview,
+                                           const ImageInfo *ii_info)
  * @brief      Insert single data item to GtkListStore.
- * @param[out] gw_list  GtkWidget with GtkListStore to insert data
+ * @param[out] gw_tview    TreeView in which data should be added
  * @param[in]  ii_info  data in ImageInfo object
  * @return     none
  *
@@ -52,26 +52,16 @@
  * @param[out] gw_tview    TreeView in which data should be replaced
  * @param[in]  gsl_iinfo1  List with ImageInfo objects with data.
  * @return     none
- *
- * @fn  static void liststore_add_items (GtkWidget *gw_list,
- *                                       GSList    *gsl_iinfo1)
- * @brief  Insert multiple data items to GtkListStore.
- * @param[out] gw_list     GtkWidget with GtkListStore to insert data
- * @param[in]  gsl_iinfo1  List with ImageInfo objects with data.
- * @return     none
  */
 /*----------------------------------------------------------------------------*/
 static void liststore_set_item    (GtkListStore    *gls_list,
                                    GtkTreeIter     *gti_iter,
                                    const ImageInfo *ii_info);
 
-static void liststore_add_item    (GtkWidget       *gw_list,
+static void treeview_add_item     (GtkWidget       *gw_tview,
                                    const ImageInfo *ii_info);
 
 static void treeview_replace_data (GtkWidget       *gw_tview,
-                                   GSList          *gsl_iinfo1);
-
-static void liststore_add_items   (GtkWidget       *gw_list,
                                    GSList          *gsl_iinfo1);
 /*----------------------------------------------------------------------------*/
 /**
@@ -96,14 +86,14 @@ liststore_set_item (GtkListStore    *gls_list,
  * @brief  Insert single data item to GtkListStore.
  */
 static void
-liststore_add_item (GtkWidget       *gw_list,
-                    const ImageInfo *ii_info)
+treeview_add_item (GtkWidget       *gw_tview,
+                   const ImageInfo *ii_info)
 {
     GtkListStore *gls_store;
     GtkTreeIter   gti_iter;
 
     gls_store = GTK_LIST_STORE (gtk_tree_view_get_model (
-                GTK_TREE_VIEW (gw_list)));
+                GTK_TREE_VIEW (gw_tview)));
 
     gtk_list_store_append (gls_store, &gti_iter);
 
@@ -149,29 +139,10 @@ treeview_replace_data (GtkWidget *gw_tview,
 }
 /*----------------------------------------------------------------------------*/
 /**
- * @brief  Insert multiple data items to GtkListStore.
- */
-static void
-liststore_add_items (GtkWidget *gw_list,
-                     GSList    *gsl_iinfo1)
-{
-    GSList *gsl_iinfo = NULL; /* Temp ItemInfo list */
-
-    gsl_iinfo = gsl_iinfo1;
-
-    while (gsl_iinfo != NULL) {
-
-        liststore_add_item (gw_list, gsl_iinfo->data);
-
-        gsl_iinfo = gsl_iinfo->next;
-    }
-}
-/*----------------------------------------------------------------------------*/
-/**
- * @brief  Insert multiple data items to GtkListStore.
+ * @brief  Insert multiple data items to GtkTreeView.
  */
 void
-liststore_add_items_glist (GtkWidget *gw_list,
+treeview_add_items_glist (GtkWidget *gw_tview,
                            GList     *gl_files)
 {
     GList *gl_fl = NULL; /* Temp ItemInfo list */
@@ -186,7 +157,7 @@ liststore_add_items_glist (GtkWidget *gw_list,
 
         if (ii_info != NULL) {
 
-            liststore_add_item (gw_list, ii_info);
+            treeview_add_item (gw_tview, ii_info);
 
             imageinfo_free (ii_info);
         }
@@ -196,11 +167,11 @@ liststore_add_items_glist (GtkWidget *gw_list,
 }
 /*----------------------------------------------------------------------------*/
 /**
- * @brief  Insert multiple data items to GtkListStore.
+ * @brief  Insert multiple data items to GtkTreeView.
  */
 void
-liststore_add_items_gslist (GtkWidget *gw_list,
-                            GSList    *gl_files)
+treeview_add_items_gslist (GtkWidget *gw_tview,
+                           GSList    *gl_files)
 {
     GSList *gl_fl = NULL; /* Temp ItemInfo list */
 
@@ -214,7 +185,7 @@ liststore_add_items_gslist (GtkWidget *gw_list,
 
         if (ii_info != NULL) {
 
-            liststore_add_item (gw_list, ii_info);
+            treeview_add_item (gw_tview, ii_info);
 
             imageinfo_free (ii_info);
         }
@@ -224,24 +195,24 @@ liststore_add_items_gslist (GtkWidget *gw_list,
 }
 /*----------------------------------------------------------------------------*/
 /**
- * @brief  Insert multiple data items to GtkListStore.
+ * @brief  Insert multiple data items to GtkTreeView.
  */
 void
-liststore_add_items_settlist (GtkWidget       *gw_list,
-                              const SettList  *sl_walls)
+treeview_add_items_settlist (GtkWidget       *gw_tview,
+                             const SettList  *sl_walls)
 {
-    Setting    *st_wall;
-    const char *s_fn      = NULL;
+    //Setting    *st_wall;
+    //const char *s_fn      = NULL;
     uint32_t    ui_cnt    = 0;
-    uint32_t    i         = 0;
+    //uint32_t    i         = 0;
 
     ui_cnt = stlist_get_length (sl_walls);
 
-    for (i = 0; i < ui_cnt; ++i) {
+    for (uint32_t i = 0; i < ui_cnt; ++i) {
 
-        st_wall = stlist_get_setting_at_pos (sl_walls, i);
+        Setting *st_wall = stlist_get_setting_at_pos (sl_walls, i);
 
-        s_fn = setting_get_string (st_wall);
+        const char *s_fn = setting_get_string (st_wall);
 
         if (s_fn != NULL) {
 
@@ -249,7 +220,7 @@ liststore_add_items_settlist (GtkWidget       *gw_list,
 
             if (ii_info != NULL) {
 
-                liststore_add_item (gw_list, ii_info);
+                treeview_add_item (gw_tview, ii_info);
 
                 imageinfo_free (ii_info);
             }

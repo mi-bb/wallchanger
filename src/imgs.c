@@ -1,6 +1,6 @@
 /**
  * @file  imgs.c
- * @copyright Copyright (C) 2019 Michał Bąbik
+ * @copyright Copyright (C) 2019-2020 Michał Bąbik
  *
  * This file is part of Wall Changer.
  *
@@ -28,10 +28,10 @@
  * @brief  Icon data structure
  */
 typedef struct Icon {
-  unsigned int    width;                        /**< Image width */
-  unsigned int    height;                       /**< Image height */
-  unsigned int    bytes_per_pixel;              /**< 2:RGB16, 3:RGB, 4:RGBA */ 
-  unsigned char   pixel_data[16 * 16 * 4 + 1];  /**< Image data */
+  int           width;                        /**< Image width */
+  int           height;                       /**< Image height */
+  int           bytes_per_pixel;              /**< 2:RGB16, 3:RGB, 4:RGBA */ 
+  unsigned char pixel_data[16 * 16 * 4 + 1];  /**< Image data */
 } Icon;
 /*----------------------------------------------------------------------------*/
 /**
@@ -472,10 +472,10 @@ static const Icon icon_info = {
  * @brief  Quit icon
  */
 static const struct {
-  unsigned int    width;
-  unsigned int    height;
-  unsigned int    bytes_per_pixel; /* 2:RGB16, 3:RGB, 4:RGBA */ 
-  unsigned char   pixel_data[20 * 20 * 4 + 1];
+  int           width;
+  int           height;
+  int           bytes_per_pixel; /* 2:RGB16, 3:RGB, 4:RGBA */ 
+  unsigned char pixel_data[20 * 20 * 4 + 1];
 } icon_exit = {
   20, 20, 4,
   "\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000"
@@ -540,10 +540,10 @@ static const struct {
  * @brief  Top part of monitor screen
  */
 static const struct {
-  unsigned int    width;
-  unsigned int    height;
-  unsigned int    bytes_per_pixel; /* 2:RGB16, 3:RGB, 4:RGBA */ 
-  unsigned char   pixel_data[152 * 7 * 4 + 1];
+  int           width;
+  int           height;
+  int           bytes_per_pixel; /* 2:RGB16, 3:RGB, 4:RGBA */ 
+  unsigned char pixel_data[152 * 7 * 4 + 1];
 } image_screen_1 = {
   152, 7, 4,
   "\377\377\377\000\377\377\377\000\377\377\377\000\377\377\377\000\377\377\377\000\377"
@@ -766,10 +766,10 @@ static const struct {
  * @brief  Middle part of monitor screen
  */
 static const struct {
-  unsigned int    width;
-  unsigned int    height;
-  unsigned int    bytes_per_pixel; /* 2:RGB16, 3:RGB, 4:RGBA */ 
-  unsigned char   pixel_data[152 * 1 * 4 + 1];
+  int           width;
+  int           height;
+  int           bytes_per_pixel; /* 2:RGB16, 3:RGB, 4:RGBA */ 
+  unsigned char pixel_data[152 * 1 * 4 + 1];
 } image_screen_2 = {
   152, 1, 4,
   "\377\377\377\000\246\246\246\377\300\300\300\377\300\300\300\377\300\300\300"
@@ -800,10 +800,10 @@ static const struct {
  * @brief  Bottom part of monitor screen
  */
 static const struct {
-  unsigned int    width;
-  unsigned int    height;
-  unsigned int    bytes_per_pixel; /* 2:RGB16, 3:RGB, 4:RGBA */ 
-  unsigned char   pixel_data[152 * 45 * 4 + 1];
+  int           width;
+  int           height;
+  int           bytes_per_pixel; /* 2:RGB16, 3:RGB, 4:RGBA */ 
+  unsigned char pixel_data[152 * 45 * 4 + 1];
 } image_screen_3 = {
   152, 45, 4,
   "\377\377\377\000\246\246\246\377\300\300\300\377\300\300\300\377\300\300\300"
@@ -2072,10 +2072,10 @@ static const struct {
 };
 
 static const struct {
-  unsigned int 	 width;
-  unsigned int 	 height;
-  unsigned int 	 bytes_per_pixel; /* 2:RGB16, 3:RGB, 4:RGBA */ 
-  unsigned char	 pixel_data[128 * 116 * 3 + 1];
+  int           width;
+  int           height;
+  int           bytes_per_pixel; /* 2:RGB16, 3:RGB, 4:RGBA */ 
+  unsigned char pixel_data[128 * 116 * 3 + 1];
 } image_about = {
   128, 116, 3,
   "\356\324\236\357\324\237\361\323\237\356\324\236\355\325\241\352\326\250"

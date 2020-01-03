@@ -1,6 +1,6 @@
 /**
  * @file  setts.h
- * @copyright Copyright (C) 2019 Michał Bąbik
+ * @copyright Copyright (C) 2019-2020 Michał Bąbik
  *
  * This file is part of Wall Changer.
  *
@@ -66,7 +66,8 @@ void settlist_check_defaults (SettList *st_list);
  * @return     Settlist list of Setting objects or null pointer
  */
 SettList * settings_read (const char *s_fname,
-                          int        *i_err);
+                          int        *i_err)
+                          __attribute__ ((nonnull (1)));
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Convert settings in SettList format to WallSett format.
@@ -132,13 +133,16 @@ int settings_update_window_size (const int   i_w,
 /*----------------------------------------------------------------------------*/
 char * settings_check_update      (const SettList   *st_list,
                                    const char       *s_fname,
-                                   int              *i_err);
+                                   int              *i_err)
+                                   __attribute__ ((nonnull (2)));
 
 int    settings_update_file       (const char       *s_buff,
-                                   const char       *s_fname);
+                                   const char       *s_fname)
+                                   __attribute__ ((nonnull (1, 2)));
 
 int    settings_check_update_file (const SettList   *st_list,
-                                   const char       *s_fname);
+                                   const char       *s_fname)
+                                   __attribute__ ((nonnull (2)));
 /*----------------------------------------------------------------------------*/
 #endif
 

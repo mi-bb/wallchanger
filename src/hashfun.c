@@ -1,6 +1,6 @@
 /**
  * @file  hashfun.c
- * @copyright Copyright (C) 2019 Michał Bąbik
+ * @copyright Copyright (C) 2019-2020 Michał Bąbik
  *
  * This file is part of Wall Changer.
  *
@@ -28,13 +28,10 @@
  * @brief  djb2 hash function.
  */
 uint32_t
-hash (const char *str)
+hash (const char * __restrict str)
 {
     uint32_t hash = 5381;
     int         c = 0;
-
-    if (str == NULL)
-        return 0;
 
     while ((c = *str++)) {
 

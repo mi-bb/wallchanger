@@ -1,6 +1,6 @@
 /**
  * @file  iminfo.c
- * @copyright Copyright (C) 2019 Michał Bąbik
+ * @copyright Copyright (C) 2019-2020 Michał Bąbik
  *
  * This file is part of Wall Changer.
  *
@@ -81,8 +81,10 @@ imageinfo_new (void)
 
     ii_res = calloc (1, sizeof (ImageInfo));
 
-    if (ii_res == NULL)
-        return NULL;
+    if (ii_res == NULL) {
+        fputs ("Alloc error\n", stderr);
+        exit (EXIT_FAILURE);
+    }
 
     imageinfo_init (ii_res);
 
@@ -101,9 +103,6 @@ imageinfo_new_from_file (const char *s_fname)
     int        i_w     = 0;    /* Image width */
     int        i_h     = 0;    /* Image height */
 
-    if (s_fname == NULL)
-        return NULL;
-
     ii_info = imageinfo_new ();
 
     imageinfo_set_full_name (ii_info, s_fname);
@@ -118,7 +117,7 @@ imageinfo_new_from_file (const char *s_fname)
         s_p++;
         imageinfo_set_file_name (ii_info, s_p);
 
-        s_path = str_ndup (s_fname, (size_t) (s_p - s_fname));
+        s_path = strndup (s_fname, (size_t) (s_p - s_fname));
         imageinfo_set_file_path (ii_info, s_path);
 
         free (s_path);
@@ -194,16 +193,20 @@ file_paths_to_imageinfo (GSList *gsl_files1)
 {
     GSList    *gsl_iinfo = NULL; /* Result ImageInfo list */
     GSList    *gsl_files = NULL; /* Pointer to file list */
-    ImageInfo *ii_info;
 
     gsl_files = gsl_files1;
 
     while (gsl_files != NULL) {
 
-        ii_info = imageinfo_new_from_file ((char *) gsl_files->data);
+        char *s_fn = (char *) gsl_files->data;
 
-        if (imageinfo_get_height (ii_info) > 0)
-            gsl_iinfo = g_slist_append (gsl_iinfo, ii_info);
+        if (s_fn != NULL) {
+
+            ImageInfo *ii_info = imageinfo_new_from_file (s_fn);
+
+            if (imageinfo_get_height (ii_info) > 0)
+                gsl_iinfo = g_slist_append (gsl_iinfo, ii_info);
+        }
 
         gsl_files = gsl_files->next;
     }
@@ -220,7 +223,7 @@ imageinfo_set_full_name (ImageInfo  *ii_info,
     if (ii_info->s_full_path != NULL)
         free (ii_info->s_full_path);
 
-    ii_info->s_full_path = str_dup (s_name);
+    ii_info->s_full_path = strdup (s_name);
 }
 /*----------------------------------------------------------------------------*/
 /**
@@ -242,7 +245,7 @@ imageinfo_set_file_name (ImageInfo  *ii_info,
     if (ii_info->s_file_name != NULL)
         free (ii_info->s_file_name);
 
-    ii_info->s_file_name = str_dup (s_name);
+    ii_info->s_file_name = strdup (s_name);
 }
 /*----------------------------------------------------------------------------*/
 /**
@@ -264,7 +267,7 @@ imageinfo_set_file_path (ImageInfo  *ii_info,
     if (ii_info->s_file_path != NULL)
         free (ii_info->s_file_path);
 
-    ii_info->s_file_path = str_dup (s_name);
+    ii_info->s_file_path = strdup (s_name);
 }
 /*----------------------------------------------------------------------------*/
 /**

@@ -1,6 +1,6 @@
 /**
  * @file  iminfo.h
- * @copyright Copyright (C) 2019 Michał Bąbik
+ * @copyright Copyright (C) 2019-2020 Michał Bąbik
  *
  * This file is part of Wall Changer.
  *
@@ -78,9 +78,11 @@ ImageInfo {
  * @return     none
  */
 /*----------------------------------------------------------------------------*/
-ImageInfo * imageinfo_new           (void);
+ImageInfo * imageinfo_new           (void)
+            __attribute__ ((malloc, returns_nonnull));
 
-ImageInfo * imageinfo_new_from_file (const char *s_fname);
+ImageInfo * imageinfo_new_from_file (const char *s_fname)
+            __attribute__ ((nonnull (1), returns_nonnull));
 
 void        imageinfo_free          (ImageInfo  *ii_info);
 /*----------------------------------------------------------------------------*/
@@ -171,17 +173,20 @@ GSList * file_paths_to_imageinfo   (GSList      *gsl_files1);
  */
 /*----------------------------------------------------------------------------*/
 void         imageinfo_set_full_name  (ImageInfo        *ii_info,
-                                       const char       *s_name);
+                                       const char       *s_name)
+                                       __attribute__ ((nonnull (2)));
 
 const char * imageinfo_get_full_name  (const ImageInfo  *ii_info);
 /*----------------------------------------------------------------------------*/
 void         imageinfo_set_file_name  (ImageInfo        *ii_info,
-                                       const char       *s_name);
+                                       const char       *s_name)
+                                       __attribute__ ((nonnull (2)));
 
 const char * imageinfo_get_file_name  (const ImageInfo  *ii_info);
 /*----------------------------------------------------------------------------*/
 void         imageinfo_set_file_path  (ImageInfo        *ii_info,
-                                       const char       *s_name);
+                                       const char       *s_name)
+                                       __attribute__ ((nonnull (2)));
 
 const char * imageinfo_get_file_path  (const ImageInfo  *ii_info);
 /*----------------------------------------------------------------------------*/

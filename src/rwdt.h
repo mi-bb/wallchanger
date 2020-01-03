@@ -1,6 +1,6 @@
 /**
  * @file  rwdt.h
- * @copyright Copyright (C) 2019 Michał Bąbik
+ * @copyright Copyright (C) 2019-2020 Michał Bąbik
  *
  * This file is part of Wall Changer.
  *
@@ -50,14 +50,17 @@
  */
 /*----------------------------------------------------------------------------*/
 char * read_file_data      (const char   *s_fname,
-                            int          *i_err);
+                            int          *i_err)
+                            __attribute__ ((nonnull (1)));
 
 char * read_file_data_hash (const char   *s_fname,
                             int          *i_err,
-                            uint32_t     *i_hash);
+                            uint32_t     *i_hash)
+                            __attribute__ ((nonnull (1)));
 
 int    save_file_data      (const char   *s_fname,
-                            const char   *s_buff);
+                            const char   *s_buff)
+                            __attribute__ ((nonnull (1,2)));
 /*----------------------------------------------------------------------------*/
 #endif
 

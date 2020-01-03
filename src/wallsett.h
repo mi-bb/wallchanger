@@ -1,6 +1,6 @@
 /**
 * @file  wallsett.h
-* @copyright Copyright (C) 2019 Michał Bąbik
+* @copyright Copyright (C) 2019-2020 Michał Bąbik
 *
 * This file is part of Wall Changer.
 *
@@ -186,12 +186,14 @@ void             wallset_set_interval          (WallSett       *ws_sett,
 uint32_t         wallset_get_interval          (const WallSett *ws_sett);
 /*----------------------------------------------------------------------------*/
 void             wallset_set_last_used_fn      (WallSett       *ws_sett,
-                                                const char     *s_fn);
+                                                const char     *s_fn)
+                                                __attribute__ ((nonnull (2)));
 
 const char *     wallset_get_last_used_fn      (const WallSett *ws_sett);
 /*----------------------------------------------------------------------------*/
 void             wallset_set_command           (WallSett       *ws_sett,
-                                                const char     *s_cmd);
+                                                const char     *s_cmd)
+                                                __attribute__ ((nonnull (2)));
 
 const char *     wallset_get_command           (const WallSett *ws_sett);
 /*----------------------------------------------------------------------------*/

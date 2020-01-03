@@ -1,6 +1,6 @@
 /**
  * @file  randomm.c
- * @copyright Copyright (C) 2019 Michał Bąbik
+ * @copyright Copyright (C) 2019-2020 Michał Bąbik
  *
  * This file is part of Wall Changer.
  *
@@ -32,9 +32,8 @@
  * @param[in]  ui_no   Number to check
  * @return     1 if it is, 0 if it is not
  */
-static uint8_t
-randomm_check_number (RandMem *rm_mem,
-                      uint32_t ui_no);
+static uint8_t randomm_check_number (RandMem *rm_mem,
+                                     uint32_t ui_no);
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Store number in random numbers memory
@@ -43,9 +42,8 @@ randomm_check_number (RandMem *rm_mem,
  * @param[in]  ui_no   Number to check
  * @return     none
  */
-static void
-randomm_set_number (RandMem *rm_mem,
-                    uint32_t ui_no);
+static void randomm_set_number (RandMem *rm_mem,
+                                uint32_t ui_no);
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Increment random number counts value
@@ -53,8 +51,7 @@ randomm_set_number (RandMem *rm_mem,
  * @param[out] rm_mem  RandMem object
  * @return     none
  */
-static void
-randomm_increment_cnt (RandMem *rm_mem);
+static void randomm_increment_cnt (RandMem *rm_mem);
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Check if number is in random numbers memory
@@ -105,9 +102,8 @@ randomm_increment_cnt (RandMem *rm_mem)
 void
 randomm_clear (RandMem *rm_mem)
 {
-    int i = 0;
-
-    for (i = 0; i < RMMAX; ++i)
+    //int i = 0;
+    for (int i = 0; i < RMMAX; ++i)
         rm_mem->ui_rand[i] = 0;
 }
 /*----------------------------------------------------------------------------*/

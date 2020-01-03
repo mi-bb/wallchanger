@@ -1,4 +1,4 @@
-Copyright (C) 2019 Michał Bąbik
+Copyright (C) 2019-2020 Michał Bąbik
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -12,6 +12,46 @@ GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
+2020-01-03  Michal Babik  <michalb1981@o2.pl>
+	* cres.c (create_resise): Changed return value to void.
+	* fdops.c (get_pbuf_exts_to_ghash): Changed str_dup to strdup.
+	* iminfo.c (imageinfo_new): Function exits instead of returning null
+	  on alloc error.
+	* iminfo.c (imageinfo_new_from_file, imageinfo_set_full_name,
+	  imageinfo_set_file_name, imageinfo_set_file_path):
+	  Changed str_dup to strdup.
+	* jsfun.c (js_settings_check_for_update): Changed str_dup to strdup.
+	* setting.c: Removed setting_hashfun function.
+	* setting.c (setting_assign_to_array): Changed function call from
+	  setting_hashfun to hash.
+	* setting.c (setting_copy, setting_create_default): Function exits
+	  instead of returning null on alloc error.
+	* setting.c (setting_new_int, setting_new_uint, setting_new_int64,
+	  setting_new_uint64, setting_new_int32, setting_new_uint32,
+	  setting_new_int16, setting_new_uint16, setting_new_int8,
+	  setting_new_uint8, setting_new_double, setting_new_string,
+	  setting_new_array): Removed null return.
+	* settlist.c (stlist_insert_setting, stlist_remove_setting_at_pos,
+	  stlist_remove_setting, stlist_remove_setting_with_name):
+	  Changed return value to void.
+	* strfun.c (str_dup, str_ndup): Functions removed from project.
+	* strfun.c (str_name_with_number): Function exits instead of returning
+	  null on alloc error.
+	* treev.c (liststore_add_item): Function renamed to treeview_add_item.
+	* treev.c (liststore_add_items_glist): Function renamed to
+	  treeview_add_items_glist.
+	* treev.c (liststore_add_items_gslist): Function renamed to
+	  treeview_add_items_gslist.
+	* treev.c (liststore_add_items_settlist): Function renamed to
+	  treeview_add_items_settlist.
+	* wchanger.c (set_wallpaper_list): Changed function call from
+	  liststore_add_items_settlist to treeview_add_items_settlist.
+	* wchanger.c (event_add_img_pressed): Changed function call from
+	  liststore_add_items_gslist to treeview_add_items_gslist.
+	* wchanger.c (event_add_img_dir_pressed): Changed function call from
+	  liststore_add_items_glist to treeview_add_items_glist.
+	* misc_files: Added attributes that may improve performance a little bit.
 
 2019-12-22  Michal Babik  <michalb1981@o2.pl>
 

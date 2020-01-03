@@ -1,6 +1,6 @@
 /**
  * @file  treev.h
- * @copyright Copyright (C) 2019 Michał Bąbik
+ * @copyright Copyright (C) 2019-2020 Michał Bąbik
  *
  * This file is part of Wall Changer.
  *
@@ -42,24 +42,24 @@ enum {
 };
 /*----------------------------------------------------------------------------*/
 /**
- * @fn  void liststore_add_items_glist (GtkWidget      *gw_list,
- *                                      GList          *gl_files)
- * @brief      Insert data items from GList to GtkListStore.
- * @param[out] gw_list   GtkWidget with GtkListStore to insert items
+ * @fn  void treeview_add_items_glist (GtkWidget      *gw_tview,
+ *                                     GList          *gl_files)
+ * @brief      Insert data items from GList to GtkTreeView.
+ * @param[out] gw_tview  TreeView to add items
  * @param[in]  gl_files  GList list with data in ImageInfo format
  * @return     none
  *
- * @fn  void liststore_add_items_gslist (GtkWidget      *gw_list,
- *                                       GSList         *gl_files)
- * @brief      Insert data items from GSList to GtkListStore.
- * @param[out] gw_list   GtkWidget with GtkListStore to insert items
+ * @fn  void treeview_add_items_gslist (GtkWidget      *gw_tview,
+ *                                      GSList         *gl_files)
+ * @brief      Insert data items from GSList to GtkTreeView.
+ * @param[out] gw_tview  TreeView to add items
  * @param[in]  gl_files  GSList list with data in ImageInfo format
  * @return     none
  *
- * @fn  void liststore_add_items_settlist (GtkWidget      *gw_list,
- *                                         const SettList *sl_walls)
- * @brief      Insert data items from SettList to GtkListStore.
- * @param[out] gw_list   GtkWidget with GtkListStore to insert items
+ * @fn  void treeview_add_items_settlist (GtkWidget      *gw_tview,
+ *                                        const SettList *sl_walls)
+ * @brief      Insert data items from SettList to GtkTreeView.
+ * @param[out] gw_tview  TreeView to add items
  * @param[in]  sl_walls  GSList list with data in ImageInfo format
  * @return     none
  *
@@ -76,13 +76,13 @@ enum {
  * @return    List with  ImageInfo data of TreeView's TreeModel items
  */
 /*----------------------------------------------------------------------------*/
-void        liststore_add_items_glist    (GtkWidget      *gw_list,
+void        treeview_add_items_glist     (GtkWidget      *gw_tview,
                                           GList          *gl_files);
 
-void        liststore_add_items_gslist   (GtkWidget      *gw_list,
+void        treeview_add_items_gslist    (GtkWidget      *gw_tview,
                                           GSList         *gl_files);
 
-void        liststore_add_items_settlist (GtkWidget      *gw_list,
+void        treeview_add_items_settlist  (GtkWidget      *gw_tview,
                                           const SettList *sl_walls);
 
 ImageInfo * treemodel_get_data           (GtkTreeModel   *gtm_model,
@@ -135,7 +135,8 @@ void treeview_move_up           (GtkWidget  *gw_tview);
 void treeview_move_down         (GtkWidget  *gw_tview);
 
 void treeview_find_select_item  (GtkWidget  *gw_tview,
-                                 const char *s_file);
+                                 const char *s_file)
+                                 __attribute__ ((nonnull (2)));
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Create treeview for image list.
