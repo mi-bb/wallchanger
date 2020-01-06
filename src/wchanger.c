@@ -1236,16 +1236,6 @@ activate (GtkApplication *app,
 }
 /*----------------------------------------------------------------------------*/
 /**
- * @brief  Application shutdown signal.
- */
-static void
-shutdown (GtkApplication *app __attribute__ ((unused)),
-          DialogData     *dd_data __attribute__ ((unused)))
-{
-    //free (dd_data->s_cfg_file);
-}
-/*----------------------------------------------------------------------------*/
-/**
  * @brief Main function.
  *
  * @param[in] argc Arguments passed to the program from the environment in which
@@ -1266,7 +1256,6 @@ main (int    argc,
                                G_APPLICATION_FLAGS_NONE);
 
     g_signal_connect (app, "activate", G_CALLBACK (activate), &dd_data);
-    g_signal_connect (app, "shutdown", G_CALLBACK (shutdown), &dd_data);
 
     g_set_application_name (APP_NAME);
 
