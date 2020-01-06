@@ -17,6 +17,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 	* strfun.c (str_set_up_wallpaper_command): Change in string copy
 	  when no file alias specified.
+	* wchanger.c: Removed unneeded shutdown signal
 
 2020-01-03  Michal Babik  <michalb1981@o2.pl>
 	* cres.c (create_resise): Changed return value to void.
