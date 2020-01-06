@@ -136,11 +136,27 @@ str_set_up_wallpaper_command (const char *s_cmd,
 
     if (strstr (s_cmd, s_sign) == NULL) {
 
-        ul_siz = strlen (s_cmd) + strlen (s_fname) + 4;
+        const char * __restrict cp = s_cmd;
+        const char * __restrict fp = s_fname;
+
+        ul_siz = strlen (cp) + strlen (fp) + 4;
 
         create_resize ((void**) &s_res, ul_siz, sizeof (char));
 
-        sprintf (s_res, "%s %s &", s_cmd, s_fname);
+        char * __restrict rp = s_res;
+
+        while (*cp) {
+            *rp++ = *cp++;
+        }
+
+        *rp++ = ' ';
+
+        while (*fp) {
+            *rp++ = *fp++;
+        }
+
+        *rp++ = ' ';
+        *rp = '&';
     }
     else {
         s_res = str_replace_in (s_cmd, s_sign, s_fname);

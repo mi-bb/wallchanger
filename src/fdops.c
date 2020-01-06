@@ -120,14 +120,14 @@ get_directory_content_glist (const char *s_dir)
 
     if (s_path == NULL) {
         fputs ("Alloc error\n", stderr);
-        /*return ERR_ALLOC;*/
         exit (EXIT_FAILURE);
     }
 
     strcpy (s_path, s_dir);
 
     if (s_path[ul_dlen-1] != '/') {
-        strcat (s_path, "/");
+        s_path[ul_dlen] = '/';
+        s_path[ul_dlen+1] = '\0';
         ul_dlen++;
     }
 
@@ -146,7 +146,6 @@ get_directory_content_glist (const char *s_dir)
             s_pthfn = calloc ((ul_dlen + strlen (de->d_name)+1), sizeof (char));
             if (s_pthfn == NULL) {
                 fputs ("Alloc error\n", stderr);
-                /*return ERR_ALLOC;*/
                 exit (EXIT_FAILURE);
             }
             strcpy (s_pthfn, s_path);
