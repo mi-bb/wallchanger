@@ -329,7 +329,7 @@ imageinfo_set_wxh (ImageInfo *ii_info,
 
     memset (s_tmp, 0, sizeof(s_tmp));
 
-    sprintf (s_tmp, "%dx%d", i_w, i_h);
+    snprintf (s_tmp, 39, "%dx%d", i_w, i_h);
 
     create_resize ((void**) &ii_info->s_width_height, strlen (s_tmp)+1,
                    sizeof (char));
