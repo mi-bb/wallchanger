@@ -56,6 +56,11 @@ main (int    argc __attribute__ ((unused)),
     uint32_t  ui_nlen = 0;
     int       i_err   = 0;
 
+    if (getenv ("DISPLAY") == NULL) {
+        fputs ("Could not open display\n", stderr);
+        exit (EXIT_FAILURE);
+    }
+
     if (wallset_init (&ws_sett) != ERR_OK) {
         exit (EXIT_FAILURE);
     }

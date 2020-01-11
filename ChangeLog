@@ -13,6 +13,14 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+2020-01-11  Michal Babik  <michalb1981@o2.pl>
+
+	* wcngdmn.c (main): Added checking for Display.
+
+2020-01-07  Michal Babik  <michalb1981@o2.pl>
+
+	* iminfo.c (imageinfo_set_wxh): Changed sprintf to snprintf.
+
 2020-01-06  Michal Babik  <michalb1981@o2.pl>
 
 	* strfun.c (str_set_up_wallpaper_command): Change in string copy
