@@ -121,10 +121,10 @@ void       stlist_clear    (SettList *st_list);
 void stlist_insert_setting          (SettList   *st_list,
                                      Setting    *st_val);
 
-int stlist_insert_setting_to_array (SettList   *st_list,
-                                    Setting    *st_val,
-                                    const char *s_array_name);
-                                    //__attribute__ ((nonnull (3)));
+int  stlist_insert_setting_to_array (SettList   *st_list,
+                                     Setting    *st_val,
+                                     const char *s_array_name);
+                                     //__attribute__ ((nonnull (3)));
 /*----------------------------------------------------------------------------*/
 /**
  * @fn  void stlist_remove_setting_at_pos (SettList   *st_list,

@@ -741,7 +741,6 @@ setting_copy (const Setting *st_src)
     }
 
     setting_init (st_ret);
-
     setting_copy2 (st_ret, st_src);
 
     return st_ret;
@@ -763,9 +762,7 @@ setting_create_default (const char *s_name)
     }
 
     setting_init (st_ret);
-
     setting_set_name (st_ret, s_name);
-
     setting_set_id (st_ret, hash (s_name));
 
     return st_ret;
@@ -896,9 +893,7 @@ Setting *
 setting_new_string (const char *s_val,
                     const char *s_name)
 {
-    Setting *st_ret;
-
-    st_ret = setting_create_default (s_name);
+    Setting *st_ret = setting_create_default (s_name);
 
     if (s_val == NULL)
         setting_set_string (st_ret, "");

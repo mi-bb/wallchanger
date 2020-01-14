@@ -96,7 +96,6 @@ treeview_add_item (GtkWidget       *gw_tview,
                 GTK_TREE_VIEW (gw_tview)));
 
     gtk_list_store_append (gls_store, &gti_iter);
-
     liststore_set_item (gls_store, &gti_iter, ii_info);
 }
 /*----------------------------------------------------------------------------*/
@@ -116,13 +115,11 @@ treeview_replace_data (GtkWidget *gw_tview,
     gboolean      b_res     = FALSE;
 
     gsl_iinfo = gsl_iinfo1;
-
     gtm_model = gtk_tree_view_get_model (GTK_TREE_VIEW (gw_tview));
     gls_list  = GTK_LIST_STORE (gtm_model);
-
-    ui_icnt = g_slist_length (gsl_iinfo);
-    ui_mcnt = (uint32_t) gtk_tree_model_iter_n_children (
-            GTK_TREE_MODEL (gls_list), NULL);
+    ui_icnt   = g_slist_length (gsl_iinfo);
+    ui_mcnt   = (uint32_t) gtk_tree_model_iter_n_children (
+                GTK_TREE_MODEL (gls_list), NULL);
     
     if (ui_icnt == ui_mcnt) {
 
@@ -143,7 +140,7 @@ treeview_replace_data (GtkWidget *gw_tview,
  */
 void
 treeview_add_items_glist (GtkWidget *gw_tview,
-                           GList     *gl_files)
+                          GList     *gl_files)
 {
     GList *gl_fl = NULL; /* Temp ItemInfo list */
 
@@ -151,17 +148,14 @@ treeview_add_items_glist (GtkWidget *gw_tview,
 
     while (gl_fl != NULL) {
 
-        const char *s_fn = (const char *) gl_fl->data;
-
-        ImageInfo *ii_info = imageinfo_new_from_file (s_fn);
+        const char *s_fn    = (const char *) gl_fl->data;
+        ImageInfo  *ii_info = imageinfo_new_from_file (s_fn);
 
         if (ii_info != NULL) {
 
             treeview_add_item (gw_tview, ii_info);
-
             imageinfo_free (ii_info);
         }
-
         gl_fl = gl_fl->next;
     }
 }
@@ -179,17 +173,14 @@ treeview_add_items_gslist (GtkWidget *gw_tview,
 
     while (gl_fl != NULL) {
 
-        const char *s_fn = (const char *) gl_fl->data;
-
-        ImageInfo *ii_info = imageinfo_new_from_file (s_fn);
+        const char *s_fn    = (const char *) gl_fl->data;
+        ImageInfo  *ii_info = imageinfo_new_from_file (s_fn);
 
         if (ii_info != NULL) {
 
             treeview_add_item (gw_tview, ii_info);
-
             imageinfo_free (ii_info);
         }
-
         gl_fl = gl_fl->next;
     }
 }
@@ -201,18 +192,12 @@ void
 treeview_add_items_settlist (GtkWidget       *gw_tview,
                              const SettList  *sl_walls)
 {
-    //Setting    *st_wall;
-    //const char *s_fn      = NULL;
-    uint32_t    ui_cnt    = 0;
-    //uint32_t    i         = 0;
-
-    ui_cnt = stlist_get_length (sl_walls);
+    uint32_t ui_cnt = stlist_get_length (sl_walls);
 
     for (uint32_t i = 0; i < ui_cnt; ++i) {
 
-        Setting *st_wall = stlist_get_setting_at_pos (sl_walls, i);
-
-        const char *s_fn = setting_get_string (st_wall);
+        Setting    *st_wall = stlist_get_setting_at_pos (sl_walls, i);
+        const char *s_fn    = setting_get_string (st_wall);
 
         if (s_fn != NULL) {
 
@@ -221,7 +206,6 @@ treeview_add_items_settlist (GtkWidget       *gw_tview,
             if (ii_info != NULL) {
 
                 treeview_add_item (gw_tview, ii_info);
-
                 imageinfo_free (ii_info);
             }
         }
@@ -315,7 +299,6 @@ treeview_sort_list (GtkWidget *gw_tview)
     GSList *gsl_iinfo = NULL; /* TreeView item list */
 
     gsl_iinfo = treeview_get_data (gw_tview);
-
     gsl_iinfo = imageinfo_sort (gsl_iinfo);
 
     treeview_replace_data (gw_tview, gsl_iinfo);
@@ -490,8 +473,7 @@ create_tview (GtkWidget **gw_tview)
     GtkTreeSelection *gts_sele;
 
     *gw_tview = gtk_tree_view_new ();
-
-    gts_sele = gtk_tree_view_get_selection (GTK_TREE_VIEW (*gw_tview));
+    gts_sele  = gtk_tree_view_get_selection (GTK_TREE_VIEW (*gw_tview));
     gtk_tree_selection_set_mode (gts_sele, GTK_SELECTION_MULTIPLE);
 
     gcr_render = gtk_cell_renderer_text_new ();

@@ -13,6 +13,22 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+2020-01-14  Michal Babik  <michalb1981@o2.pl>
+
+	* fdops.c (get_dir_content_filter_images): New function to read
+	  directory data and filter out non images (it runs two functions
+	  that were used separately before).
+	* preview.c (create_preview_label): New function to create labels
+	  with screen resolution info.
+	* wchanger.c (activate): Added inserting screen description labels.
+	* wchanger.c (event_add_img_dir_pressed): Reading directory content
+	  with one function, not two like it was before.
+	* wpset.c (wallpaper_set_file, wallpaper_set_random,
+	  wallpaper_set_next_in_list): Removed unneeded returns.
+	* wpset.c (wallpaper_set_file): Added system value reading for
+	  compiler not to complain.
+	* wpset.c (wallpaper_startup_set): Removed some unneeded code.
+
 2020-01-11  Michal Babik  <michalb1981@o2.pl>
 
 	* wcngdmn.c (main): Added checking for Display.
@@ -28,6 +44,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 	* wchanger.c: Removed unneeded shutdown signal
 
 2020-01-03  Michal Babik  <michalb1981@o2.pl>
+
 	* cres.c (create_resise): Changed return value to void.
 	* fdops.c (get_pbuf_exts_to_ghash): Changed str_dup to strdup.
 	* iminfo.c (imageinfo_new): Function exits instead of returning null

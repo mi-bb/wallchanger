@@ -160,11 +160,8 @@ str_set_up_wallpaper_command (const char *s_cmd,
     }
     else {
         s_res = str_replace_in (s_cmd, s_sign, s_fname);
-
         ul_siz = strlen (s_res) + 3;
-
         create_resize ((void**) &s_res, ul_siz, sizeof (char));
-
         strcat (s_res, " &");
     }
     return s_res;

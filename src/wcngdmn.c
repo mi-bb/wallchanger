@@ -19,9 +19,9 @@
  *
  * Automatic wallpaper changer
  *
- * @date December 22, 2019
+ * @date January 14, 2020
  *
- * @version 1.3.5
+ * @version 1.3.6
  * 
  * @author Michał Bąbik <michalb1981@o2.pl>
  */
@@ -49,15 +49,16 @@ int
 main (int    argc __attribute__ ((unused)),
       char **argv __attribute__ ((unused)))
 {
-    SettList *st_list;
-    WallSett  ws_sett;
-    uint32_t  ui_cnt  = 0;
-    uint32_t  ui_len  = 0;
-    uint32_t  ui_nlen = 0;
-    int       i_err   = 0;
+    SettList *st_list;     /* Setting list */
+    WallSett  ws_sett;     /* WallSett object with settings for wallpaper
+                              change functions */
+    uint32_t  ui_cnt  = 0; /* Minute counter */
+    uint32_t  ui_len  = 0; /* Previous wallpaper list length */
+    uint32_t  ui_nlen = 0; /* Actual wallpaper list length */
+    int       i_err   = 0; /* Error output */
 
     if (getenv ("DISPLAY") == NULL) {
-        fputs ("Could not open display\n", stderr);
+        fputs ("Could not detect display\n", stderr);
         exit (EXIT_FAILURE);
     }
 
@@ -80,9 +81,7 @@ main (int    argc __attribute__ ((unused)),
     }
 
     settlist_check_defaults (st_list);
-
     settlist_to_wallset (st_list, &ws_sett);
-
     ui_len = stlist_get_length (ws_sett.sl_walls);
 
     if (ui_len == 0) {
@@ -126,9 +125,7 @@ main (int    argc __attribute__ ((unused)),
             }
 
             settlist_check_defaults (st_list);
-
             settlist_to_wallset (st_list, &ws_sett);
-
             ui_nlen = stlist_get_length (ws_sett.sl_walls);
 
             if (ui_nlen == 0) {
@@ -155,7 +152,6 @@ main (int    argc __attribute__ ((unused)),
             ui_cnt = 0;
         }
     }
-
     return 0;
 }
 /*----------------------------------------------------------------------------*/

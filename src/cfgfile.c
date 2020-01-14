@@ -85,10 +85,8 @@ check_permissions (const char *s_name,
 {
     /* check if file/dir exists */
     if (access (s_name, F_OK) == 0) {
-
         /* check permissions */
         if (access (s_name, i_mode) != 0) {
-
             fputs (s_name, stderr);
             fputs (" Bad file / directory permissions\n", stderr);
             return ERR_FILE;
@@ -140,7 +138,6 @@ check_dir_premissions_create (const char *s_dir)
     }
     /* If directory does not exist */
     else if (i_res == ERR_FILE_EX) {
-
         /* try to create it */
         i_res2 = mkdir (s_dir, 0700);
 
@@ -173,7 +170,6 @@ check_file_premissions_create (const char *s_file)
     }
     /* If file does not exist */
     else if (i_res == ERR_FILE_EX) {
-
         /* try to create it */
         f_file = fopen(s_file, "a+");
 
@@ -259,19 +255,15 @@ check_config_path_file (int *i_err)
 int
 set_config_file_path (char *s_path)
 {
-    int i_res = ERR_OK;
-
+    int   i_res = ERR_OK;
     char *s_cfg = check_config_path_file (&i_res);
 
     if (i_res != ERR_OK) {
         free (s_cfg);
         return i_res;
     }
-
     strncpy (s_path, s_cfg, 255);
-
     free (s_cfg);
-
     return i_res;
 }
 /*----------------------------------------------------------------------------*/

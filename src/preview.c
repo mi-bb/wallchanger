@@ -245,14 +245,40 @@ preview_from_file (GtkWidget  *gw_img_prev,
     GdkPixbuf *gp_prev = make_image_preview (s_file);
 
     if (gp_prev != NULL) {
-
         gtk_image_clear (GTK_IMAGE (gw_img_prev));
-
         /* Set new pixbuf to the image */
         gtk_image_set_from_pixbuf (GTK_IMAGE (gw_img_prev), gp_prev);
-
         g_object_unref (gp_prev);
     }
+}
+/*----------------------------------------------------------------------------*/
+/**
+ * @brief  Create labels with screen resolution info.
+ */
+GtkWidget *
+create_preview_label (void)
+{
+    GtkWidget *gw_label_box = gtk_box_new (GTK_ORIENTATION_VERTICAL, 1);
+    GtkWidget *gw_label_1   = gtk_label_new (NULL);
+    GtkWidget *gw_label_2   = gtk_label_new (NULL);
+    int        i_w          = 0;
+    int        i_h          = 0;
+    char       s_markup[50];
+
+    memset (s_markup, '\0', sizeof (s_markup));
+    gtk_label_set_xalign (GTK_LABEL (gw_label_1), 0.5);
+    gtk_label_set_xalign (GTK_LABEL (gw_label_2), 0.5);
+    get_screen_size (&i_w, &i_h);
+    snprintf (s_markup, 50, "<small>%dx%d</small>", i_w, i_h);
+
+    gtk_label_set_markup (GTK_LABEL (gw_label_1), 
+                          "<small>Screen resolution :</small>");
+    gtk_label_set_markup (GTK_LABEL (gw_label_2), s_markup);
+
+    gtk_box_pack_start (GTK_BOX (gw_label_box), gw_label_1, FALSE, FALSE, 1);
+    gtk_box_pack_start (GTK_BOX (gw_label_box), gw_label_2, FALSE, FALSE, 1);
+
+    return gw_label_box;
 }
 /*----------------------------------------------------------------------------*/
 

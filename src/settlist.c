@@ -210,13 +210,11 @@ stlist_insert_setting (SettList *st_list,
     if (i_pos >= 0) {
         /* Remove old and assing new setting */
         setting_free (st_list->st_setting[i_pos]);
-
         st_list->st_setting[i_pos] = st_val;
     }
     else {
         /* Resize list and append new one */
         stlist_reserve (st_list, st_list->i_cnt+1);
-
         st_list->st_setting[st_list->i_cnt-1] = st_val;
     }
 }
@@ -245,7 +243,6 @@ stlist_insert_setting_to_array (SettList   *st_list,
             return SET_ER_NOT_ARR;
 
         setting_assign_to_array (st_val, s_array_name);
-
         stlist_insert_setting (st_list, st_val);
     }
     return i_res;
@@ -288,8 +285,7 @@ stlist_get_setting_pos (const SettList *st_list,
     uint32_t  ui_hash = 0;
 
     ui_hash = hash (s_name);
-
-    i_pos = stlist_get_setting_with_id_pos (st_list, ui_hash);
+    i_pos   = stlist_get_setting_with_id_pos (st_list, ui_hash);
 
     return i_pos;
 }
@@ -370,7 +366,6 @@ stlist_get_settings_owned_by_p (const SettList *st_list,
     uint32_t  i          = 0;
 
     st_res = stlist_new_list ();
-
     ui_cnt = stlist_get_length (st_list);
 
     for (i = 0; i < ui_cnt; ++i) {
@@ -380,7 +375,6 @@ stlist_get_settings_owned_by_p (const SettList *st_list,
         if (ui_set_oid == ui_oid) {
 
             st_val = st_list->st_setting[i];
-
             stlist_insert_setting (st_res, st_val);
         }
     }
@@ -401,7 +395,6 @@ stlist_get_settings_owned_by (const SettList *st_list,
     uint32_t  i          = 0;
 
     st_res = stlist_new_list ();
-
     ui_cnt = stlist_get_length (st_list);
 
     for (i = 0; i < ui_cnt; ++i) {
@@ -411,7 +404,6 @@ stlist_get_settings_owned_by (const SettList *st_list,
         if (ui_set_oid == ui_oid) {
 
             st_val = setting_copy (st_list->st_setting[i]);
-
             stlist_insert_setting (st_res, st_val);
         }
     }
@@ -554,7 +546,6 @@ stlist_remove_setting_at_pos (SettList *st_list,
     }
 
     st_list->st_setting[ui_len - 1] = st_set;
-
     stlist_reserve (st_list, ui_len - 1);
 }
 /*----------------------------------------------------------------------------*/
@@ -569,8 +560,7 @@ stlist_remove_setting (SettList *st_list,
     uint32_t ui_hash = 0;
 
     ui_hash = setting_get_id (st_val);
-
-    i_pos = stlist_get_setting_with_id_pos (st_list, ui_hash);
+    i_pos   = stlist_get_setting_with_id_pos (st_list, ui_hash);
 
     if (i_pos == -1)
         return;
@@ -589,8 +579,7 @@ stlist_remove_setting_with_name (SettList   *st_list,
     uint32_t ui_hash = 0;
 
     ui_hash = hash (s_name);
-
-    i_pos = stlist_get_setting_with_id_pos (st_list, ui_hash);
+    i_pos   = stlist_get_setting_with_id_pos (st_list, ui_hash);
 
     if (i_pos == -1)
         return;

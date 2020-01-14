@@ -26,34 +26,14 @@
 #include <gmodule.h>
 /*----------------------------------------------------------------------------*/
 /**
- * @fn         GHashTable * get_pbuf_exts_to_ghash (void)
- * @brief      Get list of extensions supported by GdkPixbuf.
- * @return     Hash table with extensions 
- *
- * @fn         GList * get_directory_content_glist (const char *s_dir)
- * @brief      Get list of files in directory in GList.
+ * @fn         GList * get_dir_content_filter_images (const char *s_dir)
+ * @brief      Get list of files in directory, filter out non images and
+ *             return list in GList format.
  * @param[in]  s_dir  Directory path to scan
  * @return     GList with file names 
- *
- * @fn         GList * glist_filter_by_extensions_list (GList      *gl_files,
- *                                                      GHashTable *gh_exts)
- * @brief      Filter file list with extension list.
- *
- * Remove from file list files that have extensions not present on given
- * extensions list.
- *
- * @param[out] gl_files  File list to process
- * @param[in]  gh_exts   List of extensions
- * @return     none
  */
-/*----------------------------------------------------------------------------*/
-GHashTable * get_pbuf_exts_to_ghash          (void);
-
-GList      * get_directory_content_glist     (const char *s_dir)
-                                              __attribute__ ((nonnull (1)));
-
-GList      * glist_filter_by_extensions_list (GList      *gl_files,
-                                              GHashTable *gh_exts);
+GList * get_dir_content_filter_images   (const char *s_dir)
+                                         __attribute__ ((nonnull (1)));
 /*----------------------------------------------------------------------------*/
 #endif
 

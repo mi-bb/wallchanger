@@ -374,12 +374,10 @@ settings_update_window_size (const int   i_w,
 
     st_sett = setting_new_uint32 ((uint32_t) i_w,
                                   get_setting_name (SETTING_WIN_WIDTH));
-
     stlist_insert_setting (st_list, st_sett);
 
     st_sett = setting_new_uint32 ((uint32_t) i_h,
                                   get_setting_name (SETTING_WIN_HEIGHT));
-
     stlist_insert_setting (st_list, st_sett);
 
     i_res = js_settings_check_update_file (st_list, s_cfg_file);

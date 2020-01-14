@@ -69,9 +69,7 @@ read_file_data (const char  *s_fname,
         fclose (f_file);
         return NULL;
     }
-
     create_resize ((void**) &s_buff, (size_t) l_size+1, sizeof (char));
-
     /* copy the file into the buffer */
     ul_res = fread (s_buff, 1, (size_t) l_size, f_file);
 
@@ -136,9 +134,7 @@ save_file_data (const char *s_fname,
         return ERR_FILE;
     }
     ul_size = strlen(s_buff);
-
     ul_res = fwrite (s_buff , sizeof(char), ul_size, f_file);
-
     fclose (f_file);
 
     if (ul_res != ul_size) {

@@ -104,9 +104,7 @@ imageinfo_new_from_file (const char *s_fname)
     int        i_h     = 0;    /* Image height */
 
     ii_info = imageinfo_new ();
-
     imageinfo_set_full_name (ii_info, s_fname);
-
     s_p = strrchr (s_fname, '/');
 
     if (s_p == NULL) {
@@ -116,10 +114,8 @@ imageinfo_new_from_file (const char *s_fname)
     else {
         s_p++;
         imageinfo_set_file_name (ii_info, s_p);
-
         s_path = strndup (s_fname, (size_t) (s_p - s_fname));
         imageinfo_set_file_path (ii_info, s_path);
-
         free (s_path);
     }
 
@@ -325,15 +321,12 @@ imageinfo_set_wxh (ImageInfo *ii_info,
                    const int  i_w,
                    const int  i_h)
 {
-    char s_tmp[40]; /* Temp string, I think it is long enough */
+    char s_tmp[41]; /* Temp string, I think it is long enough */
 
     memset (s_tmp, 0, sizeof(s_tmp));
-
-    snprintf (s_tmp, 39, "%dx%d", i_w, i_h);
-
+    snprintf (s_tmp, 41, "%dx%d", i_w, i_h);
     create_resize ((void**) &ii_info->s_width_height, strlen (s_tmp)+1,
                    sizeof (char));
-
     strcpy (ii_info->s_width_height, s_tmp);
 }
 /*----------------------------------------------------------------------------*/

@@ -125,8 +125,7 @@ js_json_array_to_stlist (json_object *j_array,
     json_object *j_val;
     Setting     *st_set;
     char        *s_name = NULL;
-
-    size_t ul_cnt = json_object_array_length (j_array);
+    size_t       ul_cnt = json_object_array_length (j_array);
 
     for (size_t i = 0; i < ul_cnt; ++i) {
 
@@ -135,7 +134,6 @@ js_json_array_to_stlist (json_object *j_array,
         if (j_val != NULL) {
 
             s_name = str_name_with_number (s_array_name, i);
-
             st_set = js_json_obj_to_setting (j_val, s_name, st_list);
 
             free (s_name);
@@ -207,7 +205,6 @@ js_json_string_to_stlist (const char *s_buff)
     Setting     *st_set;
 
     st_list = stlist_new_list ();
-
     j_obj = json_tokener_parse (s_buff);
 
     json_object_object_foreach(j_obj, key, val) {
@@ -236,14 +233,12 @@ js_stlist_array_to_json (const SettList *st_list,
     uint32_t     ui_cnt = 0;
 
     st_array_list = stlist_get_settings_in_array_obj_p (st_list, st_sett);
-
-    ui_cnt = stlist_get_length (st_array_list);
+    ui_cnt        = stlist_get_length (st_array_list);
 
     for (uint32_t i = 0; i < ui_cnt; ++i) {
 
         st_val = stlist_get_setting_at_pos (st_array_list, i);
-
-        j_obj = js_setting_to_json_obj (st_list, st_val);
+        j_obj  = js_setting_to_json_obj (st_list, st_val);
 
         json_object_array_add (j_array, j_obj);
     }
@@ -258,8 +253,7 @@ js_setting_to_json_obj (const SettList *st_list,
                         const Setting  *st_sett)
 {
     json_object *j_obj;
-
-    SetValType i_type = setting_get_type (st_sett);
+    SetValType   i_type = setting_get_type (st_sett);
 
     switch (i_type) {
 
@@ -298,15 +292,13 @@ js_stlist_add_to_json_obj (const SettList *st_list,
     Setting     *st_sett;
     uint32_t     ui_cnt   = 0;
 
-    st_main  = stlist_get_settings_main_p (st_list);
-
-    ui_cnt = stlist_get_length (st_main);
+    st_main = stlist_get_settings_main_p (st_list);
+    ui_cnt  = stlist_get_length (st_main);
 
     for (uint32_t i = 0; i < ui_cnt; ++i) {
 
         st_sett = stlist_get_setting_at_pos (st_main, i);
-
-        j_val = js_setting_to_json_obj (st_list, st_sett);
+        j_val   = js_setting_to_json_obj (st_list, st_sett);
 
         json_object_object_add (j_obj, setting_get_name (st_sett), j_val);
     }
@@ -355,7 +347,6 @@ js_settings_check_for_update (const SettList  *st_list,
     uint32_t     ui_hash     = 0;      /* File read hash */
 
     *i_err = ERR_OK;
-
     s_buff = read_file_data_hash (s_fname, i_err, &ui_hash);
 
     if (*i_err != ERR_OK) {

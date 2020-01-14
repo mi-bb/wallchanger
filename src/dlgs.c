@@ -50,7 +50,6 @@ add_images_folder_dialog (GtkWindow *gw_parent)
                 GTK_FILE_CHOOSER (gw_dialog));
     }
     gtk_widget_destroy (gw_dialog);
-
     return s_folder;
 }
 /*----------------------------------------------------------------------------*/
@@ -84,10 +83,8 @@ add_images_dialog (GtkWindow *gw_parent)
     if (res == GTK_RESPONSE_ACCEPT) {
         gsl_files = gtk_file_chooser_get_filenames (
                 GTK_FILE_CHOOSER (gw_dialog));
-      }
-
+    }
     gtk_widget_destroy (gw_dialog);
-
     return gsl_files;
 }
 /*----------------------------------------------------------------------------*/
@@ -107,9 +104,7 @@ message_dialog_error (GtkWindow  *gw_parent,
                                         GTK_MESSAGE_ERROR,
                                         GTK_BUTTONS_CLOSE,
                                         "%s", s_message);
-
     gtk_dialog_run (GTK_DIALOG (gw_dialog));
-
     gtk_widget_destroy (gw_dialog);
 }
 /*----------------------------------------------------------------------------*/
@@ -143,11 +138,8 @@ about_app_dialog (const char *s_ver)
             "https://www.nongnu.org/wallchanger/");
 
     gtk_about_dialog_set_authors (GTK_ABOUT_DIALOG (gw_dialog), s_authors);
-
     gtk_about_dialog_set_artists (GTK_ABOUT_DIALOG (gw_dialog), s_art);
-
     gtk_dialog_run (GTK_DIALOG (gw_dialog));
-
     gtk_widget_destroy (gw_dialog);
 }
 /*----------------------------------------------------------------------------*/

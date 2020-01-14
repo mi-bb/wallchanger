@@ -17,13 +17,9 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 Basic Installation
 -------------------
 
-You need to have autotools installed for autogen.sh script to add
-configure and make scripts.
-Otherwise this scripts are included in standard program package.
+A most simple way to install application is to unpack archive,
+go to sources directory and type:
 
-Commands to configure, build and install program:
-
-    ./autogen.sh
     ./configure
     make
     make install
@@ -37,20 +33,23 @@ Compilers and Options
 
 For a normal daily use of this program a good option should be:
 
-    ./configure CC="gcc" CFLAGS="-Os -std=gnu11"
+    ./configure CC="gcc" CFLAGS="-march=native -O2 -pipe -std=gnu11"
 
 Or with Clang
 
-    ./configure CC="clang" CFLAGS="-Os -std=gnu11"
+    ./configure CC="clang" CFLAGS="-march=native -O2 -pipe -std=gnu11"
 
 It disables the standard -g option which produces debugging information
 needed for gdb and enlarges the output file,
 
-CC="gcc"    sets the C compiler to GCC,
-CC="clang"  sets the C compiler to Clang,
+CC="gcc"       sets the C compiler to GCC,
+CC="clang"     sets the C compiler to Clang,
 
--std=gnu11  sets the C standard to C11 with GNU extensions,
--Os         sets the code optimization to size,
+-march=native  enables all instruction subsets supported by the local machine,
+-O2            sets the code optimization to level 2,
+-pipe          use pipes rather than temporary files for communication between
+               the various stages of compilation,
+-std=gnu11     sets the C standard to C11 with GNU extensions.
 
 Executing:
 

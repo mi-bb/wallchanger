@@ -66,6 +66,7 @@ wallpaper_set_file (const char *s_cmd,
                     const char *s_wall)
 {
     char *s_cmdn = NULL; /* Wallpaper set command */
+    int i_res __attribute__ ((unused)) = 0;
 
     s_cmdn = str_set_up_wallpaper_command (s_cmd, s_wall, "[F]");
 
@@ -76,11 +77,9 @@ wallpaper_set_file (const char *s_cmd,
     printf ("Setting wallpaper command %s\n", s_cmdn);
     #endif
 
-    system (s_cmdn);
+    i_res = system (s_cmdn);
 
     free (s_cmdn);
-
-    return;
 }
 /*----------------------------------------------------------------------------*/
 /**
@@ -108,15 +107,12 @@ wallpaper_set_random (WallSett *ws_sett)
             stlist_get_setting_at_pos (sl_walls, i_pos));
 
     if (s_fn != NULL) {
-
         /* Save wallpaper as last used in settings */
         wallset_set_last_used_fn (ws_sett, s_fn);
-
         /* Set wallpaper */
         wallpaper_set_file (wallset_get_command (ws_sett),
                             wallset_get_last_used_fn (ws_sett));
     }
-    return;
 }
 /*----------------------------------------------------------------------------*/
 /**
@@ -159,7 +155,6 @@ wallpaper_set_next_in_list (WallSett *ws_sett)
         wallpaper_set_file (wallset_get_command (ws_sett),
                             wallset_get_last_used_fn (ws_sett));
     }
-    return;
 }
 /*----------------------------------------------------------------------------*/
 /**
@@ -186,17 +181,11 @@ wallpaper_startup_set (WallSett *ws_sett)
 {
     int i_res = 0; /* Function result */
 
-    if (wallset_get_last_used_setting (ws_sett)) {
+    if (wallset_get_last_used_setting (ws_sett) &&
+        wallset_get_last_used_fn (ws_sett) != NULL) {
 
-        if (wallset_get_last_used_fn (ws_sett) == NULL) {
-
-            i_res = wallpaper_change (ws_sett);
-        }
-        else {
-
-            wallpaper_set_file (wallset_get_command (ws_sett),
-                                wallset_get_last_used_fn (ws_sett));
-        }
+        wallpaper_set_file (wallset_get_command (ws_sett),
+                            wallset_get_last_used_fn (ws_sett));
     }
     else {
         i_res = wallpaper_change (ws_sett);
@@ -215,7 +204,6 @@ wallpaper_dialog_set (const char *s_cmd,
     int i_res = 0;
 
     wallpaper_set_file (s_cmd, s_file);
-
     i_res = settings_update_last_used (s_file, s_cfg_file);
 
     return i_res;

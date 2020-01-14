@@ -42,9 +42,7 @@ wallset_init (WallSett *ws_sett)
     ws_sett->sl_walls      = NULL;   /* Wallpaper list */
 
     memset (ws_sett->s_cfgfile, 0, sizeof (ws_sett->s_cfgfile));
-
     randomm_init (&ws_sett->rm_mem);
-
     i_err = set_config_file_path (ws_sett->s_cfgfile);
 
     return i_err;
