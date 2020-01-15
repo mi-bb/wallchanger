@@ -89,14 +89,15 @@ get_pbuf_exts_to_ghash (void)
 {
     GdkPixbufFormat  *gpf          = NULL;
     GSList           *gsl_formats  = NULL;
+    GSList           *gsl_formats1 = NULL;
     char            **exts         = NULL;
     char            **it           = NULL;
 
     GHashTable *gh_res = g_hash_table_new_full (g_str_hash, g_str_equal,
                                                 g_free, NULL);
-
     /* Get information aboout image formats supported by GdkPixbuf */
-    gsl_formats = gdk_pixbuf_get_formats ();
+    gsl_formats1 = gdk_pixbuf_get_formats ();
+    gsl_formats  = gsl_formats1;
 
     #ifdef DEBUG
     printf ("Valid extensions : ");
@@ -125,7 +126,7 @@ get_pbuf_exts_to_ghash (void)
     printf ("\n");
     #endif
 
-    g_slist_free (gsl_formats);
+    g_slist_free (gsl_formats1);
 
     return gh_res;
 }
@@ -171,7 +172,6 @@ get_directory_content_glist (const char *s_dir)
     while ((de = readdir(dr)) != NULL) {
 
         if (de->d_type == DT_REG) {
-        /*if (de->d_type == 8) {*/
 
             s_pthfn = calloc ((ul_dlen + strlen (de->d_name)+1), sizeof (char));
             if (s_pthfn == NULL) {
@@ -209,23 +209,20 @@ glist_filter_by_extensions_list (GList      *gl_files,
     while (gl_fl != NULL) {
 
         GList *next = gl_fl->next;
-        s_fn = (char*) gl_fl->data;
+        s_fn  = (char*) gl_fl->data;
         s_ext = get_file_ext (s_fn);
 
         if (s_ext == NULL || g_hash_table_lookup (gh_exts, s_ext) == NULL) {
 
             #ifdef DEBUG
             printf ("- ");
+            printf ("%s %s\n", s_fn, s_ext);
             #endif
 
-            gl_files = g_list_delete_link (gl_files, gl_fl);
+            gl_files = g_list_remove_link (gl_files, gl_fl);
+            g_free (gl_fl->data);
+            g_list_free (gl_fl);
         }
-        #ifdef DEBUG
-        else {
-            printf ("+ ");
-        }
-        printf ("%s %s\n", s_fn, s_ext);
-        #endif
 
         gl_fl = next;
     }

@@ -142,9 +142,7 @@ void
 treeview_add_items_glist (GtkWidget *gw_tview,
                           GList     *gl_files)
 {
-    GList *gl_fl = NULL; /* Temp ItemInfo list */
-
-    gl_fl = gl_files;
+    GList *gl_fl = gl_files; /* Temp ItemInfo list */
 
     while (gl_fl != NULL) {
 
@@ -167,9 +165,7 @@ void
 treeview_add_items_gslist (GtkWidget *gw_tview,
                            GSList    *gl_files)
 {
-    GSList *gl_fl = NULL; /* Temp ItemInfo list */
-
-    gl_fl = gl_files;
+    GSList *gl_fl = gl_files; /* Temp ItemInfo list */
 
     while (gl_fl != NULL) {
 
@@ -177,7 +173,6 @@ treeview_add_items_gslist (GtkWidget *gw_tview,
         ImageInfo  *ii_info = imageinfo_new_from_file (s_fn);
 
         if (ii_info != NULL) {
-
             treeview_add_item (gw_tview, ii_info);
             imageinfo_free (ii_info);
         }
@@ -204,7 +199,6 @@ treeview_add_items_settlist (GtkWidget       *gw_tview,
             ImageInfo *ii_info = imageinfo_new_from_file (s_fn);
 
             if (ii_info != NULL) {
-
                 treeview_add_item (gw_tview, ii_info);
                 imageinfo_free (ii_info);
             }
@@ -240,7 +234,6 @@ treeview_get_data (GtkWidget *gw_tview)
 {
     GSList       *gsl_iinfo = NULL; /* ImageInfo return list */
     GtkTreeModel *gtm_model;
-    ImageInfo    *ii_info;
     GtkTreeIter   gti_iter;
     gboolean      b_res     = FALSE;
 
@@ -248,8 +241,7 @@ treeview_get_data (GtkWidget *gw_tview)
     b_res     = gtk_tree_model_get_iter_first (gtm_model, &gti_iter);
 
     while (b_res) {
-
-        ii_info = treemodel_get_data (gtm_model, gti_iter);
+        ImageInfo *ii_info = treemodel_get_data (gtm_model, gti_iter);
         gsl_iinfo = g_slist_append (gsl_iinfo, ii_info);
 
         b_res = gtk_tree_model_iter_next (gtm_model, &gti_iter);
@@ -269,16 +261,15 @@ treeview_find_select_item (GtkWidget  *gw_tview,
     GtkTreeIter       gti_iter;
     gboolean          b_res     = FALSE;
     GValue            value     = {0,};
-    const char       *s_val     = NULL;
 
     gtm_model = gtk_tree_view_get_model (GTK_TREE_VIEW (gw_tview));
     b_res     = gtk_tree_model_get_iter_first (gtm_model, &gti_iter);
 
     while (b_res) {
-        gtk_tree_model_get_value(gtm_model, &gti_iter,
-                                 COL_FULL_FILE_NAME, &value);
+        gtk_tree_model_get_value (gtm_model, &gti_iter,
+                                  COL_FULL_FILE_NAME, &value);
 
-        s_val = (const char*) g_value_get_string(&value);
+        const char *s_val = (const char*) g_value_get_string (&value);
 
         if (str_compare (s_file, s_val) == 0) {
             gts_sele = gtk_tree_view_get_selection (GTK_TREE_VIEW (gw_tview));
@@ -320,8 +311,6 @@ treeview_remove_duplicates (GtkWidget *gw_tview)
     gboolean        b_res2    = FALSE;
     GValue          value     = {0,};
     GValue          value2    = {0,};
-    const char     *s_val     = NULL;
-    const char     *s_val2    = NULL;
 
     gtm_model = gtk_tree_view_get_model (GTK_TREE_VIEW (gw_tview));
     b_res     = gtk_tree_model_get_iter_first (gtm_model, &gti_iter);
@@ -333,7 +322,7 @@ treeview_remove_duplicates (GtkWidget *gw_tview)
 
         gtk_tree_model_get_value(gtm_model, &gti_iter,
                                  COL_FULL_FILE_NAME, &value);
-        s_val = (const char*) g_value_get_string(&value);
+        const char *s_val = (const char*) g_value_get_string(&value);
 
         while (b_res2) {
 
@@ -342,7 +331,7 @@ treeview_remove_duplicates (GtkWidget *gw_tview)
 
             gtk_tree_model_get_value(gtm_model, &gti_act,
                                      COL_FULL_FILE_NAME, &value2);
-            s_val2 = (const char*) g_value_get_string(&value2);
+            const char *s_val2 = (const char*) g_value_get_string(&value2);
 
             if (str_compare (s_val, s_val2) == 0) {
 
@@ -374,9 +363,7 @@ treeview_remove_selected (GtkWidget *gw_tview)
     gl_list1  = g_list_last (gl_list);
 
     while (gl_list1 != NULL) {
-
         if (gtk_tree_model_get_iter (gtm_model, &gti_iter, gl_list1->data)) {
-
             gtk_list_store_remove (GTK_LIST_STORE (gtm_model), &gti_iter);
             }
         gl_list1 = gl_list1->prev;
