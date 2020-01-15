@@ -406,10 +406,10 @@ set_wallpaper_list (const SettList *sl_walls,
 static SettList *
 widgets_get_settings (const DialogData *dd_data)
 {
-    SettList   *st_list;
-    Setting    *st_sett;
-    const char *s_val = NULL;
-    uint32_t    i_val = 0;
+    SettList   *st_list;      /* List of settings */
+    Setting    *st_sett;      /* Setting to add */
+    const char *s_val = NULL; /* Value for a string setting */
+    uint32_t    i_val = 0;    /* Value for an integer setting */
 
     st_list = stlist_new_list ();
 
@@ -452,10 +452,10 @@ static void
 widgets_set_settings (DialogData     *dd_data,
                       const SettList *st_list)
 {
-    Setting  *st_sett;
-    SettList *sl_walls;
-    int       i_w = 0;
-    int       i_h = 0;
+    Setting  *st_sett;  /* Setting to read */
+    SettList *sl_walls; /* List of wallpapers */
+    int       i_w = 0;  /* Window width value */
+    int       i_h = 0;  /* Window height value */
 
     /* Set background set command */
     st_sett = stlist_get_setting_with_name (
@@ -535,8 +535,8 @@ static void
 event_add_img_dir_pressed (GtkWidget  *widget __attribute__ ((unused)),
                            DialogData *dd_data)
 {
-    char       *s_folder = NULL;  /* Selecred directory name */
-    GList      *gl_files = NULL;  /* Images in directory */
+    char  *s_folder = NULL;  /* Selecred directory name */
+    GList *gl_files = NULL;  /* Images in directory */
 
     /* Run directory select dialog and get selected directory name */
     s_folder = add_images_folder_dialog (dd_data->gw_window);
@@ -613,7 +613,6 @@ event_set_wallpaper_pressed (GtkWidget  *widget __attribute__ ((unused)),
 {
     GtkTreeSelection *gts_sele;
     GtkTreeModel     *gtm_model;
-    ImageInfo        *ii_info;
     GtkTreeIter       gti_iter;
     GList            *gl_list   = NULL;
     const char       *s_cmd     = NULL;
@@ -628,7 +627,7 @@ event_set_wallpaper_pressed (GtkWidget  *widget __attribute__ ((unused)),
 
     if (gtk_tree_model_get_iter (gtm_model, &gti_iter, gl_list->data)) {
 
-        ii_info = treemodel_get_data (gtm_model, gti_iter);
+        ImageInfo *ii_info = treemodel_get_data (gtm_model, gti_iter);
         s_cmd = gtk_entry_get_text (GTK_ENTRY (dd_data->gw_command));
 
         i_err = wallpaper_dialog_set (s_cmd,
@@ -649,8 +648,8 @@ static void
 event_save_settings_pressed (GtkWidget  *widget __attribute__ ((unused)),
                              DialogData *dd_data)
 {
-    SettList *st_list;
-    int       i_err = 0;
+    SettList *st_list;   /* List of settings */
+    int       i_err = 0; /* Error value */
 
     st_list = widgets_get_settings (dd_data);
     i_err   = settings_check_update_file (st_list, dd_data->s_cfg_file);
@@ -763,13 +762,13 @@ event_on_delete (GtkWidget  *window,
                  GdkEvent   *event __attribute__ ((unused)),
                  DialogData *dd_data)
 {
-    GtkWidget *dialog;
-    SettList  *st_list;
-    char      *s_buff = NULL;
-    int        i_res  = 0;
-    int        i_err  = 0;
-    int        i_w    = 0;
-    int        i_h    = 0;
+    GtkWidget *dialog;        /* Question dialog */
+    SettList  *st_list;       /* List of settings */
+    char      *s_buff = NULL; /* Buffer for settings data */
+    int        i_res  = 0;    /* Dialog result */
+    int        i_err  = 0;    /* Error value */
+    int        i_w    = 0;    /* Window width */
+    int        i_h    = 0;    /* Window height */
 
     gtk_window_get_size (GTK_WINDOW (window), &i_w, &i_h);
 
@@ -1079,8 +1078,8 @@ activate (GtkApplication *app,
     GtkWidget  *gw_box_list_btns;   /* Widget for list, buttons, preview */
     GtkWidget  *gw_settings_widget; /* Setings for wallpaper changing */
     GtkWidget  *gw_box_main;        /* Main box to pack everything */
-    SettList   *st_list;
-    Setting    *st_sett;
+    SettList   *st_list;            /* List of settings */
+    Setting    *st_sett;            /* Setting object */
     const char *s_lastused = NULL;  /* Last used wallpaper path */
     int         i_err      = 0;     /* For error output */
 
