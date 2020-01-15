@@ -50,7 +50,7 @@
  * @brief Default setting for random wallpaper change
  */
 #define APP_NAME             "Wall Changer"
-#define APP_VERSION          "1.3.6"
+#define APP_VERSION          "1.3.7"
 #define DEFAULT_BG_CMD       "feh --bg-fill"
 #define DEFAULT_WIN_WIDTH     1024
 #define DEFAULT_WIN_HEIGHT    768
