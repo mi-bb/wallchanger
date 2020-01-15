@@ -36,10 +36,6 @@
 #include "randomm.h"
 #include "settlist.h"
 #include "errs.h"
-
-//#include <gmodule.h>
-//#include "fdops.h"
-
 /*----------------------------------------------------------------------------*/
 /**
  * @brief Main function.
@@ -60,37 +56,6 @@ main (int    argc __attribute__ ((unused)),
     uint32_t  ui_len  = 0; /* Previous wallpaper list length */
     uint32_t  ui_nlen = 0; /* Actual wallpaper list length */
     int       i_err   = 0; /* Error output */
-
-    //GList *gl_files = get_dir_content_filter_images ("/home/michal/wall");
-
-    //g_list_free_full (gl_files, g_free);
-    /*
-    GList *gl_files = NULL;
-
-    char *s_fl = calloc (10, sizeof (char));
-    strcpy (s_fl, "file1.mp3");
-
-    gl_files = g_list_append (gl_files, s_fl);
-
-    s_fl = calloc (10, sizeof (char));
-    strcpy (s_fl, "file2.jpg");
-
-    gl_files = g_list_append (gl_files, s_fl);
-
-    s_fl = calloc (10, sizeof (char));
-    strcpy (s_fl, "file3.png");
-
-    gl_files = g_list_append (gl_files, s_fl);
-
-    s_fl = calloc (10, sizeof (char));
-    strcpy (s_fl, "file4.c");
-
-    gl_files = g_list_append (gl_files, s_fl);
-
-    g_list_free_full (gl_files, g_free);
-    */
-
-    //return 0;
 
     if (getenv ("DISPLAY") == NULL) {
         fputs ("Could not detect display\n", stderr);
