@@ -69,18 +69,18 @@ int    str_compare                  (const char   *a,
 
 char * str_name_with_number         (const char   *s_name,
                                      const size_t  ul_no)
-       __attribute__ ((nonnull (1), malloc, returns_nonnull));
+       __attribute__ ((nonnull (1), returns_nonnull));
 
 char * str_replace_in               (const char   *s_src,
                                      const char   *s_fr,
                                      const char   *s_to)
-       __attribute__ ((nonnull (1,2,3), malloc, returns_nonnull));
+       __attribute__ ((nonnull (1,2,3), returns_nonnull));
 
 
 char * str_set_up_wallpaper_command (const char   *s_cmd,
                                      const char   *s_fname,
                                      const char   *s_sign)
-       __attribute__ ((nonnull (1,2,3), malloc, returns_nonnull));
+       __attribute__ ((nonnull (1,2,3), returns_nonnull));
 /*----------------------------------------------------------------------------*/
 #endif
 

@@ -37,32 +37,22 @@
  * @brief      Get list of extensions supported by GdkPixbuf.
  * @return     Hash table with extensions 
  *
- * @fn  static GList * get_directory_content_glist (const char *s_dir)
- * @brief      Get list of files in directory, return as GList.
- * @param[in]  s_dir  Directory path to scan
+ * @fn  static GList * get_directory_filtered_content_glist (const char *s_dir,
+                                                             GHashTable *gh_exts)
+ * @brief      Get list of files in directory, filter extensions from
+ *             GHashTable, return as GList.
+ * @param[in]  s_dir    Directory path to scan
+ * @param[in]  gh_exts  GHashTable with extensions
  * @return     GList with file names 
- *
- * @fn  static GList * glist_filter_by_extensions_list (GList      *gl_files,
- *                                                      GHashTable *gh_exts)
- * @brief      Filter file list with extension list.
- *
- * Remove from file list files that have extensions not present on given
- * extensions list.
- *
- * @param[out] gl_files  File list to process
- * @param[in]  gh_exts   List of extensions
- * @return     none
  */
 /*----------------------------------------------------------------------------*/
-static const char * get_file_ext (const char *s_fn);
+static const char * get_file_ext                         (const char *s_fn);
 
-static GHashTable * get_pbuf_exts_to_ghash          (void);
+static GHashTable * get_pbuf_exts_to_ghash               (void);
 
-static GList      * get_directory_content_glist     (const char *s_dir)
+static GList      * get_directory_filtered_content_glist (const char *s_dir,
+                                                          GHashTable *gh_exts)
                     __attribute__ ((nonnull (1)));
-
-static GList      * glist_filter_by_extensions_list (GList      *gl_files,
-                                                     GHashTable *gh_exts);
 /*----------------------------------------------------------------------------*/
 static const char *
 get_file_ext (const char *s_fn)
@@ -132,10 +122,12 @@ get_pbuf_exts_to_ghash (void)
 }
 /*----------------------------------------------------------------------------*/
 /**
- * @brief  Get list of files in directory, return as GList.
+ * @brief  Get list of files in directory, filter extensions from GHashTable,
+ *         return as GList.
  */
 static GList *
-get_directory_content_glist (const char *s_dir)
+get_directory_filtered_content_glist (const char *s_dir,
+                                      GHashTable *gh_exts)
 {
     GList  *gl_files  = NULL; /* Result file list */
     char   *s_pthfn   = NULL; /* Full file name with path */
@@ -147,20 +139,18 @@ get_directory_content_glist (const char *s_dir)
     ul_dlen = strlen (s_dir);
 
     /* Reserve 1 more for a slash later */
-    s_path = calloc (ul_dlen + 2, sizeof (char));
+    s_path = malloc ((ul_dlen + 2) * sizeof (char));
 
     if (s_path == NULL) {
         fputs ("Alloc error\n", stderr);
         exit (EXIT_FAILURE);
     }
-
-    strcpy (s_path, s_dir);
+    memcpy (s_path, s_dir, ul_dlen);
 
     if (s_path[ul_dlen-1] != '/') {
-        s_path[ul_dlen] = '/';
-        s_path[ul_dlen+1] = '\0';
-        ul_dlen++;
+        s_path[ul_dlen++] = '/';
     }
+    s_path[ul_dlen] = '\0';
 
     dr = opendir (s_path); 
     if (dr == NULL) {
@@ -173,63 +163,27 @@ get_directory_content_glist (const char *s_dir)
 
         if (de->d_type == DT_REG) {
 
-            s_pthfn = calloc ((ul_dlen + strlen (de->d_name)+1), sizeof (char));
-            if (s_pthfn == NULL) {
-                fputs ("Alloc error\n", stderr);
-                exit (EXIT_FAILURE);
-            }
-            strcpy (s_pthfn, s_path);
-            strcat (s_pthfn, de->d_name);
+            const char *s_ext = get_file_ext (de->d_name);
 
-            gl_files = g_list_append (gl_files, s_pthfn);
+            if (s_ext != NULL &&
+                g_hash_table_lookup (gh_exts, s_ext) != NULL) {
+
+                s_pthfn = malloc ((ul_dlen + strlen (de->d_name)+1) *
+                                  sizeof (char));
+                if (s_pthfn == NULL) {
+                    fputs ("Alloc error\n", stderr);
+                    exit (EXIT_FAILURE);
+                }
+                strcpy (s_pthfn, s_path);
+                strcat (s_pthfn, de->d_name);
+
+                gl_files = g_list_append (gl_files, s_pthfn);
+            }
         }
     }
     free (s_path);
 
     closedir(dr);
-
-    return gl_files;
-}
-/*----------------------------------------------------------------------------*/
-/**
- * @brief  Filter file list with extension list.
- */
-static GList *
-glist_filter_by_extensions_list (GList      *gl_files,
-                                 GHashTable *gh_exts)
-{
-    char       *s_fn  = NULL;     /* File name */
-    const char *s_ext = NULL;     /* Pointer to ext in s_fn */
-    GList      *gl_fl = gl_files; /* File list pointer copy */
-
-    #ifdef DEBUG
-    printf ("Filtering -> started\n");
-    #endif
-
-    while (gl_fl != NULL) {
-
-        GList *next = gl_fl->next;
-        s_fn  = (char*) gl_fl->data;
-        s_ext = get_file_ext (s_fn);
-
-        if (s_ext == NULL || g_hash_table_lookup (gh_exts, s_ext) == NULL) {
-
-            #ifdef DEBUG
-            printf ("- ");
-            printf ("%s %s\n", s_fn, s_ext);
-            #endif
-
-            gl_files = g_list_remove_link (gl_files, gl_fl);
-            g_free (gl_fl->data);
-            g_list_free (gl_fl);
-        }
-
-        gl_fl = next;
-    }
-
-    #ifdef DEBUG
-    printf ("Filtering -> ended\n");
-    #endif
 
     return gl_files;
 }
@@ -240,18 +194,13 @@ get_dir_content_filter_images (const char *s_dir)
     GList      *gl_files = NULL;  /* Images in directory */
     GHashTable *gh_exts  = NULL;  /* List of extensions */
 
-    /* Scan directory for files and append them to file list */
-    gl_files = get_directory_content_glist (s_dir);
+    /* Append to list extensions of image types supported by GdkPixbuf */
+    gh_exts = get_pbuf_exts_to_ghash ();
 
-    if (gl_files != NULL) {
-        /* Append to list extensions of image types supported by
-         * GdkPixbuf */
-        gh_exts = get_pbuf_exts_to_ghash ();
-        /* Filter file list of files with extensions that are not
-         * supported by GdkPixbuf */
-        gl_files = glist_filter_by_extensions_list (gl_files, gh_exts);
-        g_hash_table_destroy (gh_exts);
-    }
+    /* Scan directory for files, filter them and append to file list */
+    gl_files = get_directory_filtered_content_glist (s_dir, gh_exts);
+
+    g_hash_table_destroy (gh_exts);
     return gl_files;
 }
 /*----------------------------------------------------------------------------*/

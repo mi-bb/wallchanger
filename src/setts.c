@@ -93,7 +93,7 @@ settings_read (const char *s_fname,
 void
 settlist_check_defaults (SettList *st_list)
 {
-    int32_t i_pos = -1;
+    int_fast32_t i_pos = -1;
 
     /* Checking option to select last used wallpaper on start */
     i_pos = stlist_get_setting_pos (
@@ -309,14 +309,14 @@ settlist_to_wallset (const SettList *st_list,
             st_list, get_setting_name (SETTING_RANDOM_OPT));
     if (st_sett != NULL) {
         ui_tmp = setting_get_uint32 (st_sett);
-        wallset_set_random (ws_sett, (uint8_t) ui_tmp);
+        wallset_set_random (ws_sett, (int8_t) ui_tmp);
     }
 
     st_sett = stlist_get_setting_with_name (
             st_list, get_setting_name (SETTING_LAST_USED_OPT));
     if (st_sett != NULL) {
         ui_tmp = setting_get_uint32 (st_sett);
-        wallset_set_last_used_setting (ws_sett, (uint8_t) ui_tmp);
+        wallset_set_last_used_setting (ws_sett, (int8_t) ui_tmp);
     }
 
     st_sett = stlist_get_setting_with_name (

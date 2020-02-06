@@ -32,7 +32,8 @@
 #ifndef SETTING_H
 #define SETTING_H
 
-#include <stdint.h>
+#include <inttypes.h>
+//#include <stdint.h>
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Setting types 
@@ -105,10 +106,10 @@ SetValType {
  */
 typedef struct 
 Setting {
-    SetValType  v_type;
-    char       *s_name;
-    uint32_t    i_id;
-    uint32_t    i_owner_id;
+    SetValType     v_type;
+    char          *s_name;
+    uint_fast32_t  i_id;
+    uint_fast32_t  i_owner_id;
     union data_t {
         int64_t   i_val;
         int64_t   i64_val;
@@ -155,13 +156,17 @@ void setting_free (Setting *st_set);
  * @return     Owner id number
  */
 /*----------------------------------------------------------------------------*/
-const char * setting_get_name     (const Setting *st_set);
+const char *  setting_get_name     (const Setting *st_set)
+                                    __attribute__ ((pure));
 
-SetValType   setting_get_type     (const Setting *st_set);
+SetValType    setting_get_type     (const Setting *st_set)
+                                    __attribute__ ((pure));
 
-uint32_t     setting_get_id       (const Setting *st_set);
+uint_fast32_t setting_get_id       (const Setting *st_set)
+                                    __attribute__ ((pure));
 
-uint32_t     setting_get_owner_id (const Setting *st_set);
+uint_fast32_t setting_get_owner_id (const Setting *st_set)
+                                    __attribute__ ((pure));
 /*----------------------------------------------------------------------------*/
 /**
  * @fn         int64_t setting_get_int (const Setting *st_set)
@@ -229,29 +234,41 @@ uint32_t     setting_get_owner_id (const Setting *st_set);
  * @return     String or null if incorrect type to get
  */
 /*----------------------------------------------------------------------------*/
-int64_t      setting_get_int    (const Setting *st_set);
+int64_t      setting_get_int    (const Setting *st_set)
+                                 __attribute__ ((pure));
 
-int64_t      setting_get_int64  (const Setting *st_set);
+int64_t      setting_get_int64  (const Setting *st_set)
+                                 __attribute__ ((pure));
 
-int32_t      setting_get_int32  (const Setting *st_set);
+int32_t      setting_get_int32  (const Setting *st_set)
+                                 __attribute__ ((pure));
 
-int16_t      setting_get_int16  (const Setting *st_set);
+int16_t      setting_get_int16  (const Setting *st_set)
+                                 __attribute__ ((pure));
 
-int8_t       setting_get_int8   (const Setting *st_set);
+int8_t       setting_get_int8   (const Setting *st_set)
+                                 __attribute__ ((pure));
 
-uint64_t     setting_get_uint   (const Setting *st_set);
+uint64_t     setting_get_uint   (const Setting *st_set)
+                                 __attribute__ ((pure));
 
-uint64_t     setting_get_uint64 (const Setting *st_set);
+uint64_t     setting_get_uint64 (const Setting *st_set)
+                                 __attribute__ ((pure));
 
-uint32_t     setting_get_uint32 (const Setting *st_set);
+uint32_t     setting_get_uint32 (const Setting *st_set)
+                                 __attribute__ ((pure));
 
-uint16_t     setting_get_uint16 (const Setting *st_set);
+uint16_t     setting_get_uint16 (const Setting *st_set)
+                                 __attribute__ ((pure));
 
-uint8_t      setting_get_uint8  (const Setting *st_set);
+uint8_t      setting_get_uint8  (const Setting *st_set)
+                                 __attribute__ ((pure));
 
-double       setting_get_double (const Setting *st_set);
+double       setting_get_double (const Setting *st_set)
+                                 __attribute__ ((pure));
 
-const char * setting_get_string (const Setting *st_set);
+const char * setting_get_string (const Setting *st_set)
+                                 __attribute__ ((pure));
 /*----------------------------------------------------------------------------*/
 /**
  * @fn         void setting_assign_to_array (Setting    *st_set,
@@ -268,11 +285,11 @@ const char * setting_get_string (const Setting *st_set);
  * @return     none
  */
 /*----------------------------------------------------------------------------*/
-void setting_assign_to_array  (Setting    *st_set,
-                               const char *s_name)
-                               __attribute__ ((nonnull (2)));
+void setting_assign_to_array (Setting    *st_set,
+                              const char *s_name)
+                              __attribute__ ((nonnull (2)));
 
-void setting_reset_array      (Setting    *st_set);
+void setting_reset_array     (Setting    *st_set);
 /*----------------------------------------------------------------------------*/
 /**
  * @fn  Setting * setting_new_int (const int64_t i_val, const char *s_name)
@@ -368,54 +385,54 @@ void setting_reset_array      (Setting    *st_set);
 /*----------------------------------------------------------------------------*/
 Setting * setting_new_int    (const int64_t    i_val,
                               const char      *s_name)
-          __attribute__ ((nonnull (2), malloc, returns_nonnull));
+          __attribute__ ((nonnull (2)));
 
 Setting * setting_new_uint   (const uint64_t   i_val,
                               const char      *s_name)
-          __attribute__ ((nonnull (2), malloc, returns_nonnull));
+          __attribute__ ((nonnull (2)));
 
 Setting * setting_new_int64  (const int64_t    i_val,
                               const char      *s_name)
-          __attribute__ ((nonnull (2), malloc, returns_nonnull));
+          __attribute__ ((nonnull (2), returns_nonnull));
 
 Setting * setting_new_uint64 (const uint64_t   i_val,
                               const char      *s_name)
-          __attribute__ ((nonnull (2), malloc, returns_nonnull));
+          __attribute__ ((nonnull (2), returns_nonnull));
 
 Setting * setting_new_int32  (const int32_t    i_val,
                               const char      *s_name)
-          __attribute__ ((nonnull (2), malloc, returns_nonnull));
+          __attribute__ ((nonnull (2), returns_nonnull));
 
 Setting * setting_new_uint32 (const uint32_t   i_val,
                               const char      *s_name)
-          __attribute__ ((nonnull (2), malloc, returns_nonnull));
+          __attribute__ ((nonnull (2), returns_nonnull));
 
 Setting * setting_new_int16  (const int16_t    i_val,
                               const char      *s_name)
-          __attribute__ ((nonnull (2), malloc, returns_nonnull));
+          __attribute__ ((nonnull (2), returns_nonnull));
 
 Setting * setting_new_uint16 (const uint16_t   i_val,
                               const char      *s_name)
-          __attribute__ ((nonnull (2), malloc, returns_nonnull));
+          __attribute__ ((nonnull (2), returns_nonnull));
 
 Setting * setting_new_int8   (const int8_t     i_val,
                               const char      *s_name)
-          __attribute__ ((nonnull (2), malloc, returns_nonnull));
+          __attribute__ ((nonnull (2), returns_nonnull));
 
 Setting * setting_new_uint8  (const uint8_t    i_val,
                               const char      *s_name)
-          __attribute__ ((nonnull (2), malloc, returns_nonnull));
+          __attribute__ ((nonnull (2), returns_nonnull));
 
 Setting * setting_new_double (const double     d_val,
                               const char      *s_name)
-          __attribute__ ((nonnull (2), malloc, returns_nonnull));
+          __attribute__ ((nonnull (2), returns_nonnull));
 
 Setting * setting_new_string (const char      *s_val,
                               const char      *s_name)
-          __attribute__ ((nonnull (2), malloc, returns_nonnull));
+          __attribute__ ((nonnull (2), returns_nonnull));
 
 Setting * setting_new_array  (const char      *s_name)
-          __attribute__ ((nonnull (1), malloc, returns_nonnull));
+          __attribute__ ((nonnull (1), returns_nonnull));
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Duplicates a Setting

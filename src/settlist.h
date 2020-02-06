@@ -29,6 +29,7 @@
 #define SETTLIST_H
 
 #include <stdint.h>
+#include <stddef.h>
 #include "setting.h"
 /*----------------------------------------------------------------------------*/
 /**
@@ -45,7 +46,7 @@
 typedef struct
 SettList {
     Setting  **st_setting;  /* List of settings */
-    uint32_t   i_cnt;       /* Number of elements in list */
+    size_t     i_cnt;       /* Number of elements in list */
 } SettList;
 /*----------------------------------------------------------------------------*/
 /**
@@ -86,7 +87,8 @@ enum {
  * @return     None
  */
 /*----------------------------------------------------------------------------*/
-SettList * stlist_new_list (void) __attribute__ ((malloc, returns_nonnull));
+SettList * stlist_new_list (void);
+//SettList * stlist_new_list (void) __attribute__ ((malloc, returns_nonnull));
 
 void       stlist_free     (SettList *st_list);
 
@@ -124,7 +126,6 @@ void stlist_insert_setting          (SettList   *st_list,
 int  stlist_insert_setting_to_array (SettList   *st_list,
                                      Setting    *st_val,
                                      const char *s_array_name);
-                                     //__attribute__ ((nonnull (3)));
 /*----------------------------------------------------------------------------*/
 /**
  * @fn  void stlist_remove_setting_at_pos (SettList   *st_list,
@@ -149,14 +150,14 @@ int  stlist_insert_setting_to_array (SettList   *st_list,
  * @return     none
  */
 /*----------------------------------------------------------------------------*/
-void stlist_remove_setting_at_pos    (SettList   *st_list,
-                                      uint32_t    ui_pos);
+void stlist_remove_setting_at_pos    (SettList     *st_list,
+                                      const size_t  ui_pos);
 
-void stlist_remove_setting           (SettList   *st_list,
-                                      Setting    *st_val);
+void stlist_remove_setting           (SettList     *st_list,
+                                      Setting      *st_val);
 
-void stlist_remove_setting_with_name (SettList   *st_list,
-                                      const char *s_name)
+void stlist_remove_setting_with_name (SettList     *st_list,
+                                      const char   *s_name)
                                       __attribute__ ((nonnull (2)));
 /*----------------------------------------------------------------------------*/
 /**
@@ -203,22 +204,24 @@ void stlist_remove_setting_with_name (SettList   *st_list,
  * @return    Position in list or -1 if not found
  */
 /*----------------------------------------------------------------------------*/
-uint32_t  stlist_get_length              (const SettList *st_list);
+size_t       stlist_get_length              (const SettList *st_list)
+             __attribute__ ((pure));
 
-Setting * stlist_get_setting_at_pos      (const SettList *st_list,
-                                          const uint32_t  ui_pos);
+Setting    * stlist_get_setting_at_pos      (const SettList *st_list,
+                                             const size_t    ui_pos)
+             __attribute__ ((pure));
 
-Setting * stlist_get_setting_with_name   (const SettList *st_list,
-                                          const char     *s_name)
-                                          __attribute__ ((nonnull (2)));
+Setting    * stlist_get_setting_with_name   (const SettList *st_list,
+                                             const char     *s_name)
+             __attribute__ ((pure, nonnull (2)));
 
-int32_t   stlist_get_setting_pos         (const SettList *st_list,
-                                          const char     *s_name)
-                                          __attribute__ ((nonnull (2)));
+int_fast32_t stlist_get_setting_pos         (const SettList *st_list,
+                                             const char     *s_name)
+             __attribute__ ((pure, nonnull (2)));
 
-int32_t   stlist_get_setting_val_str_pos (const SettList *st_list,
-                                          const char     *s_val)
-                                          __attribute__ ((nonnull (2)));
+int_fast32_t stlist_get_setting_val_str_pos (const SettList *st_list,
+                                             const char     *s_val)
+             __attribute__ ((pure, nonnull (2)));
 /*----------------------------------------------------------------------------*/
 /**
  * @fn  SettList * stlist_get_settings_in_array_name (const SettList *st_list,
@@ -297,11 +300,11 @@ int32_t   stlist_get_setting_val_str_pos (const SettList *st_list,
 /*----------------------------------------------------------------------------*/
 SettList * stlist_get_settings_in_array_name   (const SettList *st_list,
                                                 const char     *s_name)
-                                          __attribute__ ((nonnull (2)));
+           __attribute__ ((nonnull (2)));
 
 SettList * stlist_get_settings_in_array_name_p (const SettList *st_list,
                                                 const char     *s_name)
-                                          __attribute__ ((nonnull (2)));
+           __attribute__ ((nonnull (2)));
 
 SettList * stlist_get_settings_in_array_obj    (const SettList *st_list,
                                                 const Setting  *st_array);
@@ -315,7 +318,7 @@ SettList * stlist_get_settings_main_p          (const SettList *st_list);
 #ifdef DEBUG
 /*----------------------------------------------------------------------------*/
 /**
- * @brief  Print content of SettList list
+ * @brief  Print content of SettList
  *
  * @param[in]  st_list  SettList list of Setting objects
  * @return     None

@@ -176,35 +176,41 @@ void         imageinfo_set_full_name  (ImageInfo        *ii_info,
                                        const char       *s_name)
                                        __attribute__ ((nonnull (2)));
 
-const char * imageinfo_get_full_name  (const ImageInfo  *ii_info);
+const char * imageinfo_get_full_name  (const ImageInfo  *ii_info)
+                                       __attribute__ ((pure));
 /*----------------------------------------------------------------------------*/
 void         imageinfo_set_file_name  (ImageInfo        *ii_info,
                                        const char       *s_name)
                                        __attribute__ ((nonnull (2)));
 
-const char * imageinfo_get_file_name  (const ImageInfo  *ii_info);
+const char * imageinfo_get_file_name  (const ImageInfo  *ii_info)
+                                       __attribute__ ((pure));
 /*----------------------------------------------------------------------------*/
 void         imageinfo_set_file_path  (ImageInfo        *ii_info,
                                        const char       *s_name)
                                        __attribute__ ((nonnull (2)));
 
-const char * imageinfo_get_file_path  (const ImageInfo  *ii_info);
+const char * imageinfo_get_file_path  (const ImageInfo  *ii_info)
+                                       __attribute__ ((pure));
 /*----------------------------------------------------------------------------*/
 void         imageinfo_set_width      (ImageInfo        *ii_info,
                                        const int         i_val);
 
-int          imageinfo_get_width      (const ImageInfo  *ii_info);
+int          imageinfo_get_width      (const ImageInfo  *ii_info)
+                                       __attribute__ ((pure));
 /*----------------------------------------------------------------------------*/
 void         imageinfo_set_height     (ImageInfo        *ii_info,
                                        const int         i_val);
 
-int          imageinfo_get_height     (const ImageInfo  *ii_info);
+int          imageinfo_get_height     (const ImageInfo  *ii_info)
+                                       __attribute__ ((pure));
 /*----------------------------------------------------------------------------*/
 void         imageinfo_set_wxh        (ImageInfo        *ii_info,
                                        const int         i_w,
                                        const int         i_h);
 
-const char * imageinfo_get_wxh        (const ImageInfo  *ii_info);
+const char * imageinfo_get_wxh        (const ImageInfo  *ii_info)
+                                       __attribute__ ((pure));
 /*----------------------------------------------------------------------------*/
 #endif
 

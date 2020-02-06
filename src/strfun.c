@@ -69,7 +69,8 @@ str_name_with_number (const char   *s_name,
     while (ul_tmp /= 10)
         ul_l++;
 
-    create_resize ((void**) &s_res, strlen (s_name) + ul_l + 1, sizeof (char));
+    cres ((void**) &s_res, strlen (s_name) + ul_l + 1, sizeof (char));
+    s_res[0] = '\0';
 
     sprintf (s_res, "%s%ld", s_name, ul_no);
 
@@ -95,7 +96,9 @@ str_replace_in (const char *s_src,
     ul_tlen = strlen (s_to);
     ul_len  = strlen (s_src) + 1;
 
-    create_resize ((void**) &s_res, ul_len, sizeof (char));
+    cres ((void**) &s_res, ul_len, sizeof (char));
+    //s_res = malloc (ul_len * sizeof (char));
+    s_res[0] = '\0';
 
     /* find the first occurence of "replace from" */
     pn = strstr (sp, s_fr); 
@@ -106,7 +109,8 @@ str_replace_in (const char *s_src,
         ul_len += ul_tlen;
         ul_len -= ul_flen;
 
-        create_resize ((void**) &s_res, ul_len, sizeof (char));
+        cres ((void**) &s_res, ul_len, sizeof (char));
+        //s_res = realloc (s_res, ul_len * sizeof (char));
 
         /* append original text from last found up to new found */
         strncat (s_res, sp, (size_t) (pn - sp));
@@ -141,7 +145,8 @@ str_set_up_wallpaper_command (const char *s_cmd,
 
         ul_siz = strlen (cp) + strlen (fp) + 4;
 
-        create_resize ((void**) &s_res, ul_siz, sizeof (char));
+        cres ((void**) &s_res, ul_siz, sizeof (char));
+        s_res[0] = '\0';
 
         char * __restrict rp = s_res;
 
@@ -156,12 +161,15 @@ str_set_up_wallpaper_command (const char *s_cmd,
         }
 
         *rp++ = ' ';
-        *rp = '&';
+        //*rp = '&';
+        *rp++ = '&';
+        *rp = '\0';
     }
     else {
         s_res = str_replace_in (s_cmd, s_sign, s_fname);
         ul_siz = strlen (s_res) + 3;
-        create_resize ((void**) &s_res, ul_siz, sizeof (char));
+        cres ((void**) &s_res, ul_siz, sizeof (char));
+        s_res[0] = '\0';
         strcat (s_res, " &");
     }
     return s_res;

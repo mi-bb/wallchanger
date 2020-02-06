@@ -32,7 +32,6 @@ typedef enum IconImg {
     W_ICON_ADD,      /**< Add images icon */
     W_ICON_ADD_DIR,  /**< Add images from directory icon*/
     W_ICON_REMOVE,   /**< Remove images from list icon */
-    W_ICON_SORT,     /**< Sort wallpapers on list icon */
     W_ICON_UP,       /**< Move up icon */
     W_ICON_DOWN,     /**< Move down icon */
     W_ICON_FLOPPY,   /**< Save settings floppy icon */
@@ -43,7 +42,8 @@ typedef enum IconImg {
     W_ICON_ABOUT,    /**< About app dialog image */
     W_IMG_SCREEN_1,  /**< Preview image top part (screen) */
     W_IMG_SCREEN_2,  /**< Preview image middle part (screen) */
-    W_IMG_SCREEN_3   /**< Preview image bottom part (screen) */
+    W_IMG_SCREEN_3,  /**< Preview image bottom part (screen) */
+    W_IMG_COUNT      /**< Number of images */
 } IconImg;
 /*----------------------------------------------------------------------------*/
 /**

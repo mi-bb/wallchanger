@@ -1,4 +1,4 @@
-# Copyright (C) 2019 Michał Bąbik
+# Copyright (C) 2019-2020 Michał Bąbik
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -16,42 +16,43 @@
 bin_PROGRAMS=wchangerd wchangercfg
 
 wchangerd_SOURCES=wcngdmn.c\
-				  wpset.c wpset.h\
-				  setts.c setts.h\
-				  jsfun.c jsfun.h\
-				  rwdt.c rwdt.h\
-				  randomm.c randomm.h\
-				  wallsett.c wallsett.h\
-				  settlist.c settlist.h\
-				  setting.c setting.h\
-				  strfun.c strfun.h\
-				  cfgfile.c cfgfile.h\
-				  cres.c cres.h\
-				  hashfun.c hashfun.h\
-				  errs.h\
-				  defs.h
+                  wpset.c wpset.h\
+                  setts.c setts.h\
+                  jsfun.c jsfun.h\
+                  rwdt.c rwdt.h\
+                  randomm.c randomm.h\
+                  wallsett.c wallsett.h\
+                  settlist.c settlist.h\
+                  setting.c setting.h\
+                  strfun.c strfun.h\
+                  cfgfile.c cfgfile.h\
+                  cres.c cres.h\
+                  hashfun.c hashfun.h\
+                  errs.h\
+                  defs.h
 
 wchangercfg_SOURCES=wchanger.c\
-				   	treev.c treev.h\
-				   	dlgs.c dlgs.h\
-				   	iminfo.c iminfo.h\
-				   	wpset.c wpset.h\
-				   	setts.c setts.h\
-				   	jsfun.c jsfun.h\
-				   	rwdt.c rwdt.h\
-					imgs.c imgs.h\
-				   	randomm.c randomm.h\
-					wallsett.c wallsett.h\
-				   	settlist.c settlist.h\
-					setting.c setting.h\
-				   	preview.c preview.h\
-				    strfun.c strfun.h\
-				    cfgfile.c cfgfile.h\
-				    fdops.c fdops.h\
-				    cres.c cres.h\
-				    hashfun.c hashfun.h\
-					errs.c errs.h\
-					defs.h
+                    dialogdata.c dialogdata.h\
+                    treev.c treev.h\
+                    dlgs.c dlgs.h\
+                    iminfo.c iminfo.h\
+                    wpset.c wpset.h\
+                    setts.c setts.h\
+                    jsfun.c jsfun.h\
+                    rwdt.c rwdt.h\
+                    imgs.c imgs.h\
+                    randomm.c randomm.h\
+                    wallsett.c wallsett.h\
+                    settlist.c settlist.h\
+                    setting.c setting.h\
+                    preview.c preview.h\
+                    strfun.c strfun.h\
+                    cfgfile.c cfgfile.h\
+                    fdops.c fdops.h\
+                    cres.c cres.h\
+                    hashfun.c hashfun.h\
+                    errs.c errs.h\
+                    defs.h
 
 wchangercfg_CFLAGS = $(GTK_CFLAGS) $(JSON_CFLAGS) -DG_DISABLE_DEPRECATED
 wchangercfg_LDADD = $(GTK_LIBS) $(JSON_LIBS) 

@@ -66,7 +66,7 @@ wallpaper_set_file (const char *s_cmd,
                     const char *s_wall)
 {
     char *s_cmdn = NULL; /* Wallpaper set command */
-    int i_res __attribute__ ((unused)) = 0;
+    int   i_res __attribute__ ((unused)) = 0;
 
     s_cmdn = str_set_up_wallpaper_command (s_cmd, s_wall, "[F]");
 
@@ -90,7 +90,7 @@ wallpaper_set_random (WallSett *ws_sett)
 {
     const char *s_fn   = NULL; /* Wallpaper file name */
     uint32_t    i_pos  = 0;    /* Random wallpaper position */
-    uint32_t    ui_len = 0;    /* Length of wallpaper list */
+    size_t      ui_len = 0;    /* Length of wallpaper list */
 
     const SettList *sl_walls = wallset_get_wallpaper_list (ws_sett);
 
@@ -121,9 +121,9 @@ wallpaper_set_random (WallSett *ws_sett)
 static void
 wallpaper_set_next_in_list (WallSett *ws_sett)
 {
-    const char *s_next = NULL; /* Next wallpaper file name */
-    int         i_pos  = 0;    /* Next wallpaper position in list */
-    uint32_t    ui_len = 0;    /* Wallpaper list length */
+    const char   *s_next = NULL; /* Next wallpaper file name */
+    int_fast32_t  i_pos  = 0;    /* Next wallpaper position in list */
+    size_t        ui_len = 0;    /* Wallpaper list length */
 
     const SettList *sl_walls = wallset_get_wallpaper_list (ws_sett);
 
@@ -140,12 +140,12 @@ wallpaper_set_next_in_list (WallSett *ws_sett)
                 wallset_get_last_used_fn (ws_sett)) + 1;
     }
     /* If last used wallpaper was the last one get first one */
-    if ((uint32_t) i_pos >= ui_len)
+    if ((size_t) i_pos >= ui_len)
         i_pos = 0;
 
     /* Get next wallpaper from list */
     s_next = setting_get_string (
-            stlist_get_setting_at_pos (sl_walls, (uint32_t) i_pos));
+            stlist_get_setting_at_pos (sl_walls, (size_t) i_pos));
 
     if (s_next != NULL) {
         /* Save wallpaper as last used in settings */

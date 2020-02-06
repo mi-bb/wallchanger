@@ -65,8 +65,8 @@ WallSett {
     RandMem     rm_mem;        /* Random memory */
     char        s_cfgfile[256];/* Path to configuratoin file */
     uint32_t    i_chinterval;  /* Wallpaper change interval */
-    uint8_t     i_random;      /* Random wallpaper change */
-    uint8_t     i_lastsett;    /* Restore last used wallpeper */
+    int8_t      i_random;      /* Random wallpaper change */
+    int8_t      i_lastsett;    /* Restore last used wallpeper */
 } WallSett;
 /*----------------------------------------------------------------------------*/
 /**
@@ -92,24 +92,24 @@ void wallset_free (WallSett *ws_sett);
  * @return    Config file name
  *
  * @fn  void wallset_set_last_used_setting (WallSett      *ws_sett,
- *                                          const uint8_t  ui_val)
+ *                                          const int8_t  i_val)
  * @brief      Set using last used wallpaper on start.
  * @param[out] ws_sett  WallSett object
- * @param[in]  ui_val   Set last used wallpaper value
+ * @param[in]  i_val    Set last used wallpaper value
  * @return     none
  *
- * @fn  uint8_t wallset_get_last_used_setting (const WallSett *ws_sett)
+ * @fn  int8_t wallset_get_last_used_setting (const WallSett *ws_sett)
  * @brief     Get using last used wallpaper on start.
  * @param[in] ws_sett  WallSett object
  * @return    Last used setting
  *
- * @fn  void wallset_set_random (WallSett *ws_sett, const uint8_t  ui_val)
+ * @fn  void wallset_set_random (WallSett *ws_sett, const int8_t i_val)
  * @brief      Set random wallpaper select value.
  * @param[out] ws_sett  WallSett object
- * @param[in]  ui_val   Random wallpaper setting to set
+ * @param[in]  i_val    Random wallpaper setting to set
  * @return     none
  *
- * @fn  uint8_t wallset_get_random (const WallSett *ws_sett)
+ * @fn  int8_t wallset_get_random (const WallSett *ws_sett)
  * @brief     Get random wallpaper value.
  * @param[in] ws_sett  WallSett object
  * @return    Random wallpaper setting value
@@ -150,7 +150,8 @@ void wallset_free (WallSett *ws_sett);
  *
  */
 /*----------------------------------------------------------------------------*/
-const char *     wallset_get_cfg_fn            (const WallSett *ws_sett);
+const char *     wallset_get_cfg_fn            (const WallSett *ws_sett)
+                                                __attribute__((const));
 /*----------------------------------------------------------------------------*/
 /**
  * @fn  void wallset_set_wallpaper_list (WallSett *ws_sett,
@@ -171,14 +172,14 @@ void             wallset_set_wallpaper_list    (WallSett       *ws_sett,
 const SettList * wallset_get_wallpaper_list    (const WallSett *ws_sett);
 /*----------------------------------------------------------------------------*/
 void             wallset_set_last_used_setting (WallSett       *ws_sett,
-                                                const uint8_t   ui_val);
+                                                const int8_t    i_val);
 
-uint8_t          wallset_get_last_used_setting (const WallSett *ws_sett);
+int8_t           wallset_get_last_used_setting (const WallSett *ws_sett);
 /*----------------------------------------------------------------------------*/
 void             wallset_set_random            (WallSett       *ws_sett,
-                                                const uint8_t   ui_val);
+                                                const int8_t    i_val);
 
-uint8_t          wallset_get_random            (const WallSett *ws_sett);
+int8_t           wallset_get_random            (const WallSett *ws_sett);
 /*----------------------------------------------------------------------------*/
 void             wallset_set_interval          (WallSett       *ws_sett,
                                                 const uint32_t  ui_val);

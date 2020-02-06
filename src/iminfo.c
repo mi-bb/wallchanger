@@ -43,7 +43,8 @@
  */
 /*----------------------------------------------------------------------------*/
 static int  compare_imageitems (const ImageInfo *ii_info1,
-                                const ImageInfo *ii_info2);
+                                const ImageInfo *ii_info2)
+                                __attribute__ ((pure));
 
 static void imageinfo_init     (ImageInfo       *ii_info);
 /*----------------------------------------------------------------------------*/
@@ -79,13 +80,12 @@ imageinfo_new (void)
 {
     ImageInfo *ii_res;
 
-    ii_res = calloc (1, sizeof (ImageInfo));
+    ii_res = malloc (sizeof (ImageInfo));
 
     if (ii_res == NULL) {
         fputs ("Alloc error\n", stderr);
         exit (EXIT_FAILURE);
     }
-
     imageinfo_init (ii_res);
 
     return ii_res;
@@ -322,12 +322,12 @@ imageinfo_set_wxh (ImageInfo *ii_info,
                    const int  i_h)
 {
     char s_tmp[41]; /* Temp string, I think it is long enough */
-
-    memset (s_tmp, 0, sizeof(s_tmp));
-    snprintf (s_tmp, 41, "%dx%d", i_w, i_h);
-    create_resize ((void**) &ii_info->s_width_height, strlen (s_tmp)+1,
-                   sizeof (char));
-    strcpy (ii_info->s_width_height, s_tmp);
+    int n = snprintf (s_tmp, 41, "%dx%d", i_w, i_h);
+    n = n <  0 ?  0 : n;
+    n = n > 40 ? 40 : n;
+    cres ((void**) &ii_info->s_width_height, (size_t) (n+1), sizeof (char));
+    memcpy (ii_info->s_width_height, s_tmp, (size_t) n);
+    ii_info->s_width_height[n] = '\0';
 }
 /*----------------------------------------------------------------------------*/
 /**

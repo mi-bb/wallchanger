@@ -35,7 +35,8 @@
  * @param[in]  str  String to count hash
  * @return     Hash value
  */
-uint32_t hash (const char * __restrict str) __attribute__ ((pure, nonnull (1)));
+uint_fast32_t hash (const char * __restrict str)
+              __attribute__ ((pure, nonnull (1)));
 /*----------------------------------------------------------------------------*/
 #endif
 

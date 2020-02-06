@@ -48,7 +48,7 @@ enum {
  * @param[in]  i_val  Setting enum value
  * @return     String with setting name
  */
-const char * get_setting_name (const int i_val);
+const char * get_setting_name (const int i_val) __attribute__ ((const));
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Check SettList values set default ones if needed.

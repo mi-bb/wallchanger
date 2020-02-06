@@ -28,8 +28,14 @@
  * @def   APP_NAME
  * @brief String with application name
  *
- * @def   APP_VERSION
+ * @def   APP_VER
  * @brief String with application version
+ *
+ * @def   APP_WEB
+ * @brief Application webpage address
+ *
+ * @def   APP_DSC
+ * @brief Application description
  *
  * @def   DEFAULT_BG_CMD
  * @brief Default command to set wallpapers
@@ -50,7 +56,9 @@
  * @brief Default setting for random wallpaper change
  */
 #define APP_NAME             "Wall Changer"
-#define APP_VERSION          "1.3.7"
+#define APP_VER              "1.3.8"
+#define APP_WEB              "https://www.nongnu.org/wallchanger/"
+#define APP_DSC              "Wall Changer is an automatic wallpaper changer."
 #define DEFAULT_BG_CMD       "feh --bg-fill"
 #define DEFAULT_WIN_WIDTH     1024
 #define DEFAULT_WIN_HEIGHT    768

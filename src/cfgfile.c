@@ -89,6 +89,7 @@ check_permissions (const char *s_name,
         if (access (s_name, i_mode) != 0) {
             fputs (s_name, stderr);
             fputs (" Bad file / directory permissions\n", stderr);
+            perror("Error occurred");
             return ERR_FILE;
         }
         else {
@@ -212,7 +213,8 @@ check_config_path_file (int *i_err)
     #endif
 
     /* Create string for config file path and name */
-    create_resize ((void**) &s_path, (ul_len + 1), sizeof (char));
+    cres ((void**) &s_path, (ul_len + 1), sizeof (char));
+    s_path[0] = '\0';
 
     /* Copy config file path */
     strcpy (s_path, s_home);

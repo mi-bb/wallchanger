@@ -125,9 +125,9 @@ js_json_array_to_stlist (json_object *j_array,
     json_object *j_val;
     Setting     *st_set;
     char        *s_name = NULL;
-    size_t       ul_cnt = json_object_array_length (j_array);
+    size_t       ui_cnt = json_object_array_length (j_array);
 
-    for (size_t i = 0; i < ul_cnt; ++i) {
+    for (size_t i = 0; i < ui_cnt; ++i) {
 
         j_val = json_object_array_get_idx (j_array, i);
 
@@ -206,6 +206,12 @@ js_json_string_to_stlist (const char *s_buff)
 
     st_list = stlist_new_list ();
     j_obj = json_tokener_parse (s_buff);
+    if (j_obj == NULL) {
+        #ifdef DEBUG
+        printf ("Error converting json to stlist, wrong json file\n");
+        #endif
+        return st_list;
+    }
 
     json_object_object_foreach(j_obj, key, val) {
 
@@ -230,12 +236,12 @@ js_stlist_array_to_json (const SettList *st_list,
     Setting     *st_val;
     json_object *j_obj;
     SettList    *st_array_list;
-    uint32_t     ui_cnt = 0;
+    size_t       ui_cnt = 0;
 
     st_array_list = stlist_get_settings_in_array_obj_p (st_list, st_sett);
     ui_cnt        = stlist_get_length (st_array_list);
 
-    for (uint32_t i = 0; i < ui_cnt; ++i) {
+    for (size_t i = 0; i < ui_cnt; ++i) {
 
         st_val = stlist_get_setting_at_pos (st_array_list, i);
         j_obj  = js_setting_to_json_obj (st_list, st_val);
@@ -290,12 +296,12 @@ js_stlist_add_to_json_obj (const SettList *st_list,
     json_object *j_val;
     SettList    *st_main;
     Setting     *st_sett;
-    uint32_t     ui_cnt   = 0;
+    size_t       ui_cnt   = 0;
 
     st_main = stlist_get_settings_main_p (st_list);
     ui_cnt  = stlist_get_length (st_main);
 
-    for (uint32_t i = 0; i < ui_cnt; ++i) {
+    for (size_t i = 0; i < ui_cnt; ++i) {
 
         st_sett = stlist_get_setting_at_pos (st_main, i);
         j_val   = js_setting_to_json_obj (st_list, st_sett);
@@ -340,11 +346,11 @@ js_settings_check_for_update (const SettList  *st_list,
                               const char      *s_fname,
                               int             *i_err)
 {
-    json_object *j_obj;
-    const char  *s_jbuff     = NULL;   /* Json object as string */
-    char        *s_buff      = NULL;   /* File data buffer */
-    char        *s_res_buff  = NULL;   /* Result data buffer */
-    uint32_t     ui_hash     = 0;      /* File read hash */
+    json_object   *j_obj;
+    const char    *s_jbuff     = NULL;   /* Json object as string */
+    char          *s_buff      = NULL;   /* File data buffer */
+    char          *s_res_buff  = NULL;   /* Result data buffer */
+    uint_fast32_t  ui_hash     = 0;      /* File read hash */
 
     *i_err = ERR_OK;
     s_buff = read_file_data_hash (s_fname, i_err, &ui_hash);
@@ -359,6 +365,12 @@ js_settings_check_for_update (const SettList  *st_list,
     }
     else {
         j_obj = json_tokener_parse (s_buff);
+        if (j_obj == NULL) {
+            #ifdef DEBUG
+            printf ("Error, wrong json file\n");
+            #endif
+            j_obj = json_object_new_object();
+        }
     }
 
     free (s_buff);

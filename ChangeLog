@@ -13,6 +13,42 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+
+2020-02-06  Michal Babik  <michalb1981@o2.pl>
+
+	* cres.c (create_resize): Function renamed to cres.
+	* cres.c (cres): Changed from calloc to malloc for better performance.
+	* dlgs.c (about_app_dialog): Changed function argument, now it takes
+	  unused pointer to connect directly to event.
+	* dialogdata.c, dialogdata.h: New files with DialogData structrure
+	  and functions, moved from wchanger.c
+	* fdops.c (glist_filter_by_extensions_list): Function removed.
+	* fdops.c (get_directory_filtered_content_glist): New function renamed
+	  from get_directory_content_glist, with added extensions filtering.
+	* imgs.h: Added W_IMG_COUNT to IconImg enum.
+	* imgs.c: Removed sort icon.
+	* iminfo.c (imageinfo_new): calloc changed to malloc.
+	* iminfo.c (imageinfo_set_wxh): Small improvements.
+	* jsfun.c (js_settings_check_for_update, js_json_string_to_stlist): Added
+	  check for wrong json file.
+	* rwdt.c (read_file_data): Acting on error in file size read.
+	* treev.c (treeview_sort_compare_fun, treeview_replace_data,
+	  treeview_sort_list): Functions removed.
+	* treev.c (create_tview): Changed to enable sorting on title click.
+	* wchanger.c (event_rem_from_list_pressed, event_move_up_pressed,
+	  event_move_down_pressed event_sort_list_pressed, event_rem_dupl_pressed):
+	  Functions removed, signals connected to it's functions directly.
+	* wchanger.c (event_set_wallpaper_pressed, event_save_settings_pressed,
+	  event_on_delete, activate): Changed access to config file path.
+	* wchanger.c (create_buttons_widget): Changed some calls to signal
+	  connect functions to swapped and linked straight to it's destinations.
+	* wchanger.c (create_image_button): Added condition to not add image
+	  to button.
+	* wchanger.c (create_buttons_widget): Removed sort button.
+	* wchanger.c (event_about_app_pressed): Function removed.
+	* wchanger.c (main): DialogData item is created dynamically.
+	* all_files: Some type changes, added some attributes.
+
 2020-01-15  Michal Babik  <michalb1981@o2.pl>
 
 	* fdops.c (glist_filter_by_extensions_list): Corrected removing

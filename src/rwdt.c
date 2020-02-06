@@ -44,39 +44,43 @@ read_file_data (const char  *s_fname,
     char   *s_buff = NULL; /* Read file data */
     FILE   *f_file;        /* Data file */
     long    l_size = 0;    /* File size */
-    size_t  ul_res = 0;    /* Read data count */
+    size_t  ui_res = 0;    /* Read data count */
 
     f_file = fopen (s_fname, "rb");
-
+    /* Error opening file */
     if (f_file == NULL) {
-
         *i_err = ERR_FILE;
-
         fputs (s_fname, stderr);
         perror("Error occurred");
         return NULL;
     }
-
     /* get file size */
     fseek (f_file , 0 , SEEK_END);
     l_size = ftell (f_file);
     rewind (f_file);
 
+    /* Empty file */
     if (l_size == 0) {
-
         *i_err = ERR_OK;
-
         fclose (f_file);
         return NULL;
     }
-    create_resize ((void**) &s_buff, (size_t) l_size+1, sizeof (char));
-    /* copy the file into the buffer */
-    ul_res = fread (s_buff, 1, (size_t) l_size, f_file);
-
-    if (ul_res != (size_t) l_size) {
-
+    /* Function failure */
+    if (l_size < 0) {
         *i_err = ERR_FILE_RW;
+        fputs (s_fname, stderr);
+        perror("Error occurred");
+        fclose (f_file);
+        return NULL;
+    }
+    cres ((void**) &s_buff, (size_t) l_size+1, sizeof (char));
+    s_buff[0] = '\0';
+    /* copy the file into the buffer */
+    ui_res = fread (s_buff, 1, (size_t) l_size, f_file);
+    s_buff[l_size] = '\0';
 
+    if (ui_res != (size_t) l_size) {
+        *i_err = ERR_FILE_RW;
         fputs (s_fname, stderr);
         fputs (" File reading error\n", stderr);
         perror("Error occurred");
@@ -92,9 +96,9 @@ read_file_data (const char  *s_fname,
  * @brief  Read some data from file and count hash.
  */
 char *
-read_file_data_hash (const char  *s_fname,
-                     int         *i_err,
-                     uint32_t    *i_hash)
+read_file_data_hash (const char    *s_fname,
+                     int           *i_err,
+                     uint_fast32_t *i_hash)
 {
     char *s_buff = NULL;
 
@@ -123,8 +127,8 @@ save_file_data (const char *s_fname,
                 const char *s_buff)
 {
     FILE   *f_file;  /* File to save data */
-    size_t  ul_res;  /* Save data count */
-    size_t  ul_size; /* Buffer size */
+    size_t  ui_res;  /* Save data count */
+    size_t  ui_size; /* Buffer size */
 
     f_file = fopen (s_fname, "wb");
 
@@ -133,11 +137,11 @@ save_file_data (const char *s_fname,
         perror("Error occurred");
         return ERR_FILE;
     }
-    ul_size = strlen(s_buff);
-    ul_res = fwrite (s_buff , sizeof(char), ul_size, f_file);
+    ui_size = strlen(s_buff);
+    ui_res = fwrite (s_buff , sizeof (char), ui_size, f_file);
     fclose (f_file);
 
-    if (ul_res != ul_size) {
+    if (ui_res != ui_size) {
         fputs (s_fname, stderr);
         fputs (" File writting error\n", stderr);
         perror("Error occurred");

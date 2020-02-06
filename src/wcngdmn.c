@@ -1,4 +1,4 @@
-/** 
+/**
  * @file  wcngdmn.c
  * @copyright Copyright (C) 2019-2020 Michał Bąbik
  *
@@ -19,10 +19,10 @@
  *
  * Automatic wallpaper changer
  *
- * @date January 15, 2020
+ * @date February 06, 2020
  *
- * @version 1.3.7
- * 
+ * @version 1.3.8
+ *
  * @author Michał Bąbik <michalb1981@o2.pl>
  */
 #include <unistd.h>
@@ -82,7 +82,7 @@ main (int    argc __attribute__ ((unused)),
 
     settlist_check_defaults (st_list);
     settlist_to_wallset (st_list, &ws_sett);
-    ui_len = stlist_get_length (ws_sett.sl_walls);
+    ui_len = (uint32_t) stlist_get_length (ws_sett.sl_walls);
 
     if (ui_len == 0) {
         fputs ("Empty wallpaper list\n", stderr);
@@ -126,7 +126,7 @@ main (int    argc __attribute__ ((unused)),
 
             settlist_check_defaults (st_list);
             settlist_to_wallset (st_list, &ws_sett);
-            ui_nlen = stlist_get_length (ws_sett.sl_walls);
+            ui_nlen = (uint32_t) stlist_get_length (ws_sett.sl_walls);
 
             if (ui_nlen == 0) {
                 fputs ("Empty wallpaper list\n", stderr);

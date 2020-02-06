@@ -14,6 +14,15 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 ----------------------------------------------------------------------
+v1.3.8                                                      2020-02-06
+
+    * Removed sort button, list sorts itself after clicking title.
+    * Corrected reading settings when json file is not a valid
+      json file.
+    * Changed adding files from directory, it works a little faster.
+    * Some source code updates.
+
+----------------------------------------------------------------------
 v1.3.7                                                      2020-01-15
 
     * Corrected filtering files when adding from directory.

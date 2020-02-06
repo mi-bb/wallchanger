@@ -32,9 +32,9 @@
  * @brief  Create or resize dynamic array
  */
 void
-create_resize (void        **v_ptr,
-               const size_t  ul_num,
-               const size_t  ul_size)
+cres (void        **v_ptr,
+      const size_t  ul_num,
+      const size_t  ul_size)
 {
     void *s_tmp = NULL; /* Temp pointer for realloc */
 
@@ -50,7 +50,8 @@ create_resize (void        **v_ptr,
     else {
         if (*v_ptr == NULL) {
 
-            *v_ptr = calloc (ul_num, ul_size);
+            /**v_ptr = calloc (ul_num, ul_size);*/
+            *v_ptr = malloc (ul_num * ul_size);
 
             if (*v_ptr == NULL) {
 

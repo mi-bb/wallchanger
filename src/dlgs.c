@@ -21,6 +21,7 @@
  * 
  * @author Michał Bąbik <michalb1981@o2.pl>
  */
+#include "defs.h"
 #include "imgs.h"
 #include "dlgs.h"
 /*----------------------------------------------------------------------------*/
@@ -112,7 +113,7 @@ message_dialog_error (GtkWindow  *gw_parent,
  * @brief  Dialog with information about application.
  */
 void
-about_app_dialog (const char *s_ver)
+about_app_dialog (gpointer data __attribute__ ((unused)))
 {
     GtkWidget *gw_dialog;
     const char *s_authors[] = {"Michal Babik <michalb1981@o2.pl> "
@@ -123,19 +124,17 @@ about_app_dialog (const char *s_ver)
 
     gw_dialog = gtk_about_dialog_new ();
 
-    gtk_about_dialog_set_version (GTK_ABOUT_DIALOG (gw_dialog), s_ver);
+    gtk_about_dialog_set_version (GTK_ABOUT_DIALOG (gw_dialog), APP_VER);
 
     gtk_about_dialog_set_copyright (GTK_ABOUT_DIALOG (gw_dialog), 
             "Copyright (C) 2019-2020 Michal Babik");
 
-    gtk_about_dialog_set_comments (GTK_ABOUT_DIALOG (gw_dialog),
-            "Wall Changer is an automatic wallpaper changer.");
+    gtk_about_dialog_set_comments (GTK_ABOUT_DIALOG (gw_dialog), APP_DSC);
 
     gtk_about_dialog_set_license_type (GTK_ABOUT_DIALOG (gw_dialog),
                                        GTK_LICENSE_GPL_3_0);
 
-    gtk_about_dialog_set_website (GTK_ABOUT_DIALOG (gw_dialog),
-            "https://www.nongnu.org/wallchanger/");
+    gtk_about_dialog_set_website (GTK_ABOUT_DIALOG (gw_dialog), APP_WEB);
 
     gtk_about_dialog_set_authors (GTK_ABOUT_DIALOG (gw_dialog), s_authors);
     gtk_about_dialog_set_artists (GTK_ABOUT_DIALOG (gw_dialog), s_art);

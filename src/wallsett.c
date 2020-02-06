@@ -92,15 +92,15 @@ wallset_get_wallpaper_list (const WallSett *ws_sett)
  */
 void
 wallset_set_last_used_setting (WallSett      *ws_sett,
-                               const uint8_t  ui_val)
+                               const int8_t   i_val)
 {
-    ws_sett->i_lastsett = ui_val;
+    ws_sett->i_lastsett = i_val;
 }
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Get using last used wallpaper on start.
  */
-uint8_t
+int8_t
 wallset_get_last_used_setting (const WallSett *ws_sett)
 {
     return ws_sett->i_lastsett;
@@ -111,15 +111,15 @@ wallset_get_last_used_setting (const WallSett *ws_sett)
  */
 void
 wallset_set_random (WallSett      *ws_sett,
-                    const uint8_t  ui_val)
+                    const int8_t   i_val)
 {
-    ws_sett->i_random = ui_val;
+    ws_sett->i_random = i_val;
 }
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Get random wallpaper select value.
  */
-uint8_t
+int8_t
 wallset_get_random (const WallSett *ws_sett)
 {
     return ws_sett->i_random;

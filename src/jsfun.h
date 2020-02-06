@@ -62,13 +62,11 @@ SettList * js_settings_read (const char *s_fname,
  * @param[out] i_err       Error output
  * @return     String with updated settings or null if there is no update.
  *
- *
  * @fn  int js_settings_update_file (const char *s_buff, const char *s_fname)
  * @brief      Update file with new data
  * @param[in]  s_buff   String with data to save
  * @param[in]  s_fname  File name to save data
  * @return     Saving file status, ERR_OK or error code
- *
  *
  * @fn  int js_settings_check_update_file (const SettList *st_list,
  *                                         const char     *s_fname)

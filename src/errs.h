@@ -40,6 +40,6 @@ enum {
  * @param[in]  i_err   Error number
  * @return     String with message
  */
-const char * err_get_message (const int i_err);
+const char * err_get_message (const int i_err) __attribute__ ((const));
 /*----------------------------------------------------------------------------*/
 #endif

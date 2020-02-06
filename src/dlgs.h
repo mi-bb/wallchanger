@@ -45,7 +45,7 @@
  *
  * @fn  void about_app_dialog (void);
  * @brief     Dialog with information about application.
- * @param[in] s_ver  String with application version number
+ * @param[in] data  Unused pointer for event call
  * @return    none
  */
 /*----------------------------------------------------------------------------*/
@@ -57,8 +57,7 @@ void     message_dialog_error     (GtkWindow  *gw_parent,
                                    const char *s_message)
                                    __attribute__ ((nonnull (2)));
 
-void     about_app_dialog         (const char *s_ver)
-                                   __attribute__ ((nonnull (1)));
+void     about_app_dialog         (gpointer data);
 /*----------------------------------------------------------------------------*/
 #endif
 

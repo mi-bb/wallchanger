@@ -91,11 +91,6 @@ ImageInfo * treemodel_get_data           (GtkTreeModel   *gtm_model,
 GSList    * treeview_get_data            (GtkWidget      *gw_tview);
 /*----------------------------------------------------------------------------*/
 /**
- * @fn  void treeview_sort_list (GtkWidget *gw_tview)
- * @brief         Sort data in TreeView.
- * @param[in,out] gw_tview  TreeView to process
- * @return        none
- *
  * @fn  void treeview_remove_duplicates (GtkWidget *gw_tview)
  * @brief         Remove duplicates from TreeView file list.
  * @param[in,out] gw_tview  TreeView to process
@@ -124,8 +119,6 @@ GSList    * treeview_get_data            (GtkWidget      *gw_tview);
  * @return    none
  */
 /*----------------------------------------------------------------------------*/
-void treeview_sort_list         (GtkWidget  *gw_tview);
-
 void treeview_remove_duplicates (GtkWidget  *gw_tview);
 
 void treeview_remove_selected   (GtkWidget  *gw_tview);

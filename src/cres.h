@@ -21,7 +21,8 @@
  * 
  * @author Michał Bąbik <michalb1981@o2.pl>
  */
-
+#ifndef CRES_H
+#define CRES_H
 #include <stddef.h>
 /*----------------------------------------------------------------------------*/
 /**
@@ -32,8 +33,9 @@
  * @param[in]  ul_size  Size of each element
  * @return     Result of operation
  */
-void create_resize (void         **v_ptr,
-                    const size_t   ul_num, 
-                    const size_t   ul_size);
+void cres (void         **v_ptr,
+           const size_t   ul_num, 
+           const size_t   ul_size);
 /*----------------------------------------------------------------------------*/
+#endif
 

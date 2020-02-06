@@ -60,7 +60,7 @@ static void setting_copy2 (Setting       *st_dest,
  * @return     New Setting or null
  */
 static Setting * setting_create_default (const char *s_name)
-            __attribute__ ((nonnull (1), malloc, returns_nonnull));
+                 __attribute__ ((nonnull (1), returns_nonnull));
 /*----------------------------------------------------------------------------*/
 /**
  * @fn static void setting_set_type (Setting *st_set, const SetValType i_type)
@@ -93,19 +93,19 @@ static Setting * setting_create_default (const char *s_name)
  * @return     none
  */
 /*----------------------------------------------------------------------------*/
-static void setting_set_type     (Setting          *st_set,
-                                  const SetValType  i_type);
+static void setting_set_type     (Setting             *st_set,
+                                  const SetValType     i_type);
 
-static void setting_set_id       (Setting          *st_set,
-                                  const uint32_t    i_val);
+static void setting_set_id       (Setting             *st_set,
+                                  const uint_fast32_t  i_val);
 
-static void setting_set_owner_id (Setting          *st_set,
-                                  const uint32_t    i_val);
+static void setting_set_owner_id (Setting             *st_set,
+                                  const uint_fast32_t  i_val);
 
-static void setting_set_name     (Setting          *st_set,
-                                  const char       *s_str);
+static void setting_set_name     (Setting             *st_set,
+                                  const char          *s_str);
 
-static void setting_set_array    (Setting          *st_set);
+static void setting_set_array    (Setting             *st_set);
 /*----------------------------------------------------------------------------*/
 /**
  * @fn    static void setting_set_int (Setting *st_set, const int64_t i_val)
@@ -241,8 +241,8 @@ setting_get_type (const Setting *st_set)
  * @brief  Set Setting id value
  */
 static void
-setting_set_id (Setting        *st_set,
-                const uint32_t  i_val)
+setting_set_id (Setting             *st_set,
+                const uint_fast32_t  i_val)
 {
     st_set->i_id = i_val;
 }
@@ -250,7 +250,7 @@ setting_set_id (Setting        *st_set,
 /**
  * @brief      Get Setting id number
  */
-uint32_t
+uint_fast32_t
 setting_get_id (const Setting *st_set)
 {
     return st_set->i_id;
@@ -260,8 +260,8 @@ setting_get_id (const Setting *st_set)
  * @brief  Set Setting owner id value
  */
 static void
-setting_set_owner_id (Setting        *st_set,
-                      const uint32_t  i_val)
+setting_set_owner_id (Setting             *st_set,
+                      const uint_fast32_t  i_val)
 {
     st_set->i_owner_id = i_val;
 }
@@ -269,7 +269,7 @@ setting_set_owner_id (Setting        *st_set,
 /**
  * @brief  Get Setting object's owner id number
  */
-uint32_t
+uint_fast32_t
 setting_get_owner_id (const Setting *st_set)
 {
     return st_set->i_owner_id;
@@ -732,7 +732,7 @@ setting_copy (const Setting *st_src)
 {
     Setting *st_ret;
 
-    st_ret = calloc (1, sizeof (Setting));
+    st_ret = malloc (sizeof (Setting));
 
     if (st_ret == NULL) {
         fputs ("Alloc error\n", stderr);
@@ -753,7 +753,7 @@ setting_create_default (const char *s_name)
 {
     Setting *st_ret;
 
-    st_ret = calloc (1, sizeof (Setting));
+    st_ret = malloc (sizeof (Setting));
 
     if (st_ret == NULL) {
         fputs ("Alloc error\n", stderr);
@@ -768,8 +768,8 @@ setting_create_default (const char *s_name)
 }
 /*----------------------------------------------------------------------------*/
 Setting *
-setting_new_int (const int64_t i_val,
-                 const char   *s_name)
+setting_new_int (const int64_t  i_val,
+                 const char    *s_name)
 {
     Setting *st_ret = setting_create_default (s_name);
 
@@ -779,8 +779,8 @@ setting_new_int (const int64_t i_val,
 }
 /*----------------------------------------------------------------------------*/
 Setting *
-setting_new_uint (const uint64_t i_val,
-                  const char    *s_name)
+setting_new_uint (const uint64_t  i_val,
+                  const char     *s_name)
 {
     Setting *st_ret = setting_create_default (s_name);
 
@@ -790,8 +790,8 @@ setting_new_uint (const uint64_t i_val,
 }
 /*----------------------------------------------------------------------------*/
 Setting *
-setting_new_int64 (const int64_t i_val,
-                   const char   *s_name)
+setting_new_int64 (const int64_t  i_val,
+                   const char    *s_name)
 {
     Setting *st_ret = setting_create_default (s_name);
 
@@ -801,8 +801,8 @@ setting_new_int64 (const int64_t i_val,
 }
 /*----------------------------------------------------------------------------*/
 Setting *
-setting_new_uint64 (const uint64_t i_val,
-                    const char    *s_name)
+setting_new_uint64 (const uint64_t  i_val,
+                    const char     *s_name)
 {
     Setting *st_ret = setting_create_default (s_name);
 
@@ -812,8 +812,8 @@ setting_new_uint64 (const uint64_t i_val,
 }
 /*----------------------------------------------------------------------------*/
 Setting *
-setting_new_int32 (const int32_t i_val,
-                   const char   *s_name)
+setting_new_int32 (const int32_t  i_val,
+                   const char    *s_name)
 {
     Setting *st_ret = setting_create_default (s_name);
 
@@ -823,8 +823,8 @@ setting_new_int32 (const int32_t i_val,
 }
 /*----------------------------------------------------------------------------*/
 Setting *
-setting_new_uint32 (const uint32_t i_val,
-                    const char    *s_name)
+setting_new_uint32 (const uint32_t  i_val,
+                    const char     *s_name)
 {
     Setting *st_ret = setting_create_default (s_name);
 
@@ -834,8 +834,8 @@ setting_new_uint32 (const uint32_t i_val,
 }
 /*----------------------------------------------------------------------------*/
 Setting *
-setting_new_int16 (const int16_t i_val,
-                   const char   *s_name)
+setting_new_int16 (const int16_t  i_val,
+                   const char    *s_name)
 {
     Setting *st_ret = setting_create_default (s_name);
 
@@ -845,8 +845,8 @@ setting_new_int16 (const int16_t i_val,
 }
 /*----------------------------------------------------------------------------*/
 Setting *
-setting_new_uint16 (const uint16_t i_val,
-                    const char    *s_name)
+setting_new_uint16 (const uint16_t  i_val,
+                    const char     *s_name)
 {
     Setting *st_ret = setting_create_default (s_name);
 
@@ -856,8 +856,8 @@ setting_new_uint16 (const uint16_t i_val,
 }
 /*----------------------------------------------------------------------------*/
 Setting *
-setting_new_int8 (const int8_t i_val,
-                  const char  *s_name)
+setting_new_int8 (const int8_t  i_val,
+                  const char   *s_name)
 {
     Setting *st_ret = setting_create_default (s_name);
 
@@ -867,8 +867,8 @@ setting_new_int8 (const int8_t i_val,
 }
 /*----------------------------------------------------------------------------*/
 Setting *
-setting_new_uint8 (const uint8_t i_val,
-                   const char   *s_name)
+setting_new_uint8 (const uint8_t  i_val,
+                   const char    *s_name)
 {
     Setting *st_ret = setting_create_default (s_name);
 
@@ -878,8 +878,8 @@ setting_new_uint8 (const uint8_t i_val,
 }
 /*----------------------------------------------------------------------------*/
 Setting *
-setting_new_double (const double d_val,
-                    const char  *s_name)
+setting_new_double (const double  d_val,
+                    const char   *s_name)
 {
     Setting *st_ret = setting_create_default (s_name);
 
@@ -921,79 +921,79 @@ setting_print (const Setting *st_set)
 {
     switch (st_set->v_type) {
         case SET_VAL_INT:
-            printf ("int, val=%ld, n=%s, oid=%d\n",
+            printf ("int, val=%ld, n=%s, oid=%" PRIdFAST32 "\n",
                     setting_get_int (st_set),
                     setting_get_name (st_set),
                     setting_get_owner_id (st_set));
             break;
         case SET_VAL_UINT:
-            printf ("uint, val=%ld, n=%s, oid=%d\n",
+            printf ("uint, val=%ld, n=%s, oid=%" PRIdFAST32 "\n",
                     setting_get_uint (st_set),
                     setting_get_name (st_set),
                     setting_get_owner_id (st_set));
             break;
         case SET_VAL_INT64:
-            printf ("int64, val=%ld, n=%s, oid=%d\n",
+            printf ("int64, val=%ld, n=%s, oid=%" PRIdFAST32 "\n",
                     setting_get_int64 (st_set),
                     setting_get_name (st_set),
                     setting_get_owner_id (st_set));
             break;
         case SET_VAL_UINT64:
-            printf ("uint64, val=%ld, n=%s, oid=%d\n",
+            printf ("uint64, val=%ld, n=%s, oid=%" PRIdFAST32 "\n",
                     setting_get_uint64 (st_set),
                     setting_get_name (st_set),
                     setting_get_owner_id (st_set));
             break;
         case SET_VAL_INT32:
-            printf ("int32, val=%d, n=%s, oid=%d\n",
+            printf ("int32, val=%d, n=%s, oid=%" PRIdFAST32 "\n",
                     setting_get_int32 (st_set),
                     setting_get_name (st_set),
                     setting_get_owner_id (st_set));
             break;
         case SET_VAL_UINT32:
-            printf ("uint32, val=%d, n=%s, oid=%d\n",
+            printf ("uint32, val=%d, n=%s, oid=%" PRIdFAST32 "\n",
                     setting_get_uint32 (st_set),
                     setting_get_name (st_set),
                     setting_get_owner_id (st_set));
             break;
         case SET_VAL_INT16:
-            printf ("int16, val=%d, n=%s, oid=%d\n",
+            printf ("int16, val=%d, n=%s, oid=%" PRIdFAST32 "\n",
                     setting_get_int16 (st_set),
                     setting_get_name (st_set),
                     setting_get_owner_id (st_set));
             break;
         case SET_VAL_UINT16:
-            printf ("uint16, val=%d, n=%s, oid=%d\n",
+            printf ("uint16, val=%d, n=%s, oid=%" PRIdFAST32 "\n",
                     setting_get_uint16 (st_set),
                     setting_get_name (st_set),
                     setting_get_owner_id (st_set));
             break;
         case SET_VAL_INT8:
-            printf ("int8, val=%d, n=%s, oid=%d\n",
+            printf ("int8, val=%d, n=%s, oid=%" PRIdFAST32 "\n",
                     setting_get_int8 (st_set),
                     setting_get_name (st_set),
                     setting_get_owner_id (st_set));
             break;
         case SET_VAL_UINT8:
-            printf ("uint8, val=%d, n=%s, oid=%d\n",
+            printf ("uint8, val=%d, n=%s, oid=%" PRIdFAST32 "\n",
                     setting_get_uint8 (st_set),
                     setting_get_name (st_set),
                     setting_get_owner_id (st_set));
             break;
         case SET_VAL_DOUBLE:
-            printf ("double, val=%f, n=%s, oid=%d\n",
+            printf ("double, val=%f, n=%s, oid=%" PRIdFAST32 "\n",
                     setting_get_double (st_set),
                     setting_get_name (st_set),
                     setting_get_owner_id (st_set));
             break;
         case SET_VAL_STRING:
-            printf ("str, val=%s, n=%s, oid=%d\n",
+            printf ("str, val=%s, n=%s, oid=%" PRIdFAST32 "\n",
                     setting_get_string (st_set),
                     setting_get_name (st_set),
                     setting_get_owner_id (st_set));
             break;
         case SET_VAL_ARRAY:
-            printf ("array, n=%s, id=%d, oid=%d\n",
+            printf ("array, n=%s, id=%" PRIdFAST32 ", oid=%" PRIdFAST32 "\n",
                     setting_get_name (st_set),
                     setting_get_id (st_set),
                     setting_get_owner_id (st_set));
