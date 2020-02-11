@@ -29,34 +29,13 @@
 #include "strfun.h"
 /*----------------------------------------------------------------------------*/
 /**
- * @fn  static int compare_imageitems (const ImageInfo *ii_info1,
- *                                     const ImageInfo *ii_info2)
- * @brief     Function compares ImageInfo items by file name string.
- * @param[in] ii_info1 First ImageInfo item
- * @param[in] ii_info2 Second ImageInfo item
- * @return    1 if a>b, -1 if a<b, 0 if a=b
- *
  * @fn  static void imageinfo_init (ImageInfo *ii_info)
  * @brief      Init ImageInfo data.
  * @param[out] ii_info  Pointer to ImageInfo object
  * @return     none
  */
 /*----------------------------------------------------------------------------*/
-static int  compare_imageitems (const ImageInfo *ii_info1,
-                                const ImageInfo *ii_info2)
-                                __attribute__ ((pure));
-
 static void imageinfo_init     (ImageInfo       *ii_info);
-/*----------------------------------------------------------------------------*/
-/**
- * @brief  Function compares ImageInfo items by file name string.
- */
-static int
-compare_imageitems (const ImageInfo *ii_info1,
-                    const ImageInfo *ii_info2)
-{
-    return str_compare (ii_info1->s_file_name, ii_info2->s_file_name);
-}
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Init ImageInfo data.
@@ -142,43 +121,6 @@ imageinfo_free (ImageInfo *ii_info)
     g_free (ii_info->s_file_path);
     g_free (ii_info->s_width_height);
     g_free (ii_info);
-}
-/*----------------------------------------------------------------------------*/
-/**
- * @brief  Sort ImageInfo list.
- */
-GSList * imageinfo_sort (GSList *gsl_iinfo)
-{
-    return g_slist_sort (gsl_iinfo, (GCompareFunc) compare_imageitems);
-}
-/*----------------------------------------------------------------------------*/
-/**
- * @brief  Remove duplicates from ImageInfo list.
- */
-GSList * imageinfo_remove_duplicates (GSList *gsl_iinfo)
-{
-    GSList *gsl_itr = NULL;
-    GSList *gsl_nxt = NULL;
-    GSList *gsl_act = NULL;
-
-    for (gsl_itr = gsl_iinfo; gsl_itr; gsl_itr = gsl_itr->next) {
-
-        gsl_nxt = gsl_itr->next;
-
-        while (gsl_nxt) {
-
-            gsl_act = gsl_nxt;
-            gsl_nxt = gsl_nxt->next;
-
-            if (compare_imageitems (gsl_itr->data, gsl_act->data) == 0) {
-
-                gsl_iinfo = g_slist_remove_link (gsl_iinfo, gsl_act);
-
-                imageinfo_free (gsl_act->data);
-            }
-        }
-    }
-    return gsl_iinfo;
 }
 /*----------------------------------------------------------------------------*/
 /**

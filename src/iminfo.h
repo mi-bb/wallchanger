@@ -87,22 +87,6 @@ ImageInfo * imageinfo_new_from_file (const char *s_fname)
 void        imageinfo_free          (ImageInfo  *ii_info);
 /*----------------------------------------------------------------------------*/
 /**
- * @fn  GSList * imageinfo_sort (GSList *gsl_iinfo)
- * @brief         Sort ImageInfo list.
- * @param[in,out] gsl_iinfo  Pointer to ImageInfo list
- * @return        Sorted ImageInfo list
- *
- * @fn  GSList * imageinfo_remove_duplicates (GSList *gsl_iinfo)
- * @brief         Remove duplicates from ImageInfo list.
- * @param[in,out] gsl_iinfo  Pointer to ImageInfo list
- * @return        Result ImageInfo list
- */
-/*----------------------------------------------------------------------------*/
-GSList * imageinfo_sort               (GSList  *gsl_iinfo);
-
-GSList * imageinfo_remove_duplicates  (GSList  *gsl_iinfo);
-/*----------------------------------------------------------------------------*/
-/**
  * @brief      Get image info of files in list and store it in ImageInfo list.
  * @param[in]  gsl_files1  File list to process
  * @return     List of ImageInfo items
