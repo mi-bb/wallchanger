@@ -161,7 +161,6 @@ str_set_up_wallpaper_command (const char *s_cmd,
         }
 
         *rp++ = ' ';
-        //*rp = '&';
         *rp++ = '&';
         *rp = '\0';
     }
@@ -169,10 +168,22 @@ str_set_up_wallpaper_command (const char *s_cmd,
         s_res = str_replace_in (s_cmd, s_sign, s_fname);
         ul_siz = strlen (s_res) + 3;
         cres ((void**) &s_res, ul_siz, sizeof (char));
-        s_res[0] = '\0';
         strcat (s_res, " &");
     }
     return s_res;
+}
+/*----------------------------------------------------------------------------*/
+void
+str_ncpy (char         * __restrict s_dest,
+          const char   * __restrict s_src,
+          const size_t  ui_num)
+{
+    size_t i = 0;
+    while (*s_src && i < ui_num) {
+        *s_dest++ = *s_src++;
+        ++i;
+    }
+    *s_dest = '\0'; 
 }
 /*----------------------------------------------------------------------------*/
 

@@ -31,6 +31,8 @@
 #include "errs.h"
 #include "cres.h"
 #include "cfgfile.h"
+#include "defs.h"
+#include "strfun.h"
 /*----------------------------------------------------------------------------*/
 /**
  * @fn  static int check_permissions (const char *s_name, const int i_mode)
@@ -214,7 +216,7 @@ check_config_path_file (int *i_err)
 
     /* Create string for config file path and name */
     cres ((void**) &s_path, (ul_len + 1), sizeof (char));
-    s_path[0] = '\0';
+    //s_path[0] = '\0';
 
     /* Copy config file path */
     strcpy (s_path, s_home);
@@ -257,14 +259,14 @@ check_config_path_file (int *i_err)
 int
 set_config_file_path (char *s_path)
 {
-    int   i_res = ERR_OK;
-    char *s_cfg = check_config_path_file (&i_res);
+    int    i_res  = ERR_OK;
+    char  *s_cfg  = check_config_path_file (&i_res);
 
     if (i_res != ERR_OK) {
         free (s_cfg);
         return i_res;
     }
-    strncpy (s_path, s_cfg, 255);
+    str_ncpy (s_path, s_cfg, CFG_PTH_LEN);
     free (s_cfg);
     return i_res;
 }

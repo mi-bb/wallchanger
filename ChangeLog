@@ -13,10 +13,16 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-2020-02-12  Michal Babik  <michalb1981@o2.pl>
+2020-02-14  Michal Babik  <michalb1981@o2.pl>
 
+	* defs.h: Added CFG_PTH_LEN with size of config path array.
+	* dialogdata.c (dialogdata_new): Setting config file moved to this
+	  function from dialogdata_init.
 	* iminfo.c (imageinfo_sort, imageinfo_remove_duplicates,
 	  compare_imageitems): Functions removed.
+	* strfun.c (str_set_up_wallpaper_command): Corrected wallpaper command
+	  when it is set with file sign [F].
+	* wcngdmn.c (main): Changed some calls to WallSett object.
 
 2020-02-06  Michal Babik  <michalb1981@o2.pl>
 

@@ -263,8 +263,10 @@ imageinfo_set_wxh (ImageInfo *ii_info,
                    const int  i_w,
                    const int  i_h)
 {
-    char s_tmp[41]; /* Temp string, I think it is long enough */
-    int n = snprintf (s_tmp, 41, "%dx%d", i_w, i_h);
+    char s_tmp [41]; /* Temp string, I think it is long enough */
+    int  n = 0;
+
+    n = snprintf (s_tmp, 41, "%dx%d", i_w, i_h);
     n = n <  0 ?  0 : n;
     n = n > 40 ? 40 : n;
     cres ((void**) &ii_info->s_width_height, (size_t) (n+1), sizeof (char));

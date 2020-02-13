@@ -19,9 +19,9 @@
  *
  * Automatic wallpaper changer
  *
- * @date February 06, 2020
+ * @date February 14, 2020
  *
- * @version 1.3.8
+ * @version 1.3.9
  *
  * @author Michał Bąbik <michalb1981@o2.pl>
  */
@@ -310,9 +310,9 @@ set_wallpaper_list (const SettList *sl_walls,
 static SettList *
 widgets_get_settings (const DialogData *dd_data)
 {
-    SettList   *st_list;      /* List of settings */
-    Setting    *st_sett;      /* Setting to add */
-    const char *s_val = NULL; /* Value for a string setting */
+    SettList   *st_list;       /* List of settings */
+    Setting    *st_sett;       /* Setting to add */
+    const char *s_val  = NULL; /* Value for a string setting */
     uint32_t    ui_val = 0;    /* Value for an integer setting */
 
     st_list = stlist_new_list ();
@@ -755,14 +755,6 @@ create_buttons_widget (GtkWidget  **gw_widget,
                               "clicked",
                               G_CALLBACK (treeview_move_down),
                               dd_data->gw_view);
-//    gw_button = create_image_button (NULL, "Sort images", W_ICON_SORT);
-//    gtk_box_pack_start (GTK_BOX (*gw_widget),
-//                        gw_button,
-//                        FALSE, FALSE, 4);
-//    g_signal_connect_swapped (gw_button,
-//                              "clicked",
-//                              G_CALLBACK (treeview_sort_list),
-//                              dd_data->gw_view);
     gw_button = create_image_button (NULL, "Remove duplicates", W_ICON_DUPL);
     gtk_box_pack_start (GTK_BOX (*gw_widget),
                         gw_button,
@@ -926,6 +918,7 @@ activate (GtkApplication *app,
     GtkWidget  *gw_box_main;        /* Main box to pack everything */
     SettList   *st_list;            /* List of settings */
     Setting    *st_sett;            /* Setting object */
+    GdkPixbuf  *gd_pix     = NULL;  /* Default widget icon */
     const char *s_lastused = NULL;  /* Last used wallpaper path */
     int         i_err      = 0;     /* For error output */
 
@@ -944,18 +937,18 @@ activate (GtkApplication *app,
                   G_CALLBACK (event_on_delete), dd_data);
     dd_data->gw_window = GTK_WINDOW (gw_window);
 
-    create_tview (&gw_tview);
-    dd_data->gw_view = gw_tview;
-    g_signal_connect (gw_tview, "row-activated",
-                      G_CALLBACK (event_img_list_activated), gw_img_prev);
-
     /* Default widget icon */
-    GdkPixbuf *gd_pix = NULL;
     gd_pix = get_image (W_ICON_ABOUT);
     if (gd_pix != NULL) {
         gtk_window_set_default_icon (gd_pix);
         g_object_unref (gd_pix);
     }
+
+    create_tview (&gw_tview);
+    dd_data->gw_view = gw_tview;
+    g_signal_connect (gw_tview, "row-activated",
+                      G_CALLBACK (event_img_list_activated), gw_img_prev);
+
     create_title_widget (&gw_title_widget);
 
     create_buttons_widget (&gw_buttons_widget, dd_data);
@@ -1072,8 +1065,8 @@ main (int    argc,
       char **argv)
 {
     GtkApplication *app;
+    DialogData     *dd_data;
     int             status;
-    DialogData      *dd_data;
 
     dd_data = dialogdata_new ();
     app = gtk_application_new ("org.nongnu.WallChanger",

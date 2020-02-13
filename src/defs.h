@@ -56,7 +56,7 @@
  * @brief Default setting for random wallpaper change
  */
 #define APP_NAME             "Wall Changer"
-#define APP_VER              "1.3.8"
+#define APP_VER              "1.3.9"
 #define APP_WEB              "https://www.nongnu.org/wallchanger/"
 #define APP_DSC              "Wall Changer is an automatic wallpaper changer."
 #define DEFAULT_BG_CMD       "feh --bg-fill"
@@ -65,6 +65,7 @@
 #define DEFAULT_INTERVAL_VAL  30
 #define DEFAULT_LAST_USED_OPT 0
 #define DEFAULT_RANDOM_OPT    0
+#define CFG_PTH_LEN           512
 /*----------------------------------------------------------------------------*/
 #endif
 

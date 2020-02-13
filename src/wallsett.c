@@ -26,14 +26,14 @@
 #include "cfgfile.h"
 #include "errs.h"
 #include "wallsett.h"
+#include "strfun.h"
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Sets default program settings. 
  */
-int
+void
 wallset_init (WallSett *ws_sett)
 {
-    int i_err              = ERR_OK; /* Return result value */
     ws_sett->i_chinterval  = 30;     /* Wallpaper change interval */ 
     ws_sett->i_random      = 0;      /* Random wallpaper change */
     ws_sett->i_lastsett    = 0;      /* Last used wallpaper setting */
@@ -43,9 +43,6 @@ wallset_init (WallSett *ws_sett)
 
     memset (ws_sett->s_cfgfile, 0, sizeof (ws_sett->s_cfgfile));
     randomm_init (&ws_sett->rm_mem);
-    i_err = set_config_file_path (ws_sett->s_cfgfile);
-
-    return i_err;
 }
 /*----------------------------------------------------------------------------*/
 /**
@@ -60,10 +57,28 @@ wallset_free (WallSett *ws_sett)
 }
 /*----------------------------------------------------------------------------*/
 /**
+ * @brief  Sets config file name or sets default config name if s_fn is NULL.
+ */
+int
+wallset_set_cfgfile (WallSett   *ws_sett,
+                     const char *s_fn)
+{
+    int i_err = ERR_OK; /* Return result value */
+
+    if (s_fn == NULL) {
+        i_err = set_config_file_path (ws_sett->s_cfgfile);
+    }
+    else {
+        str_ncpy (ws_sett->s_cfgfile, s_fn, CFG_PTH_LEN);
+    }
+    return i_err;
+}
+/*----------------------------------------------------------------------------*/
+/**
  * @brief  Get config file name.
  */
 const char *
-wallset_get_cfg_fn (const WallSett *ws_sett)
+wallset_get_cfgfile (const WallSett *ws_sett)
 {
     return (const char*) ws_sett->s_cfgfile;
 }

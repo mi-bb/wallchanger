@@ -27,6 +27,7 @@
 #include <stdint.h>
 #include "randomm.h"
 #include "settlist.h"
+#include "defs.h"
 /*----------------------------------------------------------------------------*/
 /**
  * @struct WallSett
@@ -63,7 +64,7 @@ WallSett {
     const char *s_bgcmd;       /* Background set command */
     const char *s_lastused;    /* Last used wallpaper path */
     RandMem     rm_mem;        /* Random memory */
-    char        s_cfgfile[256];/* Path to configuratoin file */
+    char        s_cfgfile [CFG_PTH_LEN+1];/* Path to configuratoin file */
     uint32_t    i_chinterval;  /* Wallpaper change interval */
     int8_t      i_random;      /* Random wallpaper change */
     int8_t      i_lastsett;    /* Restore last used wallpeper */
@@ -73,7 +74,7 @@ WallSett {
  * @fn  int wallset_init (WallSett *ws_sett)
  * @brief      Sets default program settings. 
  * @param[out] ws_sett  Program settings
- * @return     Setting status
+ * @return     none
  *
  * @fn  void wallset_free (WallSett *ws_sett)
  * @brief      Free allocated memory.
@@ -81,15 +82,34 @@ WallSett {
  * @return     none
  */
 /*----------------------------------------------------------------------------*/
-int  wallset_init (WallSett *ws_sett);
+void wallset_init (WallSett *ws_sett);
 
 void wallset_free (WallSett *ws_sett);
 /*----------------------------------------------------------------------------*/
 /**
- * @fn  const char * wallset_get_cfg_fn (const WallSett *ws_sett)
+ * @fn  int wallset_set_cfgfile (WallSett *ws_sett, const char *s_fn)
+ * @brief      Sets config file name or sets default config name if s_fn is
+ *             NULL.
+ * @param[out] ws_sett Program settings
+ * @param[in]  s_fn    String with config file path or NULL.
+ * @return     Setting name status.
+ *
+ * @fn  const char * wallset_get_cfgfile (const WallSett *ws_sett)
  * @brief     Get config file name.
  * @param[in] ws_sett  WallSett object
  * @return    Config file name
+ *
+ * @fn  void wallset_set_wallpaper_list (WallSett *ws_sett,
+                                         SettList *sl_list)
+ * @brief      Sets wallpaper list value.
+ * @param[out] ws_sett  Program settings
+ * @param[in]  sl_list  List of wallpapers to set
+ * @return     none
+ *
+ * @fn  const SettList * wallset_get_wallpaper_list (WallSett *ws_sett)
+ * @brief      Get wallpaper list pointer.
+ * @param[in]  ws_sett  Program settings
+ * @return     Pointer to wallpaper list
  *
  * @fn  void wallset_set_last_used_setting (WallSett      *ws_sett,
  *                                          const int8_t  i_val)
@@ -150,22 +170,12 @@ void wallset_free (WallSett *ws_sett);
  *
  */
 /*----------------------------------------------------------------------------*/
-const char *     wallset_get_cfg_fn            (const WallSett *ws_sett)
+int              wallset_set_cfgfile           (WallSett       *ws_sett,
+                                                const char     *s_fn);
+
+const char *     wallset_get_cfgfile           (const WallSett *ws_sett)
                                                 __attribute__((const));
 /*----------------------------------------------------------------------------*/
-/**
- * @fn  void wallset_set_wallpaper_list (WallSett *ws_sett,
-                                         SettList *sl_list)
- * @brief      Sets wallpaper list value.
- * @param[out] ws_sett  Program settings
- * @param[in]  sl_list  List of wallpapers to set
- * @return     none
- *
- * @fn  const SettList * wallset_get_wallpaper_list (WallSett *ws_sett)
- * @brief      Get wallpaper list pointer.
- * @param[in]  ws_sett  Program settings
- * @return     Pointer to wallpaper list
- */
 void             wallset_set_wallpaper_list    (WallSett       *ws_sett,
                                                 SettList       *sl_list);
 

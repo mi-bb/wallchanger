@@ -31,7 +31,7 @@ dialogdata_free (DialogData *dd_data)
     free (dd_data);
 }
 /*----------------------------------------------------------------------------*/
-static int
+static void
 dialogdata_init (DialogData *dd_data)
 {
     dd_data->gw_window      = NULL;
@@ -43,8 +43,6 @@ dialogdata_init (DialogData *dd_data)
     dd_data->gw_inter_combo = NULL;
 
     memset (dd_data->s_cfg_file, 0, sizeof (dd_data->s_cfg_file));
-
-    return set_config_file_path (dd_data->s_cfg_file);
 }
 /*----------------------------------------------------------------------------*/
 DialogData *
@@ -58,11 +56,12 @@ dialogdata_new (void)
         fputs ("Alloc error\n", stderr);
         return NULL;
     }
-    if (dialogdata_init (dd_data) != ERR_OK) {
+    dialogdata_init (dd_data);
+
+    if (set_config_file_path (dd_data->s_cfg_file) != ERR_OK) {
         dialogdata_free (dd_data);
         return NULL;
     }
-
     return dd_data;
 }
 /*----------------------------------------------------------------------------*/

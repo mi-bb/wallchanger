@@ -82,5 +82,22 @@ char * str_set_up_wallpaper_command (const char   *s_cmd,
                                      const char   *s_sign)
        __attribute__ ((nonnull (1,2,3), returns_nonnull));
 /*----------------------------------------------------------------------------*/
+/**
+ * @brief  Copy ui_num chars from s_src to s_dest and add a null sign.
+ *
+ *         Copy ui_num chars from s_src to s_dest and add a null sign.
+ *         If a null sign is found in s_src before ui_num chars, copy
+ *         process will stop and null sign will be added.
+ *
+ * @param[out] s_dest  Destination string buffer
+ * @param[in]  s_src   Source string
+ * @param[in]  ui_num  Number of chars to copy
+ * @return     none
+ */
+void str_ncpy                       (char         * __restrict s_dest,
+                                     const char   * __restrict s_src,
+                                     const size_t  ui_num)
+       __attribute__ ((nonnull (1,2)));
+/*----------------------------------------------------------------------------*/
 #endif
 

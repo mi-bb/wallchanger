@@ -19,9 +19,9 @@
  *
  * Automatic wallpaper changer
  *
- * @date February 06, 2020
+ * @date February 14, 2020
  *
- * @version 1.3.8
+ * @version 1.3.9
  *
  * @author Michał Bąbik <michalb1981@o2.pl>
  */
@@ -62,11 +62,13 @@ main (int    argc __attribute__ ((unused)),
         exit (EXIT_FAILURE);
     }
 
-    if (wallset_init (&ws_sett) != ERR_OK) {
+    wallset_init (&ws_sett);
+
+    if (wallset_set_cfgfile (&ws_sett, NULL) != ERR_OK) {
         exit (EXIT_FAILURE);
     }
 
-    st_list = settings_read (ws_sett.s_cfgfile, &i_err);
+    st_list = settings_read (wallset_get_cfgfile (&ws_sett), &i_err);
 
     if (i_err != ERR_OK) {
         stlist_free (st_list);
@@ -82,7 +84,8 @@ main (int    argc __attribute__ ((unused)),
 
     settlist_check_defaults (st_list);
     settlist_to_wallset (st_list, &ws_sett);
-    ui_len = (uint32_t) stlist_get_length (ws_sett.sl_walls);
+    ui_len = (uint32_t) stlist_get_length (
+            wallset_get_wallpaper_list (&ws_sett));
 
     if (ui_len == 0) {
         fputs ("Empty wallpaper list\n", stderr);
@@ -110,7 +113,7 @@ main (int    argc __attribute__ ((unused)),
 
         if (ui_cnt >= ws_sett.i_chinterval) {
 
-            st_list = settings_read (ws_sett.s_cfgfile, &i_err);
+            st_list = settings_read (wallset_get_cfgfile (&ws_sett), &i_err);
 
             if (i_err != ERR_OK) {
                 stlist_free (st_list);
@@ -126,7 +129,8 @@ main (int    argc __attribute__ ((unused)),
 
             settlist_check_defaults (st_list);
             settlist_to_wallset (st_list, &ws_sett);
-            ui_nlen = (uint32_t) stlist_get_length (ws_sett.sl_walls);
+            ui_nlen = (uint32_t) stlist_get_length (
+                    wallset_get_wallpaper_list (&ws_sett));
 
             if (ui_nlen == 0) {
                 fputs ("Empty wallpaper list\n", stderr);

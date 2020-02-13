@@ -25,6 +25,7 @@
 #define DIALOGDATA_H
 
 #include <gtk/gtk.h>
+#include "defs.h"
 /*----------------------------------------------------------------------------*/
 /**
  * @struct DialogData
@@ -57,13 +58,27 @@ DialogData {
     GtkWidget  *gw_command;      /* Set wallpaper command entry */
     GtkWidget  *gw_interval;     /* Time interval check button */
     GtkWidget  *gw_inter_combo;  /* Time interval combo box */
-    char        s_cfg_file[256]; /* Config file string */
+    char        s_cfg_file[CFG_PTH_LEN+1]; /* Config file string */
 } DialogData;
 /*----------------------------------------------------------------------------*/
-void dialogdata_free (DialogData *dd_data);
+/**
+ * @brief      Free DialogData object
+ * @param[out] dd_data  DialogData object to free
+ * @return     None
+ */
+void         dialogdata_free         (DialogData       *dd_data);
 /*----------------------------------------------------------------------------*/
-DialogData * dialogdata_new (void);
+/**
+ * @brief   Create new DialogData object
+ * @return  New DialogData object
+ */
+DialogData * dialogdata_new          (void);
 /*----------------------------------------------------------------------------*/
+/**
+ * @brief     Get config file path from DialogData
+ * @param[in] dd_data  DialogData object
+ * @return    String with config file path
+ */
 const char * dialogdata_get_cfg_file (const DialogData *dd_data)
              __attribute__((const));
 /*----------------------------------------------------------------------------*/
