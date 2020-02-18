@@ -18,5 +18,5 @@
 PDIR=`dirname "$0"`
 cd ${PDIR}
 
-autoreconf --force --install --symlink --verbose
+autoreconf --install --symlink --verbose
 
