@@ -19,9 +19,9 @@
  *
  * Automatic wallpaper changer
  *
- * @date February 14, 2020
+ * @date February 19, 2020
  *
- * @version 1.3.9
+ * @version 1.3.10
  *
  * @author Michał Bąbik <michalb1981@o2.pl>
  */

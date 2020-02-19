@@ -19,9 +19,9 @@
  *
  * Automatic wallpaper changer
  *
- * @date February 14, 2020
+ * @date February 19, 2020
  *
- * @version 1.3.9
+ * @version 1.3.10
  *
  * @author Michał Bąbik <michalb1981@o2.pl>
  */
@@ -263,8 +263,8 @@ static void
 get_wallpaper_list (GtkWidget *gw_view,
                     SettList  *st_list)
 {
-    ImageInfo  *ii_info;
-    Setting    *st_sett;
+    ImageInfo  *ii_info;           /* ImageInfo item for data from tree view */
+    Setting    *st_sett;           /* Setting with file name for st_list */
     GSList     *gsl_iinfo1 = NULL; /* List of ImageInfo data */
     GSList     *gsl_iinfo  = NULL; /* Temp list for data */
     const char *s_val      = NULL; /* Full file path */

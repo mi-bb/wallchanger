@@ -41,7 +41,7 @@ char *
 read_file_data (const char  *s_fname,
                 int         *i_err)
 {
-    char   *s_buff = NULL; /* Read file data */
+    char   *s_buff = NULL; /* Result data from file */
     FILE   *f_file;        /* Data file */
     long    l_size = 0;    /* File size */
     size_t  ui_res = 0;    /* Read data count */
@@ -100,7 +100,7 @@ read_file_data_hash (const char    *s_fname,
                      int           *i_err,
                      uint_fast32_t *i_hash)
 {
-    char *s_buff = NULL;
+    char *s_buff = NULL; /* Result data from file */
 
     s_buff = read_file_data (s_fname, i_err);
 

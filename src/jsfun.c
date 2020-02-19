@@ -122,10 +122,12 @@ js_json_array_to_stlist (json_object *j_array,
                          SettList    *st_list,
                          const char  *s_array_name)
 {
-    json_object *j_val;
-    Setting     *st_set;
-    char        *s_name = NULL;
-    size_t       ui_cnt = json_object_array_length (j_array);
+    json_object *j_val;         /* Json object read from Json array */
+    Setting     *st_set;        /* Setting made from Json object */
+    char        *s_name = NULL; /* Name for Setting */
+    size_t       ui_cnt = 0;    /* Length of Json array */
+
+    ui_cnt = json_object_array_length (j_array);
 
     for (size_t i = 0; i < ui_cnt; ++i) {
 
@@ -200,9 +202,9 @@ js_json_obj_to_setting (json_object *val,
 static SettList *
 js_json_string_to_stlist (const char *s_buff)
 {
-    json_object *j_obj;
-    SettList    *st_list;
-    Setting     *st_set;
+    json_object *j_obj;   /* Json object with data from s_buff */
+    SettList    *st_list; /* List of settings made from Json object */
+    Setting     *st_set;  /* Setting for Json object setting */
 
     st_list = stlist_new_list ();
     j_obj = json_tokener_parse (s_buff);
@@ -233,10 +235,10 @@ js_stlist_array_to_json (const SettList *st_list,
                          const Setting  *st_sett,
                          json_object    *j_array)
 {
-    Setting     *st_val;
-    json_object *j_obj;
-    SettList    *st_array_list;
-    size_t       ui_cnt = 0;
+    Setting     *st_val;        /* Setting from Settlist array */
+    json_object *j_obj;         /* Json object made from Setting */
+    SettList    *st_array_list; /* List of settings from st_sett array */
+    size_t       ui_cnt = 0;    /* Length of SettList array */
 
     st_array_list = stlist_get_settings_in_array_obj_p (st_list, st_sett);
     ui_cnt        = stlist_get_length (st_array_list);
@@ -293,10 +295,10 @@ static void
 js_stlist_add_to_json_obj (const SettList *st_list,
                            json_object    *j_obj)
 {
-    json_object *j_val;
-    SettList    *st_main;
-    Setting     *st_sett;
-    size_t       ui_cnt   = 0;
+    json_object *j_val;        /* Json object made from Setting */
+    SettList    *st_main;      /* List of main settings in st_list */
+    Setting     *st_sett;      /* Concrete setting */
+    size_t       ui_cnt   = 0; /* Number of main settings in list */
 
     st_main = stlist_get_settings_main_p (st_list);
     ui_cnt  = stlist_get_length (st_main);
@@ -318,7 +320,7 @@ SettList *
 js_settings_read (const char *s_fname,
                   int        *i_err)
 {
-    SettList *st_list;
+    SettList *st_list;       /* Result SettList made from file data */
     char     *s_buff = NULL; /* File data buffer */
 
     s_buff = read_file_data (s_fname, i_err);
@@ -346,11 +348,11 @@ js_settings_check_for_update (const SettList  *st_list,
                               const char      *s_fname,
                               int             *i_err)
 {
-    json_object   *j_obj;
-    const char    *s_jbuff     = NULL;   /* Json object as string */
-    char          *s_buff      = NULL;   /* File data buffer */
-    char          *s_res_buff  = NULL;   /* Result data buffer */
-    uint_fast32_t  ui_hash     = 0;      /* File read hash */
+    json_object   *j_obj;              /* Json object made from file data */
+    const char    *s_jbuff     = NULL; /* Json object as string */
+    char          *s_buff      = NULL; /* File data buffer */
+    char          *s_res_buff  = NULL; /* Result data buffer */
+    uint_fast32_t  ui_hash     = 0;    /* File read hash */
 
     *i_err = ERR_OK;
     s_buff = read_file_data_hash (s_fname, i_err, &ui_hash);
@@ -411,9 +413,10 @@ int
 js_settings_check_update_file (const SettList *st_list,
                                const char     *s_fname)
 {
-    char *s_buff = NULL;
-    int   i_err  = ERR_OK;
-
+    int   i_err  = ERR_OK; /* Possible error to return */
+    char *s_buff = NULL;   /* Result of update check, if it is not null there
+                              is a change in configuration and returned buffer
+                              is the new data to save */
     s_buff = js_settings_check_for_update (st_list, s_fname, &i_err);
 
     if (s_buff != NULL) {

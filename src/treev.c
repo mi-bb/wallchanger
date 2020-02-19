@@ -398,14 +398,6 @@ create_tview (GtkWidget **gw_tview)
     GtkTreeSelection  *gts_sele;
     GtkTreeViewColumn *gtvc_col;
 
-    char a[5];
-    str_ncpy (a, "abcdefghi", 5);
-    printf ("%s\n", a);
-    str_ncpy (a, "abc", 5);
-    printf ("%s\n", a);
-    str_ncpy (a, "", 5);
-    printf ("%s\n", a);
-
     *gw_tview = gtk_tree_view_new ();
     gts_sele  = gtk_tree_view_get_selection (GTK_TREE_VIEW (*gw_tview));
     gtk_tree_selection_set_mode (gts_sele, GTK_SELECTION_MULTIPLE);

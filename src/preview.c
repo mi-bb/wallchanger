@@ -86,7 +86,7 @@ make_prev_screen_pbuf (GdkRectangle *gr_rect)
     int i_img_1_h  = 0;   /* Preview (monitor) part 1 (top) image height */
     int i_img_2_h  = 0;   /* Preview (monitor) part 2 (middle) image height */
     int i_img_3_h  = 0;   /* Preview (monitor) part 3 (bottom) image height */
-    int i          = 0;
+    int i          = 0;   /* The i */
 
     get_screen_size (&i_screen_w, &i_screen_h);
 

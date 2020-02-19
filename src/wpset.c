@@ -65,8 +65,8 @@ static void
 wallpaper_set_file (const char *s_cmd,
                     const char *s_wall)
 {
-    char *s_cmdn = NULL; /* Wallpaper set command */
-    int   i_res __attribute__ ((unused)) = 0;
+    char *s_cmdn = NULL;                      /* Wallpaper set command */
+    int   i_res __attribute__ ((unused)) = 0; /* Result of system command */
 
     s_cmdn = str_set_up_wallpaper_command (s_cmd, s_wall, "[F]");
 
@@ -201,7 +201,7 @@ wallpaper_dialog_set (const char *s_cmd,
                       const char *s_file,
                       const char *s_cfg_file)
 {
-    int i_res = 0;
+    int i_res = 0; /* Function result */
 
     wallpaper_set_file (s_cmd, s_file);
     i_res = settings_update_last_used (s_file, s_cfg_file);
