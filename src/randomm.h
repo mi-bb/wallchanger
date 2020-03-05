@@ -33,7 +33,6 @@
 #define RMMAX 1000  /**< RMMAX * 32 maximum random number range */
 
 #include <stdint.h>
-
 /*----------------------------------------------------------------------------*/
 /**
  * @struct RandMem

@@ -88,7 +88,6 @@ enum {
  */
 /*----------------------------------------------------------------------------*/
 SettList * stlist_new_list (void);
-//SettList * stlist_new_list (void) __attribute__ ((malloc, returns_nonnull));
 
 void       stlist_free     (SettList *st_list);
 

@@ -16,6 +16,7 @@
 bin_PROGRAMS=wchangerd wchangercfg
 
 wchangerd_SOURCES=wcngdmn.c\
+                  chkwch.c chkwch.h\
                   wpset.c wpset.h\
                   setts.c setts.h\
                   jsfun.c jsfun.h\

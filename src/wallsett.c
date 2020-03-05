@@ -23,6 +23,7 @@
 */
 #include <string.h>
 #include <stdlib.h>
+#include <stdio.h>
 #include "cfgfile.h"
 #include "errs.h"
 #include "wallsett.h"
@@ -37,12 +38,29 @@ wallset_init (WallSett *ws_sett)
     ws_sett->i_chinterval  = 30;     /* Wallpaper change interval */ 
     ws_sett->i_random      = 0;      /* Random wallpaper change */
     ws_sett->i_lastsett    = 0;      /* Last used wallpaper setting */
+    ws_sett->s_cfgfile     = NULL;   /* Configuration file path */
     ws_sett->s_lastused    = NULL;   /* Last used wallpaper file name */
     ws_sett->s_bgcmd       = NULL;   /* Background set command */
     ws_sett->sl_walls      = NULL;   /* Wallpaper list */
 
-    memset (ws_sett->s_cfgfile, 0, sizeof (ws_sett->s_cfgfile));
+    //memset (ws_sett->s_cfgfile, 0, sizeof (ws_sett->s_cfgfile));
     randomm_init (&ws_sett->rm_mem);
+}
+/*----------------------------------------------------------------------------*/
+WallSett *
+wallset_new (void)
+{
+    WallSett *ws_sett;
+
+    ws_sett = malloc (sizeof (WallSett));
+
+    if (ws_sett == NULL) {
+        fputs ("Alloc error\n", stderr);
+        exit (EXIT_FAILURE);
+    }
+    wallset_init (ws_sett);
+
+    return ws_sett;
 }
 /*----------------------------------------------------------------------------*/
 /**
@@ -54,24 +72,18 @@ wallset_free (WallSett *ws_sett)
     stlist_free_p (ws_sett->sl_walls);
     ws_sett->s_bgcmd    = NULL;
     ws_sett->s_lastused = NULL;
+    ws_sett->s_cfgfile  = NULL;
+    free (ws_sett);
 }
 /*----------------------------------------------------------------------------*/
 /**
- * @brief  Sets config file name or sets default config name if s_fn is NULL.
+ * @brief  Sets config file name.
  */
-int
+void
 wallset_set_cfgfile (WallSett   *ws_sett,
                      const char *s_fn)
 {
-    int i_err = ERR_OK; /* Return result value */
-
-    if (s_fn == NULL) {
-        i_err = set_config_file_path (ws_sett->s_cfgfile);
-    }
-    else {
-        str_ncpy (ws_sett->s_cfgfile, s_fn, CFG_PTH_LEN);
-    }
-    return i_err;
+    ws_sett->s_cfgfile = s_fn;
 }
 /*----------------------------------------------------------------------------*/
 /**
@@ -80,7 +92,7 @@ wallset_set_cfgfile (WallSett   *ws_sett,
 const char *
 wallset_get_cfgfile (const WallSett *ws_sett)
 {
-    return (const char*) ws_sett->s_cfgfile;
+    return ws_sett->s_cfgfile;
 }
 /*----------------------------------------------------------------------------*/
 /**

@@ -50,7 +50,6 @@ cres (void        **v_ptr,
     else {
         if (*v_ptr == NULL) {
 
-            /**v_ptr = calloc (ul_num, ul_size);*/
             *v_ptr = malloc (ul_num * ul_size);
 
             if (*v_ptr == NULL) {

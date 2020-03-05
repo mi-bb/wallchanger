@@ -169,8 +169,8 @@ wallpaper_change (WallSett *ws_sett)
     else {
         wallpaper_set_next_in_list (ws_sett);
     }
-    return settings_update_last_used (ws_sett->s_lastused,
-                                      ws_sett->s_cfgfile);
+    return settings_update_last_used (wallset_get_last_used_fn (ws_sett),
+                                      wallset_get_cfgfile (ws_sett));
 }
 /*----------------------------------------------------------------------------*/
 /**

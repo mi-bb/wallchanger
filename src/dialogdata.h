@@ -47,7 +47,7 @@
  * @var   DialogData::gw_inter_combo
  * @brief Pointer to ComboBox for selecting wallpapet change interval
  * @var   DialogData::s_cfg_file
- * @brief Array of chars for config file path
+ * @brief Config file path
  */
 typedef struct
 DialogData {
@@ -58,24 +58,24 @@ DialogData {
     GtkWidget  *gw_command;      /* Set wallpaper command entry */
     GtkWidget  *gw_interval;     /* Time interval check button */
     GtkWidget  *gw_inter_combo;  /* Time interval combo box */
-    char        s_cfg_file[CFG_PTH_LEN+1]; /* Config file string */
+    char       *s_cfg_file;      /* Config file string */
 } DialogData;
 /*----------------------------------------------------------------------------*/
 /**
- * @brief      Free DialogData object
+ * @brief      Free DialogData object.
  * @param[out] dd_data  DialogData object to free
  * @return     None
  */
 void         dialogdata_free         (DialogData       *dd_data);
 /*----------------------------------------------------------------------------*/
 /**
- * @brief   Create new DialogData object
+ * @brief   Create new DialogData object.
  * @return  New DialogData object
  */
 DialogData * dialogdata_new          (void);
 /*----------------------------------------------------------------------------*/
 /**
- * @brief     Get config file path from DialogData
+ * @brief     Get config file path from DialogData.
  * @param[in] dd_data  DialogData object
  * @return    String with config file path
  */

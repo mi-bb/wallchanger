@@ -1,5 +1,5 @@
 /**
- * @file  cfgfile.h
+ * @file  chkwch.h
  * @copyright Copyright (C) 2019-2020 Michał Bąbik
  *
  * This file is part of Wall Changer.
@@ -17,32 +17,34 @@
  * You should have received a copy of the GNU General Public License
  * along with Wall Changer.  If not, see <https://www.gnu.org/licenses/>.
  *
- * @brief  Configuration file examine and set
+ * @brief  Check settings and wallpaper change functions.
  * 
  * @author Michał Bąbik <michalb1981@o2.pl>
  */
-#ifndef CFGFILE_H
-#define CFGFILE_H
+#ifndef CHKWCH_H
+#define CHKWCH_H
+
+#include <stdint.h>
 /*----------------------------------------------------------------------------*/
 /**
- * @fn  char * cfgfile_get_config_path (int *i_err)
- * @brief  Check if config file and path exists, check read/write permissions. 
- *
- * Checks config path and file existence, creates them if needed. Function
- * returns config file path or null if something went wrong. Function writes
- * checking/creating status to i_err if process completed succefully or not.
- *
- * @param[out] i_err  Error output
- * @return     Config file path
- *
- * @fn         char * cfgfile_get_config_path_exit (void)
- * @brief      Get config file path or exit app if errors occurred.
- * @return     Config file path
+ * @brief  Check if display is present, exit if it is not.
+ * @return none
  */
+void check_display (void);
 /*----------------------------------------------------------------------------*/
-char * cfgfile_get_config_path              (int  *i_err);
-
-char * cfgfile_get_config_path_exit         (void);
+/**
+ * @brief  Loads settings, checks for changes in wallpaper list length and
+ *         changes wallpaper, returns change interval.
+ *
+ * Function reads settings from json file to SettList list, converts it to
+ * WallSett object to use with wallpaper change functions. It checks
+ * wallpaper list length if it changed, reinitializes random number range if
+ * needed and changes wallpaper.
+ * Function returns wallpaper change interval to use with main loop.
+ *
+ * @return Wallpaper change interval
+ */
+uint32_t check_settings_change_wallpaper (char *s_cfg_file);
 /*----------------------------------------------------------------------------*/
 #endif
 

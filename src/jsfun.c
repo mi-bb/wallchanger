@@ -205,13 +205,20 @@ js_json_string_to_stlist (const char *s_buff)
     json_object *j_obj;   /* Json object with data from s_buff */
     SettList    *st_list; /* List of settings made from Json object */
     Setting     *st_set;  /* Setting for Json object setting */
+    enum json_tokener_error j_err; /* Json error output */
 
     st_list = stlist_new_list ();
-    j_obj = json_tokener_parse (s_buff);
-    if (j_obj == NULL) {
+    j_obj = json_tokener_parse_verbose (s_buff, &j_err);
+    if (j_obj == NULL || 
+        json_object_get_type (j_obj) != json_type_object ||
+        j_err != json_tokener_success) {
         #ifdef DEBUG
+        printf ("Json error: %d\n", j_err);
+        printf ("Json type:  %d\n", json_object_get_type (j_obj));
         printf ("Error converting json to stlist, wrong json file\n");
         #endif
+        if (j_obj != NULL)
+            json_object_put (j_obj);
         return st_list;
     }
 
@@ -353,6 +360,7 @@ js_settings_check_for_update (const SettList  *st_list,
     char          *s_buff      = NULL; /* File data buffer */
     char          *s_res_buff  = NULL; /* Result data buffer */
     uint_fast32_t  ui_hash     = 0;    /* File read hash */
+    enum json_tokener_error j_err;     /* Json error output */
 
     *i_err = ERR_OK;
     s_buff = read_file_data_hash (s_fname, i_err, &ui_hash);
@@ -366,11 +374,17 @@ js_settings_check_for_update (const SettList  *st_list,
         j_obj = json_object_new_object();
     }
     else {
-        j_obj = json_tokener_parse (s_buff);
-        if (j_obj == NULL) {
+        j_obj = json_tokener_parse_verbose (s_buff, &j_err);
+        if (j_obj == NULL ||
+            json_object_get_type (j_obj) != json_type_object ||
+            j_err != json_tokener_success) {
             #ifdef DEBUG
+            printf ("Json error: %d\n", j_err);
+            printf ("Json type:  %d\n", json_object_get_type (j_obj));
             printf ("Error, wrong json file\n");
             #endif
+            if (j_obj != NULL)
+                json_object_put (j_obj);
             j_obj = json_object_new_object();
         }
     }

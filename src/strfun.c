@@ -173,6 +173,9 @@ str_set_up_wallpaper_command (const char *s_cmd,
     return s_res;
 }
 /*----------------------------------------------------------------------------*/
+/**
+ * @brief  Copy ui_num chars from s_src to s_dest and add a null sign.
+ */
 void
 str_ncpy (char         * __restrict s_dest,
           const char   * __restrict s_src,

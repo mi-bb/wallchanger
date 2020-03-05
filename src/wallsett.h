@@ -36,25 +36,18 @@
  *
  * @var   WallSett::sl_walls
  * @brief SettList list with wallpaper file paths
- *
  * @var   WallSett::s_bgcmd
  * @brief Command used to set wallpaper
- *
  * @var   WallSett::s_lastused
  * @brief Last used wallpaper file path
- *
  * @var   WallSett::rm_mem
  * @brief Structure used for selecting random numbers
- *
  * @var   WallSett::s_cfgfile
  * @brief Configuration file path
- *
  * @var   WallSett::i_chinterval
  * @brief Wallpaper change time interval
- *
  * @var   WallSett::i_random
  * @brief Random wallpaper select option
- *
  * @var   WallSett::i_lastsett
  * @brief Select last used wallpaper on start option
  */
@@ -63,33 +56,38 @@ WallSett {
     SettList   *sl_walls;      /* Wallpaper list */
     const char *s_bgcmd;       /* Background set command */
     const char *s_lastused;    /* Last used wallpaper path */
+    const char *s_cfgfile;     /* Path to configuratoin file */
     RandMem     rm_mem;        /* Random memory */
-    char        s_cfgfile [CFG_PTH_LEN+1];/* Path to configuratoin file */
     uint32_t    i_chinterval;  /* Wallpaper change interval */
     int8_t      i_random;      /* Random wallpaper change */
     int8_t      i_lastsett;    /* Restore last used wallpeper */
 } WallSett;
 /*----------------------------------------------------------------------------*/
 /**
- * @fn  int wallset_init (WallSett *ws_sett)
+ * @fn         int wallset_init (WallSett *ws_sett)
  * @brief      Sets default program settings. 
  * @param[out] ws_sett  Program settings
  * @return     none
  *
- * @fn  void wallset_free (WallSett *ws_sett)
+ * @fn      WallSett * wallset_new (void)
+ * @brief   Create new WallSett item.
+ * @return  New WallSett item
+ *
+ * @fn         void wallset_free (WallSett *ws_sett)
  * @brief      Free allocated memory.
  * @param[out] ws_sett  Pointer to WallSett with all settings
  * @return     none
  */
 /*----------------------------------------------------------------------------*/
-void wallset_init (WallSett *ws_sett);
+void       wallset_init (WallSett *ws_sett);
 
-void wallset_free (WallSett *ws_sett);
+WallSett * wallset_new  (void) __attribute__ ((returns_nonnull));
+
+void       wallset_free (WallSett *ws_sett);
 /*----------------------------------------------------------------------------*/
 /**
  * @fn  int wallset_set_cfgfile (WallSett *ws_sett, const char *s_fn)
- * @brief      Sets config file name or sets default config name if s_fn is
- *             NULL.
+ * @brief      Sets config file name.
  * @param[out] ws_sett Program settings
  * @param[in]  s_fn    String with config file path or NULL.
  * @return     Setting name status.
@@ -170,7 +168,7 @@ void wallset_free (WallSett *ws_sett);
  *
  */
 /*----------------------------------------------------------------------------*/
-int              wallset_set_cfgfile           (WallSett       *ws_sett,
+void             wallset_set_cfgfile           (WallSett       *ws_sett,
                                                 const char     *s_fn);
 
 const char *     wallset_get_cfgfile           (const WallSett *ws_sett)

@@ -19,9 +19,9 @@
  *
  * Automatic wallpaper changer
  *
- * @date February 19, 2020
+ * @date March 06, 2020
  *
- * @version 1.3.10
+ * @version 1.3.11
  *
  * @author Michał Bąbik <michalb1981@o2.pl>
  */
@@ -1040,7 +1040,7 @@ activate (GtkApplication *app,
  * @brief  Application shutdown signal.
  *
  * @param[in,out] application  Pointer to GtkApplication
- * @param[in,out] r_files      Pointer to RFiles with all file names and
+ * @param[in,out] dd_data      DialogData object with widgets and settings info
  *                             settings
  * @return        none
  */

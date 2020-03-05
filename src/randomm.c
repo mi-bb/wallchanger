@@ -102,7 +102,6 @@ randomm_increment_cnt (RandMem *rm_mem)
 void
 randomm_clear (RandMem *rm_mem)
 {
-    //int i = 0;
     for (int i = 0; i < RMMAX; ++i)
         rm_mem->ui_rand[i] = 0;
 }

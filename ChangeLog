@@ -13,6 +13,37 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+2020-03-06  Michal Babik  <michalb1981@o2.pl>
+
+	* chkwch.c, chkwch.h: New file with functions for background working
+	  wchangerd. File contains functions to load settings, change wallpaper
+	  and check for display presence.
+	* jsfun.c (js_json_string_to_stlist, js_settings_check_for_update):
+	  Changed json parse function to json_tokener_parse_verbose from
+	  json_tokener_parse for mode detailed error output, added more
+	  conditions to evaluate json object type.
+	* wcngdmn.c (main): Changed as functions to check settings and set
+	  wallpaper are moved to other file.
+	* wallsett.h: Config file string s_cfgfile in WallSett structure
+	  changed to pointer from array.
+	* wallsett.c (wallset_new): New function to create new WallSett item.
+	  (wallset_free): Added freeing WallSett item and nulling config path.
+	  (wallset_set_cfgfile): Changed to only set a cfg path, changed return
+	  type from int to void.
+	  (wallset_get_cfgfile): Skipped const char in return as it is now a const
+	  char by default.
+	  (wallset_init): Removed memset as config file string is not stored now in
+	  array.
+	* dialogdata.h: Config file path s_cfg_file in DialogData structore changed
+	  from array to pointer.
+	* dialogdata.c (dialogdata_free): Added freeing config path data.
+	  (dialogdata_new): Changed setting config path to dynamic allocate string.
+	* defs.h: Removed CFG_PTH_LEN as it is no longer needed.
+	* cfgfile.c (cfgfile_get_config_path): Renamed from check_config_path_file.
+	  (set_config_file_path): Removed, not needed now.
+	  (cfgfile_get_config_path_exit): New function, returns config file path
+	  or exits if error occurred.
+
 2020-02-20  Michal Babik  <michalb1981@o2.pl>
 
 	* dlgs.c (about_app_dialog): Updated link to my page.
@@ -36,36 +67,35 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 2020-02-06  Michal Babik  <michalb1981@o2.pl>
 
 	* cres.c (create_resize): Function renamed to cres.
-	* cres.c (cres): Changed from calloc to malloc for better performance.
+	  (cres): Changed from calloc to malloc for better performance.
 	* dlgs.c (about_app_dialog): Changed function argument, now it takes
 	  unused pointer to connect directly to event.
 	* dialogdata.c, dialogdata.h: New files with DialogData structrure
 	  and functions, moved from wchanger.c
 	* fdops.c (glist_filter_by_extensions_list): Function removed.
-	* fdops.c (get_directory_filtered_content_glist): New function renamed
+	  (get_directory_filtered_content_glist): New function renamed
 	  from get_directory_content_glist, with added extensions filtering.
 	* imgs.h: Added W_IMG_COUNT to IconImg enum.
 	* imgs.c: Removed sort icon.
 	* iminfo.c (imageinfo_new): calloc changed to malloc.
-	* iminfo.c (imageinfo_set_wxh): Small improvements.
+	  (imageinfo_set_wxh): Small improvements.
 	* jsfun.c (js_settings_check_for_update, js_json_string_to_stlist): Added
 	  check for wrong json file.
 	* rwdt.c (read_file_data): Acting on error in file size read.
 	* treev.c (treeview_sort_compare_fun, treeview_replace_data,
 	  treeview_sort_list): Functions removed.
-	* treev.c (create_tview): Changed to enable sorting on title click.
+	  (create_tview): Changed to enable sorting on title click.
 	* wchanger.c (event_rem_from_list_pressed, event_move_up_pressed,
 	  event_move_down_pressed event_sort_list_pressed, event_rem_dupl_pressed):
 	  Functions removed, signals connected to it's functions directly.
-	* wchanger.c (event_set_wallpaper_pressed, event_save_settings_pressed,
+	  (event_set_wallpaper_pressed, event_save_settings_pressed,
 	  event_on_delete, activate): Changed access to config file path.
-	* wchanger.c (create_buttons_widget): Changed some calls to signal
-	  connect functions to swapped and linked straight to it's destinations.
-	* wchanger.c (create_image_button): Added condition to not add image
-	  to button.
-	* wchanger.c (create_buttons_widget): Removed sort button.
-	* wchanger.c (event_about_app_pressed): Function removed.
-	* wchanger.c (main): DialogData item is created dynamically.
+	  (create_buttons_widget): Changed some calls to signal connect functions
+	  to swapped and linked straight to it's destinations.
+	  (create_image_button): Added condition to not add image to button.
+	  (create_buttons_widget): Removed sort button.
+	  (event_about_app_pressed): Function removed.
+	  (main): DialogData item is created dynamically.
 	* all_files: Some type changes, added some attributes.
 
 2020-01-15  Michal Babik  <michalb1981@o2.pl>
@@ -82,13 +112,13 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 	* preview.c (create_preview_label): New function to create labels
 	  with screen resolution info.
 	* wchanger.c (activate): Added inserting screen description labels.
-	* wchanger.c (event_add_img_dir_pressed): Reading directory content
-	  with one function, not two like it was before.
+	  (event_add_img_dir_pressed): Reading directory content with one
+	  function, not two like it was before.
 	* wpset.c (wallpaper_set_file, wallpaper_set_random,
 	  wallpaper_set_next_in_list): Removed unneeded returns.
-	* wpset.c (wallpaper_set_file): Added system value reading for
-	  compiler not to complain.
-	* wpset.c (wallpaper_startup_set): Removed some unneeded code.
+	  (wallpaper_set_file): Added system value reading for compiler not
+	  to complain.
+	  (wallpaper_startup_set): Removed some unneeded code.
 
 2020-01-11  Michal Babik  <michalb1981@o2.pl>
 
@@ -110,16 +140,16 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 	* fdops.c (get_pbuf_exts_to_ghash): Changed str_dup to strdup.
 	* iminfo.c (imageinfo_new): Function exits instead of returning null
 	  on alloc error.
-	* iminfo.c (imageinfo_new_from_file, imageinfo_set_full_name,
+	  (imageinfo_new_from_file, imageinfo_set_full_name,
 	  imageinfo_set_file_name, imageinfo_set_file_path):
 	  Changed str_dup to strdup.
 	* jsfun.c (js_settings_check_for_update): Changed str_dup to strdup.
 	* setting.c: Removed setting_hashfun function.
-	* setting.c (setting_assign_to_array): Changed function call from
-	  setting_hashfun to hash.
-	* setting.c (setting_copy, setting_create_default): Function exits
-	  instead of returning null on alloc error.
-	* setting.c (setting_new_int, setting_new_uint, setting_new_int64,
+	  (setting_assign_to_array): Changed function call from setting_hashfun
+	  to hash.
+	  (setting_copy, setting_create_default): Function exits instead of
+	  returning null on alloc error.
+	  (setting_new_int, setting_new_uint, setting_new_int64,
 	  setting_new_uint64, setting_new_int32, setting_new_uint32,
 	  setting_new_int16, setting_new_uint16, setting_new_int8,
 	  setting_new_uint8, setting_new_double, setting_new_string,
@@ -128,55 +158,54 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 	  stlist_remove_setting, stlist_remove_setting_with_name):
 	  Changed return value to void.
 	* strfun.c (str_dup, str_ndup): Functions removed from project.
-	* strfun.c (str_name_with_number): Function exits instead of returning
+	  (str_name_with_number): Function exits instead of returning
 	  null on alloc error.
 	* treev.c (liststore_add_item): Function renamed to treeview_add_item.
-	* treev.c (liststore_add_items_glist): Function renamed to
+	  (liststore_add_items_glist): Function renamed to
 	  treeview_add_items_glist.
-	* treev.c (liststore_add_items_gslist): Function renamed to
+	  (liststore_add_items_gslist): Function renamed to
 	  treeview_add_items_gslist.
-	* treev.c (liststore_add_items_settlist): Function renamed to
+	  (liststore_add_items_settlist): Function renamed to
 	  treeview_add_items_settlist.
 	* wchanger.c (set_wallpaper_list): Changed function call from
 	  liststore_add_items_settlist to treeview_add_items_settlist.
-	* wchanger.c (event_add_img_pressed): Changed function call from
+	  (event_add_img_pressed): Changed function call from
 	  liststore_add_items_gslist to treeview_add_items_gslist.
-	* wchanger.c (event_add_img_dir_pressed): Changed function call from
+	  (event_add_img_dir_pressed): Changed function call from
 	  liststore_add_items_glist to treeview_add_items_glist.
 	* misc_files: Added attributes that may improve performance a little bit.
 
 2019-12-22  Michal Babik  <michalb1981@o2.pl>
 
-	* flist.c: File removed from project.
-	* flist.h: File removed from project.
+	* flist.c, flist.h: File removed from project.
 	* hashfun.c: Hash function moved to this file.
 	* defs.h: New file with program defines.
 	* fdops.c: New file with file and directory load operations.
 	* errs.c: New file with function to generate error messages.
+	* rwdt.c: New file, renamed from miscfun.c.
 	* cfgfile.c: New file with functions to get config file path (moved from
 	  miscfun.c).
-	* rwdt.c: New file, renamed from miscfun.c.
-	* cfgfile.c (set_config_file_path): New function to write program settings
+	  (set_config_file_path): New function to write program settings
 	  file path to array of chars.
 	* setting.c (setting_remove_from_array): Function renamed to
 	  setting_reset_array.
 	* setting.h: Added to errors enum SET_ER_WRONG for wrong input data.
 	* settlist.c (stlist_free_p): New function to free list of pointers.
-	* settlist.c (stlist_get_setting_with_id_pos): New function to return
-	  position of setting with specific id.
-	* settlist.c (stlist_get_setting_pos): Changed equivalent code to
+	  (stlist_get_setting_with_id_pos): New function to return position
+	  of setting with specific id.
+	  (stlist_get_setting_pos): Changed equivalent code to
 	  stlist_get_setting_with_id_pos function.
-	* settlist.c (stlist_get_setting_val_str_pos): New function for getting
-	  position of setting with particulat string value.
-	* settlist.c (stlist_get_settings_owned_by_p): New function to return list
-	  of pointers to settings owned by setting with specific id.
-	* settlist.c (stlist_get_settings_in_array_name_p): New function to return
+	  (stlist_get_setting_val_str_pos): New function for getting position
+	  of setting with particulat string value.
+	  (stlist_get_settings_owned_by_p): New function to return list of
+	  pointers to settings owned by setting with specific id.
+	  (stlist_get_settings_in_array_name_p): New function to return
 	  list of pointers to settings in array with given name.
-	* settlist.c (stlist_get_settings_in_array_obj_p): New function to return
+	  (stlist_get_settings_in_array_obj_p): New function to return
 	  list of pointers to settings in array.
-	* settlist.c (stlist_get_settings_main_p): New function to return list
-	  of pointers to top level settings.
-	* settlist.c (stlist_remove_setting_at_pos, stlist_remove_setting,
+	  (stlist_get_settings_main_p): New function to return list of pointers
+	  to top level settings.
+	  (stlist_remove_setting_at_pos, stlist_remove_setting,
 	  stlist_remove_setting_with_name): New function to remove settings from
 	  list.
 	* setts.c (settlist_check_defaults): New function to check default setting
@@ -184,45 +213,41 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 	* wpset.c (wallpaper_set_file, wallpaper_set_random,
 	  wallpaper_set_next_in_list): Changed function return value type from int
 	  to void.
-	* wpset.c (wallpaper_set_random, wallpaper_set_next_in_list): Operating on
+	  (wallpaper_set_random, wallpaper_set_next_in_list): Operating on
 	  SettList instead of FList.
-	* wpset.c (wallpaper_set_next_in_list): Merged some code in function.
+	  (wallpaper_set_next_in_list): Merged some code in function.
 	* wallsett.h: In WallSett structure wallpapet list from FList to SettList
 	  and s_cfgfile from dynamic char string to fixed table.
 	* wallsett.c (wallset_init): Removed flist_init and changed set config
 	  file path from check_config_path_file to set_config_file_path.
-	* wallsett.c (wallset_free): Removed flist_free added stlist_free_p.
-	* wallsett.c (wallset_set_last_used_fn, wallset_set_command): Function
+	  (wallset_free): Removed flist_free added stlist_free_p.
+	  (wallset_set_last_used_fn, wallset_set_command): Function
 	  stores pointer to string instead of string.
 	* wchanger.c: Structure DialogData s_cfg_file changed from dynamic string
 	  to fixed table string.
-	* wchanger.c (widgets_set_settings): Changed
+	  (widgets_set_settings): Changed
 	  stlist_get_settings_in_array_name to stlist_get_settings_in_array_name_p
 	  and stlist_free to stlist_free_p
-	* wchanger.c (event_add_img_dir_pressed): flist_free changed to
+	  (event_add_img_dir_pressed): flist_free changed to
 	  flist_clear
-	* wchanger.c (activate): Changed config file path set to set fixed char
+	  (activate): Changed config file path set to set fixed char
 	  table instead of previous dynamic char string.
-	* wchanger.c (activate, event_on_delete, event_save_settings_pressed,
+	  (activate, event_on_delete, event_save_settings_pressed,
 	  event_set_wallpaper_pressed): Changed displaying error message dialog,
 	  it shows more concrete error message.
-	* wchanger.c (shutdown): Removed freeing config file path string.
-	* wchanger.c (get_default_bg_cmd): Function removed.
+	  (shutdown): Removed freeing config file path string.
+	  (get_default_bg_cmd): Function removed.
 	* wcngdmn.c: Removed FList dependency. Wallpaper changing works directly
 	  on SettList instead of creating FList and working on it.
-	* wcngdmn.c: Settings are loaded dynamically at every wallpaper change and
+	  Settings are loaded dynamically at every wallpaper change and
 	  freed after change.
 
 2019-12-09  Michal Babik  <michalb1981@o2.pl>
 
-	* strfun.c: New file with functions to duplicate string.
-	* strfun.h: New file with functions to duplicate string.
-	* miscfun.c: Removed str_dup and str_ndup function.
-	* miscfun.h: Removed str_dup and str_ndup function.
-	* miscfun.c: Renamed some values for better readability.
-	* miscfun.h: Renamed some values for better readability.
-	* settlist.c: Renamed some values for better readability.
-	* settlist.h: Renamed some values for better readability.
+	* strfun.c, strfun.h: New file with functions to duplicate string.
+	* miscfun.c, miscfun.h: Removed str_dup and str_ndup function.
+	  Renamed some values for better readability.
+	* settlist.c, settlist.h: Renamed some values for better readability.
 	* jsfun.c: Renamed some values for better readability.
 	* setting.c (setting_set_string, setting_set_name, setting_copy2):
 	  strdup function call changed to str_dup.
@@ -238,16 +263,13 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 	* dlgs.c (about_app_dialog): added s_ver argument to pass
 	  string with application version.
-	* wallsett.h: Removed i_lastused from WallSett structure
-	  and functions to set, get and work with this value.
-	* wallsett.c: Removed i_lastused from WallSett structure
+	* wallsett.h, wallsett.c: Removed i_lastused from WallSett structure
 	  and functions to set, get and work with this value.
 	* Added some cont qualifiers in functions.
 
 2019-11-27  Michal Babik  <michalb1981@o2.pl>
 
-	* dlgs.c (about_app_dialog): New function with info dialog.
-	* dlgs.h (about_app_dialog): New function with info dialog.
+	* dlgs.c, dlgs.h (about_app_dialog): New function with info dialog.
 	* wchanger.c: Updates to show application info dialog.
 	* wpset.c: Renamed from wallset.c.
 	* wpset.h: Renamed from wallset.h.
@@ -264,31 +286,29 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 	* preview.h: Wallpaper preview related functions moved here.
 	* setts.c (get_setting_name): New function that returns
 	  setting name based on enum int value.
-	* setts.c (settings_update_last_used): Changed updating of
-	  last used wallpaper setting.
-	* setts.c (settings_update_window_size): Changed updating of
-	  window size setting.
-	* setts.c (settings_check_update): New function to check if
-	  settings are an update.
-	* setts.c (settings_update_file): New function for updating
-	  settings file.
-	* setts.c (settings_check_update_file): New function to
+	  (settings_update_last_used): Changed updating of last used
+	  wallpaper setting.
+	  (settings_update_window_size): Changed updating of window
+	  size setting.
+	  (settings_check_update): New function to check if settings
+	  are an update.
+	  (settings_update_file): New function for updating settings file.
+	  (settings_check_update_file): New function to
 	  check if settings are an update and update if they are.
 	* jsfun.c (js_json_array_to_stlist): Function converts SettList
 	  to json array.
-	* jsfun.c (js_stlist_array_to_json): Converts SettList to json array.
-	* jsfun.c (js_json_object_to_setting): Converts json object to Setting.
-	* jsfun.c (js_setting_to_json_object): Converts Setting to json object.
-	* jsfun.c (js_json_string_to_settlist): Coverts string with json data to
+	  (js_stlist_array_to_json): Converts SettList to json array.
+	  (js_json_object_to_setting): Converts json object to Setting.
+	  (js_setting_to_json_object): Converts Setting to json object.
+	  (js_json_string_to_settlist): Coverts string with json data to
 	  SettList list of Setting objects.
-	* jsfun.c (js_settlist_append_to_json_object): Converts SettList to json
+	  (js_settlist_append_to_json_object): Converts SettList to json
 	  objects and adds it to json object.
-	* jsfun.c (js_settings_check_update): New function to check if
-	  settings are an update.
-	* jsfun.c (js_settings_update_file): New function for updating
-	  settings file.
-	* jsfun.c (js_settings_check_update_file): New function to
-	  check if settings are an update and update if they are.
+	  (js_settings_check_update): New function to check if settings
+	  are an update.
+	  (js_settings_update_file): New function for updating settings file.
+	  (js_settings_check_update_file): New function to check if settings
+	  are an update and update if they are.
 
 2019-11-19  Michal Babik  <michalb1981@o2.pl>
 
@@ -307,12 +327,10 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 	* wchanger.c (get_wallpaper_change_interval): New function to get
 	  change interval based on spin value and combobox.
-	* wchanger.c (set_wallpaper_change_interval): New function to set
-	  change interval.
-	* wchanger.c (create_settings_widget): New combobox to set change
-	  interval minutes or hours.
-	* wchanger.c (get_directory_content): Function removed, changed to
-	  other one.
+	  (set_wallpaper_change_interval): New function to set change interval.
+	  (create_settings_widget): New combobox to set change interval minutes
+	  or hours.
+	  (get_directory_content): Function removed, changed to other one.
 	* iminfo.c (imageinfo_set_full_name, imageinfo_get_full_name,
 	  imageinfo_set_file_name, imageinfo_get_file_name,
 	  imageinfo_set_file_path, imageinfo_get_file_path,
@@ -331,7 +349,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 	* jsfun.c (js_settings_to_json_buff): Couple updates in putting data
 	  to json objects.
-	* jsfun.c (js_settings_read): Corrected freeing buffer.
+	  (js_settings_read): Corrected freeing buffer.
 	* setts.c (settings_set_command): Comparing strings changed.
 	* settstr.c (free_wall_sett): Moved function to free WallSett here.
 

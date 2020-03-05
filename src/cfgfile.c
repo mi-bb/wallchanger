@@ -195,7 +195,7 @@ check_file_premissions_create (const char *s_file)
  * @brief  Check if config file and path exists, check read/write permissions. 
  */
 char *
-check_config_path_file (int *i_err)
+cfgfile_get_config_path (int *i_err)
 {
     const char *s_sett = "wchanger.json"; /* Settings file name */
     const char *s_cfg  = "/.config/";     /* Settings file path */
@@ -254,21 +254,20 @@ check_config_path_file (int *i_err)
 }
 /*----------------------------------------------------------------------------*/
 /**
- * @brief  Write config path to string
+ * @brief  Get config file path or exit app if errors occurred.
  */
-int
-set_config_file_path (char *s_path)
+char *
+cfgfile_get_config_path_exit (void)
 {
-    int    i_res  = ERR_OK;
-    char  *s_cfg  = check_config_path_file (&i_res);
+    char  *s_cfg = NULL;
+    int    i_err = ERR_OK;
 
-    if (i_res != ERR_OK) {
-        free (s_cfg);
-        return i_res;
+    s_cfg  = cfgfile_get_config_path (&i_err);
+
+    if (i_err != ERR_OK) {
+        exit (EXIT_FAILURE);
     }
-    str_ncpy (s_path, s_cfg, CFG_PTH_LEN);
-    free (s_cfg);
-    return i_res;
+    return s_cfg;
 }
 /*----------------------------------------------------------------------------*/
 
