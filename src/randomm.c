@@ -107,15 +107,22 @@ randomm_clear (RandMem *rm_mem)
 }
 /*----------------------------------------------------------------------------*/
 /**
- * @brief  Init random memory object.
+ * @brief  Initialize random memory object.
  */
 void
 randomm_init (RandMem *rm_mem)
 {
-    randomm_clear (rm_mem);
-    rm_mem->ui_cnt = 0;
+    struct tm t_t0   = {0};
+    double d_diff    = 0;
+    rm_mem->ui_cnt   = 0;
     rm_mem->ui_range = 0;
-    srand (time (0));
+    t_t0.tm_year     = 100;
+    t_t0.tm_mday     = 1;
+
+    d_diff = difftime (time (NULL), mktime (&t_t0));
+
+    randomm_clear (rm_mem);
+    srand ((unsigned int) d_diff);
 }
 /*----------------------------------------------------------------------------*/
 /**
