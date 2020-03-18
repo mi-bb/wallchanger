@@ -79,7 +79,7 @@ ImageInfo {
  */
 /*----------------------------------------------------------------------------*/
 ImageInfo * imageinfo_new           (void)
-            __attribute__ ((malloc, returns_nonnull));
+            __attribute__ ((returns_nonnull));
 
 ImageInfo * imageinfo_new_from_file (const char *s_fname)
             __attribute__ ((nonnull (1), returns_nonnull));
