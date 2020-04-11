@@ -34,18 +34,24 @@
 /**
  * @fn  static void wallpaper_set_file (const char *s_cmd,
  *                                      const char *s_wall)
- * @brief         Set particular file as a wallpaper. 
- * @param[in]     s_cmd   Wallpaper set command
- * @param[in]     s_wall  Wallpaper file
- * @return        Wallpaper set status
+ *
+ * @brief  Set particular file as a wallpaper. 
+ *
+ * @param[in]  s_cmd   Wallpaper set command
+ * @param[in]  s_wall  Wallpaper file
+ * @return     Wallpaper set status
  *
  * @fn  static void wallpaper_set_random (WallSett *ws_sett)
- * @brief         Set random image from list as a wallpaper.
+ *
+ * @brief  Set random image from list as a wallpaper.
+ *
  * @param[in,out] ws_sett  Program settings
  * @return        Wallpaper set status
  *
  * @fn  static void wallpaper_set_next_in_list (WallSett *ws_sett)
- * @brief         Set next wallpaper from list.
+ *
+ * @brief  Set next wallpaper from list.
+ *
  * @param[in,out] ws_sett  Program settings
  * @return        Wallpaper change status
  */

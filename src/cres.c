@@ -18,15 +18,12 @@
  * along with Wall Changer.  If not, see <https://www.gnu.org/licenses/>.
  *
  * @brief  Function to create / resize dynamic array
- * 
+ *
  * @author Michał Bąbik <michalb1981@o2.pl>
  */
-
 #include <stdlib.h>
-#include <stdio.h>
-#include "errs.h"
+#include <err.h>
 #include "cres.h"
-
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Create or resize dynamic array
@@ -39,9 +36,7 @@ cres (void        **v_ptr,
     void *s_tmp = NULL; /* Temp pointer for realloc */
 
     if (ul_size == 0 || ul_num == 0) {
-
         if (*v_ptr != NULL) {
-
             free (*v_ptr);
             *v_ptr = NULL;
         }
@@ -49,29 +44,21 @@ cres (void        **v_ptr,
     }
     else {
         if (*v_ptr == NULL) {
-
             *v_ptr = malloc (ul_num * ul_size);
 
             if (*v_ptr == NULL) {
-
-                fputs ("Alloc error\n", stderr);
-                exit (EXIT_FAILURE);
+                errx (EXIT_FAILURE, "Alloc error");
             }
         }
         else {
             s_tmp = realloc (*v_ptr, ul_num * ul_size);
 
             if (s_tmp == NULL) {
-
                 free (*v_ptr);
-
-                fputs ("Alloc error\n", stderr);
-                exit (EXIT_FAILURE);
+                errx (EXIT_FAILURE, "Alloc error");
             }
             else {
-
-            *v_ptr = s_tmp;
-
+                *v_ptr = s_tmp;
             }
         }
     }

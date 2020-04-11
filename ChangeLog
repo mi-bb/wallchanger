@@ -13,6 +13,35 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+2020-04-11  Michal Babik  <michalb1981@o2.pl>
+
+	* chkwch.c (check_daemon_presence): Function for checks if wchangerd
+	  is running.
+	  (check_daemon_exit): New function to count number of running
+	  wchangerd processes and exit if there is more than one.
+	  (check_daemon_kill): Function kills wchangerd process.
+	* cmdline.c, cmdline.h: New files with functions for command line
+	  operations.
+	* procfn.c, procfn.h, procitem.c, procitem.h, proclist.c proclist.h:
+	  New files with functions for getting active process information.
+	* wcngdmn.c (main): Added checking if wchangerd is already running with
+	  check_daemon_exit function.
+	  Added command line options operations, starting, stopping, restarting
+	  wchangerd daemon.
+	* wchanger.c (event_start_daemon_pressed, event_stop_daemon_pressed):
+	  New functions for starting and stopping wchangerd daemon.
+	  (daemon_monitor): New function for monitoring the presence of
+	  wchangerd process.
+	  (create_daemon_widget): Creating widget for monitoring wchangerd
+	  process.
+	* Some changes in error and warning messages, changed to use warnx,
+	  errx functions.
+
+2020-03-25  Michal Babik  <michalb1981@o2.pl>
+
+	* chkwch.c (check_display): Changed display check to reading out
+	  X11 lib.
+
 2020-03-06  Michal Babik  <michalb1981@o2.pl>
 
 	* chkwch.c, chkwch.h: New file with functions for background working

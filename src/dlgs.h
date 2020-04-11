@@ -23,28 +23,37 @@
  */
 #ifndef DLGS_H
 #define DLGS_H
+
 #include <gtk/gtk.h>
 /*----------------------------------------------------------------------------*/
 /**
  * @fn  char * add_images_folder_dialog (GtkWindow *gw_parent)
- * @brief     Select folder dialog.
+ *
+ * @brief  Select folder dialog.
+ *
  * @param[in] gw_parent  Dialog parent widget
  * @return    Foler path or NULL.
  *
  * @fn  GSList * add_images_dialog (GtkWindow *gw_parent)
- * @brief     Select images dialog.
+ *
+ * @brief  Select images dialog.
+ *
  * @param[in] gw_parent  Dialog parent widget
  * @return    List with images.
  *
  * @fn  void message_dialog_error (GtkWindow  *gw_parent,
  *                                 const char *s_message)
- * @brief     Error message dialog.
+ *
+ * @brief  Error message dialog.
+ *
  * @param[in] gw_parent  Dialog parent widget
  * @param[in] s_message  Message to show
  * @return    none
  *
  * @fn  void about_app_dialog (void);
- * @brief     Dialog with information about application.
+ *
+ * @brief  Dialog with information about application.
+ *
  * @param[in] data  Unused pointer for event call
  * @return    none
  */

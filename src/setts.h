@@ -26,7 +26,6 @@
 
 #include "wallsett.h"
 #include "settlist.h"
-//#include "flist.h"
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Settings enum values
@@ -82,7 +81,9 @@ void settlist_to_wallset (const SettList *st_list,
 /**
  * @fn  int settings_update_last_used (const char *s_last_used,
  *                                     const char *s_fname)
- * @brief     Update last used wallpaper position in config file. 
+ *
+ * @brief  Update last used wallpaper position in config file. 
+ *
  * @param[in] s_last_used  Last used file path
  * @param[in] s_fname      Name of file with settings
  * @return    Updating data in settings file status
@@ -90,7 +91,9 @@ void settlist_to_wallset (const SettList *st_list,
  * @fn  int settings_update_window_size (const int   i_w,
  *                                       const int   i_h,
  *                                       const char *s_cfg_file)
- * @brief     Update window size in config file. 
+ *
+ * @brief  Update window size in config file. 
+ *
  * @param[in] i_w         Window width value
  * @param[in] i_h         Window height value
  * @param[in] s_cfg_file  Config file path
@@ -106,10 +109,12 @@ int settings_update_window_size (const int   i_w,
 /*----------------------------------------------------------------------------*/
 /**
  * @fn  char * settings_check_update (const SettList   *st_list,
-                                      const char       *s_fname,
-                                      int              *i_err)
- * @brief      Check if settings in SettList are an update to settings
- *             stored in settings file.
+ *                                    const char       *s_fname,
+ *                                    int              *i_err)
+ *
+ * @brief  Check if settings in SettList are an update to settings
+ *         stored in settings file.
+ *
  * @param[in]  st_list     List of settings
  * @param[in]  s_fname     Config file name
  * @param[out] i_err       Error output
@@ -117,15 +122,19 @@ int settings_update_window_size (const int   i_w,
  *
  * @fn  int settings_update_file (const char *s_buff,
  *                                const char *s_fname)
- * @brief     Update file with new data.
+ *
+ * @brief  Update file with new data.
+ *
  * @param[in] s_buff   String with data to save
  * @param[in] s_fname  File name to save data
  * @return    Saving file status, ERR_OK or error code
  *
  * @fn  int settings_check_update_file (const SettList *st_list,
  *                                      const char     *s_fname)
- * @brief     Check if settings are an update and update file with new data
- *            if they are.
+ *
+ * @brief  Check if settings are an update and update file with new data
+ *         if they are.
+ *
  * @param[in] st_list  List of settings
  * @param[in] s_fname  File name to save data
  * @return    Saving file status, ERR_OK or error code

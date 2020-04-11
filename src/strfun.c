@@ -57,6 +57,7 @@ str_compare (const char *a,
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Creates string with name made of s_name string and number
+ *         ul_no at the end.
  */ 
 char *
 str_name_with_number (const char   *s_name,

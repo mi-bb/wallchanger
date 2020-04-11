@@ -24,6 +24,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+#include <err.h>
 #include "hashfun.h"
 #include "setting.h"
 /*----------------------------------------------------------------------------*/
@@ -735,8 +736,7 @@ setting_copy (const Setting *st_src)
     st_ret = malloc (sizeof (Setting));
 
     if (st_ret == NULL) {
-        fputs ("Alloc error\n", stderr);
-        exit (EXIT_FAILURE);
+        err (EXIT_FAILURE, NULL);
     }
 
     setting_init (st_ret);
@@ -756,8 +756,7 @@ setting_create_default (const char *s_name)
     st_ret = malloc (sizeof (Setting));
 
     if (st_ret == NULL) {
-        fputs ("Alloc error\n", stderr);
-        exit (EXIT_FAILURE);
+        err (EXIT_FAILURE, NULL);
     }
 
     setting_init (st_ret);

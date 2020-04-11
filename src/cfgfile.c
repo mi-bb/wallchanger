@@ -22,6 +22,7 @@
  * @author Michał Bąbik <michalb1981@o2.pl>
  */
 #include <stdio.h>
+#include <err.h>
 #include <string.h>
 #include <stdlib.h>
 #include <unistd.h>
@@ -36,28 +37,38 @@
 /*----------------------------------------------------------------------------*/
 /**
  * @fn  static int check_permissions (const char *s_name, const int i_mode)
- * @brief     Check permissions, existence of file or directory. 
+ *
+ * @brief  Check permissions, existence of file or directory. 
+ *
  * @param[in] s_name  Name of file / directory to check
  * @param[in] i_mode  Permissions to check
  * @return    Checking status
  *
  * @fn  static int check_file_permissions (const char *s_file)
- * @brief     Check file permissions (read write), existence. 
+ *
+ * @brief  Check file permissions (read write), existence. 
+ *
  * @param[in] s_file  File name to check
  * @return    Checking status
  *
  * @fn  static int check_dir_permissions (const char *s_dir)
- * @brief     Check directory permissions (read, write, execute), existence. 
+ *
+ * @brief  Check directory permissions (read, write, execute), existence. 
+ *
  * @param[in] s_dir  Directory name to check
  * @return    Checking status
  *
  * @fn  static int check_dir_premissions_create (const char *s_dir)
- * @brief     Check directory permissions, existence and create if needed. 
+ *
+ * @brief  Check directory permissions, existence and create if needed. 
+ *
  * @param[in] s_dir  Directory name to check / create
  * @return    Checking / creating status
  *
  * @fn  static int check_file_premissions_create (const char *s_file)
- * @brief     Check file permissions, existence and maybe create it. 
+ *
+ * @brief  Check file permissions, existence and maybe create it. 
+ *
  * @param[in] s_file  Name of file to check / create
  * @return    Checking / creating status
  */
@@ -89,9 +100,7 @@ check_permissions (const char *s_name,
     if (access (s_name, F_OK) == 0) {
         /* check permissions */
         if (access (s_name, i_mode) != 0) {
-            fputs (s_name, stderr);
-            fputs (" Bad file / directory permissions\n", stderr);
-            perror("Error occurred");
+            warn ("%s", s_name);
             return ERR_FILE;
         }
         else {
@@ -148,8 +157,7 @@ check_dir_premissions_create (const char *s_dir)
             return ERR_OK;
         }
         else {
-            fputs (s_dir, stderr);
-            fputs (" Directory can not be created\n", stderr);
+            warn ("%s", s_dir);
             return ERR_FILE_CR;
         }
     }
@@ -177,9 +185,7 @@ check_file_premissions_create (const char *s_file)
         f_file = fopen(s_file, "a+");
 
         if (f_file == NULL) {
-            fputs (s_file, stderr);
-            fputs (" File can not be created\n", stderr);
-            perror("Error occurred");
+            warn ("%s", s_file);
             return ERR_FILE_CR;
         }
         else {

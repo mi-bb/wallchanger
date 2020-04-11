@@ -23,25 +23,31 @@
  */
 #ifndef STRFUN_H
 #define STRFUN_H
+
 #include <stddef.h>
 /*----------------------------------------------------------------------------*/
 /**
- * @fn        int str_compare (const char *a, const char *b)
- * @brief     String compare function for getting string position function.
+ * @fn  int str_compare (const char *a, const char *b)
+ *
+ * @brief  String compare function for getting string position function.
+ *
  * @param[in] a  String a 
  * @param[in] b  String b
  * @return    Compare result
  *
- * @fn         char * str_name_with_number (const char   *s_name,
+ * @fn  char * str_name_with_number (const char   *s_name,
  *                                          const size_t  ul_no)
- * @brief      Creates string with name made of s_name string and number
- *             ul_no at the end.
+ *
+ * @brief  Creates string with name made of s_name string and number
+ *         ul_no at the end.
+ *
  * @param[in]  s_name  Input string
  * @param[out] ul_no   Number to append
  * @return     String with name and number to null if could not alloc memory
  *
  * @fn  char * str_replace_in (const char *s_src,
  *                             const char *s_fr, const char *s_to)
+ *
  * @brief  Replace one string with another in a given src_dest string.
  *
  * Function searches in src_dest string for s_fr and replaces it with s_to
@@ -56,7 +62,9 @@
  * @fn  char * str_set_up_wallpaper_command (const char *s_cmd,
  *                                           const char *s_fname,
  *                                           const char *s_sign)
- * @brief     Make wallpapet set command.
+ *
+ * @brief  Make wallpapet set command.
+ *
  * @param[in] s_cmd    Wallpaper set command 
  * @param[in] s_fname  Wallpaper file name 
  * @param[in] s_sign   String to swap with wallpapet name

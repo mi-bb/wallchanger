@@ -98,6 +98,7 @@ void       stlist_clear    (SettList *st_list);
 /**
  * @fn  void stlist_insert_setting (SettList *st_list,
  *                                  Setting  *st_val)
+ *
  * @brief  Inserts Settings object to settings list
  *
  * Function inserts Setting object to list. If object with the same name 
@@ -112,7 +113,9 @@ void       stlist_clear    (SettList *st_list);
  * @fn  int stlist_insert_setting_to_array (SettList   *st_list,
  *                                          Setting    *st_val,
  *                                          const char *s_array_name)
- * @brief      Inserts Settings object to array in settings list
+ *
+ * @brief  Inserts Settings object to array in settings list
+ *
  * @param[out] st_list       SettList list of settings
  * @param[in]  st_val        Settings object
  * @param[in]  s_array_name  Name of array

@@ -135,23 +135,31 @@ Setting {
 void setting_free (Setting *st_set);
 /*----------------------------------------------------------------------------*/
 /**
- * @fn         const char * setting_get_name (const Setting *st_set)
- * @brief      Get Setting object's name string
+ * @fn  const char * setting_get_name (const Setting *st_set)
+ *
+ * @brief  Get Setting object's name string
+ *
  * @param[in]  st_set  Setting object
  * @return     Name string or null if wrong data passed to function
  *
- * @fn         SetValType setting_get_type (const Setting *st_set)
- * @brief      Get the type of Setting
+ * @fn  SetValType setting_get_type (const Setting *st_set)
+ *
+ * @brief  Get the type of Setting
+ *
  * @param[in]  st_set  Setting object
  * @return     Type of Setting
  *
- * @fn         uint32_t setting_get_id (const Setting *st_set)
- * @brief      Get Setting id number
+ * @fn  uint32_t setting_get_id (const Setting *st_set)
+ *
+ * @brief  Get Setting id number
+ *
  * @param[in]  st_set  Setting object
  * @return     Id number
  *
- * @fn         uint32_t setting_get_owner_id (const Setting *st_set)
- * @brief      Get Setting object's owner id number
+ * @fn  uint32_t setting_get_owner_id (const Setting *st_set)
+ *
+ * @brief  Get Setting object's owner id number
+ *
  * @param[in]  st_set  Setting object
  * @return     Owner id number
  */

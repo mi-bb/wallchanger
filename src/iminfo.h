@@ -64,16 +64,22 @@ ImageInfo {
 /*----------------------------------------------------------------------------*/
 /**
  * @fn  ImageInfo * imageinfo_new (void)
+ *
  * @brief  Create new empty ImageInfo object.
+ *
  * @return New ImageInfo object or null if could not alloc memory
  *
  * @fn  ImageInfo *imageinfo_new_from_file (const char *s_fname)
- * @brief     Create new ImageInfo object with data gathered from file s_fname
+ *
+ * @brief  Create new ImageInfo object with data gathered from file s_fname
+ *
  * @param[in] s_fname  String with file name
  * @return    File info in ImageInfo format, null if could not alloc memory
  *
  * @fn void imageinfo_free  (ImageInfo *ii_info)
- * @brief      Free ImageInfo data.
+ *
+ * @brief  Free ImageInfo data.
+ *
  * @param[out] ii_info  Pointer to ImageInfo object
  * @return     none
  */
@@ -87,7 +93,8 @@ ImageInfo * imageinfo_new_from_file (const char *s_fname)
 void        imageinfo_free          (ImageInfo  *ii_info);
 /*----------------------------------------------------------------------------*/
 /**
- * @brief      Get image info of files in list and store it in ImageInfo list.
+ * @brief  Get image info of files in list and store it in ImageInfo list.
+ *
  * @param[in]  gsl_files1  File list to process
  * @return     List of ImageInfo items
  */
@@ -96,62 +103,84 @@ GSList * file_paths_to_imageinfo   (GSList      *gsl_files1);
 /*----------------------------------------------------------------------------*/
 /**
  * @fn  void imageinfo_set_full_name (ImageInfo *ii_info, const char *s_name)
- * @brief      Set the full file name string (path + file name)
+ *
+ * @brief  Set the full file name string (path + file name)
+ *
  * @param[out] ii_info  ImageInfo object to set data
  * @param[in]  s_name   String to set as full file name
  * @return     none
  *
  * @fn  const char * imageinfo_get_full_name (const ImageInfo *ii_info)
- * @brief      Get the full file name string (path + file name)
+ *
+ * @brief  Get the full file name string (path + file name)
+ *
  * @param[out] ii_info  ImageInfo object with data to get
  * @return     Full file name string
  *
  * @fn  void imageinfo_set_file_name (ImageInfo *ii_info, const char *s_name)
- * @brief      Set the file name string
+ *
+ * @brief  Set the file name string
+ *
  * @param[out] ii_info  ImageInfo object to set data
  * @param[in]  s_name   String to set as file name
  * @return     none
  *
  * @fn  const char * imageinfo_get_file_name (const ImageInfo *ii_info)
- * @brief      Get the file name string
+ *
+ * @brief  Get the file name string
+ *
  * @param[out] ii_info  ImageInfo object with data to get
  * @return     File name string
  *
  * @fn  void imageinfo_set_file_path (ImageInfo *ii_info, const char *s_name)
- * @brief      Set the file path string
+ *
+ * @brief  Set the file path string
+ *
  * @param[out] ii_info  ImageInfo object to set data
  * @param[in]  s_name   String to set as file path
  * @return     none
  *
  * @fn  const char * imageinfo_get_file_path (const ImageInfo *ii_info)
- * @brief      Get the file path string
+ *
+ * @brief  Get the file path string
+ *
  * @param[out] ii_info  ImageInfo object with data to get
  * @return     File path string
  *
  * @fn  void imageinfo_set_width (ImageInfo *ii_info, uint16_t ui_val)
- * @brief      Set image width information
+ *
+ * @brief  Set image width information
+ *
  * @param[out] ii_info  ImageInfo object to set data
  * @param[in]  ui_val   Image width value
  * @return     none
  *
  * @fn  int imageinfo_get_width (const ImageInfo *ii_info)
- * @brief      Get image width value
+ *
+ * @brief  Get image width value
+ *
  * @param[out] ii_info  ImageInfo object with data to get
  * @return     Width of an image
  *
  * @fn  void imageinfo_set_height (ImageInfo *ii_info, uint16_t ui_val)
- * @brief      Set image height information
+ *
+ * @brief  Set image height information
+ *
  * @param[out] ii_info  ImageInfo object to set data
  * @param[in]  ui_val   Image height value
  * @return     none
  *
  * @fn  int imageinfo_get_height (const ImageInfo *ii_info)
- * @brief      Get image height value
+ *
+ * @brief  Get image height value
+ *
  * @param[out] ii_info  ImageInfo object with data to get
  * @return     Height of an image
  *
  * @fn  const char * imageinfo_get_wxh (ImageInfo *ii_info)
- * @brief      Get string with image dimensions (width x height)
+ *
+ * @brief  Get string with image dimensions (width x height)
+ *
  * @param[out] ii_info  ImageInfo object with data to get
  * @return     String with image dimensions
  */

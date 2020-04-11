@@ -29,11 +29,16 @@ wchangerd_SOURCES=wcngdmn.c\
                   cfgfile.c cfgfile.h\
                   cres.c cres.h\
                   hashfun.c hashfun.h\
+                  procfn.c procfn.h\
+                  procitem.c procitem.h\
+                  proclist.c proclist.h\
+                  cmdline.c cmdline.h\
                   errs.h\
                   defs.h
 
 wchangercfg_SOURCES=wchanger.c\
                     dialogdata.c dialogdata.h\
+                    chkwch.c chkwch.h\
                     treev.c treev.h\
                     dlgs.c dlgs.h\
                     iminfo.c iminfo.h\
@@ -52,12 +57,15 @@ wchangercfg_SOURCES=wchanger.c\
                     fdops.c fdops.h\
                     cres.c cres.h\
                     hashfun.c hashfun.h\
+                    procfn.c procfn.h\
+                    procitem.c procitem.h\
+                    proclist.c proclist.h\
                     errs.c errs.h\
                     defs.h
 
 wchangercfg_CFLAGS = $(GTK_CFLAGS) $(JSON_CFLAGS) -DG_DISABLE_DEPRECATED
-wchangercfg_LDADD = $(GTK_LIBS) $(JSON_LIBS) 
+wchangercfg_LDADD = $(GTK_LIBS) $(JSON_LIBS) -lX11
 
-wchangerd_CFLAGS = $(JSON_CFLAGS) 
-wchangerd_LDADD = $(JSON_LIBS) 
+wchangerd_CFLAGS = $(JSON_CFLAGS) $(X_CFLAGS)
+wchangerd_LDADD = $(JSON_LIBS) -lX11
 

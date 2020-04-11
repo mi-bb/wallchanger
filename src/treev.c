@@ -29,7 +29,8 @@
  * @fn  static void liststore_set_item (GtkListStore    *gls_list,
  *                                      GtkTreeIter     *gti_iter,
  *                                      const ImageInfo *ii_info)
- * @brief      Set data in GtkListStore.
+ *
+ * @brief  Set data in GtkListStore.
  *
  * Sets data from ii_info ImageInfo to gls_list GtkListStore row pointed
  * by gti_iter GtkTreeIter.
@@ -39,9 +40,11 @@
  * @param[in]  ii_info  Data in ImageInfo object
  * @return     none
  *
- * @fn  static void treeview_add_item     (GtkWidget       *gw_tview,
-                                           const ImageInfo *ii_info)
- * @brief      Insert single data item to GtkListStore.
+ * @fn  static void treeview_add_item (GtkWidget       *gw_tview,
+ *                                     const ImageInfo *ii_info)
+ *
+ * @brief  Insert single data item to GtkListStore.
+ *
  * @param[out] gw_tview    TreeView in which data should be added
  * @param[in]  ii_info  data in ImageInfo object
  * @return     none

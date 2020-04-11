@@ -18,11 +18,12 @@
  * along with Wall Changer.  If not, see <https://www.gnu.org/licenses/>.
  *
  * @brief  Function to create / resize dynamic array
- * 
+ *
  * @author Michał Bąbik <michalb1981@o2.pl>
  */
 #ifndef CRES_H
 #define CRES_H
+
 #include <stddef.h>
 /*----------------------------------------------------------------------------*/
 /**
@@ -31,7 +32,7 @@
  * @param[out] v_ptr    Pointer to data to create or resize
  * @param[in]  ul_num   Number of elements to allocate
  * @param[in]  ul_size  Size of each element
- * @return     Result of operation
+ * @return     None
  */
 void cres (void         **v_ptr,
            const size_t   ul_num, 

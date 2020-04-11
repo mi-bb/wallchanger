@@ -64,7 +64,7 @@ RandMem {
 void randomm_clear (RandMem *rm_mem);
 /*----------------------------------------------------------------------------*/
 /**
- * @brief  Initialize random memory object.
+ * @brief  Init random memory object.
  *
  * @param[out] rm_mem  RandMem object
  * @return     none

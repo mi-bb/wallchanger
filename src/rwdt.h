@@ -28,7 +28,9 @@
 /*----------------------------------------------------------------------------*/
 /**
  * @fn  char * read_file_data (const char *s_fname, int *i_err)
- * @brief      Read some data from file.
+ *
+ * @brief  Read some data from file.
+ *
  * @param[in]  s_fname File name
  * @param[out] i_err   Error output
  * @return     Read data
@@ -36,14 +38,18 @@
  * @fn  char * read_file_data_hash (const char *s_fname,
  *                                  int        *i_err,
  *                                  uint32_t   *i_hash)
- * @brief      Read some data from file and count hash.
+ *
+ * @brief  Read some data from file and count hash.
+ *
  * @param[in]  s_fname File name
  * @param[out] i_err   Error output
  * @param[out] i_hash  Pointer to hash
  * @return     Read data
  *
  * @fn  int save_file_data (const char *s_fname, const char *s_buff)
- * @brief      Save a bunch of data to file.
+ *
+ * @brief  Save a bunch of data to file.
+ *
  * @param[in]  s_fname File name
  * @param[in]  s_buff  Buffer with data
  * @return     Writting status

@@ -22,7 +22,7 @@
  * @author Michał Bąbik <michalb1981@o2.pl>
  */
 #include <stdlib.h>
-#include <stdio.h>
+#include <err.h>
 #include <string.h>
 #include "settlist.h"
 #include "hashfun.h"
@@ -59,6 +59,7 @@ static int_fast32_t stlist_get_setting_with_id_pos (const SettList     *st_list,
 /**
  * @fn  SettList * stlist_get_settings_owned_by (const SettList *st_list,
  *                                               const uint32_t  ui_oid)
+ *
  * @brief  Get list of Setting objects owned by array with owner id ui_oid
  *
  * @param[out]  st_list  SettList list of settings
@@ -67,8 +68,10 @@ static int_fast32_t stlist_get_setting_with_id_pos (const SettList     *st_list,
  *
  * @fn  SettList * stlist_get_settings_owned_by_p (const SettList *st_list,
                                                    const uint32_t  ui_oid)
+
  * @brief  Get list of pointers to Setting objects owned by array with owner
  *         id ui_oid
+ *
  * @param[in]  st_list  SettList list of settings
  * @param[in]  ui_oid   Id of owner array
  * @return     SettList list of pointers to Setting objects
@@ -101,8 +104,7 @@ stlist_new_list (void)
     st_list = malloc (sizeof (SettList));
 
     if (st_list == NULL) {
-        fputs ("Alloc error\n", stderr);
-        exit (EXIT_FAILURE);
+        err (EXIT_FAILURE, NULL);
     }
 
     stlist_init (st_list);
@@ -140,8 +142,7 @@ stlist_reserve (SettList     *st_list,
     if (st_list->st_setting == NULL) {
         st_list->st_setting = malloc (ui_size * sizeof (Setting*));
         if (st_list->st_setting == NULL) {
-            fputs ("Alloc error\n", stderr);
-            exit (EXIT_FAILURE);
+            err (EXIT_FAILURE, NULL);
         }
     }
     else {
@@ -151,8 +152,7 @@ stlist_reserve (SettList     *st_list,
                 setting_free (st_list->st_setting[i]);
             }
             free (st_list->st_setting);
-            fputs ("Alloc error\n", stderr);
-            exit (EXIT_FAILURE);
+            err (EXIT_FAILURE, NULL);
         }
         else {
             st_list->st_setting = s_tmp;
@@ -303,7 +303,6 @@ stlist_get_setting_val_str_pos (const SettList *st_list,
 {
     Setting      *st_sett;
     size_t        ui_cnt = stlist_get_length (st_list);
-    int_fast32_t  i_pos  = -1;
 
     for (size_t i = 0; i < ui_cnt; ++i) {
 
@@ -312,14 +311,11 @@ stlist_get_setting_val_str_pos (const SettList *st_list,
         if (setting_get_type (st_sett) == SET_VAL_STRING) {
 
             if (strcmp (s_val, setting_get_string (st_sett)) == 0) {
-                i_pos = (int_fast32_t) i;
-                break;
-                //return (int_fast32_t) i;
+                return (int_fast32_t) i;
             }
         }
     }
-    return i_pos;
-    //return -1;
+    return -1;
 }
 /*----------------------------------------------------------------------------*/
 /**

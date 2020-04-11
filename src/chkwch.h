@@ -28,9 +28,44 @@
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Check if display is present, exit if it is not.
+ *
  * @return none
  */
 void check_display (void);
+/*----------------------------------------------------------------------------*/
+/**
+ * @brief  Check if wchangerd runs in background.
+ *
+ * @return 1 if it is running 0 if not.
+ */
+int  check_daemon_presence (void);
+/*----------------------------------------------------------------------------*/
+/**
+ * @brief  Print status of wchangerd daemon.
+ *
+ * @return none
+ */
+void check_print_status (void);
+/**
+ * @brief  Check if wchangerd runs in background exit if it is.
+ *
+ * @return none
+ */
+void check_daemon_exit (void);
+/*----------------------------------------------------------------------------*/
+/**
+ * @brief  Start wchangerd process
+ *
+ * @return none
+ */
+void check_daemon_start (void);
+/*----------------------------------------------------------------------------*/
+/**
+ * @brief  Kill wchangerd process
+ *
+ * @return none
+ */
+void check_daemon_kill (void);
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Loads settings, checks for changes in wallpaper list length and
@@ -42,7 +77,8 @@ void check_display (void);
  * needed and changes wallpaper.
  * Function returns wallpaper change interval to use with main loop.
  *
- * @return Wallpaper change interval
+ * @param[in] s_cfg_file  Config file path
+ * @return    Wallpaper change interval
  */
 uint32_t check_settings_change_wallpaper (char *s_cfg_file);
 /*----------------------------------------------------------------------------*/

@@ -21,6 +21,7 @@
  * 
  * @author Michał Bąbik <michalb1981@o2.pl>
  */
+#include <err.h>
 #include "errs.h"
 #include "cfgfile.h"
 #include "dialogdata.h"
@@ -56,11 +57,12 @@ dialogdata_init (DialogData *dd_data)
     dd_data->gw_command     = NULL;
     dd_data->gw_interval    = NULL;
     dd_data->gw_inter_combo = NULL;
+    dd_data->gw_dm_label    = NULL;
     dd_data->s_cfg_file     = NULL;
 }
 /*----------------------------------------------------------------------------*/
 /**
- * @brief   Create new DialogData object.
+ * @brief  Create new DialogData object.
  */
 DialogData *
 dialogdata_new (void)
@@ -71,7 +73,7 @@ dialogdata_new (void)
     dd_data = malloc (sizeof (DialogData));
 
     if (dd_data == NULL) {
-        fputs ("Alloc error\n", stderr);
+        warn ("Alloc error");
         return NULL;
     }
     dialogdata_init (dd_data);

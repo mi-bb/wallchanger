@@ -37,9 +37,13 @@ Compilers and Options
 
 For a normal daily use of this program a good option should be:
 
+    ./configure CFLAGS="-march=native -O2 -pipe"
+
+or more specific:
+
     ./configure CC="gcc" CFLAGS="-march=native -O2 -pipe -std=gnu11"
 
-Or with Clang
+with CLANG:
 
     ./configure CC="clang" CFLAGS="-march=native -O2 -pipe -std=gnu11"
 
@@ -61,4 +65,3 @@ Executing:
 
 will print detailed description of available initial values for 
 configuration parameters.
-

@@ -26,6 +26,7 @@
 /*----------------------------------------------------------------------------*/
 /**
  * @fn  char * cfgfile_get_config_path (int *i_err)
+ *
  * @brief  Check if config file and path exists, check read/write permissions. 
  *
  * Checks config path and file existence, creates them if needed. Function
@@ -35,9 +36,11 @@
  * @param[out] i_err  Error output
  * @return     Config file path
  *
- * @fn         char * cfgfile_get_config_path_exit (void)
- * @brief      Get config file path or exit app if errors occurred.
- * @return     Config file path
+ * @fn  char * cfgfile_get_config_path_exit (void)
+ *
+ * @brief  Get config file path or exit app if errors occurred.
+ *
+ * @return Config file path
  */
 /*----------------------------------------------------------------------------*/
 char * cfgfile_get_config_path              (int  *i_err);

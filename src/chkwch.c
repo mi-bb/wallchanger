@@ -21,12 +21,15 @@
  * 
  * @author Michał Bąbik <michalb1981@o2.pl>
  */
-#include <stdlib.h>
 #include <stdio.h>
+#include <stdlib.h>
+#include <err.h>
 #include <stdint.h>
+#include <X11/Xlib.h>
 #include "wpset.h"
 #include "setts.h"
 #include "errs.h"
+#include "procfn.h"
 #include "chkwch.h"
 /*----------------------------------------------------------------------------*/
 /**
@@ -35,9 +38,75 @@
 void
 check_display (void)
 {
-    if (getenv ("DISPLAY") == NULL) {
-        fputs ("Could not detect display\n", stderr);
-        exit (EXIT_FAILURE);
+    Display *display;
+
+    display = XOpenDisplay (NULL);
+    if (display == NULL) {
+        errx (EXIT_FAILURE, "Could not detect display");
+    }
+    XCloseDisplay(display);
+}
+/*----------------------------------------------------------------------------*/
+/**
+ * @brief  Check if wchangerd runs in background.
+ */
+int
+check_daemon_presence (void)
+{
+    return process_count_except_current ("wchangerd");
+}
+/*----------------------------------------------------------------------------*/
+/**
+ * @brief  Print status of wchangerd daemon.
+ */
+void
+check_print_status (void)
+{
+    int i_cnt = check_daemon_presence ();
+    if (i_cnt > 0) {
+        printf ("wchangerd is running\n");
+    }
+    else {
+        printf ("wchangerd is stopped\n");
+    }
+}
+/*----------------------------------------------------------------------------*/
+/**
+ * @brief  Check if wchangerd runs in background exit if it is.
+ */
+void
+check_daemon_exit (void)
+{
+    if (check_daemon_presence () > 0) {
+        errx (EXIT_FAILURE, "wchangerd is already running !" );
+    }
+}
+/*----------------------------------------------------------------------------*/
+/**
+ * @brief  Start wchangerd process
+ */
+void
+check_daemon_start (void)
+{
+    int i_res __attribute__ ((unused)) = 0; /* Result of system command */
+    i_res = system ("wchangerd --start &");
+}
+/*----------------------------------------------------------------------------*/
+/**
+ * @brief  Kill wchangerd process
+ */
+void
+check_daemon_kill (void)
+{
+    int i_cnt = 0;
+
+    printf ("Stopping wchangerd ... ");
+    i_cnt = process_kill_all_except_current ("wchangerd");
+    if (i_cnt > 0) {
+        printf ("Stopped\n");
+    }
+    else {
+        printf ("Could not find wchangerd\n");
     }
 }
 /*----------------------------------------------------------------------------*/
@@ -66,11 +135,10 @@ check_settings_change_wallpaper (char *s_cfg_file)
         exit (EXIT_FAILURE);
     }
     if (stlist_get_length (st_list) == 0) {
-        fputs ("Empty config file\n", stderr);
         stlist_free (st_list);
         free (ws_sett);
         free (s_cfg_file);
-        exit (EXIT_FAILURE);
+        errx (EXIT_FAILURE, "Empty config file");
     }
 
     settlist_check_defaults (st_list);
@@ -82,11 +150,10 @@ check_settings_change_wallpaper (char *s_cfg_file)
 
     if (ui_nlen == 0) {
         /* Empty wallpaper list, free and exit */
-        fputs ("Empty wallpaper list\n", stderr);
         stlist_free (st_list);
         wallset_free (ws_sett);
         free (s_cfg_file);
-        exit (EXIT_FAILURE);
+        errx (EXIT_FAILURE, "Empty wallpaper list");
     }
     else if (ui_len == ui_nlen) {
         /* Wallpaper list length not changed, change wallpaper */

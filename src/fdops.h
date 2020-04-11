@@ -23,12 +23,13 @@
  */
 #ifndef FDOPS_H
 #define FDOPS_H
+
 #include <gmodule.h>
 /*----------------------------------------------------------------------------*/
 /**
- * @fn         GList * get_dir_content_filter_images (const char *s_dir)
- * @brief      Get list of files in directory, filter out non images and
- *             return list in GList format.
+ * @brief  Get list of files in directory, filter out non images and
+ *         return list in GList format.
+ *
  * @param[in]  s_dir  Directory path to scan
  * @return     GList with file names 
  */

@@ -47,6 +47,7 @@ SettList * js_settings_read (const char *s_fname,
  * @fn  char * js_settings_check_for_update (const SettList *st_list,
  *                                           const char     *s_fname,
  *                                           int            *i_err)
+ *
  * @brief  Check if settings in SettList are an update to settings
  *         stored in settings file.
  *
@@ -63,13 +64,16 @@ SettList * js_settings_read (const char *s_fname,
  * @return     String with updated settings or null if there is no update.
  *
  * @fn  int js_settings_update_file (const char *s_buff, const char *s_fname)
- * @brief      Update file with new data
+ *
+ * @brief  Update file with new data
+ *
  * @param[in]  s_buff   String with data to save
  * @param[in]  s_fname  File name to save data
  * @return     Saving file status, ERR_OK or error code
  *
  * @fn  int js_settings_check_update_file (const SettList *st_list,
  *                                         const char     *s_fname)
+ *
  * @brief  Check if settings are an update and update file with new data
  *         if they are.
  *

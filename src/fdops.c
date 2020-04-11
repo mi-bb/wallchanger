@@ -24,23 +24,30 @@
 #include <gdk-pixbuf/gdk-pixbuf.h>
 #include <string.h>
 #include <stdio.h>
+#include <err.h>
 #include "strfun.h"
 #include "fdops.h"
 /*----------------------------------------------------------------------------*/
 /**
  * @fn  static const char * get_file_ext (const char *s_fn)
- * @brief      Get file extenstion.
+ *
+ * @brief  Get file extenstion.
+ *
  * @param[in]  s_fn String with file path
  * @return     Pointer to file extension
  *
  * @fn  static GHashTable * get_pbuf_exts_to_ghash (void)
- * @brief      Get list of extensions supported by GdkPixbuf.
- * @return     Hash table with extensions 
+ *
+ * @brief  Get list of extensions supported by GdkPixbuf.
+ *
+ * @return  Hash table with extensions 
  *
  * @fn  static GList * get_directory_filtered_content_glist (const char *s_dir,
                                                              GHashTable *gh_exts)
- * @brief      Get list of files in directory, filter extensions from
- *             GHashTable, return as GList.
+
+ * @brief  Get list of files in directory, filter extensions from GHashTable,
+ *         return as GList.
+ *
  * @param[in]  s_dir    Directory path to scan
  * @param[in]  gh_exts  GHashTable with extensions
  * @return     GList with file names 
@@ -142,8 +149,7 @@ get_directory_filtered_content_glist (const char *s_dir,
     s_path = malloc ((ul_dlen + 2) * sizeof (char));
 
     if (s_path == NULL) {
-        fputs ("Alloc error\n", stderr);
-        exit (EXIT_FAILURE);
+        err (EXIT_FAILURE, NULL);
     }
     memcpy (s_path, s_dir, ul_dlen);
 
@@ -154,7 +160,7 @@ get_directory_filtered_content_glist (const char *s_dir,
 
     dr = opendir (s_path); 
     if (dr == NULL) {
-        printf ("Could not open current directory\n"); 
+        warn ("%s", s_path);
         free (s_path);
         return NULL; 
     }
@@ -171,8 +177,7 @@ get_directory_filtered_content_glist (const char *s_dir,
                 s_pthfn = malloc ((ul_dlen + strlen (de->d_name)+1) *
                                   sizeof (char));
                 if (s_pthfn == NULL) {
-                    fputs ("Alloc error\n", stderr);
-                    exit (EXIT_FAILURE);
+                    err (EXIT_FAILURE, NULL);
                 }
                 strcpy (s_pthfn, s_path);
                 strcat (s_pthfn, de->d_name);

@@ -27,23 +27,28 @@
 #include <gtk/gtk.h>
 /*----------------------------------------------------------------------------*/
 /**
- * @fn         void get_screen_size (int *i_scr_w,
+ * @fn  void get_screen_size (int *i_scr_w,
  *                                   int *i_scr_h)
- * @brief      Get screen size.
+ * @brief  Get screen size.
+ *
  * @param[out] i_scr_w  Screen width
  * @param[out] i_scr_h  Screen height
  * @return     none
  *
- * @fn         void preview_from_file (GtkWidget  *gw_img_prev,
+ * @fn  void preview_from_file (GtkWidget  *gw_img_prev,
  *                                     const char *s_file)
- * @brief      Make preview image widget of image (file path).
+ *
+ * @brief  Make preview image widget of image (file path).
+ *
  * @param[out] gw_img_prev  Preview image widget
  * @param[in]  s_file       File to make preview image
  * @return     none
  *
- * @fn         GtkWidget * create_preview_label (void)
- * @brief      Create labels with screen resolution info.
- * @return     GtkWidget with screen resolution info.
+ * @fn  GtkWidget * create_preview_label (void)
+ *
+ * @brief  Create labels with screen resolution info.
+ *
+ * @return GtkWidget with screen resolution info.
  */
 /*----------------------------------------------------------------------------*/
 void        get_screen_size      (int        *i_scr_w,

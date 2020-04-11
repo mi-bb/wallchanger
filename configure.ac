@@ -16,14 +16,18 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 AC_PREREQ([2.69])
-AC_INIT([wallchanger], [1.3.11], [michalb1981@o2.pl], [wallchanger],\
+AC_INIT([wallchanger], [1.4.0], [michalb1981@o2.pl], [wallchanger],\
         [https://www.nongnu.org/wallchanger/])
 AM_INIT_AUTOMAKE
 AC_CONFIG_SRCDIR([src/settlist.c])
 AC_CONFIG_HEADERS([config.h])
+AC_GNU_SOURCE
 
 # Checks for programs.
 AC_PROG_CC
+AC_PATH_XTRA
+
+AC_CHECK_LIB([procstat], [procstat_getprocs], [], [], [])
 
 # Checks for libraries.
 PKG_CHECK_MODULES([GTK],  [gtk+-3.0 >= [3.22.0]])
@@ -46,6 +50,8 @@ AC_TYPE_UINT64_T
 AC_TYPE_UINT8_T
 
 # Checks for library functions.
+AC_FUNC_FORK
+AC_FUNC_MALLOC
 AC_FUNC_REALLOC
 AC_CHECK_FUNCS([memset mkdir strdup strndup strrchr strstr])
 

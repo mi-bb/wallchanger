@@ -22,6 +22,7 @@
  * @author Michał Bąbik <michalb1981@o2.pl>
  */
 #include <stdio.h>
+#include <err.h>
 #include <string.h>
 #include <stdlib.h>
 #include <unistd.h>
@@ -50,8 +51,7 @@ read_file_data (const char  *s_fname,
     /* Error opening file */
     if (f_file == NULL) {
         *i_err = ERR_FILE;
-        fputs (s_fname, stderr);
-        perror("Error occurred");
+        warn ("%s", s_fname);
         return NULL;
     }
     /* get file size */
@@ -68,8 +68,7 @@ read_file_data (const char  *s_fname,
     /* Function failure */
     if (l_size < 0) {
         *i_err = ERR_FILE_RW;
-        fputs (s_fname, stderr);
-        perror("Error occurred");
+        warn ("%s", s_fname);
         fclose (f_file);
         return NULL;
     }
@@ -81,9 +80,7 @@ read_file_data (const char  *s_fname,
 
     if (ui_res != (size_t) l_size) {
         *i_err = ERR_FILE_RW;
-        fputs (s_fname, stderr);
-        fputs (" File reading error\n", stderr);
-        perror("Error occurred");
+        warn ("%s", s_fname);
     }
     fclose (f_file);
 
@@ -133,8 +130,7 @@ save_file_data (const char *s_fname,
     f_file = fopen (s_fname, "wb");
 
     if (f_file == NULL) {
-        fputs (s_fname, stderr);
-        perror("Error occurred");
+        warn ("%s", s_fname);
         return ERR_FILE;
     }
     ui_size = strlen(s_buff);
@@ -142,9 +138,7 @@ save_file_data (const char *s_fname,
     fclose (f_file);
 
     if (ui_res != ui_size) {
-        fputs (s_fname, stderr);
-        fputs (" File writting error\n", stderr);
-        perror("Error occurred");
+        warn ("%s", s_fname);
         return ERR_FILE_RW;
         }
     return ERR_OK;

@@ -28,23 +28,29 @@
 /*----------------------------------------------------------------------------*/
 /**
  * @fn  int wallpaper_change (WallSett *ws_sett)
- * @brief         Wallpaper change during program work.
+ *
+ * @brief  Wallpaper change during program work.
+ *
  * @param[in,out] ws_sett  Program settings
  * @return        Wallpaper change status
  *
  * @fn  int wallpaper_startup_set (WallSett *ws_sett)
- * @brief         Setting wallpaper image at program startup.
+ *
+ * @brief  Setting wallpaper image at program startup.
+ *
  * @param[in,out] ws_sett  Program settings
  * @return        Wallpaper set status
  *
  * @fn  int wallpaper_dialog_set (const char *s_cmd,
  *                                const char *s_file,
  *                                const char *s_cfg_file)
- * @brief         Setting wallpaper out of settings dialog.
- * @param[in]     s_cmd       Wallpaper set command
- * @param[in]     s_file      Wallpaper file path
- * @param[in]     s_cfg_file  Config file path
- * @return        Wallpaper set status
+ *
+ * @brief  Setting wallpaper out of settings dialog.
+ *
+ * @param[in]  s_cmd       Wallpaper set command
+ * @param[in]  s_file      Wallpaper file path
+ * @param[in]  s_cfg_file  Config file path
+ * @return     Wallpaper set status
  */
 /*----------------------------------------------------------------------------*/
 int wallpaper_change      (WallSett   *ws_sett);

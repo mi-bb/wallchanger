@@ -40,6 +40,8 @@ typedef enum IconImg {
     W_ICON_INFO,     /**< Info about application icon */
     W_ICON_EXIT,     /**< Exit app icon */
     W_ICON_ABOUT,    /**< About app dialog image */
+    W_ICON_PLAY,     /**< Play icon */
+    W_ICON_STOP,     /**< Stop icon */
     W_IMG_SCREEN_1,  /**< Preview image top part (screen) */
     W_IMG_SCREEN_2,  /**< Preview image middle part (screen) */
     W_IMG_SCREEN_3,  /**< Preview image bottom part (screen) */

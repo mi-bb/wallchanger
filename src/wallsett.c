@@ -23,7 +23,7 @@
 */
 #include <string.h>
 #include <stdlib.h>
-#include <stdio.h>
+#include <err.h>
 #include "cfgfile.h"
 #include "errs.h"
 #include "wallsett.h"
@@ -35,15 +35,13 @@
 void
 wallset_init (WallSett *ws_sett)
 {
-    ws_sett->i_chinterval  = 30;     /* Wallpaper change interval */ 
-    ws_sett->i_random      = 0;      /* Random wallpaper change */
-    ws_sett->i_lastsett    = 0;      /* Last used wallpaper setting */
-    ws_sett->s_cfgfile     = NULL;   /* Configuration file path */
-    ws_sett->s_lastused    = NULL;   /* Last used wallpaper file name */
-    ws_sett->s_bgcmd       = NULL;   /* Background set command */
-    ws_sett->sl_walls      = NULL;   /* Wallpaper list */
-
-    //memset (ws_sett->s_cfgfile, 0, sizeof (ws_sett->s_cfgfile));
+    ws_sett->i_chinterval = DEFAULT_INTERVAL_VAL; /* Wallpaper change interv. */
+    ws_sett->i_random     = 0;      /* Random wallpaper change */
+    ws_sett->i_lastsett   = 0;      /* Last used wallpaper setting */
+    ws_sett->s_cfgfile    = NULL;   /* Configuration file path */
+    ws_sett->s_lastused   = NULL;   /* Last used wallpaper file name */
+    ws_sett->s_bgcmd      = NULL;   /* Background set command */
+    ws_sett->sl_walls     = NULL;   /* Wallpaper list */
     randomm_init (&ws_sett->rm_mem);
 }
 /*----------------------------------------------------------------------------*/
@@ -55,8 +53,7 @@ wallset_new (void)
     ws_sett = malloc (sizeof (WallSett));
 
     if (ws_sett == NULL) {
-        fputs ("Alloc error\n", stderr);
-        exit (EXIT_FAILURE);
+        err (EXIT_FAILURE, NULL);
     }
     wallset_init (ws_sett);
 

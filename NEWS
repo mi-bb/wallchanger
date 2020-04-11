@@ -14,6 +14,15 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 ----------------------------------------------------------------------
+v1.4.0                                                      2020-04-11
+
+    * Added controls for starting, stopping and monitoring of
+      wchangerd daemon.
+    * Command line options for starting, stopping, restarting,
+      getting status of wchangerd daemon.
+    * Source code updates.
+
+----------------------------------------------------------------------
 v1.3.11                                                     2020-03-06
 
     * Code improvements.

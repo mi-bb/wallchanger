@@ -27,7 +27,8 @@
 /*----------------------------------------------------------------------------*/
 /**
  * @fn  static GdkPixbuf * make_prev_screen_pbuf (GdkRectangle *gr_rect)
- * @brief      Paint a preview screen.
+ *
+ * @brief  Paint a preview screen.
  *
  * Create preview image (monitor) in GdkPixbuf format.
  *
@@ -38,7 +39,8 @@
  * @fn  static void paint_pbuf_on_pbuf (GdkPixbuf          *gp_dest,
  *                                      const GdkPixbuf    *gp_src,
  *                                      const GdkRectangle *gr_area)
- * @brief       Paint pixbuf on another pixbuf.
+ *
+ * @brief  Paint pixbuf on another pixbuf.
  *
  * Paint GdkPixbuf image pointed by gp_src on GdkPixbuf pointed by gp_dest.
  * Image will be painted in rectangle described in gr_area GdkRectangle.
@@ -47,16 +49,18 @@
  * @param[in]  gp_src   Source pixpuf to paint on destination one
  * @param[in]  gr_area  GdkRectangle with area where preview image can be 
  *                      painted
- * @return      none
+ * @return     none
  *
  * @fn  static GdkPixbuf * make_image_preview (const char *s_fname)
- * @brief      Create pixbuf preview of image from path.
+ *
+ * @brief  Create pixbuf preview of image from path.
  *
  * Function creates GdkPixbuf with preview image (monitor) and a scalled
  * wallpaper in it. If passed s_fname is null, wallpaper will not be
  * painted inside preview image.
  *
  * @param[in]  s_fname   Image path
+ *
  * @return     Pixbuf with preview image.
  */
 /*----------------------------------------------------------------------------*/

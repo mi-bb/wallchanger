@@ -43,7 +43,9 @@
  * @fn  static void js_json_array_to_stlist (json_object *j_array,
  *                                           SettList    *st_list,
  *                                           const char  *s_array_name)
- * @brief      Get items from Json array and add them to SettList object.
+ *
+ * @brief  Get items from Json array and add them to SettList object.
+ *
  * @param[in]  j_array       Array of Json objects
  * @param[in]  st_list       SettList list to add elements
  * @param[in]  s_array_name  Name of array for the elements
@@ -52,7 +54,9 @@
  * @fn  static void js_stlist_array_to_json (const SettList *st_list,
  *                                           const Setting  *st_sett,
  *                                           json_object    *j_array)
- * @brief      Get items from Setting array and save them in Json array object.
+ *
+ * @brief  Get items from Setting array and save them in Json array object.
+ *
  * @param[in]  st_list  List of all settings
  * @param[in]  st_sett  Array Setting to process
  * @param[out] j_array  Json aray object to insert data
@@ -61,7 +65,9 @@
  * @fn  static Setting * js_json_obj_to_setting (json_object *val,
  *                                               const char  *s_name,
  *                                               SettList    *st_list)
- * @brief      Convert Json object to Setting object
+ *
+ * @brief  Convert Json object to Setting object
+ *
  * @param[in]  val      Json object to process
  * @param[in]  s_name   Destination Setting name
  * @param[out] st_list  SettList to insert settings
@@ -69,7 +75,9 @@
  *
  * @fn  static json_object * js_setting_to_json_obj (const SettList *st_list,
  *                                                   const Setting  *st_sett)
- * @brief      Convert Setting object to Json object
+ *
+ * @brief  Convert Setting object to Json object
+ *
  * @param[in]  st_list   List of all settings
  * @param[in]  st_sett   Setting to examine
  * @return     Json object
@@ -95,12 +103,15 @@ static json_object * js_setting_to_json_obj  (const SettList     *st_list,
 /*----------------------------------------------------------------------------*/
 /**
  * @fn  static SettList * js_json_string_to_stlist (const char *s_buff)
- * @brief     Convert raw Json data string to SettList list of Setting objects.
+ *
+ * @brief  Convert raw Json data string to SettList list of Setting objects.
+ *
  * @param[in] s_buff  String with Json data
  * @return    SettList list
  *
  * @fn  static void js_stlist_add_to_json_obj (const SettList *st_list,
  *                                             json_object    *j_obj)
+ *
  * @brief  Convert Setting items from SettList and put them in Json object
  *
  * @param[in]  st_list  List of Setting items

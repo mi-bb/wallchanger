@@ -22,6 +22,7 @@
  * @author Michał Bąbik <michalb1981@o2.pl>
  */
 #include <stdio.h>
+#include <err.h>
 #include <string.h>
 #include <gdk-pixbuf/gdk-pixbuf.h>
 #include "cres.h"
@@ -30,11 +31,12 @@
 /*----------------------------------------------------------------------------*/
 /**
  * @fn  static void imageinfo_init (ImageInfo *ii_info)
- * @brief      Init ImageInfo data.
+ *
+ * @brief  Init ImageInfo data.
+ *
  * @param[out] ii_info  Pointer to ImageInfo object
  * @return     none
  */
-/*----------------------------------------------------------------------------*/
 static void imageinfo_init     (ImageInfo       *ii_info);
 /*----------------------------------------------------------------------------*/
 /**
@@ -62,8 +64,7 @@ imageinfo_new (void)
     ii_res = malloc (sizeof (ImageInfo));
 
     if (ii_res == NULL) {
-        fputs ("Alloc error\n", stderr);
-        exit (EXIT_FAILURE);
+        err (EXIT_FAILURE, NULL);
     }
     imageinfo_init (ii_res);
 
