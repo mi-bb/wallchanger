@@ -106,7 +106,7 @@ wallpaper_set_random (WallSett *ws_sett)
         return;
 
     /* Get random number */
-    i_pos = randomm_get_number (&ws_sett->rm_mem);
+    i_pos = randomm_get_number (ws_sett->rm_rand);
 
     /* Get the file name at the random position */
     s_fn = setting_get_string (

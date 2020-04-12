@@ -42,11 +42,11 @@ wallset_init (WallSett *ws_sett)
     ws_sett->s_lastused   = NULL;   /* Last used wallpaper file name */
     ws_sett->s_bgcmd      = NULL;   /* Background set command */
     ws_sett->sl_walls     = NULL;   /* Wallpaper list */
-    randomm_init (&ws_sett->rm_mem);
+    ws_sett->rm_rand      = NULL;   /* Random mem pointer */
 }
 /*----------------------------------------------------------------------------*/
 WallSett *
-wallset_new (void)
+wallset_new (RandMem *rm_rand)
 {
     WallSett *ws_sett;
 
@@ -56,6 +56,7 @@ wallset_new (void)
         err (EXIT_FAILURE, NULL);
     }
     wallset_init (ws_sett);
+    ws_sett->rm_rand = rm_rand;
 
     return ws_sett;
 }
@@ -70,6 +71,7 @@ wallset_free (WallSett *ws_sett)
     ws_sett->s_bgcmd    = NULL;
     ws_sett->s_lastused = NULL;
     ws_sett->s_cfgfile  = NULL;
+    ws_sett->rm_rand    = NULL;
     free (ws_sett);
 }
 /*----------------------------------------------------------------------------*/

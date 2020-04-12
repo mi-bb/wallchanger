@@ -16,7 +16,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 AC_PREREQ([2.69])
-AC_INIT([wallchanger], [1.4.0], [michalb1981@o2.pl], [wallchanger],\
+AC_INIT([wallchanger], [1.4.1], [michalb1981@o2.pl], [wallchanger],\
         [https://www.nongnu.org/wallchanger/])
 AM_INIT_AUTOMAKE
 AC_CONFIG_SRCDIR([src/settlist.c])
@@ -27,15 +27,21 @@ AC_GNU_SOURCE
 AC_PROG_CC
 AC_PATH_XTRA
 
+# Checks for procstat for FreeBSD.
 AC_CHECK_LIB([procstat], [procstat_getprocs], [], [], [])
 
 # Checks for libraries.
 PKG_CHECK_MODULES([GTK],  [gtk+-3.0 >= [3.22.0]])
 PKG_CHECK_MODULES([JSON], [json-c >= [0.12.1]])
 
+# Check for bash completion and set its directory.
+PKG_CHECK_VAR(bashcompdir, [bash-completion], [completionsdir], ,
+  bashcompdir="${sysconfdir}/bash_completion.d")
+AC_SUBST(bashcompdir)
+
 # Checks for header files.
 AC_CHECK_HEADERS([inttypes.h stddef.h stdint.h stdlib.h string.h unistd.h\
-                  json-c/json.h])
+                  json-c/json.h sys/param.h])
 
 # Checks for typedefs, structures, and compiler characteristics.
 AC_C_INLINE
@@ -44,6 +50,7 @@ AC_TYPE_INT32_T
 AC_TYPE_INT64_T
 AC_TYPE_INT8_T
 AC_TYPE_SIZE_T
+AC_TYPE_UID_T
 AC_TYPE_UINT16_T
 AC_TYPE_UINT32_T
 AC_TYPE_UINT64_T
@@ -53,8 +60,9 @@ AC_TYPE_UINT8_T
 AC_FUNC_FORK
 AC_FUNC_MALLOC
 AC_FUNC_REALLOC
-AC_CHECK_FUNCS([memset mkdir strdup strndup strrchr strstr])
+AC_FUNC_MKTIME
+AC_CHECK_FUNCS([memset mkdir strchr strdup strndup strrchr strstr])
 
-AC_CONFIG_FILES([Makefile src/Makefile])
+AC_CONFIG_FILES([Makefile src/Makefile bash_comp/Makefile])
 AC_OUTPUT
 

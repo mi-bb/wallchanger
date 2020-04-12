@@ -25,6 +25,7 @@
 #define CHKWCH_H
 
 #include <stdint.h>
+#include "randomm.h"
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Check if display is present, exit if it is not.
@@ -78,9 +79,11 @@ void check_daemon_kill (void);
  * Function returns wallpaper change interval to use with main loop.
  *
  * @param[in] s_cfg_file  Config file path
+ * @param[in] rm_rand     RandMem object
  * @return    Wallpaper change interval
  */
-uint32_t check_settings_change_wallpaper (char *s_cfg_file);
+uint32_t check_settings_change_wallpaper (char    *s_cfg_file,
+                                          RandMem *rm_rand);
 /*----------------------------------------------------------------------------*/
 #endif
 

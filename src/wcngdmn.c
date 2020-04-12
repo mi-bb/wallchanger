@@ -19,9 +19,9 @@
  *
  * Automatic wallpaper changer
  *
- * @date April 11, 2020
+ * @date April 12, 2020
  *
- * @version 1.4.0
+ * @version 1.4.1
  *
  * @author Michał Bąbik <michalb1981@o2.pl>
  */
@@ -35,6 +35,7 @@
 #include "cmdline.h"
 #include "cfgfile.h"
 #include "chkwch.h"
+#include "randomm.h"
 /*----------------------------------------------------------------------------*/
 /**
  * @brief Main function.
@@ -52,7 +53,10 @@ main (int    argc,
     uint32_t  ui_cnt    = 0;    /* Minute counter */
     uint32_t  ui_ch_int = 0;    /* Change interval */
     char     *s_cfgfile = NULL; /* Config file path */
+    RandMem   rm_rand;          /* Ramdom memory structure */
     struct gengetopt_args_info args_info;
+
+    randomm_init (&rm_rand);
 
     if (cmdline_parser (argc, argv, &args_info) != 0)
         exit(EXIT_FAILURE);
@@ -112,12 +116,12 @@ main (int    argc,
     }
 
     s_cfgfile = cfgfile_get_config_path_exit ();
-    ui_ch_int = check_settings_change_wallpaper (s_cfgfile);
+    ui_ch_int = check_settings_change_wallpaper (s_cfgfile, &rm_rand);
 
     while (1) {
 
         if (++ui_cnt > ui_ch_int) {
-            ui_ch_int = check_settings_change_wallpaper (s_cfgfile);
+            ui_ch_int = check_settings_change_wallpaper (s_cfgfile, &rm_rand);
             ui_cnt = 1;
         }
         sleep (60);

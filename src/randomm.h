@@ -50,9 +50,9 @@
  */
 typedef struct
 RandMem {
-    uint32_t ui_rand[RMMAX];
-    uint32_t ui_range;
-    uint32_t ui_cnt;
+    int32_t i_rand[RMMAX];
+    int32_t i_range;
+    int32_t i_cnt;
 } RandMem;
 /*----------------------------------------------------------------------------*/
 /**
@@ -64,7 +64,7 @@ RandMem {
 void randomm_clear (RandMem *rm_mem);
 /*----------------------------------------------------------------------------*/
 /**
- * @brief  Init random memory object.
+ * @brief  Initialize random memory object.
  *
  * @param[out] rm_mem  RandMem object
  * @return     none
@@ -79,7 +79,7 @@ void randomm_init (RandMem *rm_mem);
  * @return     none
  */
 void randomm_set_range (RandMem  *rm_mem,
-                        uint32_t  ui_rng);
+                        int32_t   i_rng);
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Reset random number couts value

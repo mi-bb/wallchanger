@@ -40,7 +40,7 @@
  * @brief Command used to set wallpaper
  * @var   WallSett::s_lastused
  * @brief Last used wallpaper file path
- * @var   WallSett::rm_mem
+ * @var   WallSett::rm_rand
  * @brief Structure used for selecting random numbers
  * @var   WallSett::s_cfgfile
  * @brief Configuration file path
@@ -57,7 +57,7 @@ WallSett {
     const char *s_bgcmd;       /* Background set command */
     const char *s_lastused;    /* Last used wallpaper path */
     const char *s_cfgfile;     /* Path to configuratoin file */
-    RandMem     rm_mem;        /* Random memory */
+    RandMem    *rm_rand;        /* Random memory */
     uint32_t    i_chinterval;  /* Wallpaper change interval */
     int8_t      i_random;      /* Random wallpaper change */
     int8_t      i_lastsett;    /* Restore last used wallpeper */
@@ -75,7 +75,8 @@ WallSett {
  *
  * @brief  Create new WallSett item.
  *
- * @return  New WallSett item
+ * @param[in] rm_rand  RandMem object
+ * @return    New WallSett item
  *
  * @fn  void wallset_free (WallSett *ws_sett)
  *
@@ -87,7 +88,7 @@ WallSett {
 /*----------------------------------------------------------------------------*/
 void       wallset_init (WallSett *ws_sett);
 
-WallSett * wallset_new  (void) __attribute__ ((returns_nonnull));
+WallSett * wallset_new  (RandMem *rm_rand) __attribute__ ((returns_nonnull));
 
 void       wallset_free (WallSett *ws_sett);
 /*----------------------------------------------------------------------------*/

@@ -115,7 +115,8 @@ check_daemon_kill (void)
  *         changes wallpaper, returns change interval.
  */
 uint32_t
-check_settings_change_wallpaper (char *s_cfg_file)
+check_settings_change_wallpaper (char    *s_cfg_file,
+                                 RandMem *rm_rand)
 {
     static uint32_t  ui_len  = 0; /* Wallpaper list length */
     int              i_err   = 0; /* Error output */
@@ -124,7 +125,7 @@ check_settings_change_wallpaper (char *s_cfg_file)
     SettList        *st_list;     /* Setting list */
     WallSett        *ws_sett;     /* WallSett object with settings for wallpaper
                                      change functions */
-    ws_sett = wallset_new ();
+    ws_sett = wallset_new (rm_rand);
     wallset_set_cfgfile (ws_sett, s_cfg_file);
     st_list = settings_read (s_cfg_file, &i_err);
 
@@ -166,8 +167,8 @@ check_settings_change_wallpaper (char *s_cfg_file)
     }
     else {
         /* Wallpaper list length changed, reinit random, change wallpaper */
-        randomm_init (&ws_sett->rm_mem);
-        randomm_set_range (&ws_sett->rm_mem, ui_nlen);
+        randomm_init (ws_sett->rm_rand);
+        randomm_set_range (ws_sett->rm_rand, (int32_t) ui_nlen);
 
         if (ui_len == 0) {
             /* Program startup */

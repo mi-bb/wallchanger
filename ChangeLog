@@ -13,6 +13,18 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+2020-04-12  Michal Babik  <michalb1981@o2.pl>
+
+	* bash_comp/wchangerd: New script for bash completion.
+	* chkwch.c (check_settings_change_wallpaper): Added RandMem as a function
+	  parameter.
+	* wallset.c (wallset_new): Added RandMem as a function parameter.
+	  Assigning RandMem pointer to WallSett item.
+	  (wallset_init): RandMem clearing removed, changed to nulling pointer.
+	  (walldet_free): Nulling RandMem pointer.
+	* wallset.h: RandMem in WallSet struct changed from a variable to pointer.
+	* wcngdmn.c (main): Added RandMem variable for random number generation.
+
 2020-04-11  Michal Babik  <michalb1981@o2.pl>
 
 	* chkwch.c (check_daemon_presence): Function for checks if wchangerd
