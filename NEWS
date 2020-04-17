@@ -14,6 +14,20 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 ----------------------------------------------------------------------
+v1.4.2                                                      2020-04-17
+
+    * Option to run wchangerd daemon with other than standard config
+      file using option --config.
+    * Added script for wchangercfg options bash completion.
+    * Added config dialog icon and desktop entry.
+
+----------------------------------------------------------------------
+v1.4.1                                                      2020-04-12
+
+    * Added script for wchangerd options bash completion.
+    * Corrected random wallpaper select.
+
+----------------------------------------------------------------------
 v1.4.0                                                      2020-04-11
 
     * Added controls for starting, stopping and monitoring of

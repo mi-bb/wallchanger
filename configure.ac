@@ -16,7 +16,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 AC_PREREQ([2.69])
-AC_INIT([wallchanger], [1.4.1], [michalb1981@o2.pl], [wallchanger],\
+AC_INIT([wallchanger], [1.4.2], [michalb1981@o2.pl], [wallchanger],\
         [https://www.nongnu.org/wallchanger/])
 AM_INIT_AUTOMAKE
 AC_CONFIG_SRCDIR([src/settlist.c])
@@ -63,6 +63,6 @@ AC_FUNC_REALLOC
 AC_FUNC_MKTIME
 AC_CHECK_FUNCS([memset mkdir strchr strdup strndup strrchr strstr])
 
-AC_CONFIG_FILES([Makefile src/Makefile bash_comp/Makefile])
+AC_CONFIG_FILES([Makefile src/Makefile other/Makefile])
 AC_OUTPUT
 

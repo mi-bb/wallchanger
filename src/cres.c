@@ -47,7 +47,7 @@ cres (void        **v_ptr,
             *v_ptr = malloc (ul_num * ul_size);
 
             if (*v_ptr == NULL) {
-                errx (EXIT_FAILURE, "Alloc error");
+                err (EXIT_FAILURE, NULL);
             }
         }
         else {
@@ -55,7 +55,7 @@ cres (void        **v_ptr,
 
             if (s_tmp == NULL) {
                 free (*v_ptr);
-                errx (EXIT_FAILURE, "Alloc error");
+                err (EXIT_FAILURE, NULL);
             }
             else {
                 *v_ptr = s_tmp;

@@ -68,14 +68,23 @@ DialogData {
  * @param[out] dd_data  DialogData object to free
  * @return     None
  */
-void         dialogdata_free         (DialogData       *dd_data);
+void         dialogdata_free                 (DialogData       *dd_data);
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Create new DialogData object.
  *
  * @return  New DialogData object
  */
-DialogData * dialogdata_new          (void);
+DialogData * dialogdata_new                  (void);
+/*----------------------------------------------------------------------------*/
+/**
+ * @brief  Look for config file, try to create it if not found. When
+ *         s_cfg_file from dd_data is not null, checks it. Exits on fail.
+ *
+ * @param[in] dd_data  DialogData object
+ * @return    none
+ */
+void         dialogdata_do_config_file_stuff (DialogData       *dd_data);
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Get config file path from DialogData.
@@ -83,7 +92,7 @@ DialogData * dialogdata_new          (void);
  * @param[in] dd_data  DialogData object
  * @return    String with config file path
  */
-const char * dialogdata_get_cfg_file (const DialogData *dd_data)
+const char * dialogdata_get_cfg_file         (const DialogData *dd_data)
              __attribute__((const));
 /*----------------------------------------------------------------------------*/
 #endif

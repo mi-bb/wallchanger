@@ -19,21 +19,19 @@
  *
  * Automatic wallpaper changer
  *
- * @date April 12, 2020
+ * @date April 17, 2020
  *
- * @version 1.4.1
+ * @version 1.4.2
  *
  * @author Michał Bąbik <michalb1981@o2.pl>
  */
 #include <unistd.h>
 #include <stdlib.h>
 #include <stdint.h>
+#include <stdio.h>
 #include <err.h>
-#include <signal.h>
-#include <sys/types.h>
-#include <sys/stat.h>
-#include "cmdline.h"
-#include "cfgfile.h"
+#include "cmdfn.h"
+#include "dmfn.h"
 #include "chkwch.h"
 #include "randomm.h"
 /*----------------------------------------------------------------------------*/
@@ -52,72 +50,45 @@ main (int    argc,
 {
     uint32_t  ui_cnt    = 0;    /* Minute counter */
     uint32_t  ui_ch_int = 0;    /* Change interval */
+    int       i_opt     = 0;    /* Command line options */
     char     *s_cfgfile = NULL; /* Config file path */
     RandMem   rm_rand;          /* Ramdom memory structure */
-    struct gengetopt_args_info args_info;
 
+    /* Parse command line options */
+    cmdfn_parse (argc, argv, &i_opt, &s_cfgfile);
+    /* Init random number structure */
     randomm_init (&rm_rand);
 
-    if (cmdline_parser (argc, argv, &args_info) != 0)
-        exit(EXIT_FAILURE);
-    if (args_info.start_given && args_info.stop_given)
-        errx (EXIT_FAILURE, "Start and stop options can't be mixed together");
-    if (args_info.start_given && args_info.restart_given)
-        errx (EXIT_FAILURE, "Start and restart options can't be mixed together");
-    if (args_info.stop_given && args_info.restart_given)
-        errx (EXIT_FAILURE, "Stop and restart options can't be mixed together");
     /* Printing status */
-    if (args_info.status_given) {
-        check_print_status ();
-        exit(0);
+    if (i_opt & CMD_OPT_STATUS) {
+        dmfn_print_status ();
+        exit (EXIT_SUCCESS);
     }
     /* Stopping daemon */
-    if (args_info.stop_given) {
-        check_daemon_kill ();
-        exit(0);
+    if (i_opt & CMD_OPT_STOP) {
+        dmfn_kill ();
+        exit (EXIT_SUCCESS);
     }
     /* Restarting daemon - stopping existing one */
-    if (args_info.restart_given) {
-        check_daemon_kill ();
+    if (i_opt & CMD_OPT_RESTART) {
+        dmfn_kill ();
     }
-    /* Checking wchangerd process presence, exiting if it is running */
-    check_daemon_exit ();
+
+    /* Check wchangerd process presence, exit if it is running */
+    dmfn_check_exit ();
     /* Checking if display is available */
     check_display ();
-
-    /* Starting daemon */
-    if (args_info.start_given || args_info.restart_given) {
-        printf ("Starting wchangerd daemon\n");
-
-        int i_res = fork ();
-
-        if (i_res > 0)
-            exit (EXIT_SUCCESS);
-        else if (i_res < 0)
-            err (EXIT_FAILURE, NULL);
-
-        if (setsid () < 0)
-            err (EXIT_FAILURE, NULL);
-
-        signal (SIGCHLD, SIG_IGN);
-        signal (SIGHUP, SIG_IGN);
-
-        i_res = fork ();
-        if (i_res > 0)
-            exit (EXIT_SUCCESS);
-        else if (i_res < 0)
-            err (EXIT_FAILURE, NULL);
-
-        umask (0);
-        chdir ("/");
-        for (long i = sysconf (_SC_OPEN_MAX); i >= 0; --i) {
-            close ((int) i);
-        }
-    }
-
-    s_cfgfile = cfgfile_get_config_path_exit ();
+    /* Check config file correctness */
+    check_config_file (&s_cfgfile);
+    /* Load settings and set wallpaper */
     ui_ch_int = check_settings_change_wallpaper (s_cfgfile, &rm_rand);
 
+    /* Starting daemon */
+    if ((i_opt & CMD_OPT_START) || (i_opt & CMD_OPT_RESTART)) {
+        puts ("Starting wchangerd daemon");
+        dmfn_daemonize ();
+    }
+    /* Program loop */
     while (1) {
 
         if (++ui_cnt > ui_ch_int) {

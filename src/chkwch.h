@@ -18,7 +18,7 @@
  * along with Wall Changer.  If not, see <https://www.gnu.org/licenses/>.
  *
  * @brief  Check settings and wallpaper change functions.
- * 
+ *
  * @author Michał Bąbik <michalb1981@o2.pl>
  */
 #ifndef CHKWCH_H
@@ -35,38 +35,13 @@
 void check_display (void);
 /*----------------------------------------------------------------------------*/
 /**
- * @brief  Check if wchangerd runs in background.
+ * @brief  Look for config files in standard locations, if s_file is not null
+ *         check s_file path for existence. Exit on fail.
  *
- * @return 1 if it is running 0 if not.
+ * @param[in,out]  s_file  Pointer to config file string variable
+ * @return         none
  */
-int  check_daemon_presence (void);
-/*----------------------------------------------------------------------------*/
-/**
- * @brief  Print status of wchangerd daemon.
- *
- * @return none
- */
-void check_print_status (void);
-/**
- * @brief  Check if wchangerd runs in background exit if it is.
- *
- * @return none
- */
-void check_daemon_exit (void);
-/*----------------------------------------------------------------------------*/
-/**
- * @brief  Start wchangerd process
- *
- * @return none
- */
-void check_daemon_start (void);
-/*----------------------------------------------------------------------------*/
-/**
- * @brief  Kill wchangerd process
- *
- * @return none
- */
-void check_daemon_kill (void);
+void check_config_file (char **s_file);
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Loads settings, checks for changes in wallpaper list length and

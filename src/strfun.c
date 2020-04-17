@@ -98,21 +98,15 @@ str_replace_in (const char *s_src,
     ul_len  = strlen (s_src) + 1;
 
     cres ((void**) &s_res, ul_len, sizeof (char));
-    //s_res = malloc (ul_len * sizeof (char));
     s_res[0] = '\0';
 
-    /* find the first occurence of "replace from" */
-    pn = strstr (sp, s_fr); 
-
     /* while there are "replace from" in source string */
-    while (pn != NULL) {
+    while ((pn = strstr (sp, s_fr)) != NULL) {
 
         ul_len += ul_tlen;
         ul_len -= ul_flen;
 
         cres ((void**) &s_res, ul_len, sizeof (char));
-        //s_res = realloc (s_res, ul_len * sizeof (char));
-
         /* append original text from last found up to new found */
         strncat (s_res, sp, (size_t) (pn - sp));
         /* append "replace to" */
@@ -120,8 +114,6 @@ str_replace_in (const char *s_src,
 
         /* change source pointer to "after found" */
         sp = pn + ul_flen; 
-        /* find another "replace from" str in src */
-        pn = strstr (sp, s_fr);  
     }
     strcat (s_res, sp);
 
@@ -183,11 +175,69 @@ str_ncpy (char         * __restrict s_dest,
           const size_t  ui_num)
 {
     size_t i = 0;
-    while (*s_src && i < ui_num) {
+    while (i++ < ui_num && *s_src)
         *s_dest++ = *s_src++;
-        ++i;
-    }
     *s_dest = '\0'; 
+}
+/*----------------------------------------------------------------------------*/
+/**
+ * @brief  Combine 2 strings into one.
+ */
+char *
+str_comb (const char *s_str1,
+          const char *s_str2)
+{
+    char   *s_ret = NULL;
+    size_t  ui_str1 = 0;
+    size_t  ui_str2 = 0;
+
+    if (s_str1 == NULL && s_str2 == NULL)
+        return NULL;
+    else if (s_str1 == NULL && s_str2 != NULL)
+        return strdup (s_str2);
+    else if (s_str1 != NULL && s_str2 == NULL)
+        return strdup (s_str1);
+
+    ui_str1 = strlen (s_str1);
+    ui_str2 = strlen (s_str2);
+
+    cres ((void**) &s_ret, ui_str1 + ui_str2 + 1, sizeof (char));
+    s_ret[0] = '\0';
+
+    memcpy (s_ret, s_str1, ui_str1);
+    memcpy (s_ret + ui_str1, s_str2, ui_str2);
+    s_ret[ui_str1 + ui_str2] = '\0';
+
+    return s_ret;
+}
+/*----------------------------------------------------------------------------*/
+/**
+ * @brief  Append string s_src to s_dst.
+ */
+void
+str_append (char       **s_dst,
+            const char  *s_src)
+{
+    size_t ui_dst = 0;
+    size_t ui_src = 0;
+    int    i_zero = 0;
+
+    if (s_src == NULL)
+        return;
+    else
+        ui_src = strlen (s_src);
+
+    if (*s_dst == NULL)
+        i_zero = 1;
+    else
+        ui_dst = strlen (*s_dst);
+
+    cres ((void**) s_dst, ui_src + ui_dst + 1, sizeof (char));
+
+    if (i_zero)
+        *s_dst[0] = '\0';
+
+    strcat (*s_dst, s_src);
 }
 /*----------------------------------------------------------------------------*/
 

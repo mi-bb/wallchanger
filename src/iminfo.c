@@ -85,9 +85,8 @@ imageinfo_new_from_file (const char *s_fname)
 
     ii_info = imageinfo_new ();
     imageinfo_set_full_name (ii_info, s_fname);
-    s_p = strrchr (s_fname, '/');
 
-    if (s_p == NULL) {
+    if ((s_p = strrchr (s_fname, '/')) == NULL) {
         imageinfo_set_file_name (ii_info, s_fname);
         imageinfo_set_file_path (ii_info, "");
     }

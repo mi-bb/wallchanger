@@ -19,9 +19,9 @@
  *
  * Automatic wallpaper changer
  *
- * @date April 12, 2020
+ * @date April 17, 2020
  *
- * @version 1.4.1
+ * @version 1.4.2
  *
  * @author Michał Bąbik <michalb1981@o2.pl>
  */
@@ -42,7 +42,7 @@
 #include "defs.h"
 #include "fdops.h"
 #include "hashfun.h"
-#include "chkwch.h"
+#include "dmfn.h"
 /*----------------------------------------------------------------------------*/
 /**
  * @fn  static uint32_t get_wallpaper_ch_interval (const DialogData *dd_data)
@@ -239,9 +239,8 @@ static gboolean    daemon_monitor              (gpointer data);
  * @brief  Create side buttons widget.
  *
  * @param[out]    gw_widget  Pointer to widget where to set buttons
- * @param[in,out] dd_data    DialogData object with widgets and
- *                           settings info
- * @return         none
+ * @param[in,out] dd_data    DialogData object with widgets and settings info
+ * @return        none
  *
  * @fn  static void create_settings_widget (GtkWidget **gw_widget,
  *                                          DialogData *dd_data)
@@ -249,15 +248,14 @@ static gboolean    daemon_monitor              (gpointer data);
  * @brief  Creates widget with settings for wallpaper changing.
  *
  * @param[out]    gw_widget  Pointer to destination widget
- * @param[in,out] dd_data    DialogData object with settings and
- *                           widget data
+ * @param[in,out] dd_data    DialogData object with settings and widget data
  * @return        none
  *
  * @fn  static GtkWidget * create_daemon_widget (DialogData *dd_data)
  *
  * @brief  Creates widget for monitoring, starting and stopping wchangerd
  *
- * @param[in,out] dd_data    DialogData object with settings and
+ * @param[in,out] dd_data    DialogData object with settings and widget data
  * @return        none
  */
 /*----------------------------------------------------------------------------*/
@@ -542,6 +540,7 @@ event_set_wallpaper_pressed (DialogData *dd_data)
     GtkTreeSelection *gts_sele;
     GtkTreeModel     *gtm_model;
     GtkTreeIter       gti_iter;
+    ImageInfo        *ii_info;
     GList            *gl_list   = NULL;
     const char       *s_cmd     = NULL;
     int               i_err     = 0;
@@ -555,7 +554,7 @@ event_set_wallpaper_pressed (DialogData *dd_data)
 
     if (gtk_tree_model_get_iter (gtm_model, &gti_iter, gl_list->data)) {
 
-        ImageInfo *ii_info = treemodel_get_data (gtm_model, gti_iter);
+        ii_info = treemodel_get_data (gtm_model, gti_iter);
         s_cmd = gtk_entry_get_text (GTK_ENTRY (dd_data->gw_command));
 
         i_err = wallpaper_dialog_set (s_cmd,
@@ -732,7 +731,7 @@ event_on_delete (GtkWidget  *window,
 static void
 event_start_daemon_pressed (GtkWidget *widget __attribute__ ((unused)))
 {
-    check_daemon_start ();
+    dmfn_start ();
 }
 /*----------------------------------------------------------------------------*/
 /**
@@ -741,7 +740,7 @@ event_start_daemon_pressed (GtkWidget *widget __attribute__ ((unused)))
 static void
 event_stop_daemon_pressed (GtkWidget *widget __attribute__ ((unused)))
 {
-    check_daemon_kill ();
+    dmfn_kill ();
 }
 /*----------------------------------------------------------------------------*/
 /**
@@ -752,7 +751,7 @@ daemon_monitor (gpointer data)
 {
     DialogData *dd_data = (DialogData *) data;
 
-    if (check_daemon_presence ()) {
+    if (dmfn_check_presence ()) {
         gtk_label_set_markup (GTK_LABEL (dd_data->gw_dm_label), 
                 "<span weight=\"bold\" foreground=\"#009900\" "
                 "style=\"italic\">running</span>");
@@ -927,42 +926,39 @@ create_settings_widget (GtkWidget **gw_widget,
     GtkWidget     *gw_spinbutton;        /* Time interval GtkSpinButton */
     GtkAdjustment *ga_adjustment;        /* Time interval GtkAdjustment */
     GtkWidget     *gw_time_combo;        /* Time interval GtkComboBoxText*/
-    const char    *s_markup = NULL;      /* String for markups */
 
     /* Random wallpaper change button */
-    s_markup = "When <b>enabled</b> wallpaper images will be selected "
-        "randomly.\n"
-        "When <b>disabled</b> wallpapers will be set in the same order as "
-        "they appear on the list";
     gw_random_button = gtk_check_button_new ();
-    gtk_widget_set_tooltip_markup (gw_random_button, s_markup);
+    gtk_widget_set_tooltip_markup (gw_random_button, 
+        "When <b>enabled</b> wallpaper images will be selected randomly.\n"
+        "When <b>disabled</b> wallpapers will be set in the same order as "
+        "they appear on the list");
     gtk_button_set_label (GTK_BUTTON (gw_random_button),
                           "Random wallpaper change");
 
     /* Select last used wallpaper button */
-    s_markup = "When <b>enabled</b> first wallpaper set on program start will "
-       " be the last one previously set.\n"
-        "When <b>disabled</b> wallpaper will be set randomly or next in list "
-        "to the last one before stop.";
     gw_button_selectlast = gtk_check_button_new ();
-    gtk_widget_set_tooltip_markup (gw_button_selectlast, s_markup);
+    gtk_widget_set_tooltip_markup (gw_button_selectlast,
+        "When <b>enabled</b> first wallpaper set on program start will "
+        " be the last one previously set.\n"
+        "When <b>disabled</b> wallpaper will be set randomly or next in list "
+        "to the last one before stop.");
     gtk_button_set_label (GTK_BUTTON (gw_button_selectlast),
                           "Select last used wallpaper at start");
 
     /* Wallpaper set command entry */
-    gw_command_entry = gtk_entry_new ();
     gw_command_label = gtk_label_new ("Background set command : ");
-
-    s_markup = "This command will be executed to set background image\n"
+    gw_command_entry = gtk_entry_new ();
+    gtk_widget_set_tooltip_markup (gw_command_entry,
+        "This command will be executed to set background image\n"
         "e.g. <b>feh --bg-fill</b>\nFor more complex commands use <b>[F]</b>" 
-        " as a file name\ne.g. <b>feh --bg-fill [F]</b>";
-    gtk_widget_set_tooltip_markup (gw_command_entry, s_markup);
+        " as a file name\ne.g. <b>feh --bg-fill [F]</b>");
 
     /* Background change interval widgets */
-    s_markup = "Time between background changes";
     ga_adjustment = gtk_adjustment_new (30.0, 1.0, 6000.0, 1.0, 5.0, 0.0);
     gw_spinbutton = gtk_spin_button_new (ga_adjustment, 1.0, 0);
-    gtk_widget_set_tooltip_markup (gw_spinbutton, s_markup);
+    gtk_widget_set_tooltip_markup (gw_spinbutton,
+            "Time between background changes");
     gw_interval_label = gtk_label_new ("Background change interval : ");
     gw_time_combo = gtk_combo_box_text_new ();
     gtk_combo_box_text_append (GTK_COMBO_BOX_TEXT (gw_time_combo),
@@ -1001,7 +997,7 @@ create_settings_widget (GtkWidget **gw_widget,
                              GTK_POS_RIGHT, 1, 1);
     gtk_grid_attach_next_to (GTK_GRID (*gw_widget),
                              gw_command_entry, gw_command_label,
-                             GTK_POS_RIGHT, 1, 1);
+                             GTK_POS_RIGHT, 2, 1);
 
     /* Packing time interval widgets */
     gtk_grid_attach_next_to (GTK_GRID (*gw_widget),
@@ -1078,10 +1074,8 @@ activate (GtkApplication *app,
     const char *s_lastused = NULL;  /* Last used wallpaper path */
     int         i_err      = 0;     /* For error output */
 
-    if (dd_data == NULL) {
-        g_application_quit (G_APPLICATION (app));
-        return;
-    }
+    dialogdata_do_config_file_stuff (dd_data);
+
     /* Image preview widget */
     gw_img_prev = gtk_image_new ();
 
@@ -1094,8 +1088,7 @@ activate (GtkApplication *app,
     dd_data->gw_window = GTK_WINDOW (gw_window);
 
     /* Default widget icon */
-    gd_pix = get_image (W_ICON_ABOUT);
-    if (gd_pix != NULL) {
+    if ((gd_pix = get_image (W_ICON_ABOUT)) != NULL) {
         gtk_window_set_default_icon (gd_pix);
         g_object_unref (gd_pix);
     }
@@ -1208,14 +1201,33 @@ activate (GtkApplication *app,
  *
  * @param[in,out] application  Pointer to GtkApplication
  * @param[in,out] dd_data      DialogData object with widgets and settings info
- *                             settings
  * @return        none
  */
 static void
 shutdown (GtkApplication *application __attribute__ ((unused)),
-          DialogData        *dd_data)
+          DialogData     *dd_data)
 {
     dialogdata_free (dd_data);
+}
+/*----------------------------------------------------------------------------*/
+/**
+ * @brief  Handling command line options.
+ *
+ * @param[in,out] application  Pointer to GtkApplication
+ * @param[in]     options      Options dictionary
+ * @param[in,out] dd_data      DialogData object with widgets and settings info
+ */
+static gint
+local_options (GApplication *application __attribute__ ((unused)),
+               GVariantDict *options,
+               DialogData   *dd_data)
+{
+    char *s_val = NULL;
+
+    if (g_variant_dict_lookup (options, "config", "s", &s_val)) {
+        dd_data->s_cfg_file = strdup (s_val);
+    }
+    return -1;
 }
 /*----------------------------------------------------------------------------*/
 /**
@@ -1238,8 +1250,17 @@ main (int    argc,
     dd_data = dialogdata_new ();
     app = gtk_application_new ("org.nongnu.WallChanger",
                                G_APPLICATION_FLAGS_NONE);
+    g_application_add_main_option (G_APPLICATION (app),
+                                   "config",
+                                   0,
+                                   G_OPTION_FLAG_IN_MAIN,
+                                   G_OPTION_ARG_STRING,
+                                   "Path to config file",
+                                   "FILENAME");
     g_signal_connect (app, "activate", G_CALLBACK (activate), dd_data);
     g_signal_connect (app, "shutdown", G_CALLBACK (shutdown), dd_data);
+    g_signal_connect (app, "handle-local-options",
+            G_CALLBACK (local_options), dd_data);
     g_set_application_name (APP_NAME);
     status = g_application_run (G_APPLICATION (app), argc, argv);
     g_object_unref (app);

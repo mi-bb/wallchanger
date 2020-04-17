@@ -1,5 +1,5 @@
 /**
- * @file  errs.h
+ * @file  dmfn.h
  * @copyright Copyright (C) 2019-2020 Michał Bąbik
  *
  * This file is part of Wall Changer.
@@ -17,30 +17,53 @@
  * You should have received a copy of the GNU General Public License
  * along with Wall Changer.  If not, see <https://www.gnu.org/licenses/>.
  *
- * @brief  Error info
- * 
+ * @brief  Daemon related functions
+ *
  * @author Michał Bąbik <michalb1981@o2.pl>
  */
-#ifndef ERRS_H
-#define ERRS_H
-/*----------------------------------------------------------------------------*/
-enum {
-    ERR_OK,      /**< OK */
-    ERR_FILE,    /**< File error (cannot access / bad permissions) */
-    ERR_FILE_RW, /**< File read / write error */
-    ERR_FILE_CR, /**< File can not be created */
-    ERR_FILE_EX, /**< File does not exist */
-    ERR_ALLOC,   /**< Alloc error */
-    ERR_TYPE,    /**< Wrong type */
-    ERR_CFG_NOF  /**< No config files found */
-};
+#ifndef DMFN_H
+#define DMFN_H
 /*----------------------------------------------------------------------------*/
 /**
- * @brief  Function returns string with error message.
+ * @brief  Daemonize current process.
  *
- * @param[in]  i_err   Error number
- * @return     String with message
+ * @return none
  */
-const char * err_get_message (const int i_err) __attribute__ ((const));
+void dmfn_daemonize (void);
+/*----------------------------------------------------------------------------*/
+/**
+ * @brief  Check if wchangerd runs in background.
+ *
+ * @return 1 if it is running 0 if not.
+ */
+int dmfn_check_presence (void);
+/*----------------------------------------------------------------------------*/
+/**
+ * @brief  Check if wchangerd runs in background exit if it is.
+ *
+ * @return none
+ */
+void dmfn_check_exit (void);
+/*----------------------------------------------------------------------------*/
+/**
+ * @brief  Print status of wchangerd daemon.
+ *
+ * @return none
+ */
+void dmfn_print_status (void);
+/*----------------------------------------------------------------------------*/
+/**
+ * @brief  Start wchangerd process
+ *
+ * @return none
+ */
+void dmfn_start (void);
+/*----------------------------------------------------------------------------*/
+/**
+ * @brief  Kill wchangerd process
+ *
+ * @return none
+ */
+void dmfn_kill (void);
 /*----------------------------------------------------------------------------*/
 #endif

@@ -90,6 +90,30 @@ static int check_file_premissions_create (const char *s_file)
                                           __attribute__ ((nonnull (1)));
 /*----------------------------------------------------------------------------*/
 /**
+ * @brief  Get users home dir path.
+ *
+ * @return  String with home path, after use it thould be freed using free
+ */
+static char * cfgfile_get_home_dir (void);
+/*----------------------------------------------------------------------------*/
+/**
+ * @brief  Create file with subfolders if it doesn't exist.
+ *
+ * @param[in] s_fn  File path
+ * @return    Process result
+ */
+static int create_file_with_subdirs (const char *s_fn);
+/*----------------------------------------------------------------------------*/
+/**
+ * @brief  Look for config file in paths from list.
+ *
+ * @param[in] s_cc  Null terminadet list with config file paths
+ * @return    Config file path string or null if config files were not found,
+ *            after use it should be freed using free
+ */
+static char * cfgfile_find_config_file (const char **s_cc);
+/*----------------------------------------------------------------------------*/
+/**
  * @brief  Check permissions, existence of file or directory. 
  */
 static int
@@ -100,7 +124,7 @@ check_permissions (const char *s_name,
     if (access (s_name, F_OK) == 0) {
         /* check permissions */
         if (access (s_name, i_mode) != 0) {
-            warn ("%s", s_name);
+            //warn ("%s", s_name);
             return ERR_FILE;
         }
         else {
@@ -109,6 +133,7 @@ check_permissions (const char *s_name,
         }
     }
     else {
+        //warn ("%s", s_name);
         /* File/dir does not exist */
         return ERR_FILE_EX;
     }
@@ -130,7 +155,7 @@ check_file_permissions (const char *s_file)
 static int
 check_dir_permissions (const char *s_dir)
 {
-    return check_permissions (s_dir, W_OK | R_OK | X_OK);
+    return check_permissions (s_dir, R_OK | X_OK);
 }
 /*----------------------------------------------------------------------------*/
 /**
@@ -157,7 +182,7 @@ check_dir_premissions_create (const char *s_dir)
             return ERR_OK;
         }
         else {
-            warn ("%s", s_dir);
+            //warn ("%s", s_dir);
             return ERR_FILE_CR;
         }
     }
@@ -185,7 +210,7 @@ check_file_premissions_create (const char *s_file)
         f_file = fopen(s_file, "a+");
 
         if (f_file == NULL) {
-            warn ("%s", s_file);
+            /* warn ("%s", s_file); */
             return ERR_FILE_CR;
         }
         else {
@@ -198,82 +223,142 @@ check_file_premissions_create (const char *s_file)
 }
 /*----------------------------------------------------------------------------*/
 /**
- * @brief  Check if config file and path exists, check read/write permissions. 
+ * @brief  Get users home dir path.
  */
-char *
-cfgfile_get_config_path (int *i_err)
+static char *
+cfgfile_get_home_dir (void)
 {
-    const char *s_sett = "wchanger.json"; /* Settings file name */
-    const char *s_cfg  = "/.config/";     /* Settings file path */
-    char       *s_path = NULL;            /* Result full config file name */
-    char       *s_home = NULL;            /* Home path */
-    size_t      ul_len = 0;               /* Config path length */
-
+    char *s_home = NULL;
     /* Getting user's HOME path */
     if ((s_home = getenv ("HOME")) == NULL) {
         s_home = getpwuid (getuid ())->pw_dir;
     }
-
-    /* Total config file path and name length */
-    ul_len = strlen (s_home) + strlen (s_cfg) + strlen (s_sett);
-    #ifdef DEBUG
-    ul_len += 4;
-    #endif
-
-    /* Create string for config file path and name */
-    cres ((void**) &s_path, (ul_len + 1), sizeof (char));
-    //s_path[0] = '\0';
-
-    /* Copy config file path */
-    strcpy (s_path, s_home);
-    strcat (s_path, s_cfg);
-
-    /* Check config path existence and permissions,
-     * create directory if needed */
-    *i_err = check_dir_premissions_create (s_path);
-
-    if (*i_err != ERR_OK) {
-        free (s_path);
-        return NULL;
-    }
-
-    /* Append file name to config path */
-    strcat (s_path, s_sett);
-    #ifdef DEBUG
-    strcat (s_path, ".dbg");
-    #endif
-
-    /* Check config file existence and permissions,
-     * create file if needed */
-    *i_err = check_file_premissions_create (s_path);
-
-    if (*i_err != ERR_OK) {
-        free (s_path);
-        return NULL;
-    }
-
-    #ifdef DEBUG
-    printf ("Config path : %s\n", s_path);
-    #endif
-
-    return s_path;
+    return strdup (s_home);
 }
 /*----------------------------------------------------------------------------*/
 /**
- * @brief  Get config file path or exit app if errors occurred.
+ * @brief  Create file with subfolders if it doesn't exist.
  */
-char *
-cfgfile_get_config_path_exit (void)
+static int
+create_file_with_subdirs (const char *s_fn)
 {
-    char  *s_cfg = NULL;
-    int    i_err = ERR_OK;
+    char *s_new = NULL;          /* New string with dirs */
+    char *s_sls = NULL;          /* / position */
+    char *s_dup = strdup (s_fn); /* Duplicate of s_fn */
+    char *s_tmp = s_dup;         /* Pointer to duplicate of s_fn */
+    int   i_err = 0;             /* Error output */
 
-    s_cfg  = cfgfile_get_config_path (&i_err);
+    /* Skip first / in file path */
+    if (*s_tmp == '/')
+        ++s_tmp;
 
-    if (i_err != ERR_OK) {
-        exit (EXIT_FAILURE);
+    /* Find every / in path string */
+    while ((s_sls = strchr (s_tmp, '/')) != NULL) {
+        /* Replace found / with null */
+        *s_sls = '\0';
+        str_append (&s_new, "/");
+        /* Append directory to new string */
+        str_append (&s_new, s_tmp);
+        /* Check path permissions and try to create it if necessary */
+        if ((i_err = check_dir_premissions_create (s_new)) != ERR_OK) {
+            warn (NULL);
+            return i_err;
+        }
+        size_t ui_len = (size_t) (s_sls - s_tmp);
+        /* *s_sls = '/'; */
+        s_tmp += ui_len + 1;
     }
-    return s_cfg;
+    free (s_dup);
+    free (s_new);
+
+    if ((i_err = check_file_premissions_create (s_fn)) != ERR_OK) {
+        warn (NULL);
+        return i_err;
+    }
+    return ERR_OK;
+}
+/*----------------------------------------------------------------------------*/
+/**
+ * @brief  Look for config file in paths from list.
+ */
+static char *
+cfgfile_find_config_file (const char **s_cc)
+{
+    char *s_tmp  = NULL; /* Temp string */
+    char *s_home = NULL; /* Home path string */
+
+    s_home = cfgfile_get_home_dir ();
+
+    while (*s_cc != NULL) {
+        s_tmp = str_comb (s_home, *s_cc);
+        if (check_file_permissions (s_tmp) == ERR_OK) {
+            free (s_home);
+            return s_tmp;
+        }
+        /* else {
+            warn ("%s", *s_cc);
+        } */
+        free (s_tmp);
+        ++s_cc;
+    }
+    free (s_home);
+    return NULL;
+}
+/*----------------------------------------------------------------------------*/
+/**
+ * @brief  Checks config file existence, creates default if i_create is set.
+ */
+int
+cfgfile_config_file_stuff (char **s_file,
+                           int    i_create)
+{
+    const char *s_cfg_files[] = {"/.config/wchanger/config.json",
+                                 "/.config/wchanger.json",
+                                 "/.config/wchanger/wchanger.json",
+                                 NULL};
+    int i_res = 0;
+
+    /* Config file was not passed, look for config files */
+    if (*s_file == NULL) {
+
+        char *s_tmp = cfgfile_find_config_file (s_cfg_files);
+        if (s_tmp == NULL && i_create) {
+            /* No files found, try to create first one from list */
+            s_tmp = cfgfile_get_home_dir ();
+
+            str_append (&s_tmp, s_cfg_files[0]);
+
+            if ((i_res = create_file_with_subdirs (s_tmp)) != ERR_OK) {
+                warn ("%s", s_tmp);
+                free (s_tmp);
+                return i_res;
+            }
+        }
+        if (s_tmp == NULL) {
+            warnx ("No config files found");
+            return ERR_CFG_NOF;
+        }
+        *s_file = s_tmp;
+    }
+    /* Config file was passed as an option */
+    else {
+        i_res = check_file_permissions (*s_file);
+        if (i_res == ERR_FILE_EX && i_create) {
+            /* File does not exist, try to create */
+            int i_res2 = create_file_with_subdirs (*s_file);
+            if (i_res2 != ERR_OK) {
+                warn ("%s", *s_file);
+                free (*s_file);
+                return i_res2;
+            }
+        }
+        else if (i_res != ERR_OK) {
+            warn ("%s", *s_file);
+            free (*s_file);
+            return i_res;
+        }
+    }
+    return ERR_OK;
 }
 /*----------------------------------------------------------------------------*/
 

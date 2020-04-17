@@ -102,10 +102,30 @@ char * str_set_up_wallpaper_command (const char   *s_cmd,
  * @param[in]  ui_num  Number of chars to copy
  * @return     none
  */
-void str_ncpy                       (char         * __restrict s_dest,
-                                     const char   * __restrict s_src,
-                                     const size_t  ui_num)
+void   str_ncpy (char         * __restrict s_dest,
+                 const char   * __restrict s_src,
+                 const size_t  ui_num)
        __attribute__ ((nonnull (1,2)));
+/*----------------------------------------------------------------------------*/
+/**
+ * @brief  Combine 2 strings into one.
+ *
+ * @param[in] s_str1  First string
+ * @param[in] s_str2  Second string
+ * @return    String made of s_str1 and s_str2
+ */
+char * str_comb (const char *s_str1,
+                 const char *s_str2);
+/*----------------------------------------------------------------------------*/
+/**
+ * @brief  Append string s_src to s_dst.
+ *
+ * @param[out] s_dst Pointer to result append string process
+ * @param[in]  s_src Source string which should be appended to s_dst
+ * @return     none
+ */
+void str_append (char       **s_dst,
+                 const char  *s_src);
 /*----------------------------------------------------------------------------*/
 #endif
 

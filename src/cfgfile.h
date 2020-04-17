@@ -25,27 +25,24 @@
 #define CFGFILE_H
 /*----------------------------------------------------------------------------*/
 /**
- * @fn  char * cfgfile_get_config_path (int *i_err)
+ * @brief  Checks config file existence, creates default if i_create is set.
  *
- * @brief  Check if config file and path exists, check read/write permissions. 
+ * When s_file string is null, no config path is passed, default config file
+ * locations are checked for config file existence. If it is present in one
+ * if these locations, it is stored in s_file and function returns ERR_OK.
+ * If no file was found function returns ERR_CFG_NOF or tries to create
+ * config file in default location. Variable i_create defines if config
+ * file should be created or not. 
+ * When s_file is not null, it is checked for existence and permissions.
+ * It will be created or not based on i_create value.
+ * If everything went fine ERR_OK is returned and s_file contains path
+ * to config file.
  *
- * Checks config path and file existence, creates them if needed. Function
- * returns config file path or null if something went wrong. Function writes
- * checking/creating status to i_err if process completed succefully or not.
- *
- * @param[out] i_err  Error output
- * @return     Config file path
- *
- * @fn  char * cfgfile_get_config_path_exit (void)
- *
- * @brief  Get config file path or exit app if errors occurred.
- *
- * @return Config file path
+ * @param[in,out] s_file   Config file path or null to use default
+ * @param[in]     i_create Create config file if it doesn't exist
  */
-/*----------------------------------------------------------------------------*/
-char * cfgfile_get_config_path              (int  *i_err);
-
-char * cfgfile_get_config_path_exit         (void);
+int    cfgfile_config_file_stuff (char **s_file,
+                                  int    i_create);
 /*----------------------------------------------------------------------------*/
 #endif
 

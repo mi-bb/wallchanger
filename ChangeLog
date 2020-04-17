@@ -13,6 +13,29 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+2020-04-17  Michal Babik  <michalb1981@o2.pl>
+
+	* cfgfile.c (cfgfile_config_file_stuff): New function for checking
+	  config file path.
+	  (create_file_with_subdirs): New function for creating file with
+	  subdirs.
+	  (cfgfile_get_home_dir): New function for getting user home path.
+	  (cfgfile_get_config_path_exit, cfgfile_get_config_path): Functions
+	  removed.
+	* chkwch.c (check_config_file): Checking config path for daemon.
+	* cmdfn.c, cmdfn.h: Command line parsing operations moved here.
+	* dialogdata.c (dialogdata_do_config_file_stuff): Checking config
+	  path for cfg window.
+	* dmfn.c, dmfn.h: Functions to work with daemon moved here.
+	* strfun.c (str_comb, str_append): New functions to combine and append
+	  strings.
+	* wchanger.c (local_options): New function for handling command line
+	  options.
+	  (main): Command line options set.
+	* other/wchangercfg: New script for bash completion.
+	* other/wchangercfg.desktop: Config dialog dektop entry.
+	* other/wchangercfg.png: App icon.
+
 2020-04-12  Michal Babik  <michalb1981@o2.pl>
 
 	* bash_comp/wchangerd: New script for bash completion.

@@ -68,23 +68,28 @@ DialogData *
 dialogdata_new (void)
 {
     DialogData *dd_data = NULL;   /* DialogData item to return */
-    int         i_err   = ERR_OK; /* For error output */
 
     dd_data = malloc (sizeof (DialogData));
 
     if (dd_data == NULL) {
-        warn ("Alloc error");
-        return NULL;
+        err (EXIT_FAILURE, NULL);
     }
     dialogdata_init (dd_data);
 
-    dd_data->s_cfg_file = cfgfile_get_config_path (&i_err);
-
-    if (i_err != ERR_OK) {
-        dialogdata_free (dd_data);
-        return NULL;
-    }
     return dd_data;
+}
+/*----------------------------------------------------------------------------*/
+/**
+ * @brief  Look for config file, try to create it if not found. When
+ *         s_cfg_file from dd_data is not null, checks it. Exits on fail.
+ */
+void
+dialogdata_do_config_file_stuff (DialogData *dd_data)
+{
+    if (cfgfile_config_file_stuff (&dd_data->s_cfg_file, 1) != ERR_OK) {
+        dialogdata_free (dd_data);
+        exit (EXIT_FAILURE);
+    }
 }
 /*----------------------------------------------------------------------------*/
 /**

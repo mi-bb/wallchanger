@@ -70,9 +70,7 @@ get_file_ext (const char *s_fn)
     if (s_fn == NULL)
         return NULL;
 
-    s_p = strrchr (s_fn, '.');
-
-    if (s_p != NULL) {
+    if ((s_p = strrchr (s_fn, '.')) != NULL) {
         s_ext = s_p+1;
     }
     return s_ext;
@@ -136,30 +134,30 @@ static GList *
 get_directory_filtered_content_glist (const char *s_dir,
                                       GHashTable *gh_exts)
 {
-    GList  *gl_files  = NULL; /* Result file list */
-    char   *s_pthfn   = NULL; /* Full file name with path */
-    char   *s_path    = NULL; /* File path */
-    size_t  ul_dlen   = 0;    /* Path string length */
-    DIR    *dr;               /* Dirent directory */
-    struct  dirent *de;       /* Dirent struct */
+    GList      *gl_files = NULL; /* Result file list */
+    char       *s_pthfn  = NULL; /* Full file name with path */
+    char       *s_path   = NULL; /* File path */
+    const char *s_ext    = NULL; /* File extension */
+    size_t      ui_dlen  = 0;    /* Path string length */
+    size_t      ui_flen  = 0;    /* File name length */
+    DIR        *dr;              /* Dirent directory */
+    struct dirent *de;           /* Dirent struct */
 
-    ul_dlen = strlen (s_dir);
-
+    ui_dlen = strlen (s_dir);
     /* Reserve 1 more for a slash later */
-    s_path = malloc ((ul_dlen + 2) * sizeof (char));
+    s_path = malloc ((ui_dlen + 2) * sizeof (char));
 
     if (s_path == NULL) {
         err (EXIT_FAILURE, NULL);
     }
-    memcpy (s_path, s_dir, ul_dlen);
+    memcpy (s_path, s_dir, ui_dlen);
 
-    if (s_path[ul_dlen-1] != '/') {
-        s_path[ul_dlen++] = '/';
+    if (s_path[ui_dlen-1] != '/') {
+        s_path[ui_dlen++] = '/';
     }
-    s_path[ul_dlen] = '\0';
+    s_path[ui_dlen] = '\0';
 
-    dr = opendir (s_path); 
-    if (dr == NULL) {
+    if ((dr = opendir (s_path)) == NULL) {
         warn ("%s", s_path);
         free (s_path);
         return NULL; 
@@ -169,18 +167,20 @@ get_directory_filtered_content_glist (const char *s_dir,
 
         if (de->d_type == DT_REG) {
 
-            const char *s_ext = get_file_ext (de->d_name);
+            s_ext = get_file_ext (de->d_name);
 
             if (s_ext != NULL &&
                 g_hash_table_lookup (gh_exts, s_ext) != NULL) {
 
-                s_pthfn = malloc ((ul_dlen + strlen (de->d_name)+1) *
-                                  sizeof (char));
+                ui_flen = strlen (de->d_name);
+
+                s_pthfn = malloc ((ui_dlen + ui_flen + 1) * sizeof (char));
                 if (s_pthfn == NULL) {
                     err (EXIT_FAILURE, NULL);
                 }
-                strcpy (s_pthfn, s_path);
-                strcat (s_pthfn, de->d_name);
+                memcpy (s_pthfn, s_path, ui_dlen);
+                memcpy (s_pthfn + ui_dlen, de->d_name, ui_flen);
+                s_pthfn[ui_dlen + ui_flen] = '\0';
 
                 gl_files = g_list_append (gl_files, s_pthfn);
             }
@@ -193,6 +193,10 @@ get_directory_filtered_content_glist (const char *s_dir,
     return gl_files;
 }
 /*----------------------------------------------------------------------------*/
+/**
+ * @brief  Get list of files in directory, filter out non images and
+ *         return list in GList format.
+ */
 GList *
 get_dir_content_filter_images (const char *s_dir)
 {

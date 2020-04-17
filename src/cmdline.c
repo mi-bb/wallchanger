@@ -34,16 +34,18 @@ const char *gengetopt_args_info_versiontext = "";
 const char *gengetopt_args_info_description = "";
 
 const char *gengetopt_args_info_help[] = {
-  "  -h, --help     Print help and exit",
-  "  -V, --version  Print version and exit",
-  "      --start    Start wchangerd daemon",
-  "      --stop     Stop wchangerd daemon",
-  "      --restart  Restart wchangerd daemon",
-  "      --status   Print wchangerd status",
+  "  -h, --help             Print help and exit",
+  "  -V, --version          Print version and exit",
+  "      --start            Start wchangerd process",
+  "      --stop             Stop wchangerd process",
+  "      --restart          Restart wchangerd process",
+  "      --status           Print wchangerd status",
+  "      --config=filename  Path to config file",
     0
 };
 
 typedef enum {ARG_NO
+  , ARG_STRING
 } cmdline_parser_arg_type;
 
 static
@@ -68,12 +70,15 @@ void clear_given (struct gengetopt_args_info *args_info)
   args_info->stop_given = 0 ;
   args_info->restart_given = 0 ;
   args_info->status_given = 0 ;
+  args_info->config_given = 0 ;
 }
 
 static
 void clear_args (struct gengetopt_args_info *args_info)
 {
   FIX_UNUSED (args_info);
+  args_info->config_arg = NULL;
+  args_info->config_orig = NULL;
   
 }
 
@@ -88,6 +93,7 @@ void init_args_info(struct gengetopt_args_info *args_info)
   args_info->stop_help = gengetopt_args_info_help[3] ;
   args_info->restart_help = gengetopt_args_info_help[4] ;
   args_info->status_help = gengetopt_args_info_help[5] ;
+  args_info->config_help = gengetopt_args_info_help[6] ;
   
 }
 
@@ -162,12 +168,23 @@ cmdline_parser_params_create(void)
   return params;
 }
 
+static void
+free_string_field (char **s)
+{
+  if (*s)
+    {
+      free (*s);
+      *s = 0;
+    }
+}
 
 
 static void
 cmdline_parser_release (struct gengetopt_args_info *args_info)
 {
 
+  free_string_field (&(args_info->config_arg));
+  free_string_field (&(args_info->config_orig));
   
   
 
@@ -210,6 +227,8 @@ cmdline_parser_dump(FILE *outfile, struct gengetopt_args_info *args_info)
     write_into_file(outfile, "restart", 0, 0 );
   if (args_info->status_given)
     write_into_file(outfile, "status", 0, 0 );
+  if (args_info->config_given)
+    write_into_file(outfile, "config", args_info->config_orig, 0);
   
 
   i = EXIT_SUCCESS;
@@ -345,6 +364,7 @@ int update_arg(void *field, char **orig_field,
   char *stop_char = 0;
   const char *val = value;
   int found;
+  char **string_field;
   FIX_UNUSED (field);
 
   stop_char = 0;
@@ -375,12 +395,19 @@ int update_arg(void *field, char **orig_field,
     val = possible_values[found];
 
   switch(arg_type) {
+  case ARG_STRING:
+    if (val) {
+      string_field = (char **)field;
+      if (!no_free && *string_field)
+        free (*string_field); /* free previous string */
+      *string_field = gengetopt_strdup (val);
+    }
+    break;
   default:
     break;
   };
 
 	FIX_UNUSED(stop_char);
-			FIX_UNUSED(val);
 	
   /* store the original value */
   switch(arg_type) {
@@ -451,6 +478,7 @@ cmdline_parser_internal (
         { "stop",	0, NULL, 0 },
         { "restart",	0, NULL, 0 },
         { "status",	0, NULL, 0 },
+        { "config",	1, NULL, 0 },
         { 0,  0, 0, 0 }
       };
 
@@ -472,7 +500,7 @@ cmdline_parser_internal (
 
 
         case 0:	/* Long option with no short option */
-          /* Start wchangerd daemon.  */
+          /* Start wchangerd process.  */
           if (strcmp (long_options[option_index].name, "start") == 0)
           {
           
@@ -486,7 +514,7 @@ cmdline_parser_internal (
               goto failure;
           
           }
-          /* Stop wchangerd daemon.  */
+          /* Stop wchangerd process.  */
           else if (strcmp (long_options[option_index].name, "stop") == 0)
           {
           
@@ -500,7 +528,7 @@ cmdline_parser_internal (
               goto failure;
           
           }
-          /* Restart wchangerd daemon.  */
+          /* Restart wchangerd process.  */
           else if (strcmp (long_options[option_index].name, "restart") == 0)
           {
           
@@ -524,6 +552,20 @@ cmdline_parser_internal (
                 &(local_args_info.status_given), optarg, 0, 0, ARG_NO,
                 check_ambiguity, override, 0, 0,
                 "status", '-',
+                additional_error))
+              goto failure;
+          
+          }
+          /* Path to config file.  */
+          else if (strcmp (long_options[option_index].name, "config") == 0)
+          {
+          
+          
+            if (update_arg( (void *)&(args_info->config_arg), 
+                 &(args_info->config_orig), &(args_info->config_given),
+                &(local_args_info.config_given), optarg, 0, 0, ARG_STRING,
+                check_ambiguity, override, 0, 0,
+                "config", '-',
                 additional_error))
               goto failure;
           

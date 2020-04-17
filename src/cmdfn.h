@@ -1,0 +1,70 @@
+/**
+ * @file  cmdfn.h
+ * @copyright Copyright (C) 2019-2020 Michał Bąbik
+ *
+ * This file is part of Wall Changer.
+ *
+ * Wall Changer is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Wall Changer is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Wall Changer.  If not, see <https://www.gnu.org/licenses/>.
+ *
+ * @brief  Command line parsing functions
+ *
+ * @author Michał Bąbik <michalb1981@o2.pl>
+ */
+#ifndef CMDFN_H
+#define CMDFN_H
+/*----------------------------------------------------------------------------*/
+/**
+ * @def   CMD_OPT_NONE
+ * @brief No option set
+ *
+ * @def   CMD_OPT_START
+ * @brief Start option given
+ *
+ * @def   CMD_OPT_STOP
+ * @brief Stop option given
+ *
+ * @def   CMD_OPT_RESTART
+ * @brief Restart option given
+ *
+ * @def   CMD_OPT_STATUS
+ * @brief Status option given
+ *
+ * @def   Config path given
+ * @brief CMD_OPT_CONFIG
+ */
+#define CMD_OPT_NONE    0x00
+#define CMD_OPT_START   0x01
+#define CMD_OPT_STOP    0x02
+#define CMD_OPT_RESTART 0x04
+#define CMD_OPT_STATUS  0x08
+#define CMD_OPT_CONFIG  0x10
+/*----------------------------------------------------------------------------*/
+/**
+ * @brief  Parse command line options, set i_opt and s_cfgpath.
+ *
+ * @param[in] argc       Arguments passed to the program from the environment
+ *                       in which the program is run
+ * @param[in] argv       Pointer to the first element of an array of pointers
+ *                       that represent the arguments passed to the program
+ * @param[out] i_opt     Set here command line options
+ * @param[out] s_cfgpath Copy here config path if given in options
+ * @return     none
+ */
+void cmdfn_parse (int    argc,
+                  char **argv,
+                  int   *i_opt,
+                  char **s_cfgpath);
+/*----------------------------------------------------------------------------*/
+#endif
+

@@ -302,9 +302,12 @@ stlist_get_setting_val_str_pos (const SettList *st_list,
                                 const char     *s_val)
 {
     Setting      *st_sett;
-    size_t        ui_cnt = stlist_get_length (st_list);
+    size_t        ui_cnt = 0;
+    size_t        i      = 0;
 
-    for (size_t i = 0; i < ui_cnt; ++i) {
+    ui_cnt = stlist_get_length (st_list);
+
+    for (i = 0; i < ui_cnt; ++i) {
 
         st_sett = stlist_get_setting_at_pos (st_list, i);
 
@@ -536,6 +539,7 @@ stlist_remove_setting_at_pos (SettList     *st_list,
                               const size_t  ui_pos)
 {
     size_t   ui_len = 0;
+    size_t   i      = 0;
     Setting *st_set;
 
     ui_len = stlist_get_length (st_list);
@@ -545,7 +549,7 @@ stlist_remove_setting_at_pos (SettList     *st_list,
 
     st_set = stlist_get_setting_at_pos (st_list, ui_pos);
 
-    for (size_t i = ui_pos; i < ui_len - 1; ++i) {
+    for (i = ui_pos; i < ui_len - 1; ++i) {
         st_list->st_setting[i] = st_list->st_setting[i + 1];
     }
 

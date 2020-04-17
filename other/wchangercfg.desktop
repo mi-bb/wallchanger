@@ -1,0 +1,10 @@
+[Desktop Entry]
+Type=Application
+Name=Wall Changer
+GenericName=Wallpaper Changer
+Comment=Automatic wallpaper changer
+Icon=wchangercfg
+Exec=wchangercfg
+Terminal=false
+Categories=GTK;Utility;DesktopSettings;
+

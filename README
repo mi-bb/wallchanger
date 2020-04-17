@@ -43,8 +43,8 @@ Requirements
 
  * GNU/Linux, FreeBSD
  * GCC / Clang
- * json-c (0.12.1 or newer)
- * GTK+ 3 (3.22 or newer)
+ * json-c (>= 0.12.1)
+ * GTK+ 3 (>= 3.22)
 
 
 Installation and running
@@ -65,6 +65,8 @@ working with the wchangerd daemon:
     wchangerd --stop       Stops the wchangerd daemon
     wchangerd --restart    Restarts the wchangerd daemon
 
+    wchangerd --config     Loads configuration from file provided here
+
 wchangercfg is a configuration window to set wallpaper change time intervals,
 images on wallpaper list and a way wallpapers change.
 
@@ -72,9 +74,17 @@ Afer changing settings using wchangercfg, wchangerd daemon will load them
 before next wallpaper change. If you want to load settings before that time,
 you need to restart wchangerd daemon using wchangerd --restart command.
 
-Application configuration is stored in
+Default places for configuration file:
+(application will look for it in order like on the list below)
 
-~/.config/wchanger.json
+    ~/.config/wchanger/config.json
+    ~/.config/wchanger.json
+    ~/.config/wchanger/wchanger.json
+
+To use other than standard config path, use the --config option:
+
+    wchangerd --config [FILENAME]
+    wchangercfg --config [FILENAME]
 
 
 Contact and help

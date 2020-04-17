@@ -33,7 +33,6 @@ add_images_folder_dialog (GtkWindow *gw_parent)
 {
     GtkWidget *gw_dialog;        /* Directory choose dialog */
     char      *s_folder  = NULL; /* Selected folder name */
-    int        res       = 0;    /* Dialog run response */
 
     gw_dialog = gtk_file_chooser_dialog_new ("Select Folder",
                                           gw_parent,
@@ -44,9 +43,7 @@ add_images_folder_dialog (GtkWindow *gw_parent)
                                           GTK_RESPONSE_ACCEPT,
                                           NULL);
 
-    res = gtk_dialog_run (GTK_DIALOG (gw_dialog));
-
-    if (res == GTK_RESPONSE_ACCEPT) {
+    if (gtk_dialog_run (GTK_DIALOG (gw_dialog)) == GTK_RESPONSE_ACCEPT) {
         s_folder = gtk_file_chooser_get_filename (
                 GTK_FILE_CHOOSER (gw_dialog));
     }
@@ -63,7 +60,6 @@ add_images_dialog (GtkWindow *gw_parent)
     GtkFileFilter *gff_filter;
     GtkWidget     *gw_dialog;
     GSList        *gsl_files = NULL; /* Result file list */
-    int            res       = 0;    /* Dialog run response */
 
     gw_dialog = gtk_file_chooser_dialog_new ("Select Files",
                                              gw_parent,
@@ -79,9 +75,7 @@ add_images_dialog (GtkWindow *gw_parent)
     gtk_file_chooser_add_filter (GTK_FILE_CHOOSER (gw_dialog), gff_filter);
     gtk_file_chooser_set_select_multiple (GTK_FILE_CHOOSER (gw_dialog), TRUE);
 
-    res = gtk_dialog_run (GTK_DIALOG (gw_dialog));
-
-    if (res == GTK_RESPONSE_ACCEPT) {
+    if (gtk_dialog_run (GTK_DIALOG (gw_dialog)) == GTK_RESPONSE_ACCEPT) {
         gsl_files = gtk_file_chooser_get_filenames (
                 GTK_FILE_CHOOSER (gw_dialog));
     }

@@ -1,5 +1,3 @@
-# wchangerd(1) completion                                       -*- shell-script -*-
-#
 # Copyright (C) 2019-2020 Michał Bąbik
 #
 # This program is free software: you can redistribute it and/or modify
@@ -15,24 +13,11 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-_wchangerd()
-{
-    local cur prev words cword
-    _init_completion || return
+bashcompdir = @bashcompdir@
+dist_bashcomp_DATA = wchangerd wchangercfg
 
-    case $prev in
-        --start|--stop|--restart|--status|--version|--help)
-            return
-            ;;
-    esac
+desktopdir = $(datadir)/applications
+dist_desktop_DATA = wchangercfg.desktop
 
-    if [[ "$cur" == -* ]]; then
-        COMPREPLY=( $(compgen -W '$(_parse_help "$1")' -- "$cur") )
-        return
-    fi
-
-} &&
-complete -F _wchangerd wchangerd
-
-# ex: filetype=sh
-
+pixmapdir=$(datadir)/pixmaps
+dist_pixmap_DATA=wchangercfg.png

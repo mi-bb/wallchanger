@@ -18,18 +18,17 @@
  * along with Wall Changer.  If not, see <https://www.gnu.org/licenses/>.
  *
  * @brief  Check settings and wallpaper change functions.
- * 
+ *
  * @author Michał Bąbik <michalb1981@o2.pl>
  */
-#include <stdio.h>
 #include <stdlib.h>
 #include <err.h>
 #include <stdint.h>
 #include <X11/Xlib.h>
+#include "cfgfile.h"
 #include "wpset.h"
 #include "setts.h"
 #include "errs.h"
-#include "procfn.h"
 #include "chkwch.h"
 /*----------------------------------------------------------------------------*/
 /**
@@ -48,65 +47,14 @@ check_display (void)
 }
 /*----------------------------------------------------------------------------*/
 /**
- * @brief  Check if wchangerd runs in background.
- */
-int
-check_daemon_presence (void)
-{
-    return process_count_except_current ("wchangerd");
-}
-/*----------------------------------------------------------------------------*/
-/**
- * @brief  Print status of wchangerd daemon.
+ * @brief  Look for config files in standard locations if s_file is null or
+ *         check s_file path for existence. Exit on fail.
  */
 void
-check_print_status (void)
+check_config_file (char **s_file)
 {
-    int i_cnt = check_daemon_presence ();
-    if (i_cnt > 0) {
-        printf ("wchangerd is running\n");
-    }
-    else {
-        printf ("wchangerd is stopped\n");
-    }
-}
-/*----------------------------------------------------------------------------*/
-/**
- * @brief  Check if wchangerd runs in background exit if it is.
- */
-void
-check_daemon_exit (void)
-{
-    if (check_daemon_presence () > 0) {
-        errx (EXIT_FAILURE, "wchangerd is already running !" );
-    }
-}
-/*----------------------------------------------------------------------------*/
-/**
- * @brief  Start wchangerd process
- */
-void
-check_daemon_start (void)
-{
-    int i_res __attribute__ ((unused)) = 0; /* Result of system command */
-    i_res = system ("wchangerd --start &");
-}
-/*----------------------------------------------------------------------------*/
-/**
- * @brief  Kill wchangerd process
- */
-void
-check_daemon_kill (void)
-{
-    int i_cnt = 0;
-
-    printf ("Stopping wchangerd ... ");
-    i_cnt = process_kill_all_except_current ("wchangerd");
-    if (i_cnt > 0) {
-        printf ("Stopped\n");
-    }
-    else {
-        printf ("Could not find wchangerd\n");
+    if (cfgfile_config_file_stuff (s_file, 0) != ERR_OK) {
+        exit (EXIT_FAILURE);
     }
 }
 /*----------------------------------------------------------------------------*/
@@ -147,7 +95,7 @@ check_settings_change_wallpaper (char    *s_cfg_file,
     ui_nlen = (uint32_t) stlist_get_length (
             wallset_get_wallpaper_list (ws_sett));
 
-    ui_res = ws_sett->i_chinterval;
+    ui_res = wallset_get_interval (ws_sett);
 
     if (ui_nlen == 0) {
         /* Empty wallpaper list, free and exit */
@@ -185,7 +133,7 @@ check_settings_change_wallpaper (char    *s_cfg_file,
                 stlist_free (st_list);
                 wallset_free (ws_sett);
                 free (s_cfg_file);
-                exit(EXIT_FAILURE);
+                exit (EXIT_FAILURE);
             }
         }
         ui_len = ui_nlen;
