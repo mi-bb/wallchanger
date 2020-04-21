@@ -13,16 +13,6 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-2020-04-21  Michal Babik  <michalb1981@o2.pl>
-
-	* (cfgfile_config_file_stuff): Changed config file operations.
-	* wchanger.c (statusbar_push_config_info): New function for setting
-	  statusbar info about config file.
-	  (event_start_daemon_pressed, event_stop_daemon_pressed): Added
-	  DialogData item to function parameters for running daemon_monitor
-	  before timer.
-	  (activate): Added statusbar creation and placement.
-
 2020-04-17  Michal Babik  <michalb1981@o2.pl>
 
 	* cfgfile.c (cfgfile_config_file_stuff): New function for checking
