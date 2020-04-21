@@ -19,9 +19,9 @@
  *
  * Automatic wallpaper changer
  *
- * @date April 17, 2020
+ * @date April 21, 2020
  *
- * @version 1.4.2
+ * @version 1.4.3
  *
  * @author Michał Bąbik <michalb1981@o2.pl>
  */
@@ -116,6 +116,14 @@ static void        widgets_set_settings        (DialogData        *dd_data,
                                                 const SettList    *st_list);
 /*----------------------------------------------------------------------------*/
 /**
+ * @brief  Sets statusbar info about actual config file.
+ *
+ * @param[in,out] dd_data  DialogData object with settings and widget data
+ * @return        none
+ */
+static void        statusbar_push_config_info  (DialogData *dd_data);
+/*----------------------------------------------------------------------------*/
+/**
  * @fn  static void event_add_img_pressed (DialogData *dd_data)
  *
  * @brief  Add images button pressed.
@@ -169,17 +177,19 @@ static void        widgets_set_settings        (DialogData        *dd_data,
  * @param[in] dd_data  DialogData object with widgets and settings info
  * @return    Stop or propagate event further 
  *
- * @fn  static void event_start_daemon_pressed (GtkWidget *widget)
+ * @fn  static void event_start_daemon_pressed (DialogData *dd_data)
  *
  * @brief  Start background daemon process
  *
- * @return  none
+ * @param[in,out] dd_data  DialogData object with settings and widget data
+ * @return        none
  *
- * @fn  static void event_stop_daemon_pressed (GtkWidget *widget)
+ * @fn  static void event_stop_daemon_pressed (DialogData *dd_data)
  *
  * @brief  Stop background daemon process
  *
- * @return  none
+ * @param[in,out] dd_data  DialogData object with settings and widget data
+ * @return        none
  */
 /*----------------------------------------------------------------------------*/
 static void        event_add_img_pressed       (DialogData        *dd_data);
@@ -202,9 +212,9 @@ static gboolean    event_on_delete             (GtkWidget         *window,
                                                 GdkEvent          *event,
                                                 DialogData        *dd_data);
 
-static void        event_start_daemon_pressed  (GtkWidget *widget);
+static void        event_start_daemon_pressed  (DialogData        *dd_data);
 
-static void        event_stop_daemon_pressed   (GtkWidget *widget);
+static void        event_stop_daemon_pressed   (DialogData        *dd_data);
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Monitors running of wchangerd daemon.
@@ -488,6 +498,21 @@ widgets_set_settings (DialogData     *dd_data,
 }
 /*----------------------------------------------------------------------------*/
 /**
+ * @brief  Sets statusbar info about actual config file.
+ */
+static void
+statusbar_push_config_info (DialogData *dd_data)
+{
+    char *s_info = dialogdata_get_status_config_info (dd_data);
+
+    gtk_statusbar_push (GTK_STATUSBAR (dd_data->gw_statusbar),
+            gtk_statusbar_get_context_id (GTK_STATUSBAR (dd_data->gw_statusbar),
+                                          STATUS_CONFIG),
+            s_info);
+    free (s_info);
+}
+/*----------------------------------------------------------------------------*/
+/**
  * @brief  Add images button pressed.
  */
 static void
@@ -667,7 +692,6 @@ event_interval_changed (GtkSpinButton *spin_button,
         gtk_combo_box_set_active (GTK_COMBO_BOX (dd_data->gw_inter_combo),
                                                  i_act);
     }
-
     i_prev = i_val;
 }
 /*----------------------------------------------------------------------------*/
@@ -698,7 +722,6 @@ event_on_delete (GtkWidget  *window,
     if (i_err != ERR_OK) {
         message_dialog_error (GTK_WINDOW (window), err_get_message (i_err));
     }
-
     if (s_buff != NULL) {
         dialog = gtk_message_dialog_new (GTK_WINDOW (window),
                                          GTK_DIALOG_DESTROY_WITH_PARENT,
@@ -720,7 +743,6 @@ event_on_delete (GtkWidget  *window,
         }
         free (s_buff);
     }
-
     settings_update_window_size (i_w, i_h, dialogdata_get_cfg_file(dd_data));
     return FALSE;
 }
@@ -729,18 +751,20 @@ event_on_delete (GtkWidget  *window,
  * @brief  Start background daemon process
  */
 static void
-event_start_daemon_pressed (GtkWidget *widget __attribute__ ((unused)))
+event_start_daemon_pressed (DialogData *dd_data)
 {
     dmfn_start ();
+    daemon_monitor (dd_data);
 }
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Stop background daemon process
  */
 static void
-event_stop_daemon_pressed (GtkWidget *widget __attribute__ ((unused)))
+event_stop_daemon_pressed (DialogData *dd_data)
 {
     dmfn_kill ();
+    daemon_monitor (dd_data);
 }
 /*----------------------------------------------------------------------------*/
 /**
@@ -1036,14 +1060,14 @@ create_daemon_widget (DialogData *dd_data)
     gtk_grid_attach (GTK_GRID (gw_widget), dd_data->gw_dm_label, 0, 1, 2, 1);
 
     gw_button = create_image_button (NULL, "Start wchangerd daemon", W_ICON_PLAY);
-    g_signal_connect (gw_button, "clicked",
-                      G_CALLBACK (event_start_daemon_pressed), NULL);
+    g_signal_connect_swapped (gw_button, "clicked",
+                              G_CALLBACK (event_start_daemon_pressed), dd_data);
 
     gtk_grid_attach (GTK_GRID (gw_widget), gw_button, 0, 2, 1, 1);
 
     gw_button = create_image_button (NULL, "Stop wchangerd daemon", W_ICON_STOP);
-    g_signal_connect (gw_button, "clicked",
-                      G_CALLBACK (event_stop_daemon_pressed), NULL);
+    g_signal_connect_swapped (gw_button, "clicked",
+                              G_CALLBACK (event_stop_daemon_pressed), dd_data);
 
     gtk_grid_attach (GTK_GRID (gw_widget), gw_button, 1, 2, 1, 1);
 
@@ -1068,6 +1092,7 @@ activate (GtkApplication *app,
     GtkWidget  *gw_box_list_btns;   /* Widget for list, buttons, preview */
     GtkWidget  *gw_settings_widget; /* Setings for wallpaper changing */
     GtkWidget  *gw_box_main;        /* Main box to pack everything */
+    GtkWidget  *gw_statusbar;       /* Bottom status bar */
     SettList   *st_list;            /* List of settings */
     Setting    *st_sett;            /* Setting object */
     GdkPixbuf  *gd_pix     = NULL;  /* Default widget icon */
@@ -1105,6 +1130,9 @@ activate (GtkApplication *app,
     preview_from_file (gw_img_prev, NULL);
 
     create_settings_widget (&gw_settings_widget, dd_data);
+
+    gw_statusbar = gtk_statusbar_new ();
+    dd_data->gw_statusbar = gw_statusbar;
 
     /* Scrolled window for TreeView */
     gw_scroll = gtk_scrolled_window_new (NULL, NULL);
@@ -1148,11 +1176,17 @@ activate (GtkApplication *app,
 
     /* Pack in main box separator and settings */
     gtk_box_pack_start (GTK_BOX (gw_box_main),
-                        gtk_separator_new (GTK_ORIENTATION_VERTICAL),
+                        gtk_separator_new (GTK_ORIENTATION_HORIZONTAL),
                         FALSE, FALSE, 4);
     gtk_box_pack_start (GTK_BOX (gw_box_main),
                         gw_settings_widget,
                         FALSE, FALSE, 4);
+
+    gtk_box_pack_start (GTK_BOX (gw_box_main),
+                        gw_statusbar,
+                        FALSE, FALSE, 4);
+
+    statusbar_push_config_info (dd_data);
 
     gtk_container_set_border_width (GTK_CONTAINER (gw_box_main), 10);
     gtk_container_add (GTK_CONTAINER (gw_window), gw_box_main);
