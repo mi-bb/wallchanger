@@ -40,7 +40,7 @@ const char *gengetopt_args_info_help[] = {
   "      --stop             Stop wchangerd process",
   "      --restart          Restart wchangerd process",
   "      --status           Print wchangerd status",
-  "      --config=filename  Path to config file",
+  "      --config=FILENAME  Path to config file",
     0
 };
 

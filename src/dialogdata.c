@@ -58,6 +58,7 @@ dialogdata_init (DialogData *dd_data)
     dd_data->gw_interval    = NULL;
     dd_data->gw_inter_combo = NULL;
     dd_data->gw_dm_label    = NULL;
+    dd_data->gw_statusbar   = NULL;
     dd_data->s_cfg_file     = NULL;
 }
 /*----------------------------------------------------------------------------*/
@@ -86,6 +87,7 @@ dialogdata_new (void)
 void
 dialogdata_do_config_file_stuff (DialogData *dd_data)
 {
+    //if (cfgfile_config_file_stuff (&dd_data->s_cfg_file, 1) != ERR_OK) {
     if (cfgfile_config_file_stuff (&dd_data->s_cfg_file, 1) != ERR_OK) {
         dialogdata_free (dd_data);
         exit (EXIT_FAILURE);
@@ -99,6 +101,30 @@ const char *
 dialogdata_get_cfg_file (const DialogData *dd_data)
 {
     return (const char*) dd_data->s_cfg_file;
+}
+/*----------------------------------------------------------------------------*/
+/**
+ * @brief  Get information about config file for status bar.
+ */
+char *
+dialogdata_get_status_config_info (const DialogData *dd_data)
+{
+    char   *s_ret   = NULL; /* Result string */
+    size_t  ui_plen = 0;    /* Prefix text length */
+    size_t  ui_clen = 0;    /* Config file name length */
+
+    ui_plen = strlen (STATUS_CONFIG);
+    ui_clen = strlen (dd_data->s_cfg_file);
+
+    s_ret = malloc ((ui_plen + ui_clen + 1) * sizeof (char));
+    if (s_ret == NULL)
+        err (EXIT_FAILURE, NULL);
+
+    memcpy (s_ret, STATUS_CONFIG, ui_plen);
+    memcpy (s_ret + ui_plen, dd_data->s_cfg_file, ui_clen);
+    s_ret[ui_plen + ui_clen] = '\0';
+
+    return s_ret;
 }
 /*----------------------------------------------------------------------------*/
 

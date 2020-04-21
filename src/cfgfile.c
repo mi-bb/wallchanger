@@ -316,46 +316,51 @@ cfgfile_config_file_stuff (char **s_file,
                                  "/.config/wchanger.json",
                                  "/.config/wchanger/wchanger.json",
                                  NULL};
-    int i_res = 0;
+    int i_res = 0; /* Function result */
+    int i_st  = 1; /* Config process state */
 
-    /* Config file was not passed, look for config files */
-    if (*s_file == NULL) {
-
-        char *s_tmp = cfgfile_find_config_file (s_cfg_files);
-        if (s_tmp == NULL && i_create) {
-            /* No files found, try to create first one from list */
-            s_tmp = cfgfile_get_home_dir ();
-
-            str_append (&s_tmp, s_cfg_files[0]);
-
-            if ((i_res = create_file_with_subdirs (s_tmp)) != ERR_OK) {
-                warn ("%s", s_tmp);
-                free (s_tmp);
-                return i_res;
-            }
-        }
-        if (s_tmp == NULL) {
-            warnx ("No config files found");
-            return ERR_CFG_NOF;
-        }
-        *s_file = s_tmp;
-    }
-    /* Config file was passed as an option */
-    else {
-        i_res = check_file_permissions (*s_file);
-        if (i_res == ERR_FILE_EX && i_create) {
-            /* File does not exist, try to create */
-            int i_res2 = create_file_with_subdirs (*s_file);
-            if (i_res2 != ERR_OK) {
+    while (i_st) {
+        switch (i_st) {
+            case 1: /* Checking config name */
+                i_st = *s_file == NULL ? 2 : 3;
+                break;
+            case 2: /* No file passed, serch for default */
+                *s_file = cfgfile_find_config_file (s_cfg_files);
+                if (*s_file == NULL && i_create) { /* No file found, create */
+                    *s_file = cfgfile_get_home_dir ();
+                    str_append (&(*s_file), s_cfg_files[0]);
+                    i_st = 4;
+                    break;
+                }
+                if (*s_file == NULL) {
+                    warnx ("No config files found");
+                    return ERR_CFG_NOF;
+                }
+                return ERR_OK;
+            case 3: /* Config file passed, check it */
+                i_res = check_file_permissions (*s_file);
+                if (i_res == ERR_FILE_EX && i_create) { /* Try to create */
+                    i_st = 4;
+                    break;
+                }
+                else if (i_res != ERR_OK) { /* Other error */
+                    i_st = 5;
+                    break;
+                }
+                return ERR_OK;
+            case 4: /* Try to create config file */
+                if ((i_res = create_file_with_subdirs (*s_file)) != ERR_OK) {
+                    i_st = 5;
+                    break;
+                }
+                return ERR_OK;
+            case 5: /* Warn, free and return error */
                 warn ("%s", *s_file);
                 free (*s_file);
-                return i_res2;
-            }
-        }
-        else if (i_res != ERR_OK) {
-            warn ("%s", *s_file);
-            free (*s_file);
-            return i_res;
+                *s_file = NULL;
+                return i_res;
+            default:
+                break;
         }
     }
     return ERR_OK;
