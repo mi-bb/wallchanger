@@ -97,21 +97,16 @@ read_file_data_hash (const char    *s_fname,
                      int           *i_err,
                      uint_fast32_t *i_hash)
 {
-    char *s_buff = NULL; /* Result data from file */
+    char *s_buff = NULL; /* Result data */
 
-    s_buff = read_file_data (s_fname, i_err);
+    *i_hash = 0;
+    s_buff  = read_file_data (s_fname, i_err);
 
-    if (*i_err != ERR_OK) {
-        *i_hash = 0;
+    if (*i_err != ERR_OK)
         return NULL;
-    }
 
-    if (s_buff == NULL)
-        *i_hash = 0;
-    else
+    if (s_buff != NULL)
         *i_hash = hash (s_buff);
-
-    *i_err = ERR_OK;
 
     return s_buff;
 }
