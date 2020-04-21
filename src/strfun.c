@@ -71,7 +71,6 @@ str_name_with_number (const char   *s_name,
         ul_l++;
 
     cres ((void**) &s_res, strlen (s_name) + ul_l + 1, sizeof (char));
-    s_res[0] = '\0';
 
     sprintf (s_res, "%s%ld", s_name, ul_no);
 
@@ -86,12 +85,12 @@ str_replace_in (const char *s_src,
                 const char *s_fr,
                 const char *s_to)
 {
-    const char *sp      = s_src; /* copy s_src pointer */
-    const char *pn      = NULL;  /* find string pointer */
-    char       *s_res   = NULL;  /* result string */
-    size_t      ul_len  = 0;     /* length to allocate */
-    size_t      ul_flen = 0;     /* length of s_fr */
-    size_t      ul_tlen = 0;     /* length if s_to */
+    const char *sp      = s_src; /* Copy s_src pointer */
+    const char *pn      = NULL;  /* Find string pointer */
+    char       *s_res   = NULL;  /* Result string */
+    size_t      ul_len  = 0;     /* Length to allocate */
+    size_t      ul_flen = 0;     /* Length of s_fr */
+    size_t      ul_tlen = 0;     /* Length if s_to */
 
     ul_flen = strlen (s_fr);
     ul_tlen = strlen (s_to);
@@ -128,41 +127,20 @@ str_set_up_wallpaper_command (const char *s_cmd,
                               const char *s_fname,
                               const char *s_sign)
 {
-    char   *s_res  = NULL;
-    size_t  ul_siz = 0;
+    char *s_res = NULL; /* Result string */
 
     if (strstr (s_cmd, s_sign) == NULL) {
-
-        const char * __restrict cp = s_cmd;
-        const char * __restrict fp = s_fname;
-
-        ul_siz = strlen (cp) + strlen (fp) + 4;
-
-        cres ((void**) &s_res, ul_siz, sizeof (char));
-        s_res[0] = '\0';
-
-        char * __restrict rp = s_res;
-
-        while (*cp) {
-            *rp++ = *cp++;
-        }
-
-        *rp++ = ' ';
-
-        while (*fp) {
-            *rp++ = *fp++;
-        }
-
-        *rp++ = ' ';
-        *rp++ = '&';
-        *rp = '\0';
+        s_res = str_comb (s_cmd, " ");
+        str_append (&s_res, s_fname);
+        str_append (&s_res, " &");
     }
     else {
         s_res = str_replace_in (s_cmd, s_sign, s_fname);
-        ul_siz = strlen (s_res) + 3;
-        cres ((void**) &s_res, ul_siz, sizeof (char));
-        strcat (s_res, " &");
+        str_append (&s_res, " &");
     }
+    #ifdef DEBUG
+    printf ("%s\n", s_res);
+    #endif
     return s_res;
 }
 /*----------------------------------------------------------------------------*/
@@ -187,9 +165,9 @@ char *
 str_comb (const char *s_str1,
           const char *s_str2)
 {
-    char   *s_ret = NULL;
-    size_t  ui_str1 = 0;
-    size_t  ui_str2 = 0;
+    char   *s_ret   = NULL; /* Return string */
+    size_t  ui_str1 = 0;    /* Length of str1 */
+    size_t  ui_str2 = 0;    /* Length of str2 */
 
     if (s_str1 == NULL && s_str2 == NULL)
         return NULL;
@@ -202,7 +180,6 @@ str_comb (const char *s_str1,
     ui_str2 = strlen (s_str2);
 
     cres ((void**) &s_ret, ui_str1 + ui_str2 + 1, sizeof (char));
-    s_ret[0] = '\0';
 
     memcpy (s_ret, s_str1, ui_str1);
     memcpy (s_ret + ui_str1, s_str2, ui_str2);
@@ -218,9 +195,9 @@ void
 str_append (char       **s_dst,
             const char  *s_src)
 {
-    size_t ui_dst = 0;
-    size_t ui_src = 0;
-    int    i_zero = 0;
+    size_t ui_dst = 0; /* length of dst string */
+    size_t ui_src = 0; /* Length of src string */
+    int    i_zero = 0; /* Place 0 in new string */
 
     if (s_src == NULL)
         return;
@@ -237,7 +214,8 @@ str_append (char       **s_dst,
     if (i_zero)
         *s_dst[0] = '\0';
 
-    strcat (*s_dst, s_src);
+    memcpy ((*s_dst)+ui_dst, s_src, ui_src);
+    (*s_dst)[ui_src+ui_dst] = '\0';
 }
 /*----------------------------------------------------------------------------*/
 
