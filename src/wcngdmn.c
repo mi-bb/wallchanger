@@ -19,9 +19,9 @@
  *
  * Automatic wallpaper changer
  *
- * @date April 17, 2020
+ * @date April 21, 2020
  *
- * @version 1.4.2
+ * @version 1.4.3
  *
  * @author Michał Bąbik <michalb1981@o2.pl>
  */
@@ -88,7 +88,6 @@ main (int    argc,
         puts ("Starting wchangerd daemon");
         dmfn_daemonize ();
     }
-    /* Program loop */
     while (1) {
 
         if (++ui_cnt > ui_ch_int) {

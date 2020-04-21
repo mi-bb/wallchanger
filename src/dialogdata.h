@@ -46,6 +46,10 @@
  * @brief Pointer to CheckBox for selecting wallpaper change interval
  * @var   DialogData::gw_inter_combo
  * @brief Pointer to ComboBox for selecting wallpapet change interval
+ * @var   DialogData::gw_dm_label
+ * @brief Daemon info label
+ * @var   DialogData::gw_statusbar
+ * @brief Status bar
  * @var   DialogData::s_cfg_file
  * @brief Config file path
  */
@@ -59,6 +63,7 @@ DialogData {
     GtkWidget  *gw_interval;     /* Time interval check button */
     GtkWidget  *gw_inter_combo;  /* Time interval combo box */
     GtkWidget  *gw_dm_label;     /* Daemon info label */
+    GtkWidget  *gw_statusbar;    /* Status bar */
     char       *s_cfg_file;      /* Config file string */
 } DialogData;
 /*----------------------------------------------------------------------------*/
@@ -68,14 +73,14 @@ DialogData {
  * @param[out] dd_data  DialogData object to free
  * @return     None
  */
-void         dialogdata_free                 (DialogData       *dd_data);
+void         dialogdata_free                   (DialogData       *dd_data);
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Create new DialogData object.
  *
  * @return  New DialogData object
  */
-DialogData * dialogdata_new                  (void);
+DialogData * dialogdata_new                    (void);
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Look for config file, try to create it if not found. When
@@ -84,7 +89,7 @@ DialogData * dialogdata_new                  (void);
  * @param[in] dd_data  DialogData object
  * @return    none
  */
-void         dialogdata_do_config_file_stuff (DialogData       *dd_data);
+void         dialogdata_do_config_file_stuff   (DialogData       *dd_data);
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Get config file path from DialogData.
@@ -92,8 +97,16 @@ void         dialogdata_do_config_file_stuff (DialogData       *dd_data);
  * @param[in] dd_data  DialogData object
  * @return    String with config file path
  */
-const char * dialogdata_get_cfg_file         (const DialogData *dd_data)
+const char * dialogdata_get_cfg_file           (const DialogData *dd_data)
              __attribute__((const));
+/*----------------------------------------------------------------------------*/
+/**
+ * @brief  Get information about config file for status bar.
+ *
+ * @param[in] dd_data  DialogData object
+ * @return    String with config file information
+ */
+char       * dialogdata_get_status_config_info (const DialogData *dd_data);
 /*----------------------------------------------------------------------------*/
 #endif
 
