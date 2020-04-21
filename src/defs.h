@@ -37,6 +37,9 @@
  * @def   APP_DSC
  * @brief Application description
  *
+ * @def   STATUS_CONFIG
+ * @brief Prefix for statusbar config file info
+ *
  * @def   DEFAULT_BG_CMD
  * @brief Default command to set wallpapers
  *

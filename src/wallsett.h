@@ -40,10 +40,10 @@
  * @brief Command used to set wallpaper
  * @var   WallSett::s_lastused
  * @brief Last used wallpaper file path
- * @var   WallSett::rm_rand
- * @brief Structure used for selecting random numbers
  * @var   WallSett::s_cfgfile
  * @brief Configuration file path
+ * @var   WallSett::rm_rand
+ * @brief Structure used for selecting random numbers
  * @var   WallSett::i_chinterval
  * @brief Wallpaper change time interval
  * @var   WallSett::i_random
@@ -71,7 +71,7 @@ WallSett {
  * @param[out] ws_sett  Program settings
  * @return     none
  *
- * @fn  WallSett * wallset_new (void)
+ * @fn  WallSett * wallset_new (RandMem *rm_rand)
  *
  * @brief  Create new WallSett item.
  *

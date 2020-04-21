@@ -40,8 +40,8 @@
  * @def   CMD_OPT_STATUS
  * @brief Status option given
  *
- * @def   Config path given
- * @brief CMD_OPT_CONFIG
+ * @def   CMD_OPT_CONFIG
+ * @brief Config path given
  */
 #define CMD_OPT_NONE    0x00
 #define CMD_OPT_START   0x01
