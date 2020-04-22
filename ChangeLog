@@ -13,9 +13,20 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-2020-04-21  Michal Babik  <michalb1981@o2.pl>
+2020-04-22  Michal Babik  <michalb1981@o2.pl>
 
-	* (cfgfile_config_file_stuff): Changed config file operations.
+	* cfgfile.c (cfgfile_config_file_stuff): Changed config file operations.
+	* defs.h: New define STATUS_CONFIG with string prefix for statusbar
+	  config info.
+	* dialogdata.h: New pointer to statusbar widget (gw_statusbar) in
+	  DialogData structure.
+	* dialogdata.c (dialogdata_init): Nulling gw_statusbar pointer.
+	  (dialogdata_get_status_config_info): New function that returns
+	  string for statusbar information about config file in use.
+	* rwdt.c (read_file_data_hash): Some code ceaning.
+	* strfun.c (str_set_up_wallpaper_command): Code changed a little,
+	  used str_append and str_comb.
+	  (str_append): Changed strcat to memcpy.
 	* wchanger.c (statusbar_push_config_info): New function for setting
 	  statusbar info about config file.
 	  (event_start_daemon_pressed, event_stop_daemon_pressed): Added
