@@ -29,7 +29,7 @@
  * @brief  Check if number is in random numbers memory
  *
  * @param[out] rm_mem  RandMem object
- * @param[in]  ui_no   Number to check
+ * @param[in]  i_no    Number to check
  * @return     1 if it is, 0 if it is not
  */
 static int8_t randomm_check_number (RandMem *rm_mem,
@@ -39,7 +39,7 @@ static int8_t randomm_check_number (RandMem *rm_mem,
  * @brief  Store number in random numbers memory
  *
  * @param[out] rm_mem  RandMem object
- * @param[in]  ui_no   Number to check
+ * @param[in]  i_no    Number to check
  * @return     none
  */
 static void randomm_set_number (RandMem *rm_mem,
@@ -60,7 +60,7 @@ static int8_t
 randomm_check_number (RandMem *rm_mem,
                       int32_t  i_no)
 {
-    int8_t  i_res = 0;          /* Result of number check */
+    int8_t  i_res = 0;         /* Result of number check */
     int32_t i_idx = i_no / 32; /* Number position in array */
     int32_t i_pos = i_no % 32; /* Number bit position in integer */
 

@@ -39,13 +39,13 @@
  *
  * @brief  Random memory struct
  *
- * @var   RandMem::ui_rand
+ * @var   RandMem::i_rand
  * @brief Table to store information which number was randomed
  *
- * @var   RandMem::ui_range
+ * @var   RandMem::i_range
  * @brief Max random number that will be generated
  *
- * @var   RandMem::ui_cnt
+ * @var   RandMem::i_cnt
  * @brief Number of random number generated in a serie
  */
 typedef struct
@@ -75,7 +75,7 @@ void randomm_init (RandMem *rm_mem);
  * @brief  Set random numbers maximum range.
  *
  * @param[out] rm_mem  RandMem object
- * @param[in]  ui_rng  Range value
+ * @param[in]  i_rng   Range value
  * @return     none
  */
 void randomm_set_range (RandMem  *rm_mem,

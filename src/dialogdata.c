@@ -87,7 +87,6 @@ dialogdata_new (void)
 void
 dialogdata_do_config_file_stuff (DialogData *dd_data)
 {
-    //if (cfgfile_config_file_stuff (&dd_data->s_cfg_file, 1) != ERR_OK) {
     if (cfgfile_config_file_stuff (&dd_data->s_cfg_file, 1) != ERR_OK) {
         dialogdata_free (dd_data);
         exit (EXIT_FAILURE);

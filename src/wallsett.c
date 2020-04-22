@@ -45,6 +45,9 @@ wallset_init (WallSett *ws_sett)
     ws_sett->rm_rand      = NULL;   /* Random mem pointer */
 }
 /*----------------------------------------------------------------------------*/
+/**
+ * @brief  Create new WallSett item.
+ */
 WallSett *
 wallset_new (RandMem *rm_rand)
 {
