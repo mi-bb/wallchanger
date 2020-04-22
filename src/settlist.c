@@ -255,14 +255,14 @@ stlist_insert_setting_to_array (SettList   *st_list,
 /**
  * @brief     Get position of setting with specified id
  */
+#include <stdio.h>
 static int_fast32_t
 stlist_get_setting_with_id_pos (const SettList      *st_list,
                                 const uint_fast32_t  ui_id)
 {
-    Setting     *st_act;
-    int_fast32_t i_pos  = -1;
-    size_t       ui_cnt = 0;
-    size_t       i      = 0;
+    Setting *st_act;
+    size_t   ui_cnt = 0;
+    size_t   i      = 0;
 
     ui_cnt  = stlist_get_length (st_list);
 
@@ -271,11 +271,10 @@ stlist_get_setting_with_id_pos (const SettList      *st_list,
         st_act = stlist_get_setting_at_pos (st_list, i);
 
         if (st_act != NULL && setting_get_id (st_act) == ui_id) {
-            i_pos = (int_fast32_t) i;
-            break;
+            return (int_fast32_t) i;
         }
     }
-    return i_pos;
+    return -1;
 }
 /*----------------------------------------------------------------------------*/
 /**
@@ -454,7 +453,6 @@ SettList *
 stlist_get_settings_in_array_name_p (const SettList *st_list,
                                      const char     *s_name) 
 {
-    SettList      *st_res;
     Setting       *st_array;
     uint_fast32_t  ui_array_id = 0;
 
@@ -472,9 +470,7 @@ stlist_get_settings_in_array_name_p (const SettList *st_list,
         ui_array_id = setting_get_id (st_array);
     }
 
-    st_res = stlist_get_settings_owned_by_p (st_list, ui_array_id);
-
-    return st_res;
+    return stlist_get_settings_owned_by_p (st_list, ui_array_id);
 }
 /*----------------------------------------------------------------------------*/
 /**
@@ -484,14 +480,10 @@ SettList *
 stlist_get_settings_in_array_obj (const SettList *st_list,
                                   const Setting  *st_array)
 {
-    SettList *st_res;
-
     if (setting_get_type (st_array) != SET_VAL_ARRAY)
         return NULL;
 
-    st_res = stlist_get_settings_owned_by (st_list, setting_get_id (st_array));
-
-    return st_res;
+    return stlist_get_settings_owned_by (st_list, setting_get_id (st_array));
 }
 /*----------------------------------------------------------------------------*/
 /**
@@ -501,15 +493,11 @@ SettList *
 stlist_get_settings_in_array_obj_p (const SettList *st_list,
                                     const Setting  *st_array)
 {
-    SettList *st_res;
-
     if (setting_get_type (st_array) != SET_VAL_ARRAY)
         return NULL;
 
-    st_res = stlist_get_settings_owned_by_p (st_list,
-                                             setting_get_id (st_array));
-
-    return st_res;
+    return stlist_get_settings_owned_by_p (st_list,
+                                           setting_get_id (st_array));
 }
 /*----------------------------------------------------------------------------*/
 /**
