@@ -19,7 +19,7 @@
  *
  * Automatic wallpaper changer
  *
- * @date April 21, 2020
+ * @date April 28, 2020
  *
  * @version 1.4.3
  *
@@ -1059,13 +1059,15 @@ create_daemon_widget (DialogData *dd_data)
 
     gtk_grid_attach (GTK_GRID (gw_widget), dd_data->gw_dm_label, 0, 1, 2, 1);
 
-    gw_button = create_image_button (NULL, "Start wchangerd daemon", W_ICON_PLAY);
+    gw_button = create_image_button (NULL, "Start wchangerd daemon",
+                                     W_ICON_PLAY);
     g_signal_connect_swapped (gw_button, "clicked",
                               G_CALLBACK (event_start_daemon_pressed), dd_data);
 
     gtk_grid_attach (GTK_GRID (gw_widget), gw_button, 0, 2, 1, 1);
 
-    gw_button = create_image_button (NULL, "Stop wchangerd daemon", W_ICON_STOP);
+    gw_button = create_image_button (NULL, "Stop wchangerd daemon",
+                                     W_ICON_STOP);
     g_signal_connect_swapped (gw_button, "clicked",
                               G_CALLBACK (event_stop_daemon_pressed), dd_data);
 

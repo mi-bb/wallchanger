@@ -13,7 +13,7 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-2020-04-22  Michal Babik  <michalb1981@o2.pl>
+2020-04-28  Michal Babik  <michalb1981@o2.pl>
 
 	* cfgfile.c (cfgfile_config_file_stuff): Changed config file operations.
 	* defs.h: New define STATUS_CONFIG with string prefix for statusbar
