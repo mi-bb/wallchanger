@@ -13,6 +13,29 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+2020-05-03  Michal Babik  <michalb1981@o2.pl>
+
+	* cmddialog.c, cmddialog.h: New files with dialog and functions
+	  for selecting and detection of wallpaper set command.
+	* procfn.c, procfn.h (process_exists_b): New function for checking
+	  process presence but returning 0 or 1 instead of ProcItem item.
+	* setts.c (settlist_check_defaults): Changed wallpaper command when
+	  no setting found to blank instead of default cmd. Actual check is
+	  made in wchanger.c.
+	* wchanger.c (widgets_set_settings): Changed wallpaper set command
+	  setting. If it doesn't exist, program tries to detect window
+	  manager and checks if program has a command for this wm.
+	  (event_treeview_key_press): New function to check treeview key
+	  press, if it is a Del key items from list are being deleted.
+	  (event_command_button_pressed): Evet for select wallpaper command
+	  button pressed.
+	  (create_settings_widget): Added button for command select, relocated
+	  settings widgets.
+	  (activate): Connected key press event to treeview.
+	* wpset.c, wpset.h (wallpaper_test_set): New function for testing
+	  wallpaper set command.
+	* All files: Some minor code updates.
+
 2020-04-28  Michal Babik  <michalb1981@o2.pl>
 
 	* cfgfile.c (cfgfile_config_file_stuff): Changed config file operations.

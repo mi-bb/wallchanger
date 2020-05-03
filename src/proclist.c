@@ -58,8 +58,12 @@ ProcList *
 proclist_new (void)
 {
     ProcList *pl_new = NULL;
-    pl_new = malloc (sizeof (ProcList));
+
+    if ((pl_new = malloc (sizeof (ProcList))) == NULL)
+        err (EXIT_FAILURE, NULL);
+
     proclist_init (pl_new);
+
     return pl_new;
 }
 /*----------------------------------------------------------------------------*/

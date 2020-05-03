@@ -63,9 +63,9 @@ imageinfo_new (void)
 
     ii_res = malloc (sizeof (ImageInfo));
 
-    if (ii_res == NULL) {
+    if (ii_res == NULL)
         err (EXIT_FAILURE, NULL);
-    }
+
     imageinfo_init (ii_res);
 
     return ii_res;
@@ -127,20 +127,20 @@ imageinfo_free (ImageInfo *ii_info)
  * @brief  Get image info of files in list and store it in ImageInfo list.
  */
 GSList *
-file_paths_to_imageinfo (GSList *gsl_files1)
+file_paths_to_imageinfo (const GSList *gsl_files1)
 {
-    GSList    *gsl_iinfo = NULL; /* Result ImageInfo list */
-    GSList    *gsl_files = NULL; /* Pointer to file list */
+    GSList       *gsl_iinfo = NULL; /* Result ImageInfo list */
+    const GSList *gsl_files = NULL; /* Pointer to file list */
+    char         *s_fn      = NULL; /* File path */
+    ImageInfo    *ii_info;          /* ImageInfo to add to list */
 
     gsl_files = gsl_files1;
 
     while (gsl_files != NULL) {
 
-        char *s_fn = (char *) gsl_files->data;
+        if ((s_fn = (char *) gsl_files->data) != NULL) {
 
-        if (s_fn != NULL) {
-
-            ImageInfo *ii_info = imageinfo_new_from_file (s_fn);
+            ii_info = imageinfo_new_from_file (s_fn);
 
             if (imageinfo_get_height (ii_info) > 0)
                 gsl_iinfo = g_slist_append (gsl_iinfo, ii_info);

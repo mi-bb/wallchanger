@@ -62,6 +62,7 @@ wchangercfg_SOURCES=wchanger.c\
                     procfn.c procfn.h\
                     procitem.c procitem.h\
                     proclist.c proclist.h\
+                    cmddialog.c cmddialog.h\
                     errs.c errs.h\
                     defs.h
 

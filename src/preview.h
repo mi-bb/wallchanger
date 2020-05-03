@@ -28,7 +28,7 @@
 /*----------------------------------------------------------------------------*/
 /**
  * @fn  void get_screen_size (int *i_scr_w,
- *                                   int *i_scr_h)
+ *                            int *i_scr_h)
  * @brief  Get screen size.
  *
  * @param[out] i_scr_w  Screen width
@@ -36,7 +36,7 @@
  * @return     none
  *
  * @fn  void preview_from_file (GtkWidget  *gw_img_prev,
- *                                     const char *s_file)
+ *                              const char *s_file)
  *
  * @brief  Make preview image widget of image (file path).
  *

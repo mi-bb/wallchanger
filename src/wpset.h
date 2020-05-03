@@ -41,6 +41,15 @@
  * @param[in,out] ws_sett  Program settings
  * @return        Wallpaper set status
  *
+ * @fn  void wallpaper_test_set (const char *s_cmd,
+ *                               const char *s_file)
+ *
+ * @brief  Setting wallpaper out of wallpaper configuration dialog.
+ *
+ * @param[in]  s_cmd       Wallpaper set command
+ * @param[in]  s_file      Wallpaper file path
+ * @return     none
+ *
  * @fn  int wallpaper_dialog_set (const char *s_cmd,
  *                                const char *s_file,
  *                                const char *s_cfg_file)
@@ -53,14 +62,17 @@
  * @return     Wallpaper set status
  */
 /*----------------------------------------------------------------------------*/
-int wallpaper_change      (WallSett   *ws_sett);
+int  wallpaper_change      (WallSett   *ws_sett);
 
-int wallpaper_startup_set (WallSett   *ws_sett);
+int  wallpaper_startup_set (WallSett   *ws_sett);
 
-int wallpaper_dialog_set  (const char *s_cmd,
-                           const char *s_file,
-                           const char *s_cfg_file)
-                           __attribute__ ((nonnull (1, 2, 3)));
+void wallpaper_test_set    (const char *s_cmd,
+                            const char *s_file);
+
+int  wallpaper_dialog_set  (const char *s_cmd,
+                            const char *s_file,
+                            const char *s_cfg_file)
+                            __attribute__ ((nonnull (1, 2, 3)));
 /*----------------------------------------------------------------------------*/
 #endif
 

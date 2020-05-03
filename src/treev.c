@@ -96,17 +96,18 @@ treeview_add_item (GtkWidget       *gw_tview,
  * @brief  Insert multiple data items to GtkTreeView.
  */
 void
-treeview_add_items_glist (GtkWidget *gw_tview,
-                          GList     *gl_files)
+treeview_add_items_glist (GtkWidget   *gw_tview,
+                          const GList *gl_files)
 {
-    GList *gl_fl = gl_files; /* Temp ItemInfo list */
+    const GList *gl_fl   = gl_files; /* Temp ItemInfo list */
+    const char  *s_fn    = NULL;     /* Strng for file path */
+    ImageInfo   *ii_info;            /* Image information */
 
     while (gl_fl != NULL) {
 
-        const char *s_fn    = (const char *) gl_fl->data;
-        ImageInfo  *ii_info = imageinfo_new_from_file (s_fn);
+        s_fn = (const char *) gl_fl->data;
 
-        if (ii_info != NULL) {
+        if ((ii_info = imageinfo_new_from_file (s_fn)) != NULL) {
 
             treeview_add_item (gw_tview, ii_info);
             imageinfo_free (ii_info);
@@ -119,17 +120,18 @@ treeview_add_items_glist (GtkWidget *gw_tview,
  * @brief  Insert multiple data items to GtkTreeView.
  */
 void
-treeview_add_items_gslist (GtkWidget *gw_tview,
-                           GSList    *gl_files)
+treeview_add_items_gslist (GtkWidget    *gw_tview,
+                           const GSList *gl_files)
 {
-    GSList *gl_fl = gl_files; /* Temp ItemInfo list */
+    const GSList *gl_fl   = gl_files; /* Temp ItemInfo list */
+    const char   *s_fn    = NULL;     /* Strng for file path */
+    ImageInfo    *ii_info;            /* Image information */
 
     while (gl_fl != NULL) {
 
-        const char *s_fn    = (const char *) gl_fl->data;
-        ImageInfo  *ii_info = imageinfo_new_from_file (s_fn);
+        s_fn = (const char *) gl_fl->data;
 
-        if (ii_info != NULL) {
+        if ((ii_info = imageinfo_new_from_file (s_fn)) != NULL) {
             treeview_add_item (gw_tview, ii_info);
             imageinfo_free (ii_info);
         }
@@ -141,21 +143,24 @@ treeview_add_items_gslist (GtkWidget *gw_tview,
  * @brief  Insert multiple data items to GtkTreeView.
  */
 void
-treeview_add_items_settlist (GtkWidget       *gw_tview,
-                             const SettList  *sl_walls)
+treeview_add_items_settlist (GtkWidget      *gw_tview,
+                             const SettList *sl_walls)
 {
-    size_t ui_cnt = stlist_get_length (sl_walls);
+    Setting    *st_wall;
+    ImageInfo  *ii_info;
+    const char *s_fn    = NULL;
+    size_t      ui_cnt  = 0;
+    size_t      i       = 0;
 
-    for (size_t i = 0; i < ui_cnt; ++i) {
+    ui_cnt  = stlist_get_length (sl_walls);
 
-        Setting    *st_wall = stlist_get_setting_at_pos (sl_walls, i);
-        const char *s_fn    = setting_get_string (st_wall);
+    for (i = 0; i < ui_cnt; ++i) {
+
+        st_wall = stlist_get_setting_at_pos (sl_walls, i);
+        s_fn    = setting_get_string (st_wall);
 
         if (s_fn != NULL) {
-
-            ImageInfo *ii_info = imageinfo_new_from_file (s_fn);
-
-            if (ii_info != NULL) {
+            if ((ii_info = imageinfo_new_from_file (s_fn)) != NULL) {
                 treeview_add_item (gw_tview, ii_info);
                 imageinfo_free (ii_info);
             }
@@ -191,6 +196,7 @@ treeview_get_data (GtkWidget *gw_tview)
 {
     GSList       *gsl_iinfo = NULL; /* ImageInfo return list */
     GtkTreeModel *gtm_model;
+    ImageInfo    *ii_info;
     GtkTreeIter   gti_iter;
     gboolean      b_res     = FALSE;
 
@@ -198,7 +204,7 @@ treeview_get_data (GtkWidget *gw_tview)
     b_res     = gtk_tree_model_get_iter_first (gtm_model, &gti_iter);
 
     while (b_res) {
-        ImageInfo *ii_info = treemodel_get_data (gtm_model, gti_iter);
+        ii_info = treemodel_get_data (gtm_model, gti_iter);
         gsl_iinfo = g_slist_append (gsl_iinfo, ii_info);
 
         b_res = gtk_tree_model_iter_next (gtm_model, &gti_iter);
@@ -218,6 +224,7 @@ treeview_find_select_item (GtkWidget  *gw_tview,
     GtkTreeIter       gti_iter;
     gboolean          b_res     = FALSE;
     GValue            value     = {0,};
+    const char       *s_val     = NULL;
 
     gtm_model = gtk_tree_view_get_model (GTK_TREE_VIEW (gw_tview));
     b_res     = gtk_tree_model_get_iter_first (gtm_model, &gti_iter);
@@ -226,7 +233,7 @@ treeview_find_select_item (GtkWidget  *gw_tview,
         gtk_tree_model_get_value (gtm_model, &gti_iter,
                                   COL_FULL_FILE_NAME, &value);
 
-        const char *s_val = (const char*) g_value_get_string (&value);
+        s_val = (const char*) g_value_get_string (&value);
 
         if (str_compare (s_file, s_val) == 0) {
             gts_sele = gtk_tree_view_get_selection (GTK_TREE_VIEW (gw_tview));
@@ -252,6 +259,8 @@ treeview_remove_duplicates (GtkWidget *gw_tview)
     gboolean        b_res2    = FALSE;
     GValue          value     = {0,};
     GValue          value2    = {0,};
+    const char     *s_val     = NULL;
+    const char     *s_val2    = NULL;
 
     gtm_model = gtk_tree_view_get_model (GTK_TREE_VIEW (gw_tview));
     b_res     = gtk_tree_model_get_iter_first (gtm_model, &gti_iter);
@@ -263,7 +272,7 @@ treeview_remove_duplicates (GtkWidget *gw_tview)
 
         gtk_tree_model_get_value(gtm_model, &gti_iter,
                                  COL_FULL_FILE_NAME, &value);
-        const char *s_val = (const char*) g_value_get_string(&value);
+        s_val = (const char*) g_value_get_string(&value);
 
         while (b_res2) {
 
@@ -272,7 +281,7 @@ treeview_remove_duplicates (GtkWidget *gw_tview)
 
             gtk_tree_model_get_value(gtm_model, &gti_act,
                                      COL_FULL_FILE_NAME, &value2);
-            const char *s_val2 = (const char*) g_value_get_string(&value2);
+            s_val2 = (const char*) g_value_get_string(&value2);
 
             if (str_compare (s_val, s_val2) == 0) {
 

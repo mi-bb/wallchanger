@@ -99,7 +99,7 @@ void        imageinfo_free          (ImageInfo  *ii_info);
  * @return     List of ImageInfo items
  */
 /*----------------------------------------------------------------------------*/
-GSList * file_paths_to_imageinfo   (GSList      *gsl_files1);
+GSList * file_paths_to_imageinfo   (const GSList *gsl_files1);
 /*----------------------------------------------------------------------------*/
 /**
  * @fn  void imageinfo_set_full_name (ImageInfo *ii_info, const char *s_name)

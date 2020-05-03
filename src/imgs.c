@@ -4882,7 +4882,7 @@ make_icon_from_data (const unsigned char *s_data,
     stream = g_memory_input_stream_new ();
     g_memory_input_stream_add_data (G_MEMORY_INPUT_STREAM (stream),
                                     s_data, i_size, NULL);
-    //g_pbuf = gdk_pixbuf_new_from_stream (stream, NULL, NULL);
+    /*g_pbuf = gdk_pixbuf_new_from_stream (stream, NULL, NULL);*/
     g_pbuf = gdk_pixbuf_new_from_stream_at_scale (stream,
                                                   25,
                                                   -1,

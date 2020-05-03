@@ -36,7 +36,8 @@
 void
 dmfn_daemonize (void)
 {
-    int i_res = fork ();
+    int  i_res = fork ();
+    long i     = 0;
 
     if (i_res > 0)
         exit (EXIT_SUCCESS);
@@ -57,7 +58,7 @@ dmfn_daemonize (void)
 
     umask (0);
     i_res = chdir ("/");
-    for (long i = sysconf (_SC_OPEN_MAX); i >= 0; --i) {
+    for (i = sysconf (_SC_OPEN_MAX); i >= 0; --i) {
         close ((int) i);
     }
 }
@@ -88,7 +89,10 @@ dmfn_check_exit (void)
 void
 dmfn_print_status (void)
 {
-    int i_cnt = dmfn_check_presence ();
+    int i_cnt = 0;
+
+    i_cnt = dmfn_check_presence ();
+
     if (i_cnt > 0) {
         puts ("wchangerd is running");
     }

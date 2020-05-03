@@ -41,11 +41,11 @@ For a normal daily use of this program a good option should be:
 
 or more specific:
 
-    ./configure CC="gcc" CFLAGS="-march=native -O2 -pipe -std=gnu11"
+    ./configure CC="gcc" CFLAGS="-march=native -O2 -pipe -std=gnu17"
 
 with CLANG:
 
-    ./configure CC="clang" CFLAGS="-march=native -O2 -pipe -std=gnu11"
+    ./configure CC="clang" CFLAGS="-march=native -O2 -pipe -std=gnu17"
 
 It disables the standard -g option which produces debugging information
 needed for gdb and enlarges the output file,
@@ -57,7 +57,7 @@ CC="clang"     sets the C compiler to Clang,
 -O2            sets the code optimization to level 2,
 -pipe          use pipes rather than temporary files for communication between
                the various stages of compilation,
--std=gnu11     sets the C standard to C11 with GNU extensions.
+-std=gnu17     sets the C standard to C17 with GNU extensions.
 
 Executing:
 

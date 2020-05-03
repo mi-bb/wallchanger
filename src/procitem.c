@@ -56,9 +56,11 @@ void
 procitem_set_pid (ProcItem   *pi_item,
                   const char *s_pid)
 {
-    size_t ui_len = strlen (s_pid);
+    size_t ui_len = 0;
 
+    ui_len = strlen (s_pid);
     cres ((void **) &pi_item->s_pid, (ui_len + 1), sizeof (char));
+
     memcpy (pi_item->s_pid, s_pid, ui_len);
     pi_item->s_pid [ui_len] = '\0';
 }
@@ -79,9 +81,11 @@ void
 procitem_set_name (ProcItem   *pi_item,
                    const char *s_name)
 {
-    size_t ui_len = strlen (s_name);
+    size_t ui_len = 0;
 
+    ui_len = strlen (s_name);
     cres ((void **) &pi_item->s_name, (ui_len + 1), sizeof (char));
+
     memcpy (pi_item->s_name, s_name, ui_len);
     pi_item->s_name [ui_len] = '\0';
 }
@@ -104,11 +108,12 @@ ProcItem *
 procitem_new (void)
 {
     ProcItem *pi_new = NULL;
-    pi_new = malloc (sizeof (ProcItem));
-    if (pi_new == NULL) {
+
+    if ((pi_new = malloc (sizeof (ProcItem))) == NULL)
         err (EXIT_FAILURE, NULL);
-    }
+
     procitem_init (pi_new);
+
     return pi_new;
 }
 /*----------------------------------------------------------------------------*/
@@ -119,9 +124,13 @@ ProcItem *
 procitem_new_from_data (const char *s_pid,
                         const char *s_name)
 {
-    ProcItem *pi_new = procitem_new ();
+    ProcItem *pi_new;
+
+    pi_new = procitem_new ();
+
     procitem_set_pid (pi_new, s_pid);
     procitem_set_name (pi_new, s_name);
+
     return pi_new;
 }
 /*----------------------------------------------------------------------------*/

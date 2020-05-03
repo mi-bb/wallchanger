@@ -21,7 +21,7 @@
  *
  * @date April 28, 2020
  *
- * @version 1.4.3
+ * @version 1.4.4
  *
  * @author Michał Bąbik <michalb1981@o2.pl>
  */

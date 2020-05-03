@@ -33,7 +33,6 @@
 #define SETTING_H
 
 #include <inttypes.h>
-//#include <stdint.h>
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Setting types 

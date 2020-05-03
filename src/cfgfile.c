@@ -124,7 +124,7 @@ check_permissions (const char *s_name,
     if (access (s_name, F_OK) == 0) {
         /* check permissions */
         if (access (s_name, i_mode) != 0) {
-            //warn ("%s", s_name);
+            /* warn ("%s", s_name); */
             return ERR_FILE;
         }
         else {
@@ -133,7 +133,7 @@ check_permissions (const char *s_name,
         }
     }
     else {
-        //warn ("%s", s_name);
+        /* warn ("%s", s_name); */
         /* File/dir does not exist */
         return ERR_FILE_EX;
     }
@@ -182,7 +182,7 @@ check_dir_premissions_create (const char *s_dir)
             return ERR_OK;
         }
         else {
-            //warn ("%s", s_dir);
+            /* warn ("%s", s_dir); */
             return ERR_FILE_CR;
         }
     }
@@ -242,11 +242,12 @@ cfgfile_get_home_dir (void)
 static int
 create_file_with_subdirs (const char *s_fn)
 {
-    char *s_new = NULL;          /* New string with dirs */
-    char *s_sls = NULL;          /* / position */
-    char *s_dup = strdup (s_fn); /* Duplicate of s_fn */
-    char *s_tmp = s_dup;         /* Pointer to duplicate of s_fn */
-    int   i_err = 0;             /* Error output */
+    char  *s_new  = NULL;          /* New string with dirs */
+    char  *s_sls  = NULL;          /* / position */
+    char  *s_dup  = strdup (s_fn); /* Duplicate of s_fn */
+    char  *s_tmp  = s_dup;         /* Pointer to duplicate of s_fn */
+    int    i_err  = 0;             /* Error output */
+    size_t ui_len = 0;             /* Name length */
 
     /* Skip first / in file path */
     if (*s_tmp == '/')
@@ -264,7 +265,7 @@ create_file_with_subdirs (const char *s_fn)
             warn (NULL);
             return i_err;
         }
-        size_t ui_len = (size_t) (s_sls - s_tmp);
+        ui_len = (size_t) (s_sls - s_tmp);
         /* *s_sls = '/'; */
         s_tmp += ui_len + 1;
     }

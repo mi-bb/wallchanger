@@ -134,7 +134,7 @@ settlist_check_defaults (SettList *st_list)
 
         stlist_insert_setting (st_list, 
                                setting_new_string (
-                                    DEFAULT_BG_CMD,
+                                    "",
                                     get_setting_name (SETTING_BG_CMD)));
 
         #ifdef DEBUG
@@ -150,7 +150,7 @@ settlist_check_defaults (SettList *st_list)
 
             stlist_insert_setting (st_list, 
                                    setting_new_string (
-                                       DEFAULT_BG_CMD,
+                                       "",
                                        get_setting_name (SETTING_BG_CMD)));
             #ifdef DEBUG
             printf ("Sth wrong with Wallpaper command, setting default\n");

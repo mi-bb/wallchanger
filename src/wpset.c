@@ -200,6 +200,16 @@ wallpaper_startup_set (WallSett *ws_sett)
 }
 /*----------------------------------------------------------------------------*/
 /**
+ * @brief  Setting wallpaper out of wallpaper configuration dialog.
+ */
+void
+wallpaper_test_set (const char *s_cmd,
+                    const char *s_file)
+{
+    wallpaper_set_file (s_cmd, s_file);
+}
+/*----------------------------------------------------------------------------*/
+/**
  * @brief  Setting wallpaper out of settings dialog.
  */
 int
@@ -207,12 +217,8 @@ wallpaper_dialog_set (const char *s_cmd,
                       const char *s_file,
                       const char *s_cfg_file)
 {
-    int i_res = 0; /* Function result */
-
     wallpaper_set_file (s_cmd, s_file);
-    i_res = settings_update_last_used (s_file, s_cfg_file);
-
-    return i_res;
+    return settings_update_last_used (s_file, s_cfg_file);
 }
 /*----------------------------------------------------------------------------*/
 

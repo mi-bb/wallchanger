@@ -132,12 +132,11 @@ str_set_up_wallpaper_command (const char *s_cmd,
     if (strstr (s_cmd, s_sign) == NULL) {
         s_res = str_comb (s_cmd, " ");
         str_append (&s_res, s_fname);
-        str_append (&s_res, " &");
     }
     else {
         s_res = str_replace_in (s_cmd, s_sign, s_fname);
-        str_append (&s_res, " &");
     }
+    str_append (&s_res, " &");
     #ifdef DEBUG
     printf ("%s\n", s_res);
     #endif

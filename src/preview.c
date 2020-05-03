@@ -42,7 +42,7 @@
  *
  * @brief  Paint pixbuf on another pixbuf.
  *
- * Paint GdkPixbuf image pointed by gp_src on GdkPixbuf pointed by gp_dest.
+ * Paint GdkPixbuf image gp_src on GdkPixbuf gp_dest.
  * Image will be painted in rectangle described in gr_area GdkRectangle.
  *
  * @param[out] gp_dest  Destination pixpuf to paint on to
@@ -262,14 +262,17 @@ preview_from_file (GtkWidget  *gw_img_prev,
 GtkWidget *
 create_preview_label (void)
 {
-    GtkWidget *gw_label_box = gtk_box_new (GTK_ORIENTATION_VERTICAL, 1);
-    GtkWidget *gw_label_1   = gtk_label_new (NULL);
-    GtkWidget *gw_label_2   = gtk_label_new (NULL);
-    int        i_w          = 0;
-    int        i_h          = 0;
-    char       s_markup[50];
+    GtkWidget *gw_label_box;     /* Box with peview labels to return */
+    GtkWidget *gw_label_1;       /* Desctiption label 1 */
+    GtkWidget *gw_label_2;       /* Description label 2 */
+    int        i_w          = 0; /* Screen width */
+    int        i_h          = 0; /* screen height */
+    char       s_markup[50];     /* Buffer for snprintf */
 
-    memset (s_markup, '\0', sizeof (s_markup));
+    gw_label_box = gtk_box_new (GTK_ORIENTATION_VERTICAL, 1);
+    gw_label_1   = gtk_label_new (NULL);
+    gw_label_2   = gtk_label_new (NULL);
+
     gtk_label_set_xalign (GTK_LABEL (gw_label_1), 0.5);
     gtk_label_set_xalign (GTK_LABEL (gw_label_2), 0.5);
     get_screen_size (&i_w, &i_h);

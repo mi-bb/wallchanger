@@ -42,8 +42,8 @@ enum {
 };
 /*----------------------------------------------------------------------------*/
 /**
- * @fn  void treeview_add_items_glist (GtkWidget *gw_tview,
- *                                     GList     *gl_files)
+ * @fn  void treeview_add_items_glist (GtkWidget   *gw_tview,
+ *                                     const GList *gl_files)
  *
  * @brief  Insert data items from GList to GtkTreeView.
  *
@@ -51,8 +51,8 @@ enum {
  * @param[in]  gl_files  GList list with data in ImageInfo format
  * @return     none
  *
- * @fn  void treeview_add_items_gslist (GtkWidget *gw_tview,
- *                                      GSList    *gl_files)
+ * @fn  void treeview_add_items_gslist (GtkWidget    *gw_tview,
+ *                                      const GSList *gl_files)
  *
  * @brief  Insert data items from GSList to GtkTreeView.
  *
@@ -87,10 +87,10 @@ enum {
  */
 /*----------------------------------------------------------------------------*/
 void        treeview_add_items_glist     (GtkWidget      *gw_tview,
-                                          GList          *gl_files);
+                                          const GList    *gl_files);
 
 void        treeview_add_items_gslist    (GtkWidget      *gw_tview,
-                                          GSList         *gl_files);
+                                          const GSList   *gl_files);
 
 void        treeview_add_items_settlist  (GtkWidget      *gw_tview,
                                           const SettList *sl_walls);

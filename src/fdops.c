@@ -82,11 +82,11 @@ get_file_ext (const char *s_fn)
 static GHashTable *
 get_pbuf_exts_to_ghash (void)
 {
-    GdkPixbufFormat  *gpf          = NULL;
-    GSList           *gsl_formats  = NULL;
-    GSList           *gsl_formats1 = NULL;
-    char            **exts         = NULL;
-    char            **it           = NULL;
+    GdkPixbufFormat  *gpf          = NULL; /* Single pixbuf format */
+    GSList           *gsl_formats  = NULL; /* Copy of pixbuf list */
+    GSList           *gsl_formats1 = NULL; /* Pixbuf list */
+    char            **exts         = NULL; /* Exstension list for a pixbuf */
+    char            **it           = NULL; /* For list iteration */
 
     GHashTable *gh_res = g_hash_table_new_full (g_str_hash, g_str_equal,
                                                 g_free, NULL);
