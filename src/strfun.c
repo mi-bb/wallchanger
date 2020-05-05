@@ -130,8 +130,9 @@ str_set_up_wallpaper_command (const char *s_cmd,
     char *s_res = NULL; /* Result string */
 
     if (strstr (s_cmd, s_sign) == NULL) {
-        s_res = str_comb (s_cmd, " ");
+        s_res = str_comb (s_cmd, " \"");
         str_append (&s_res, s_fname);
+        str_append (&s_res, "\"");
     }
     else {
         s_res = str_replace_in (s_cmd, s_sign, s_fname);

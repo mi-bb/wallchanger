@@ -207,7 +207,7 @@ check_file_premissions_create (const char *s_file)
     /* If file does not exist */
     else if (i_res == ERR_FILE_EX) {
         /* try to create it */
-        f_file = fopen(s_file, "a+");
+        f_file = fopen (s_file, "a+");
 
         if (f_file == NULL) {
             /* warn ("%s", s_file); */

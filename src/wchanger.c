@@ -19,9 +19,9 @@
  *
  * Automatic wallpaper changer
  *
- * @date April 28, 2020
+ * @date May 05, 2020
  *
- * @version 1.4.4
+ * @version 1.4.5
  *
  * @author Michał Bąbik <michalb1981@o2.pl>
  */
@@ -280,7 +280,6 @@ static gboolean    daemon_monitor              (gpointer data);
  *
  * @fn  static void create_buttons_widget (GtkWidget **gw_widget,
  *                                         DialogData *dd_data)
- *
  * @brief  Create side buttons widget.
  *
  * @param[out]    gw_widget  Pointer to widget where to set buttons

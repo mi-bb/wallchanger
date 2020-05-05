@@ -35,6 +35,7 @@
 /*----------------------------------------------------------------------------*/
 enum {
     COLUMN_ID,      /**< Combobox ListStore column for id */
+    COLUMN_WM_ID,   /**< Combobox ListStore column for window manager id */
     COLUMN_NAME,    /**< Combobox ListStore column for window manager name */
     COLUMN_COMMAND, /**< Combobox ListStore column for wallpaper set command */
     COLUMN_COUNT    /**< Column count */
@@ -48,12 +49,16 @@ enum {
 /*----------------------------------------------------------------------------*/
 enum {
     WM_ID_I3,       /**< Id for i3 window manager */
+    WM_ID_SPECTRWM, /**< Id for Spectrwm window manager */
     WM_ID_MATE,     /**< Id foe MATE window manager */
     WM_ID_GNOME,    /**< Id for Gnome window manager */
     WM_ID_CINNAMON, /**< Id for Cinnamon window manager */
     WM_ID_PLASMA,   /**< Id for KDE Plasma window manager */
     WM_ID_OPENBOX,  /**< Id for Openbox window manager */
     WM_ID_FLUXBOX,  /**< Id for Fluxbox window manager */
+    WM_ID_LXDE,     /**< Id for LXDE window manager */
+    WM_ID_FVWM,     /**< Id for FVWM window manager */
+    WM_ID_WMAKER,   /**< Id for Window Maker window manager */
     WM_ID_END       /**< End of Ids */
 };
 /*----------------------------------------------------------------------------*/
@@ -61,6 +66,9 @@ enum {
  * @struct Wms
  *
  * @brief Structure with window manager info.
+ *
+ * @var   Wms::id
+ * @brief Entry id
  *
  * @var   Wms::wm_id
  * @brief Window manager id
@@ -75,6 +83,7 @@ enum {
  * @brief Command to set wallpaper for window manager
  */
 typedef struct Wms {
+    int  id;
     int  wm_id;
     char process [32];
     char name    [16];
@@ -83,32 +92,40 @@ typedef struct Wms {
 /*----------------------------------------------------------------------------*/
 /**
  * @var   wms
- * @brief List with window managers.
+ * @brief Array with window managers.
  */
 static Wms wms[] = {
-    {WM_ID_MATE, "mate-session", "MATE",
-     "gsettings set org.mate.background picture-filename [F]"},
-    {WM_ID_GNOME, "gnome-session-b", "Gnome",
-     "gsettings set org.gnome.desktop.background picture-uri file://[F]"},
-    {WM_ID_GNOME, "gnome-session-binary", "Gnome",
-     "gsettings set org.gnome.desktop.background picture-uri file://[F]"},
-    {WM_ID_CINNAMON, "cinnamon-sessio", "Cinnamon",
-     "gsettings set org.cinnamon.desktop.background picture-uri file://[F]"},
-    {WM_ID_CINNAMON, "cinnamon", "Cinnamon",
-     "gsettings set org.cinnamon.desktop.background picture-uri file://[F]"},
-    {WM_ID_PLASMA, "plasma-session", "KDE Plasma",
+    {1, WM_ID_MATE, "mate-session", "MATE",
+     "gsettings set org.mate.background picture-filename \"[F]\""},
+    {2, WM_ID_GNOME, "gnome-session-b", "Gnome",
+     "gsettings set org.gnome.desktop.background picture-uri \"file://[F]\""},
+    {3, WM_ID_GNOME, "gnome-session-binary", "Gnome",
+     "gsettings set org.gnome.desktop.background picture-uri \"file://[F]\""},
+    {4, WM_ID_CINNAMON, "cinnamon-sessio", "Cinnamon",
+     "gsettings set org.cinnamon.desktop.background picture-uri \"file://[F]\""},
+    {5, WM_ID_CINNAMON, "cinnamon", "Cinnamon",
+     "gsettings set org.cinnamon.desktop.background picture-uri \"file://[F]\""},
+    {6, WM_ID_PLASMA, "plasma_session", "KDE Plasma",
      "qdbus org.kde.plasmashell /PlasmaShell org.kde.PlasmaShell.evaluateScri"
      "pt 'var allDesktops = desktops();print (allDesktops);for (i=0;i<allDesk"
      "tops.length;i++) {d = allDesktops[i];d.wallpaperPlugin = \"org.kde.imag"
      "e\";d.currentConfigGroup = Array(\"Wallpaper\", \"org.kde.image\", \"Ge"
      "neral\");d.writeConfig(\"Image\", \"file://[F]\")}'"},
-    {WM_ID_I3, "i3", "i3",
-     "feh --bg-fill [F]"},
-    {WM_ID_OPENBOX, "openbox", "Openbox",
-     "feh --bg-fill [F]"},
-    {WM_ID_FLUXBOX, "fluxbox", "Fluxbox",
-     "feh --bg-fill [F]"},
-    {WM_ID_END, "", "", ""}
+    {7, WM_ID_LXDE, "lxsession", "LXDE",
+     "pcmanfm --wallpaper-mode crop --set-wallpaper \"[F]\""},
+    {8, WM_ID_FVWM, "fvwm2", "FVWM",
+     "feh --bg-fill \"[F]\""},
+    {9, WM_ID_I3, "i3", "i3",
+     "feh --bg-fill \"[F]\""},
+    {10, WM_ID_SPECTRWM, "spectrwm", "spectrwm",
+     "feh --bg-fill \"[F]\""},
+    {11, WM_ID_OPENBOX, "openbox", "Openbox",
+     "feh --bg-fill \"[F]\""},
+    {12, WM_ID_FLUXBOX, "fluxbox", "Fluxbox",
+     "feh --bg-fill \"[F]\""},
+    {13, WM_ID_WMAKER, "wmaker", "Window Maker",
+     "feh --bg-fill \"[F]\""},
+    {14, WM_ID_END, "", "", ""}
     };
 
 /*----------------------------------------------------------------------------*/
@@ -131,8 +148,9 @@ find_window_magager (const Wms *wm_list)
             if ((wms_ret = malloc (sizeof (Wms))) == NULL)
                 err (EXIT_FAILURE, NULL);
 
+            wms_ret->id = wm_list->id;
             wms_ret->wm_id = wm_list->wm_id;
-            strcpy (wms_ret->name, wm_list->name);
+            strcpy (wms_ret->name,    wm_list->name);
             strcpy (wms_ret->process, wm_list->process);
             strcpy (wms_ret->command, wm_list->command);
             return wms_ret;
@@ -155,15 +173,15 @@ combo_set_active_by_wm_id (GtkWidget *gw_combo,
 {
     GtkTreeModel *gtm_model;  /* TreeModel */
     GtkTreeIter   iter;       /* TreeIter */
-    int           i_id  = -1; /* Window manager id */
+    int           i_wm_id  = -1; /* Window manager id */
     int           i_res = 0;  /* Getting iter result */
 
     gtm_model = gtk_combo_box_get_model (GTK_COMBO_BOX (gw_combo));
     i_res = gtk_tree_model_get_iter_first (gtm_model, &iter);
 
     while (i_res) {
-        gtk_tree_model_get (gtm_model, &iter, COLUMN_ID, &i_id, -1);
-        if (i_act_id == i_id) {
+        gtk_tree_model_get (gtm_model, &iter, COLUMN_WM_ID, &i_wm_id, -1);
+        if (i_act_id == i_wm_id) {
             gtk_combo_box_set_active_iter (GTK_COMBO_BOX (gw_combo), &iter);
             break;
         }
@@ -214,6 +232,7 @@ cmddialog_combo (const Wms *wm_list)
 
     list_store = gtk_list_store_new (COLUMN_COUNT,
                                      G_TYPE_INT,
+                                     G_TYPE_INT,
                                      G_TYPE_STRING,
                                      G_TYPE_STRING);
 
@@ -224,7 +243,8 @@ cmddialog_combo (const Wms *wm_list)
         if (i_prev != wm_list->wm_id) {
             gtk_list_store_append (list_store, &iter);
             gtk_list_store_set (list_store, &iter,
-                                COLUMN_ID,      wm_list->wm_id,
+                                COLUMN_ID,      wm_list->id,
+                                COLUMN_WM_ID,   wm_list->wm_id,
                                 COLUMN_NAME,    wm_list->name,
                                 COLUMN_COMMAND, wm_list->command,
                                 -1);
@@ -411,6 +431,9 @@ cmddialog_run (GtkWindow    *gw_parent,
         wm_label_set_text (gw_wm_label, wms_wm->name);
         gtk_entry_set_text (GTK_ENTRY (gw_entry), wms_wm->command);
         free (wms_wm);
+    }
+    else {
+        wm_label_set_text (gw_wm_label, NULL);
     }
     gtk_box_pack_start (GTK_BOX (gw_test_box),
                         gw_test_button,
