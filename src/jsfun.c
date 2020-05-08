@@ -96,7 +96,6 @@ static void          js_stlist_array_to_json (const SettList     *st_list,
 static Setting     * js_json_obj_to_setting  (json_object        *val,
                                               const char         *s_name,
                                               SettList           *st_list);
-                                              //__attribute__ ((nonnull (2)));
 
 static json_object * js_setting_to_json_obj  (const SettList     *st_list,
                                               const Setting      *st_sett);
@@ -135,7 +134,6 @@ js_json_array_to_stlist (json_object *j_array,
 {
     json_object *j_val;         /* Json object read from Json array */
     Setting     *st_set;        /* Setting made from Json object */
-    //char        *s_name = NULL; /* Name for Setting */
     size_t       ui_cnt = 0;    /* Length of Json array */
     size_t            i = 0;    /* i */
 
@@ -147,11 +145,7 @@ js_json_array_to_stlist (json_object *j_array,
 
         if (j_val != NULL) {
 
-            //s_name = str_name_with_number (s_array_name, i);
-            //st_set = js_json_obj_to_setting (j_val, s_name, st_list);
             st_set = js_json_obj_to_setting (j_val, NULL, st_list);
-
-            //free (s_name);
 
             if (st_set != NULL)
                 stlist_insert_setting_to_array (st_list, st_set, s_array_name);

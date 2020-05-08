@@ -637,7 +637,7 @@ setting_assign_to_array (Setting    *st_set,
 {
     size_t ui_hash = 0;
     ui_hash = (s_name != NULL && s_name[0] != '\0') ? hash (s_name) : 0;
-    setting_set_owner_id (st_set, hash (s_name));
+    setting_set_owner_id (st_set, ui_hash);
 }
 /*----------------------------------------------------------------------------*/
 /**
