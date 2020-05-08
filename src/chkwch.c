@@ -25,6 +25,7 @@
 #include <err.h>
 #include <stdint.h>
 #include <X11/Xlib.h>
+#include <time.h>
 #include "cfgfile.h"
 #include "wpset.h"
 #include "setts.h"
@@ -32,10 +33,21 @@
 #include "chkwch.h"
 /*----------------------------------------------------------------------------*/
 /**
+ * @brief  Sleep for 500 milliseconds.
+ */
+void sleep500 (void)
+{
+    struct timespec ts = {0, 500000000};
+
+    nanosleep(&ts, NULL);
+}
+/*----------------------------------------------------------------------------*/
+/**
  * @brief  Check if display is present, exit if it is not.
  */
+#include <stdio.h>
 void
-check_display (void)
+check_display_exit (void)
 {
     Display *display;
 

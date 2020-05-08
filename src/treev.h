@@ -18,7 +18,7 @@
  * along with Wall Changer.  If not, see <https://www.gnu.org/licenses/>.
  *
  * @brief  TreeView related functions
- * 
+ *
  * @author Michał Bąbik <michalb1981@o2.pl>
  */
 #ifndef TREEV_H

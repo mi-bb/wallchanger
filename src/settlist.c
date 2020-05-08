@@ -207,10 +207,12 @@ void
 stlist_insert_setting (SettList *st_list,
                        Setting  *st_val)
 {
-    int_fast32_t i_pos = 0;
+    int_fast32_t  i_pos = 0;
+    const char   *s_name = NULL;
 
-    i_pos = stlist_get_setting_pos (st_list,
-                                    setting_get_name (st_val));
+    s_name = setting_get_name (st_val);
+    i_pos  = (s_name == NULL) ? -1 : stlist_get_setting_pos (st_list, s_name);
+
     if (i_pos < 0) {
         /* Resize list and append new one */
         stlist_reserve (st_list, st_list->i_cnt+1);
@@ -234,10 +236,7 @@ stlist_insert_setting_to_array (SettList   *st_list,
     Setting *st_array;
     int      i_res = SET_ER_OK;
 
-    if (s_array_name == NULL || strcmp (s_array_name, "") == 0) {
-        stlist_insert_setting (st_list, st_val);
-    }
-    else {
+    if (s_array_name != NULL && s_array_name[0] != '\0') {
 
         st_array = stlist_get_setting_with_name (st_list, s_array_name);
         if (st_array == NULL)
@@ -249,13 +248,14 @@ stlist_insert_setting_to_array (SettList   *st_list,
         setting_assign_to_array (st_val, s_array_name);
         stlist_insert_setting (st_list, st_val);
     }
+    else
+        stlist_insert_setting (st_list, st_val);
     return i_res;
 }
 /*----------------------------------------------------------------------------*/
 /**
  * @brief     Get position of setting with specified id
  */
-#include <stdio.h>
 static int_fast32_t
 stlist_get_setting_with_id_pos (const SettList      *st_list,
                                 const uint_fast32_t  ui_id)
@@ -287,7 +287,7 @@ stlist_get_setting_pos (const SettList *st_list,
     int_fast32_t  i_pos   = -1;
     uint_fast32_t ui_hash = 0;
 
-    ui_hash = hash (s_name);
+    ui_hash = (s_name != NULL && s_name[0] != '\0') ? hash (s_name) : 0;
     i_pos   = stlist_get_setting_with_id_pos (st_list, ui_hash);
 
     return i_pos;
@@ -342,9 +342,6 @@ stlist_get_setting_with_name (const SettList *st_list,
 {
     Setting      *st_ret;
     int_fast32_t  i_pos = -1;
-
-    if (strcmp (s_name, "") == 0)
-        return NULL;
 
     i_pos = stlist_get_setting_pos (st_list, s_name);
 
@@ -427,10 +424,7 @@ stlist_get_settings_in_array_name (const SettList *st_list,
     Setting       *st_array;
     uint_fast32_t  ui_array_id = 0;
 
-    if (strcmp (s_name, "") == 0) {
-        ui_array_id = 0;
-    }
-    else {
+    if (s_name != NULL && s_name[0] != '\0') {
         st_array = stlist_get_setting_with_name (st_list, s_name);
         if (st_array == NULL)
             return NULL;
@@ -440,6 +434,8 @@ stlist_get_settings_in_array_name (const SettList *st_list,
 
         ui_array_id = setting_get_id (st_array);
     }
+    else
+        ui_array_id = 0;
 
     st_res = stlist_get_settings_owned_by (st_list, ui_array_id);
 
@@ -456,10 +452,7 @@ stlist_get_settings_in_array_name_p (const SettList *st_list,
     Setting       *st_array;
     uint_fast32_t  ui_array_id = 0;
 
-    if (strcmp (s_name, "") == 0) {
-        ui_array_id = 0;
-    }
-    else {
+    if (s_name != NULL && s_name[0] != '\0') {
         st_array = stlist_get_setting_with_name (st_list, s_name);
         if (st_array == NULL)
             return NULL;
@@ -469,6 +462,8 @@ stlist_get_settings_in_array_name_p (const SettList *st_list,
 
         ui_array_id = setting_get_id (st_array);
     }
+    else
+        ui_array_id = 0;
 
     return stlist_get_settings_owned_by_p (st_list, ui_array_id);
 }
@@ -554,6 +549,7 @@ stlist_remove_setting (SettList *st_list,
 {
     int_fast32_t  i_pos   = 0;
     uint_fast32_t ui_hash = 0;
+    size_t        ui_cnt  = 0;
 
     ui_hash = setting_get_id (st_val);
     i_pos   = stlist_get_setting_with_id_pos (st_list, ui_hash);
@@ -561,7 +557,20 @@ stlist_remove_setting (SettList *st_list,
     if (i_pos == -1)
         return;
 
-    stlist_remove_setting_at_pos (st_list, (size_t) i_pos);
+    if (ui_hash == 0) {
+        ui_cnt = stlist_get_length (st_list);
+
+        while ((size_t) i_pos < ui_cnt) {
+            if (setting_compare (st_val, st_list->st_setting[i_pos]) == 0) {
+                stlist_remove_setting_at_pos (st_list, (size_t) i_pos);
+                return;
+            }
+            ++i_pos;
+        }
+    }
+    else {
+        stlist_remove_setting_at_pos (st_list, (size_t) i_pos);
+    }
 }
 /*----------------------------------------------------------------------------*/
 /**
@@ -574,7 +583,7 @@ stlist_remove_setting_with_name (SettList   *st_list,
     int_fast32_t  i_pos   = 0;
     uint_fast32_t ui_hash = 0;
 
-    ui_hash = hash (s_name);
+    ui_hash = (s_name != NULL && s_name[0] != '\0') ? hash (s_name) : 0;
     i_pos   = stlist_get_setting_with_id_pos (st_list, ui_hash);
 
     if (i_pos == -1)

@@ -19,7 +19,7 @@
  *
  * Automatic wallpaper changer
  *
- * @date May 05, 2020
+ * @date May 08, 2020
  *
  * @version 1.4.5
  *
@@ -72,12 +72,13 @@ main (int    argc,
     /* Restarting daemon - stopping existing one */
     if (i_opt & CMD_OPT_RESTART) {
         dmfn_kill ();
+        sleep500 ();
     }
 
     /* Check wchangerd process presence, exit if it is running */
     dmfn_check_exit ();
     /* Checking if display is available */
-    check_display ();
+    check_display_exit ();
     /* Check config file correctness */
     check_config_file (&s_cfgfile);
     /* Load settings and set wallpaper */

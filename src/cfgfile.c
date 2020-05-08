@@ -18,7 +18,7 @@
  * along with Wall Changer.  If not, see <https://www.gnu.org/licenses/>.
  *
  * @brief  Configuration file examine and set
- * 
+ *
  * @author Michał Bąbik <michalb1981@o2.pl>
  */
 #include <stdio.h>
@@ -31,9 +31,9 @@
 #include <pwd.h>
 #include "errs.h"
 #include "cres.h"
-#include "cfgfile.h"
 #include "defs.h"
 #include "strfun.h"
+#include "cfgfile.h"
 /*----------------------------------------------------------------------------*/
 /**
  * @fn  static int check_permissions (const char *s_name, const int i_mode)

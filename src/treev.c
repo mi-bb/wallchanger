@@ -18,7 +18,7 @@
  * along with Wall Changer.  If not, see <https://www.gnu.org/licenses/>.
  *
  * @brief  TreeView related functions
- * 
+ *
  * @author Michał Bąbik <michalb1981@o2.pl>
  */
 #include <stdint.h>
@@ -99,9 +99,11 @@ void
 treeview_add_items_glist (GtkWidget   *gw_tview,
                           const GList *gl_files)
 {
-    const GList *gl_fl   = gl_files; /* Temp ItemInfo list */
-    const char  *s_fn    = NULL;     /* Strng for file path */
-    ImageInfo   *ii_info;            /* Image information */
+    const GList *gl_fl   = NULL; /* Temp ItemInfo list */
+    const char  *s_fn    = NULL; /* Strng for file path */
+    ImageInfo   *ii_info;        /* Image information */
+
+    gl_fl = gl_files;
 
     while (gl_fl != NULL) {
 
@@ -123,9 +125,11 @@ void
 treeview_add_items_gslist (GtkWidget    *gw_tview,
                            const GSList *gl_files)
 {
-    const GSList *gl_fl   = gl_files; /* Temp ItemInfo list */
-    const char   *s_fn    = NULL;     /* Strng for file path */
-    ImageInfo    *ii_info;            /* Image information */
+    const GSList *gl_fl   = NULL; /* Temp ItemInfo list */
+    const char   *s_fn    = NULL; /* Strng for file path */
+    ImageInfo    *ii_info;        /* Image information */
+
+    gl_fl = gl_files;
 
     while (gl_fl != NULL) {
 

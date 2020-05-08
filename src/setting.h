@@ -26,7 +26,7 @@
  * value or a string.
  * Setting object may be also set as an array type. Array type do not hold any
  * value in it. It can be a parent to other settings assigned to it.
- * 
+ *
  * @author Michał Bąbik <michalb1981@o2.pl>
  */
 #ifndef SETTING_H
@@ -53,6 +53,14 @@ SetValType {
     SET_VAL_STRING, /**< string */
     SET_VAL_ARRAY   /**< array */
 } SetValType;
+/*----------------------------------------------------------------------------*/
+typedef struct
+SettingBase {
+    SetValType     v_type;
+    char          *s_name;
+    uint_fast32_t  i_id;
+    uint_fast32_t  i_owner_id;
+} SettingBase;
 /*----------------------------------------------------------------------------*/
 /**
  * @struct Setting
@@ -132,6 +140,16 @@ Setting {
  * @return     none
  */
 void setting_free (Setting *st_set);
+/*----------------------------------------------------------------------------*/
+/**
+ * @brief  Compare 2 setting items.
+ *
+ * @param[in] st_sett1  Setting object
+ * @param[in] st_sett2  Setting object
+ * @return    0 if setting are equal, 1 if they differ
+ */
+int setting_compare (const Setting *st_sett1,
+                     const Setting *st_sett2);
 /*----------------------------------------------------------------------------*/
 /**
  * @fn  const char * setting_get_name (const Setting *st_set)
@@ -293,8 +311,8 @@ const char * setting_get_string (const Setting *st_set)
  */
 /*----------------------------------------------------------------------------*/
 void setting_assign_to_array (Setting    *st_set,
-                              const char *s_name)
-                              __attribute__ ((nonnull (2)));
+                              const char *s_name);
+//                              __attribute__ ((nonnull (2)));
 
 void setting_reset_array     (Setting    *st_set);
 /*----------------------------------------------------------------------------*/
@@ -392,51 +410,63 @@ void setting_reset_array     (Setting    *st_set);
 /*----------------------------------------------------------------------------*/
 Setting * setting_new_int    (const int64_t    i_val,
                               const char      *s_name)
-          __attribute__ ((nonnull (2)));
+          __attribute__ ((returns_nonnull));
+//          __attribute__ ((nonnull (2)));
 
 Setting * setting_new_uint   (const uint64_t   i_val,
                               const char      *s_name)
-          __attribute__ ((nonnull (2)));
+          __attribute__ ((returns_nonnull));
+//          __attribute__ ((nonnull (2)));
 
 Setting * setting_new_int64  (const int64_t    i_val,
                               const char      *s_name)
-          __attribute__ ((nonnull (2), returns_nonnull));
+          __attribute__ ((returns_nonnull));
+//          __attribute__ ((nonnull (2), returns_nonnull));
 
 Setting * setting_new_uint64 (const uint64_t   i_val,
                               const char      *s_name)
-          __attribute__ ((nonnull (2), returns_nonnull));
+          __attribute__ ((returns_nonnull));
+//          __attribute__ ((nonnull (2), returns_nonnull));
 
 Setting * setting_new_int32  (const int32_t    i_val,
                               const char      *s_name)
-          __attribute__ ((nonnull (2), returns_nonnull));
+          __attribute__ ((returns_nonnull));
+//          __attribute__ ((nonnull (2), returns_nonnull));
 
 Setting * setting_new_uint32 (const uint32_t   i_val,
                               const char      *s_name)
-          __attribute__ ((nonnull (2), returns_nonnull));
+          __attribute__ ((returns_nonnull));
+//          __attribute__ ((nonnull (2), returns_nonnull));
 
 Setting * setting_new_int16  (const int16_t    i_val,
                               const char      *s_name)
-          __attribute__ ((nonnull (2), returns_nonnull));
+          __attribute__ ((returns_nonnull));
+//          __attribute__ ((nonnull (2), returns_nonnull));
 
 Setting * setting_new_uint16 (const uint16_t   i_val,
                               const char      *s_name)
-          __attribute__ ((nonnull (2), returns_nonnull));
+          __attribute__ ((returns_nonnull));
+//          __attribute__ ((nonnull (2), returns_nonnull));
 
 Setting * setting_new_int8   (const int8_t     i_val,
                               const char      *s_name)
-          __attribute__ ((nonnull (2), returns_nonnull));
+          __attribute__ ((returns_nonnull));
+//          __attribute__ ((nonnull (2), returns_nonnull));
 
 Setting * setting_new_uint8  (const uint8_t    i_val,
                               const char      *s_name)
-          __attribute__ ((nonnull (2), returns_nonnull));
+          __attribute__ ((returns_nonnull));
+//          __attribute__ ((nonnull (2), returns_nonnull));
 
 Setting * setting_new_double (const double     d_val,
                               const char      *s_name)
-          __attribute__ ((nonnull (2), returns_nonnull));
+          __attribute__ ((returns_nonnull));
+//          __attribute__ ((nonnull (2), returns_nonnull));
 
 Setting * setting_new_string (const char      *s_val,
                               const char      *s_name)
-          __attribute__ ((nonnull (2), returns_nonnull));
+          __attribute__ ((returns_nonnull));
+//          __attribute__ ((nonnull (2), returns_nonnull));
 
 Setting * setting_new_array  (const char      *s_name)
           __attribute__ ((nonnull (1), returns_nonnull));

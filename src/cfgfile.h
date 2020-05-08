@@ -18,7 +18,7 @@
  * along with Wall Changer.  If not, see <https://www.gnu.org/licenses/>.
  *
  * @brief  Configuration file examine and set
- * 
+ *
  * @author Michał Bąbik <michalb1981@o2.pl>
  */
 #ifndef CFGFILE_H

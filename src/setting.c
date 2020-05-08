@@ -18,7 +18,7 @@
  * along with Wall Changer.  If not, see <https://www.gnu.org/licenses/>.
  *
  * @brief  Setting structure and functions
- * 
+ *
  * @author Michał Bąbik <michalb1981@o2.pl>
  */
 #include <stdio.h>
@@ -29,7 +29,7 @@
 #include "setting.h"
 /*----------------------------------------------------------------------------*/
 /**
- * @brief  Setting initialization
+ * @brief  Setting initialization.
  *
  * @param[out] st_set  Setting object
  * @return     none
@@ -61,7 +61,7 @@ static void setting_copy2 (Setting       *st_dest,
  * @return     New Setting or null
  */
 static Setting * setting_create_default (const char *s_name)
-                 __attribute__ ((nonnull (1), returns_nonnull));
+                 __attribute__ ((returns_nonnull));
 /*----------------------------------------------------------------------------*/
 /**
  * @fn static void setting_set_type (Setting *st_set, const SetValType i_type)
@@ -582,10 +582,6 @@ setting_get_uint8 (const Setting *st_set)
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Set Setting double data value
- *
- * @param[out] st_set  Setting object
- * @param[in]  d_val   Double value
- * @return     none
  */
 static void
 setting_set_double (Setting      *st_set,
@@ -639,10 +635,9 @@ void
 setting_assign_to_array (Setting    *st_set,
                          const char *s_name)
 {
-    if (strcmp (s_name, "") == 0)
-        setting_set_owner_id (st_set, 0);
-    else
-        setting_set_owner_id (st_set, hash (s_name));
+    size_t ui_hash = 0;
+    ui_hash = (s_name != NULL && s_name[0] != '\0') ? hash (s_name) : 0;
+    setting_set_owner_id (st_set, hash (s_name));
 }
 /*----------------------------------------------------------------------------*/
 /**
@@ -662,7 +657,8 @@ setting_copy2 (Setting       *st_dest,
                const Setting *st_src)
 {
     setting_init (st_dest);
-    st_dest->s_name     = strdup (st_src->s_name);
+    if (st_src->s_name != NULL)
+        st_dest->s_name = strdup (st_src->s_name);
     st_dest->i_id       = st_src->i_id;
     st_dest->i_owner_id = st_src->i_owner_id;
     st_dest->v_type     = st_src->v_type;
@@ -760,8 +756,14 @@ setting_create_default (const char *s_name)
     }
 
     setting_init (st_ret);
-    setting_set_name (st_ret, s_name);
-    setting_set_id (st_ret, hash (s_name));
+
+    if (s_name != NULL && s_name[0] != '\0') {
+        setting_set_name (st_ret, s_name);
+        setting_set_id (st_ret, hash (s_name));
+    }
+    else {
+        setting_set_id (st_ret, 0);
+    }
 
     return st_ret;
 }
@@ -910,6 +912,91 @@ setting_new_array (const char *s_name)
 
     return st_ret;
 }
+/*----------------------------------------------------------------------------*/
+int
+setting_compare (const Setting *st_sett1,
+                 const Setting *st_sett2)
+{
+    int i_res = 1;
+
+    if (st_sett1->i_id != st_sett2->i_id)
+        return 1;
+
+    if (st_sett1->i_owner_id != st_sett2->i_owner_id)
+        return 1;
+
+    if (st_sett1->v_type != st_sett2->v_type)
+        return 1;
+
+    if (st_sett1->s_name != NULL && st_sett2->s_name != NULL)
+        return 0;
+
+    if (st_sett1->s_name == NULL && st_sett2->s_name != NULL)
+        return 1;
+
+    if (st_sett1->s_name != NULL && st_sett2->s_name == NULL)
+        return 1;
+
+    switch (st_sett1->v_type) {
+    
+        case SET_VAL_INT:
+            i_res = st_sett1->data.i_val != st_sett2->data.i_val;
+            break;
+
+        case SET_VAL_UINT:
+            i_res = st_sett1->data.ui_val != st_sett2->data.ui_val;
+            break;
+
+        case SET_VAL_INT64:
+            i_res = st_sett1->data.i64_val != st_sett2->data.i64_val;
+            break;
+
+        case SET_VAL_UINT64:
+            i_res = st_sett1->data.ui64_val != st_sett2->data.ui64_val;
+            break;
+
+        case SET_VAL_INT32:
+            i_res = st_sett1->data.i32_val != st_sett2->data.i32_val;
+            break;
+
+        case SET_VAL_UINT32:
+            i_res = st_sett1->data.ui32_val != st_sett2->data.ui32_val;
+            break;
+
+        case SET_VAL_INT16:
+            i_res = st_sett1->data.i16_val != st_sett2->data.i16_val;
+            break;
+
+        case SET_VAL_UINT16:
+            i_res = st_sett1->data.ui16_val != st_sett2->data.ui16_val;
+            break;
+
+        case SET_VAL_INT8:
+            i_res = st_sett1->data.i8_val != st_sett2->data.i8_val;
+            break;
+
+        case SET_VAL_UINT8:
+            i_res = st_sett1->data.ui8_val != st_sett2->data.ui8_val;
+            break;
+
+        case SET_VAL_DOUBLE:
+            i_res = st_sett1->data.d_val != st_sett2->data.d_val;
+            break;
+
+        case SET_VAL_STRING:
+            i_res = strcmp (st_sett1->data.s_val, st_sett2->data.s_val);
+            break;
+
+        case SET_VAL_ARRAY:
+            break;
+
+        default:
+            break;
+    };
+
+    return i_res;
+}
+/*----------------------------------------------------------------------------*/
 #ifdef DEBUG
 /*----------------------------------------------------------------------------*/
 /*

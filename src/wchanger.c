@@ -19,7 +19,7 @@
  *
  * Automatic wallpaper changer
  *
- * @date May 05, 2020
+ * @date May 08, 2020
  *
  * @version 1.4.5
  *
@@ -387,8 +387,6 @@ get_wallpaper_list (GtkWidget *gw_view,
     GSList     *gsl_iinfo1 = NULL; /* List of ImageInfo data */
     GSList     *gsl_iinfo  = NULL; /* Temp list for data */
     const char *s_val      = NULL; /* Full file path */
-    char       *s_name     = NULL; /* Unique name for background file */
-    size_t      ui_no      = 0;    /* Number to append to name */
 
     /* get ImageInfo list of TreeView files */
     gsl_iinfo1 = treeview_get_data (gw_view);
@@ -401,11 +399,8 @@ get_wallpaper_list (GtkWidget *gw_view,
 
         ii_info = gsl_iinfo->data;
         s_val   = ii_info->s_full_path;
-        s_name  = str_name_with_number (get_setting_name (SETTING_WALL_ARRAY),
-                                        ui_no++);
-        st_sett = setting_new_string (s_val, s_name);
-
-        free (s_name);
+        st_sett = setting_new_string (s_val, NULL);
+        
         stlist_insert_setting_to_array (st_list, st_sett,
                                         get_setting_name (SETTING_WALL_ARRAY));
         gsl_iinfo = gsl_iinfo->next;
@@ -657,7 +652,6 @@ event_save_settings_pressed (const DialogData *dd_data)
     st_list = widgets_get_settings (dd_data);
     i_err   = settings_check_update_file (st_list,
                                           dialogdata_get_cfg_file (dd_data));
-
     stlist_free (st_list);
 
     if (i_err != ERR_OK) {

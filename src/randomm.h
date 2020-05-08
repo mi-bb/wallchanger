@@ -24,7 +24,7 @@
  * It gets random numbers until the range of numbers reached, resets memory
  * and starts getting random values again.
  * Maximum available range can be set with RMMAX, it will be RMMAX * 32.
- * 
+ *
  * @author Michał Bąbik <michalb1981@o2.pl>
  */
 #ifndef RANDOMM_H

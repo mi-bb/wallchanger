@@ -18,7 +18,7 @@
  * along with Wall Changer.  If not, see <https://www.gnu.org/licenses/>.
  *
  * @brief  String operations 
- * 
+ *
  * @author Michał Bąbik <michalb1981@o2.pl>
  */
 #include <stdlib.h>
@@ -53,28 +53,6 @@ str_compare (const char *a,
         i_res = strcmp (a, b);
     }
     return i_res;
-}
-/*----------------------------------------------------------------------------*/
-/**
- * @brief  Creates string with name made of s_name string and number
- *         ul_no at the end.
- */ 
-char *
-str_name_with_number (const char   *s_name,
-                      const size_t  ul_no)
-{
-    char   *s_res  = NULL;   /* Result string */
-    size_t  ul_tmp = ul_no;  /* Copy of number */
-    size_t  ul_l   = 1;      /* Length of number string */
-
-    while (ul_tmp /= 10)
-        ul_l++;
-
-    cres ((void**) &s_res, strlen (s_name) + ul_l + 1, sizeof (char));
-
-    sprintf (s_res, "%s%ld", s_name, ul_no);
-
-    return s_res;
 }
 /*----------------------------------------------------------------------------*/
 /**

@@ -28,11 +28,18 @@
 #include "randomm.h"
 /*----------------------------------------------------------------------------*/
 /**
+ * @brief  Sleep for 500 milliseconds.
+ *
+ * @return none
+ */
+void sleep500 (void);
+/*----------------------------------------------------------------------------*/
+/**
  * @brief  Check if display is present, exit if it is not.
  *
  * @return none
  */
-void check_display (void);
+void check_display_exit (void);
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Look for config files in standard locations, if s_file is not null

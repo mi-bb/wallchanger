@@ -18,7 +18,7 @@
  * along with Wall Changer.  If not, see <https://www.gnu.org/licenses/>.
  *
  * @brief  String operations 
- * 
+ *
  * @author Michał Bąbik <michalb1981@o2.pl>
  */
 #ifndef STRFUN_H
@@ -74,10 +74,6 @@
 int    str_compare                  (const char   *a,
                                      const char   *b)
                                      __attribute__ ((pure));
-
-char * str_name_with_number         (const char   *s_name,
-                                     const size_t  ul_no)
-       __attribute__ ((nonnull (1), returns_nonnull));
 
 char * str_replace_in               (const char   *s_src,
                                      const char   *s_fr,

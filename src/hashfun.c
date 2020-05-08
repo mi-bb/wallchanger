@@ -18,7 +18,7 @@
  * along with Wall Changer.  If not, see <https://www.gnu.org/licenses/>.
  *
  * @brief  Hash function
- * 
+ *
  * @author Michał Bąbik <michalb1981@o2.pl>
  */
 #include <stdlib.h>

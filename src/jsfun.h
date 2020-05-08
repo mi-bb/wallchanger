@@ -20,7 +20,7 @@
  * @brief  Json functions
  *
  * Functions to get and store application settings in JSON database.
- * 
+ *
  * @author Michał Bąbik <michalb1981@o2.pl>
  */
 #ifndef JSFUN_H

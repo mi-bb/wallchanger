@@ -18,7 +18,7 @@
  * along with Wall Changer.  If not, see <https://www.gnu.org/licenses/>.
  *
  * @brief  Wallpaper set command window for detailed command setting.
- * 
+ *
  * @author Michał Bąbik <michalb1981@o2.pl>
  */
 #include <err.h>
@@ -127,7 +127,6 @@ static Wms wms[] = {
      "feh --bg-fill \"[F]\""},
     {14, WM_ID_END, "", "", ""}
     };
-
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Find window manager that is currently in use.

@@ -18,7 +18,7 @@
  * along with Wall Changer.  If not, see <https://www.gnu.org/licenses/>.
  *
  * @brief  ImageInfo structure and functions
- * 
+ *
  * @author Michał Bąbik <michalb1981@o2.pl>
  */
 #include <stdio.h>
