@@ -33,6 +33,22 @@
 #include "chkwch.h"
 /*----------------------------------------------------------------------------*/
 /**
+ * @brief  Check if display is present, exit if it is not.
+ *
+ * @return none
+ */
+static int
+check_display (void)
+{
+    Display *display;
+
+    if ((display = XOpenDisplay (NULL)) == NULL)
+        return 0;
+    XCloseDisplay(display);
+    return 1;
+}
+/*----------------------------------------------------------------------------*/
+/**
  * @brief  Sleep for 500 milliseconds.
  */
 void sleep500 (void)
@@ -49,13 +65,8 @@ void sleep500 (void)
 void
 check_display_exit (void)
 {
-    Display *display;
-
-    display = XOpenDisplay (NULL);
-    if (display == NULL) {
+    if (!check_display ())
         errx (EXIT_FAILURE, "Could not detect display");
-    }
-    XCloseDisplay(display);
 }
 /*----------------------------------------------------------------------------*/
 /**
@@ -65,9 +76,8 @@ check_display_exit (void)
 void
 check_config_file (char **s_file)
 {
-    if (cfgfile_config_file_stuff (s_file, 0) != ERR_OK) {
+    if (cfgfile_config_file_stuff (s_file, 0) != ERR_OK)
         exit (EXIT_FAILURE);
-    }
 }
 /*----------------------------------------------------------------------------*/
 /**

@@ -62,8 +62,8 @@ void dmfn_start (void);
 /**
  * @brief  Kill wchangerd process
  *
- * @return none
+ * @return Non 0 if daemon was killed, 0 if not found
  */
-void dmfn_kill (void);
+int dmfn_kill (void);
 /*----------------------------------------------------------------------------*/
 #endif

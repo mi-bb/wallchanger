@@ -70,8 +70,7 @@ main (int    argc,
         exit (EXIT_SUCCESS);
     }
     /* Restarting daemon - stopping existing one */
-    if (i_opt & CMD_OPT_RESTART) {
-        dmfn_kill ();
+    if (i_opt & CMD_OPT_RESTART && dmfn_kill ()) {
         sleep500 ();
     }
 

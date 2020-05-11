@@ -627,11 +627,10 @@ event_set_wallpaper_pressed (const DialogData *dd_data)
     if (gtk_tree_model_get_iter (gtm_model, &gti_iter, gl_list->data)) {
 
         ii_info = treemodel_get_data (gtm_model, gti_iter);
-        s_cmd = gtk_entry_get_text (GTK_ENTRY (dd_data->gw_command));
-
-        i_err = wallpaper_dialog_set (s_cmd,
-                                      imageinfo_get_full_name (ii_info),
-                                      dialogdata_get_cfg_file (dd_data));
+        s_cmd   = gtk_entry_get_text (GTK_ENTRY (dd_data->gw_command));
+        i_err   = wallpaper_dialog_set (s_cmd,
+                                        imageinfo_get_full_name (ii_info),
+                                        dialogdata_get_cfg_file (dd_data));
         if (i_err != ERR_OK) {
             message_dialog_error (dd_data->gw_window, err_get_message (i_err));
         }
@@ -695,7 +694,6 @@ event_treeview_key_press (GtkWidget        *widget __attribute__ ((unused)),
     if (event->keyval == GDK_KEY_Delete) {
         treeview_remove_selected (dd_data->gw_view);
     }
-
     return FALSE;
 }
 /*----------------------------------------------------------------------------*/

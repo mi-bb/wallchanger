@@ -114,7 +114,7 @@ dmfn_start (void)
 /**
  * @brief  Kill wchangerd process
  */
-void
+int
 dmfn_kill (void)
 {
     int i_cnt = 0;
@@ -127,6 +127,7 @@ dmfn_kill (void)
     else {
         printf ("Could not find wchangerd\n");
     }
+    return i_cnt;
 }
 /*----------------------------------------------------------------------------*/
 

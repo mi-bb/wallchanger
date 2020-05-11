@@ -13,6 +13,40 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+2020-05-11  Michal Babik  <michalb1981@o2.pl>
+
+	* chkwch.c (check_display): Check for display moved to this function.
+	  (check_display_exit): New function, calls check_display and exits
+	  app if display is not present.
+	* dmfn.c, dmfn.h (dmfn_kill): Changed function to return number of processes
+	  to which the kill signal was sent.
+	* jsfun.c (js_json_obj_to_setting): Attribute nonnull removed fron s_name,
+	  now null value can be set as setting name. Removed creating name with
+	  number for wallpaper items in settings.
+	* setting.c (setting_create_default): Removed nonnull attribute for
+	  s_name.
+	  (setting_assign_to_array): Changed function style.
+	  (setting_copy2): Copying name if it is not null.
+	  (setting_create_default): Setting name if s_name is not null, and
+	  setting 0 value hash if passed s_name is null.
+	  (setting_compare): New function for more precise settings compare.
+	* setting.h (setting_assign_to_array, setting_new_*): Removed nonnull
+	  attribute from s_name parameter as it can be null now.
+	* (stlist_get_setting_pos): Added setting hash as 0 if null s_name
+	  passed.
+	* (stlist_get_setting_with_name, stlist_get_settings_in_array_name_p):
+	  Removed checking for empty string. When s_name is empty or null
+	  ui_array_id is set to 0.
+	  (stlist_remove_setting): Added more precise compare of setting to delete
+	  when it's id is 0.
+
+2020-05-06  Michal Babik  <michalb1981@o2.pl>
+
+	* wcngdmn.c (main): Added 500 msec sleep after killing process when
+	  restarting daemon, so it will have some time to exit.
+	* chkwch.c, chkwch.h (sleep500): New function, calls nanosleep for 500 ms
+	  sleep.
+
 2020-05-05  Michal Babik  <michalb1981@o2.pl>
 
 	* cmddialog.c: Added some window managers to array.
