@@ -219,10 +219,10 @@ void             wallset_set_last_used_setting (WallSett       *ws_sett,
 
 int8_t           wallset_get_last_used_setting (const WallSett *ws_sett);
 /*----------------------------------------------------------------------------*/
-void             wallset_set_random            (WallSett       *ws_sett,
+void             wallset_set_random_opt        (WallSett       *ws_sett,
                                                 const int8_t    i_val);
 
-int8_t           wallset_get_random            (const WallSett *ws_sett);
+int8_t           wallset_get_random_opt        (const WallSett *ws_sett);
 /*----------------------------------------------------------------------------*/
 void             wallset_set_interval          (WallSett       *ws_sett,
                                                 const uint32_t  ui_val);

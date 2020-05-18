@@ -175,22 +175,16 @@ str_append (char       **s_dst,
 {
     size_t ui_dst = 0; /* length of dst string */
     size_t ui_src = 0; /* Length of src string */
-    int    i_zero = 0; /* Place 0 in new string */
 
     if (s_src == NULL)
         return;
     else
         ui_src = strlen (s_src);
 
-    if (*s_dst == NULL)
-        i_zero = 1;
-    else
+    if (*s_dst != NULL)
         ui_dst = strlen (*s_dst);
 
     cres ((void**) s_dst, ui_src + ui_dst + 1, sizeof (char));
-
-    if (i_zero)
-        *s_dst[0] = '\0';
 
     memcpy ((*s_dst)+ui_dst, s_src, ui_src);
     (*s_dst)[ui_src+ui_dst] = '\0';

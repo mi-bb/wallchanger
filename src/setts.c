@@ -309,7 +309,7 @@ settlist_to_wallset (const SettList *st_list,
             st_list, get_setting_name (SETTING_RANDOM_OPT));
     if (st_sett != NULL) {
         ui_tmp = setting_get_uint32 (st_sett);
-        wallset_set_random (ws_sett, (int8_t) ui_tmp);
+        wallset_set_random_opt (ws_sett, (int8_t) ui_tmp);
     }
 
     st_sett = stlist_get_setting_with_name (

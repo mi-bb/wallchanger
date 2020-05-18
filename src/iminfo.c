@@ -37,7 +37,7 @@
  * @param[out] ii_info  Pointer to ImageInfo object
  * @return     none
  */
-static void imageinfo_init     (ImageInfo       *ii_info);
+static void imageinfo_init (ImageInfo *ii_info);
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Init ImageInfo data.
@@ -142,7 +142,9 @@ file_paths_to_imageinfo (const GSList *gsl_files1)
 
             ii_info = imageinfo_new_from_file (s_fn);
 
-            if (imageinfo_get_height (ii_info) > 0)
+            if (imageinfo_get_height (ii_info) > 0 &&
+                imageinfo_get_width (ii_info) > 0)
+
                 gsl_iinfo = g_slist_append (gsl_iinfo, ii_info);
         }
 
@@ -267,9 +269,9 @@ imageinfo_set_wxh (ImageInfo *ii_info,
     int  n = 0;      /* Length of string with dimensions */
 
     n = snprintf (s_tmp, 41, "%dx%d", i_w, i_h);
-    n = n <  0 ?  0 : n;
-    n = n > 40 ? 40 : n;
-    cres ((void**) &ii_info->s_width_height, (size_t) (n+1), sizeof (char));
+    if      (n < 0)  n = 0;
+    else if (n > 40) n = 40;
+    cres ((void**) &ii_info->s_width_height, (size_t) (n + 1), sizeof (char));
     memcpy (ii_info->s_width_height, s_tmp, (size_t) n);
     ii_info->s_width_height[n] = '\0';
 }

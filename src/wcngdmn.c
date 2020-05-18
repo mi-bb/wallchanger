@@ -19,9 +19,9 @@
  *
  * Automatic wallpaper changer
  *
- * @date May 08, 2020
+ * @date May 17, 2020
  *
- * @version 1.4.5
+ * @version 1.4.6
  *
  * @author Michał Bąbik <michalb1981@o2.pl>
  */
@@ -73,7 +73,6 @@ main (int    argc,
     if (i_opt & CMD_OPT_RESTART && dmfn_kill ()) {
         sleep500 ();
     }
-
     /* Check wchangerd process presence, exit if it is running */
     dmfn_check_exit ();
     /* Checking if display is available */

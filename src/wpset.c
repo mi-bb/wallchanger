@@ -169,7 +169,7 @@ wallpaper_set_next_in_list (WallSett *ws_sett)
 int
 wallpaper_change (WallSett *ws_sett)
 {
-    if (wallset_get_random (ws_sett)) {
+    if (wallset_get_random_opt (ws_sett)) {
         wallpaper_set_random (ws_sett);
     }
     else {

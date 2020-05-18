@@ -139,8 +139,8 @@ wallset_get_last_used_setting (const WallSett *ws_sett)
  * @brief  Set random wallpaper select value.
  */
 void
-wallset_set_random (WallSett      *ws_sett,
-                    const int8_t   i_val)
+wallset_set_random_opt (WallSett      *ws_sett,
+                        const int8_t   i_val)
 {
     ws_sett->i_random = i_val;
 }
@@ -149,7 +149,7 @@ wallset_set_random (WallSett      *ws_sett,
  * @brief  Get random wallpaper select value.
  */
 int8_t
-wallset_get_random (const WallSett *ws_sett)
+wallset_get_random_opt (const WallSett *ws_sett)
 {
     return ws_sett->i_random;
 }

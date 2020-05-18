@@ -36,9 +36,10 @@
 void
 dmfn_daemonize (void)
 {
-    int  i_res = fork ();
+    int  i_res = 0;
     long i     = 0;
 
+    i_res = fork ();
     if (i_res > 0)
         exit (EXIT_SUCCESS);
     else if (i_res < 0)
