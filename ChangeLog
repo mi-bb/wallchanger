@@ -13,6 +13,37 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+2020-05-24  Michal Babik  <michalb1981@o2.pl>
+
+	* astart.c, astart.h: New files with functions to create/delete wchangerd
+	  daemon entry in user's autostart directory.
+	* chkwch.c (check_config_file): Changed exit to err to show config file
+	  error.
+	* cmddialog.c (textview_set_text, textview_get_text): Functions
+	  for setting and getting text from textview.
+	  (event_combo_changed): Changed to put text to textview instead of entry.
+	  (event_test_button_clicked): Changed to get command from textview.
+	  (event_get_default_button_clicked): New function for get default button
+	  click.
+	  (cmddialog_run): Changed command entry to textview.
+	  Added parameter s_current_cmd for passing command string from main window.
+	  (newline_to_space): New fuction for changing new line character to space
+	  in a given string.
+	* dirlist.c, dirlist.h: New files for directory listing related functions.
+	* errs.h: Added ERR_FILE_RM in error enum for error when file can't be
+	  removed.
+	* errs.c (err_get_message): Added string for ERR_OK, ERR_FILE_RM,
+	  ERR_CFG_NOF.
+	* fdfn.c, fdfn.h: File / diectory operations like file_check_permissions,
+	  file_create_with_subdirs, dir_get_home moved here.
+	* treev.c (treeview_find_select_item): Changed selecting to scroll and
+	  select desired item.
+	* wchanger.c (event_autostart_toggled): New function to create or delete
+	  wchangerd daemon entry in user's autostart directory when check button
+	  is checked or unchecked.
+	  (create_settings_widget): Added autostart check button placing.
+	  Changed widgets layout.
+
 2020-05-18  Michal Babik  <michalb1981@o2.pl>
 
 	* strfun.c (str_append): Some code cleaning.

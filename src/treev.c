@@ -224,7 +224,7 @@ treeview_find_select_item (GtkWidget  *gw_tview,
                            const char *s_file)
 {
     GtkTreeModel     *gtm_model;
-    GtkTreeSelection *gts_sele;
+    GtkTreePath      *path;
     GtkTreeIter       gti_iter;
     gboolean          b_res     = FALSE;
     GValue            value     = {0,};
@@ -240,8 +240,12 @@ treeview_find_select_item (GtkWidget  *gw_tview,
         s_val = (const char*) g_value_get_string (&value);
 
         if (str_compare (s_file, s_val) == 0) {
-            gts_sele = gtk_tree_view_get_selection (GTK_TREE_VIEW (gw_tview));
-            gtk_tree_selection_select_iter (gts_sele, &gti_iter);
+            path = gtk_tree_model_get_path (gtm_model, &gti_iter);
+            gtk_tree_view_scroll_to_cell (GTK_TREE_VIEW (gw_tview), path, NULL,
+                    TRUE, 0.5, 0);
+            gtk_tree_view_set_cursor (GTK_TREE_VIEW (gw_tview), path, NULL, FALSE);
+            gtk_tree_path_free (path);
+            puts ("aaaaa");
             break;
         }
         g_value_unset(&value);

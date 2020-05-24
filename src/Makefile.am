@@ -26,6 +26,7 @@ wchangerd_SOURCES=wcngdmn.c\
                   settlist.c settlist.h\
                   setting.c setting.h\
                   strfun.c strfun.h\
+                  fdfn.c fdfn.h\
                   cfgfile.c cfgfile.h\
                   cres.c cres.h\
                   hashfun.c hashfun.h\
@@ -54,8 +55,9 @@ wchangercfg_SOURCES=wchanger.c\
                     setting.c setting.h\
                     preview.c preview.h\
                     strfun.c strfun.h\
+                    fdfn.c fdfn.h\
                     cfgfile.c cfgfile.h\
-                    fdops.c fdops.h\
+                    dirlist.c dirlist.h\
                     cres.c cres.h\
                     hashfun.c hashfun.h\
                     dmfn.c dmfn.h\
@@ -63,6 +65,7 @@ wchangercfg_SOURCES=wchanger.c\
                     procitem.c procitem.h\
                     proclist.c proclist.h\
                     cmddialog.c cmddialog.h\
+                    astart.c astart.h\
                     errs.c errs.h\
                     defs.h
 

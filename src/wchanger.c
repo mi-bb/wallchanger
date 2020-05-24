@@ -19,9 +19,9 @@
  *
  * Automatic wallpaper changer
  *
- * @date May 17, 2020
+ * @date May 24, 2020
  *
- * @version 1.4.6
+ * @version 1.4.7
  *
  * @author Michał Bąbik <michalb1981@o2.pl>
  */
@@ -35,14 +35,15 @@
 #include "imgs.h"
 #include "dlgs.h"
 #include "treev.h"
+#include "dirlist.h"
 #include "preview.h"
 #include "strfun.h"
 #include "errs.h"
 #include "cfgfile.h"
 #include "defs.h"
-#include "fdops.h"
 #include "hashfun.h"
 #include "dmfn.h"
+#include "astart.h"
 #include "cmddialog.h"
 /*----------------------------------------------------------------------------*/
 /**
@@ -765,13 +766,26 @@ event_command_button_pressed (const DialogData *dd_data)
     char   *s_command = NULL; /* Command from dialog */
 
     gsl_files = treeview_get_data (dd_data->gw_view);
-    s_command = cmddialog_run (dd_data->gw_window, gsl_files);
+    s_command = cmddialog_run (dd_data->gw_window,
+            gtk_entry_get_text (GTK_ENTRY (dd_data->gw_command)), gsl_files);
 
     if (s_command != NULL) {
         gtk_entry_set_text (GTK_ENTRY (dd_data->gw_command), s_command);
         free (s_command);
     }
     g_slist_free_full (gsl_files, (GDestroyNotify) imageinfo_free);
+}
+/*----------------------------------------------------------------------------*/
+static void
+event_autostart_toggled (GtkToggleButton *togglebutton,
+                         gpointer         user_data __attribute__ ((unused)))
+{
+    if (gtk_toggle_button_get_active (togglebutton)) {
+        autostart_create ();
+    }
+    else {
+        autostart_remove ();
+    }
 }
 /*----------------------------------------------------------------------------*/
 /**
@@ -1023,12 +1037,11 @@ create_settings_widget (GtkWidget **gw_widget,
     GtkWidget     *gw_command_label;     /* Wallpaper set cmd GtkLabel */
     GtkWidget     *gw_command_button;    /* Button for command dialog */
     GtkWidget     *gw_command_entry;     /* Wallpaper set cmd GtkEntry */
-    GtkWidget     *gw_command_box;       /* Box for command entry and btn */
     GtkWidget     *gw_interval_label;    /* Time interval GtkLabel */
     GtkWidget     *gw_spinbutton;        /* Time interval GtkSpinButton */
     GtkAdjustment *ga_adjustment;        /* Time interval GtkAdjustment */
     GtkWidget     *gw_time_combo;        /* Time interval GtkComboBoxText*/
-    GtkWidget     *gw_interval_box;      /* Box for interval widgets */
+    GtkWidget     *gw_autostart_button;  /* Autostart file GtkCheckButton */
 
     /* Random wallpaper change button */
     gw_random_button = gtk_check_button_new ();
@@ -1053,7 +1066,7 @@ create_settings_widget (GtkWidget **gw_widget,
     gw_command_label = gtk_label_new ("Background set command : ");
     gtk_label_set_xalign (GTK_LABEL (gw_command_label), 0);
     gw_command_entry = gtk_entry_new ();
-    gtk_entry_set_width_chars (GTK_ENTRY (gw_command_entry), 70);
+    //gtk_entry_set_width_chars (GTK_ENTRY (gw_command_entry), 70);
 
     gtk_widget_set_tooltip_markup (gw_command_entry,
         "This command will be executed to set background image\n"
@@ -1086,7 +1099,23 @@ create_settings_widget (GtkWidget **gw_widget,
     gtk_combo_box_set_active (GTK_COMBO_BOX (gw_time_combo), 0);
 
     g_signal_connect (gw_spinbutton, "value-changed",
-                  G_CALLBACK (event_interval_changed), dd_data);
+                      G_CALLBACK (event_interval_changed), dd_data);
+
+    /* Autostart button */
+    gw_autostart_button = gtk_check_button_new ();
+    gtk_widget_set_tooltip_markup (gw_autostart_button, 
+        "When <b>enabled</b> wchangerd daemon entry will be placed in "
+        "user's autostart directory."
+        "\nWhen <b>disabled</b> daemon entry will be removed from "
+        "user's autostart directory."
+        "\nThis will allow to start (restart actually) wchangerd daemon "
+        " in XDG Autostart compatible window managers.");
+    gtk_button_set_label (GTK_BUTTON (gw_autostart_button),
+                          "Create autostart entry");
+    gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (gw_autostart_button),
+                                  autostart_exists ());
+    g_signal_connect (gw_autostart_button, "toggled",
+                      G_CALLBACK (event_autostart_toggled), NULL);
 
     /* Setting pointers in DialogData */
     dd_data->gw_random      = gw_random_button;
@@ -1099,38 +1128,44 @@ create_settings_widget (GtkWidget **gw_widget,
     *gw_widget = gtk_grid_new ();
     gtk_grid_set_column_spacing (GTK_GRID (*gw_widget), 8);
     gtk_grid_set_row_spacing (GTK_GRID (*gw_widget), 8);
+    gtk_grid_set_row_homogeneous (GTK_GRID (*gw_widget), TRUE);
+
+    /* Packing time interval widgets */
+    gtk_grid_attach (GTK_GRID (*gw_widget),
+                     gw_interval_label, 0, 0, 1, 1);
+    gtk_grid_attach_next_to (GTK_GRID (*gw_widget),
+                             gw_spinbutton, gw_interval_label,
+                             GTK_POS_RIGHT, 1, 1);
+    gtk_grid_attach_next_to (GTK_GRID (*gw_widget),
+                             gw_time_combo, gw_spinbutton,
+                             GTK_POS_RIGHT, 1, 1);
 
     /* Packing background set command */
-    gw_command_box = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 8);
-    gtk_box_pack_start (GTK_BOX (gw_command_box), gw_command_button,
-                        FALSE, FALSE, 0);
-    gtk_box_pack_start (GTK_BOX (gw_command_box), gw_command_entry,
-                        TRUE, TRUE, 0);
-    gtk_grid_attach (GTK_GRID (*gw_widget),
-                     gw_command_label, 0, 0, 3, 1);
     gtk_grid_attach_next_to (GTK_GRID (*gw_widget),
-                             gw_command_box, gw_command_label,
-                             GTK_POS_BOTTOM, 3, 1);
+                             gw_command_label, gw_interval_label,
+                             GTK_POS_BOTTOM, 1, 1);
+    gtk_grid_attach_next_to (GTK_GRID (*gw_widget),
+                             gw_command_entry, gw_command_label,
+                             GTK_POS_RIGHT, 2, 1);
+    gtk_grid_attach_next_to (GTK_GRID (*gw_widget),
+                             gw_command_button, gw_command_entry,
+                             GTK_POS_RIGHT, 1, 1);
+
+    /* Separator for checkbuttons */
+    gtk_grid_attach (GTK_GRID (*gw_widget),
+                     gtk_separator_new (GTK_ORIENTATION_VERTICAL),
+                     4, 0, 1, 3);
 
     /* Packing button for random change */
-    gtk_grid_attach_next_to (GTK_GRID (*gw_widget),
-                             gw_random_button, gw_command_box,
-                             GTK_POS_BOTTOM, 1, 1);
+    gtk_grid_attach (GTK_GRID (*gw_widget),
+                     gw_random_button, 5, 0, 1, 1);
     gtk_grid_attach_next_to (GTK_GRID (*gw_widget),
                              gw_button_selectlast, gw_random_button,
                              GTK_POS_BOTTOM, 1, 1);
 
-    /* Packing time interval widgets */
-    gw_interval_box = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 8);
-    gtk_box_pack_start (GTK_BOX (gw_interval_box), gw_spinbutton,
-                        FALSE, FALSE, 0);
-    gtk_box_pack_start (GTK_BOX (gw_interval_box), gw_time_combo,
-                        FALSE, FALSE, 0);
+    /* Packing autostart widget */
     gtk_grid_attach_next_to (GTK_GRID (*gw_widget),
-                             gw_interval_label, gw_random_button,
-                             GTK_POS_RIGHT, 1, 1);
-    gtk_grid_attach_next_to (GTK_GRID (*gw_widget),
-                             gw_interval_box, gw_interval_label,
+                             gw_autostart_button, gw_button_selectlast,
                              GTK_POS_BOTTOM, 1, 1);
 }
 /*----------------------------------------------------------------------------*/

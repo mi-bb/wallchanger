@@ -149,7 +149,7 @@ void setting_free (Setting *st_set);
  * @return    0 if setting are equal, 1 if they differ
  */
 int setting_compare (const Setting *st_sett1,
-                     const Setting *st_sett2);
+                     const Setting *st_sett2) __attribute__ ((pure));
 /*----------------------------------------------------------------------------*/
 /**
  * @fn  const char * setting_get_name (const Setting *st_set)

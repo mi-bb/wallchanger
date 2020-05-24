@@ -59,7 +59,7 @@
  * @brief Default setting for random wallpaper change
  */
 #define APP_NAME             "Wall Changer"
-#define APP_VER              "1.4.6"
+#define APP_VER              "1.4.7"
 #define APP_WEB              "https://www.nongnu.org/wallchanger/"
 #define APP_DSC              "Wall Changer is an automatic wallpaper changer."
 #define STATUS_CONFIG        "Config file in use: "

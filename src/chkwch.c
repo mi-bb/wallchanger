@@ -76,8 +76,14 @@ check_display_exit (void)
 void
 check_config_file (char **s_file)
 {
-    if (cfgfile_config_file_stuff (s_file, 0) != ERR_OK)
-        exit (EXIT_FAILURE);
+    int i_err = 0; /* Error output */
+
+    if ((i_err = cfgfile_config_file_stuff (s_file, 0)) != ERR_OK) {
+        err (EXIT_FAILURE, "Problem with config file");
+        //warnx ("Could not find a config file");
+        /* warnx ("%s", err_get_message (i_err)); */
+        //exit (EXIT_FAILURE);
+    }
 }
 /*----------------------------------------------------------------------------*/
 /**

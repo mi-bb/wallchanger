@@ -1,5 +1,5 @@
 /**
- * @file  errs.h
+ * @file  fdfn.h
  * @copyright Copyright (C) 2019-2020 Michał Bąbik
  *
  * This file is part of Wall Changer.
@@ -17,31 +17,37 @@
  * You should have received a copy of the GNU General Public License
  * along with Wall Changer.  If not, see <https://www.gnu.org/licenses/>.
  *
- * @brief  Error info
+ * @brief  File / directory operations
  *
  * @author Michał Bąbik <michalb1981@o2.pl>
  */
-#ifndef ERRS_H
-#define ERRS_H
-/*----------------------------------------------------------------------------*/
-enum {
-    ERR_OK,      /**< OK */
-    ERR_FILE,    /**< File error (cannot access / bad permissions) */
-    ERR_FILE_RW, /**< File read / write error */
-    ERR_FILE_CR, /**< File can not be created */
-    ERR_FILE_RM, /**< File can not be removed */
-    ERR_FILE_EX, /**< File does not exist */
-    ERR_ALLOC,   /**< Alloc error */
-    ERR_TYPE,    /**< Wrong type */
-    ERR_CFG_NOF  /**< No config file found */
-};
+#ifndef FDFN_H
+#define FDFN_H
 /*----------------------------------------------------------------------------*/
 /**
- * @brief  Function returns string with error message.
+ * @brief  Check file permissions (read write), existence. 
  *
- * @param[in]  i_err   Error number
- * @return     String with message
+ * @param[in] s_file  File name to check
+ * @return    Checking status
  */
-const char * err_get_message (const int i_err) __attribute__ ((const));
+int    file_check_permissions (const char *s_file)
+       __attribute__ ((nonnull (1)));
+/*----------------------------------------------------------------------------*/
+/**
+ * @brief  Create file with subfolders if it doesn't exist.
+ *
+ * @param[in] s_fn  File path
+ * @return    Process result
+ */
+int    file_create_with_subdirs (const char *s_fn)
+       __attribute__ ((nonnull (1)));
+/*----------------------------------------------------------------------------*/
+/**
+ * @brief  Get users home dir path.
+ *
+ * @return  String with home path, after use it thould be freed using free
+ */
+char * dir_get_home (void);
 /*----------------------------------------------------------------------------*/
 #endif
+

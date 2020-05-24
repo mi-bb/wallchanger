@@ -41,8 +41,8 @@
  * @param[in,out] s_file   Config file path or null to use default
  * @param[in]     i_create Create config file if it doesn't exist
  */
-int    cfgfile_config_file_stuff (char **s_file,
-                                  int    i_create);
+int cfgfile_config_file_stuff (char **s_file,
+                               int    i_create);
 /*----------------------------------------------------------------------------*/
 #endif
 

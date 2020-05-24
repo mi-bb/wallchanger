@@ -34,6 +34,10 @@ err_get_message (const int i_err)
 
     switch (i_err) {
 
+        case ERR_OK:
+            s_res = "All OK";
+            break;
+
         case ERR_FILE:
             s_res = "File error (cannot access / bad permissions)";
             break;
@@ -46,6 +50,10 @@ err_get_message (const int i_err)
             s_res = "File / directory can not be created";
             break;
 
+        case ERR_FILE_RM:
+            s_res = "File / directory can not be removed";
+            break;
+
         case ERR_FILE_EX:
             s_res = "File does not exist";
             break;
@@ -56,6 +64,10 @@ err_get_message (const int i_err)
 
         case ERR_TYPE:
             s_res = "Wrong type passed";
+            break;
+
+        case ERR_CFG_NOF:
+            s_res = "Could not find a config file";
             break;
 
         default:

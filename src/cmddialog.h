@@ -29,12 +29,14 @@
 /**
  * @brief  Run wallpaper set command configuration dialog.
  *
- * @param[in] gw_parent Window widget for setting dialog modal
- * @param[in] gsl_iinfo List with wallpapers
+ * @param[in] gw_parent     Window widget for setting dialog modal
+ * @param[in] s_current_cmd Current wallpaper set command
+ * @param[in] gsl_iinfo     List with wallpapers
  * @return    String with wallpaper set command or null. It should be
  *            freed after use using free.
  */
 char * cmddialog_run (GtkWindow    *gw_parent,
+                      const char   *s_current_cmd,
                       const GSList *gsl_iinfo);
 /*----------------------------------------------------------------------------*/
 /**

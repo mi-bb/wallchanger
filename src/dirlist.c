@@ -1,5 +1,5 @@
 /**
- * @file  fdops.c
+ * @file  dirlist.c
  * @copyright Copyright (C) 2019-2020 Michał Bąbik
  *
  * This file is part of Wall Changer.
@@ -17,7 +17,7 @@
  * You should have received a copy of the GNU General Public License
  * along with Wall Changer.  If not, see <https://www.gnu.org/licenses/>.
  *
- * @brief  File, directory operations
+ * @brief  Getting directory content functions
  *
  * @author Michał Bąbik <michalb1981@o2.pl>
  */
@@ -26,7 +26,7 @@
 #include <stdio.h>
 #include <err.h>
 #include "strfun.h"
-#include "fdops.h"
+#include "dirlist.h"
 /*----------------------------------------------------------------------------*/
 /**
  * @fn  static const char * get_file_ext (const char *s_fn)
