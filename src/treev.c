@@ -245,7 +245,6 @@ treeview_find_select_item (GtkWidget  *gw_tview,
                     TRUE, 0.5, 0);
             gtk_tree_view_set_cursor (GTK_TREE_VIEW (gw_tview), path, NULL, FALSE);
             gtk_tree_path_free (path);
-            puts ("aaaaa");
             break;
         }
         g_value_unset(&value);
