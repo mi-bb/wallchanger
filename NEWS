@@ -14,6 +14,11 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 ----------------------------------------------------------------------
+v1.4.8                                                      2020-05-28
+
+    * Added time align option
+
+----------------------------------------------------------------------
 v1.4.7                                                      2020-05-24
 
     * Added possibility to create autostart entry for wchangerd

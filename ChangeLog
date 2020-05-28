@@ -13,6 +13,15 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+2020-05-28  Michal Babik  <michalb1981@o2.pl>
+
+	* chkwch.c, chkwch.h (check_time_align_val): New function to check and
+	  return difference between now and next full hour.
+	  (check_settings_change_wallpaper): Added ui_algntime parameter for
+	  setting time align option. Function changed to return interval in
+	  seconds instead of minutes.
+	* Added time align option to files with settings operations.
+
 2020-05-24  Michal Babik  <michalb1981@o2.pl>
 
 	* astart.c, astart.h: New files with functions to create/delete wchangerd

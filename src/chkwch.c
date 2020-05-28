@@ -32,6 +32,45 @@
 #include "errs.h"
 #include "chkwch.h"
 /*----------------------------------------------------------------------------*/
+#ifdef DEBUG
+#include <stdio.h>
+#endif
+/*----------------------------------------------------------------------------*/
+#ifdef DEBUG
+void
+print_now (void)
+{
+    time_t     t_now;
+    struct tm *tm_now;
+
+    time (&t_now);
+    tm_now = localtime (&t_now);
+    printf ("%s\n", asctime (tm_now));
+}
+#endif
+/*----------------------------------------------------------------------------*/
+uint32_t
+check_time_align_val (void)
+{
+    time_t     t_now;   /* Time for present */
+    time_t     t_later; /* Time for next full hour */
+    struct tm *tm_now;  /* Struct for change */
+
+    time (&t_now);
+    tm_now = localtime (&t_now);
+    #ifdef DEBUG
+    printf ("%s\n", asctime (tm_now));
+    #endif
+    tm_now->tm_hour += 1;
+    tm_now->tm_min   = 0;
+    tm_now->tm_sec   = 0;
+    #ifdef DEBUG
+    printf ("%s\n", asctime (tm_now));
+    #endif
+    t_later = mktime (tm_now);
+    return (uint32_t) difftime (t_later, t_now);
+}
+/*----------------------------------------------------------------------------*/
 /**
  * @brief  Check if display is present, exit if it is not.
  *
@@ -61,7 +100,6 @@ void sleep500 (void)
 /**
  * @brief  Check if display is present, exit if it is not.
  */
-#include <stdio.h>
 void
 check_display_exit (void)
 {
@@ -80,9 +118,6 @@ check_config_file (char **s_file)
 
     if ((i_err = cfgfile_config_file_stuff (s_file, 0)) != ERR_OK) {
         err (EXIT_FAILURE, "Problem with config file");
-        //warnx ("Could not find a config file");
-        /* warnx ("%s", err_get_message (i_err)); */
-        //exit (EXIT_FAILURE);
     }
 }
 /*----------------------------------------------------------------------------*/
@@ -91,8 +126,9 @@ check_config_file (char **s_file)
  *         changes wallpaper, returns change interval.
  */
 uint32_t
-check_settings_change_wallpaper (char    *s_cfg_file,
-                                 RandMem *rm_rand)
+check_settings_change_wallpaper (char     *s_cfg_file,
+                                 RandMem  *rm_rand,
+                                 int      *ui_algntime)
 {
     static uint32_t  ui_len  = 0; /* Wallpaper list length */
     int              i_err   = 0; /* Error output */
@@ -122,6 +158,8 @@ check_settings_change_wallpaper (char    *s_cfg_file,
     settlist_to_wallset (st_list, ws_sett);
     ui_nlen = (uint32_t) stlist_get_length (
             wallset_get_wallpaper_list (ws_sett));
+
+    *ui_algntime = wallset_get_align_opt (ws_sett);
 
     ui_res = wallset_get_interval (ws_sett);
 
@@ -168,7 +206,7 @@ check_settings_change_wallpaper (char    *s_cfg_file,
     }
     stlist_free (st_list);
     wallset_free (ws_sett);
-    return ui_res;
+    return ui_res * 60;
 }
 /*----------------------------------------------------------------------------*/
 

@@ -54,6 +54,7 @@ dialogdata_init (DialogData *dd_data)
     dd_data->gw_view        = NULL;
     dd_data->gw_random      = NULL;
     dd_data->gw_lastused    = NULL;
+    dd_data->gw_timealign   = NULL;
     dd_data->gw_command     = NULL;
     dd_data->gw_interval    = NULL;
     dd_data->gw_inter_combo = NULL;

@@ -26,6 +26,11 @@
 
 #include <stdint.h>
 #include "randomm.h"
+//unsigned int time_stuff (void);
+/*----------------------------------------------------------------------------*/
+void print_now (void);
+/*----------------------------------------------------------------------------*/
+uint32_t check_time_align_val (void);
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Sleep for 500 milliseconds.
@@ -64,8 +69,9 @@ void check_config_file (char **s_file);
  * @param[in] rm_rand     RandMem object
  * @return    Wallpaper change interval
  */
-uint32_t check_settings_change_wallpaper (char    *s_cfg_file,
-                                          RandMem *rm_rand);
+uint32_t check_settings_change_wallpaper (char     *s_cfg_file,
+                                          RandMem  *rm_rand,
+                                          int      *ui_algntime);
 /*----------------------------------------------------------------------------*/
 #endif
 

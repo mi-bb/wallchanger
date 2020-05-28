@@ -28,6 +28,19 @@
 #include "errs.h"
 #include "wallsett.h"
 #include "strfun.h"
+/**
+ * @def   WS_OPT_RANDOM_CHANGE
+ * #brief Value for random wallpaper change option
+ *
+ * @def   WS_OPT_SELECT_LAST_USED
+ * #brief Value for select last used wallpaper on start option
+ *
+ * @def   WS_OPT_TIME_ALIGN
+ * #brief Value for time align option
+ */
+#define WS_OPT_RANDOM_CHANGE    0x01
+#define WS_OPT_SELECT_LAST_USED 0x02
+#define WS_OPT_TIME_ALIGN       0x04
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Sets default program settings. 
@@ -36,8 +49,7 @@ void
 wallset_init (WallSett *ws_sett)
 {
     ws_sett->i_chinterval = DEFAULT_INTERVAL_VAL; /* Wallpaper change interv. */
-    ws_sett->i_random     = 0;      /* Random wallpaper change */
-    ws_sett->i_lastsett   = 0;      /* Last used wallpaper setting */
+    ws_sett->i_opt        = 0;      /* Binary options */
     ws_sett->s_cfgfile    = NULL;   /* Configuration file path */
     ws_sett->s_lastused   = NULL;   /* Last used wallpaper file name */
     ws_sett->s_bgcmd      = NULL;   /* Background set command */
@@ -120,38 +132,66 @@ wallset_get_wallpaper_list (const WallSett *ws_sett)
  * @brief  Set using last used wallpaper on start.
  */
 void
-wallset_set_last_used_setting (WallSett      *ws_sett,
-                               const int8_t   i_val)
+wallset_set_last_used_setting (WallSett  *ws_sett,
+                               const int  i_val)
 {
-    ws_sett->i_lastsett = i_val;
+    if (i_val)
+        ws_sett->i_opt |= WS_OPT_SELECT_LAST_USED;
+    else
+        ws_sett->i_opt &= ~WS_OPT_SELECT_LAST_USED;
 }
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Get using last used wallpaper on start.
  */
-int8_t
+int
 wallset_get_last_used_setting (const WallSett *ws_sett)
 {
-    return ws_sett->i_lastsett;
+    return ws_sett->i_opt & WS_OPT_SELECT_LAST_USED;
 }
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Set random wallpaper select value.
  */
 void
-wallset_set_random_opt (WallSett      *ws_sett,
-                        const int8_t   i_val)
+wallset_set_random_opt (WallSett  *ws_sett,
+                        const int  i_val)
 {
-    ws_sett->i_random = i_val;
+    if (i_val)
+        ws_sett->i_opt |= WS_OPT_RANDOM_CHANGE;
+    else
+        ws_sett->i_opt &= ~WS_OPT_RANDOM_CHANGE;
 }
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Get random wallpaper select value.
  */
-int8_t
+int
 wallset_get_random_opt (const WallSett *ws_sett)
 {
-    return ws_sett->i_random;
+    return ws_sett->i_opt & WS_OPT_RANDOM_CHANGE;
+}
+/*----------------------------------------------------------------------------*/
+/**
+ * @brief  Set time align value.
+ */
+void
+wallset_set_align_opt (WallSett  *ws_sett,
+                       const int  i_val)
+{
+    if (i_val)
+        ws_sett->i_opt |= WS_OPT_TIME_ALIGN;
+    else
+        ws_sett->i_opt &= ~WS_OPT_TIME_ALIGN;
+}
+/*----------------------------------------------------------------------------*/
+/**
+ * @brief  Get time align value.
+ */
+int
+wallset_get_align_opt (const WallSett *ws_sett)
+{
+    return ws_sett->i_opt & WS_OPT_TIME_ALIGN;
 }
 /*----------------------------------------------------------------------------*/
 /**

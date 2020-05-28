@@ -59,6 +59,7 @@ DialogData {
     GtkWidget  *gw_view;         /* TreeView file list widget */
     GtkWidget  *gw_random;       /* Random background select check box */
     GtkWidget  *gw_lastused;     /* Set last used wallpaper check box */
+    GtkWidget  *gw_timealign;    /* Time align check box */
     GtkWidget  *gw_command;      /* Set wallpaper command entry */
     GtkWidget  *gw_interval;     /* Time interval check button */
     GtkWidget  *gw_inter_combo;  /* Time interval combo box */

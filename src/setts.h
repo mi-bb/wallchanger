@@ -31,14 +31,15 @@
  * @brief  Settings enum values
  */
 enum {
-    SETTING_BG_CMD,
-    SETTING_LAST_USED_OPT,
-    SETTING_LAST_USED_STR,
-    SETTING_WIN_WIDTH,
-    SETTING_WIN_HEIGHT,
-    SETTING_RANDOM_OPT,
-    SETTING_INTERVAL_VAL,
-    SETTING_WALL_ARRAY
+    SETTING_BG_CMD,         /**< Wallpaper set command */
+    SETTING_LAST_USED_OPT,  /**< Select last used on start */
+    SETTING_LAST_USED_STR,  /**< Last used wallpaper path */
+    SETTING_WIN_WIDTH,      /**< Window width */
+    SETTING_WIN_HEIGHT,     /**< Window height */
+    SETTING_RANDOM_OPT,     /**< Random wallpaper select */
+    SETTING_INTERVAL_VAL,   /**< Wallpaper change interval */
+    SETTING_TIME_ALIGN_OPT, /**< Time align */
+    SETTING_WALL_ARRAY      /**< Array with wallpapers */
 };
 /*----------------------------------------------------------------------------*/
 /**

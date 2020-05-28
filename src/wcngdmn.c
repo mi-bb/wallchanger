@@ -19,9 +19,9 @@
  *
  * Automatic wallpaper changer
  *
- * @date May 24, 2020
+ * @date May 28, 2020
  *
- * @version 1.4.7
+ * @version 1.4.8
  *
  * @author Michał Bąbik <michalb1981@o2.pl>
  */
@@ -48,11 +48,13 @@ int
 main (int    argc,
       char **argv)
 {
-    uint32_t  ui_cnt    = 0;    /* Minute counter */
+    int8_t    i_cnt     = 0;    /* Parts counter */
     uint32_t  ui_ch_int = 0;    /* Change interval */
     int       i_opt     = 0;    /* Command line options */
     char     *s_cfgfile = NULL; /* Config file path */
     RandMem   rm_rand;          /* Ramdom memory structure */
+    int       i_atime_opt = 0;    /* */
+    uint32_t       ui_atime_val = 0;    /* */
 
     /* Parse command line options */
     cmdfn_parse (argc, argv, &i_opt, &s_cfgfile);
@@ -80,7 +82,9 @@ main (int    argc,
     /* Check config file correctness */
     check_config_file (&s_cfgfile);
     /* Load settings and set wallpaper */
-    ui_ch_int = check_settings_change_wallpaper (s_cfgfile, &rm_rand);
+    ui_ch_int = check_settings_change_wallpaper (s_cfgfile,
+                                                 &rm_rand,
+                                                 &i_atime_opt);
 
     /* Starting daemon */
     if ((i_opt & CMD_OPT_START) || (i_opt & CMD_OPT_RESTART)) {
@@ -88,12 +92,33 @@ main (int    argc,
         dmfn_daemonize ();
     }
     while (1) {
-
-        if (++ui_cnt > ui_ch_int) {
-            ui_ch_int = check_settings_change_wallpaper (s_cfgfile, &rm_rand);
-            ui_cnt = 1;
+        /* Time align enabled */
+        if (i_atime_opt) {
+            /* If counter gets to 0 count time of align sleep and
+             * number of standard interval sleeps before getting
+             * to full hour */
+            if (i_cnt > 0) {
+                --i_cnt;
+                sleep (ui_ch_int);
+            }
+            else {
+                ui_atime_val = check_time_align_val ();
+                i_cnt = ui_atime_val / ui_ch_int;
+                ui_atime_val = ui_atime_val - (ui_ch_int * i_cnt);
+                /* If interval is longer than hour set counter to intmax so
+                 * it should not get to zero and not count align time */
+                if (ui_ch_int > 3600)
+                    i_cnt = INT8_MAX;
+                sleep (ui_atime_val);
+            }
         }
-        sleep (60);
+        /* Time align disabled */
+        else {
+            sleep (ui_ch_int);
+        }
+        ui_ch_int = check_settings_change_wallpaper (s_cfgfile,
+                                                     &rm_rand,
+                                                     &i_atime_opt);
     }
     free (s_cfgfile);
     return 0;

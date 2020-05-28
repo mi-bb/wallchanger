@@ -19,9 +19,9 @@
  *
  * Automatic wallpaper changer
  *
- * @date May 24, 2020
+ * @date May 28, 2020
  *
- * @version 1.4.7
+ * @version 1.4.8
  *
  * @author Michał Bąbik <michalb1981@o2.pl>
  */
@@ -449,6 +449,13 @@ widgets_get_settings (const DialogData *dd_data)
             ui_val, get_setting_name (SETTING_LAST_USED_OPT));
     stlist_insert_setting (st_list, st_sett);
 
+    /* Get time align setting */
+    ui_val = (uint32_t) gtk_toggle_button_get_active (
+                GTK_TOGGLE_BUTTON (dd_data->gw_timealign));
+    st_sett = setting_new_uint32 (
+            ui_val, get_setting_name (SETTING_TIME_ALIGN_OPT));
+    stlist_insert_setting (st_list, st_sett);
+
     /* Get wallpaper change interval setting */
     ui_val = get_wallpaper_ch_interval (dd_data);
     st_sett = setting_new_uint32 (
@@ -517,6 +524,13 @@ widgets_set_settings (const DialogData *dd_data,
             st_list, get_setting_name (SETTING_RANDOM_OPT));
     if (st_sett != NULL) {
         gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (dd_data->gw_random),
+                                      (gboolean) setting_get_uint32 (st_sett));
+    }
+    /* Set time align setting */
+    st_sett = stlist_get_setting_with_name (
+            st_list, get_setting_name (SETTING_TIME_ALIGN_OPT));
+    if (st_sett != NULL) {
+        gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (dd_data->gw_timealign),
                                       (gboolean) setting_get_uint32 (st_sett));
     }
     /* Get wallpaper list and add to treeview */
@@ -1034,6 +1048,7 @@ create_settings_widget (GtkWidget **gw_widget,
 {
     GtkWidget     *gw_random_button;     /* Random image GtkCheckButton */
     GtkWidget     *gw_button_selectlast; /* Set last used GtkCheckButton */
+    GtkWidget     *gw_align_button;      /* Time align GtkCheckButton */
     GtkWidget     *gw_command_label;     /* Wallpaper set cmd GtkLabel */
     GtkWidget     *gw_command_button;    /* Button for command dialog */
     GtkWidget     *gw_command_entry;     /* Wallpaper set cmd GtkEntry */
@@ -1061,6 +1076,18 @@ create_settings_widget (GtkWidget **gw_widget,
         "to the last one before stop.");
     gtk_button_set_label (GTK_BUTTON (gw_button_selectlast),
                           "Select last used wallpaper at start");
+
+    /* Time align button */
+    gw_align_button = gtk_check_button_new ();
+    gtk_widget_set_tooltip_markup (gw_align_button, 
+        "This option enables time aligning, when <b>enabled</b> wallpaper"
+        " change intervals will be set for changes to appear on full hour."
+        "\ne.g. interval is set to 20 minutes, daemon starts at"
+        " 10:15, first interval will be changed to 5 minutes so changes"
+        " will appear on 10:20, 10:40, 11:00 ..."
+        );
+    gtk_button_set_label (GTK_BUTTON (gw_align_button),
+                          "Align");
 
     /* Wallpaper set command entry */
     gw_command_label = gtk_label_new ("Background set command : ");
@@ -1122,6 +1149,7 @@ create_settings_widget (GtkWidget **gw_widget,
     dd_data->gw_lastused    = gw_button_selectlast;
     dd_data->gw_command     = gw_command_entry;
     dd_data->gw_interval    = gw_spinbutton;
+    dd_data->gw_timealign   = gw_align_button;
     dd_data->gw_inter_combo = gw_time_combo;
 
     /* Container for settings widgets */
@@ -1138,6 +1166,9 @@ create_settings_widget (GtkWidget **gw_widget,
                              GTK_POS_RIGHT, 1, 1);
     gtk_grid_attach_next_to (GTK_GRID (*gw_widget),
                              gw_time_combo, gw_spinbutton,
+                             GTK_POS_RIGHT, 1, 1);
+    gtk_grid_attach_next_to (GTK_GRID (*gw_widget),
+                             gw_align_button, gw_time_combo,
                              GTK_POS_RIGHT, 1, 1);
 
     /* Packing background set command */

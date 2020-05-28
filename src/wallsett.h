@@ -46,10 +46,8 @@
  * @brief Structure used for selecting random numbers
  * @var   WallSett::i_chinterval
  * @brief Wallpaper change time interval
- * @var   WallSett::i_random
- * @brief Random wallpaper select option
- * @var   WallSett::i_lastsett
- * @brief Select last used wallpaper on start option
+ * @var   WallSett::i_opt
+ * @brief Binary options
  */
 typedef struct
 WallSett {
@@ -57,10 +55,9 @@ WallSett {
     const char *s_bgcmd;       /* Background set command */
     const char *s_lastused;    /* Last used wallpaper path */
     const char *s_cfgfile;     /* Path to configuratoin file */
-    RandMem    *rm_rand;        /* Random memory */
+    RandMem    *rm_rand;       /* Random memory */
     uint32_t    i_chinterval;  /* Wallpaper change interval */
-    int8_t      i_random;      /* Random wallpaper change */
-    int8_t      i_lastsett;    /* Restore last used wallpeper */
+    int8_t      i_opt;         /* Binary options */
 } WallSett;
 /*----------------------------------------------------------------------------*/
 /**
@@ -124,8 +121,7 @@ void       wallset_free (WallSett *ws_sett);
  * @param[in]  ws_sett  Program settings
  * @return     Pointer to wallpaper list
  *
- * @fn  void wallset_set_last_used_setting (WallSett      *ws_sett,
- *                                          const int8_t  i_val)
+ * @fn  void wallset_set_last_used_setting (WallSett *ws_sett, const int i_val)
  *
  * @brief  Set using last used wallpaper on start.
  *
@@ -133,14 +129,14 @@ void       wallset_free (WallSett *ws_sett);
  * @param[in]  i_val    Set last used wallpaper value
  * @return     none
  *
- * @fn  int8_t wallset_get_last_used_setting (const WallSett *ws_sett)
+ * @fn  int wallset_get_last_used_setting (const WallSett *ws_sett)
  *
  * @brief  Get using last used wallpaper on start.
  *
  * @param[in] ws_sett  WallSett object
  * @return    Last used setting
  *
- * @fn  void wallset_set_random (WallSett *ws_sett, const int8_t i_val)
+ * @fn  void wallset_set_random (WallSett *ws_sett, const int i_val)
  *
  * @brief  Set random wallpaper select value.
  *
@@ -148,12 +144,27 @@ void       wallset_free (WallSett *ws_sett);
  * @param[in]  i_val    Random wallpaper setting to set
  * @return     none
  *
- * @fn  int8_t wallset_get_random (const WallSett *ws_sett)
+ * @fn  int wallset_get_random (const WallSett *ws_sett)
  *
  * @brief  Get random wallpaper value.
  *
  * @param[in] ws_sett  WallSett object
  * @return    Random wallpaper setting value
+ *
+ * @fn  void wallset_set_align_opt (WallSett  *ws_sett, const int  i_val)
+ *
+ * @brief  Set time align value.
+ *
+ * @param[out] ws_sett  WallSett object
+ * @param[in]  i_val    Time align setting to set
+ * @return     none
+ *
+ * @fn  int wallset_get_align_opt (const WallSett *ws_sett)
+ *
+ * @brief  Get time align value.
+ *
+ * @param[in] ws_sett  WallSett object
+ * @return    Time align setting value
  *
  * @fn  void wallset_set_interval (WallSett *ws_sett, const uint32_t ui_val)
  *
@@ -215,14 +226,19 @@ void             wallset_set_wallpaper_list    (WallSett       *ws_sett,
 const SettList * wallset_get_wallpaper_list    (const WallSett *ws_sett);
 /*----------------------------------------------------------------------------*/
 void             wallset_set_last_used_setting (WallSett       *ws_sett,
-                                                const int8_t    i_val);
+                                                const int       i_val);
 
-int8_t           wallset_get_last_used_setting (const WallSett *ws_sett);
+int              wallset_get_last_used_setting (const WallSett *ws_sett);
 /*----------------------------------------------------------------------------*/
 void             wallset_set_random_opt        (WallSett       *ws_sett,
-                                                const int8_t    i_val);
+                                                const int       i_val);
 
-int8_t           wallset_get_random_opt        (const WallSett *ws_sett);
+int              wallset_get_random_opt        (const WallSett *ws_sett);
+/*----------------------------------------------------------------------------*/
+void             wallset_set_align_opt         (WallSett       *ws_sett,
+                                                const int       i_val);
+
+int              wallset_get_align_opt         (const WallSett *ws_sett);
 /*----------------------------------------------------------------------------*/
 void             wallset_set_interval          (WallSett       *ws_sett,
                                                 const uint32_t  ui_val);

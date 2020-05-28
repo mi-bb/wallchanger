@@ -67,6 +67,10 @@ get_setting_name (const int i_val)
             s_res = "Wallpaper change interval";
             break;
 
+        case SETTING_TIME_ALIGN_OPT:
+            s_res = "Time align";
+            break;
+
         case SETTING_WALL_ARRAY:
             s_res = "Backgrounds";
             break;
@@ -123,6 +127,21 @@ settlist_check_defaults (SettList *st_list)
                                    get_setting_name (SETTING_RANDOM_OPT)));
         #ifdef DEBUG
         printf ("Select random wallpapers not present, setting default\n");
+        #endif
+    }
+
+    /* Checking option for time align */
+    i_pos = stlist_get_setting_pos (
+                st_list, get_setting_name (SETTING_TIME_ALIGN_OPT));
+
+    if (i_pos == -1) {
+
+        stlist_insert_setting (st_list,
+                               setting_new_uint32 (
+                                   DEFAULT_TIME_ALIGN_OPT,
+                                   get_setting_name (SETTING_TIME_ALIGN_OPT)));
+        #ifdef DEBUG
+        printf ("Time align not present, setting default\n");
         #endif
     }
 
@@ -309,14 +328,21 @@ settlist_to_wallset (const SettList *st_list,
             st_list, get_setting_name (SETTING_RANDOM_OPT));
     if (st_sett != NULL) {
         ui_tmp = setting_get_uint32 (st_sett);
-        wallset_set_random_opt (ws_sett, (int8_t) ui_tmp);
+        wallset_set_random_opt (ws_sett, (int) ui_tmp);
     }
 
     st_sett = stlist_get_setting_with_name (
             st_list, get_setting_name (SETTING_LAST_USED_OPT));
     if (st_sett != NULL) {
         ui_tmp = setting_get_uint32 (st_sett);
-        wallset_set_last_used_setting (ws_sett, (int8_t) ui_tmp);
+        wallset_set_last_used_setting (ws_sett, (int) ui_tmp);
+    }
+
+    st_sett = stlist_get_setting_with_name (
+            st_list, get_setting_name (SETTING_TIME_ALIGN_OPT));
+    if (st_sett != NULL) {
+        ui_tmp = setting_get_uint32 (st_sett);
+        wallset_set_align_opt (ws_sett, (int) ui_tmp);
     }
 
     st_sett = stlist_get_setting_with_name (
