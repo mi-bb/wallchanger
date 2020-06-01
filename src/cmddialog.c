@@ -99,7 +99,7 @@ typedef struct Wms {
 static Wms wms[] = {
     {1, WM_ID_MATE, "mate-session", "MATE",
      "gsettings set org.mate.background picture-filename \"[F]\""},
-    {2, WM_ID_XFCE, "xfce-session", "Xfce", ""},
+    {2, WM_ID_XFCE, "xfce4-session", "Xfce", ""},
     {3, WM_ID_GNOME, "gnome-session-b", "Gnome",
      "gsettings set org.gnome.desktop.background picture-uri \"file://[F]\""},
     {4, WM_ID_GNOME, "gnome-session-binary", "Gnome",
