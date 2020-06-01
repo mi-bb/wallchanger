@@ -164,10 +164,7 @@ get_xfce_display_list (void)
     if ((s_ret = malloc ((ui_alloc + 1) * sizeof (char*))) == NULL)
         err (EXIT_FAILURE, NULL);
 
-    f_file = fopen ("/home/michal/xxfc", "rb");
-    //f_file = popen ("ls -l | grep wch", "r");
-    //f_file = popen ("xfconf-query -c xfce4-desktop -p /backdrop -l", "r");
-    //                " | grep last-image", "r");
+    f_file = popen ("xfconf-query -c xfce4-desktop -p /backdrop -l", "r");
 
     if (f_file == NULL) {
         warnx ("Failed to run checking displays");
@@ -191,8 +188,7 @@ get_xfce_display_list (void)
         }
     }
     s_ret[ui_alloc] = NULL;
-    //pclose (f_file);
-    fclose (f_file);
+    pclose (f_file);
     return s_ret;
 }
 /*----------------------------------------------------------------------------*/
