@@ -48,18 +48,19 @@ int
 main (int    argc,
       char **argv)
 {
-    int8_t    i_cnt     = 0;    /* Parts counter */
-    uint32_t  ui_ch_int = 0;    /* Change interval */
-    int       i_opt     = 0;    /* Command line options */
-    char     *s_cfgfile = NULL; /* Config file path */
-    RandMem   rm_rand;          /* Ramdom memory structure */
-    int       i_atime_opt = 0;    /* */
-    uint32_t       ui_atime_val = 0;    /* */
+    uint32_t  ui_cnt       = 0;    /* Parts counter */
+    uint32_t  ui_ch_int    = 0;    /* Change interval value */
+    uint32_t  ui_ch_int_n  = 0;    /* New change interval value */
+    int       i_opt        = 0;    /* Command line options */
+    int       i_atime_opt  = 0;    /* Time align option */
+    uint32_t  ui_atime_val = 0;    /* Time align value */
+    char     *s_cfgfile    = NULL; /* Config file path */
+    RandMem  *rm_rand;             /* Ramdom memory structure */
 
     /* Parse command line options */
     cmdfn_parse (argc, argv, &i_opt, &s_cfgfile);
     /* Init random number structure */
-    randomm_init (&rm_rand);
+    rm_rand = randomm_new ();
 
     /* Printing status */
     if (i_opt & CMD_OPT_STATUS) {
@@ -83,9 +84,8 @@ main (int    argc,
     check_config_file (&s_cfgfile);
     /* Load settings and set wallpaper */
     ui_ch_int = check_settings_change_wallpaper (s_cfgfile,
-                                                 &rm_rand,
+                                                 rm_rand,
                                                  &i_atime_opt);
-
     /* Starting daemon */
     if ((i_opt & CMD_OPT_START) || (i_opt & CMD_OPT_RESTART)) {
         puts ("Starting wchangerd daemon");
@@ -97,18 +97,18 @@ main (int    argc,
             /* If counter gets to 0 count time of align sleep and
              * number of standard interval sleeps before getting
              * to full hour */
-            if (i_cnt > 0) {
-                --i_cnt;
+            if (ui_cnt > 0) {
+                --ui_cnt;
                 sleep (ui_ch_int);
             }
             else {
                 ui_atime_val = check_time_align_val ();
-                i_cnt = ui_atime_val / ui_ch_int;
-                ui_atime_val = ui_atime_val - (ui_ch_int * i_cnt);
+                ui_cnt = ui_atime_val / ui_ch_int;
+                ui_atime_val = ui_atime_val - (ui_ch_int * ui_cnt);
                 /* If interval is longer than hour set counter to intmax so
                  * it should not get to zero and not count align time */
                 if (ui_ch_int > 3600)
-                    i_cnt = INT8_MAX;
+                    ui_cnt = UINT32_MAX;
                 sleep (ui_atime_val);
             }
         }
@@ -116,10 +116,15 @@ main (int    argc,
         else {
             sleep (ui_ch_int);
         }
-        ui_ch_int = check_settings_change_wallpaper (s_cfgfile,
-                                                     &rm_rand,
+        ui_ch_int_n = check_settings_change_wallpaper (s_cfgfile,
+                                                     rm_rand,
                                                      &i_atime_opt);
+        if (ui_ch_int_n != ui_ch_int) {
+            ui_ch_int = ui_ch_int_n;
+            ui_cnt = 0; // ?
+        }
     }
+    randomm_free (rm_rand);
     free (s_cfgfile);
     return 0;
 }

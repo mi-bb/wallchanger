@@ -25,6 +25,7 @@
 #include "procfn.h"
 #include "iminfo.h"
 #include "wpset.h"
+#include "strfun.h"
 #include "cmddialog.h"
 /*----------------------------------------------------------------------------*/
 /**
@@ -52,6 +53,7 @@ enum {
     WM_ID_SPECTRWM, /**< Id for Spectrwm window manager */
     WM_ID_MATE,     /**< Id foe MATE window manager */
     WM_ID_GNOME,    /**< Id for Gnome window manager */
+    WM_ID_XFCE,     /**< Id for Xfce window manager */
     WM_ID_CINNAMON, /**< Id for Cinnamon window manager */
     WM_ID_PLASMA,   /**< Id for KDE Plasma window manager */
     WM_ID_OPENBOX,  /**< Id for Openbox window manager */
@@ -97,35 +99,36 @@ typedef struct Wms {
 static Wms wms[] = {
     {1, WM_ID_MATE, "mate-session", "MATE",
      "gsettings set org.mate.background picture-filename \"[F]\""},
-    {2, WM_ID_GNOME, "gnome-session-b", "Gnome",
+    {2, WM_ID_XFCE, "xfce-session", "Xfce", ""},
+    {3, WM_ID_GNOME, "gnome-session-b", "Gnome",
      "gsettings set org.gnome.desktop.background picture-uri \"file://[F]\""},
-    {3, WM_ID_GNOME, "gnome-session-binary", "Gnome",
+    {4, WM_ID_GNOME, "gnome-session-binary", "Gnome",
      "gsettings set org.gnome.desktop.background picture-uri \"file://[F]\""},
-    {4, WM_ID_CINNAMON, "cinnamon-sessio", "Cinnamon",
+    {5, WM_ID_CINNAMON, "cinnamon-sessio", "Cinnamon",
      "gsettings set org.cinnamon.desktop.background picture-uri \"file://[F]\""},
-    {5, WM_ID_CINNAMON, "cinnamon", "Cinnamon",
+    {6, WM_ID_CINNAMON, "cinnamon", "Cinnamon",
      "gsettings set org.cinnamon.desktop.background picture-uri \"file://[F]\""},
-    {6, WM_ID_PLASMA, "plasma_session", "KDE Plasma",
+    {7, WM_ID_PLASMA, "plasma_session", "KDE Plasma",
      "qdbus org.kde.plasmashell /PlasmaShell org.kde.PlasmaShell.evaluateScri"
      "pt 'var allDesktops = desktops();print (allDesktops);for (i=0;i<allDesk"
      "tops.length;i++) {d = allDesktops[i];d.wallpaperPlugin = \"org.kde.imag"
      "e\";d.currentConfigGroup = Array(\"Wallpaper\", \"org.kde.image\", \"Ge"
      "neral\");d.writeConfig(\"Image\", \"file://[F]\")}'"},
-    {7, WM_ID_LXDE, "lxsession", "LXDE",
+    {8, WM_ID_LXDE, "lxsession", "LXDE",
      "pcmanfm --wallpaper-mode crop --set-wallpaper \"[F]\""},
-    {8, WM_ID_FVWM, "fvwm2", "FVWM",
+    {9, WM_ID_FVWM, "fvwm2", "FVWM",
      "feh --bg-fill \"[F]\""},
-    {9, WM_ID_I3, "i3", "i3",
+    {10, WM_ID_I3, "i3", "i3",
      "feh --bg-fill \"[F]\""},
-    {10, WM_ID_SPECTRWM, "spectrwm", "spectrwm",
+    {11, WM_ID_SPECTRWM, "spectrwm", "spectrwm",
      "feh --bg-fill \"[F]\""},
-    {11, WM_ID_OPENBOX, "openbox", "Openbox",
+    {12, WM_ID_OPENBOX, "openbox", "Openbox",
      "feh --bg-fill \"[F]\""},
-    {12, WM_ID_FLUXBOX, "fluxbox", "Fluxbox",
+    {13, WM_ID_FLUXBOX, "fluxbox", "Fluxbox",
      "feh --bg-fill \"[F]\""},
-    {13, WM_ID_WMAKER, "wmaker", "Window Maker",
+    {14, WM_ID_WMAKER, "wmaker", "Window Maker",
      "feh --bg-fill \"[F]\""},
-    {14, WM_ID_END, "", "", ""}
+    {15, WM_ID_END, "", "", ""}
     };
 /*----------------------------------------------------------------------------*/
 /**
@@ -140,6 +143,57 @@ newline_to_space (char *s_str)
     while ((s_str = strchr (s_str, 0x0A)) != NULL) {
         *s_str++ = ' ';
     }
+}
+/*----------------------------------------------------------------------------*/
+/**
+ * @brief  Get list of Xfce displays possible to set wallpaper.
+ *
+ * @return Null terminated list of display strings
+ */
+static char **
+get_xfce_display_list (void)
+{
+    char   **s_ret    = NULL; /* Null terminated list of displays to return */
+    char   **s_tmp    = NULL; /* Temp for realloc */
+    char    *s_nl     = NULL; /* Newline pos char */
+    size_t   ui_alloc = 0;    /* Number of strings to alloc */
+    size_t   i        = 0;    /* i */
+    char     s_buff[1024];    /* Buffer for fgets */
+    FILE    *f_file;          /* File */
+
+    if ((s_ret = malloc ((ui_alloc + 1) * sizeof (char*))) == NULL)
+        err (EXIT_FAILURE, NULL);
+
+    f_file = fopen ("/home/michal/xxfc", "rb");
+    //f_file = popen ("ls -l | grep wch", "r");
+    //f_file = popen ("xfconf-query -c xfce4-desktop -p /backdrop -l", "r");
+    //                " | grep last-image", "r");
+
+    if (f_file == NULL) {
+        warnx ("Failed to run checking displays");
+    }
+    else {
+        while (fgets (s_buff, sizeof (s_buff), f_file) != NULL) {
+            if (strstr (s_buff, "last-image") != NULL) {
+                ++ui_alloc;
+                if ((s_nl = strchr (s_buff, '\n')) != NULL) {
+                    *s_nl = '\0';
+                }
+                s_tmp = realloc (s_ret, (ui_alloc + 1) * sizeof (char*));
+                if (s_tmp == NULL) {
+                    for (i = 0; i < ui_alloc-1; ++i)
+                        free (s_ret[i]);
+                    err (EXIT_FAILURE, NULL);
+                }
+                s_ret = s_tmp;
+                s_ret[ui_alloc-1] = strdup (s_buff);
+            }
+        }
+    }
+    s_ret[ui_alloc] = NULL;
+    //pclose (f_file);
+    fclose (f_file);
+    return s_ret;
 }
 /*----------------------------------------------------------------------------*/
 /**
@@ -184,10 +238,10 @@ static void
 combo_set_active_by_wm_id (GtkWidget *gw_combo,
                            const int  i_act_id)
 {
-    GtkTreeModel *gtm_model;  /* TreeModel */
-    GtkTreeIter   iter;       /* TreeIter */
-    int           i_wm_id  = -1; /* Window manager id */
-    int           i_res = 0;  /* Getting iter result */
+    GtkTreeModel *gtm_model;
+    GtkTreeIter   iter;
+    int           i_wm_id = -1; /* Window manager id */
+    int           i_res   = 0;  /* Getting iter result */
 
     gtm_model = gtk_combo_box_get_model (GTK_COMBO_BOX (gw_combo));
     i_res = gtk_tree_model_get_iter_first (gtm_model, &iter);
@@ -378,6 +432,95 @@ preview_combo (const GSList *gsl_iinfo)
 }
 /*----------------------------------------------------------------------------*/
 /**
+ * @brief  Run Xfce wallpaper set command configuration dialog.
+ *
+ * @param[in] gw_parent  Window widget for setting dialog modal
+ * @return    String with wallpaper set command or null. It should be
+ *            freed after use using free.
+ */
+static char *
+xfce_dialog_run (GtkWindow *gw_parent)
+{
+    GtkWidget   *gw_dialog;              /* Xfce command dialog */
+    GtkWidget   *gw_tlabel;              /* Title label */
+    GtkWidget   *gw_content_box;         /* Dialog's box */
+    GtkWidget   *gw_radiobutton  = NULL; /* Radiobutton */
+    GtkToggleButton *gtb_button  = NULL; /* ToggleButton */
+    GSList      *gs_list         = NULL; /* List for buttons */
+    char        *s_res           = NULL; /* Result command string */
+    int          i_res           = 0;    /* Dialog result */
+    char       **s_displays      = NULL; /* Null term. list of xfce displays */
+    char       **s_it            = NULL; /* For display list iteration */
+    const char  *s_disp          = NULL; /* Selected display string */
+
+    GtkDialogFlags flags = GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT;
+
+    gw_dialog = gtk_dialog_new_with_buttons (
+                                      "Xfce wallpaper set command configuraion",
+                                      gw_parent,
+                                      flags,
+                                      "_OK",
+                                      GTK_RESPONSE_ACCEPT,
+                                      "_Cancel",
+                                      GTK_RESPONSE_REJECT,
+                                      NULL);
+
+    gw_content_box = gtk_dialog_get_content_area (GTK_DIALOG (gw_dialog));
+    gtk_container_set_border_width (GTK_CONTAINER (gw_content_box), 8);
+
+    s_displays = get_xfce_display_list ();
+    if (*s_displays == NULL) {
+        gw_tlabel = gtk_label_new ("Could not find Xfce screens");
+    }
+    else {
+        gw_tlabel = gtk_label_new ("Select display to set wallpaper:");
+    }
+    gtk_box_pack_start (GTK_BOX (gw_content_box),
+                        gw_tlabel,
+                        FALSE, FALSE, 4);
+
+    for (s_it = s_displays; *s_it != NULL; ++s_it) {
+        gw_radiobutton = gtk_radio_button_new_with_label_from_widget (
+                GTK_RADIO_BUTTON (gw_radiobutton), *s_it);
+        gtk_widget_set_name (gw_radiobutton, *s_it);
+
+        gtk_box_pack_start (GTK_BOX (gw_content_box), gw_radiobutton,
+                        FALSE, FALSE, 4);
+    }
+
+    for (s_it = s_displays; *s_it != NULL; ++s_it) {
+        free (*s_it);
+    }
+    free (s_displays);
+
+    gtk_widget_show_all (gw_content_box);
+
+    i_res = gtk_dialog_run (GTK_DIALOG (gw_dialog));
+
+    if (i_res == GTK_RESPONSE_ACCEPT && gw_radiobutton != NULL) {
+        gs_list = gtk_radio_button_get_group (
+                GTK_RADIO_BUTTON (gw_radiobutton));
+        while (gs_list != NULL) {
+            gtb_button = gs_list->data;
+            if (gtk_toggle_button_get_active (gtb_button)) {
+                s_disp = gtk_widget_get_name (GTK_WIDGET (gtb_button));
+                puts (s_disp);
+                break;
+            }
+            gs_list = gs_list->next;
+        }
+    }
+    if (s_disp != NULL) {
+        s_res = str_comb ("xfconf-query --channel xfce4-desktop --property ",
+                          s_disp);
+        str_append (&s_res, " --set [F]");
+    }
+    gtk_widget_destroy (gw_dialog);
+
+    return s_res;
+}
+/*----------------------------------------------------------------------------*/
+/**
  * @brief  Clicked button to get wm's default wallpaper set command.
  *
  * @param[in] gw_array  Array with combo and entry widgets
@@ -386,17 +529,28 @@ preview_combo (const GSList *gsl_iinfo)
 static void
 event_get_default_button_clicked (GtkWidget **gw_array)
 {
-
-    GtkWidget    *gw_combo  = gw_array[0];  /* ComboBox with wallpapers */
-    GtkWidget    *gw_tview  = gw_array[2];  /* Textview with command */
     GtkTreeModel *model;
     GtkTreeIter   iter;
-    char         *s_cmd  = NULL;
+    GtkWidget    *gw_combo;         /* ComboBox with window managers */
+    GtkWidget    *gw_tview;         /* Textview with wallpaper set command */
+    GtkWindow    *gw_parent;        /* Parent window for dialog */
+    char         *s_cmd     = NULL; /* Wallpaper set command */
+    int           i_wm_id   = 0;    /* Wm's id */
+
+    gw_combo  = gw_array[0];
+    gw_tview  = gw_array[2];
+    gw_parent = GTK_WINDOW (gw_array[3]);
 
     if (gtk_combo_box_get_active_iter (GTK_COMBO_BOX (gw_combo), &iter)) {
 
         model = gtk_combo_box_get_model (GTK_COMBO_BOX (gw_combo));
-        gtk_tree_model_get (model, &iter, COLUMN_COMMAND, &s_cmd, -1 );
+        gtk_tree_model_get (model, &iter, COLUMN_COMMAND, &s_cmd, -1);
+        gtk_tree_model_get (model, &iter, COLUMN_WM_ID, &i_wm_id, -1);
+
+        if (i_wm_id == WM_ID_XFCE) {
+            s_cmd = xfce_dialog_run (gw_parent);
+        }
+
         if (s_cmd != NULL) {
             textview_set_text (gw_tview, s_cmd);
             free (s_cmd);
@@ -413,12 +567,15 @@ event_get_default_button_clicked (GtkWidget **gw_array)
 static void
 event_test_button_clicked (GtkWidget **gw_array)
 {
-    GtkTreeModel *model;                    /* TreeModel */
-    GtkTreeIter   iter;                     /* TreeIter */
-    GtkWidget    *gw_combo  = gw_array[1];  /* ComboBox with wallpapers */
-    GtkWidget    *gw_tview  = gw_array[2];  /* Textview with command */
-    char         *s_file    = NULL;         /* String for wallpaper file */
-    char         *s_command = NULL;         /* String for wallpaper command */
+    GtkTreeModel *model;            /* TreeModel */
+    GtkTreeIter   iter;             /* TreeIter */
+    GtkWidget    *gw_combo;         /* ComboBox with wallpapers */
+    GtkWidget    *gw_tview;         /* Textview with command */
+    char         *s_file    = NULL; /* String for wallpaper file */
+    char         *s_command = NULL; /* String for wallpaper command */
+
+    gw_combo = gw_array[1];
+    gw_tview = gw_array[2];
 
     if (gtk_combo_box_get_active_iter (GTK_COMBO_BOX (gw_combo), &iter)) {
         model = gtk_combo_box_get_model (GTK_COMBO_BOX (gw_combo));
@@ -432,6 +589,30 @@ event_test_button_clicked (GtkWidget **gw_array)
     }
     free (s_command);
     free (s_file);
+}
+/*----------------------------------------------------------------------------*/
+static GtkWidget *
+create_command_textview (void)
+{
+    GtkWidget *gw_tview; /* TextView to return */
+
+    gw_tview = gtk_text_view_new ();
+
+    /* Settings for command treeview */
+    gtk_text_view_set_wrap_mode (GTK_TEXT_VIEW (gw_tview), GTK_WRAP_WORD);
+    gtk_text_view_set_editable (GTK_TEXT_VIEW (gw_tview), TRUE);
+    gtk_text_view_set_cursor_visible (GTK_TEXT_VIEW (gw_tview), TRUE);
+    gtk_text_view_set_accepts_tab (GTK_TEXT_VIEW (gw_tview), FALSE);
+    gtk_text_view_set_monospace (GTK_TEXT_VIEW (gw_tview), TRUE);
+    gtk_text_view_set_border_window_size (GTK_TEXT_VIEW (gw_tview),
+                                          GTK_TEXT_WINDOW_LEFT, 8);
+    gtk_text_view_set_border_window_size (GTK_TEXT_VIEW (gw_tview),
+                                          GTK_TEXT_WINDOW_RIGHT, 8);
+    gtk_text_view_set_border_window_size (GTK_TEXT_VIEW (gw_tview),
+                                          GTK_TEXT_WINDOW_TOP, 8);
+    gtk_text_view_set_border_window_size (GTK_TEXT_VIEW (gw_tview),
+                                          GTK_TEXT_WINDOW_BOTTOM, 8);
+    return gw_tview;
 }
 /*----------------------------------------------------------------------------*/
 /**
@@ -453,7 +634,7 @@ cmddialog_run (GtkWindow    *gw_parent,
     GtkWidget *gw_preview_combo;  /* ComboBox with wallpapers */
     GtkWidget *gw_test_button;    /* Button for testing wallpaper command */
     GtkWidget *gw_test_box;       /* Box for test button and wallpaper list */
-    GtkWidget *gw_array[3];       /* Array with widgets for clicked events */
+    GtkWidget *gw_array[4];       /* Array with widgets for clicked events */
     Wms       *wms_wm;            /* Window manager structure for searching */
     char      *s_result = NULL;   /* Result string with wall set command */
     int        i_res    = 0;      /* Config dialog result */
@@ -471,7 +652,7 @@ cmddialog_run (GtkWindow    *gw_parent,
                                       NULL);
 
     gw_wm_label       = gtk_label_new (NULL);
-    gw_tview          = gtk_text_view_new ();
+    gw_tview          = create_command_textview ();
     gw_wm_combo       = wm_combo (wms);
     gw_get_def_button = gtk_button_new_with_label ("Get default");
     gw_test_button    = gtk_button_new_with_label ("Test");
@@ -487,24 +668,10 @@ cmddialog_run (GtkWindow    *gw_parent,
 
     gtk_container_set_border_width (GTK_CONTAINER (gw_content_box), 8);
 
-    /* Settings for command treeview */
-    gtk_text_view_set_wrap_mode (GTK_TEXT_VIEW (gw_tview), GTK_WRAP_WORD);
-    gtk_text_view_set_editable (GTK_TEXT_VIEW (gw_tview), TRUE);
-    gtk_text_view_set_cursor_visible (GTK_TEXT_VIEW (gw_tview), TRUE);
-    gtk_text_view_set_accepts_tab (GTK_TEXT_VIEW (gw_tview), FALSE);
-    gtk_text_view_set_monospace (GTK_TEXT_VIEW (gw_tview), TRUE);
-    gtk_text_view_set_border_window_size (GTK_TEXT_VIEW (gw_tview),
-                                          GTK_TEXT_WINDOW_LEFT, 8);
-    gtk_text_view_set_border_window_size (GTK_TEXT_VIEW (gw_tview),
-                                          GTK_TEXT_WINDOW_RIGHT, 8);
-    gtk_text_view_set_border_window_size (GTK_TEXT_VIEW (gw_tview),
-                                          GTK_TEXT_WINDOW_TOP, 8);
-    gtk_text_view_set_border_window_size (GTK_TEXT_VIEW (gw_tview),
-                                          GTK_TEXT_WINDOW_BOTTOM, 8);
-
     gw_array[0] = gw_wm_combo;
     gw_array[1] = gw_preview_combo;
     gw_array[2] = gw_tview;
+    gw_array[3] = gw_dialog;
 
     /* Packing window manager box */
     gtk_box_pack_start (GTK_BOX (gw_wm_box),

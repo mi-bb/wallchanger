@@ -72,6 +72,21 @@ void randomm_clear (RandMem *rm_mem);
 void randomm_init (RandMem *rm_mem);
 /*----------------------------------------------------------------------------*/
 /**
+ * @brief  Create new RandMem item.
+ *
+ * @return New RandMem item
+ */
+RandMem * randomm_new (void) __attribute__((malloc));
+/*----------------------------------------------------------------------------*/
+/**
+ * @brief  Free RandMem item.
+ *
+ * @param[out] rm_mem  RandMem object
+ * @return     none
+ */
+void randomm_free (RandMem *rm_mem);
+/*----------------------------------------------------------------------------*/
+/**
  * @brief  Set random numbers maximum range.
  *
  * @param[out] rm_mem  RandMem object

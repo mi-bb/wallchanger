@@ -23,6 +23,7 @@
  */
 #include <stdlib.h>
 #include <time.h>
+#include <err.h>
 #include "randomm.h"
 /*----------------------------------------------------------------------------*/
 /**
@@ -125,6 +126,29 @@ randomm_init (RandMem *rm_mem)
 
     randomm_clear (rm_mem);
     srand ((unsigned int) d_diff);
+}
+/*----------------------------------------------------------------------------*/
+/**
+ * @brief  Create new RandMem item.
+ */
+RandMem *
+randomm_new (void)
+{
+    RandMem *rm_mem;
+
+    if ((rm_mem = malloc (sizeof (RandMem))) == NULL)
+        err (EXIT_FAILURE, NULL);
+
+    return rm_mem;
+}
+/*----------------------------------------------------------------------------*/
+/**
+ * @brief  Free RandMem item.
+ */
+void
+randomm_free (RandMem *rm_mem)
+{
+    free (rm_mem);
 }
 /*----------------------------------------------------------------------------*/
 /**
