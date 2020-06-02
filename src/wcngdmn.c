@@ -19,9 +19,9 @@
  *
  * Automatic wallpaper changer
  *
- * @date May 28, 2020
+ * @date June 02, 2020
  *
- * @version 1.4.8
+ * @version 1.4.9
  *
  * @author Michał Bąbik <michalb1981@o2.pl>
  */
@@ -34,6 +34,7 @@
 #include "dmfn.h"
 #include "chkwch.h"
 #include "randomm.h"
+
 /*----------------------------------------------------------------------------*/
 /**
  * @brief Main function.

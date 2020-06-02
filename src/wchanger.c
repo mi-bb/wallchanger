@@ -19,9 +19,9 @@
  *
  * Automatic wallpaper changer
  *
- * @date May 28, 2020
+ * @date June 02, 2020
  *
- * @version 1.4.8
+ * @version 1.4.9
  *
  * @author Michał Bąbik <michalb1981@o2.pl>
  */
@@ -44,7 +44,7 @@
 #include "hashfun.h"
 #include "dmfn.h"
 #include "astart.h"
-#include "cmddialog.h"
+#include "wmsfn.h"
 /*----------------------------------------------------------------------------*/
 /**
  * @fn  static uint32_t get_wallpaper_ch_interval (const DialogData *dd_data)
