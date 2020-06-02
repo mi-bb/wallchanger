@@ -49,6 +49,13 @@ enum {
     PREV_COLUMN_COUNT /**< Column count */
 };
 /*----------------------------------------------------------------------------*/
+/**
+ * @brief  Run Xfce wallpaper set command configuration dialog.
+ *
+ * @param[in] gw_parent  Window widget for setting dialog modal
+ * @return    String with wallpaper set command or null. It should be
+ *            freed after use using free.
+ */
 static char * xfce_dialog_run (GtkWindow *gw_parent);
 /*----------------------------------------------------------------------------*/
 /**
@@ -124,7 +131,7 @@ wm_label_set_text (GtkWidget  *gw_label,
  * @brief  Set text in TextView
  *
  * @param[in,out] gw_tview  TextView widget
- * @param[in,out] s_txt     text to set
+ * @param[in]     s_txt     text to set
  * @return        none
  */
 static void
@@ -174,7 +181,7 @@ wm_combo (Wms **wms_list)
     GtkListStore    *list_store;    /* ListStore for window manager data */
     GtkTreeIter      iter;          /* TreeIter */
     int              i_prev = -1;   /* Preview wm id value */
-    Wms **wms_it = NULL;
+    Wms            **wms_it = NULL; /* For iteration */
 
     list_store = gtk_list_store_new (COLUMN_COUNT,
                                      G_TYPE_INT,
@@ -186,7 +193,6 @@ wm_combo (Wms **wms_list)
                                           COLUMN_NAME, GTK_SORT_ASCENDING);
 
     for (wms_it = wms_list; *wms_it != NULL; ++wms_it) {
-    //while (wm_list->wm_id != WM_ID_END) {
         if (i_prev != (*wms_it)->wm_id) {
             gtk_list_store_append (list_store, &iter);
             gtk_list_store_set (list_store, &iter,
@@ -195,12 +201,9 @@ wm_combo (Wms **wms_list)
                                 COLUMN_NAME,    (*wms_it)->name,
                                 COLUMN_COMMAND, (*wms_it)->command,
                                 -1);
-
             i_prev = (*wms_it)->wm_id;
         }
-        //++wm_list;
     }
-
     gw_combo = gtk_combo_box_new_with_model (GTK_TREE_MODEL (list_store));
 
     g_object_unref (G_OBJECT (list_store));
@@ -342,6 +345,11 @@ event_test_button_clicked (GtkWidget **gw_array)
     free (s_file);
 }
 /*----------------------------------------------------------------------------*/
+/**
+ * @brief  Create textview for command display.
+ *
+ * @return  TextView widget
+ */
 static GtkWidget *
 create_command_textview (void)
 {
@@ -439,7 +447,6 @@ xfce_dialog_run (GtkWindow *gw_parent)
             gtb_button = gs_list->data;
             if (gtk_toggle_button_get_active (gtb_button)) {
                 s_disp = gtk_widget_get_name (GTK_WIDGET (gtb_button));
-                puts (s_disp);
                 break;
             }
             gs_list = gs_list->next;

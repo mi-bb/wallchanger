@@ -1,5 +1,5 @@
 /**
- * @file  cmddialog.h
+ * @file  wmsfn.h
  * @copyright Copyright (C) 2019-2020 Michał Bąbik
  *
  * This file is part of Wall Changer.
@@ -17,7 +17,7 @@
  * You should have received a copy of the GNU General Public License
  * along with Wall Changer.  If not, see <https://www.gnu.org/licenses/>.
  *
- * @brief  Wallpaper set command window for detailed command setting.
+ * @brief  Wallpaper set command functions.
  *
  * @author Michał Bąbik <michalb1981@o2.pl>
  */
@@ -70,17 +70,37 @@ enum {
     WM_ID_END       /**< End of Ids */
 };
 /*----------------------------------------------------------------------------*/
+/**
+ * @brief  Get null terminated list of window manager's data.
+ *
+ * @return List of wm data. After use it should be freed using wms_list_free
+ */
 Wms ** wms_list_get (void);
 /*----------------------------------------------------------------------------*/
+/**
+ * @brief  Free list of window manager's data.
+ *
+ * @param[in,out]  wms_list  Wms list to free
+ * @return         none
+ */
 void wms_list_free (Wms **wms_list);
 /*----------------------------------------------------------------------------*/
+/**
+ * @brief  Find window manager that is currently in use.
+ *
+ * @param[in] wm_list  List with window manager info
+ * return     Wms item with info about window manager or null if no wm was
+ *            found. It should be freed after use using free.
+ */
 Wms * find_window_magager (void);
+/*----------------------------------------------------------------------------*/
 /**
  * @brief  Get list of Xfce displays possible to set wallpaper.
  *
  * @return Null terminated list of display strings
  */
 char ** get_xfce_display_list (void);
+/*----------------------------------------------------------------------------*/
 /**
  * @brief  Find command for current window manager.
  *

@@ -19,7 +19,7 @@
  *
  * Automatic wallpaper changer
  *
- * @date June 02, 2020
+ * @date June 03, 2020
  *
  * @version 1.4.9
  *
@@ -118,11 +118,11 @@ main (int    argc,
             sleep (ui_ch_int);
         }
         ui_ch_int_n = check_settings_change_wallpaper (s_cfgfile,
-                                                     rm_rand,
-                                                     &i_atime_opt);
+                                                       rm_rand,
+                                                       &i_atime_opt);
         if (ui_ch_int_n != ui_ch_int) {
             ui_ch_int = ui_ch_int_n;
-            ui_cnt = 0; // ?
+            ui_cnt = 0;
         }
     }
     randomm_free (rm_rand);

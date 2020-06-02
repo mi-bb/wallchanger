@@ -62,7 +62,7 @@
  * @brief Default setting for time align
  */
 #define APP_NAME              "Wall Changer"
-#define APP_VER               "1.4.8"
+#define APP_VER               "1.4.9"
 #define APP_WEB               "https://www.nongnu.org/wallchanger/"
 #define APP_DSC               "Wall Changer is an automatic wallpaper changer."
 #define STATUS_CONFIG         "Config file in use: "
