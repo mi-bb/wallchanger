@@ -145,12 +145,14 @@ check_settings_change_wallpaper (char     *s_cfg_file,
         stlist_free (st_list);
         free (ws_sett);
         free (s_cfg_file);
+        randomm_free (rm_rand);
         exit (EXIT_FAILURE);
     }
     if (stlist_get_length (st_list) == 0) {
         stlist_free (st_list);
         free (ws_sett);
         free (s_cfg_file);
+        randomm_free (rm_rand);
         errx (EXIT_FAILURE, "Empty config file");
     }
 
@@ -167,6 +169,7 @@ check_settings_change_wallpaper (char     *s_cfg_file,
         /* Empty wallpaper list, free and exit */
         stlist_free (st_list);
         wallset_free (ws_sett);
+        randomm_free (rm_rand);
         free (s_cfg_file);
         errx (EXIT_FAILURE, "Empty wallpaper list");
     }
@@ -175,6 +178,7 @@ check_settings_change_wallpaper (char     *s_cfg_file,
         if (wallpaper_change (ws_sett) != ERR_OK) {
             stlist_free (st_list);
             wallset_free (ws_sett);
+            randomm_free (rm_rand);
             free (s_cfg_file);
             exit(EXIT_FAILURE);
         }
@@ -189,6 +193,7 @@ check_settings_change_wallpaper (char     *s_cfg_file,
             if (wallpaper_startup_set (ws_sett) != ERR_OK) {
                 stlist_free (st_list);
                 wallset_free (ws_sett);
+                randomm_free (rm_rand);
                 free (s_cfg_file);
                 exit (EXIT_FAILURE);
             }
@@ -198,6 +203,7 @@ check_settings_change_wallpaper (char     *s_cfg_file,
             if (wallpaper_change (ws_sett) != ERR_OK) {
                 stlist_free (st_list);
                 wallset_free (ws_sett);
+                randomm_free (rm_rand);
                 free (s_cfg_file);
                 exit (EXIT_FAILURE);
             }

@@ -30,7 +30,7 @@
 #ifndef RANDOMM_H
 #define RANDOMM_H
 
-#define RMMAX 1000  /**< RMMAX * 32 maximum random number range */
+#define RMMAX 500  /**< RMMAX * 32 maximum random number range */
 
 #include <stdint.h>
 /*----------------------------------------------------------------------------*/

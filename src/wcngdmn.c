@@ -60,8 +60,6 @@ main (int    argc,
 
     /* Parse command line options */
     cmdfn_parse (argc, argv, &i_opt, &s_cfgfile);
-    /* Init random number structure */
-    rm_rand = randomm_new ();
 
     /* Printing status */
     if (i_opt & CMD_OPT_STATUS) {
@@ -83,6 +81,8 @@ main (int    argc,
     check_display_exit ();
     /* Check config file correctness */
     check_config_file (&s_cfgfile);
+    /* Init random number structure */
+    rm_rand = randomm_new ();
     /* Load settings and set wallpaper */
     ui_ch_int = check_settings_change_wallpaper (s_cfgfile,
                                                  rm_rand,
