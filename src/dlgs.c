@@ -21,6 +21,9 @@
  *
  * @author Michał Bąbik <michalb1981@o2.pl>
  */
+#include <inttypes.h>
+#include "hashfun.h"
+
 #include "defs.h"
 #include "imgs.h"
 #include "iminfo.h"
@@ -36,7 +39,6 @@
 #define PREV_LEN 47
 /*----------------------------------------------------------------------------*/
 enum {
-    COLUMN_ID,      /**< Combobox ListStore column for id */
     COLUMN_WM_ID,   /**< Combobox ListStore column for window manager id */
     COLUMN_NAME,    /**< Combobox ListStore column for window manager name */
     COLUMN_COMMAND, /**< Combobox ListStore column for wallpaper set command */
@@ -170,7 +172,7 @@ textview_get_text (GtkWidget *gw_tview)
 /**
  * @brief  Creates ComboBox with window managers.
  *
- * @param[in]  wm_list List with window manager info.
+ * @param[in]  wms_list List with window manager info.
  * @return     ComboBox widget
  */
 static GtkWidget *
@@ -185,18 +187,25 @@ wm_combo (Wms **wms_list)
 
     list_store = gtk_list_store_new (COLUMN_COUNT,
                                      G_TYPE_INT,
-                                     G_TYPE_INT,
                                      G_TYPE_STRING,
                                      G_TYPE_STRING);
 
     gtk_tree_sortable_set_sort_column_id (GTK_TREE_SORTABLE (list_store),
                                           COLUMN_NAME, GTK_SORT_ASCENDING);
 
+    Wms *wms_unk = NULL;
+
     for (wms_it = wms_list; *wms_it != NULL; ++wms_it) {
-        if (i_prev != (*wms_it)->wm_id) {
+        printf ("%s, %" PRIuFAST32 " %d, %" PRId64 "\n",
+                (*wms_it)->name,
+                hash ((*wms_it)->name),
+                (int) hash ((*wms_it)->name),
+                (int64_t) hash ((*wms_it)->name));
+        if ((*wms_it)->wm_id == 0)
+            wms_unk = *wms_it;
+        else if (i_prev != (*wms_it)->wm_id) {
             gtk_list_store_append (list_store, &iter);
             gtk_list_store_set (list_store, &iter,
-                                COLUMN_ID,      (*wms_it)->id,
                                 COLUMN_WM_ID,   (*wms_it)->wm_id,
                                 COLUMN_NAME,    (*wms_it)->name,
                                 COLUMN_COMMAND, (*wms_it)->command,
@@ -204,6 +213,16 @@ wm_combo (Wms **wms_list)
             i_prev = (*wms_it)->wm_id;
         }
     }
+    gtk_tree_sortable_set_sort_column_id (GTK_TREE_SORTABLE (list_store),
+                                          GTK_TREE_SORTABLE_UNSORTED_SORT_COLUMN_ID,
+                                          GTK_SORT_ASCENDING);
+    gtk_list_store_prepend (list_store, &iter);
+    gtk_list_store_set (list_store, &iter,
+                                COLUMN_WM_ID,   wms_unk->wm_id,
+                                COLUMN_NAME,    wms_unk->name,
+                                COLUMN_COMMAND, wms_unk->command,
+                                -1);
+
     gw_combo = gtk_combo_box_new_with_model (GTK_TREE_MODEL (list_store));
 
     g_object_unref (G_OBJECT (list_store));
@@ -411,13 +430,11 @@ xfce_dialog_run (GtkWindow *gw_parent)
     gw_content_box = gtk_dialog_get_content_area (GTK_DIALOG (gw_dialog));
     gtk_container_set_border_width (GTK_CONTAINER (gw_content_box), 8);
 
-    s_displays = get_xfce_display_list ();
-    if (*s_displays == NULL) {
-        gw_tlabel = gtk_label_new ("Could not find Xfce screens");
-    }
-    else {
-        gw_tlabel = gtk_label_new ("Select display to set wallpaper:");
-    }
+    s_displays = wms_get_xfce_display_list ();
+    gw_tlabel  = *s_displays == NULL ?
+                 gtk_label_new ("Could not find Xfce screens") :
+                 gtk_label_new ("Select display to set wallpaper:");
+
     gtk_box_pack_start (GTK_BOX (gw_content_box),
                         gw_tlabel,
                         FALSE, FALSE, 4);
@@ -430,11 +447,7 @@ xfce_dialog_run (GtkWindow *gw_parent)
         gtk_box_pack_start (GTK_BOX (gw_content_box), gw_radiobutton,
                         FALSE, FALSE, 4);
     }
-
-    for (s_it = s_displays; *s_it != NULL; ++s_it) {
-        free (*s_it);
-    }
-    free (s_displays);
+    wms_free_xfce_display_list (s_displays);
 
     gtk_widget_show_all (gw_content_box);
 
@@ -453,9 +466,7 @@ xfce_dialog_run (GtkWindow *gw_parent)
         }
     }
     if (s_disp != NULL) {
-        s_res = str_comb ("xfconf-query --channel xfce4-desktop --property ",
-                          s_disp);
-        str_append (&s_res, " --set [F]");
+        s_res = wms_get_xfce_command (s_disp);
     }
     gtk_widget_destroy (gw_dialog);
 
@@ -487,7 +498,7 @@ cmddialog_run (GtkWindow    *gw_parent,
     int        i_res    = 0;      /* Config dialog result */
 
     Wms **wms_list = NULL;
-    wms_list = wms_list_get ();
+    wms_list = wms_get_wm_list ();
     GtkDialogFlags flags = GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT;
 
     gw_dialog = gtk_dialog_new_with_buttons (
@@ -511,7 +522,7 @@ cmddialog_run (GtkWindow    *gw_parent,
     gw_preview_combo  = preview_combo (gsl_iinfo);
     gw_combo_label    = gtk_label_new (
             "List of window managers with provided wallpaer set commands:");
-    wms_list_free (wms_list);
+    wms_free_wm_list (wms_list);
 
     gtk_widget_set_tooltip_markup (gw_get_def_button,
             "Get default command for selected window manager.");
@@ -537,7 +548,7 @@ cmddialog_run (GtkWindow    *gw_parent,
 
     /* Trying to detect what window manager is in use and set wm label text and
      * combobox active index to found wm */
-    if ((wms_wm = find_window_magager ()) != NULL) {
+    if ((wms_wm = wms_get_current_wm ()) != NULL) {
         combo_set_active_by_wm_id (gw_wm_combo, wms_wm->wm_id);
         wm_label_set_text (gw_wm_label, wms_wm->name);
         free (wms_wm);

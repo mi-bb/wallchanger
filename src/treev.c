@@ -147,28 +147,23 @@ treeview_add_items_gslist (GtkWidget    *gw_tview,
  * @brief  Insert multiple data items to GtkTreeView.
  */
 void
-treeview_add_items_settlist (GtkWidget      *gw_tview,
-                             const SettList *sl_walls)
+treeview_add_items_setting (GtkWidget *gw_tview,
+                            Setting   *st_wallpapers)
 {
-    Setting    *st_wall;
-    ImageInfo  *ii_info;
-    const char *s_fn    = NULL;
-    size_t      ui_cnt  = 0;
-    size_t      i       = 0;
+    Setting    *st_item;         /* For setting iteration */
+    const char *s_fn     = NULL; /* File name to process */
+    ImageInfo  *ii_info;         /* ImageInfo wallpaper info */
 
-    ui_cnt  = stlist_get_length (sl_walls);
+    st_item = st_wallpapers;
 
-    for (i = 0; i < ui_cnt; ++i) {
-
-        st_wall = stlist_get_setting_at_pos (sl_walls, i);
-        s_fn    = setting_get_string (st_wall);
-
-        if (s_fn != NULL) {
+    while (st_item != NULL) {
+        if ((s_fn = setting_get_string (st_item)) != NULL) {
             if ((ii_info = imageinfo_new_from_file (s_fn)) != NULL) {
                 treeview_add_item (gw_tview, ii_info);
                 imageinfo_free (ii_info);
             }
         }
+        st_item = st_item->next;
     }
 }
 /*----------------------------------------------------------------------------*/
@@ -214,6 +209,29 @@ treeview_get_data (GtkWidget *gw_tview)
         b_res = gtk_tree_model_iter_next (gtm_model, &gti_iter);
     }
     return gsl_iinfo;
+}
+/*----------------------------------------------------------------------------*/
+void
+treeview_get_setting_data (GtkWidget *gw_tview,
+                           Setting   *st_wallpapers)
+{
+    GtkTreeModel *gtm_model;
+    ImageInfo    *ii_info;
+    GtkTreeIter   gti_iter;
+    gboolean      b_res     = FALSE;
+    Setting      *st_data;
+
+    gtm_model = gtk_tree_view_get_model (GTK_TREE_VIEW (gw_tview));
+    b_res     = gtk_tree_model_get_iter_first (gtm_model, &gti_iter);
+
+    while (b_res) {
+        ii_info = treemodel_get_data (gtm_model, gti_iter);
+        st_data = setting_new_string (NULL, imageinfo_get_full_name (ii_info));
+        setting_add_child (st_wallpapers, st_data);
+        imageinfo_free (ii_info);
+
+        b_res = gtk_tree_model_iter_next (gtm_model, &gti_iter);
+    }
 }
 /*----------------------------------------------------------------------------*/
 /**

@@ -31,6 +31,37 @@
 #include "defs.h"
 /*----------------------------------------------------------------------------*/
 /**
+ * @struct SettingData
+ *
+ * @brief  Structure with Setting item info for checking default values.
+ *
+ * @var   SettingData::setting_id
+ * @brief Setting enum id number
+ *
+ * @var   SettingData::setting_type
+ * @brief Setting type SetValType value
+ *
+ * @var   SettingData::default_int
+ * @brief Default value for integer type
+ *
+ * @var   SettingData::default_double
+ * @brief Default value for double type
+ *
+ * @var   SettingData::default_string
+ * @brief Default value for a string
+ *
+ */
+typedef struct
+SettingData {
+    int        setting_id;
+    SetValType setting_type;
+    int64_t    default_int;
+    double     default_double;
+    char       default_string[128];
+} SettingData;
+
+/*----------------------------------------------------------------------------*/
+/**
  * @brief  Get name of setting in config file, based on enum value.
  */
 const char *
@@ -49,6 +80,10 @@ get_setting_name (const int i_val)
         
         case SETTING_LAST_USED_STR:
             s_res = "Last used wallpaper file";
+            break;
+
+        case SETTING_LAST_USED_WM:
+            s_res = "Last used window manager";
             break;
 
         case SETTING_WIN_WIDTH:
@@ -84,278 +119,94 @@ get_setting_name (const int i_val)
 /**
  * @brief  Read program settings. 
  */
-SettList *
-settings_read (const char *s_fname,
+Setting *
+settings_read (const char *s_cfg_file,
                int        *i_err)
 {
-    return js_settings_read (s_fname, i_err);
+    return js_settings_read (s_cfg_file, i_err);
 }
 /*----------------------------------------------------------------------------*/
 /**
- * @brief  Check SettList values set default ones if needed.
+ * @brief  Check for a Setting with name as in sd_data presence and insert
+ *         new one with data as in sd_data.
+ *
+ * @param[in,out] st_settings  List of Setting items
+ * @param[in]     sd_data      Data with setting info to examine
+ * @return        none
  */
-void
-settlist_check_defaults (SettList *st_list)
+static void
+settings_check_setting (Setting     *st_settings,
+                        SettingData *sd_data)
 {
-    int_fast32_t i_pos = -1;
-
-    /* Checking option to select last used wallpaper on start */
-    i_pos = stlist_get_setting_pos (
-                st_list, get_setting_name (SETTING_LAST_USED_OPT));
-
-    if (i_pos == -1) {
-
-        stlist_insert_setting (st_list,
-                               setting_new_uint32 (
-                                   DEFAULT_LAST_USED_OPT,
-                                   get_setting_name (SETTING_LAST_USED_OPT)));
-        #ifdef DEBUG
-        printf ("Select last used wallpaper on start not present, "
-                "setting default\n");
-        #endif
-    }
-
-    /* Checking option to select random wallpapers */
-    i_pos = stlist_get_setting_pos (
-                st_list, get_setting_name (SETTING_RANDOM_OPT));
-
-    if (i_pos == -1) {
-
-        stlist_insert_setting (st_list,
-                               setting_new_uint32 (
-                                   DEFAULT_RANDOM_OPT,
-                                   get_setting_name (SETTING_RANDOM_OPT)));
-        #ifdef DEBUG
-        printf ("Select random wallpapers not present, setting default\n");
-        #endif
-    }
-
-    /* Checking option for time align */
-    i_pos = stlist_get_setting_pos (
-                st_list, get_setting_name (SETTING_TIME_ALIGN_OPT));
-
-    if (i_pos == -1) {
-
-        stlist_insert_setting (st_list,
-                               setting_new_uint32 (
-                                   DEFAULT_TIME_ALIGN_OPT,
-                                   get_setting_name (SETTING_TIME_ALIGN_OPT)));
-        #ifdef DEBUG
-        printf ("Time align not present, setting default\n");
-        #endif
-    }
-
-    /* Checking for wallpaper command */
-    i_pos = stlist_get_setting_pos (
-                st_list, get_setting_name (SETTING_BG_CMD));
-
-    if (i_pos == -1) {
-
-        stlist_insert_setting (st_list, 
-                               setting_new_string (
-                                    "",
-                                    get_setting_name (SETTING_BG_CMD)));
-
-        #ifdef DEBUG
-        printf ("Wallpaper command not present, setting default\n");
-        #endif
-    }
-    else {
-
-        const char *s_str = setting_get_string (
-                stlist_get_setting_at_pos (st_list, (uint32_t) i_pos));
-
-        if (s_str == NULL || strcmp (s_str, "") == 0) {
-
-            stlist_insert_setting (st_list, 
-                                   setting_new_string (
-                                       "",
-                                       get_setting_name (SETTING_BG_CMD)));
-            #ifdef DEBUG
-            printf ("Sth wrong with Wallpaper command, setting default\n");
-            #endif
-        }
-    }
-
-    /* Checking window width */
-    i_pos = stlist_get_setting_pos (
-                st_list, get_setting_name (SETTING_WIN_WIDTH));
-
-    if (i_pos == -1) {
-
-        stlist_insert_setting (st_list,
-                               setting_new_uint32 (
-                                   DEFAULT_WIN_WIDTH,
-                                   get_setting_name (SETTING_WIN_WIDTH)));
-        #ifdef DEBUG
-        printf ("Window width not present, setting default\n");
-        #endif
-    }
-    else {
-
-        uint32_t ui_val = setting_get_uint32 (
-                stlist_get_setting_at_pos (st_list, (uint32_t) i_pos));
-
-        if (ui_val == 0) {
-
-            stlist_insert_setting (st_list,
-                                   setting_new_uint32 (
-                                       DEFAULT_WIN_WIDTH,
-                                       get_setting_name (SETTING_WIN_WIDTH)));
-            #ifdef DEBUG
-            printf ("Window width 0, setting default\n");
-            #endif
-        }
-    }
-
-    /* Checking window height */
-    i_pos = stlist_get_setting_pos (
-                st_list, get_setting_name (SETTING_WIN_HEIGHT));
-
-    if (i_pos == -1) {
-
-        stlist_insert_setting (st_list,
-                               setting_new_uint32 (
-                                   DEFAULT_WIN_HEIGHT,
-                                   get_setting_name (SETTING_WIN_HEIGHT)));
-        #ifdef DEBUG
-        printf ("Window height not present, setting default\n");
-        #endif
-    }
-    else {
-
-        uint32_t ui_val = setting_get_uint32 (
-                stlist_get_setting_at_pos (st_list, (uint32_t) i_pos));
-
-        if (ui_val == 0) {
-
-            stlist_insert_setting (st_list,
-                                   setting_new_uint32 (
-                                       DEFAULT_WIN_HEIGHT,
-                                       get_setting_name (SETTING_WIN_HEIGHT)));
-            #ifdef DEBUG
-            printf ("Window height 0, setting default\n");
-            #endif
-        }
-    }
-
-    /* Checking wallpaper change interval */
-    i_pos = stlist_get_setting_pos (
-                st_list, get_setting_name (SETTING_INTERVAL_VAL));
-
-    if (i_pos == -1) {
-
-        stlist_insert_setting (st_list,
-                               setting_new_uint32 (
-                                   DEFAULT_INTERVAL_VAL,
-                                   get_setting_name (SETTING_INTERVAL_VAL)));
-        #ifdef DEBUG
-        printf ("Wallpaper change interval not present, setting default\n");
-        #endif
-    }
-    else {
-
-        uint32_t ui_val = setting_get_uint32 (
-                stlist_get_setting_at_pos (st_list, (uint32_t) i_pos));
-
-        if (ui_val == 0) {
-
-            stlist_insert_setting (st_list,
-                                   setting_new_uint32 (
-                                      DEFAULT_INTERVAL_VAL,
-                                      get_setting_name (SETTING_INTERVAL_VAL)));
-            #ifdef DEBUG
-            printf ("Wallpaper change interval 0, setting default\n");
-            #endif
-        }
-    }
-    /* Checking wallpaper list */
-    i_pos = stlist_get_setting_pos (
-                st_list, get_setting_name (SETTING_WALL_ARRAY));
-
-    if (i_pos == -1) {
-
-        stlist_insert_setting (st_list,
-                               setting_new_array (
-                                   get_setting_name (SETTING_WALL_ARRAY)));
-        #ifdef DEBUG
-        printf ("Wallpaper list not present creating empty list\n");
-        #endif
-    }
-    else {
-
-        if (setting_get_type (stlist_get_setting_at_pos (st_list,
-                                                         (uint32_t) i_pos))
-                != SET_VAL_ARRAY) {
-
-            stlist_insert_setting (st_list,
-                                   setting_new_array (
-                                       get_setting_name (SETTING_WALL_ARRAY)));
-        #ifdef DEBUG
-        printf ("Wallpaper list is some weird type, creating empty list\n");
-        #endif
-        }
-    }
-}
-/*----------------------------------------------------------------------------*/
-/**
- * @brief  Convert settings in SettList format to WallSett format.
- */
-void
-settlist_to_wallset (const SettList *st_list,
-                     WallSett       *ws_sett)
-{
+    const char *s_name = NULL;
     Setting    *st_sett;
-    SettList   *sl_walls;
-    const char *s_tmp  = NULL;
-    uint32_t    ui_tmp = 0;
 
-    st_sett = stlist_get_setting_with_name (
-            st_list, get_setting_name (SETTING_BG_CMD));
-    if (st_sett != NULL) {
-        s_tmp = setting_get_string (st_sett);
-        wallset_set_command (ws_sett, s_tmp);
+    s_name = get_setting_name (sd_data->setting_id);
+
+    if ((st_sett = setting_find_child (st_settings, s_name)) == NULL) {
+        #ifdef DEBUG
+        printf ("%s", s_name);
+        printf (" not present, setting default ");
+        #endif
+        if (sd_data->setting_type == SET_VAL_INT) {
+            #ifdef DEBUG
+            printf ("%" PRId64 "\n", sd_data->default_int);
+            #endif
+            setting_add_child (st_settings,
+                    setting_new_int (s_name, sd_data->default_int));
+        }
+        else if (sd_data->setting_type == SET_VAL_DOUBLE) {
+            #ifdef DEBUG
+            printf ("%f\n", sd_data->default_double);
+            #endif
+            setting_add_child (st_settings,
+                    setting_new_double (s_name, sd_data->default_double));
+        }
+        else if (sd_data->setting_type == SET_VAL_STRING) {
+            #ifdef DEBUG
+            printf ("%s\n", sd_data->default_string);
+            #endif
+            setting_add_child (st_settings,
+                    setting_new_string (s_name, sd_data->default_string));
+        }
+        else if (sd_data->setting_type == SET_VAL_ARRAY) {
+            #ifdef DEBUG
+            printf ("\n");
+            #endif
+            setting_add_child (st_settings, setting_new_array (s_name));
+        }
     }
-
-    st_sett = stlist_get_setting_with_name (
-            st_list, get_setting_name (SETTING_LAST_USED_STR));
-    if (st_sett != NULL) {
-        s_tmp = setting_get_string (st_sett);
-        wallset_set_last_used_fn (ws_sett, s_tmp);
+    else {
+        #ifdef DEBUG
+        printf ("%s", s_name);
+        printf (" OK\n");
+        #endif
     }
+}
+/*----------------------------------------------------------------------------*/
+/**
+ * @brief  Check Setting list values and set default ones if needed.
+ */
+void
+settings_check_defaults (Setting *st_settings)
+{
+    SettingData *sd_data;
 
-    st_sett = stlist_get_setting_with_name (
-            st_list, get_setting_name (SETTING_RANDOM_OPT));
-    if (st_sett != NULL) {
-        ui_tmp = setting_get_uint32 (st_sett);
-        wallset_set_random_opt (ws_sett, (int) ui_tmp);
-    }
+    SettingData sdd[] = {
+        {SETTING_LAST_USED_OPT,  SET_VAL_INT,    DEFAULT_LAST_USED_OPT, 0, ""},
+        {SETTING_LAST_USED_WM,   SET_VAL_INT,    DEFAULT_LAST_USED_WM, 0, ""},
+        {SETTING_RANDOM_OPT,     SET_VAL_INT,    DEFAULT_RANDOM_OPT, 0, ""},
+        {SETTING_TIME_ALIGN_OPT, SET_VAL_INT,    DEFAULT_TIME_ALIGN_OPT, 0, ""},
+        {SETTING_WIN_WIDTH,      SET_VAL_INT,    DEFAULT_WIN_WIDTH, 0, ""},
+        {SETTING_WIN_HEIGHT,     SET_VAL_INT,    DEFAULT_WIN_HEIGHT, 0, ""},
+        {SETTING_INTERVAL_VAL,   SET_VAL_INT,    DEFAULT_INTERVAL_VAL, 0, ""},
+        {SETTING_BG_CMD,         SET_VAL_STRING, 0, 0, DEFAULT_BG_CMD},
+        {SETTING_WALL_ARRAY,     SET_VAL_ARRAY,  0, 0, ""},
+        {-1, 0, 0, 0, ""}
+    };
 
-    st_sett = stlist_get_setting_with_name (
-            st_list, get_setting_name (SETTING_LAST_USED_OPT));
-    if (st_sett != NULL) {
-        ui_tmp = setting_get_uint32 (st_sett);
-        wallset_set_last_used_setting (ws_sett, (int) ui_tmp);
-    }
-
-    st_sett = stlist_get_setting_with_name (
-            st_list, get_setting_name (SETTING_TIME_ALIGN_OPT));
-    if (st_sett != NULL) {
-        ui_tmp = setting_get_uint32 (st_sett);
-        wallset_set_align_opt (ws_sett, (int) ui_tmp);
-    }
-
-    st_sett = stlist_get_setting_with_name (
-            st_list, get_setting_name (SETTING_INTERVAL_VAL));
-    if (st_sett != NULL) {
-        ui_tmp = setting_get_uint32 (st_sett);
-        wallset_set_interval (ws_sett, ui_tmp);
-    }
-
-    sl_walls = stlist_get_settings_in_array_name_p (st_list,
-            get_setting_name (SETTING_WALL_ARRAY));
-    if (sl_walls != NULL) {
-        wallset_set_wallpaper_list (ws_sett, sl_walls);
+    for (sd_data = sdd; sd_data->setting_id != -1; ++sd_data) {
+        settings_check_setting (st_settings, sd_data);
     }
 }
 /*----------------------------------------------------------------------------*/
@@ -363,24 +214,43 @@ settlist_to_wallset (const SettList *st_list,
  * @brief  Update last used wallpaper position in config file. 
  */
 int
-settings_update_last_used (const char *s_last_used,
-                           const char *s_fname)
+settings_update_last_used (const char *s_cfg_file,
+                           const char *s_last_used)
 {
-    SettList *st_list;
-    Setting  *st_sett;
+    Setting  *st_settings;
+    Setting  *st_item;
     int       i_res = ERR_OK;
 
-    st_list = stlist_new_list ();
+    st_settings = setting_new_setting ("Settings");
+    
+    st_item = setting_new_string (get_setting_name (SETTING_LAST_USED_STR),
+                                   s_last_used);
+    setting_add_child (st_settings, st_item);
 
-    st_sett = setting_new_string (s_last_used,
-                                  get_setting_name (SETTING_LAST_USED_STR));
+    i_res = js_settings_check_update_file (st_settings, s_cfg_file);
+    settings_free_all (st_settings);
+    return i_res;
+}
+/*----------------------------------------------------------------------------*/
+/**
+ * @brief  Update last used window manager value in config file. 
+ */
+int
+settings_update_last_used_wm (const char *s_cfg_file,
+                              const int   i_last_used_wm)
+{
+    Setting  *st_settings;
+    Setting  *st_item;
+    int       i_res = ERR_OK;
 
-    stlist_insert_setting (st_list, st_sett);
+    st_settings = setting_new_setting ("Settings");
+    
+    st_item = setting_new_int (get_setting_name (SETTING_LAST_USED_WM),
+                                (int64_t) i_last_used_wm);
+    setting_add_child (st_settings, st_item);
 
-    i_res = js_settings_check_update_file (st_list, s_fname);
-
-    stlist_free (st_list);
-
+    i_res = js_settings_check_update_file (st_settings, s_cfg_file);
+    settings_free_all (st_settings);
     return i_res;
 }
 /*----------------------------------------------------------------------------*/
@@ -388,28 +258,26 @@ settings_update_last_used (const char *s_last_used,
  * @brief  Update window size in config file. 
  */
 int
-settings_update_window_size (const int   i_w,
-                             const int   i_h,
-                             const char *s_cfg_file)
+settings_update_window_size (const char *s_cfg_file,
+                             const int   i_w,
+                             const int   i_h)
 {
-    SettList *st_list;
-    Setting  *st_sett;
+    Setting  *st_settings;
+    Setting  *st_item;
     int       i_res = ERR_OK;
 
-    st_list = stlist_new_list ();
+    st_settings = setting_new_setting ("Settings");
+    
+    st_item = setting_new_int (get_setting_name (SETTING_WIN_WIDTH),
+                                (int64_t) i_w);
+    setting_add_child (st_settings, st_item);
 
-    st_sett = setting_new_uint32 ((uint32_t) i_w,
-                                  get_setting_name (SETTING_WIN_WIDTH));
-    stlist_insert_setting (st_list, st_sett);
+    st_item = setting_new_int (get_setting_name (SETTING_WIN_HEIGHT),
+                                (int64_t) i_h);
+    setting_add_child (st_settings, st_item);
 
-    st_sett = setting_new_uint32 ((uint32_t) i_h,
-                                  get_setting_name (SETTING_WIN_HEIGHT));
-    stlist_insert_setting (st_list, st_sett);
-
-    i_res = js_settings_check_update_file (st_list, s_cfg_file);
-
-    stlist_free (st_list);
-
+    i_res = js_settings_check_update_file (st_settings, s_cfg_file);
+    settings_free_all (st_settings);
     return i_res;
 }
 /*----------------------------------------------------------------------------*/
@@ -418,21 +286,21 @@ settings_update_window_size (const int   i_w,
  *         stored in settings file.
  */
 char *
-settings_check_update (const SettList  *st_list,
-                       const char      *s_fname,
-                       int             *i_err)
+settings_check_update (const char *s_cfg_file,
+                       Setting    *st_settings,
+                       int        *i_err)
 {
-    return js_settings_check_for_update (st_list, s_fname, i_err);
+    return js_settings_check_for_update (st_settings, s_cfg_file, i_err);
 }
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Update file with new data.
  */
 int
-settings_update_file (const char *s_buff, 
-                      const char *s_fname)
+settings_update_file (const char *s_cfg_file,
+                      const char *s_buff)
 {
-    return js_settings_update_file (s_buff, s_fname);
+    return js_settings_update_file (s_buff, s_cfg_file);
 }
 /*----------------------------------------------------------------------------*/
 /**
@@ -440,10 +308,10 @@ settings_update_file (const char *s_buff,
  *         if they are.
  */
 int
-settings_check_update_file (const SettList *st_list,
-                            const char     *s_fname)
+settings_check_update_file (const char *s_cfg_file,
+                            Setting    *st_settings)
 {
-    return js_settings_check_update_file (st_list, s_fname);
+    return js_settings_check_update_file (st_settings, s_cfg_file);
 }
 /*----------------------------------------------------------------------------*/
 

@@ -38,6 +38,7 @@ cmdfn_parse (int    argc,
              char **s_cfgpath __attribute__ ((unused)))
 {
     struct gengetopt_args_info args_info;
+    *i_opt = 0;
 
     if (cmdline_parser (argc, argv, &args_info) != 0)
         exit(EXIT_FAILURE);
@@ -63,6 +64,9 @@ cmdfn_parse (int    argc,
     }
     if (args_info.status_given) {
         *i_opt |= CMD_OPT_STATUS;
+    }
+    if (args_info.once_given) {
+        *i_opt |= CMD_OPT_ONCE;
     }
     if (args_info.config_given &&
             !args_info.status_given && !args_info.stop_given) {

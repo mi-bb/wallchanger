@@ -22,8 +22,6 @@ wchangerd_SOURCES=wcngdmn.c\
                   jsfun.c jsfun.h\
                   rwdt.c rwdt.h\
                   randomm.c randomm.h\
-                  wallsett.c wallsett.h\
-                  settlist.c settlist.h\
                   setting.c setting.h\
                   strfun.c strfun.h\
                   fdfn.c fdfn.h\
@@ -50,8 +48,6 @@ wchangercfg_SOURCES=wchanger.c\
                     rwdt.c rwdt.h\
                     imgs.c imgs.h\
                     randomm.c randomm.h\
-                    wallsett.c wallsett.h\
-                    settlist.c settlist.h\
                     setting.c setting.h\
                     preview.c preview.h\
                     strfun.c strfun.h\

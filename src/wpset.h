@@ -23,28 +23,36 @@
  */
 #ifndef WPSET_H
 #define WPSET_H
-
-#include "wallsett.h"
+#include "randomm.h"
+#include "setting.h"
 /*----------------------------------------------------------------------------*/
 /**
- * @fn  int wallpaper_change (WallSett *ws_sett)
+ * @fn  int wpset_change (Setting    *st_settings,
+ *                        RandMem    *rm_rand,
+ *                        const char *s_cfg_file)
  *
  * @brief  Wallpaper change during program work.
  *
- * @param[in,out] ws_sett  Program settings
+ * @param[in,out] st_settings  Program settings
+ * @param[in,out] rm_rand      Raddom memory structure
+ * @param[in]     s_cfg_file   Config file path
  * @return        Wallpaper change status
  *
- * @fn  int wallpaper_startup_set (WallSett *ws_sett)
+ * @fn  int wpset_startup_set (Setting    *st_settings,
+ *                             RandMem    *rm_rand,
+ *                             const char *s_cfg_file)
  *
  * @brief  Setting wallpaper image at program startup.
  *
- * @param[in,out] ws_sett  Program settings
+ * @param[in,out] st_settings  Program settings
+ * @param[in,out] rm_rand      Raddom memory structure
+ * @param[in]     s_cfg_file   Config file path
  * @return        Wallpaper set status
  *
  * @fn  void wallpaper_test_set (const char *s_cmd,
  *                               const char *s_file)
  *
- * @brief  Setting wallpaper out of wallpaper configuration dialog.
+ * @brief  Setting wallpaper with configuration dialog.
  *
  * @param[in]  s_cmd       Wallpaper set command
  * @param[in]  s_file      Wallpaper file path
@@ -54,7 +62,7 @@
  *                                const char *s_file,
  *                                const char *s_cfg_file)
  *
- * @brief  Setting wallpaper out of settings dialog.
+ * @brief  Setting wallpaper with settings dialog.
  *
  * @param[in]  s_cmd       Wallpaper set command
  * @param[in]  s_file      Wallpaper file path
@@ -62,17 +70,21 @@
  * @return     Wallpaper set status
  */
 /*----------------------------------------------------------------------------*/
-int  wallpaper_change      (WallSett   *ws_sett);
+int wpset_change          (Setting    *st_settings,
+                           RandMem    *rm_rand,
+                           const char *s_cfg_file);
 
-int  wallpaper_startup_set (WallSett   *ws_sett);
+int wpset_startup_set     (Setting    *st_settings,
+                           RandMem    *rm_rand,
+                           const char *s_cfg_file);
 
-void wallpaper_test_set    (const char *s_cmd,
-                            const char *s_file);
+void wallpaper_test_set   (const char *s_cmd,
+                           const char *s_file);
 
-int  wallpaper_dialog_set  (const char *s_cmd,
-                            const char *s_file,
-                            const char *s_cfg_file)
-                            __attribute__ ((nonnull (1, 2, 3)));
+int  wallpaper_dialog_set (const char *s_cmd,
+                           const char *s_file,
+                           const char *s_cfg_file)
+                           __attribute__ ((nonnull (1, 2, 3)));
 /*----------------------------------------------------------------------------*/
 #endif
 

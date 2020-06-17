@@ -71,11 +71,9 @@ dialogdata_new (void)
 {
     DialogData *dd_data = NULL;   /* DialogData item to return */
 
-    dd_data = malloc (sizeof (DialogData));
-
-    if (dd_data == NULL) {
+    if ((dd_data = malloc (sizeof (DialogData))) == NULL)
         err (EXIT_FAILURE, NULL);
-    }
+
     dialogdata_init (dd_data);
 
     return dd_data;
@@ -116,8 +114,7 @@ dialogdata_get_status_config_info (const DialogData *dd_data)
     ui_plen = strlen (STATUS_CONFIG);
     ui_clen = strlen (dd_data->s_cfg_file);
 
-    s_ret = malloc ((ui_plen + ui_clen + 1) * sizeof (char));
-    if (s_ret == NULL)
+    if ((s_ret = malloc ((ui_plen + ui_clen + 1) * sizeof (char))) == NULL)
         err (EXIT_FAILURE, NULL);
 
     memcpy (s_ret, STATUS_CONFIG, ui_plen);

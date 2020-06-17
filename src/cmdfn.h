@@ -42,6 +42,9 @@
  *
  * @def   CMD_OPT_CONFIG
  * @brief Config path given
+ *
+ * @def   CMD_OPT_ONCE
+ * @brief Run once and exit option given
  */
 #define CMD_OPT_NONE    0x00
 #define CMD_OPT_START   0x01
@@ -49,6 +52,7 @@
 #define CMD_OPT_RESTART 0x04
 #define CMD_OPT_STATUS  0x08
 #define CMD_OPT_CONFIG  0x10
+#define CMD_OPT_ONCE    0x20
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Parse command line options, set i_opt and s_cfgpath.

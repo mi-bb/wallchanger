@@ -60,19 +60,23 @@
  *
  * @def   DEFAULT_TIME_ALIGN_OPT
  * @brief Default setting for time align
+ *
+ * @def   DEFAULT_LAST_USED_WM
+ * @brief Default setting for last used window manager
  */
 #define APP_NAME              "Wall Changer"
-#define APP_VER               "1.4.9"
+#define APP_VER               "1.5.0"
 #define APP_WEB               "https://www.nongnu.org/wallchanger/"
 #define APP_DSC               "Wall Changer is an automatic wallpaper changer."
 #define STATUS_CONFIG         "Config file in use: "
-#define DEFAULT_BG_CMD        "feh --bg-fill"
+#define DEFAULT_BG_CMD        "feh --bg-fill \"[F]\""
 #define DEFAULT_WIN_WIDTH      1024
 #define DEFAULT_WIN_HEIGHT     768
 #define DEFAULT_INTERVAL_VAL   30
 #define DEFAULT_LAST_USED_OPT  0
 #define DEFAULT_RANDOM_OPT     0
 #define DEFAULT_TIME_ALIGN_OPT 0
+#define DEFAULT_LAST_USED_WM   -1
 /*----------------------------------------------------------------------------*/
 #endif
 

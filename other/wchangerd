@@ -21,7 +21,7 @@ _wchangerd()
     _init_completion || return
 
     case $prev in
-        --start|--stop|--restart|--status|--version|--help)
+        --start|--stop|--restart|--status|--once|--version|--help)
             return
             ;;
         --config)

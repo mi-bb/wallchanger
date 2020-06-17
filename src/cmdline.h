@@ -47,6 +47,7 @@ struct gengetopt_args_info
   const char *stop_help; /**< @brief Stop wchangerd process help description.  */
   const char *restart_help; /**< @brief Restart wchangerd process help description.  */
   const char *status_help; /**< @brief Print wchangerd status help description.  */
+  const char *once_help; /**< @brief Run once and exit help description.  */
   char * config_arg;	/**< @brief Path to config file.  */
   char * config_orig;	/**< @brief Path to config file original value given at command line.  */
   const char *config_help; /**< @brief Path to config file help description.  */
@@ -57,6 +58,7 @@ struct gengetopt_args_info
   unsigned int stop_given ;	/**< @brief Whether stop was given.  */
   unsigned int restart_given ;	/**< @brief Whether restart was given.  */
   unsigned int status_given ;	/**< @brief Whether status was given.  */
+  unsigned int once_given ;	/**< @brief Whether once was given.  */
   unsigned int config_given ;	/**< @brief Whether config was given.  */
 
 } ;

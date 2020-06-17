@@ -40,6 +40,8 @@
  * @brief Pointer to CheckBox for selecting random wallpapers
  * @var   DialogData::gw_lastused
  * @brief Pointer to CheckBox for restoring last used wallpaper on start
+ * @var   DialogData::gw_timealign
+ * @brief Pointer to CheckBox for time aligning
  * @var   DialogData::gw_command
  * @brief Pointer to Entry with command to set wallpaper
  * @var   DialogData::gw_interval

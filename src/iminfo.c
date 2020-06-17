@@ -61,9 +61,7 @@ imageinfo_new (void)
 {
     ImageInfo *ii_res;
 
-    ii_res = malloc (sizeof (ImageInfo));
-
-    if (ii_res == NULL)
+    if ((ii_res = malloc (sizeof (ImageInfo))) == NULL)
         err (EXIT_FAILURE, NULL);
 
     imageinfo_init (ii_res);

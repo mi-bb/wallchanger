@@ -129,7 +129,7 @@ save_file_data (const char *s_fname,
         return ERR_FILE;
     }
     ui_size = strlen(s_buff);
-    ui_res = fwrite (s_buff , sizeof (char), ui_size, f_file);
+    ui_res  = fwrite (s_buff , sizeof (char), ui_size, f_file);
     fclose (f_file);
 
     if (ui_res != ui_size) {

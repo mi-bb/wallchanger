@@ -16,10 +16,10 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 AC_PREREQ([2.69])
-AC_INIT([wallchanger], [1.4.9], [michalb1981@o2.pl], [wallchanger],\
+AC_INIT([wallchanger], [1.5.0], [michalb1981@o2.pl], [wallchanger],\
         [https://www.nongnu.org/wallchanger/])
 AM_INIT_AUTOMAKE
-AC_CONFIG_SRCDIR([src/settlist.c])
+AC_CONFIG_SRCDIR([src/setting.c])
 AC_CONFIG_HEADERS([config.h])
 AC_GNU_SOURCE
 

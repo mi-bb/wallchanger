@@ -31,9 +31,6 @@
  *
  * @brief Structure with window manager info.
  *
- * @var   Wms::id
- * @brief Entry id
- *
  * @var   Wms::wm_id
  * @brief Window manager id
  *
@@ -47,7 +44,6 @@
  * @brief Command to set wallpaper for window manager
  */
 typedef struct Wms {
-    int  id;
     int  wm_id;
     char process [32];
     char name    [16];
@@ -55,19 +51,20 @@ typedef struct Wms {
 } Wms;
 /*----------------------------------------------------------------------------*/
 enum {
-    WM_ID_I3,       /**< Id for i3 window manager */
-    WM_ID_SPECTRWM, /**< Id for Spectrwm window manager */
-    WM_ID_MATE,     /**< Id foe MATE window manager */
-    WM_ID_GNOME,    /**< Id for Gnome window manager */
-    WM_ID_XFCE,     /**< Id for Xfce window manager */
-    WM_ID_CINNAMON, /**< Id for Cinnamon window manager */
-    WM_ID_PLASMA,   /**< Id for KDE Plasma window manager */
-    WM_ID_OPENBOX,  /**< Id for Openbox window manager */
-    WM_ID_FLUXBOX,  /**< Id for Fluxbox window manager */
-    WM_ID_LXDE,     /**< Id for LXDE window manager */
-    WM_ID_FVWM,     /**< Id for FVWM window manager */
-    WM_ID_WMAKER,   /**< Id for Window Maker window manager */
-    WM_ID_END       /**< End of Ids */
+    WM_ID_UNKNOWN = 0, /**< Id for unknown manager */
+    WM_ID_I3,          /**< Id for i3 window manager */
+    WM_ID_SPECTRWM,    /**< Id for Spectrwm window manager */
+    WM_ID_MATE,        /**< Id foe MATE window manager */
+    WM_ID_GNOME,       /**< Id for Gnome window manager */
+    WM_ID_XFCE,        /**< Id for Xfce window manager */
+    WM_ID_CINNAMON,    /**< Id for Cinnamon window manager */
+    WM_ID_PLASMA,      /**< Id for KDE Plasma window manager */
+    WM_ID_OPENBOX,     /**< Id for Openbox window manager */
+    WM_ID_FLUXBOX,     /**< Id for Fluxbox window manager */
+    WM_ID_LXDE,        /**< Id for LXDE window manager */
+    WM_ID_FVWM,        /**< Id for FVWM window manager */
+    WM_ID_WMAKER,      /**< Id for Window Maker window manager */
+    WM_ID_END          /**< End of Ids */
 };
 /*----------------------------------------------------------------------------*/
 /**
@@ -75,7 +72,7 @@ enum {
  *
  * @return List of wm data. After use it should be freed using wms_list_free
  */
-Wms ** wms_list_get (void);
+Wms ** wms_get_wm_list (void);
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Free list of window manager's data.
@@ -83,31 +80,54 @@ Wms ** wms_list_get (void);
  * @param[in,out]  wms_list  Wms list to free
  * @return         none
  */
-void wms_list_free (Wms **wms_list);
-/*----------------------------------------------------------------------------*/
-/**
- * @brief  Find window manager that is currently in use.
- *
- * @param[in] wm_list  List with window manager info
- * return     Wms item with info about window manager or null if no wm was
- *            found. It should be freed after use using free.
- */
-Wms * find_window_magager (void);
+void wms_free_wm_list (Wms **wms_list);
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Get list of Xfce displays possible to set wallpaper.
  *
- * @return Null terminated list of display strings
+ * @return Null terminated list of display strings.
  */
-char ** get_xfce_display_list (void);
+char ** wms_get_xfce_display_list (void);
+/*----------------------------------------------------------------------------*/
+/**
+ * @brief  Free null terminated list of strings.
+ *
+ * @param[in,out]  s_list  Null terminated list of strings
+ * @return         none
+ */
+void wms_free_xfce_display_list (char **s_list);
+/*----------------------------------------------------------------------------*/
+/**
+ * @brief  Create Xfce wallpaper set command with display name given in s_disp.
+ *
+ * @param[in] s_disp  String with display for command
+ * @return    New string with wallpaper set command. After use it should be
+ *            freeed using free.
+ */
+char *  wms_get_xfce_command (const char *s_disp);
+/*----------------------------------------------------------------------------*/
+/**
+ * @brief  Find window manager that is currently in use.
+ *
+ * return     Wms item with info about window manager or null if no wm was
+ *            found. After use it should be freed using free.
+ */
+Wms * wms_get_current_wm (void);
+/*----------------------------------------------------------------------------*/
+/**
+ * @brief  Find window manager that is currently in use and return it's id.
+ *
+ * return     Id of found window managaer or -1 if unknown
+ */
+int wms_get_current_wm_id (void);
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Find command for current window manager.
  *
- * @return    String with wallpaper set command or null. It should be
- *            freed after use using free.
+ * @return String with wallpaper set command or null. After use it should be
+ *         freed using free.
  */
-char * cmddialog_find_command (void);
+char * wms_find_command (void);
 /*----------------------------------------------------------------------------*/
 #endif
 

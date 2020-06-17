@@ -26,10 +26,16 @@
 
 #include <stdint.h>
 #include "randomm.h"
-//unsigned int time_stuff (void);
 /*----------------------------------------------------------------------------*/
+#ifdef DEBUG
 void print_now (void);
+#endif
 /*----------------------------------------------------------------------------*/
+/**
+ * @brief  Count time to align intervals to next full hour.
+ *
+ * @return Time in seconds
+ */
 uint32_t check_time_align_val (void);
 /*----------------------------------------------------------------------------*/
 /**
@@ -65,13 +71,14 @@ void check_config_file (char **s_file);
  * needed and changes wallpaper.
  * Function returns wallpaper change interval to use with main loop.
  *
- * @param[in] s_cfg_file  Config file path
- * @param[in] rm_rand     RandMem object
+ * @param[in,out] s_cfg_file  Config file path
+ * @param[in,out] rm_rand     RandMem object
+ * @param[in,out] i_algntime  For time align option value
  * @return    Wallpaper change interval
  */
 uint32_t check_settings_change_wallpaper (char     *s_cfg_file,
                                           RandMem  *rm_rand,
-                                          int      *ui_algntime);
+                                          int      *i_algntime);
 /*----------------------------------------------------------------------------*/
 #endif
 

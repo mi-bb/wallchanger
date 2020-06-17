@@ -26,7 +26,8 @@
 
 #include <gtk/gtk.h>
 #include "iminfo.h"
-#include "settlist.h"
+#include "setting.h"
+//#include "settlist.h"
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  TreeView Columns
@@ -60,13 +61,13 @@ enum {
  * @param[in]  gl_files  GSList list with data in ImageInfo format
  * @return     none
  *
- * @fn  void treeview_add_items_settlist (GtkWidget      *gw_tview,
- *                                        const SettList *sl_walls)
+ * @fn  void treeview_add_items_setting (GtkWidget *gw_tview,
+ *                                       Setting   *st_wallpapers)
  *
- * @brief  Insert data items from SettList to GtkTreeView.
+ * @brief  Insert data items from Setting list to GtkTreeView.
  *
- * @param[out] gw_tview  TreeView to add items
- * @param[in]  sl_walls  GSList list with data in ImageInfo format
+ * @param[out] gw_tview       TreeView to add items
+ * @param[in]  st_wallpapers  List of Setting items with file paths
  * @return     none
  *
  * @fn  ImageInfo * treemodel_get_data (GtkTreeModel *gtm_model,
@@ -84,6 +85,15 @@ enum {
  *
  * @param[in] gw_tview   TreeView from which data should be taken
  * @return    List with  ImageInfo data of TreeView's TreeModel items
+ *
+ * @fn void treeview_get_setting_data (GtkWidget *gw_tview,
+                                       Setting   *st_wallpapers)
+
+ * @brief  Get data out of TreeView to Setting list.
+ *
+ * @param[in]  gw_tview       TreeView with wallpapers
+ * @param[out] st_wallpapers  List to insert Setting items with file paths
+ * @return     none
  */
 /*----------------------------------------------------------------------------*/
 void        treeview_add_items_glist     (GtkWidget      *gw_tview,
@@ -92,13 +102,16 @@ void        treeview_add_items_glist     (GtkWidget      *gw_tview,
 void        treeview_add_items_gslist    (GtkWidget      *gw_tview,
                                           const GSList   *gl_files);
 
-void        treeview_add_items_settlist  (GtkWidget      *gw_tview,
-                                          const SettList *sl_walls);
+void        treeview_add_items_setting   (GtkWidget      *gw_tview,
+                                          Setting        *st_wallpapers);
 
 ImageInfo * treemodel_get_data           (GtkTreeModel   *gtm_model,
                                           GtkTreeIter     gti_iter);
 
 GSList    * treeview_get_data            (GtkWidget      *gw_tview);
+
+void        treeview_get_setting_data    (GtkWidget      *gw_tview,
+                                          Setting        *st_wallpapers);
 /*----------------------------------------------------------------------------*/
 /**
  * @fn  void treeview_remove_duplicates (GtkWidget *gw_tview)

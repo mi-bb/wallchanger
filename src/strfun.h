@@ -80,7 +80,6 @@ char * str_replace_in               (const char   *s_src,
                                      const char   *s_to)
        __attribute__ ((nonnull (1,2,3), returns_nonnull));
 
-
 char * str_set_up_wallpaper_command (const char   *s_cmd,
                                      const char   *s_fname,
                                      const char   *s_sign)

@@ -40,126 +40,64 @@
 #include "jsfun.h"
 /*----------------------------------------------------------------------------*/
 /**
- * @fn  static void js_json_array_to_stlist (json_object *j_array,
- *                                           SettList    *st_list,
- *                                           const char  *s_array_name)
+ * @fn  static void js_json_obj_to_settings (json_object   *val,
+ *                                           Setting       *st_settings,
+ *                                           const char    *s_name)
  *
- * @brief  Get items from Json array and add them to SettList object.
+ * @brief  Convert Json object to Setting object and add to st_settings list.
  *
- * @param[in]  j_array       Array of Json objects
- * @param[in]  st_list       SettList list to add elements
- * @param[in]  s_array_name  Name of array for the elements
+ * @param[in]  val          Json object to process
+ * @param[out] st_settings  List of Setting items
+ * @param[in]  s_name       Destination Setting name
  * @return     none
  *
- * @fn  static void js_stlist_array_to_json (const SettList *st_list,
- *                                           const Setting  *st_sett,
- *                                           json_object    *j_array)
- *
- * @brief  Get items from Setting array and save them in Json array object.
- *
- * @param[in]  st_list  List of all settings
- * @param[in]  st_sett  Array Setting to process
- * @param[out] j_array  Json aray object to insert data
- * @return     None
- *
- * @fn  static Setting * js_json_obj_to_setting (json_object *val,
- *                                               const char  *s_name,
- *                                               SettList    *st_list)
- *
- * @brief  Convert Json object to Setting object
- *
- * @param[in]  val      Json object to process
- * @param[in]  s_name   Destination Setting name
- * @param[out] st_list  SettList to insert settings
- * @return     Setting object
- *
- * @fn  static json_object * js_setting_to_json_obj (const SettList *st_list,
- *                                                   const Setting  *st_sett)
+ * @fn  static json_object * js_setting_to_json_obj (const Setting *st_sett)
  *
  * @brief  Convert Setting object to Json object
  *
- * @param[in]  st_list   List of all settings
- * @param[in]  st_sett   Setting to examine
- * @return     Json object
- *
+ * @param[in] st_sett   Setting item to convert
+ * @return    Json object
  */
 /*----------------------------------------------------------------------------*/
-static void          js_json_array_to_stlist (json_object        *j_array,
-                                              SettList           *st_list,
-                                              const char         *s_array_name)
-                                              __attribute__ ((nonnull (3)));
+static void          js_json_obj_to_settings (json_object   *val,
+                                              Setting       *st_settings,
+                                              const char    *s_name);
 
-static void          js_stlist_array_to_json (const SettList     *st_list,
-                                              const Setting      *st_sett,
-                                              json_object        *j_array);
-
-static Setting     * js_json_obj_to_setting  (json_object        *val,
-                                              const char         *s_name,
-                                              SettList           *st_list);
-
-static json_object * js_setting_to_json_obj  (const SettList     *st_list,
-                                              const Setting      *st_sett);
+static json_object * js_setting_to_json_obj  (const Setting *st_sett);
 /*----------------------------------------------------------------------------*/
 /**
- * @fn  static SettList * js_json_string_to_stlist (const char *s_buff)
+ * @brief  Get items from Json array and add them to list with Setting items.
  *
- * @brief  Convert raw Json data string to SettList list of Setting objects.
- *
- * @param[in] s_buff  String with Json data
- * @return    SettList list
- *
- * @fn  static void js_stlist_add_to_json_obj (const SettList *st_list,
- *                                             json_object    *j_obj)
- *
- * @brief  Convert Setting items from SettList and put them in Json object
- *
- * @param[in]  st_list  List of Setting items
- * @param[out] j_obj    Json object to insert data
+ * @param[in]  j_array       Array of Json objects
+ * @param[out] st_settings   List of Setting items
+ * @param[in]  s_array_name  Name of array for the elements
  * @return     none
  */
-/*----------------------------------------------------------------------------*/
-static SettList * js_json_string_to_stlist  (const char     *s_buff)
-                                             __attribute__ ((nonnull (1)));
-
-static void       js_stlist_add_to_json_obj (const SettList *st_list,
-                                             json_object    *j_obj);
-/*----------------------------------------------------------------------------*/
-/**
- * @brief  Get items from Json array and add them to SettList object.
- */
 static void
-js_json_array_to_stlist (json_object *j_array,
-                         SettList    *st_list,
-                         const char  *s_array_name)
+js_json_array_to_settings (json_object *j_array,
+                           Setting     *st_settings,
+                           const char  *s_array_name)
 {
     json_object *j_val;         /* Json object read from Json array */
-    Setting     *st_set;        /* Setting made from Json object */
     size_t       ui_cnt = 0;    /* Length of Json array */
     size_t            i = 0;    /* i */
 
     ui_cnt = json_object_array_length (j_array);
 
     for (i = 0; i < ui_cnt; ++i) {
-
-        j_val = json_object_array_get_idx (j_array, i);
-
-        if (j_val != NULL) {
-
-            st_set = js_json_obj_to_setting (j_val, NULL, st_list);
-
-            if (st_set != NULL)
-                stlist_insert_setting_to_array (st_list, st_set, s_array_name);
+        if ((j_val = json_object_array_get_idx (j_array, i)) != NULL) {
+            js_json_obj_to_settings (j_val, st_settings, s_array_name);
         }
     }
 }
 /*----------------------------------------------------------------------------*/
 /**
- * @brief  Convert Json object to Setting object
+ * @brief  Convert Json object to Setting object and add to st_settings list.
  */
-static Setting *
-js_json_obj_to_setting (json_object *val,
-                        const char  *s_name,
-                        SettList    *st_list)
+static void
+js_json_obj_to_settings (json_object *val,
+                         Setting     *st_settings,
+                         const char  *s_name)
 {
     Setting *st_set;
 
@@ -168,54 +106,61 @@ js_json_obj_to_setting (json_object *val,
     switch (i_val_type) {
 
         case json_type_null:
-            return NULL;
+            break;
 
         case json_type_boolean:
-            st_set = setting_new_int8 ((int8_t) json_object_get_int (val),
-                                       s_name);
-            return st_set;
+            st_set = setting_new_int (s_name,
+                                      (int64_t) json_object_get_int64 (val));
+            setting_add_child (st_settings, st_set);
+            break;
 
         case json_type_double:
-            st_set = setting_new_double (json_object_get_double (val), s_name);
-            return st_set;
+            st_set = setting_new_double (s_name, json_object_get_double (val));
+            setting_add_child (st_settings, st_set);
+            break;
 
         case json_type_int:
-            st_set = setting_new_uint32 ((uint32_t) json_object_get_int (val),
-                                         s_name);
-            return st_set;
+            st_set = setting_new_int (s_name,
+                                      (int64_t) json_object_get_int64 (val));
+            setting_add_child (st_settings, st_set);
+            break;
 
         case json_type_string:
-            st_set = setting_new_string (json_object_get_string (val), s_name);
-            return st_set;
-
+            st_set = setting_new_string (s_name, json_object_get_string (val));
+            setting_add_child (st_settings, st_set);
+            break;
         case json_type_object:
-            return NULL;
-
+            st_set = setting_new_setting (s_name);
+            setting_add_child (st_settings, st_set);
+            json_object_object_foreach (val, key, val1) {
+                js_json_obj_to_settings (val1, st_set, key);
+            }
+            break;
         case json_type_array:
             st_set = setting_new_array (s_name);
-            stlist_insert_setting (st_list, st_set);
-            js_json_array_to_stlist (val, st_list, s_name);
-            return NULL;
-
+            setting_add_child (st_settings, st_set);
+            js_json_array_to_settings (val, st_set, s_name);
         default:
             break;
     }
-    return NULL;
 }
 /*----------------------------------------------------------------------------*/
 /**
- * @brief  Convert raw Json data string to SettList list of Setting objects.
+ * @brief  Convert string with raw json data to Setting items and insert them
+ *         to st_settings list.
+ *
+ * @param[in]  s_jbuff      String with json data
+ * @param[out] st_settings  List of Setting items
+ * @return     none
  */
-static SettList *
-js_json_string_to_stlist (const char *s_buff)
+static void
+js_json_string_to_settings (const char *s_jbuff,
+                            Setting    *st_settings)
 {
     json_object *j_obj;   /* Json object with data from s_buff */
-    SettList    *st_list; /* List of settings made from Json object */
-    Setting     *st_set;  /* Setting for Json object setting */
     enum json_tokener_error j_err; /* Json error output */
 
-    st_list = stlist_new_list ();
-    j_obj = json_tokener_parse_verbose (s_buff, &j_err);
+    j_obj = json_tokener_parse_verbose (s_jbuff, &j_err);
     if (j_obj == NULL ||
         json_object_get_type (j_obj) != json_type_object ||
         j_err != json_tokener_success) {
@@ -226,54 +171,51 @@ js_json_string_to_stlist (const char *s_buff)
         #endif
         if (j_obj != NULL)
             json_object_put (j_obj);
-        return st_list;
     }
-
-    json_object_object_foreach (j_obj, key, val) {
-
-        st_set = js_json_obj_to_setting (val, key, st_list);
-
-        if (st_set != NULL)
-            stlist_insert_setting (st_list, st_set);
+    else {
+        json_object_object_foreach (j_obj, key, val) {
+            js_json_obj_to_settings (val, st_settings, key);
+        }
+        json_object_put (j_obj);
     }
-    json_object_put (j_obj);
-
-    return st_list;
 }
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Get items from Setting array and save them in Json array object.
  */
-static void
-js_stlist_array_to_json (const SettList *st_list,
-                         const Setting  *st_sett,
-                         json_object    *j_array)
+static json_object *
+js_settings_array_to_json (const Setting  *st_setting)
 {
-    Setting     *st_val;        /* Setting from Settlist array */
-    json_object *j_obj;         /* Json object made from Setting */
-    SettList    *st_array_list; /* List of settings from st_sett array */
-    size_t       ui_cnt = 0;    /* Length of SettList array */
-    size_t            i = 0;    /* i */
+    json_object *j_array;  /* Json array to return */
+    json_object *j_obj;    /* Json object made from Setting */
+    Setting     *st_item;
 
-    st_array_list = stlist_get_settings_in_array_obj_p (st_list, st_sett);
-    ui_cnt        = stlist_get_length (st_array_list);
+    j_array = (setting_get_type (st_setting) == SET_VAL_SETTING) ?
+              json_object_new_object() :
+              json_object_new_array();
 
-    for (i = 0; i < ui_cnt; ++i) {
+    st_item = setting_get_child (st_setting);
 
-        st_val = stlist_get_setting_at_pos (st_array_list, i);
-        j_obj  = js_setting_to_json_obj (st_list, st_val);
+    while (st_item != NULL) {
 
-        json_object_array_add (j_array, j_obj);
+        j_obj = js_setting_to_json_obj (st_item);
+
+        if (setting_get_type (st_setting) == SET_VAL_SETTING) { /* Json obj */
+            json_object_object_add (j_array, setting_get_name (st_item), j_obj);
+        }
+        else { /* Json array */
+            json_object_array_add (j_array, j_obj);
+        }
+        st_item = st_item->next;
     }
-    stlist_free_p (st_array_list);
+    return j_array;
 }
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Convert Setting object to Json object
  */
 static json_object *
-js_setting_to_json_obj (const SettList *st_list,
-                        const Setting  *st_sett)
+js_setting_to_json_obj (const Setting *st_sett)
 {
     json_object *j_obj;
     SetValType   i_type = setting_get_type (st_sett);
@@ -284,17 +226,24 @@ js_setting_to_json_obj (const SettList *st_list,
             j_obj = json_object_new_double (setting_get_double (st_sett));
             return j_obj;
 
-        case SET_VAL_UINT32:
-            j_obj = json_object_new_int ((int) setting_get_uint32 (st_sett));
+        case SET_VAL_INT:
+            j_obj = json_object_new_int64 ((int64_t) setting_get_int (st_sett));
+            return j_obj;
+
+        case SET_VAL_UINT:
+            j_obj = json_object_new_int64 ((int64_t) setting_get_uint (st_sett));
             return j_obj;
 
         case SET_VAL_STRING:
             j_obj = json_object_new_string (setting_get_string (st_sett));
             return j_obj;
 
+        case SET_VAL_SETTING:
+            j_obj = js_settings_array_to_json (st_sett);
+            return j_obj;
+
         case SET_VAL_ARRAY:
-            j_obj = json_object_new_array();
-            js_stlist_array_to_json (st_list, st_sett, j_obj);
+            j_obj = js_settings_array_to_json (st_sett);
             return j_obj;
 
         default:
@@ -305,80 +254,72 @@ js_setting_to_json_obj (const SettList *st_list,
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Convert Setting items from SettList and put them in Json object
+ *
+ * @param[in]  st_settings  List of Setting items
+ * @param[out] j_obj        Json object to insert data
+ * @return     none
  */
 static void
-js_stlist_add_to_json_obj (const SettList *st_list,
-                           json_object    *j_obj)
+js_settings_add_to_json_obj (const Setting *st_settings,
+                             json_object   *j_obj)
 {
-    json_object *j_val;      /* Json object made from Setting */
-    SettList    *st_main;    /* List of main settings in st_list */
-    Setting     *st_sett;    /* Concrete setting */
-    size_t       ui_cnt = 0; /* Number of main settings in list */
-    size_t            i = 0; /* i */
+    json_object *j_val;   /* Json object made from Setting */
+    Setting     *st_main; /* List of main settings in st_list */
 
-    st_main = stlist_get_settings_main_p (st_list);
-    ui_cnt  = stlist_get_length (st_main);
+    st_main = setting_get_child (st_settings);
 
-    for (i = 0; i < ui_cnt; ++i) {
-
-        st_sett = stlist_get_setting_at_pos (st_main, i);
-        j_val   = js_setting_to_json_obj (st_list, st_sett);
-
-        json_object_object_add (j_obj, setting_get_name (st_sett), j_val);
+    while (st_main != NULL) {
+        j_val = js_setting_to_json_obj (st_main);
+        json_object_object_add (j_obj, setting_get_name (st_main), j_val);
+        st_main = st_main->next;
     }
-    stlist_free_p (st_main);
 }
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Get settings data from file.
  */
-SettList *
+Setting *
 js_settings_read (const char *s_fname,
-                  int        *i_err)
+                   int        *i_err)
 {
-    SettList *st_list;       /* Result SettList made from file data */
-    char     *s_buff = NULL; /* File data buffer */
+    Setting *st_settings;   /* Settings to return */
+    char    *s_buff = NULL; /* File data buffer */
 
-    s_buff = read_file_data (s_fname, i_err);
+    st_settings = setting_new_setting ("Settings");
+    s_buff      = read_file_data (s_fname, i_err);
 
-    if (*i_err != ERR_OK)
-        return NULL;
-
-    if (s_buff == NULL) {
-        st_list = stlist_new_list ();
+    if (*i_err == ERR_OK && s_buff != NULL) {
+        js_json_string_to_settings (s_buff, st_settings);
     }
-    else {
-        st_list = js_json_string_to_stlist (s_buff);
-        free (s_buff);
-    }
+    free (s_buff);
 
-    return st_list;
+    return st_settings;
 }
 /*----------------------------------------------------------------------------*/
 /**
- * @brief  Check if settings in SettList are an update to settings
- *         stored in settings file.
+ * @brief  Check if settings in list are an update to settings stored in
+ *         settings file.
  */
 char *
-js_settings_check_for_update (const SettList  *st_list,
-                              const char      *s_fname,
-                              int             *i_err)
+js_settings_check_for_update (Setting    *st_settings,
+                              const char *s_fname,
+                              int        *i_err)
 {
-    json_object   *j_obj;              /* Json object made from file data */
-    const char    *s_jbuff     = NULL; /* Json object as string */
-    char          *s_buff      = NULL; /* File data buffer */
-    char          *s_res_buff  = NULL; /* Result data buffer */
-    uint_fast32_t  ui_hash     = 0;    /* File read hash */
-    enum json_tokener_error j_err;     /* Json error output */
+    json_object   *j_obj;             /* Json object made from file data */
+    const char    *s_jbuff    = NULL; /* Json object as string */
+    char          *s_buff     = NULL; /* File data buffer */
+    char          *s_res_buff = NULL; /* Result data buffer */
+    uint_fast32_t  ui_hash    = 0;    /* Data read hash */
+    enum json_tokener_error j_err;    /* Json error output */
 
     *i_err = ERR_OK;
-    s_buff = read_file_data_hash (s_fname, i_err, &ui_hash);
+    /*s_buff = read_file_data_hash (s_fname, i_err, &ui_hash);*/
+    s_buff = read_file_data (s_fname, i_err);
 
     if (*i_err != ERR_OK) {
         free (s_buff);
         return NULL;
     }
-
     if (s_buff == NULL) {
         j_obj = json_object_new_object();
     }
@@ -397,21 +338,17 @@ js_settings_check_for_update (const SettList  *st_list,
             j_obj = json_object_new_object();
         }
     }
-
     free (s_buff);
 
-    js_stlist_add_to_json_obj (st_list, j_obj);
+    ui_hash = hash (json_object_to_json_string (j_obj));
+
+    js_settings_add_to_json_obj (st_settings, j_obj);
 
     s_jbuff = json_object_to_json_string (j_obj);
 
     /* Compare saved file buffer hash and new one,
      * if they are different update output buffer */
-    if (hash (s_jbuff) != ui_hash) {
-        s_res_buff = strdup (s_jbuff);
-    }
-    else {
-        s_res_buff = NULL;
-    }
+    s_res_buff = (hash (s_jbuff) != ui_hash) ? strdup (s_jbuff) : NULL;
 
     json_object_put (j_obj);
 
@@ -429,19 +366,18 @@ js_settings_update_file (const char *s_buff,
 }
 /*----------------------------------------------------------------------------*/
 /**
- * @brief  Check if settings are an update and update file with new data
- *         if they are.
+ * @brief  Check if settings are an update to saved ones and update file with
+ *         new data if they are.
  */
 int
-js_settings_check_update_file (const SettList *st_list,
-                               const char     *s_fname)
+js_settings_check_update_file (Setting    *st_settings,
+                               const char *s_fname)
 {
     int   i_err  = ERR_OK; /* Possible error to return */
     char *s_buff = NULL;   /* Result of update check, if it is not null there
                               is a change in configuration and returned buffer
                               is the new data to save */
-    s_buff = js_settings_check_for_update (st_list, s_fname, &i_err);
-
+    s_buff = js_settings_check_for_update (st_settings, s_fname, &i_err);
     if (s_buff != NULL) {
         i_err = js_settings_update_file (s_buff, s_fname);
         free (s_buff);

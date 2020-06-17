@@ -19,9 +19,9 @@
  *
  * Automatic wallpaper changer
  *
- * @date June 03, 2020
+ * @date June 17, 2020
  *
- * @version 1.4.9
+ * @version 1.5.0
  *
  * @author Michał Bąbik <michalb1981@o2.pl>
  */
@@ -34,7 +34,6 @@
 #include "dmfn.h"
 #include "chkwch.h"
 #include "randomm.h"
-
 /*----------------------------------------------------------------------------*/
 /**
  * @brief Main function.
@@ -87,6 +86,12 @@ main (int    argc,
     ui_ch_int = check_settings_change_wallpaper (s_cfgfile,
                                                  rm_rand,
                                                  &i_atime_opt);
+    /* Exiting after first wallpaper change, --once option */
+    if (i_opt & CMD_OPT_ONCE) {
+        randomm_free (rm_rand);
+        free (s_cfgfile);
+        exit (EXIT_SUCCESS);
+    }
     /* Starting daemon */
     if ((i_opt & CMD_OPT_START) || (i_opt & CMD_OPT_RESTART)) {
         puts ("Starting wchangerd daemon");
@@ -104,7 +109,7 @@ main (int    argc,
             }
             else {
                 ui_atime_val = check_time_align_val ();
-                ui_cnt = ui_atime_val / ui_ch_int;
+                ui_cnt       = ui_atime_val / ui_ch_int;
                 ui_atime_val = ui_atime_val - (ui_ch_int * ui_cnt);
                 /* If interval is longer than hour set counter to intmax so
                  * it should not get to zero and not count align time */
@@ -127,7 +132,7 @@ main (int    argc,
     }
     randomm_free (rm_rand);
     free (s_cfgfile);
-    return 0;
+    exit (EXIT_SUCCESS);
 }
 /*----------------------------------------------------------------------------*/
 

@@ -13,6 +13,18 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+2020-06-17  Michal Babik  <michalb1981@o2.pl>
+
+	* cmdfn.c, cmdfn.h: Added processing --once option.
+	* cmdline.c, cmdline.h: Added --once option.
+	* setting.c, setting.h: Setting item changed to a sort of linked list
+	  type. Some functions changed to macros. Changed old SettList related
+	  functions in other files to use Setting type.
+	* settlist.c, settlist.h: Removed. Not needed now, settings are based
+	  only on Settin type.
+	* wallsett.c, wallsett.h: Removed. Changed functions in other files
+	  to use Setting instead of WallSett.
+
 2020-06-02  Michal Babik  <michalb1981@o2.pl>
 
 	* cmddialog.c, cmddialog.h: Moved to dlgs.c, dlgs.h, wmsfn.c, wmsfn.h

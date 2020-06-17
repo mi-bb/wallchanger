@@ -49,6 +49,9 @@ print_now (void)
 }
 #endif
 /*----------------------------------------------------------------------------*/
+/**
+ * @brief  Count time to align intervals to next full hour.
+ */
 uint32_t
 check_time_align_val (void)
 {
@@ -122,97 +125,110 @@ check_config_file (char **s_file)
 }
 /*----------------------------------------------------------------------------*/
 /**
+ * @brief  Free dynamic data and exit app.
+ *
+ * @param[out] st_settings Settings data
+ * @param[out] s_cfg_file  String with config file path
+ * @param[out] rm_rand     Random data
+ * @param[in]  i_exit_val  Exit return value
+ * @param[in]  s_message   Message to show on exit or null
+ * @return     none
+ */
+static void
+free_and_exit (Setting    *st_settings,
+               char       *s_cfg_file,
+               RandMem    *rm_rand,
+               int         i_exit_val,
+               const char *s_message)
+{
+    settings_free_all (st_settings);
+    free (s_cfg_file);
+    randomm_free (rm_rand);
+    if (s_message == NULL) {
+        exit (i_exit_val);
+    }
+    else {
+        errx (i_exit_val, "Empty config file");
+    }
+}
+/*----------------------------------------------------------------------------*/
+/**
  * @brief  Loads settings, checks for changes in wallpaper list length and
  *         changes wallpaper, returns change interval.
  */
 uint32_t
 check_settings_change_wallpaper (char     *s_cfg_file,
                                  RandMem  *rm_rand,
-                                 int      *ui_algntime)
+                                 int      *i_algntime)
 {
-    static uint32_t  ui_len  = 0; /* Wallpaper list length */
-    int              i_err   = 0; /* Error output */
-    uint32_t         ui_nlen = 0; /* Actual wallpaper list length */
-    uint32_t         ui_res  = 0; /* Result change interval */
-    SettList        *st_list;     /* Setting list */
-    WallSett        *ws_sett;     /* WallSett object with settings for wallpaper
-                                     change functions */
-    ws_sett = wallset_new (rm_rand);
-    wallset_set_cfgfile (ws_sett, s_cfg_file);
-    st_list = settings_read (s_cfg_file, &i_err);
+    static uint32_t  ui_len   = 0;    /* Wallpaper list length */
+    int              i_err    = 0;    /* Error output */
+    uint32_t         ui_nlen  = 0;    /* Actual wallpaper list length */
+    uint32_t         ui_inter = 0;    /* Result change interval */
+    Setting         *st_setts = NULL; /* For settings */
+    Setting         *st_walls = NULL; /* For wallpaper list */
+    Setting         *st_st    = NULL; /* For particular setting */
 
+    /* Read settings, check for empty config file, set defaults */
+    st_setts = settings_read (s_cfg_file, &i_err);
     if (i_err != ERR_OK) {
-        stlist_free (st_list);
-        free (ws_sett);
-        free (s_cfg_file);
-        randomm_free (rm_rand);
-        exit (EXIT_FAILURE);
+        free_and_exit (st_setts, s_cfg_file, rm_rand, EXIT_FAILURE, NULL);
     }
-    if (stlist_get_length (st_list) == 0) {
-        stlist_free (st_list);
-        free (ws_sett);
-        free (s_cfg_file);
-        randomm_free (rm_rand);
-        errx (EXIT_FAILURE, "Empty config file");
+    if (setting_get_child (st_setts) == NULL) {
+        free_and_exit (st_setts, s_cfg_file, rm_rand,
+                       EXIT_FAILURE, "Empty config file");
     }
+    settings_check_defaults (st_setts);
 
-    settlist_check_defaults (st_list);
-    settlist_to_wallset (st_list, ws_sett);
-    ui_nlen = (uint32_t) stlist_get_length (
-            wallset_get_wallpaper_list (ws_sett));
-
-    *ui_algntime = wallset_get_align_opt (ws_sett);
-
-    ui_res = wallset_get_interval (ws_sett);
-
-    if (ui_nlen == 0) {
-        /* Empty wallpaper list, free and exit */
-        stlist_free (st_list);
-        wallset_free (ws_sett);
-        randomm_free (rm_rand);
-        free (s_cfg_file);
-        errx (EXIT_FAILURE, "Empty wallpaper list");
+    /* Get wallaper list setting */
+    st_walls = settings_find (setting_get_child (st_setts),
+                              get_setting_name (SETTING_WALL_ARRAY));
+    /* Exit function if there are no wallpapers in an array */
+    if ((st_walls = setting_get_child (st_walls)) == NULL) {
+        free_and_exit (st_setts, s_cfg_file, rm_rand,
+                       EXIT_FAILURE, "Empty wallpaper list");
     }
-    else if (ui_len == ui_nlen) {
-        /* Wallpaper list length not changed, change wallpaper */
-        if (wallpaper_change (ws_sett) != ERR_OK) {
-            stlist_free (st_list);
-            wallset_free (ws_sett);
-            randomm_free (rm_rand);
-            free (s_cfg_file);
-            exit(EXIT_FAILURE);
+    ui_nlen = (uint32_t) settings_count (st_walls);
+
+    st_st = settings_find (setting_get_child (st_setts),
+                           get_setting_name (SETTING_TIME_ALIGN_OPT));
+    if (st_st != NULL) {
+        *i_algntime = (int) setting_get_int (st_st);
+    }
+    st_st = settings_find (setting_get_child (st_setts),
+                           get_setting_name (SETTING_INTERVAL_VAL));
+    if (st_st != NULL) {
+        ui_inter = (uint32_t) setting_get_int (st_st);
+    }
+    if (ui_len == ui_nlen) {
+        /* Wallpaper list length did not changed, change wallpaper */
+        if (wpset_change (st_setts, rm_rand, s_cfg_file) != ERR_OK) {
+            free_and_exit (st_setts, s_cfg_file, rm_rand, EXIT_FAILURE, NULL);
         }
     }
     else {
         /* Wallpaper list length changed, reinit random, change wallpaper */
-        randomm_init (ws_sett->rm_rand);
-        randomm_set_range (ws_sett->rm_rand, (int32_t) ui_nlen);
+        randomm_init (rm_rand);
+        randomm_set_range (rm_rand, (int32_t) ui_nlen);
 
         if (ui_len == 0) {
             /* Program startup */
-            if (wallpaper_startup_set (ws_sett) != ERR_OK) {
-                stlist_free (st_list);
-                wallset_free (ws_sett);
-                randomm_free (rm_rand);
-                free (s_cfg_file);
-                exit (EXIT_FAILURE);
+            if (wpset_startup_set (st_setts, rm_rand, s_cfg_file) != ERR_OK) {
+                free_and_exit (st_setts, s_cfg_file, rm_rand,
+                               EXIT_FAILURE, NULL);
             }
         }
         else {
             /* Change during progam work */
-            if (wallpaper_change (ws_sett) != ERR_OK) {
-                stlist_free (st_list);
-                wallset_free (ws_sett);
-                randomm_free (rm_rand);
-                free (s_cfg_file);
-                exit (EXIT_FAILURE);
+            if (wpset_change (st_setts, rm_rand, s_cfg_file) != ERR_OK) {
+                free_and_exit (st_setts, s_cfg_file, rm_rand,
+                               EXIT_FAILURE, NULL);
             }
         }
         ui_len = ui_nlen;
     }
-    stlist_free (st_list);
-    wallset_free (ws_sett);
-    return ui_res * 60;
+    settings_free_all (st_setts);
+    return ui_inter * 60;
 }
 /*----------------------------------------------------------------------------*/
 
