@@ -65,6 +65,8 @@ working with the wchangerd daemon:
     wchangerd --stop       Stops the wchangerd daemon
     wchangerd --restart    Restarts the wchangerd daemon
 
+    wchangerd --once       Change wallpaper once and exit
+
     wchangerd --config     Loads configuration from file provided here
 
 wchangercfg is a configuration window to set wallpaper change time intervals,
@@ -91,5 +93,5 @@ Contact and help
 -----------------
 
 In case of problems with the program, please contact me:
-michalb1981@o2.pl
+michal.babik@pm.me
 

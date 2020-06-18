@@ -19,7 +19,7 @@
  *
  * @brief  ImageInfo structure and functions
  *
- * @author Michał Bąbik <michalb1981@o2.pl>
+ * @author Michal Babik <michal.babik@pm.me>
  */
 #include <stdio.h>
 #include <err.h>

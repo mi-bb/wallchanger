@@ -19,7 +19,7 @@
  *
  * @brief  ProcList structure and functions.
  *
- * @author Michał Bąbik <michalb1981@o2.pl>
+ * @author Michal Babik <michal.babik@pm.me>
  */
 #ifndef PROCLIST_H
 #define PROCLIST_H

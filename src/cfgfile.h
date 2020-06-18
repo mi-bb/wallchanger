@@ -19,7 +19,7 @@
  *
  * @brief  Configuration file examine and set
  *
- * @author Michał Bąbik <michalb1981@o2.pl>
+ * @author Michal Babik <michal.babik@pm.me>
  */
 #ifndef CFGFILE_H
 #define CFGFILE_H

@@ -19,7 +19,7 @@
  *
  * @brief  Settings manage functions
  *
- * @author Michał Bąbik <michalb1981@o2.pl>
+ * @author Michal Babik <michal.babik@pm.me>
  */
 #ifndef SETTS_H
 #define SETTS_H

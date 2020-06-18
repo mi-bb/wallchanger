@@ -19,7 +19,7 @@
  *
  * @brief  Check settings and wallpaper change functions.
  *
- * @author Michał Bąbik <michalb1981@o2.pl>
+ * @author Michal Babik <michal.babik@pm.me>
  */
 #ifndef CHKWCH_H
 #define CHKWCH_H

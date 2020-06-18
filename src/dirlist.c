@@ -19,7 +19,7 @@
  *
  * @brief  Getting directory content functions
  *
- * @author Michał Bąbik <michalb1981@o2.pl>
+ * @author Michal Babik <michal.babik@pm.me>
  */
 #include <gdk-pixbuf/gdk-pixbuf.h>
 #include <string.h>

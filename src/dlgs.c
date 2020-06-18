@@ -19,7 +19,7 @@
  *
  * @brief  Application dialogs
  *
- * @author Michał Bąbik <michalb1981@o2.pl>
+ * @author Michal Babik <michal.babik@pm.me>
  */
 #include <inttypes.h>
 #include "hashfun.h"
@@ -196,11 +196,13 @@ wm_combo (Wms **wms_list)
     Wms *wms_unk = NULL;
 
     for (wms_it = wms_list; *wms_it != NULL; ++wms_it) {
+        #ifdef DEBUG
         printf ("%s, %" PRIuFAST32 " %d, %" PRId64 "\n",
                 (*wms_it)->name,
                 hash ((*wms_it)->name),
                 (int) hash ((*wms_it)->name),
                 (int64_t) hash ((*wms_it)->name));
+        #endif
         if ((*wms_it)->wm_id == 0)
             wms_unk = *wms_it;
         else if (i_prev != (*wms_it)->wm_id) {
@@ -712,7 +714,7 @@ void
 about_app_dialog (gpointer data __attribute__ ((unused)))
 {
     GtkWidget *gw_dialog;
-    const char *s_authors[] = {"Michal Babik <michalb1981@o2.pl> "
+    const char *s_authors[] = {"Michal Babik <michal.babik@protonmail.com> "
                                "http://init6.pomorze.pl", NULL};
     const char *s_art[]     = {
         "https://fr.wikisource.org/wiki/Le_Tour_de_la_France_par_deux_enfants",

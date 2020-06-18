@@ -19,7 +19,7 @@
  *
  * @brief  Hash function
  *
- * @author Michał Bąbik <michalb1981@o2.pl>
+ * @author Michal Babik <michal.babik@pm.me>
  */
 #ifndef HASHFUN_H
 #define HASHFUN_H

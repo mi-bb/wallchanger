@@ -19,7 +19,7 @@
  *
  * @brief  Autostart file set functions
  *
- * @author Michał Bąbik <michalb1981@o2.pl>
+ * @author Michal Babik <michal.babik@pm.me>
  */
 #ifndef ASTART_H
 #define ASTART_H

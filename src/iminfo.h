@@ -22,7 +22,7 @@
  * ImageInfo structure and functions I made to work with images.
  * It contains information about image file name, path, dimensions.
  *
- * @author Michał Bąbik <michalb1981@o2.pl>
+ * @author Michal Babik <michal.babik@pm.me>
  */
 #ifndef IMINFO_H
 #define IMINFO_H

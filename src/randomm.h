@@ -25,7 +25,7 @@
  * and starts getting random values again.
  * Maximum available range can be set with RMMAX, it will be RMMAX * 32.
  *
- * @author Michał Bąbik <michalb1981@o2.pl>
+ * @author Michal Babik <michal.babik@pm.me>
  */
 #ifndef RANDOMM_H
 #define RANDOMM_H

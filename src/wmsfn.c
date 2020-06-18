@@ -19,7 +19,7 @@
  *
  * @brief  Wallpaper set command functions.
  *
- * @author Michał Bąbik <michalb1981@o2.pl>
+ * @author Michal Babik <michal.babik@pm.me>
  */
 #include <err.h>
 #include "procfn.h"

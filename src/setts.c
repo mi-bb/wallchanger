@@ -19,7 +19,7 @@
  *
  * @brief  Settings manage functions
  *
- * @author Michał Bąbik <michalb1981@o2.pl>
+ * @author Michal Babik <michal.babik@pm.me>
  */
 #include <stdint.h>
 #include <stdio.h>

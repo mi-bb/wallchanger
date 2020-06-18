@@ -19,7 +19,7 @@
  *
  * @brief  DialogData structure and functions
  *
- * @author Michał Bąbik <michalb1981@o2.pl>
+ * @author Michal Babik <michal.babik@pm.me>
  */
 #ifndef DIALOGDATA_H
 #define DIALOGDATA_H

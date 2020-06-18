@@ -19,7 +19,7 @@
  *
  * @brief  Command line parsing functions
  *
- * @author Michał Bąbik <michalb1981@o2.pl>
+ * @author Michal Babik <michal.babik@pm.me>
  */
 #include <stdio.h>
 #include <stdlib.h>

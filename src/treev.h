@@ -19,7 +19,7 @@
  *
  * @brief  TreeView related functions
  *
- * @author Michał Bąbik <michalb1981@o2.pl>
+ * @author Michal Babik <michal.babik@pm.me>
  */
 #ifndef TREEV_H
 #define TREEV_H

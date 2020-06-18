@@ -19,7 +19,7 @@
  *
  * @brief  Wallpaper setting functions
  *
- * @author Michał Bąbik <michalb1981@o2.pl>
+ * @author Michal Babik <michal.babik@pm.me>
  */
 #ifndef WPSET_H
 #define WPSET_H

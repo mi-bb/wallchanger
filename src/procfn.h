@@ -19,7 +19,7 @@
  *
  * @brief  Functions for getting process info.
  *
- * @author Michał Bąbik <michalb1981@o2.pl>
+ * @author Michal Babik <michal.babik@pm.me>
  */
 #ifndef PROCFN_H
 #define PROCFN_H

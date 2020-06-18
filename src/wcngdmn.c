@@ -23,7 +23,7 @@
  *
  * @version 1.5.0
  *
- * @author Michał Bąbik <michalb1981@o2.pl>
+ * @author Michal Babik <michal.babik@pm.me>
  */
 #include <unistd.h>
 #include <stdlib.h>

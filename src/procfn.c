@@ -19,7 +19,7 @@
  *
  * @brief  Functions for getting process info.
  *
- * @author Michał Bąbik <michalb1981@o2.pl>
+ * @author Michal Babik <michal.babik@pm.me>
  */
 #include <stdio.h>
 #include <stdlib.h>
@@ -121,7 +121,7 @@ read_proc_file_data (const char  *s_fname,
         cres ((void**) &s_data, ui_alloc + 1, sizeof (char));
         memcpy (s_data + ui_alloc - ui_count, s_buff, ui_count);
     }
-    while (!feof(f_file));
+    while (!feof (f_file));
     s_data [ui_alloc] = '\0';
     fclose (f_file);
     *i_err = 0;

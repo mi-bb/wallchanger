@@ -19,7 +19,7 @@
  *
  * @brief  Daemon related functions
  *
- * @author Michał Bąbik <michalb1981@o2.pl>
+ * @author Michal Babik <michal.babik@pm.me>
  */
 #ifndef DMFN_H
 #define DMFN_H

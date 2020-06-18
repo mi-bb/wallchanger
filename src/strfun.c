@@ -19,7 +19,7 @@
  *
  * @brief  String operations 
  *
- * @author Michał Bąbik <michalb1981@o2.pl>
+ * @author Michal Babik <michal.babik@pm.me>
  */
 #include <stdlib.h>
 #include <stdio.h>

@@ -21,7 +21,7 @@
  *
  * Functions to get and store application settings in JSON database.
  *
- * @author Michał Bąbik <michalb1981@o2.pl>
+ * @author Michal Babik <michal.babik@pm.me>
  */
 #ifndef JSFUN_H
 #define JSFUN_H

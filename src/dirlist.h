@@ -19,7 +19,7 @@
  *
  * @brief  Getting directory content functions
  *
- * @author Michał Bąbik <michalb1981@o2.pl>
+ * @author Michal Babik <michal.babik@pm.me>
  */
 #ifndef FDOPS_H
 #define FDOPS_H

@@ -23,7 +23,7 @@
  *
  * @version 1.5.0
  *
- * @author Michał Bąbik <michalb1981@o2.pl>
+ * @author Michal Babik <michal.babik@pm.me>
  */
 #include <stdio.h>
 #include <stdint.h>
@@ -119,28 +119,28 @@ static gboolean    event_on_delete             (GtkWidget         *window,
 /**
  * @fn  static void event_add_img_pressed (const DialogData *dd_data)
  *
- * @brief  Add images button pressed.
+ * @brief  "Add images" button pressed.
  *
  * @param[in,out] dd_data  DialogData object with settings and widget data
  * @return        none
  *
  * @fn  static void event_add_img_dir_pressed (const DialogData *dd_data)
  *
- * @brief  Add images from folder button pressed.
+ * @brief  "Add images from folder" button pressed.
  *
  * @param[in,out] dd_data  DialogData object with settings and widget data
  * @return        none
  *
  * @fn  static void event_set_wallpaper_pressed (const DialogData *dd_data)
  *
- * @brief  Set wallpaper button pressed.
+ * @brief  "Set wallpaper" button pressed.
  *
  * @param[in,out] dd_data  DialogData object with settings and widget data
  * @return        none
  *
  * @fn  static void event_save_settings_pressed (const DialogData *dd_data)
  *
- * @brief  Save settings button pressed.
+ * @brief  "Save settings" button pressed.
  *
  * @param[in,out] dd_data  DialogData object with settings and widget data
  * @return none
@@ -429,7 +429,6 @@ widgets_set_settings (const DialogData *dd_data,
     if (i_current_wm == i_last_used_wm) {
         /* Load the command from config file */
         //puts ("wms are the same");
-    
     }
     /* Current wm is different than the last one */
     else {
@@ -443,7 +442,6 @@ widgets_set_settings (const DialogData *dd_data,
     }
     if (i_current_wm == -1 && i_last_used_wm == -1) {
         /* Lst used and current unk */
-    
     }
     /* Set background set command */
     st_item = settings_find (st_settings, get_setting_name (SETTING_BG_CMD));
@@ -530,7 +528,7 @@ statusbar_push_config_info (const DialogData *dd_data)
 }
 /*----------------------------------------------------------------------------*/
 /**
- * @brief  Add images button pressed.
+ * @brief  "Add images" button pressed.
  */
 static void
 event_add_img_pressed (const DialogData *dd_data)
@@ -549,7 +547,7 @@ event_add_img_pressed (const DialogData *dd_data)
 }
 /*----------------------------------------------------------------------------*/
 /**
- * @brief  Add images from folder button pressed.
+ * @brief  "Add images from folder" button pressed.
  */
 static void
 event_add_img_dir_pressed (const DialogData *dd_data)
@@ -574,7 +572,7 @@ event_add_img_dir_pressed (const DialogData *dd_data)
 }
 /*----------------------------------------------------------------------------*/
 /**
- * @brief  Set wallpaper button pressed.
+ * @brief  "Set wallpaper" button pressed.
  */
 static void
 event_set_wallpaper_pressed (const DialogData *dd_data)
@@ -610,7 +608,7 @@ event_set_wallpaper_pressed (const DialogData *dd_data)
 }
 /*----------------------------------------------------------------------------*/
 /**
- * @brief  Save settings button pressed.
+ * @brief  "Save settings" button pressed.
  */
 static void
 event_save_settings_pressed (const DialogData *dd_data)
@@ -1168,20 +1166,24 @@ create_daemon_widget (DialogData *dd_data)
     GtkWidget *gw_widget;
     GtkWidget *gw_label;
 
+    /* Grid to pack widgets */
     gw_widget = gtk_grid_new ();
     gtk_grid_set_row_spacing (GTK_GRID (gw_widget), 4);
     gtk_grid_set_column_spacing (GTK_GRID (gw_widget), 4);
 
+    /* Daemon name label */
     gw_label = gtk_label_new ("wchangerd");
     gtk_label_set_xalign (GTK_LABEL (gw_label), 0.5);
 
     gtk_grid_attach (GTK_GRID (gw_widget), gw_label, 0, 0, 2, 1);
 
+    /* Daemon run status label */
     dd_data->gw_dm_label = gtk_label_new (" ");
     gtk_label_set_xalign (GTK_LABEL (dd_data->gw_dm_label), 0.5);
 
     gtk_grid_attach (GTK_GRID (gw_widget), dd_data->gw_dm_label, 0, 1, 2, 1);
 
+    /* Start daemon button */
     gw_button = create_image_button (NULL, "Start wchangerd daemon",
                                      W_ICON_PLAY);
     g_signal_connect_swapped (gw_button, "clicked",
@@ -1189,6 +1191,7 @@ create_daemon_widget (DialogData *dd_data)
 
     gtk_grid_attach (GTK_GRID (gw_widget), gw_button, 0, 2, 1, 1);
 
+    /* Stop daemon button */
     gw_button = create_image_button (NULL, "Stop wchangerd daemon",
                                      W_ICON_STOP);
     g_signal_connect_swapped (gw_button, "clicked",
@@ -1224,6 +1227,7 @@ activate (GtkApplication *app,
     const char *s_lastused = NULL;  /* Last used wallpaper path */
     int         i_err      = 0;     /* For error output */
 
+    /* Find config file and set config file name */
     dialogdata_do_config_file_stuff (dd_data);
 
     /* Image preview widget */
@@ -1242,7 +1246,7 @@ activate (GtkApplication *app,
         gtk_window_set_default_icon (gd_pix);
         g_object_unref (gd_pix);
     }
-
+    /* Treeview for background file list */
     create_tview (&gw_tview);
     dd_data->gw_view = gw_tview;
     g_signal_connect (gw_tview, "row-activated",

@@ -13,7 +13,7 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-2020-06-17  Michal Babik  <michalb1981@o2.pl>
+2020-06-17  Michal Babik  <michal.babik@pm.me>
 
 	* cmdfn.c, cmdfn.h: Added processing --once option.
 	* cmdline.c, cmdline.h: Added --once option.
@@ -25,7 +25,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 	* wallsett.c, wallsett.h: Removed. Changed functions in other files
 	  to use Setting instead of WallSett.
 
-2020-06-02  Michal Babik  <michalb1981@o2.pl>
+2020-06-02  Michal Babik  <michal.babik@pm.me>
 
 	* cmddialog.c, cmddialog.h: Moved to dlgs.c, dlgs.h, wmsfn.c, wmsfn.h
 	* randomm.c, randomm.h (randomm_new): Function to create new RandMem item.
@@ -35,7 +35,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 	* dlgs.c, wmsfn.c: Added functions to get default wallpaper set command
 	  for Xfce.
 
-2020-05-28  Michal Babik  <michalb1981@o2.pl>
+2020-05-28  Michal Babik  <michal.babik@pm.me>
 
 	* chkwch.c, chkwch.h (check_time_align_val): New function to check and
 	  return difference between now and next full hour.
@@ -44,7 +44,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 	  seconds instead of minutes.
 	* Added time align option to files with settings operations.
 
-2020-05-24  Michal Babik  <michalb1981@o2.pl>
+2020-05-24  Michal Babik  <michal.babik@pm.me>
 
 	* astart.c, astart.h: New files with functions to create/delete wchangerd
 	  daemon entry in user's autostart directory.
@@ -75,11 +75,11 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 	  (create_settings_widget): Added autostart check button placing.
 	  Changed widgets layout.
 
-2020-05-18  Michal Babik  <michalb1981@o2.pl>
+2020-05-18  Michal Babik  <michal.babik@pm.me>
 
 	* strfun.c (str_append): Some code cleaning.
 
-2020-05-11  Michal Babik  <michalb1981@o2.pl>
+2020-05-11  Michal Babik  <michal.babik@pm.me>
 
 	* chkwch.c (check_display): Check for display moved to this function.
 	  (check_display_exit): New function, calls check_display and exits
@@ -113,21 +113,21 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 	* treev.c (treeview_add_items_glist, treeview_add_items_gslist):
 	  Some cosmetic updates.
 
-2020-05-06  Michal Babik  <michalb1981@o2.pl>
+2020-05-06  Michal Babik  <michal.babik@pm.me>
 
 	* wcngdmn.c (main): Added 500 msec sleep after killing process when
 	  restarting daemon, so it will have some time to exit.
 	* chkwch.c, chkwch.h (sleep500): New function, calls nanosleep for 500 ms
 	  sleep.
 
-2020-05-05  Michal Babik  <michalb1981@o2.pl>
+2020-05-05  Michal Babik  <michal.babik@pm.me>
 
 	* cmddialog.c: Added some window managers to array.
 	  Added " to file name in wallpaper set command.
 	* strfun.c (str_set_up_wallpaper_command): Added " to file name in
 	  wallpaper set command.
 
-2020-05-03  Michal Babik  <michalb1981@o2.pl>
+2020-05-03  Michal Babik  <michal.babik@pm.me>
 
 	* cmddialog.c, cmddialog.h: New files with dialog and functions
 	  for selecting and detection of wallpaper set command.
@@ -150,7 +150,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 	  wallpaper set command.
 	* All files: Some minor code updates.
 
-2020-04-28  Michal Babik  <michalb1981@o2.pl>
+2020-04-28  Michal Babik  <michal.babik@pm.me>
 
 	* cfgfile.c (cfgfile_config_file_stuff): Changed config file operations.
 	* defs.h: New define STATUS_CONFIG with string prefix for statusbar
@@ -171,7 +171,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 	  before timer.
 	  (activate): Added statusbar creation and placement.
 
-2020-04-17  Michal Babik  <michalb1981@o2.pl>
+2020-04-17  Michal Babik  <michal.babik@pm.me>
 
 	* cfgfile.c (cfgfile_config_file_stuff): New function for checking
 	  config file path.
@@ -194,7 +194,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 	* other/wchangercfg.desktop: Config dialog dektop entry.
 	* other/wchangercfg.png: App icon.
 
-2020-04-12  Michal Babik  <michalb1981@o2.pl>
+2020-04-12  Michal Babik  <michal.babik@pm.me>
 
 	* bash_comp/wchangerd: New script for bash completion.
 	* chkwch.c (check_settings_change_wallpaper): Added RandMem as a function
@@ -206,7 +206,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 	* wallset.h: RandMem in WallSet struct changed from a variable to pointer.
 	* wcngdmn.c (main): Added RandMem variable for random number generation.
 
-2020-04-11  Michal Babik  <michalb1981@o2.pl>
+2020-04-11  Michal Babik  <michal.babik@pm.me>
 
 	* chkwch.c (check_daemon_presence): Function for checks if wchangerd
 	  is running.
@@ -230,12 +230,12 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 	* Some changes in error and warning messages, changed to use warnx,
 	  errx functions.
 
-2020-03-25  Michal Babik  <michalb1981@o2.pl>
+2020-03-25  Michal Babik  <michal.babik@pm.me>
 
 	* chkwch.c (check_display): Changed display check to reading out
 	  X11 lib.
 
-2020-03-06  Michal Babik  <michalb1981@o2.pl>
+2020-03-06  Michal Babik  <michal.babik@pm.me>
 
 	* chkwch.c, chkwch.h: New file with functions for background working
 	  wchangerd. File contains functions to load settings, change wallpaper
@@ -266,16 +266,16 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 	  (cfgfile_get_config_path_exit): New function, returns config file path
 	  or exits if error occurred.
 
-2020-02-20  Michal Babik  <michalb1981@o2.pl>
+2020-02-20  Michal Babik  <michal.babik@pm.me>
 
 	* dlgs.c (about_app_dialog): Updated link to my page.
 
-2020-02-19  Michal Babik  <michalb1981@o2.pl>
+2020-02-19  Michal Babik  <michal.babik@pm.me>
 
 	* treev.c: Removed uneeded printf.
 	* Some comments updated.
 
-2020-02-14  Michal Babik  <michalb1981@o2.pl>
+2020-02-14  Michal Babik  <michal.babik@pm.me>
 
 	* defs.h: Added CFG_PTH_LEN with size of config path array.
 	* dialogdata.c (dialogdata_new): Setting config file moved to this
@@ -286,7 +286,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 	  when it is set with file sign [F].
 	* wcngdmn.c (main): Changed some calls to WallSett object.
 
-2020-02-06  Michal Babik  <michalb1981@o2.pl>
+2020-02-06  Michal Babik  <michal.babik@pm.me>
 
 	* cres.c (create_resize): Function renamed to cres.
 	  (cres): Changed from calloc to malloc for better performance.
@@ -320,13 +320,13 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 	  (main): DialogData item is created dynamically.
 	* all_files: Some type changes, added some attributes.
 
-2020-01-15  Michal Babik  <michalb1981@o2.pl>
+2020-01-15  Michal Babik  <michal.babik@pm.me>
 
 	* fdops.c (glist_filter_by_extensions_list): Corrected removing
 	  file name from list.
 	* fdops.c (get_pbuf_exts_to_ghash): Updated format list declaration.
 
-2020-01-14  Michal Babik  <michalb1981@o2.pl>
+2020-01-14  Michal Babik  <michal.babik@pm.me>
 
 	* fdops.c (get_dir_content_filter_images): New function to read
 	  directory data and filter out non images (it runs two functions
@@ -342,21 +342,21 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 	  to complain.
 	  (wallpaper_startup_set): Removed some unneeded code.
 
-2020-01-11  Michal Babik  <michalb1981@o2.pl>
+2020-01-11  Michal Babik  <michal.babik@pm.me>
 
 	* wcngdmn.c (main): Added checking for Display.
 
-2020-01-07  Michal Babik  <michalb1981@o2.pl>
+2020-01-07  Michal Babik  <michal.babik@pm.me>
 
 	* iminfo.c (imageinfo_set_wxh): Changed sprintf to snprintf.
 
-2020-01-06  Michal Babik  <michalb1981@o2.pl>
+2020-01-06  Michal Babik  <michal.babik@pm.me>
 
 	* strfun.c (str_set_up_wallpaper_command): Change in string copy
 	  when no file alias specified.
 	* wchanger.c: Removed unneeded shutdown signal
 
-2020-01-03  Michal Babik  <michalb1981@o2.pl>
+2020-01-03  Michal Babik  <michal.babik@pm.me>
 
 	* cres.c (create_resise): Changed return value to void.
 	* fdops.c (get_pbuf_exts_to_ghash): Changed str_dup to strdup.
@@ -397,7 +397,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 	  liststore_add_items_glist to treeview_add_items_glist.
 	* misc_files: Added attributes that may improve performance a little bit.
 
-2019-12-22  Michal Babik  <michalb1981@o2.pl>
+2019-12-22  Michal Babik  <michal.babik@pm.me>
 
 	* flist.c, flist.h: File removed from project.
 	* hashfun.c: Hash function moved to this file.
@@ -464,7 +464,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 	  Settings are loaded dynamically at every wallpaper change and
 	  freed after change.
 
-2019-12-09  Michal Babik  <michalb1981@o2.pl>
+2019-12-09  Michal Babik  <michal.babik@pm.me>
 
 	* strfun.c, strfun.h: New file with functions to duplicate string.
 	* miscfun.c, miscfun.h: Removed str_dup and str_ndup function.
@@ -475,13 +475,13 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 	  strdup function call changed to str_dup.
 	* dlgs.c (about_app_dialog): Changed app website url.
 
-2019-12-07  Michal Babik  <michalb1981@o2.pl>
+2019-12-07  Michal Babik  <michal.babik@pm.me>
 
 	* jsfun.c (js_json_array_to_stlist): Removed const from
 	  json_object parameter for compatibility with json-c functions.
 	* wchangercfg: renamed from wchanger-cfg.
 
-2019-12-02  Michal Babik  <michalb1981@o2.pl>
+2019-12-02  Michal Babik  <michal.babik@pm.me>
 
 	* dlgs.c (about_app_dialog): added s_ver argument to pass
 	  string with application version.
@@ -489,7 +489,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 	  and functions to set, get and work with this value.
 	* Added some cont qualifiers in functions.
 
-2019-11-27  Michal Babik  <michalb1981@o2.pl>
+2019-11-27  Michal Babik  <michal.babik@pm.me>
 
 	* dlgs.c, dlgs.h (about_app_dialog): New function with info dialog.
 	* wchanger.c: Updates to show application info dialog.
@@ -498,7 +498,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 	* wallsett.c: Renamed from settstr.c.
 	* wallsett.h: Renamed from settstr.h.
 
-2019-11-25  Michal Babik  <michalb1981@o2.pl>
+2019-11-25  Michal Babik  <michal.babik@pm.me>
 
 	* settlist.c: New file with functions to manage settings.
 	* settlist.h: New file with functions to manage settings.
@@ -532,12 +532,12 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 	  (js_settings_check_update_file): New function to check if settings
 	  are an update and update if they are.
 
-2019-11-19  Michal Babik  <michalb1981@o2.pl>
+2019-11-19  Michal Babik  <michal.babik@pm.me>
 
 	* wchanger.c (create_settings_widget): added hints to settings
 	  widgets.
 
-2019-11-16  Michal Babik  <michalb1981@o2.pl>
+2019-11-16  Michal Babik  <michal.babik@pm.me>
 
 	* wchanger.c: Functions to handle removing duplicates from list.
 	* treev.c (treeview_remove_duplicates): New function to remove
@@ -545,7 +545,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 	* New functions for saving width and height of configuration window
 	* dlgs.c (message_dialog_error): Corrected string passing.
 
-2019-11-14  Michal Babik  <michalb1981@o2.pl>
+2019-11-14  Michal Babik  <michal.babik@pm.me>
 
 	* wchanger.c (get_wallpaper_change_interval): New function to get
 	  change interval based on spin value and combobox.
@@ -562,12 +562,12 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 	* miscfun.c (get_directory_content_append_to_flist): Function
 	  to get directory content and add to FList.
 
-2019-11-14  Michal Babik  <michalb1981@o2.pl>
+2019-11-14  Michal Babik  <michal.babik@pm.me>
 
 	* randomm.c: New file with functions for random wallpaper select.
 	* randomm.h: New file with Functions for random wallpaper select.
 
-2019-11-08  Michal Babik  <michalb1981@o2.pl>
+2019-11-08  Michal Babik  <michal.babik@pm.me>
 
 	* jsfun.c (js_settings_to_json_buff): Couple updates in putting data
 	  to json objects.
@@ -575,16 +575,16 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 	* setts.c (settings_set_command): Comparing strings changed.
 	* settstr.c (free_wall_sett): Moved function to free WallSett here.
 
-2019-11-07  Michal Babik  <michalb1981@o2.pl>
+2019-11-07  Michal Babik  <michal.babik@pm.me>
 
 	* wchanger.c: Changed wallpaper preview.
 	* treev.c:    Moved treeview related functions.
 
-2019-11-04  Michal Babik  <michalb1981@o2.pl>
+2019-11-04  Michal Babik  <michal.babik@pm.me>
 
 	* wchanger.c (create_preview): corrected making "empty" preview.
 
-2019-11-03  Michal Babik  <michalb1981@o2.pl>
+2019-11-03  Michal Babik  <michal.babik@pm.me>
 
 	* First relase
 
