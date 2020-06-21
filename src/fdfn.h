@@ -43,7 +43,7 @@ int    file_create_with_subdirs (const char *s_fn)
        __attribute__ ((nonnull (1)));
 /*----------------------------------------------------------------------------*/
 /**
- * @brief  Get users home dir path.
+ * @brief  Get user's home dir path.
  *
  * @return  String with home path, after use it thould be freed using free
  */

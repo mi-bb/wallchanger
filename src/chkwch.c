@@ -170,7 +170,7 @@ check_settings_change_wallpaper (char     *s_cfg_file,
     Setting         *st_st    = NULL; /* For particular setting */
 
     /* Read settings, check for empty config file, set defaults */
-    st_setts = settings_read (s_cfg_file, &i_err);
+    st_setts = setts_read (s_cfg_file, &i_err);
     if (i_err != ERR_OK) {
         free_and_exit (st_setts, s_cfg_file, rm_rand, EXIT_FAILURE, NULL);
     }
@@ -178,7 +178,7 @@ check_settings_change_wallpaper (char     *s_cfg_file,
         free_and_exit (st_setts, s_cfg_file, rm_rand,
                        EXIT_FAILURE, "Empty config file");
     }
-    settings_check_defaults (st_setts);
+    setts_check_defaults (st_setts);
 
     /* Get wallaper list setting */
     st_walls = settings_find (setting_get_child (st_setts),

@@ -204,7 +204,7 @@ wpset_change (Setting    *st_settings,
               wallpaper_set_next_in_list (st_settings);
 
     if (s_lastu != NULL)
-        return settings_update_last_used (s_cfg_file, s_lastu);
+        return setts_update_last_used (s_cfg_file, s_lastu);
     return ERR_OK;
 }
 /*----------------------------------------------------------------------------*/
@@ -256,7 +256,7 @@ wallpaper_dialog_set (const char *s_cmd,
                       const char *s_cfg_file)
 {
     wallpaper_set_file (s_cmd, s_file);
-    return settings_update_last_used (s_cfg_file, s_file);
+    return setts_update_last_used (s_cfg_file, s_file);
 }
 /*----------------------------------------------------------------------------*/
 

@@ -60,6 +60,7 @@ dialogdata_init (DialogData *dd_data)
     dd_data->gw_inter_combo = NULL;
     dd_data->gw_dm_label    = NULL;
     dd_data->gw_statusbar   = NULL;
+    dd_data->gw_imgprev     = NULL;
     dd_data->s_cfg_file     = NULL;
 }
 /*----------------------------------------------------------------------------*/

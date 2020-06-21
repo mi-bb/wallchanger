@@ -1,5 +1,5 @@
 /**
- * @file  astart.h
+ * @file  deffiles.h
  * @copyright Copyright (C) 2019-2020 Michał Bąbik
  *
  * This file is part of Wall Changer.
@@ -17,12 +17,12 @@
  * You should have received a copy of the GNU General Public License
  * along with Wall Changer.  If not, see <https://www.gnu.org/licenses/>.
  *
- * @brief  Autostart file set functions
+ * @brief  Default files create / delete ... functions
  *
  * @author Michal Babik <michal.babik@pm.me>
  */
-#ifndef ASTART_H
-#define ASTART_H
+#ifndef DEFFILES_H
+#define DEFFILES_H
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Check if wchangerd daemon desktop file exists in user's autostart
@@ -30,21 +30,31 @@
  *
  * @return 1 if file exists, 0 if not or there was some problem with it.
  */
-int autostart_exists (void);
+int deffiles_autostart_exists (void);
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Creates wchangerd desktop file in user's autostart directory.
  *
  * @return ERR_OK if created successfully, other error value if not.
  */
-int autostart_create (void);
+int deffiles_autostart_create (void);
+/*----------------------------------------------------------------------------*/
+/**
+ * @brief  Check if exists and create window manager info json file.
+ *
+ * @return ERR_OK if created successfully, other error value if not.
+ */
+int deffiles_wm_check_create (void);
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Removes wchangerd desktop file from user's autostart directory.
  *
  * @return ERR_OK if removed successfully, ERR_FILE_RM if not.
  */
-int autostart_remove (void);
+int deffiles_autostart_remove (void);
+/*----------------------------------------------------------------------------*/
+char * deffiles_wm_get_buff (void);
+const char * deffiles_wm_get_buff2 (void);
 /*----------------------------------------------------------------------------*/
 #endif
 

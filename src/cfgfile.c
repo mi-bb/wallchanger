@@ -27,6 +27,9 @@
 #include "strfun.h"
 #include "fdfn.h"
 #include "cfgfile.h"
+
+#define AUTOSTART_FILE_PATH "/.config/autostart/wchangerd.desktop"
+#define WM_JSON_FILE_PATH   "/.config/wchanger/wms.json"
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Look for config file in paths from list.
@@ -66,57 +69,109 @@ int
 cfgfile_config_file_stuff (char **s_file,
                            int    i_create)
 {
+    /* List of possible config paths in home directory */
     const char *s_cfg_files[] = {"/.config/wchanger/config.json",
                                  "/.config/wchanger.json",
                                  "/.config/wchanger/wchanger.json",
                                  NULL};
     int i_res = 0; /* Function result */
-    int i_st  = 1; /* Config process state */
 
-    while (i_st) {
-        switch (i_st) {
-            case 1: /* Checking config name */
-                i_st = *s_file == NULL ? 2 : 3;
+    enum cfg_state {
+        C_STATE_END = 0,         /* End of checking */
+        C_STATE_CHECK_CFG_NAME,  /* Check config name for null */
+        C_STATE_SEARCH_DEFAULT,  /* Search for config file */
+        C_STATE_CHECK_CFG_PERM,  /* Check config path permissions */
+        C_STATE_CREATE_CFG_FILE, /* Create config file */
+        C_STATE_WARN_RETURN_ERR  /* Show warning and end verifying */
+    };
+
+    enum cfg_state c_state = C_STATE_CHECK_CFG_NAME;
+
+    while (c_state) {
+        switch (c_state) {
+            case C_STATE_CHECK_CFG_NAME: /* Checking config name */
+                c_state = *s_file == NULL ?
+                          C_STATE_SEARCH_DEFAULT :
+                          C_STATE_CHECK_CFG_PERM;
                 break;
-            case 2: /* No file passed, serch for default */
+            case C_STATE_SEARCH_DEFAULT: /* No file passed, serch for default */
                 *s_file = cfgfile_find_config_file (s_cfg_files);
                 if (*s_file == NULL && i_create) { /* No file found, create */
                     *s_file = dir_get_home ();
                     str_append (&(*s_file), s_cfg_files[0]);
-                    i_st = 4;
+                    c_state = C_STATE_CREATE_CFG_FILE;
                     break;
                 }
                 if (*s_file == NULL) {
-                    return ERR_CFG_NOF;
+                    i_res   = ERR_CFG_NOF;
+                    c_state = C_STATE_WARN_RETURN_ERR;
+                    break;
                 }
-                return ERR_OK;
-            case 3: /* Config file passed, check it */
+                i_res   = ERR_OK;
+                c_state = C_STATE_END;
+                break;
+            case C_STATE_CHECK_CFG_PERM: /* Config file passed, check it */
                 i_res = file_check_permissions (*s_file);
                 if (i_res == ERR_FILE_EX && i_create) { /* Try to create */
-                    i_st = 4;
+                    c_state = C_STATE_CREATE_CFG_FILE;
                     break;
                 }
                 else if (i_res != ERR_OK) { /* Other error */
-                    i_st = 5;
+                    c_state = C_STATE_WARN_RETURN_ERR;
                     break;
                 }
-                return ERR_OK;
-            case 4: /* Try to create config file */
+                i_res   = ERR_OK;
+                c_state = C_STATE_END;
+                break;
+            case C_STATE_CREATE_CFG_FILE: /* Try to create config file */
                 if ((i_res = file_create_with_subdirs (*s_file)) != ERR_OK) {
-                    i_st = 5;
+                    c_state = C_STATE_WARN_RETURN_ERR;
                     break;
                 }
-                return ERR_OK;
-            case 5: /* Warn, free and return error */
+                i_res   = ERR_OK;
+                c_state = C_STATE_END;
+                break;
+            case C_STATE_WARN_RETURN_ERR: /* Warn, free and return error */
                 warn ("%s", *s_file);
                 free (*s_file);
                 *s_file = NULL;
-                return i_res;
+                c_state = C_STATE_END;
+                break;
+            case C_STATE_END:
+                break;
             default:
                 break;
         }
     }
-    return ERR_OK;
+    return i_res;
+}
+/*----------------------------------------------------------------------------*/
+/**
+ * @brief  Get path for wchangerd daemon autostart file.
+ */
+char *
+cfgfile_get_autostart_file_path (void)
+{
+    char *s_path = NULL; /* Config file path */
+
+    s_path = dir_get_home ();
+    str_append (&s_path, AUTOSTART_FILE_PATH);
+
+    return s_path;
+}
+/*----------------------------------------------------------------------------*/
+/**
+ * @brief  Get path for window manager info config file.
+ */
+char *
+cfgfile_get_wm_info_file_path (void)
+{
+    char *s_path = NULL; /* Config file path */
+
+    s_path = dir_get_home ();
+    str_append (&s_path, WM_JSON_FILE_PATH);
+
+    return s_path;
 }
 /*----------------------------------------------------------------------------*/
 

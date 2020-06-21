@@ -22,117 +22,72 @@
  * @author Michal Babik <michal.babik@pm.me>
  */
 #include <err.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 #include "procfn.h"
+#include "cfgfile.h"
+#include "setts.h"
 #include "strfun.h"
+#include "fdfn.h"
+#include "defs.h"
+#include "errs.h"
 #include "wmsfn.h"
 /*----------------------------------------------------------------------------*/
 /**
- * @var   wms
- * @brief Array with window managers.
+ * @brief  Get window manager info from local config file.
  */
-static Wms wms[] = {
-    {WM_ID_UNKNOWN, "", "Unknown",
-     "feh --bg-fill \"[F]\""},
-    {WM_ID_MATE, "mate-session", "MATE",
-     "gsettings set org.mate.background picture-filename \"[F]\""},
-    {WM_ID_XFCE, "xfce4-session", "Xfce", ""},
-    {WM_ID_GNOME, "gnome-session-b", "Gnome",
-     "gsettings set org.gnome.desktop.background picture-uri \"file://[F]\""},
-    {WM_ID_GNOME, "gnome-session-binary", "Gnome",
-     "gsettings set org.gnome.desktop.background picture-uri \"file://[F]\""},
-    {WM_ID_CINNAMON, "cinnamon-sessio", "Cinnamon",
-     "gsettings set org.cinnamon.desktop.background picture-uri \"file://[F]\""},
-    {WM_ID_CINNAMON, "cinnamon-session", "Cinnamon",
-     "gsettings set org.cinnamon.desktop.background picture-uri \"file://[F]\""},
-    {WM_ID_CINNAMON, "cinnamon", "Cinnamon",
-     "gsettings set org.cinnamon.desktop.background picture-uri \"file://[F]\""},
-    {WM_ID_PLASMA, "plasma_session", "KDE Plasma",
-     "qdbus org.kde.plasmashell /PlasmaShell org.kde.PlasmaShell.evaluateScri"
-     "pt 'var allDesktops = desktops();print (allDesktops);for (i=0;i<allDesk"
-     "tops.length;i++) {d = allDesktops[i];d.wallpaperPlugin = \"org.kde.imag"
-     "e\";d.currentConfigGroup = Array(\"Wallpaper\", \"org.kde.image\", \"Ge"
-     "neral\");d.writeConfig(\"Image\", \"file://[F]\")}'"},
-    {WM_ID_LXDE, "lxsession", "LXDE",
-     "pcmanfm --wallpaper-mode crop --set-wallpaper \"[F]\""},
-    {WM_ID_FVWM, "fvwm2", "FVWM",
-     "feh --bg-fill \"[F]\""},
-    {WM_ID_I3, "i3", "i3",
-     "feh --bg-fill \"[F]\""},
-    {WM_ID_SPECTRWM, "spectrwm", "spectrwm",
-     "feh --bg-fill \"[F]\""},
-    {WM_ID_OPENBOX, "openbox", "Openbox",
-     "feh --bg-fill \"[F]\""},
-    {WM_ID_FLUXBOX, "fluxbox", "Fluxbox",
-     "feh --bg-fill \"[F]\""},
-    {WM_ID_WMAKER, "wmaker", "Window Maker",
-     "feh --bg-fill \"[F]\""},
-    {WM_ID_END, "", "", ""}
-    };
-/*----------------------------------------------------------------------------*/
-/**
- * @brief  Create a copy of Wms item.
- *
- * @param[in]  wms_item  Wms item to copy
- * @return     New Wms item
- */
-static Wms *
-wms_copy (Wms *wms_item)
+Setting *
+wms_get_wm_info (int *i_err)
 {
-    Wms *wm_new = NULL;
+    Setting *st_wms = NULL; /* Setting list to return */
+    char    *s_path = NULL; /* Config file path */
 
-    if ((wm_new = malloc (sizeof (Wms))) == NULL)
-        err (EXIT_FAILURE, NULL);
+    *i_err = 0;
 
-    wm_new->wm_id = wms_item->wm_id;
-    strcpy (wm_new->name,    wms_item->name);
-    strcpy (wm_new->process, wms_item->process);
-    strcpy (wm_new->command, wms_item->command);
+    s_path = cfgfile_get_wm_info_file_path ();
+    st_wms = setts_read (s_path, i_err);
 
-    return wm_new;
+    free (s_path);
+
+    return st_wms;
 }
 /*----------------------------------------------------------------------------*/
 /**
- * @brief  Get null terminated list of window manager's data.
+ * @brief  Update wallpaper set command in window manager info config file.
  */
-Wms **
-wms_get_wm_list (void)
+int
+wms_update_wm_command (const char *s_wm_name,
+                       const char *s_command)
 {
-    Wms   **wms_list = NULL; /* List of window managers to return */
-    Wms   **wms_temp = NULL; /* Temp for realloc */
-    Wms    *wm_list  = NULL; /* Input source of window manager list */
-    size_t  i        = 0;    /* i */
-    size_t  ui_alloc = 0;    /* Number of data to alloc */
+    Setting   *st_wms;             /* Window manager info list */
+    int        i_err    = 0;       /* Error output */
+    Setting      *st_item     = NULL; /* For checking wm name and command */
+    char    *s_path = NULL; /* Config file path */
 
-    wm_list  = wms;
-    wms_list = malloc ((ui_alloc + 1) * sizeof (Wms*));
-
-    while (wm_list->wm_id != WM_ID_END) {
-        ++ui_alloc;
-        wms_temp = realloc (wms_list, (ui_alloc + 1) * sizeof (Wms*));
-        if (wms_temp == NULL) {
-            for (i = 0; i < ui_alloc-1; ++i)
-                free (wms_list[i]);
-            free (wms_list);
-            err (EXIT_FAILURE, NULL);
-        }
-        wms_list = wms_temp;
-        wms_list[ui_alloc-1] = wms_copy (wm_list++);
+    /* Load settings from config file */
+    s_path = cfgfile_get_wm_info_file_path ();
+    st_wms = setts_read (s_path, &i_err);
+    //st_wms = wms_get_wm_info (&i_err);
+    if (i_err != ERR_OK) {
+        /* err (EXIT_FAILURE, NULL); */
+        settings_free_all (st_wms);
+        return i_err;
     }
-    wms_list[ui_alloc] = NULL;
-    return wms_list;
-}
-/*----------------------------------------------------------------------------*/
-/**
- * @brief  Free list of window manager's data.
- */
-void
-wms_free_wm_list (Wms **wms_list)
-{
-    Wms **wms_it = NULL;
-
-    for (wms_it = wms_list; *wms_it != NULL; ++wms_it)
-        free (*wms_it);
-    free (wms_list);
+    #ifdef DEBUG
+    printf ("WM : %s\nCM : %s\n", s_wm_name, s_command);
+    #endif
+    if ((st_item = setting_find_child (st_wms, s_wm_name)) != NULL) {
+        if ((st_item = setting_find_child (st_item, "Command")) != NULL) {
+            setting_set_string (st_item, s_command);
+        }
+    }
+    i_err = setts_check_update_file (s_path, st_wms);
+    #ifdef DEBUG
+    settings_print (st_wms);
+    #endif
+    settings_free_all (st_wms);
+    return i_err;
 }
 /*----------------------------------------------------------------------------*/
 /**
@@ -210,86 +165,220 @@ wms_get_xfce_command (const char *s_disp)
 }
 /*----------------------------------------------------------------------------*/
 /**
- * @brief  Get Wms item with window manager info based on wm im from i_wm_id.
- *
- * @param[in] i_wm_id  Window mahager's id
- * @return    Wms item with window manager info. After use it should be freed
- *            using free.
- */
-static Wms *
-wms_get_wm (const int i_wm_id)
-{
-    Wms *wm_list = NULL;
-
-    wm_list = wms;
-
-    while (wm_list->wm_id != WM_ID_END) {
-        if (wm_list->wm_id == i_wm_id) {
-
-            return wms_copy (wm_list);
-        }
-        ++wm_list;
-    }
-    return NULL;
-}
-/*----------------------------------------------------------------------------*/
-/**
  * @brief  Find window manager that is currently in use.
  */
-Wms *
-wms_get_current_wm (void)
+Setting *
+wms_get_current_wm (Setting *st_wmsl)
 {
-    Wms *wm_list = NULL;
+    const char *s_name  = NULL; /* Window manager name string */
+    const char *s_proc  = NULL; /* Window manager process name string */
+    Setting    *st_proc = NULL; /* Setting with process name info */
+    Setting    *st_wm   = NULL; /* Setting with window manager info */
+    Setting    *st_unkn = NULL; /* Setting for unknown window manager */
 
-    wm_list = wms;
+    #ifdef DEBUG
+    printf ("Finding wm\n");
+    #endif
+    /*st_wm = setting_get_child (st_wmsl);*/
+    st_wm = st_wmsl;
 
-    while (wm_list->wm_id != WM_ID_END) {
-        if (wm_list->wm_id != WM_ID_UNKNOWN &&
-            process_exists_b (wm_list->process)) {
-
-            return wms_copy (wm_list);
+    while (st_wm != NULL) {
+        s_name = setting_get_name (st_wm);
+        if (strcmp (s_name, "Unknown") == 0) {
+            st_unkn = st_wm;
+            st_wm = st_wm->next;
+            continue;
         }
-        ++wm_list;
+        #ifdef DEBUG
+        printf ("%s", s_name);
+        #endif
+        st_proc = setting_find_child (st_wm, "Proc");
+        st_proc = setting_get_child (st_proc);
+        while (st_proc != NULL) {
+            s_proc = setting_get_string (st_proc);
+            #ifdef DEBUG
+            printf (" %s", s_proc);
+            #endif
+            if (process_exists_b (s_proc)) {
+                #ifdef DEBUG
+                printf (" YES!\n");
+                #endif
+                return st_wm;
+            }
+            st_proc = st_proc->next;
+        }
+        #ifdef DEBUG
+        printf (" nope\n");
+        #endif
+        st_wm = st_wm->next;
     }
-    return wms_get_wm (WM_ID_UNKNOWN);
+    return st_unkn;
 }
 /*----------------------------------------------------------------------------*/
 /**
- * @brief  Find window manager that is currently in use and return it's id.
- */
-int
-wms_get_current_wm_id (void)
-{
-    Wms *wm_list = NULL;
-
-    wm_list = wms;
-
-    while (wm_list->wm_id != WM_ID_END) {
-        //if (process_exists_b (wm_list->process)) {
-        if (wm_list->wm_id != WM_ID_UNKNOWN &&
-            process_exists_b (wm_list->process)) {
-
-            return wm_list->wm_id;
-        }
-        wm_list++;
-    }
-    return 0;
-}
-/*----------------------------------------------------------------------------*/
-/**
- * @brief  Find command for current window manager.
+ * @brief  Compare previously used window manager with present one, set
+ *         wallpaper change command.
  */
 char *
-wms_find_command (void)
+wms_get_wallpaper_command (const char *s_cfg_file,
+                           Setting    *st_settings,
+                           Setting    *st_wmlist,
+                           int *i_err)
 {
-    char *s_ret  = NULL; /* Command to return */
-    Wms  *wms_wm = NULL; /* Window manager info */
+    Setting    *st_wm        = NULL; /* Wm list setting */
+    Setting    *st_cu_wm     = NULL; /* Current used wm setting */
+    Setting    *st_lu_wm     = NULL; /* Last used wm setting */
+    Setting    *st_item      = NULL; /* Temp setting */
+    Setting    *st_bgcmd     = NULL; /* Wallpaper set command setting */
+    const char *s_setts_cmd  = NULL; /* Command from settings */
+    const char *s_result_cmd = NULL; /* Result command */
+    const char *s_lu_wm      = NULL; /* Last used wm string */
+    const char *s_cu_wm      = NULL; /* Current used wm string */
+    const char *s_cu_wm_cmd  = NULL; /* Current used wm command string */
 
-    if ((wms_wm = wms_get_current_wm ()) != NULL) {
-        s_ret = strdup (wms_wm->command);
-        free (wms_wm);
+    *i_err = ERR_OK;
+
+    enum wm_enum_state {
+        WM_STATE_END = 0,
+        WM_STATE_SET_SAVED_BG_CMD,
+        WM_STATE_SET_CURRENT_USED_WM_CMD,
+        WM_STATE_CHECK_CURRENT_USED_WM_CMD,
+        WM_STATE_SET_MAIN_DEFAULT,
+        WM_STATE_CHECK_WM_INFO
+    };
+
+    enum wm_enum_state e_state = WM_STATE_CHECK_WM_INFO;
+    st_wm = st_wmlist;
+
+    /* Getting saved wallpaper set command setting and string */
+    st_bgcmd = settings_find (st_settings, get_setting_name (SETTING_BG_CMD));
+    if (st_bgcmd != NULL) {
+        s_setts_cmd = setting_get_string (st_bgcmd);
     }
-    return s_ret;
+    /* Getting last used window manager setting and name string */
+    st_lu_wm = settings_find (st_settings,
+                              get_setting_name (SETTING_LAST_USED_WM));
+    if (st_lu_wm != NULL) {
+        s_lu_wm = setting_get_string (st_lu_wm);
+    }
+    /* Getting currently used window manager setting and name string */
+    st_cu_wm = wms_get_current_wm (st_wm);
+    if (st_cu_wm != NULL) {
+        #ifdef DEBUG
+        printf ("Found wm %s\n", setting_get_name (st_cu_wm));
+        #endif
+        s_cu_wm = setting_get_name (st_cu_wm);
+    }
+    #ifdef DEBUG
+    printf ("wms  last used: %s, current: %s\n", s_lu_wm, s_cu_wm);
+    #endif
+    /* Compare last and currently used window manager, set wallpaper
+     * change command for returning */
+    while (e_state) {
+        switch (e_state) {
+            case WM_STATE_CHECK_WM_INFO:
+                #ifdef DEBUG
+                puts (" Checking wm info");
+                #endif
+                if (s_cu_wm == NULL && s_lu_wm == NULL) {
+                    #ifdef DEBUG
+                    puts ("  All nulls");
+                    #endif
+                    e_state = WM_STATE_SET_MAIN_DEFAULT;
+                }
+                else if (strcmp (s_cu_wm, s_lu_wm) == 0) {
+                    #ifdef DEBUG
+                    puts ("  Current wm equals last used");
+                    #endif
+                    e_state = WM_STATE_SET_SAVED_BG_CMD;
+                }
+                else {
+                    #ifdef DEBUG
+                    puts ("  Current wm differs last used");
+                    #endif
+                    *i_err = setts_update_last_used_wm (s_cfg_file, s_cu_wm);
+                    e_state = WM_STATE_SET_CURRENT_USED_WM_CMD;
+                }
+                break;
+
+            case WM_STATE_SET_CURRENT_USED_WM_CMD:
+                #ifdef DEBUG
+                puts (" Setting current used wm cmd string");
+                #endif
+                st_item = setting_find_child (st_cu_wm, "Command");
+                if (st_item != NULL) {
+                    #ifdef DEBUG
+                    puts ("  Current used wm item ok");
+                    #endif
+                    s_cu_wm_cmd = setting_get_string (st_item);
+                    e_state     = WM_STATE_CHECK_CURRENT_USED_WM_CMD;
+                }
+                else {
+                    #ifdef DEBUG
+                    puts ("  Current used wm item null");
+                    #endif
+                    e_state = WM_STATE_SET_SAVED_BG_CMD;
+                }
+                break;
+
+            case WM_STATE_CHECK_CURRENT_USED_WM_CMD:
+                #ifdef DEBUG
+                puts (" Checking current used wm cmd string");
+                #endif
+                if (s_cu_wm_cmd != NULL) {
+                    #ifdef DEBUG
+                    puts ("  Current used wm command ok");
+                    #endif
+                    s_result_cmd = s_cu_wm_cmd;
+                    e_state      = WM_STATE_END;
+                }
+                else {
+                    #ifdef DEBUG
+                    puts ("  Current used wm command null");
+                    #endif
+                    e_state = WM_STATE_SET_SAVED_BG_CMD;
+                }
+                break;
+
+            case WM_STATE_SET_SAVED_BG_CMD:
+                #ifdef DEBUG
+                puts (" Checking saved wm cmd string");
+                #endif
+                if (s_setts_cmd != NULL) {
+                    #ifdef DEBUG
+                    puts ("  Saved wm command ok");
+                    #endif
+                    s_result_cmd = s_setts_cmd;
+                    e_state      = WM_STATE_END;
+                }
+                else {
+                    #ifdef DEBUG
+                    puts ("  Saved wm command null");
+                    #endif
+                    e_state = WM_STATE_SET_MAIN_DEFAULT;
+                }
+                break;
+
+            case WM_STATE_SET_MAIN_DEFAULT:
+                #ifdef DEBUG
+                puts (" Setting main default cmd string");
+                #endif
+                s_result_cmd = DEFAULT_BG_CMD;
+                e_state      = WM_STATE_END;
+                break;
+
+            case WM_STATE_END:
+                #ifdef DEBUG
+                puts (" End");
+                #endif
+                break;
+
+            default:
+                break;
+        }
+    }
+    return strdup (s_result_cmd);
 }
 /*----------------------------------------------------------------------------*/
+
 

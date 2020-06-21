@@ -25,7 +25,7 @@
 #define ERRS_H
 /*----------------------------------------------------------------------------*/
 enum {
-    ERR_OK,      /**< OK */
+    ERR_OK = 0,  /**< OK */
     ERR_FILE,    /**< File error (cannot access / bad permissions) */
     ERR_FILE_RW, /**< File read / write error */
     ERR_FILE_CR, /**< File can not be created */

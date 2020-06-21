@@ -261,7 +261,8 @@ treeview_find_select_item (GtkWidget  *gw_tview,
             path = gtk_tree_model_get_path (gtm_model, &gti_iter);
             gtk_tree_view_scroll_to_cell (GTK_TREE_VIEW (gw_tview), path, NULL,
                     TRUE, 0.5, 0);
-            gtk_tree_view_set_cursor (GTK_TREE_VIEW (gw_tview), path, NULL, FALSE);
+            gtk_tree_view_set_cursor (GTK_TREE_VIEW (gw_tview),
+                                      path, NULL, FALSE);
             gtk_tree_path_free (path);
             break;
         }

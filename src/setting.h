@@ -228,6 +228,16 @@ double       setting_get_double (const Setting *st_set) __attribute__ ((pure));
 const char * setting_get_string (const Setting *st_set) __attribute__ ((pure));
 /*----------------------------------------------------------------------------*/
 /**
+ * @brief  Set setting to string type and its content to val.
+ *
+ * @param[in,out] st_set  Setting object
+ * @param[in]     val     String value to set
+ * @return        none
+ */
+void         setting_set_string (Setting       *st_set,
+                                 const char    *val);
+/*----------------------------------------------------------------------------*/
+/**
  * @fn  Setting * setting_new_setting (const char *s_name)
  * @brief      Create new Setting object, set it to be a setting type and its
  *             name to s_name.
@@ -319,7 +329,7 @@ Setting * setting_copy (const Setting *st_src)
  *
  * @brief  Get top parent Setting of given Setting item.
  *
- * @param[in] st_setting  Setting to get it's top parent
+ * @param[in] st_setting  Setting to get its top parent
  * @return    Pointer to top parent Setting item
  *
  * @fn  Setting * settings_find (Setting *st_settings, const char *s_name)

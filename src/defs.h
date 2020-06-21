@@ -76,7 +76,7 @@
 #define DEFAULT_LAST_USED_OPT  0
 #define DEFAULT_RANDOM_OPT     0
 #define DEFAULT_TIME_ALIGN_OPT 0
-#define DEFAULT_LAST_USED_WM   -1
+#define DEFAULT_LAST_USED_WM   "Unknown"
 /*----------------------------------------------------------------------------*/
 #endif
 

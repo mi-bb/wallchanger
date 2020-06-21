@@ -35,9 +35,10 @@
  * @return    String with wallpaper set command or null. It should be
  *            freed after use using free.
  */
-char * cmddialog_run (GtkWindow    *gw_parent,
-                      const char   *s_current_cmd,
-                      const GSList *gsl_iinfo);
+/*----------------------------------------------------------------------------*/
+char *   cmddialog_run            (GtkWindow    *gw_parent,
+                                   const char   *s_current_cmd,
+                                   const GSList *gsl_iinfo);
 /*----------------------------------------------------------------------------*/
 /**
  * @fn  char * add_images_folder_dialog (GtkWindow *gw_parent)
@@ -53,33 +54,32 @@ char * cmddialog_run (GtkWindow    *gw_parent,
  *
  * @param[in] gw_parent  Dialog parent widget
  * @return    List with images.
- *
- * @fn  void message_dialog_error (GtkWindow  *gw_parent,
- *                                 const char *s_message)
- *
+ */
+/*----------------------------------------------------------------------------*/
+char   * add_images_folder_dialog (GtkWindow    *gw_parent);
+
+GSList * add_images_dialog        (GtkWindow    *gw_parent);
+/*----------------------------------------------------------------------------*/
+/**
  * @brief  Error message dialog.
  *
  * @param[in] gw_parent  Dialog parent widget
  * @param[in] s_message  Message to show
  * @return    none
- *
- * @fn  void about_app_dialog (void);
- *
+ */
+/*----------------------------------------------------------------------------*/
+void     message_dialog_error     (GtkWindow    *gw_parent,
+                                   const char   *s_message)
+                                   __attribute__ ((nonnull (2)));
+/*----------------------------------------------------------------------------*/
+/**
  * @brief  Dialog with information about application.
  *
  * @param[in] data  Unused pointer for event call
  * @return    none
  */
 /*----------------------------------------------------------------------------*/
-char   * add_images_folder_dialog (GtkWindow  *gw_parent);
-
-GSList * add_images_dialog        (GtkWindow  *gw_parent);
-
-void     message_dialog_error     (GtkWindow  *gw_parent,
-                                   const char *s_message)
-                                   __attribute__ ((nonnull (2)));
-
-void     about_app_dialog         (gpointer data);
+void     about_app_dialog         (gpointer     data);
 /*----------------------------------------------------------------------------*/
 #endif
 

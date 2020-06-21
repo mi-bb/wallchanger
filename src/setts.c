@@ -22,6 +22,7 @@
  * @author Michal Babik <michal.babik@pm.me>
  */
 #include <stdint.h>
+
 #include <stdio.h>
 #include <string.h>
 #include "jsfun.h"
@@ -116,12 +117,18 @@ get_setting_name (const int i_val)
     return s_res;
 }
 /*----------------------------------------------------------------------------*/
+void setts_string_to_settings (const char *s_buff,
+                               Setting    *st_settings)
+{
+    js_json_string_to_settings (s_buff, st_settings);
+}
+/*----------------------------------------------------------------------------*/
 /**
  * @brief  Read program settings. 
  */
 Setting *
-settings_read (const char *s_cfg_file,
-               int        *i_err)
+setts_read (const char *s_cfg_file,
+            int        *i_err)
 {
     return js_settings_read (s_cfg_file, i_err);
 }
@@ -135,8 +142,8 @@ settings_read (const char *s_cfg_file,
  * @return        none
  */
 static void
-settings_check_setting (Setting     *st_settings,
-                        SettingData *sd_data)
+setts_check_setting (Setting     *st_settings,
+                     SettingData *sd_data)
 {
     const char *s_name = NULL;
     Setting    *st_sett;
@@ -188,13 +195,13 @@ settings_check_setting (Setting     *st_settings,
  * @brief  Check Setting list values and set default ones if needed.
  */
 void
-settings_check_defaults (Setting *st_settings)
+setts_check_defaults (Setting *st_settings)
 {
     SettingData *sd_data;
 
     SettingData sdd[] = {
         {SETTING_LAST_USED_OPT,  SET_VAL_INT,    DEFAULT_LAST_USED_OPT, 0, ""},
-        {SETTING_LAST_USED_WM,   SET_VAL_INT,    DEFAULT_LAST_USED_WM, 0, ""},
+        {SETTING_LAST_USED_WM,   SET_VAL_STRING, 0, 0, DEFAULT_LAST_USED_WM},
         {SETTING_RANDOM_OPT,     SET_VAL_INT,    DEFAULT_RANDOM_OPT, 0, ""},
         {SETTING_TIME_ALIGN_OPT, SET_VAL_INT,    DEFAULT_TIME_ALIGN_OPT, 0, ""},
         {SETTING_WIN_WIDTH,      SET_VAL_INT,    DEFAULT_WIN_WIDTH, 0, ""},
@@ -206,7 +213,7 @@ settings_check_defaults (Setting *st_settings)
     };
 
     for (sd_data = sdd; sd_data->setting_id != -1; ++sd_data) {
-        settings_check_setting (st_settings, sd_data);
+        setts_check_setting (st_settings, sd_data);
     }
 }
 /*----------------------------------------------------------------------------*/
@@ -214,8 +221,8 @@ settings_check_defaults (Setting *st_settings)
  * @brief  Update last used wallpaper position in config file. 
  */
 int
-settings_update_last_used (const char *s_cfg_file,
-                           const char *s_last_used)
+setts_update_last_used (const char *s_cfg_file,
+                        const char *s_last_used)
 {
     Setting  *st_settings;
     Setting  *st_item;
@@ -236,8 +243,8 @@ settings_update_last_used (const char *s_cfg_file,
  * @brief  Update last used window manager value in config file. 
  */
 int
-settings_update_last_used_wm (const char *s_cfg_file,
-                              const int   i_last_used_wm)
+setts_update_last_used_wm (const char *s_cfg_file,
+                           const char *s_last_used_wm)
 {
     Setting  *st_settings;
     Setting  *st_item;
@@ -245,8 +252,8 @@ settings_update_last_used_wm (const char *s_cfg_file,
 
     st_settings = setting_new_setting ("Settings");
     
-    st_item = setting_new_int (get_setting_name (SETTING_LAST_USED_WM),
-                                (int64_t) i_last_used_wm);
+    st_item = setting_new_string (get_setting_name (SETTING_LAST_USED_WM),
+                                  s_last_used_wm);
     setting_add_child (st_settings, st_item);
 
     i_res = js_settings_check_update_file (st_settings, s_cfg_file);
@@ -258,9 +265,9 @@ settings_update_last_used_wm (const char *s_cfg_file,
  * @brief  Update window size in config file. 
  */
 int
-settings_update_window_size (const char *s_cfg_file,
-                             const int   i_w,
-                             const int   i_h)
+setts_update_window_size (const char *s_cfg_file,
+                          const int   i_w,
+                          const int   i_h)
 {
     Setting  *st_settings;
     Setting  *st_item;
@@ -286,9 +293,9 @@ settings_update_window_size (const char *s_cfg_file,
  *         stored in settings file.
  */
 char *
-settings_check_update (const char *s_cfg_file,
-                       Setting    *st_settings,
-                       int        *i_err)
+setts_check_update (const char *s_cfg_file,
+                    Setting    *st_settings,
+                    int        *i_err)
 {
     return js_settings_check_for_update (st_settings, s_cfg_file, i_err);
 }
@@ -297,8 +304,8 @@ settings_check_update (const char *s_cfg_file,
  * @brief  Update file with new data.
  */
 int
-settings_update_file (const char *s_cfg_file,
-                      const char *s_buff)
+setts_update_file (const char *s_cfg_file,
+                   const char *s_buff)
 {
     return js_settings_update_file (s_buff, s_cfg_file);
 }
@@ -308,10 +315,9 @@ settings_update_file (const char *s_cfg_file,
  *         if they are.
  */
 int
-settings_check_update_file (const char *s_cfg_file,
-                            Setting    *st_settings)
+setts_check_update_file (const char *s_cfg_file,
+                         Setting    *st_settings)
 {
     return js_settings_check_update_file (st_settings, s_cfg_file);
 }
 /*----------------------------------------------------------------------------*/
-

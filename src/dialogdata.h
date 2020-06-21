@@ -52,22 +52,25 @@
  * @brief Daemon info label
  * @var   DialogData::gw_statusbar
  * @brief Status bar
+ * @var   DialogData::gw_imgprev
+ * @brief Wallpaper preview image
  * @var   DialogData::s_cfg_file
  * @brief Config file path
  */
 typedef struct
 DialogData {
-    GtkWindow  *gw_window;       /* App window pointer */
-    GtkWidget  *gw_view;         /* TreeView file list widget */
-    GtkWidget  *gw_random;       /* Random background select check box */
-    GtkWidget  *gw_lastused;     /* Set last used wallpaper check box */
-    GtkWidget  *gw_timealign;    /* Time align check box */
-    GtkWidget  *gw_command;      /* Set wallpaper command entry */
-    GtkWidget  *gw_interval;     /* Time interval check button */
-    GtkWidget  *gw_inter_combo;  /* Time interval combo box */
-    GtkWidget  *gw_dm_label;     /* Daemon info label */
-    GtkWidget  *gw_statusbar;    /* Status bar */
-    char       *s_cfg_file;      /* Config file string */
+    GtkWindow  *gw_window;      /* App window pointer */
+    GtkWidget  *gw_view;        /* TreeView file list widget */
+    GtkWidget  *gw_random;      /* Random background select check box */
+    GtkWidget  *gw_lastused;    /* Set last used wallpaper check box */
+    GtkWidget  *gw_timealign;   /* Time align check box */
+    GtkWidget  *gw_command;     /* Set wallpaper command entry */
+    GtkWidget  *gw_interval;    /* Time interval check button */
+    GtkWidget  *gw_inter_combo; /* Time interval combo box */
+    GtkWidget  *gw_dm_label;    /* Daemon info label */
+    GtkWidget  *gw_statusbar;   /* Status bar */
+    GtkWidget  *gw_imgprev;     /* Wallpaper preview image */
+    char       *s_cfg_file;     /* Config file string */
 } DialogData;
 /*----------------------------------------------------------------------------*/
 /**

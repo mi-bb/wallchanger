@@ -42,8 +42,8 @@
 #include "defs.h"
 #include "hashfun.h"
 #include "dmfn.h"
-#include "astart.h"
 #include "wmsfn.h"
+#include "deffiles.h"
 /*----------------------------------------------------------------------------*/
 /**
  * @fn  static uint32_t get_wallpaper_ch_interval (const DialogData *dd_data)
@@ -74,22 +74,28 @@ static void        set_wallpaper_ch_interval   (const DialogData  *dd_data,
  * @brief  Read settings from widgets and store them in WallSett object.
  *
  * @param[in,out] dd_data  DialogData object with settings and widget data
- * @return        none
+ * @return        List of settings
  *
  * @fn  static void widgets_set_settings (const DialogData  *dd_data,
- *                                        Setting           *st_settings)
+ *                                        Setting           *st_settings,
+ *                                        Setting           *st_wmlist,
+ *                                        int               *i_err)
  *
- * @brief  Loading data from SettList list of settings to program window.
+ * @brief  Loading data from list of settings to program window.
  *
  * @param[in,out] dd_data      DialogData object with settings and widget data
  * @param[in]     st_settings  List with settings
+ * @param[in]     st_wmlist    List with window manager info
+ * @param[out]    i_err        Error output
  * @return        none
  */
 /*----------------------------------------------------------------------------*/
 static Setting   * widgets_get_settings        (const DialogData  *dd_data);
 
 static void        widgets_set_settings        (const DialogData  *dd_data,
-                                                Setting           *st_settings);
+                                                Setting           *st_settings,
+                                                Setting           *st_wmlist,
+                                                int               *i_err);
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Sets statusbar info about actual config file.
@@ -404,63 +410,30 @@ widgets_get_settings (const DialogData *dd_data)
  */
 static void
 widgets_set_settings (const DialogData *dd_data,
-                      Setting          *st_settings)
+                      Setting          *st_settings,
+                      Setting          *st_wmlist,
+                      int              *i_err)
 {
-    Setting    *st_item;            /* Setting to read */
-    int         i_w         = 0;    /* Window width value */
-    int         i_h         = 0;    /* Window height value */
-    const char *s_setts_cmd = NULL; /* Command from settings */
-    const char *s_cmd       = NULL; /* Command from detection */
+    Setting    *st_item    = NULL; /* Setting to read */
+    int         i_w        = 0;    /* Window width value */
+    int         i_h        = 0;    /* Window height value */
+    const char *s_lastused = NULL; /* Last used wallpapet string */
+    char       *s_cmd      = NULL; /* Wallpaper set command */
 
-    int i_last_used_wm = -1;
-    int i_current_wm   = -1;
+    *i_err = ERR_OK;
 
-    st_item = settings_find (st_settings,
-                             get_setting_name (SETTING_LAST_USED_WM));
+    /* Check window managers and set wallpaper set command */
+    s_cmd = wms_get_wallpaper_command (dd_data->s_cfg_file,
+                                       st_settings,
+                                       st_wmlist,
+                                       i_err);
+    if (*i_err != ERR_OK) {
+        free (s_cmd);
+        return;
+    }
+    gtk_entry_set_text (GTK_ENTRY (dd_data->gw_command), s_cmd);
+    free (s_cmd);
 
-    i_current_wm = wms_get_current_wm_id ();
-
-    if (st_item != NULL) {
-        //puts ("setting not null");
-        i_last_used_wm = (int) setting_get_int (st_item);
-    }
-    //printf ("wms last used : %d current %d\n", i_last_used_wm, i_current_wm);
-    /* Current wm is same as the one last used */
-    if (i_current_wm == i_last_used_wm) {
-        /* Load the command from config file */
-        //puts ("wms are the same");
-    }
-    /* Current wm is different than the last one */
-    else {
-        /* Look for command for the current wm */
-        //puts ("wms differ");
-        if (i_current_wm == -1 && i_last_used_wm != -1) {
-            /* Current unk but last used was different and known */
-            //puts ("current and last one unk");
-        }
-        /* Update last used wm option value in config file */
-    }
-    if (i_current_wm == -1 && i_last_used_wm == -1) {
-        /* Lst used and current unk */
-    }
-    /* Set background set command */
-    st_item = settings_find (st_settings, get_setting_name (SETTING_BG_CMD));
-    if (st_item != NULL) {
-        s_setts_cmd = setting_get_string (st_item);
-        if (s_setts_cmd != NULL && s_setts_cmd[0] != '\0') {
-            gtk_entry_set_text (GTK_ENTRY (dd_data->gw_command), s_setts_cmd);
-        }
-        else {
-            s_cmd = wms_find_command ();
-            if (s_cmd == NULL) {
-                gtk_entry_set_text (GTK_ENTRY (dd_data->gw_command),
-                        DEFAULT_BG_CMD);
-            }
-            else {
-                gtk_entry_set_text (GTK_ENTRY (dd_data->gw_command), s_cmd);
-            }
-        }
-    }
     /* Set last used wallpaper on start setting */
     st_item = settings_find (st_settings,
                              get_setting_name (SETTING_LAST_USED_OPT));
@@ -508,6 +481,18 @@ widgets_set_settings (const DialogData *dd_data,
         i_h = (int) setting_get_int (st_item);
     }
     gtk_window_set_default_size (GTK_WINDOW (dd_data->gw_window), i_w, i_h);
+
+    /* Check if there is last used wallpaper info, if it is select it on
+     * list and make a preview image */
+    st_item = settings_find (st_settings,
+                             get_setting_name (SETTING_LAST_USED_STR));
+    if (st_item != NULL)
+        s_lastused = setting_get_string (st_item);
+
+    if (s_lastused != NULL) {
+        preview_from_file (dd_data->gw_imgprev, s_lastused);
+        treeview_find_select_item (dd_data->gw_view, s_lastused);
+    }
 }
 /*----------------------------------------------------------------------------*/
 /**
@@ -617,8 +602,8 @@ event_save_settings_pressed (const DialogData *dd_data)
     int       i_err = 0;  /* Error value */
 
     st_settings = widgets_get_settings (dd_data);
-    i_err = settings_check_update_file (dialogdata_get_cfg_file (dd_data),
-                                        st_settings);
+    i_err = setts_check_update_file (dialogdata_get_cfg_file (dd_data),
+                                     st_settings);
     settings_free_all (st_settings);
 
     if (i_err != ERR_OK) {
@@ -748,10 +733,10 @@ event_autostart_toggled (GtkToggleButton *togglebutton,
                          gpointer         user_data __attribute__ ((unused)))
 {
     if (gtk_toggle_button_get_active (togglebutton)) {
-        autostart_create ();
+        deffiles_autostart_create ();
     }
     else {
-        autostart_remove ();
+        deffiles_autostart_remove ();
     }
 }
 /*----------------------------------------------------------------------------*/
@@ -778,9 +763,9 @@ event_on_delete (GtkWidget        *window,
     settings_print (st_settings);
     #endif
 
-    s_buff  = settings_check_update (dialogdata_get_cfg_file (dd_data),
-                                     st_settings,
-                                     &i_err);
+    s_buff  = setts_check_update (dialogdata_get_cfg_file (dd_data),
+                                  st_settings,
+                                  &i_err);
     settings_free_all (st_settings);
 
     if (i_err != ERR_OK) {
@@ -798,8 +783,8 @@ event_on_delete (GtkWidget        *window,
         gtk_widget_destroy (dialog);
 
         if (i_res == GTK_RESPONSE_YES) {
-            i_err = settings_update_file (dialogdata_get_cfg_file (dd_data),
-                                          s_buff);
+            i_err = setts_update_file (dialogdata_get_cfg_file (dd_data),
+                                       s_buff);
             if (i_err != ERR_OK) {
                 message_dialog_error (GTK_WINDOW (window),
                                       err_get_message (i_err));
@@ -807,7 +792,7 @@ event_on_delete (GtkWidget        *window,
         }
         free (s_buff);
     }
-    settings_update_window_size (dialogdata_get_cfg_file(dd_data), i_w, i_h);
+    setts_update_window_size (dialogdata_get_cfg_file(dd_data), i_w, i_h);
     return FALSE;
 }
 /*----------------------------------------------------------------------------*/
@@ -1088,15 +1073,15 @@ create_settings_widget (GtkWidget **gw_widget,
     gw_autostart_button = gtk_check_button_new ();
     gtk_widget_set_tooltip_markup (gw_autostart_button, 
         "When <b>enabled</b> wchangerd daemon entry will be placed in "
-        "user's autostart directory."
+        "users autostart directory."
         "\nWhen <b>disabled</b> daemon entry will be removed from "
-        "user's autostart directory."
+        "users autostart directory."
         "\nThis will allow to start (restart actually) wchangerd daemon "
         " in XDG Autostart compatible window managers.");
     gtk_button_set_label (GTK_BUTTON (gw_autostart_button),
                           "Create autostart entry");
     gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (gw_autostart_button),
-                                  autostart_exists ());
+                                  deffiles_autostart_exists ());
     g_signal_connect (gw_autostart_button, "toggled",
                       G_CALLBACK (event_autostart_toggled), NULL);
 
@@ -1222,9 +1207,8 @@ activate (GtkApplication *app,
     GtkWidget  *gw_box_main;        /* Main box to pack everything */
     GtkWidget  *gw_statusbar;       /* Bottom status bar */
     Setting    *st_settings;        /* Program settings */
-    Setting    *st_sett;            /* Setting object */
+    Setting    *st_wm      = NULL;  /* Window manager info */
     GdkPixbuf  *gd_pix     = NULL;  /* Default widget icon */
-    const char *s_lastused = NULL;  /* Last used wallpaper path */
     int         i_err      = 0;     /* For error output */
 
     /* Find config file and set config file name */
@@ -1232,6 +1216,7 @@ activate (GtkApplication *app,
 
     /* Image preview widget */
     gw_img_prev = gtk_image_new ();
+    dd_data->gw_imgprev = gw_img_prev;
 
     /* Main window */
     gw_window = gtk_application_window_new (app);
@@ -1322,39 +1307,53 @@ activate (GtkApplication *app,
     gtk_container_set_border_width (GTK_CONTAINER (gw_box_main), 10);
     gtk_container_add (GTK_CONTAINER (gw_window), gw_box_main);
 
-    st_settings = settings_read (dialogdata_get_cfg_file (dd_data), &i_err);
+    /* Read program settings */
+    st_settings = setts_read (dialogdata_get_cfg_file (dd_data), &i_err);
 
+    /* Check window managers config file */
+    if (i_err == ERR_OK)
+        i_err = deffiles_wm_check_create ();
+
+    /* Get window manager data */
+    if (i_err == ERR_OK)
+        st_wm = wms_get_wm_info (&i_err);
+
+    #ifdef DEBUG
+    printf ("RESULT %d\n", i_err);
+    #endif
     if (i_err != ERR_OK) {
         message_dialog_error (NULL, err_get_message (i_err));
         settings_free_all (st_settings);
+        settings_free_all (st_wm);
         g_application_quit (G_APPLICATION (app));
         return;
     }
+
     #ifdef DEBUG
-    settings_print (st_settings);
+    //settings_print (st_settings);
     #endif
-    settings_check_defaults (st_settings);
+    setts_check_defaults (st_settings);
     #ifdef DEBUG
-    settings_print (st_settings);
+    //settings_print (st_settings);
     #endif
 
-    widgets_set_settings (dd_data, setting_get_child (st_settings));
+    widgets_set_settings (dd_data,
+                          setting_get_child (st_settings),
+                          setting_get_child (st_wm),
+                          &i_err);
 
-    st_sett = settings_find (setting_get_child (st_settings),
-                             get_setting_name (SETTING_LAST_USED_STR));
-    if (st_sett != NULL)
-        s_lastused = setting_get_string (st_sett);
-
-    /* Check if there is last used wallpaper info, if it is select it on
-     * list and make a preview image */
-    if (s_lastused != NULL) {
-        preview_from_file (gw_img_prev, s_lastused);
-        treeview_find_select_item (gw_tview, s_lastused);
-    }
+    settings_free_all (st_wm);
     settings_free_all (st_settings);
 
-    daemon_monitor (dd_data);
+    if (i_err != ERR_OK) {
+        message_dialog_error (NULL, err_get_message (i_err));
+        g_application_quit (G_APPLICATION (app));
+        return;
+    }
 
+    /* Set info about wchangerd deamon presence */
+    daemon_monitor (dd_data);
+    /* Add gtk thread for checking wchangerd deaemon process presence */
     gdk_threads_add_timeout_full (G_PRIORITY_LOW,
                                   3000,
                                   daemon_monitor,

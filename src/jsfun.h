@@ -29,6 +29,18 @@
 #include "setting.h"
 /*----------------------------------------------------------------------------*/
 /**
+ * @brief  Convert string with raw json data to Setting items and insert them
+ *         to st_settings list.
+ *
+ * @param[in]  s_jbuff      String with json data
+ * @param[out] st_settings  List of Setting items
+ * @return     none
+ */
+/*----------------------------------------------------------------------------*/
+void   js_json_string_to_settings (const char *s_jbuff,
+                                   Setting    *st_settings);
+/*----------------------------------------------------------------------------*/
+/**
  * @brief  Get settings data from file.
  *
  * Reads settings from json file, returns SettList with settings or empty if

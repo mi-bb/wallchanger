@@ -47,7 +47,7 @@ struct gengetopt_args_info
   const char *stop_help; /**< @brief Stop wchangerd process help description.  */
   const char *restart_help; /**< @brief Restart wchangerd process help description.  */
   const char *status_help; /**< @brief Print wchangerd status help description.  */
-  const char *once_help; /**< @brief Run once and exit help description.  */
+  const char *once_help; /**< @brief Change wallpaper once and exit help description.  */
   char * config_arg;	/**< @brief Path to config file.  */
   char * config_orig;	/**< @brief Path to config file original value given at command line.  */
   const char *config_help; /**< @brief Path to config file help description.  */

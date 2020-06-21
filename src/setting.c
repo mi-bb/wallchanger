@@ -208,6 +208,21 @@ setting_get_string (const Setting *st_set)
         return NULL;
 }
 /*----------------------------------------------------------------------------*/
+void
+setting_set_string (Setting    *st_set,
+                    const char *val)
+{
+    if (setting_get_type (st_set) == SET_VAL_STRING)
+        setting_free_string (st_set);
+
+    setting_set_type (st_set, SET_VAL_STRING);
+
+    if (val == NULL)
+        st_set->data.s_val = strdup ("");
+    else
+        st_set->data.s_val = strdup (val);
+}
+/*----------------------------------------------------------------------------*/
 /**
  * @brief  Copy data from one Setting object to another
  */
@@ -368,12 +383,14 @@ setting_new_string (const char *s_name,
     Setting *st_set = NULL;
 
     st_set = setting_new_default (s_name);
-    setting_set_type (st_set, SET_VAL_STRING);
 
-    if (val == NULL)
-        st_set->data.s_val = strdup ("");
-    else
-        st_set->data.s_val = strdup (val);
+    setting_set_string (st_set, val);
+    //setting_set_type (st_set, SET_VAL_STRING);
+
+    //if (val == NULL)
+    //    st_set->data.s_val = strdup ("");
+    //else
+    //    st_set->data.s_val = strdup (val);
 
     return st_set;
 }

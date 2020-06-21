@@ -24,8 +24,6 @@
 #ifndef SETTS_H
 #define SETTS_H
 
-//#include "wallsett.h"
-//#include "settlist.h"
 #include "setting.h"
 /*----------------------------------------------------------------------------*/
 /**
@@ -58,7 +56,10 @@ const char * get_setting_name (const int i_val) __attribute__ ((const));
  * @param[in,out] st_settings  List of Setting items
  * @return        none
  */
-void settings_check_defaults (Setting *st_settings);
+void setts_check_defaults (Setting *st_settings);
+/*----------------------------------------------------------------------------*/
+void setts_string_to_settings (const char *s_jbuff,
+                               Setting    *st_settings);
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Read program settings from a given config file.
@@ -67,13 +68,13 @@ void settings_check_defaults (Setting *st_settings);
  * @param[out] i_err       Error output
  * @return     Setting list with settings or null pointer
  */
-Setting * settings_read (const char *s_cfg_file,
-                         int        *i_err)
-                         __attribute__ ((nonnull (1)));
+Setting * setts_read (const char *s_cfg_file,
+                      int        *i_err)
+                      __attribute__ ((nonnull (1)));
 /*----------------------------------------------------------------------------*/
 /**
- * @fn  int settings_update_last_used (const char *s_cfg_file,
- *                                     const char *s_last_used)
+ * @fn  int setts_update_last_used (const char *s_cfg_file,
+ *                                  const char *s_last_used)
  *
  * @brief  Update last used wallpaper file name in config file. 
  *
@@ -81,8 +82,8 @@ Setting * settings_read (const char *s_cfg_file,
  * @param[in] s_last_used  Last used file path
  * @return    Updating data in settings file status
  *
- * @fn  int settings_update_last_used_wm (const char *s_cfg_file,
- *                                        const int   i_last_used_wm)
+ * @fn  int setts_update_last_used_wm (const char *s_cfg_file,
+ *                                     const int   i_last_used_wm)
  *
  * @brief  Update last used window manager value in config file. 
  *
@@ -90,9 +91,9 @@ Setting * settings_read (const char *s_cfg_file,
  * @param[in] i_last_used_wm  Last used window manager
  * @return    Updating data in settings file status
  *
- * @fn  int settings_update_window_size (const char *s_cfg_file,
- *                                       const int   i_w,
- *                                       const int   i_h)
+ * @fn  int setts_update_window_size (const char *s_cfg_file,
+ *                                    const int   i_w,
+ *                                    const int   i_h)
  *
  * @brief  Update window size in config file. 
  *
@@ -102,26 +103,26 @@ Setting * settings_read (const char *s_cfg_file,
  * @return    Updating data in settings file status
  */
 /*----------------------------------------------------------------------------*/
-int settings_update_last_used    (const char *s_cfg_file,
-                                  const char *s_last_used);
+int setts_update_last_used    (const char *s_cfg_file,
+                               const char *s_last_used);
 
-int settings_update_last_used_wm (const char *s_cfg_file,
-                                  const int   i_last_used_wm);
+int setts_update_last_used_wm (const char *s_cfg_file,
+                               const char *s_last_used_wm);
 
-int settings_update_window_size  (const char *s_cfg_file,
-                                  const int   i_w,
-                                  const int   i_h);
+int setts_update_window_size  (const char *s_cfg_file,
+                               const int   i_w,
+                               const int   i_h);
 /*----------------------------------------------------------------------------*/
 /**
- * @fn  char * settings_check_update (Setting    *st_settings,
- *                                    const char *s_cfg_file,
- *                                    int        *i_err)
+ * @fn  char * settings_check_update      (const char *s_cfg_file,
+ *                                         Setting    *st_settings,
+ *                                         int        *i_err)
  *
  * @brief  Check if settings in SettList are an update to settings
  *         stored in settings file.
  *
- * @param[in]  st_settings  List of Setting items
  * @param[in]  s_cfg_file   Config file path
+ * @param[in]  st_settings  List of Setting items
  * @param[out] i_err        Error output
  * @return     String with updated settings or null if there is no update.
  *
@@ -130,8 +131,8 @@ int settings_update_window_size  (const char *s_cfg_file,
  *
  * @brief  Update file with new data.
  *
- * @param[in] s_buff      String with data to save
  * @param[in] s_cfg_file  Config file path
+ * @param[in] s_buff      String with data to save
  * @return    Saving file status, ERR_OK or error code
  *
  * @fn  int settings_check_update_file (const char *s_cfg_file,
@@ -140,23 +141,23 @@ int settings_update_window_size  (const char *s_cfg_file,
  * @brief  Check if settings are an update and update file with new data
  *         if they are.
  *
- * @param[in] st_settings  List of Setting items
  * @param[in] s_cfg_file   Config file path
+ * @param[in] st_settings  List of Setting items
  * @return    Saving file status, ERR_OK or error code
  */
 /*----------------------------------------------------------------------------*/
-char * settings_check_update      (const char *s_cfg_file,
-                                   Setting    *st_settings,
-                                   int        *i_err)
-                                   __attribute__ ((nonnull (1)));
+char * setts_check_update      (const char *s_cfg_file,
+                                Setting    *st_settings,
+                                int        *i_err)
+                                __attribute__ ((nonnull (1)));
 
-int    settings_update_file       (const char *s_cfg_file,
-                                   const char *s_buff)
-                                   __attribute__ ((nonnull (1, 2)));
+int    setts_update_file       (const char *s_cfg_file,
+                                const char *s_buff)
+                                __attribute__ ((nonnull (1, 2)));
 
-int    settings_check_update_file (const char *s_cfg_file,
-                                   Setting    *st_settings)
-                                   __attribute__ ((nonnull (1)));
+int    setts_check_update_file (const char *s_cfg_file,
+                                Setting    *st_settings)
+                                __attribute__ ((nonnull (1)));
 /*----------------------------------------------------------------------------*/
 #endif
 

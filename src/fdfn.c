@@ -188,7 +188,7 @@ file_check_permissions_create (const char *s_file)
 }
 /*----------------------------------------------------------------------------*/
 /**
- * @brief  Get users home dir path.
+ * @brief  Get user's home dir path.
  */
 char *
 dir_get_home (void)

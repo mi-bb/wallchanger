@@ -153,7 +153,8 @@ js_json_obj_to_settings (json_object *val,
  * @param[out] st_settings  List of Setting items
  * @return     none
  */
-static void
+//static void
+void
 js_json_string_to_settings (const char *s_jbuff,
                             Setting    *st_settings)
 {
@@ -280,7 +281,7 @@ js_settings_add_to_json_obj (const Setting *st_settings,
  */
 Setting *
 js_settings_read (const char *s_fname,
-                   int        *i_err)
+                  int        *i_err)
 {
     Setting *st_settings;   /* Settings to return */
     char    *s_buff = NULL; /* File data buffer */
