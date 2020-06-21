@@ -60,10 +60,10 @@ int
 wms_update_wm_command (const char *s_wm_name,
                        const char *s_command)
 {
-    Setting   *st_wms;             /* Window manager info list */
-    int        i_err    = 0;       /* Error output */
-    Setting      *st_item     = NULL; /* For checking wm name and command */
-    char    *s_path = NULL; /* Config file path */
+    Setting *st_wms  = NULL; /* Window manager info list */
+    Setting *st_item = NULL; /* For checking wm name and command */
+    char    *s_path  = NULL; /* Config file path */
+    int      i_err   = 0;    /* Error output */
 
     /* Load settings from config file */
     s_path = cfgfile_get_wm_info_file_path ();

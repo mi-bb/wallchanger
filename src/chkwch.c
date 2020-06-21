@@ -30,6 +30,7 @@
 #include "wpset.h"
 #include "setts.h"
 #include "errs.h"
+#include "wmsfn.h"
 #include "chkwch.h"
 /*----------------------------------------------------------------------------*/
 #ifdef DEBUG
@@ -135,15 +136,17 @@ check_config_file (char **s_file)
  * @return     none
  */
 static void
-free_and_exit (Setting    *st_settings,
-               char       *s_cfg_file,
+free_and_exit (char       *s_cfg_file,
                RandMem    *rm_rand,
+               Setting    *st_settings,
+               Setting    *st_wminfo,
                int         i_exit_val,
                const char *s_message)
 {
-    settings_free_all (st_settings);
     free (s_cfg_file);
     randomm_free (rm_rand);
+    settings_free_all (st_settings);
+    settings_free_all (st_wminfo);
     if (s_message == NULL) {
         exit (i_exit_val);
     }
@@ -167,15 +170,23 @@ check_settings_change_wallpaper (char     *s_cfg_file,
     uint32_t         ui_inter = 0;    /* Result change interval */
     Setting         *st_setts = NULL; /* For settings */
     Setting         *st_walls = NULL; /* For wallpaper list */
+    Setting         *st_wm    = NULL; /* Window manager info */
     Setting         *st_st    = NULL; /* For particular setting */
+    char            *s_cmd    = NULL; /* For wallpaper change command */
 
     /* Read settings, check for empty config file, set defaults */
     st_setts = setts_read (s_cfg_file, &i_err);
+
+    /* Get settings with window manager info */
+    if (i_err == ERR_OK)
+        st_wm = wms_get_wm_info (&i_err);
+
     if (i_err != ERR_OK) {
-        free_and_exit (st_setts, s_cfg_file, rm_rand, EXIT_FAILURE, NULL);
+        free_and_exit (s_cfg_file, rm_rand, st_setts, st_wm,
+                       EXIT_FAILURE, NULL);
     }
     if (setting_get_child (st_setts) == NULL) {
-        free_and_exit (st_setts, s_cfg_file, rm_rand,
+        free_and_exit (s_cfg_file, rm_rand, st_setts, st_wm,
                        EXIT_FAILURE, "Empty config file");
     }
     setts_check_defaults (st_setts);
@@ -185,16 +196,29 @@ check_settings_change_wallpaper (char     *s_cfg_file,
                               get_setting_name (SETTING_WALL_ARRAY));
     /* Exit function if there are no wallpapers in an array */
     if ((st_walls = setting_get_child (st_walls)) == NULL) {
-        free_and_exit (st_setts, s_cfg_file, rm_rand,
+        free_and_exit (s_cfg_file, rm_rand, st_setts, st_wm,
                        EXIT_FAILURE, "Empty wallpaper list");
     }
+    /* Get wallpaper set command depending on used window manager */
+    s_cmd = wms_get_wallpaper_command (s_cfg_file, setting_get_child (st_setts),
+                                       setting_get_child (st_wm), &i_err);
+    /* Update wallpaper set command in settings */
+    if (s_cmd != NULL) {
+        if ((st_st = setting_find_child (st_setts,
+                    get_setting_name (SETTING_BG_CMD))) != NULL) {
+            setting_set_string (st_st, s_cmd);
+        }
+        free (s_cmd);
+    }
+    /* Get actual number of wallpapers in list */
     ui_nlen = (uint32_t) settings_count (st_walls);
-
+    /* Get time align info */
     st_st = settings_find (setting_get_child (st_setts),
                            get_setting_name (SETTING_TIME_ALIGN_OPT));
     if (st_st != NULL) {
         *i_algntime = (int) setting_get_int (st_st);
     }
+    /* Get wallpaper change inerval value */
     st_st = settings_find (setting_get_child (st_setts),
                            get_setting_name (SETTING_INTERVAL_VAL));
     if (st_st != NULL) {
@@ -203,7 +227,8 @@ check_settings_change_wallpaper (char     *s_cfg_file,
     if (ui_len == ui_nlen) {
         /* Wallpaper list length did not changed, change wallpaper */
         if (wpset_change (st_setts, rm_rand, s_cfg_file) != ERR_OK) {
-            free_and_exit (st_setts, s_cfg_file, rm_rand, EXIT_FAILURE, NULL);
+            free_and_exit (s_cfg_file, rm_rand, st_setts, st_wm,
+                           EXIT_FAILURE, NULL);
         }
     }
     else {
@@ -214,19 +239,20 @@ check_settings_change_wallpaper (char     *s_cfg_file,
         if (ui_len == 0) {
             /* Program startup */
             if (wpset_startup_set (st_setts, rm_rand, s_cfg_file) != ERR_OK) {
-                free_and_exit (st_setts, s_cfg_file, rm_rand,
+                free_and_exit (s_cfg_file, rm_rand, st_setts, st_wm,
                                EXIT_FAILURE, NULL);
             }
         }
         else {
             /* Change during progam work */
             if (wpset_change (st_setts, rm_rand, s_cfg_file) != ERR_OK) {
-                free_and_exit (st_setts, s_cfg_file, rm_rand,
+                free_and_exit (s_cfg_file, rm_rand, st_setts, st_wm,
                                EXIT_FAILURE, NULL);
             }
         }
         ui_len = ui_nlen;
     }
+    settings_free_all (st_wm);
     settings_free_all (st_setts);
     return ui_inter * 60;
 }

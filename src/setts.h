@@ -56,8 +56,16 @@ const char * get_setting_name (const int i_val) __attribute__ ((const));
  * @param[in,out] st_settings  List of Setting items
  * @return        none
  */
-void setts_check_defaults (Setting *st_settings);
+void setts_check_defaults     (Setting    *st_settings);
 /*----------------------------------------------------------------------------*/
+/**
+ * @brief  Convert string with raw json data to Setting items and insert them
+ *         to st_settings list.
+ *
+ * @param[in]  s_jbuff      String with json data
+ * @param[out] st_settings  List of Setting items
+ * @return     none
+ */
 void setts_string_to_settings (const char *s_jbuff,
                                Setting    *st_settings);
 /*----------------------------------------------------------------------------*/

@@ -117,10 +117,10 @@ get_setting_name (const int i_val)
     return s_res;
 }
 /*----------------------------------------------------------------------------*/
-void setts_string_to_settings (const char *s_buff,
+void setts_string_to_settings (const char *s_jbuff,
                                Setting    *st_settings)
 {
-    js_json_string_to_settings (s_buff, st_settings);
+    js_json_string_to_settings (s_jbuff, st_settings);
 }
 /*----------------------------------------------------------------------------*/
 /**
