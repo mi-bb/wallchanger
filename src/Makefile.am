@@ -34,6 +34,7 @@ wchangerd_SOURCES=wcngdmn.c\
                   proclist.c proclist.h\
                   cmdfn.c cmdfn.h\
                   cmdline.c cmdline.h\
+                  wmsfn.c wmsfn.h\
                   errs.h\
                   defs.h
 
