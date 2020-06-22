@@ -182,16 +182,6 @@ void setting_free      (Setting *st_set);
 void settings_free_all (Setting *st_set);
 /*----------------------------------------------------------------------------*/
 /**
- * @brief  Compare 2 setting items.
- *
- * @param[in] st_sett1  Setting object
- * @param[in] st_sett2  Setting object
- * @return    0 if setting are equal, non 0 if they differ
- */
-int setting_compare (const Setting *st_sett1,
-                     const Setting *st_sett2) __attribute__ ((pure));
-/*----------------------------------------------------------------------------*/
-/**
  * @fn         int64_t setting_get_int (const Setting *st_set)
  * @brief      Get integer value stored in Setting
  *
@@ -350,13 +340,6 @@ Setting * setting_copy (const Setting *st_src)
  * @param[in] st_settings  List of Setting items
  * @param[in] pos          Position of setting to get
  * @return    Pointer to Setting item or null if not found
- *
- * @fn  size_t settings_count (const Setting *st_settings)
- *
- * @brief  Count number of Setting items present in given st_settings list.
- *
- * @param[in] st_settings  List of Setting items
- * @return    Number of Setting items in st_settings list
  */
 /*----------------------------------------------------------------------------*/
 Setting * setting_first          (Setting       *st_settings);
@@ -370,19 +353,44 @@ Setting * settings_find          (Setting       *st_settings,
 
 Setting * setting_get_at_pos     (Setting       *st_settings,
                                   const size_t   pos);
-
+/*----------------------------------------------------------------------------*/
+/**
+ * @brief  Count number of Setting items present in given st_settings list.
+ *
+ * @param[in] st_settings  List of Setting items
+ * @return    Number of Setting items in st_settings list
+ */
 size_t    settings_count         (const Setting *st_settings);
 /*----------------------------------------------------------------------------*/
 /**
- * @fn  void setting_replace (Setting *st_old,
- *                            Setting *st_new)
- *
  * @brief  Replace Setting st_old in list with st_new.
  *
  * @param[in,out] st_old  Old Setting item to be replaced
  * @param[in,out] st_new  New Setting item to replace old one
  * @return        none
+ */
+void      setting_replace        (Setting       *st_old,
+                                  Setting       *st_new);
+/*----------------------------------------------------------------------------*/
+/**
+ * @brief  Find setting in list and replace.
  *
+ * Function is looking in Setting list st_list for settings with name like
+ * name of st_setting Setting. After finding such setting it will be replaced
+ * with st_seting. If i_multi is set to 0, fuction stops after first replace,
+ * if i_multi is set to 1, funciton replaces all found settings. Function
+ * returns number of replaces performed.
+ *
+ * @param[in,out] st_list     List of Setting items
+ * @param[in,out] st_setting  Destination Setting
+ * @param[in]     i_multi     Multiple replaces value
+ * @return        Number of replaces performed.
+ */
+int       settings_find_replace  (Setting       *st_list,
+                                  Setting       *st_setting,
+                                  const int      i_multi);
+/*----------------------------------------------------------------------------*/
+/**
  * @fn  void setting_add_child (Setting *st_parent,
  *                              Setting *st_child)
  *
@@ -431,9 +439,6 @@ size_t    settings_count         (const Setting *st_settings);
  * @return     none
  */
 /*----------------------------------------------------------------------------*/
-void setting_replace            (Setting *st_old,
-                                 Setting *st_new);
-
 void setting_add_child          (Setting *st_parent,
                                  Setting *st_child);
 
@@ -457,7 +462,7 @@ void settings_append_or_replace (Setting *st_list,
  * @param[out]  st_set  Setting object
  * @return      none
  */
-void setting_print (const Setting *st_set);
+void setting_print  (const Setting *st_set);
 
 void settings_print (const Setting *st_set);
 /*----------------------------------------------------------------------------*/

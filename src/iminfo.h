@@ -84,13 +84,13 @@ ImageInfo {
  * @return     none
  */
 /*----------------------------------------------------------------------------*/
-ImageInfo * imageinfo_new           (void)
-            __attribute__ ((returns_nonnull));
+ImageInfo *  imageinfo_new            (void)
+             __attribute__ ((returns_nonnull));
 
-ImageInfo * imageinfo_new_from_file (const char *s_fname)
-            __attribute__ ((nonnull (1), returns_nonnull));
+ImageInfo *  imageinfo_new_from_file  (const char       *s_fname)
+             __attribute__ ((nonnull (1), returns_nonnull));
 
-void        imageinfo_free          (ImageInfo  *ii_info);
+void         imageinfo_free           (ImageInfo        *ii_info);
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Get image info of files in list and store it in ImageInfo list.
@@ -99,7 +99,7 @@ void        imageinfo_free          (ImageInfo  *ii_info);
  * @return     List of ImageInfo items
  */
 /*----------------------------------------------------------------------------*/
-GSList * file_paths_to_imageinfo   (const GSList *gsl_files1);
+GSList     * file_paths_to_imageinfo  (const GSList     *gsl_files1);
 /*----------------------------------------------------------------------------*/
 /**
  * @fn  void imageinfo_set_full_name (ImageInfo *ii_info, const char *s_name)
@@ -187,43 +187,43 @@ GSList * file_paths_to_imageinfo   (const GSList *gsl_files1);
 /*----------------------------------------------------------------------------*/
 void         imageinfo_set_full_name  (ImageInfo        *ii_info,
                                        const char       *s_name)
-                                       __attribute__ ((nonnull (2)));
+             __attribute__ ((nonnull (2)));
 
 const char * imageinfo_get_full_name  (const ImageInfo  *ii_info)
-                                       __attribute__ ((pure));
+             __attribute__ ((pure));
 /*----------------------------------------------------------------------------*/
 void         imageinfo_set_file_name  (ImageInfo        *ii_info,
                                        const char       *s_name)
-                                       __attribute__ ((nonnull (2)));
+             __attribute__ ((nonnull (2)));
 
 const char * imageinfo_get_file_name  (const ImageInfo  *ii_info)
-                                       __attribute__ ((pure));
+             __attribute__ ((pure));
 /*----------------------------------------------------------------------------*/
 void         imageinfo_set_file_path  (ImageInfo        *ii_info,
                                        const char       *s_name)
-                                       __attribute__ ((nonnull (2)));
+             __attribute__ ((nonnull (2)));
 
 const char * imageinfo_get_file_path  (const ImageInfo  *ii_info)
-                                       __attribute__ ((pure));
+             __attribute__ ((pure));
 /*----------------------------------------------------------------------------*/
 void         imageinfo_set_width      (ImageInfo        *ii_info,
                                        const int         i_val);
 
 int          imageinfo_get_width      (const ImageInfo  *ii_info)
-                                       __attribute__ ((pure));
+             __attribute__ ((pure));
 /*----------------------------------------------------------------------------*/
 void         imageinfo_set_height     (ImageInfo        *ii_info,
                                        const int         i_val);
 
 int          imageinfo_get_height     (const ImageInfo  *ii_info)
-                                       __attribute__ ((pure));
+             __attribute__ ((pure));
 /*----------------------------------------------------------------------------*/
 void         imageinfo_set_wxh        (ImageInfo        *ii_info,
                                        const int         i_w,
                                        const int         i_h);
 
 const char * imageinfo_get_wxh        (const ImageInfo  *ii_info)
-                                       __attribute__ ((pure));
+             __attribute__ ((pure));
 /*----------------------------------------------------------------------------*/
 #endif
 

@@ -70,7 +70,7 @@ GSList * add_images_dialog        (GtkWindow    *gw_parent);
 /*----------------------------------------------------------------------------*/
 void     message_dialog_error     (GtkWindow    *gw_parent,
                                    const char   *s_message)
-                                   __attribute__ ((nonnull (2)));
+         __attribute__ ((nonnull (2)));
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Dialog with information about application.

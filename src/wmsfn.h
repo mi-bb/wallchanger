@@ -31,7 +31,7 @@
  *
  * @return Null terminated list of display strings.
  */
-char ** wms_get_xfce_display_list (void);
+char   ** wms_get_xfce_display_list  (void);
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Free null terminated list of strings.
@@ -39,7 +39,7 @@ char ** wms_get_xfce_display_list (void);
  * @param[in,out]  s_list  Null terminated list of strings
  * @return         none
  */
-void wms_free_xfce_display_list (char **s_list);
+void      wms_free_xfce_display_list (char      **s_list);
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Create Xfce wallpaper set command with display name given in s_disp.
@@ -48,14 +48,14 @@ void wms_free_xfce_display_list (char **s_list);
  * @return    New string with wallpaper set command. After use it should be
  *            freeed using free.
  */
-char *  wms_get_xfce_command (const char *s_disp);
+char    * wms_get_xfce_command       (const char *s_disp);
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Get window manager info from local config file.
  *
  * @return List of Setting items with window manager info
  */
-Setting * wms_get_wm_info (int *i_err);
+Setting * wms_get_wm_info            (int        *i_err);
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Find window manager that is currently in use.
@@ -63,7 +63,7 @@ Setting * wms_get_wm_info (int *i_err);
  * return     Setting item with info about window manager.
  *            After use it should be freed using free.
  */
-Setting * wms_get_current_wm (Setting *st_wmsl);
+Setting * wms_get_current_wm         (Setting    *st_wmsl);
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Update wallpaper set command in window manager info config file.
@@ -72,8 +72,8 @@ Setting * wms_get_current_wm (Setting *st_wmsl);
  * @param[in] s_command  New command to set wallpaper
  * @return    Saving file status, ERR_OK or error code
  */
-int wms_update_wm_command (const char *s_wm_name,
-                           const char *s_command);
+int       wms_update_wm_command      (const char *s_wm_name,
+                                      const char *s_command);
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Compare previously used window manager with present one, set
@@ -86,10 +86,10 @@ int wms_update_wm_command (const char *s_wm_name,
  * @return     String with wallpaper set command. After use it should be freed
  *             using free
  */
-char * wms_get_wallpaper_command (const char *s_cfg_file,
-                                  Setting    *st_settings,
-                                  Setting    *st_wmlist,
-                                  int        *i_err);
+char    * wms_get_wallpaper_command  (const char *s_cfg_file,
+                                      Setting    *st_settings,
+                                      Setting    *st_wmlist,
+                                      int        *i_err);
 /*----------------------------------------------------------------------------*/
 #endif
 

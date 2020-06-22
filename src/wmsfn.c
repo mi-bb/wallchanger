@@ -223,7 +223,7 @@ char *
 wms_get_wallpaper_command (const char *s_cfg_file,
                            Setting    *st_settings,
                            Setting    *st_wmlist,
-                           int *i_err)
+                           int        *i_err)
 {
     Setting    *st_wm        = NULL; /* Wm list setting */
     Setting    *st_cu_wm     = NULL; /* Current used wm setting */
@@ -264,13 +264,10 @@ wms_get_wallpaper_command (const char *s_cfg_file,
     /* Getting currently used window manager setting and name string */
     st_cu_wm = wms_get_current_wm (st_wm);
     if (st_cu_wm != NULL) {
-        #ifdef DEBUG
-        printf ("Found wm %s\n", setting_get_name (st_cu_wm));
-        #endif
         s_cu_wm = setting_get_name (st_cu_wm);
     }
     #ifdef DEBUG
-    printf ("wms  last used: %s, current: %s\n", s_lu_wm, s_cu_wm);
+    printf ("WM last used: %s, current: %s\n", s_lu_wm, s_cu_wm);
     #endif
     /* Compare last and currently used window manager, set wallpaper
      * change command for returning */
@@ -368,9 +365,6 @@ wms_get_wallpaper_command (const char *s_cfg_file,
                 break;
 
             case WM_STATE_END:
-                #ifdef DEBUG
-                puts (" End");
-                #endif
                 break;
 
             default:

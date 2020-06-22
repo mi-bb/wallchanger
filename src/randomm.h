@@ -61,7 +61,7 @@ RandMem {
  * @param[out] rm_mem  RandMem object
  * @return     none
  */
-void randomm_clear (RandMem *rm_mem);
+void      randomm_clear      (RandMem *rm_mem);
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Initialize random memory object.
@@ -69,14 +69,14 @@ void randomm_clear (RandMem *rm_mem);
  * @param[out] rm_mem  RandMem object
  * @return     none
  */
-void randomm_init (RandMem *rm_mem);
+void      randomm_init       (RandMem *rm_mem);
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Create new RandMem item.
  *
  * @return New RandMem item
  */
-RandMem * randomm_new (void) __attribute__((malloc));
+RandMem * randomm_new        (void) __attribute__((malloc));
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Free RandMem item.
@@ -84,7 +84,7 @@ RandMem * randomm_new (void) __attribute__((malloc));
  * @param[out] rm_mem  RandMem object
  * @return     none
  */
-void randomm_free (RandMem *rm_mem);
+void      randomm_free       (RandMem *rm_mem);
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Set random numbers maximum range.
@@ -93,8 +93,8 @@ void randomm_free (RandMem *rm_mem);
  * @param[in]  i_rng   Range value
  * @return     none
  */
-void randomm_set_range (RandMem  *rm_mem,
-                        int32_t   i_rng);
+void      randomm_set_range  (RandMem *rm_mem,
+                              int32_t  i_rng);
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Reset random number couts value
@@ -102,7 +102,7 @@ void randomm_set_range (RandMem  *rm_mem,
  * @param[out] rm_mem  RandMem object
  * @return     none
  */
-void randomm_reset_cnt (RandMem *rm_mem);
+void      randomm_reset_cnt  (RandMem *rm_mem);
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Get random number
@@ -118,7 +118,7 @@ void randomm_reset_cnt (RandMem *rm_mem);
  * @param[out] rm_mem  RandMem object
  * @return     Ranom number
  */
-uint32_t randomm_get_number (RandMem *rm_mem);
+uint32_t  randomm_get_number (RandMem *rm_mem);
 /*----------------------------------------------------------------------------*/
 #endif
 

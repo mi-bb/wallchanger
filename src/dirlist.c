@@ -40,7 +40,7 @@
  *
  * @brief  Get list of extensions supported by GdkPixbuf.
  *
- * @return  Hash table with extensions 
+ * @return  Hash table with extensions
  *
  * @fn  static GList * get_directory_filtered_content_glist (const char *s_dir,
                                                              GHashTable *gh_exts)
@@ -50,7 +50,7 @@
  *
  * @param[in]  s_dir    Directory path to scan
  * @param[in]  gh_exts  GHashTable with extensions
- * @return     GList with file names 
+ * @return     GList with file names
  */
 /*----------------------------------------------------------------------------*/
 static const char * get_file_ext                         (const char *s_fn);
@@ -63,7 +63,7 @@ static GList      * get_directory_filtered_content_glist (const char *s_dir,
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Get file extenstion.
- */                    
+ */
 static const char *
 get_file_ext (const char *s_fn)
 {
@@ -163,7 +163,7 @@ get_directory_filtered_content_glist (const char *s_dir,
     if ((dr = opendir (s_path)) == NULL) {
         warn ("%s", s_path);
         free (s_path);
-        return NULL; 
+        return NULL;
     }
 
     while ((de = readdir(dr)) != NULL) {

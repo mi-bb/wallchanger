@@ -116,9 +116,6 @@ str_set_up_wallpaper_command (const char *s_cmd,
         s_res = str_replace_in (s_cmd, s_sign, s_fname);
     }
     str_append (&s_res, " &");
-    #ifdef DEBUG
-    printf ("%s\n", s_res);
-    #endif
     return s_res;
 }
 /*----------------------------------------------------------------------------*/

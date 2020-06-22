@@ -765,9 +765,6 @@ event_on_delete (GtkWidget        *window,
     gtk_window_get_size (GTK_WINDOW (window), &i_w, &i_h);
 
     st_settings = widgets_get_settings (dd_data);
-    #ifdef DEBUG
-    settings_print (st_settings);
-    #endif
 
     s_buff  = setts_check_update (dialogdata_get_cfg_file (dd_data),
                                   st_settings,
@@ -977,7 +974,7 @@ create_buttons_widget (GtkWidget  **gw_widget,
     g_signal_connect_swapped (gw_button,
                               "clicked",
                               G_CALLBACK (about_app_dialog), NULL);
-    gw_button = create_image_button (NULL, "Exit app", W_ICON_EXIT);
+    gw_button = create_image_button (NULL, "Exit", W_ICON_EXIT);
     g_signal_connect_swapped (gw_button,
                               "clicked",
                               G_CALLBACK (gtk_window_close),
@@ -1324,9 +1321,6 @@ activate (GtkApplication *app,
     if (i_err == ERR_OK)
         st_wm = wms_get_wm_info (&i_err);
 
-    #ifdef DEBUG
-    printf ("RESULT %d\n", i_err);
-    #endif
     if (i_err != ERR_OK) {
         message_dialog_error (NULL, err_get_message (i_err));
         settings_free_all (st_settings);
@@ -1335,13 +1329,7 @@ activate (GtkApplication *app,
         return;
     }
 
-    #ifdef DEBUG
-    //settings_print (st_settings);
-    #endif
     setts_check_defaults (st_settings);
-    #ifdef DEBUG
-    //settings_print (st_settings);
-    #endif
 
     widgets_set_settings (dd_data,
                           setting_get_child (st_settings),

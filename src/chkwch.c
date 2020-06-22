@@ -170,7 +170,6 @@ check_settings_change_wallpaper (char     *s_cfg_file,
     uint32_t         ui_nlen  = 0;    /* Actual wallpaper list length */
     uint32_t         ui_inter = 0;    /* Result change interval */
     Setting         *st_setts = NULL; /* For settings */
-    Setting         *st_walls = NULL; /* For wallpaper list */
     Setting         *st_wm    = NULL; /* Window manager info */
     Setting         *st_st    = NULL; /* For particular setting */
     char            *s_cmd    = NULL; /* For wallpaper change command */
@@ -191,11 +190,12 @@ check_settings_change_wallpaper (char     *s_cfg_file,
     }
     /* Check settings, set default values if some are missing */
     setts_check_defaults (st_setts);
-    /* Get wallaper list setting */
-    st_walls = settings_find (setting_get_child (st_setts),
-                              get_setting_name (SETTING_WALL_ARRAY));
-    /* Exit function if there are no wallpapers in an array */
-    if ((st_walls = setting_get_child (st_walls)) == NULL) {
+
+    /* Get number of wallpapers in list */
+    ui_nlen = (uint32_t) setting_count_children (
+            settings_find (setting_get_child (st_setts),
+                           get_setting_name (SETTING_WALL_ARRAY)));
+    if (ui_nlen == 0) {
         free_and_exit (s_cfg_file, rm_rand, st_setts, st_wm,
                        EXIT_FAILURE, "Empty wallpaper list");
     }
@@ -210,8 +210,6 @@ check_settings_change_wallpaper (char     *s_cfg_file,
         }
         free (s_cmd);
     }
-    /* Get actual number of wallpapers in list */
-    ui_nlen = (uint32_t) settings_count (st_walls);
     /* Get time align info */
     st_st = settings_find (setting_get_child (st_setts),
                            get_setting_name (SETTING_TIME_ALIGN_OPT));

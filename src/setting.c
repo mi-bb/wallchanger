@@ -43,7 +43,7 @@
 
 #define setting_set_name(setting,name) (setting->s_name = strdup (name))
 
-#define setting_set_hash(setting,val) (setting->hash = val)
+#define setting_set_hash(setting,val)  (setting->hash = val)
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Free string data in Setting
@@ -68,44 +68,6 @@ static void setting_init (Setting *st_set);
  */
 static void setting_copy2 (Setting       *st_dest,
                            const Setting *st_src);
-/*----------------------------------------------------------------------------*/
-/**
- * @brief  Create default Setting
- *
- * @param[in]  s_name  Setting name
- * @return     New Setting or null
- */
-/*----------------------------------------------------------------------------*/
-/**
- * @fn static void setting_set_type (Setting *st_set, const SetValType i_type)
- * @brief  Set the type of setting
- * @param[out] st_set  Setting object
- * @param[in]  i_type  Type of setting
- * @return     none
- *
- * @fn static void setting_set_id (Setting *st_set, const uint32_t i_val)
- * @brief  Set Setting id value
- * @param[out] st_set  Setting object
- * @param[in]  i_val   Id value
- * @return     none
- *
- * @fn static void setting_set_owner_id (Setting *st_set, const uint32_t i_val)
- * @brief  Set Setting owner id value
- * @param[out] st_set  Setting object
- * @param[in]  i_val   Owner id value
- * @return     none
- *
- * @fn static void setting_set_name (Setting *st_set, const char *s_str)
- * @brief  Set Setting name
- * @param[out] st_set  Setting object
- * @param[in]  s_str   String name to set
- * @return     none
- *
- * @fn static void setting_set_array (Setting *st_set)
- * @brief  Set Setting type as array
- * @param[out] st_set  Setting object
- * @return     none
- */
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Setting initialization
@@ -288,7 +250,10 @@ setting_copy (const Setting *st_src)
 }
 /*----------------------------------------------------------------------------*/
 /**
- * @brief  Create default Setting
+ * @brief  Create default Setting.
+ *
+ * @param[in] s_name  Setting's name
+ * @return    New Setting item
  */
 static Setting *
 setting_new_default (const char *s_name)
@@ -385,12 +350,6 @@ setting_new_string (const char *s_name,
     st_set = setting_new_default (s_name);
 
     setting_set_string (st_set, val);
-    //setting_set_type (st_set, SET_VAL_STRING);
-
-    //if (val == NULL)
-    //    st_set->data.s_val = strdup ("");
-    //else
-    //    st_set->data.s_val = strdup (val);
 
     return st_set;
 }
@@ -431,55 +390,6 @@ setting_last (Setting *st_settings)
         st_last = st_last->next;
 
     return st_last;
-}
-/*----------------------------------------------------------------------------*/
-int
-setting_compare (const Setting *st_sett1,
-                 const Setting *st_sett2)
-{
-    int i_res = 1;
-
-    if (st_sett1->v_type != st_sett2->v_type)
-        return 1;
-
-    if (st_sett1->s_name != NULL && st_sett2->s_name != NULL)
-        return 0;
-
-    if (st_sett1->s_name == NULL && st_sett2->s_name != NULL)
-        return 1;
-
-    if (st_sett1->s_name != NULL && st_sett2->s_name == NULL)
-        return 1;
-
-    if ((i_res = strcmp (st_sett1->s_name, st_sett2->s_name)) != 0)
-        return i_res;
-
-    switch (st_sett1->v_type) {
-    
-        case SET_VAL_INT:
-            i_res = st_sett1->data.i_val != st_sett2->data.i_val;
-            break;
-
-        case SET_VAL_UINT:
-            i_res = st_sett1->data.ui_val != st_sett2->data.ui_val;
-            break;
-
-        case SET_VAL_DOUBLE:
-            i_res = st_sett1->data.d_val != st_sett2->data.d_val;
-            break;
-
-        case SET_VAL_STRING:
-            i_res = strcmp (st_sett1->data.s_val, st_sett2->data.s_val);
-            break;
-
-        case SET_VAL_ARRAY:
-            break;
-
-        default:
-            break;
-    };
-
-    return i_res;
 }
 /*----------------------------------------------------------------------------*/
 /**
@@ -589,6 +499,31 @@ settings_append_or_replace (Setting *st_list,
 }
 /*----------------------------------------------------------------------------*/
 /**
+ * @brief  Find setting in list and replace.
+ */
+int
+settings_find_replace (Setting   *st_list,
+                       Setting   *st_setting,
+                       const int  i_multi)
+{
+    int i_cnt = 0;
+
+    Setting *st_item = NULL;
+
+    st_item = st_list;
+
+    while (st_item != NULL) {
+        if (setting_get_hash (st_item) == setting_get_hash (st_setting)) {
+            setting_replace (st_item, st_setting);
+            ++i_cnt;
+            if (!i_multi) break;
+        }
+        st_item = st_item->next;
+    }
+    return i_cnt;
+}
+/*----------------------------------------------------------------------------*/
+/**
  * @brief Set st_child Setting to be a child of st_parent.
  *
  * @param[out] st_parent  Parent Setting to set child to
@@ -692,11 +627,11 @@ settings_count (const Setting *st_settings)
  *         list.
  */
 Setting *
-setting_get_at_pos (Setting *st_settings,
-                    const size_t   pos)
+setting_get_at_pos (Setting      *st_settings,
+                    const size_t  pos)
 {
-    size_t   ui_cnt  = 0;
     Setting *st_item = NULL;
+    size_t   ui_cnt  = 0;
 
     st_item = st_settings;
 
