@@ -34,6 +34,9 @@
 #include "deffiles.h"
 
 /*----------------------------------------------------------------------------*/
+/**
+ * @brief  Template for autostart desktop file with wchangerd daemon.
+ */
 static const char *s_default_autostart = 
     "[Desktop Entry]\n"
     "Type=Application\n"
@@ -47,6 +50,9 @@ static const char *s_default_autostart =
     "StartupNotify=false\n"
     "Categories=Utility;DesktopSettings;\n";
 /*----------------------------------------------------------------------------*/
+/**
+ * @brief  Template for config file with window manager info.
+ */
 static const char *s_default_wm_json = "{"
 "\"Unknown\": {"
     "\"Proc\": [\"\"],"
@@ -169,6 +175,10 @@ deffiles_autostart_remove (void)
     return ERR_OK;
 }
 /*----------------------------------------------------------------------------*/
+/**
+ * @brief  Check existence of json config file with window manager info,
+ *         creates it if there is no such file.
+ */
 int
 deffiles_wm_check_create (void)
 {
@@ -189,14 +199,20 @@ deffiles_wm_check_create (void)
     return i_err;
 }
 /*----------------------------------------------------------------------------*/
+/**
+ * @brief  Get copy of string with window manager info (config file template).
+ */
 char *
-deffiles_wm_get_buff (void)
+deffiles_wm_get_buff_copy (void)
 {
     return strdup (s_default_wm_json);
 }
 /*----------------------------------------------------------------------------*/
+/**
+ * @brief  Get string with window manager info (config file template).
+ */
 const char *
-deffiles_wm_get_buff2 (void)
+deffiles_wm_get_buff (void)
 {
     return s_default_wm_json;
 }

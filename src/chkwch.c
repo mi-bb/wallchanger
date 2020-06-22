@@ -128,9 +128,10 @@ check_config_file (char **s_file)
 /**
  * @brief  Free dynamic data and exit app.
  *
- * @param[out] st_settings Settings data
  * @param[out] s_cfg_file  String with config file path
  * @param[out] rm_rand     Random data
+ * @param[out] st_settings Settings data
+ * @param[out] st_wminfo   Window manager info
  * @param[in]  i_exit_val  Exit return value
  * @param[in]  s_message   Message to show on exit or null
  * @return     none
@@ -151,7 +152,7 @@ free_and_exit (char       *s_cfg_file,
         exit (i_exit_val);
     }
     else {
-        errx (i_exit_val, "Empty config file");
+        errx (i_exit_val, "%s", s_message);
     }
 }
 /*----------------------------------------------------------------------------*/
@@ -176,7 +177,6 @@ check_settings_change_wallpaper (char     *s_cfg_file,
 
     /* Read settings, check for empty config file, set defaults */
     st_setts = setts_read (s_cfg_file, &i_err);
-
     /* Get settings with window manager info */
     if (i_err == ERR_OK)
         st_wm = wms_get_wm_info (&i_err);
@@ -189,8 +189,8 @@ check_settings_change_wallpaper (char     *s_cfg_file,
         free_and_exit (s_cfg_file, rm_rand, st_setts, st_wm,
                        EXIT_FAILURE, "Empty config file");
     }
+    /* Check settings, set default values if some are missing */
     setts_check_defaults (st_setts);
-
     /* Get wallaper list setting */
     st_walls = settings_find (setting_get_child (st_setts),
                               get_setting_name (SETTING_WALL_ARRAY));
@@ -237,14 +237,14 @@ check_settings_change_wallpaper (char     *s_cfg_file,
         randomm_set_range (rm_rand, (int32_t) ui_nlen);
 
         if (ui_len == 0) {
-            /* Program startup */
+            /* Program startup, previous wallpaper count was 0 */
             if (wpset_startup_set (st_setts, rm_rand, s_cfg_file) != ERR_OK) {
                 free_and_exit (s_cfg_file, rm_rand, st_setts, st_wm,
                                EXIT_FAILURE, NULL);
             }
         }
         else {
-            /* Change during progam work */
+            /* Change during progam work, previous wallpaper count was not 0 */
             if (wpset_change (st_setts, rm_rand, s_cfg_file) != ERR_OK) {
                 free_and_exit (s_cfg_file, rm_rand, st_setts, st_wm,
                                EXIT_FAILURE, NULL);

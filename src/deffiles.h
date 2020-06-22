@@ -30,31 +30,44 @@
  *
  * @return 1 if file exists, 0 if not or there was some problem with it.
  */
-int deffiles_autostart_exists (void);
+int          deffiles_autostart_exists (void);
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Creates wchangerd desktop file in user's autostart directory.
  *
  * @return ERR_OK if created successfully, other error value if not.
  */
-int deffiles_autostart_create (void);
+int          deffiles_autostart_create (void);
 /*----------------------------------------------------------------------------*/
 /**
- * @brief  Check if exists and create window manager info json file.
+ * @brief  Check existence of json config file with window manager info,
+ *         creates it if there is no such file.
  *
  * @return ERR_OK if created successfully, other error value if not.
  */
-int deffiles_wm_check_create (void);
+int          deffiles_wm_check_create  (void);
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Removes wchangerd desktop file from user's autostart directory.
  *
  * @return ERR_OK if removed successfully, ERR_FILE_RM if not.
  */
-int deffiles_autostart_remove (void);
+int          deffiles_autostart_remove (void);
 /*----------------------------------------------------------------------------*/
-char * deffiles_wm_get_buff (void);
-const char * deffiles_wm_get_buff2 (void);
+/**
+ * @brief  Get copy of string with window manager info (config file template).
+ *
+ * return  String with json config file with window manager info.
+ *         After use it should be freed using free.
+ */
+char       * deffiles_wm_get_buff_copy (void);
+/*----------------------------------------------------------------------------*/
+/**
+ * @brief  Get string with window manager info (config file template).
+ *
+ * return  String with json config file with window manager info.
+ */
+const char * deffiles_wm_get_buff      (void);
 /*----------------------------------------------------------------------------*/
 #endif
 

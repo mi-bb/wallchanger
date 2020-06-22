@@ -77,7 +77,7 @@ newline_to_space (char *s_str)
 }
 /*----------------------------------------------------------------------------*/
 /**
- * @brief  Set active combobox position using wm's name.
+ * @brief  Set active combobox position based on wm's name.
  *
  * @param[in,out] gw_combo ComboBox item
  * @param[in]     s_name   Window manager's name
@@ -89,8 +89,8 @@ combo_set_active_by_wm_name (GtkWidget  *gw_combo,
 {
     GtkTreeModel *gtm_model;
     GtkTreeIter   iter;
-    int           i_res   = 0;  /* Getting iter result */
-    char *s_cname = NULL;
+    int           i_res   = 0;    /* Getting iter result */
+    char         *s_cname = NULL; /* For wm name from combobox */
 
     gtm_model = gtk_combo_box_get_model (GTK_COMBO_BOX (gw_combo));
     i_res = gtk_tree_model_get_iter_first (gtm_model, &iter);
@@ -118,7 +118,6 @@ static void
 wm_label_set_text (GtkWidget  *gw_label,
                    const char *s_txt)
 {
-    //if (s_txt == NULL) {
     if (strcmp (s_txt, "Unknown") == 0) {
         gtk_label_set_markup (GTK_LABEL (gw_label),
             "<span font_size=\"large\">Could not find the window manager that "
@@ -177,8 +176,8 @@ textview_get_text (GtkWidget *gw_tview)
 /**
  * @brief  Creates ComboBox with window managers.
  *
- * @param[in]  wms_list List with window manager info.
- * @return     ComboBox widget
+ * @param[in] st_wmlist  List with window manager info.
+ * @return    ComboBox widget
  */
 static GtkWidget *
 wm_combo (Setting *st_wmlist)
@@ -365,7 +364,7 @@ event_get_default_button_clicked (GtkWidget **gw_array)
 
         /* Load settings from deffiles template */
         st_settings = setting_new_setting ("Settings");
-        setts_string_to_settings (deffiles_wm_get_buff2 (), st_settings);
+        setts_string_to_settings (deffiles_wm_get_buff (), st_settings);
 
         model = gtk_combo_box_get_model (GTK_COMBO_BOX (gw_combo));
         gtk_tree_model_get (model, &iter, WM_COLUMN_NAME, &s_name, -1);

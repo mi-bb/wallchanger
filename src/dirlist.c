@@ -61,6 +61,9 @@ static GList      * get_directory_filtered_content_glist (const char *s_dir,
                                                           GHashTable *gh_exts)
                     __attribute__ ((nonnull (1)));
 /*----------------------------------------------------------------------------*/
+/**
+ * @brief  Get file extenstion.
+ */                    
 static const char *
 get_file_ext (const char *s_fn)
 {

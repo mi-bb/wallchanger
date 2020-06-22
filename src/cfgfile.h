@@ -45,7 +45,7 @@ int cfgfile_config_file_stuff (char **s_file,
                                int    i_create);
 /*----------------------------------------------------------------------------*/
 /**
- * @brief  Get path for wchangerd daemon autostart file.
+ * @brief  Get path for autostart desktop file for wchangerd daemon.
  *
  * @return String with autostart file path.
  *         After use it should be freed using free.
@@ -53,7 +53,7 @@ int cfgfile_config_file_stuff (char **s_file,
 char * cfgfile_get_autostart_file_path (void);
 /*----------------------------------------------------------------------------*/
 /**
- * @brief  Get path for window manager info config file.
+ * @brief  Get path for config file with window manager info.
  *
  * @return String with window manager info file path.
  *         After use it should be freed using free.

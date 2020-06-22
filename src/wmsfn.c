@@ -35,62 +35,6 @@
 #include "wmsfn.h"
 /*----------------------------------------------------------------------------*/
 /**
- * @brief  Get window manager info from local config file.
- */
-Setting *
-wms_get_wm_info (int *i_err)
-{
-    Setting *st_wms = NULL; /* Setting list to return */
-    char    *s_path = NULL; /* Config file path */
-
-    *i_err = 0;
-
-    s_path = cfgfile_get_wm_info_file_path ();
-    st_wms = setts_read (s_path, i_err);
-
-    free (s_path);
-
-    return st_wms;
-}
-/*----------------------------------------------------------------------------*/
-/**
- * @brief  Update wallpaper set command in window manager info config file.
- */
-int
-wms_update_wm_command (const char *s_wm_name,
-                       const char *s_command)
-{
-    Setting *st_wms  = NULL; /* Window manager info list */
-    Setting *st_item = NULL; /* For checking wm name and command */
-    char    *s_path  = NULL; /* Config file path */
-    int      i_err   = 0;    /* Error output */
-
-    /* Load settings from config file */
-    s_path = cfgfile_get_wm_info_file_path ();
-    st_wms = setts_read (s_path, &i_err);
-    //st_wms = wms_get_wm_info (&i_err);
-    if (i_err != ERR_OK) {
-        /* err (EXIT_FAILURE, NULL); */
-        settings_free_all (st_wms);
-        return i_err;
-    }
-    #ifdef DEBUG
-    printf ("WM : %s\nCM : %s\n", s_wm_name, s_command);
-    #endif
-    if ((st_item = setting_find_child (st_wms, s_wm_name)) != NULL) {
-        if ((st_item = setting_find_child (st_item, "Command")) != NULL) {
-            setting_set_string (st_item, s_command);
-        }
-    }
-    i_err = setts_check_update_file (s_path, st_wms);
-    #ifdef DEBUG
-    settings_print (st_wms);
-    #endif
-    settings_free_all (st_wms);
-    return i_err;
-}
-/*----------------------------------------------------------------------------*/
-/**
  * @brief  Get list of Xfce displays possible to set wallpaper.
  */
 char **
@@ -165,6 +109,25 @@ wms_get_xfce_command (const char *s_disp)
 }
 /*----------------------------------------------------------------------------*/
 /**
+ * @brief  Get window manager info from local config file.
+ */
+Setting *
+wms_get_wm_info (int *i_err)
+{
+    Setting *st_wms = NULL; /* Setting list to return */
+    char    *s_path = NULL; /* Config file path */
+
+    *i_err = 0;
+
+    s_path = cfgfile_get_wm_info_file_path ();
+    st_wms = setts_read (s_path, i_err);
+
+    free (s_path);
+
+    return st_wms;
+}
+/*----------------------------------------------------------------------------*/
+/**
  * @brief  Find window manager that is currently in use.
  */
 Setting *
@@ -216,6 +179,43 @@ wms_get_current_wm (Setting *st_wmsl)
 }
 /*----------------------------------------------------------------------------*/
 /**
+ * @brief  Update wallpaper set command in window manager info config file.
+ */
+int
+wms_update_wm_command (const char *s_wm_name,
+                       const char *s_command)
+{
+    Setting *st_wms  = NULL; /* Window manager info list */
+    Setting *st_item = NULL; /* For checking wm name and command */
+    char    *s_path  = NULL; /* Config file path */
+    int      i_err   = 0;    /* Error output */
+
+    /* Load settings from config file */
+    s_path = cfgfile_get_wm_info_file_path ();
+    st_wms = setts_read (s_path, &i_err);
+    //st_wms = wms_get_wm_info (&i_err);
+    if (i_err != ERR_OK) {
+        /* err (EXIT_FAILURE, NULL); */
+        settings_free_all (st_wms);
+        return i_err;
+    }
+    #ifdef DEBUG
+    printf ("WM : %s\nCM : %s\n", s_wm_name, s_command);
+    #endif
+    if ((st_item = setting_find_child (st_wms, s_wm_name)) != NULL) {
+        if ((st_item = setting_find_child (st_item, "Command")) != NULL) {
+            setting_set_string (st_item, s_command);
+        }
+    }
+    i_err = setts_check_update_file (s_path, st_wms);
+    #ifdef DEBUG
+    settings_print (st_wms);
+    #endif
+    settings_free_all (st_wms);
+    return i_err;
+}
+/*----------------------------------------------------------------------------*/
+/**
  * @brief  Compare previously used window manager with present one, set
  *         wallpaper change command.
  */
@@ -239,12 +239,12 @@ wms_get_wallpaper_command (const char *s_cfg_file,
     *i_err = ERR_OK;
 
     enum wm_enum_state {
-        WM_STATE_END = 0,
-        WM_STATE_SET_SAVED_BG_CMD,
-        WM_STATE_SET_CURRENT_USED_WM_CMD,
-        WM_STATE_CHECK_CURRENT_USED_WM_CMD,
-        WM_STATE_SET_MAIN_DEFAULT,
-        WM_STATE_CHECK_WM_INFO
+        WM_STATE_END = 0,                /* End of work */
+        WM_STATE_SET_SAVED_BG_CMD,       /* Set saved in cfg command */
+        WM_STATE_SET_CURR_USED_WM_CMD,   /* Find setting with command */
+        WM_STATE_CHECK_CURR_USED_WM_CMD, /* Check current command string */
+        WM_STATE_SET_MAIN_DEFAULT,       /* Set main default command */
+        WM_STATE_CHECK_WM_INFO           /* Check if wm changed */
     };
 
     enum wm_enum_state e_state = WM_STATE_CHECK_WM_INFO;
@@ -297,11 +297,11 @@ wms_get_wallpaper_command (const char *s_cfg_file,
                     puts ("  Current wm differs last used");
                     #endif
                     *i_err = setts_update_last_used_wm (s_cfg_file, s_cu_wm);
-                    e_state = WM_STATE_SET_CURRENT_USED_WM_CMD;
+                    e_state = WM_STATE_SET_CURR_USED_WM_CMD;
                 }
                 break;
 
-            case WM_STATE_SET_CURRENT_USED_WM_CMD:
+            case WM_STATE_SET_CURR_USED_WM_CMD:
                 #ifdef DEBUG
                 puts (" Setting current used wm cmd string");
                 #endif
@@ -311,7 +311,7 @@ wms_get_wallpaper_command (const char *s_cfg_file,
                     puts ("  Current used wm item ok");
                     #endif
                     s_cu_wm_cmd = setting_get_string (st_item);
-                    e_state     = WM_STATE_CHECK_CURRENT_USED_WM_CMD;
+                    e_state     = WM_STATE_CHECK_CURR_USED_WM_CMD;
                 }
                 else {
                     #ifdef DEBUG
@@ -321,7 +321,7 @@ wms_get_wallpaper_command (const char *s_cfg_file,
                 }
                 break;
 
-            case WM_STATE_CHECK_CURRENT_USED_WM_CMD:
+            case WM_STATE_CHECK_CURR_USED_WM_CMD:
                 #ifdef DEBUG
                 puts (" Checking current used wm cmd string");
                 #endif

@@ -189,7 +189,7 @@ js_settings_array_to_json (const Setting  *st_setting)
 {
     json_object *j_array;  /* Json array to return */
     json_object *j_obj;    /* Json object made from Setting */
-    Setting     *st_item;
+    Setting     *st_item;  /* For setting iteration */
 
     j_array = (setting_get_type (st_setting) == SET_VAL_SETTING) ?
               json_object_new_object() :

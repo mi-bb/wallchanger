@@ -117,6 +117,10 @@ get_setting_name (const int i_val)
     return s_res;
 }
 /*----------------------------------------------------------------------------*/
+/**
+ * @brief  Convert string with raw json data to Setting items and insert them
+ *         to st_settings list.
+ */
 void setts_string_to_settings (const char *s_jbuff,
                                Setting    *st_settings)
 {

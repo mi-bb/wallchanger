@@ -51,19 +51,19 @@ void wms_free_xfce_display_list (char **s_list);
 char *  wms_get_xfce_command (const char *s_disp);
 /*----------------------------------------------------------------------------*/
 /**
+ * @brief  Get window manager info from local config file.
+ *
+ * @return List of Setting items with window manager info
+ */
+Setting * wms_get_wm_info (int *i_err);
+/*----------------------------------------------------------------------------*/
+/**
  * @brief  Find window manager that is currently in use.
  *
  * return     Setting item with info about window manager.
  *            After use it should be freed using free.
  */
 Setting * wms_get_current_wm (Setting *st_wmsl);
-/*----------------------------------------------------------------------------*/
-/**
- * @brief  Get window manager info from local config file.
- *
- * @return List of Setting items with window manager info
- */
-Setting * wms_get_wm_info (int *i_err);
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Update wallpaper set command in window manager info config file.

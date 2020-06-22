@@ -27,7 +27,14 @@
 #include "strfun.h"
 #include "fdfn.h"
 #include "cfgfile.h"
-
+/*----------------------------------------------------------------------------*/
+/**
+ * @def   AUTOSTART_FILE_PATH
+ * @brief Path for autostart desktop file for whcnagerd.
+ *
+ * @def   WM_JSON_FILE_PATH
+ * @brief Path for config file with window manager info.
+ */
 #define AUTOSTART_FILE_PATH "/.config/autostart/wchangerd.desktop"
 #define WM_JSON_FILE_PATH   "/.config/wchanger/wms.json"
 /*----------------------------------------------------------------------------*/
@@ -147,7 +154,7 @@ cfgfile_config_file_stuff (char **s_file,
 }
 /*----------------------------------------------------------------------------*/
 /**
- * @brief  Get path for wchangerd daemon autostart file.
+ * @brief  Get path for autostart desktop file for wchangerd daemon.
  */
 char *
 cfgfile_get_autostart_file_path (void)
@@ -161,7 +168,7 @@ cfgfile_get_autostart_file_path (void)
 }
 /*----------------------------------------------------------------------------*/
 /**
- * @brief  Get path for window manager info config file.
+ * @brief  Get path for config file with window manager info.
  */
 char *
 cfgfile_get_wm_info_file_path (void)

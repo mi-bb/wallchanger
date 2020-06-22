@@ -19,7 +19,7 @@
  *
  * Automatic wallpaper changer
  *
- * @date June 17, 2020
+ * @date June 22, 2020
  *
  * @version 1.5.0
  *

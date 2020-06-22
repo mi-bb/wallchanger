@@ -19,7 +19,7 @@
  *
  * Automatic wallpaper changer
  *
- * @date June 17, 2020
+ * @date June 22, 2020
  *
  * @version 1.5.0
  *
@@ -465,7 +465,6 @@ widgets_set_settings (const DialogData *dd_data,
     /* Get wallpaper list and add to treeview */
     st_item = settings_find (st_settings,
                              get_setting_name (SETTING_WALL_ARRAY));
-
     if (st_item != NULL) {
         treeview_add_items_setting (dd_data->gw_view,
                                     setting_get_child (st_item));
@@ -728,6 +727,13 @@ event_command_button_pressed (const DialogData *dd_data)
     g_slist_free_full (gsl_files, (GDestroyNotify) imageinfo_free);
 }
 /*----------------------------------------------------------------------------*/
+/**
+ * @brief  Changed active state of autostart checkbox
+ *
+ * @param[in] togglebutton  Togglebutton which changed state
+ * @param[in] user_data     Data passed to function
+ * @return    none
+ */
 static void
 event_autostart_toggled (GtkToggleButton *togglebutton,
                          gpointer         user_data __attribute__ ((unused)))
