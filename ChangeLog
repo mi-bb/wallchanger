@@ -13,6 +13,13 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+2020-06-22  Michal Babik  <michal.babik@pm.me>
+
+	* astart.c, astart.h: Files removed. Content moved to deffiles.c,
+	  deffiles.h
+	* deffiles.c, deffiles.h: New files with templates for autostart
+	  and window manager info files.
+
 2020-06-17  Michal Babik  <michal.babik@pm.me>
 
 	* cmdfn.c, cmdfn.h: Added processing --once option.

@@ -451,7 +451,6 @@ event_test_button_clicked (GtkWidget **gw_array)
         model = gtk_combo_box_get_model (GTK_COMBO_BOX (gw_combo));
         gtk_tree_model_get (model, &iter, PREV_NAME_FULL, &s_file, -1 );
     }
-
     s_command = textview_get_text (gw_tview);
 
     if (s_command != NULL && s_file != NULL) {

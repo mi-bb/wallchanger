@@ -974,7 +974,8 @@ create_buttons_widget (GtkWidget  **gw_widget,
     g_signal_connect_swapped (gw_button,
                               "clicked",
                               G_CALLBACK (about_app_dialog), NULL);
-    gw_button = create_image_button (NULL, "Exit", W_ICON_EXIT);
+    gw_button = create_image_button (NULL, "Exit configuration dialog",
+                                     W_ICON_EXIT);
     g_signal_connect_swapped (gw_button,
                               "clicked",
                               G_CALLBACK (gtk_window_close),

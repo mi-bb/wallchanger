@@ -14,12 +14,14 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 ----------------------------------------------------------------------
-v1.5.0                                                      2020-06-17
+v1.5.0                                                      2020-06-22
 
-    * Code cleaning, changed internal setting passing, couple files
-      removed.
+    * Wallpaper change command is now set on start, based on currently
+      used window manager.
     * Added --once option for wchangerd daemon to change wallpaper
       once and exit.
+    * Code cleaning, changed internal setting passing, couple files
+      removed.
 
 ----------------------------------------------------------------------
 v1.4.9                                                      2020-06-02
