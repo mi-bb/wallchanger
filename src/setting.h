@@ -36,67 +36,6 @@
 #include <stddef.h>
 /*----------------------------------------------------------------------------*/
 /**
- * @def    setting_get_top_level(setting)
- * @brief  Get top level Setting on list
- *
- * @def    setting_count_children(setting)
- * @brief  Count children in Setting object or array
- *
- * @def    setting_find_child(setting)
- * @brief  Find child with given name in Setting object or array
- */
-/*----------------------------------------------------------------------------*/
-#define setting_get_top_level(setting) \
-    (setting_first (setting_get_top_parent (setting)))
-
-#define setting_count_children(setting) \
-    (settings_count (setting_get_child (setting)))
-
-#define setting_find_child(setting, name) \
-    (settings_find (setting_get_child (setting), name))
-/*----------------------------------------------------------------------------*/
-/**
- * @def    setting_get_type(setting)
- * @brief  Get Setting type value
- *
- * @def    setting_get_name(setting)
- * @brief  Get Setting name string
- *
- * @def    setting_get_hash(setting)
- * @brief  Get Setting hash value
- */
-/*----------------------------------------------------------------------------*/
-#define setting_get_type(setting)     (setting->v_type)
-
-#define setting_get_name(setting)     (setting->s_name)
-
-#define setting_get_hash(setting)     (setting->hash)
-/*----------------------------------------------------------------------------*/
-/**
- * @def    setting_get_parent(setting)
- * @brief  Get Setting parent Setting
- *
- * @def    setting_get_child(setting)
- * @brief  Get Setting child Setting
- */
-/*----------------------------------------------------------------------------*/
-#define setting_get_parent(setting)   (setting->parent)
-
-#define setting_get_child(setting)    (setting->data.st_child)
-/*----------------------------------------------------------------------------*/
-/**
- * @def    setting_next(setting)
- * @brief  Get next Setting in list
- *
- * @def    setting_prev(setting)
- * @brief  Get previous Setting in list
- */
-/*----------------------------------------------------------------------------*/
-#define setting_next(setting)         (setting->next)
-
-#define setting_prev(setting)         (setting->prev)
-/*----------------------------------------------------------------------------*/
-/**
  * @brief  Setting types 
  */
 typedef enum
@@ -160,6 +99,71 @@ Setting {
         struct Setting *st_child;
     } data; 
 } Setting;
+/*----------------------------------------------------------------------------*/
+/**
+ * @brief  Get Setting type value
+ *
+ * @param[in] st_setting  Setting to get type
+ * @return    Setting type value
+ *
+ * @brief  Get Setting name string
+ *
+ * @param[in] st_setting  Setting to get name
+ * @return    Name string
+ *
+ * @brief  Get Setting hash value
+ *
+ * @param[in] st_setting  Setting to get hash
+ * @return    Hash value
+ */
+/*----------------------------------------------------------------------------*/
+static inline SetValType    setting_get_type (const Setting *st_setting) {
+    return st_setting->v_type;
+}
+static inline const char  * setting_get_name (const Setting *st_setting) {
+    return st_setting->s_name;
+}
+static inline uint_fast32_t setting_get_hash (const Setting *st_setting) {
+    return st_setting->hash;
+}
+/*----------------------------------------------------------------------------*/
+/**
+ * @brief  Get Setting's parent Setting
+ *
+ * @param[in] st_setting  Setting item
+ * @return    Parent Setting
+ *
+ * @brief  Get Setting's child Setting
+ *
+ * @param[in] st_setting  Setting item
+ * @return    Child Setting
+ */
+/*----------------------------------------------------------------------------*/
+static inline Setting * setting_get_parent (Setting *st_setting) {
+    return st_setting->parent;
+}
+static inline Setting * setting_get_child  (Setting *st_setting) {
+    return st_setting->data.st_child;
+}
+/*----------------------------------------------------------------------------*/
+/**
+ * @brief  Get next Setting in list
+ *
+ * @param[in] st_setting  Setting item
+ * @return    Next Setting in list or null
+ *
+ * @brief  Get previous Setting in list
+ *
+ * @param[in] st_setting  Setting item
+ * @return    Previous Setting in list or null
+ */
+/*----------------------------------------------------------------------------*/
+static inline Setting * setting_next (Setting *st_setting) {
+    return st_setting->next;
+}
+static inline Setting * setting_prev (Setting *st_setting) {
+    return st_setting->prev;
+}
 /*----------------------------------------------------------------------------*/
 /**
  * @fn  void setting_free (Setting *st_set)
@@ -303,14 +307,14 @@ Setting * setting_copy (const Setting *st_src)
 /**
  * @fn  Setting * setting_first (Setting *st_settings)
  *
- * @brief  Finds and return first item in a Setting list.
+ * @brief  Find and return first item in a Setting list.
  *
  * @param[in] st_settings  List of Setting items
  * @return    Pointer to first element on list or null if list is empty
  *
  * @fn  Setting * setting_last (Setting *st_settings)
  *
- * @brief  Finds and return last item in a Setting list.
+ * @brief  Find and return last item in a Setting list.
  *
  * @param[in] st_settings  List of Setting items
  * @return    Pointer to last element on list or null if list is empty
@@ -454,6 +458,40 @@ void settings_append_or_ignore  (Setting *st_list,
 void settings_append_or_replace (Setting *st_list,
                                  Setting *st_setting);
 /*----------------------------------------------------------------------------*/
+/**
+ * @fn  Setting * setting_get_top_level (Setting *st_setting)
+ *
+ * @brief  Get top level Setting on list
+ *
+ * @param[in]  st_setting  Setting from list
+ * @return     Top level setting in list
+ *
+ * @fn  size_t setting_count_children (const Setting *st_setting)
+ *
+ * @brief  Count children in Setting object or array
+ *
+ * @param[in]  st_setting  Setting from list
+ * @return     Number of items in List
+ *
+ * @fn  Setting * setting_find_child (Setting *st_setting, const char *s_name)
+ *
+ * @brief  Find child with given name in Setting object or array
+ *
+ * @param[in]  st_setting  Setting from list
+ * @return     Found Setting item or null of not found
+ */
+/*----------------------------------------------------------------------------*/
+static inline Setting * setting_get_top_level  (Setting    *st_setting) {
+    return setting_first (setting_get_top_parent (st_setting));
+}
+static inline size_t    setting_count_children (Setting    *st_setting) {
+    return settings_count (setting_get_child (st_setting));
+}
+static inline Setting * setting_find_child     (Setting    *st_setting,
+                                                const char *s_name) {
+    return settings_find (setting_get_child (st_setting), s_name);
+}
+/*----------------------------------------------------------------------------*/
 #ifdef DEBUG
 /*----------------------------------------------------------------------------*/
 /**
@@ -462,9 +500,9 @@ void settings_append_or_replace (Setting *st_list,
  * @param[out]  st_set  Setting object
  * @return      none
  */
-void setting_print  (const Setting *st_set);
+void setting_print  (Setting *st_set);
 
-void settings_print (const Setting *st_set);
+void settings_print (Setting *st_set);
 /*----------------------------------------------------------------------------*/
 #endif
 #endif

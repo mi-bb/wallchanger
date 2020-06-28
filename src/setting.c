@@ -29,27 +29,55 @@
 #include "setting.h"
 /*----------------------------------------------------------------------------*/
 /**
- * @def    setting_set_type(setting,type)
  * @brief  Set Setting type value
  *
- * @def    setting_set_name(setting,name)
+ * @param[in] st_setting  Setting item
+ * @param[in] val         Type value to set
+ * @return    none
+ */
+static void
+setting_set_type (Setting    *st_setting,
+                  SetValType  val)
+{
+    st_setting->v_type = val;
+}
+/*----------------------------------------------------------------------------*/
+/**
  * @brief  Set Setting name string
  *
- * @def    setting_set_hash(setting,val)
- * @brief  Set Setting hash value
+ * @param[in] st_setting  Setting item
+ * @param[in] val         Name string to set
+ * @return    none
  */
+static void
+setting_set_name (Setting    *st_setting,
+                  const char *val)
+{
+    st_setting->s_name = strdup (val);
+}
 /*----------------------------------------------------------------------------*/
-#define setting_set_type(setting,type) (setting->v_type = type)
-
-#define setting_set_name(setting,name) (setting->s_name = strdup (name))
-
-#define setting_set_hash(setting,val)  (setting->hash = val)
+/**
+ * @brief  Set Setting hash value
+ *
+ * @param[in] st_setting  Setting item
+ * @param[in] val         Hash value to set
+ * @return    none
+ */
+static void
+setting_set_hash (Setting       *st_setting,
+                  uint_fast32_t  val)
+{
+    st_setting->hash = val;
+}
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Free string data in Setting
  */
-/*----------------------------------------------------------------------------*/
-#define setting_free_string(setting)   (free (setting->data.s_val))
+static void
+setting_free_string (Setting *st_setting)
+{
+    free (st_setting->data.s_val);
+}
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Setting initialization.
@@ -85,7 +113,7 @@ setting_init (Setting *st_set)
 }
 /*----------------------------------------------------------------------------*/
 /**
- * @brief  Free Setting object
+ * @brief  Free Setting data
  */
 void
 setting_free (Setting *st_set)
@@ -98,6 +126,9 @@ setting_free (Setting *st_set)
     free (st_set);
 }
 /*----------------------------------------------------------------------------*/
+/**
+ * @brief  Free all settings in given Setting
+ */
 void
 settings_free_all (Setting *st_set)
 {
@@ -170,6 +201,9 @@ setting_get_string (const Setting *st_set)
         return NULL;
 }
 /*----------------------------------------------------------------------------*/
+/**
+ * @brief  Set setting to string type and its content to val.
+ */
 void
 setting_set_string (Setting    *st_set,
                     const char *val)
@@ -355,7 +389,7 @@ setting_new_string (const char *s_name,
 }
 /*----------------------------------------------------------------------------*/
 /**
- * @brief  Finds and return first item in a Setting list.
+ * @brief  Find and return first item in a Setting list.
  */
 Setting *
 setting_first (Setting *st_settings)
@@ -374,7 +408,7 @@ setting_first (Setting *st_settings)
 }
 /*----------------------------------------------------------------------------*/
 /**
- * @brief  Finds and return last item in a Setting list.
+ * @brief  Find and return last item in a Setting list.
  */
 Setting *
 setting_last (Setting *st_settings)
@@ -649,7 +683,7 @@ setting_get_at_pos (Setting      *st_settings,
  * @brief  Print setting info
  */
 void
-setting_print (const Setting *st_set)
+setting_print (Setting *st_set)
 {
     switch (st_set->v_type) {
         case SET_VAL_INT:
@@ -708,7 +742,7 @@ setting_print (const Setting *st_set)
 }
 /*----------------------------------------------------------------------------*/
 void
-settings_print (const Setting *st_set)
+settings_print (Setting *st_set)
 {
     while (st_set != NULL) {
         setting_print (st_set);

@@ -63,7 +63,7 @@ static void          js_json_obj_to_settings (json_object   *val,
                                               Setting       *st_settings,
                                               const char    *s_name);
 
-static json_object * js_setting_to_json_obj  (const Setting *st_sett);
+static json_object * js_setting_to_json_obj  (Setting *st_sett);
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Get items from Json array and add them to list with Setting items.
@@ -185,7 +185,7 @@ js_json_string_to_settings (const char *s_jbuff,
  * @brief  Get items from Setting array and save them in Json array object.
  */
 static json_object *
-js_settings_array_to_json (const Setting  *st_setting)
+js_settings_array_to_json (Setting *st_setting)
 {
     json_object *j_array;  /* Json array to return */
     json_object *j_obj;    /* Json object made from Setting */
@@ -216,7 +216,7 @@ js_settings_array_to_json (const Setting  *st_setting)
  * @brief  Convert Setting object to Json object
  */
 static json_object *
-js_setting_to_json_obj (const Setting *st_sett)
+js_setting_to_json_obj (Setting *st_sett)
 {
     json_object *j_obj;
     SetValType   i_type = setting_get_type (st_sett);
@@ -261,8 +261,8 @@ js_setting_to_json_obj (const Setting *st_sett)
  * @return     none
  */
 static void
-js_settings_add_to_json_obj (const Setting *st_settings,
-                             json_object   *j_obj)
+js_settings_add_to_json_obj (Setting     *st_settings,
+                             json_object *j_obj)
 {
     json_object *j_val;   /* Json object made from Setting */
     Setting     *st_main; /* List of main settings in st_list */
