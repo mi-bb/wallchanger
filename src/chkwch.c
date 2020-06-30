@@ -155,6 +155,7 @@ free_and_exit (char       *s_cfg_file,
         errx (i_exit_val, "%s", s_message);
     }
 }
+#include <stdio.h>
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Loads settings, checks for changes in wallpaper list length and
@@ -250,6 +251,10 @@ check_settings_change_wallpaper (char     *s_cfg_file,
         }
         ui_len = ui_nlen;
     }
+    //setting_remove (st_wm);
+    //setting_remove (st_wm);
+    //st_wm = NULL;
+    setting_remove (setting_get_child (st_wm));
     settings_free_all (st_wm);
     settings_free_all (st_setts);
     return ui_inter * 60;

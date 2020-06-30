@@ -185,45 +185,53 @@ GSList     * file_paths_to_imageinfo  (const GSList     *gsl_files1);
  * @return     String with image dimensions
  */
 /*----------------------------------------------------------------------------*/
-void         imageinfo_set_full_name  (ImageInfo        *ii_info,
-                                       const char       *s_name)
-             __attribute__ ((nonnull (2)));
+void imageinfo_set_full_name (ImageInfo       *ii_info,
+                              const char      *s_name)
+     __attribute__ ((nonnull (2)));
 
-const char * imageinfo_get_full_name  (const ImageInfo  *ii_info)
-             __attribute__ ((pure));
+static inline const char * imageinfo_get_full_name (const ImageInfo *ii_info) {
+     return (const char*) ii_info->s_full_path;       
+}
 /*----------------------------------------------------------------------------*/
-void         imageinfo_set_file_name  (ImageInfo        *ii_info,
-                                       const char       *s_name)
-             __attribute__ ((nonnull (2)));
+void imageinfo_set_file_name  (ImageInfo        *ii_info,
+                               const char       *s_name)
+     __attribute__ ((nonnull (2)));
 
-const char * imageinfo_get_file_name  (const ImageInfo  *ii_info)
-             __attribute__ ((pure));
+static inline const char * imageinfo_get_file_name (const ImageInfo *ii_info) {
+     return (const char*) ii_info->s_file_name;
+}
 /*----------------------------------------------------------------------------*/
-void         imageinfo_set_file_path  (ImageInfo        *ii_info,
-                                       const char       *s_name)
-             __attribute__ ((nonnull (2)));
+void imageinfo_set_file_path  (ImageInfo        *ii_info,
+                               const char       *s_name)
+     __attribute__ ((nonnull (2)));
 
-const char * imageinfo_get_file_path  (const ImageInfo  *ii_info)
-             __attribute__ ((pure));
+static inline const char * imageinfo_get_file_path (const ImageInfo *ii_info) {
+     return (const char*) ii_info->s_file_path;       
+}
 /*----------------------------------------------------------------------------*/
-void         imageinfo_set_width      (ImageInfo        *ii_info,
-                                       const int         i_val);
-
-int          imageinfo_get_width      (const ImageInfo  *ii_info)
-             __attribute__ ((pure));
+static inline void imageinfo_set_width (ImageInfo        *ii_info,
+                                        const int         i_val) {
+    ii_info->i_width = i_val;
+}
+static inline int imageinfo_get_width  (const ImageInfo  *ii_info) {
+    return ii_info->i_width;
+}
 /*----------------------------------------------------------------------------*/
-void         imageinfo_set_height     (ImageInfo        *ii_info,
-                                       const int         i_val);
-
-int          imageinfo_get_height     (const ImageInfo  *ii_info)
-             __attribute__ ((pure));
+static inline void imageinfo_set_height (ImageInfo        *ii_info,
+                                         const int         i_val) {
+    ii_info->i_height = i_val;
+}
+static inline int  imageinfo_get_height (const ImageInfo  *ii_info) {
+    return ii_info->i_height;
+}
 /*----------------------------------------------------------------------------*/
 void         imageinfo_set_wxh        (ImageInfo        *ii_info,
                                        const int         i_w,
                                        const int         i_h);
 
-const char * imageinfo_get_wxh        (const ImageInfo  *ii_info)
-             __attribute__ ((pure));
+static inline const char * imageinfo_get_wxh (const ImageInfo *ii_info) {
+    return (const char*) ii_info->s_width_height;
+}
 /*----------------------------------------------------------------------------*/
 #endif
 

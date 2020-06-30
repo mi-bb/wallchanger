@@ -367,6 +367,14 @@ Setting * setting_get_at_pos     (Setting       *st_settings,
 size_t    settings_count         (const Setting *st_settings);
 /*----------------------------------------------------------------------------*/
 /**
+ * @brief  Remove Setting from list.
+ *
+ * @param[in] st_setting  Setting to remove
+ * @return    none
+ */
+void      setting_remove         (Setting *st_setting);
+/*----------------------------------------------------------------------------*/
+/**
  * @brief  Replace Setting st_old in list with st_new.
  *
  * @param[in,out] st_old  Old Setting item to be replaced

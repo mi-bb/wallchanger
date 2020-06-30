@@ -215,6 +215,15 @@ wms_update_wm_command (const char *s_wm_name,
     return i_err;
 }
 /*----------------------------------------------------------------------------*/
+int
+wms_update_wm_config (Setting *st_wms)
+{
+    char *s_path  = NULL; /* Config file path */
+
+    s_path = cfgfile_get_wm_info_file_path ();
+    return setts_check_update_file (s_path, st_wms);
+}
+/*----------------------------------------------------------------------------*/
 /**
  * @brief  Compare previously used window manager with present one, set
  *         wallpaper change command.
@@ -372,6 +381,31 @@ wms_get_wallpaper_command (const char *s_cfg_file,
         }
     }
     return strdup (s_result_cmd);
+}
+/*----------------------------------------------------------------------------*/
+void
+wms_check_for_new_wms (const Setting *st_settings,
+                       Setting       *st_defaults)
+{
+    const Setting *st_item_set = NULL;
+    Setting       *st_item_def = NULL;
+
+    st_item_set = st_settings;
+
+    while (st_item_set != NULL) {
+
+        st_item_def = st_defaults;
+
+        while (st_item_def != NULL) {
+
+            if (st_item_set->hash == st_item_def->hash) {
+                setting_remove (st_item_def);
+                break;
+            }
+            st_item_def = st_item_def->next;
+        }
+        st_item_set = st_item_set->next;
+    }
 }
 /*----------------------------------------------------------------------------*/
 

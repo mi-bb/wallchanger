@@ -29,57 +29,6 @@
 #include "setting.h"
 /*----------------------------------------------------------------------------*/
 /**
- * @brief  Set Setting type value
- *
- * @param[in] st_setting  Setting item
- * @param[in] val         Type value to set
- * @return    none
- */
-static void
-setting_set_type (Setting    *st_setting,
-                  SetValType  val)
-{
-    st_setting->v_type = val;
-}
-/*----------------------------------------------------------------------------*/
-/**
- * @brief  Set Setting name string
- *
- * @param[in] st_setting  Setting item
- * @param[in] val         Name string to set
- * @return    none
- */
-static void
-setting_set_name (Setting    *st_setting,
-                  const char *val)
-{
-    st_setting->s_name = strdup (val);
-}
-/*----------------------------------------------------------------------------*/
-/**
- * @brief  Set Setting hash value
- *
- * @param[in] st_setting  Setting item
- * @param[in] val         Hash value to set
- * @return    none
- */
-static void
-setting_set_hash (Setting       *st_setting,
-                  uint_fast32_t  val)
-{
-    st_setting->hash = val;
-}
-/*----------------------------------------------------------------------------*/
-/**
- * @brief  Free string data in Setting
- */
-static void
-setting_free_string (Setting *st_setting)
-{
-    free (st_setting->data.s_val);
-}
-/*----------------------------------------------------------------------------*/
-/**
  * @brief  Setting initialization.
  *
  * @param[out] st_set  Setting object
@@ -96,6 +45,57 @@ static void setting_init (Setting *st_set);
  */
 static void setting_copy2 (Setting       *st_dest,
                            const Setting *st_src);
+/*----------------------------------------------------------------------------*/
+/**
+ * @brief  Set Setting type value
+ *
+ * @param[in] st_setting  Setting item
+ * @param[in] val         Type value to set
+ * @return    none
+ */
+static inline void
+setting_set_type (Setting    *st_setting,
+                  SetValType  val)
+{
+    st_setting->v_type = val;
+}
+/*----------------------------------------------------------------------------*/
+/**
+ * @brief  Set Setting name string
+ *
+ * @param[in] st_setting  Setting item
+ * @param[in] val         Name string to set
+ * @return    none
+ */
+static inline void
+setting_set_name (Setting    *st_setting,
+                  const char *val)
+{
+    st_setting->s_name = strdup (val);
+}
+/*----------------------------------------------------------------------------*/
+/**
+ * @brief  Set Setting hash value
+ *
+ * @param[in] st_setting  Setting item
+ * @param[in] val         Hash value to set
+ * @return    none
+ */
+static inline void
+setting_set_hash (Setting       *st_setting,
+                  uint_fast32_t  val)
+{
+    st_setting->hash = val;
+}
+/*----------------------------------------------------------------------------*/
+/**
+ * @brief  Free string data in Setting
+ */
+static inline void
+setting_free_string (Setting *st_setting)
+{
+    free (st_setting->data.s_val);
+}
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Setting initialization
@@ -118,6 +118,9 @@ setting_init (Setting *st_set)
 void
 setting_free (Setting *st_set)
 {
+    if (st_set == NULL)
+        return;
+
     free (st_set->s_name);
 
     if (setting_get_type (st_set) == SET_VAL_STRING) {
@@ -213,10 +216,7 @@ setting_set_string (Setting    *st_set,
 
     setting_set_type (st_set, SET_VAL_STRING);
 
-    if (val == NULL)
-        st_set->data.s_val = strdup ("");
-    else
-        st_set->data.s_val = strdup (val);
+    st_set->data.s_val = (val == NULL) ? strdup ("") : strdup (val);
 }
 /*----------------------------------------------------------------------------*/
 /**
@@ -569,9 +569,10 @@ setting_set_child (Setting *st_parent,
                    Setting *st_child)
 {
     st_parent->data.st_child = st_child;
-    st_child->parent         = st_parent;
-    st_child->prev           = NULL;
-    st_child->next           = NULL;
+
+    if (st_child != NULL) {
+        st_child->parent = st_parent;
+    }
 }
 /*----------------------------------------------------------------------------*/
 /**
@@ -675,6 +676,34 @@ setting_get_at_pos (Setting      *st_settings,
         st_item = st_item->next;
     }
     return NULL;
+}
+/*----------------------------------------------------------------------------*/
+/**
+ * @brief  Remove Setting from list.
+ */
+void
+setting_remove (Setting *st_setting)
+{
+    Setting *st_item = NULL;
+
+    if (st_setting->prev != NULL) {
+        st_setting->prev->next = st_setting->next;
+    }
+    if (st_setting->next != NULL) {
+        st_setting->next->prev = st_setting->prev;
+    }
+    if (st_setting->parent != NULL) {
+
+        st_item = st_setting->prev == NULL ?
+                  st_setting->next :
+                  setting_first (st_setting);
+
+        setting_set_child (st_setting->parent, st_item);
+    }
+    if ((st_item = setting_get_child (st_setting)) != NULL) {
+        settings_free_all (st_item);
+    }
+    setting_free (st_setting);
 }
 /*----------------------------------------------------------------------------*/
 #ifdef DEBUG

@@ -165,15 +165,6 @@ imageinfo_set_full_name (ImageInfo  *ii_info,
 }
 /*----------------------------------------------------------------------------*/
 /**
- * @brief  Get the full file name string (path + file name)
- */
-const char *
-imageinfo_get_full_name (const ImageInfo *ii_info)
-{
-     return (const char*) ii_info->s_full_path;       
-}
-/*----------------------------------------------------------------------------*/
-/**
  * @brief  Set the file name string
  */
 void
@@ -187,15 +178,6 @@ imageinfo_set_file_name (ImageInfo  *ii_info,
 }
 /*----------------------------------------------------------------------------*/
 /**
- * @brief  Get the file name string
- */
-const char *
-imageinfo_get_file_name (const ImageInfo *ii_info)
-{
-     return (const char*) ii_info->s_file_name;       
-}
-/*----------------------------------------------------------------------------*/
-/**
  * @brief  Set the file path string
  */
 void
@@ -206,53 +188,6 @@ imageinfo_set_file_path (ImageInfo  *ii_info,
         free (ii_info->s_file_path);
 
     ii_info->s_file_path = strdup (s_name);
-}
-/*----------------------------------------------------------------------------*/
-/**
- * @brief  Get the file path string
- */
-const char *
-imageinfo_get_file_path (const ImageInfo *ii_info)
-{
-     return (const char*) ii_info->s_file_path;       
-}
-/*----------------------------------------------------------------------------*/
-/**
- * @brief  Set image width information
- */
-void
-imageinfo_set_width (ImageInfo *ii_info, 
-                     const int  i_val)
-{
-    ii_info->i_width = i_val; 
-}
-/*----------------------------------------------------------------------------*/
-/**
- * @brief  Get image width value
- */
-int
-imageinfo_get_width (const ImageInfo *ii_info)
-{
-    return ii_info->i_width;
-}
-/*----------------------------------------------------------------------------*/
-/**
- * @brief  Set image height information
- */
-void
-imageinfo_set_height (ImageInfo *ii_info, 
-                      const int  i_val)
-{
-    ii_info->i_height = i_val; 
-}
-/*----------------------------------------------------------------------------*/
-/**
- * @brief  Get image height value
- */
-int
-imageinfo_get_height (const ImageInfo *ii_info)
-{
-    return ii_info->i_height;
 }
 /*----------------------------------------------------------------------------*/
 /**
@@ -272,15 +207,6 @@ imageinfo_set_wxh (ImageInfo *ii_info,
     cres ((void**) &ii_info->s_width_height, (size_t) (n + 1), sizeof (char));
     memcpy (ii_info->s_width_height, s_tmp, (size_t) n);
     ii_info->s_width_height[n] = '\0';
-}
-/*----------------------------------------------------------------------------*/
-/**
- * @brief  Get string with image dimensions (width x height)
- */
-const char *
-imageinfo_get_wxh (const ImageInfo *ii_info)
-{
-    return (const char*) ii_info->s_width_height;
 }
 /*----------------------------------------------------------------------------*/
 

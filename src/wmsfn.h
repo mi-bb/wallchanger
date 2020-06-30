@@ -75,6 +75,8 @@ Setting * wms_get_current_wm         (Setting    *st_wmsl);
 int       wms_update_wm_command      (const char *s_wm_name,
                                       const char *s_command);
 /*----------------------------------------------------------------------------*/
+int       wms_update_wm_config       (Setting    *st_wms);
+/*----------------------------------------------------------------------------*/
 /**
  * @brief  Compare previously used window manager with present one, set
  *         wallpaper change command.
@@ -90,6 +92,9 @@ char    * wms_get_wallpaper_command  (const char *s_cfg_file,
                                       Setting    *st_settings,
                                       Setting    *st_wmlist,
                                       int        *i_err);
+/*----------------------------------------------------------------------------*/
+void      wms_check_for_new_wms      (const Setting *st_settings,
+                                      Setting       *st_defaults);
 /*----------------------------------------------------------------------------*/
 #endif
 

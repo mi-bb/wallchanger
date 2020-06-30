@@ -594,6 +594,7 @@ cmddialog_run (GtkWindow    *gw_parent,
     char      *s_result = NULL;    /* Result string with wall set command */
     int        i_res    = 0;       /* Config dialog result */
     Setting   *st_wms;             /* Window manager info list */
+    Setting   *st_wms_defaults;    /* App default window manager info list */
     Setting   *st_crwm;            /* Current window manager info */
     int        i_err    = 0;       /* Error output */
 
@@ -602,6 +603,22 @@ cmddialog_run (GtkWindow    *gw_parent,
     if (i_err != ERR_OK) {
         return NULL;
     }
+    st_wms_defaults = setting_new_setting ("Settings");
+    setts_string_to_settings (deffiles_wm_get_buff (), st_wms_defaults);
+
+    wms_check_for_new_wms (setting_get_child (st_wms),
+                           setting_get_child (st_wms_defaults));
+
+    if (setting_count_children (st_wms_defaults) > 0) {
+        i_err = wms_update_wm_config (st_wms_defaults);
+        if (i_err != ERR_OK) {
+            return NULL;
+        }
+        settings_free_all (st_wms);
+        st_wms = wms_get_wm_info (&i_err);
+    }
+    settings_free_all (st_wms_defaults);
+
     GtkDialogFlags flags = GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT;
 
     gw_dialog = gtk_dialog_new_with_buttons (

@@ -13,6 +13,11 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+2020-06-28  Michal Babik  <michal.babik@pm.me>
+
+	* setting.c, setting.h: Changed some ugly macros to funcitons.
+	* deffiles.c: Added dwm to wm list.
+
 2020-06-22  Michal Babik  <michal.babik@pm.me>
 
 	* astart.c, astart.h: Files removed. Content moved to deffiles.c,
