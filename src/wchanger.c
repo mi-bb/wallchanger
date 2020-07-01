@@ -602,7 +602,7 @@ event_save_settings_pressed (const DialogData *dd_data)
 
     st_settings = widgets_get_settings (dd_data);
     i_err = setts_check_update_file (dialogdata_get_cfg_file (dd_data),
-                                     st_settings);
+                                     setting_get_child (st_settings));
     settings_free_all (st_settings);
 
     if (i_err != ERR_OK) {
@@ -767,7 +767,7 @@ event_on_delete (GtkWidget        *window,
     st_settings = widgets_get_settings (dd_data);
 
     s_buff  = setts_check_update (dialogdata_get_cfg_file (dd_data),
-                                  st_settings,
+                                  setting_get_child (st_settings),
                                   &i_err);
     settings_free_all (st_settings);
 

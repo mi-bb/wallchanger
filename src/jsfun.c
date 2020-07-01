@@ -267,7 +267,7 @@ js_settings_add_to_json_obj (Setting     *st_settings,
     json_object *j_val;   /* Json object made from Setting */
     Setting     *st_main; /* List of main settings in st_list */
 
-    st_main = setting_get_child (st_settings);
+    st_main = st_settings;
 
     while (st_main != NULL) {
         j_val = js_setting_to_json_obj (st_main);

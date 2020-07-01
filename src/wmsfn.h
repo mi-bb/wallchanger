@@ -60,6 +60,8 @@ Setting * wms_get_wm_info            (int        *i_err);
 /**
  * @brief  Find window manager that is currently in use.
  *
+ * @param[in]  st_wmsl  List of Setting items
+ *
  * return     Setting item with info about window manager.
  *            After use it should be freed using free.
  */
@@ -75,6 +77,12 @@ Setting * wms_get_current_wm         (Setting    *st_wmsl);
 int       wms_update_wm_command      (const char *s_wm_name,
                                       const char *s_command);
 /*----------------------------------------------------------------------------*/
+/**
+ * @brief  Update window manager info file with new settings.
+ *
+ * @param[in]  st_wms  List of Setting items
+ * @return     Updating result
+ */
 int       wms_update_wm_config       (Setting    *st_wms);
 /*----------------------------------------------------------------------------*/
 /**
@@ -93,8 +101,18 @@ char    * wms_get_wallpaper_command  (const char *s_cfg_file,
                                       Setting    *st_wmlist,
                                       int        *i_err);
 /*----------------------------------------------------------------------------*/
-void      wms_check_for_new_wms      (const Setting *st_settings,
-                                      Setting       *st_defaults);
+/**
+ * @brief  Compare setting with wm info with default app wm info.
+ *
+ * Compare setting with wm info with default app wm info, update user's config
+ * file if there was some new data in default wm info (usually after adding
+ * some new window managers in new version).
+ *
+ * @param[in] s_buff  String with default wm info template
+ * @return    Error result
+ */
+/*----------------------------------------------------------------------------*/
+int       wms_check_for_new_wms      (const char *s_buff);
 /*----------------------------------------------------------------------------*/
 #endif
 

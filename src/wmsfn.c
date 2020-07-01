@@ -207,7 +207,7 @@ wms_update_wm_command (const char *s_wm_name,
             setting_set_string (st_item, s_command);
         }
     }
-    i_err = setts_check_update_file (s_path, st_wms);
+    i_err = setts_check_update_file (s_path, setting_get_child (st_wms));
     #ifdef DEBUG
     settings_print (st_wms);
     #endif
@@ -215,6 +215,9 @@ wms_update_wm_command (const char *s_wm_name,
     return i_err;
 }
 /*----------------------------------------------------------------------------*/
+/**
+ * @brief  Update window manager info file with new settings.
+ */
 int
 wms_update_wm_config (Setting *st_wms)
 {
@@ -383,18 +386,34 @@ wms_get_wallpaper_command (const char *s_cfg_file,
     return strdup (s_result_cmd);
 }
 /*----------------------------------------------------------------------------*/
-void
-wms_check_for_new_wms (const Setting *st_settings,
-                       Setting       *st_defaults)
+/**
+ * @brief  Check setting with wm info, remove from st_defaults all wms present
+ *         in st_settings list.
+ */
+int
+wms_check_for_new_wms (const char *s_buff)
 {
-    const Setting *st_item_set = NULL;
-    Setting       *st_item_def = NULL;
+    Setting *st_settings = NULL;   /* For user's wm info */
+    Setting *st_wms_def  = NULL;   /* For app default wm info */
+    Setting *st_item_set = NULL;   /* Temp for saved data item */
+    Setting *st_item_def = NULL;   /* Temp for default data item */
+    int      i_err       = ERR_OK; /* Error output */
 
-    st_item_set = st_settings;
+    /* Load user's wm info data */
+    st_settings = wms_get_wm_info (&i_err);
+    if (i_err != ERR_OK)
+        return i_err;
+
+    /* Load app default wm info data */
+    st_wms_def = setting_new_setting ("Settings");
+    setts_string_to_settings (s_buff, st_wms_def);
+
+    /* Iterate and remove from app default data wms present in user's info */
+    st_item_set = setting_get_child (st_settings);
 
     while (st_item_set != NULL) {
 
-        st_item_def = st_defaults;
+        st_item_def = setting_get_child (st_wms_def);
 
         while (st_item_def != NULL) {
 
@@ -406,7 +425,15 @@ wms_check_for_new_wms (const Setting *st_settings,
         }
         st_item_set = st_item_set->next;
     }
+
+    /* If there are some window managers left in app default wm data,
+     * update user's wm data with this window managers */
+    if (setting_count_children (st_wms_def) > 0) {
+        i_err = wms_update_wm_config (setting_get_child (st_wms_def));
+    }
+    settings_free_all (st_wms_def);
+    settings_free_all (st_settings);
+    return i_err;
 }
 /*----------------------------------------------------------------------------*/
-
 

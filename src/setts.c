@@ -229,14 +229,10 @@ setts_update_last_used (const char *s_cfg_file,
                         const char *s_last_used)
 {
     Setting  *st_settings;
-    Setting  *st_item;
     int       i_res = ERR_OK;
 
-    st_settings = setting_new_setting ("Settings");
-    
-    st_item = setting_new_string (get_setting_name (SETTING_LAST_USED_STR),
-                                   s_last_used);
-    setting_add_child (st_settings, st_item);
+    st_settings = setting_new_string (get_setting_name (SETTING_LAST_USED_STR),
+                                      s_last_used);
 
     i_res = js_settings_check_update_file (st_settings, s_cfg_file);
     settings_free_all (st_settings);
@@ -251,14 +247,10 @@ setts_update_last_used_wm (const char *s_cfg_file,
                            const char *s_last_used_wm)
 {
     Setting  *st_settings;
-    Setting  *st_item;
     int       i_res = ERR_OK;
 
-    st_settings = setting_new_setting ("Settings");
-    
-    st_item = setting_new_string (get_setting_name (SETTING_LAST_USED_WM),
-                                  s_last_used_wm);
-    setting_add_child (st_settings, st_item);
+    st_settings = setting_new_string (get_setting_name (SETTING_LAST_USED_WM),
+                                      s_last_used_wm);
 
     i_res = js_settings_check_update_file (st_settings, s_cfg_file);
     settings_free_all (st_settings);
@@ -274,18 +266,14 @@ setts_update_window_size (const char *s_cfg_file,
                           const int   i_h)
 {
     Setting  *st_settings;
-    Setting  *st_item;
     int       i_res = ERR_OK;
 
-    st_settings = setting_new_setting ("Settings");
-    
-    st_item = setting_new_int (get_setting_name (SETTING_WIN_WIDTH),
+    st_settings = setting_new_int (get_setting_name (SETTING_WIN_WIDTH),
                                 (int64_t) i_w);
-    setting_add_child (st_settings, st_item);
 
-    st_item = setting_new_int (get_setting_name (SETTING_WIN_HEIGHT),
-                                (int64_t) i_h);
-    setting_add_child (st_settings, st_item);
+    settings_append (st_settings,
+                     setting_new_int (get_setting_name (SETTING_WIN_HEIGHT),
+                                      (int64_t) i_h));
 
     i_res = js_settings_check_update_file (st_settings, s_cfg_file);
     settings_free_all (st_settings);

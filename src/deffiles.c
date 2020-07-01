@@ -32,7 +32,6 @@
 #include "strfun.h"
 #include "rwdt.h"
 #include "deffiles.h"
-
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Template for autostart desktop file with wchangerd daemon.
