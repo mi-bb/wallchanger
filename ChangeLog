@@ -13,10 +13,22 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-2020-06-28  Michal Babik  <michal.babik@pm.me>
+2020-07-02  Michal Babik  <michal.babik@pm.me>
 
 	* setting.c, setting.h: Changed some ugly macros to funcitons.
+	  (setting_remove): New function to remove setting.
 	* deffiles.c: Added dwm to wm list.
+	* dlgs.c (cmddialog_run): Added checking for new wm's in app default
+	  info.
+	* jsfun.c (js_settings_add_to_json_obj): Changed processing of
+	  setting list, settings should be passed as list not a parent.
+	* wchanger.c (event_on_delete, event_save_settings_pressed):
+	  changed passing settings from parent to list for
+	  setts_check_update_file, setts_check_update.
+	* wmsfn.c (wms_update_wm_config): New function to update wm config
+	  file.
+	  (wms_check_for_new_wms): New function to compare saved wm info
+	  with app default and update saved info if needed.
 
 2020-06-22  Michal Babik  <michal.babik@pm.me>
 

@@ -101,15 +101,21 @@ Setting {
 } Setting;
 /*----------------------------------------------------------------------------*/
 /**
+ * @fn  SetValType setting_get_type (const Setting *st_setting)
+ *
  * @brief  Get Setting type value
  *
  * @param[in] st_setting  Setting to get type
  * @return    Setting type value
  *
+ * @fn  const char * setting_get_name (const Setting *st_setting)
+ *
  * @brief  Get Setting name string
  *
  * @param[in] st_setting  Setting to get name
  * @return    Name string
+ *
+ * @fn  uint_fast32_t setting_get_hash (const Setting *st_setting)
  *
  * @brief  Get Setting hash value
  *
@@ -128,10 +134,14 @@ static inline uint_fast32_t setting_get_hash (const Setting *st_setting) {
 }
 /*----------------------------------------------------------------------------*/
 /**
+ * @fn  Setting * setting_get_parent (Setting *st_setting)
+ *
  * @brief  Get Setting's parent Setting
  *
  * @param[in] st_setting  Setting item
  * @return    Parent Setting
+ *
+ * @fn  Setting * setting_get_child (Setting *st_setting)
  *
  * @brief  Get Setting's child Setting
  *
@@ -147,10 +157,14 @@ static inline Setting * setting_get_child  (Setting *st_setting) {
 }
 /*----------------------------------------------------------------------------*/
 /**
+ * @fn  Setting * setting_next (Setting *st_setting)
+ *
  * @brief  Get next Setting in list
  *
  * @param[in] st_setting  Setting item
  * @return    Next Setting in list or null
+ *
+ * @fn  Setting * setting_prev (Setting *st_setting)
  *
  * @brief  Get previous Setting in list
  *
@@ -186,29 +200,35 @@ void setting_free      (Setting *st_set);
 void settings_free_all (Setting *st_set);
 /*----------------------------------------------------------------------------*/
 /**
- * @fn         int64_t setting_get_int (const Setting *st_set)
- * @brief      Get integer value stored in Setting
+ * @fn  int64_t setting_get_int (const Setting *st_set)
+ *
+ * @brief  Get integer value stored in Setting
  *
  * It is set to hold and return 64 bit integer value.
  *
  * @param[in]  st_set  Setting object
  * @return     64 bit integer or 0 if incorrect type to get
  *
- * @fn         uint64_t setting_get_uint (const Setting *st_set)
- * @brief      Get unsigned integer value stored in Setting
+ * @fn  uint64_t setting_get_uint (const Setting *st_set)
+ *
+ * @brief  Get unsigned integer value stored in Setting
  *
  * It is set to hold and return 64 bit unsigned integer value.
  *
  * @param[in]  st_set  Setting object
  * @return     64 bit unsigned integer or 0 if incorrect type to get
  *
- * @fn         double setting_get_double (const Setting *st_set)
- * @brief      Get double type value stored in Setting
+ * @fn  double setting_get_double (const Setting *st_set)
+ *
+ * @brief  Get double type value stored in Setting
+ *
  * @param[in]  st_set  Setting object
  * @return     Double value or 0 if incorrect type to get
  *
- * @fn         const char * setting_get_string (const Setting *st_set)
- * @brief      Get text string stored in Setting
+ * @fn  const char * setting_get_string (const Setting *st_set)
+ *
+ * @brief  Get text string stored in Setting
+ *
  * @param[in]  st_set  Setting object
  * @return     String or null if incorrect type to get
  */
@@ -474,7 +494,7 @@ void settings_append_or_replace (Setting *st_list,
  * @param[in]  st_setting  Setting from list
  * @return     Top level setting in list
  *
- * @fn  size_t setting_count_children (const Setting *st_setting)
+ * @fn  size_t setting_count_children (Setting *st_setting)
  *
  * @brief  Count children in Setting object or array
  *
@@ -486,6 +506,7 @@ void settings_append_or_replace (Setting *st_list,
  * @brief  Find child with given name in Setting object or array
  *
  * @param[in]  st_setting  Setting from list
+ * @param[in]  s_name      Name of Setting to find
  * @return     Found Setting item or null of not found
  */
 /*----------------------------------------------------------------------------*/

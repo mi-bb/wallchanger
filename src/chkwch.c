@@ -118,9 +118,7 @@ check_display_exit (void)
 void
 check_config_file (char **s_file)
 {
-    int i_err = 0; /* Error output */
-
-    if ((i_err = cfgfile_config_file_stuff (s_file, 0)) != ERR_OK) {
+    if (cfgfile_config_file_stuff (s_file, 0) != ERR_OK) {
         err (EXIT_FAILURE, "Problem with config file");
     }
 }
@@ -170,6 +168,7 @@ check_settings_change_wallpaper (char     *s_cfg_file,
     uint32_t         ui_nlen  = 0;    /* Actual wallpaper list length */
     uint32_t         ui_inter = 0;    /* Result change interval */
     Setting         *st_setts = NULL; /* For settings */
+    Setting         *st_c     = NULL; /* For setting list */
     Setting         *st_wm    = NULL; /* Window manager info */
     Setting         *st_st    = NULL; /* For particular setting */
     char            *s_cmd    = NULL; /* For wallpaper change command */
@@ -184,7 +183,7 @@ check_settings_change_wallpaper (char     *s_cfg_file,
         free_and_exit (s_cfg_file, rm_rand, st_setts, st_wm,
                        EXIT_FAILURE, NULL);
     }
-    if (setting_get_child (st_setts) == NULL) {
+    if ((st_c = setting_get_child (st_setts)) == NULL) {
         free_and_exit (s_cfg_file, rm_rand, st_setts, st_wm,
                        EXIT_FAILURE, "Empty config file");
     }
@@ -193,32 +192,29 @@ check_settings_change_wallpaper (char     *s_cfg_file,
 
     /* Get number of wallpapers in list */
     ui_nlen = (uint32_t) setting_count_children (
-            settings_find (setting_get_child (st_setts),
-                           get_setting_name (SETTING_WALL_ARRAY)));
+            settings_find (st_c, get_setting_name (SETTING_WALL_ARRAY)));
     if (ui_nlen == 0) {
         free_and_exit (s_cfg_file, rm_rand, st_setts, st_wm,
                        EXIT_FAILURE, "Empty wallpaper list");
     }
     /* Get wallpaper set command depending on used window manager */
-    s_cmd = wms_get_wallpaper_command (s_cfg_file, setting_get_child (st_setts),
+    s_cmd = wms_get_wallpaper_command (s_cfg_file, st_c,
                                        setting_get_child (st_wm), &i_err);
     /* Update wallpaper set command in settings */
     if (s_cmd != NULL) {
-        if ((st_st = setting_find_child (st_setts,
+        if ((st_st = settings_find (st_c,
                     get_setting_name (SETTING_BG_CMD))) != NULL) {
             setting_set_string (st_st, s_cmd);
         }
         free (s_cmd);
     }
     /* Get time align info */
-    st_st = settings_find (setting_get_child (st_setts),
-                           get_setting_name (SETTING_TIME_ALIGN_OPT));
+    st_st = settings_find (st_c, get_setting_name (SETTING_TIME_ALIGN_OPT));
     if (st_st != NULL) {
         *i_algntime = (int) setting_get_int (st_st);
     }
     /* Get wallpaper change inerval value */
-    st_st = settings_find (setting_get_child (st_setts),
-                           get_setting_name (SETTING_INTERVAL_VAL));
+    st_st = settings_find (st_c, get_setting_name (SETTING_INTERVAL_VAL));
     if (st_st != NULL) {
         ui_inter = (uint32_t) setting_get_int (st_st);
     }
@@ -250,7 +246,6 @@ check_settings_change_wallpaper (char     *s_cfg_file,
         }
         ui_len = ui_nlen;
     }
-    setting_remove (setting_get_child (st_wm));
     settings_free_all (st_wm);
     settings_free_all (st_setts);
     return ui_inter * 60;

@@ -19,9 +19,9 @@
  *
  * Automatic wallpaper changer
  *
- * @date June 22, 2020
+ * @date July 02, 2020
  *
- * @version 1.5.0
+ * @version 1.5.1
  *
  * @author Michal Babik <michal.babik@pm.me>
  */
@@ -48,14 +48,14 @@ int
 main (int    argc,
       char **argv)
 {
-    uint32_t  ui_cnt       = 0;    /* Parts counter */
+    uint32_t  ui_cnt       = 0;    /* Time align parts counter */
     uint32_t  ui_ch_int    = 0;    /* Change interval value */
     uint32_t  ui_ch_int_n  = 0;    /* New change interval value */
     int       i_opt        = 0;    /* Command line options */
     int       i_atime_opt  = 0;    /* Time align option */
     uint32_t  ui_atime_val = 0;    /* Time align value */
     char     *s_cfgfile    = NULL; /* Config file path */
-    RandMem  *rm_rand;             /* Ramdom memory structure */
+    RandMem  *rm_rand      = NULL; /* Ramdom memory structure */
 
     /* Parse command line options */
     cmdfn_parse (argc, argv, &i_opt, &s_cfgfile);

@@ -35,6 +35,24 @@
 #include "wmsfn.h"
 /*----------------------------------------------------------------------------*/
 /**
+ * @brief  Update window manager info file with new settings.
+ *
+ * @param[in]  st_wms  List of Setting items
+ * @return     Updating result
+ */
+static int
+wms_update_wm_config (Setting *st_wms)
+{
+    char *s_path = NULL;   /* Config file path */
+    int   i_res  = ERR_OK; /* Error output */
+
+    s_path = cfgfile_get_wm_info_file_path ();
+    i_res = setts_check_update_file (s_path, st_wms);
+    free (s_path);
+    return i_res;
+}
+/*----------------------------------------------------------------------------*/
+/**
  * @brief  Get list of Xfce displays possible to set wallpaper.
  */
 char **
@@ -208,23 +226,12 @@ wms_update_wm_command (const char *s_wm_name,
         }
     }
     i_err = setts_check_update_file (s_path, setting_get_child (st_wms));
+    free (s_path);
     #ifdef DEBUG
     settings_print (st_wms);
     #endif
     settings_free_all (st_wms);
     return i_err;
-}
-/*----------------------------------------------------------------------------*/
-/**
- * @brief  Update window manager info file with new settings.
- */
-int
-wms_update_wm_config (Setting *st_wms)
-{
-    char *s_path  = NULL; /* Config file path */
-
-    s_path = cfgfile_get_wm_info_file_path ();
-    return setts_check_update_file (s_path, st_wms);
 }
 /*----------------------------------------------------------------------------*/
 /**

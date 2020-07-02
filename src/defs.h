@@ -65,7 +65,7 @@
  * @brief Default setting for last used window manager
  */
 #define APP_NAME              "Wall Changer"
-#define APP_VER               "1.5.0"
+#define APP_VER               "1.5.1"
 #define APP_WEB               "https://www.nongnu.org/wallchanger/"
 #define APP_DSC               "Wall Changer is an automatic wallpaper changer."
 #define STATUS_CONFIG         "Config file in use: "

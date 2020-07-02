@@ -147,12 +147,12 @@ GSList     * file_paths_to_imageinfo  (const GSList     *gsl_files1);
  * @param[out] ii_info  ImageInfo object with data to get
  * @return     File path string
  *
- * @fn  void imageinfo_set_width (ImageInfo *ii_info, uint16_t ui_val)
+ * @fn  void imageinfo_set_width (ImageInfo *ii_info, const int val)
  *
  * @brief  Set image width information
  *
  * @param[out] ii_info  ImageInfo object to set data
- * @param[in]  ui_val   Image width value
+ * @param[in]  val      Image width value
  * @return     none
  *
  * @fn  int imageinfo_get_width (const ImageInfo *ii_info)
@@ -162,12 +162,12 @@ GSList     * file_paths_to_imageinfo  (const GSList     *gsl_files1);
  * @param[out] ii_info  ImageInfo object with data to get
  * @return     Width of an image
  *
- * @fn  void imageinfo_set_height (ImageInfo *ii_info, uint16_t ui_val)
+ * @fn  void imageinfo_set_height (ImageInfo *ii_info, const int val)
  *
  * @brief  Set image height information
  *
  * @param[out] ii_info  ImageInfo object to set data
- * @param[in]  ui_val   Image height value
+ * @param[in]  val      Image height value
  * @return     none
  *
  * @fn  int imageinfo_get_height (const ImageInfo *ii_info)
@@ -177,7 +177,7 @@ GSList     * file_paths_to_imageinfo  (const GSList     *gsl_files1);
  * @param[out] ii_info  ImageInfo object with data to get
  * @return     Height of an image
  *
- * @fn  const char * imageinfo_get_wxh (ImageInfo *ii_info)
+ * @fn  const char * imageinfo_get_wxh (const ImageInfo *ii_info)
  *
  * @brief  Get string with image dimensions (width x height)
  *
@@ -210,16 +210,16 @@ static inline const char * imageinfo_get_file_path (const ImageInfo *ii_info) {
 }
 /*----------------------------------------------------------------------------*/
 static inline void imageinfo_set_width (ImageInfo        *ii_info,
-                                        const int         i_val) {
-    ii_info->i_width = i_val;
+                                        const int         val) {
+    ii_info->i_width = val;
 }
 static inline int imageinfo_get_width  (const ImageInfo  *ii_info) {
     return ii_info->i_width;
 }
 /*----------------------------------------------------------------------------*/
 static inline void imageinfo_set_height (ImageInfo        *ii_info,
-                                         const int         i_val) {
-    ii_info->i_height = i_val;
+                                         const int         val) {
+    ii_info->i_height = val;
 }
 static inline int  imageinfo_get_height (const ImageInfo  *ii_info) {
     return ii_info->i_height;

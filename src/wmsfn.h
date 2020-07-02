@@ -78,14 +78,6 @@ int       wms_update_wm_command      (const char *s_wm_name,
                                       const char *s_command);
 /*----------------------------------------------------------------------------*/
 /**
- * @brief  Update window manager info file with new settings.
- *
- * @param[in]  st_wms  List of Setting items
- * @return     Updating result
- */
-int       wms_update_wm_config       (Setting    *st_wms);
-/*----------------------------------------------------------------------------*/
-/**
  * @brief  Compare previously used window manager with present one, set
  *         wallpaper change command.
  *

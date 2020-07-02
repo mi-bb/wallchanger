@@ -92,9 +92,7 @@ dmfn_print_status (void)
 {
     int i_cnt = 0;
 
-    i_cnt = dmfn_check_presence ();
-
-    if (i_cnt > 0) {
+    if ((i_cnt = dmfn_check_presence ()) > 0) {
         puts ("wchangerd is running");
     }
     else {
@@ -121,8 +119,8 @@ dmfn_kill (void)
     int i_cnt = 0;
 
     printf ("Stopping wchangerd ... ");
-    i_cnt = process_kill_all_except_current ("wchangerd");
-    if (i_cnt > 0) {
+
+    if ((i_cnt = process_kill_all_except_current ("wchangerd")) > 0) {
         printf ("Stopped\n");
     }
     else {

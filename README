@@ -59,6 +59,9 @@ If compilation ends without problems, 2 executable files will be created:
 
 wchangerd works in background and changes wallpaper in specified time intervals.
 
+wchangercfg is a configuration window to set wallpaper change time intervals,
+images on wallpaper list, the way wallpapers change, etc. 
+
 working with the wchangerd daemon:
 
     wchangerd --start      Starts the wchangerd daemon
@@ -67,14 +70,20 @@ working with the wchangerd daemon:
 
     wchangerd --once       Change wallpaper once and exit
 
-    wchangerd --config     Loads configuration from file provided here
+    wchangerd --config     Loads configuration from given file
 
-wchangercfg is a configuration window to set wallpaper change time intervals,
-images on wallpaper list and a way wallpapers change.
+The wallpaper change command is selected based on the currently used window
+manager.
+Application has default wallpaper change commands for several window managers.
+Default commands can be changed througn wchangercfg, using Select button.
+It opens wallpaper command set dialog with list of window managers and commands.
+After checking and setting commands, especially for Xfce, which has an unusual
+wallpaper set command, you can use this app with different window managers
+without changing settings.
 
-Afer changing settings using wchangercfg, wchangerd daemon will load them
-before next wallpaper change. If you want to load settings before that time,
-you need to restart wchangerd daemon using wchangerd --restart command.
+Afer changing settings using wchangercfg, wchangerd daemon will load them before
+next wallpaper change. If you want to load settings before that time, you need
+to restart wchangerd daemon using wchangerd --restart command. 
 
 Default places for configuration file:
 (application will look for it in order like on the list below)
