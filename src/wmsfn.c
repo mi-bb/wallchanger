@@ -47,7 +47,7 @@ wms_update_wm_config (Setting *st_wms)
     int   i_res  = ERR_OK; /* Error output */
 
     s_path = cfgfile_get_wm_info_file_path ();
-    i_res = setts_check_update_file (s_path, st_wms);
+    i_res  = setts_check_update_file (s_path, st_wms);
     free (s_path);
     return i_res;
 }
@@ -69,6 +69,7 @@ wms_get_xfce_display_list (void)
     if ((s_ret = malloc ((ui_alloc + 1) * sizeof (char*))) == NULL)
         err (EXIT_FAILURE, NULL);
 
+    /* Get output for xfce backdrop query */
     f_file = popen ("xfconf-query -c xfce4-desktop -p /backdrop -l", "r");
 
     if (f_file == NULL) {
@@ -203,10 +204,10 @@ int
 wms_update_wm_command (const char *s_wm_name,
                        const char *s_command)
 {
-    Setting *st_wms  = NULL; /* Window manager info list */
-    Setting *st_item = NULL; /* For checking wm name and command */
-    char    *s_path  = NULL; /* Config file path */
-    int      i_err   = 0;    /* Error output */
+    Setting *st_wms  = NULL;   /* Window manager info list */
+    Setting *st_item = NULL;   /* For checking wm name and command */
+    char    *s_path  = NULL;   /* Config file path */
+    int      i_err   = ERR_OK; /* Error output */
 
     /* Load settings from config file */
     s_path = cfgfile_get_wm_info_file_path ();
@@ -214,6 +215,7 @@ wms_update_wm_command (const char *s_wm_name,
     //st_wms = wms_get_wm_info (&i_err);
     if (i_err != ERR_OK) {
         /* err (EXIT_FAILURE, NULL); */
+        free (s_path);
         settings_free_all (st_wms);
         return i_err;
     }
@@ -281,8 +283,7 @@ wms_get_wallpaper_command (const char *s_cfg_file,
         s_lu_wm = setting_get_string (st_lu_wm);
     }
     /* Getting currently used window manager setting and name string */
-    st_cu_wm = wms_get_current_wm (st_wm);
-    if (st_cu_wm != NULL) {
+    if ((st_cu_wm = wms_get_current_wm (st_wm)) != NULL) {
         s_cu_wm = setting_get_name (st_cu_wm);
     }
     #ifdef DEBUG

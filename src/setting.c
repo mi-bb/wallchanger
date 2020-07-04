@@ -49,6 +49,25 @@ static void setting_copy2 (Setting       *st_dest,
                            const Setting *st_src);
 /*----------------------------------------------------------------------------*/
 /**
+ * @brief  Create default Setting.
+ *
+ * @param[in] s_name  Setting's name
+ * @return    New Setting item
+ */
+static Setting * setting_new_default (const char *s_name)
+       __attribute__ ((returns_nonnull));
+/*----------------------------------------------------------------------------*/
+/**
+ * @brief Set st_child Setting to be a child of st_parent.
+ *
+ * @param[out] st_parent  Parent Setting to set child to
+ * @param[out] st_child   Child setting to be assigned to st_parent Setting
+ * @return     none
+ */
+static void setting_set_child (Setting *st_parent,
+                               Setting *st_child);
+/*----------------------------------------------------------------------------*/
+/**
  * @brief  Set Setting type value
  *
  * @param[in] st_setting  Setting item
@@ -287,9 +306,6 @@ setting_copy (const Setting *st_src)
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Create default Setting.
- *
- * @param[in] s_name  Setting's name
- * @return    New Setting item
  */
 static Setting *
 setting_new_default (const char *s_name)
@@ -561,10 +577,6 @@ settings_find_replace (Setting   *st_list,
 /*----------------------------------------------------------------------------*/
 /**
  * @brief Set st_child Setting to be a child of st_parent.
- *
- * @param[out] st_parent  Parent Setting to set child to
- * @param[out] st_child   Child setting to be assigned to st_parent Setting
- * @return     none
  */
 static void
 setting_set_child (Setting *st_parent,

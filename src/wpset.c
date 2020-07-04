@@ -193,8 +193,8 @@ wpset_change (Setting    *st_settings,
               RandMem    *rm_rand,
               const char *s_cfg_file)
 {
-    Setting    *st_sett = NULL;
-    const char *s_lastu = NULL;
+    Setting    *st_sett = NULL; /* For setting with random opt */
+    const char *s_lastu = NULL; /* For file name of last used wallpaper */
 
     st_sett = settings_find (setting_get_child (st_settings),
                              get_setting_name (SETTING_RANDOM_OPT));
@@ -216,9 +216,9 @@ wpset_startup_set (Setting    *st_settings,
                    RandMem    *rm_rand,
                    const char *s_cfg_file)
 {
-    Setting *st_sett = NULL;
-    Setting *st_opt  = NULL;
-    Setting *st_cmd  = NULL;
+    Setting *st_opt  = NULL; /* For setting with last used option */
+    Setting *st_sett = NULL; /* For setting with last used wallpaper name */
+    Setting *st_cmd  = NULL; /* For wallpaper set command */
 
     st_opt  = settings_find (setting_get_child (st_settings),
                              get_setting_name (SETTING_LAST_USED_OPT));

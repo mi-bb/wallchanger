@@ -118,9 +118,8 @@ check_display_exit (void)
 void
 check_config_file (char **s_file)
 {
-    if (cfgfile_config_file_stuff (s_file, 0) != ERR_OK) {
+    if (cfgfile_config_file_stuff (s_file, 0) != ERR_OK)
         err (EXIT_FAILURE, "Problem with config file");
-    }
 }
 /*----------------------------------------------------------------------------*/
 /**

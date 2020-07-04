@@ -127,8 +127,8 @@ static const char *s_default_wm_json = "{"
 int
 deffiles_autostart_exists (void)
 {
-    char *s_path = NULL;
-    int  i_res   = 0;
+    char *s_path = NULL; /* Autostart file path */
+    int  i_res   = 0;    /* File presence value to return */
 
     s_path = cfgfile_get_autostart_file_path ();
 
@@ -146,8 +146,8 @@ deffiles_autostart_exists (void)
 int
 deffiles_autostart_create (void)
 {
-    char *s_path = NULL;
-    int   i_err  = 0;
+    char *s_path = NULL;   /* Autostart file path */
+    int   i_err  = ERR_OK; /* Error value to return */
 
     s_path = cfgfile_get_autostart_file_path ();
 
@@ -165,7 +165,7 @@ deffiles_autostart_create (void)
 int
 deffiles_autostart_remove (void)
 {
-    char *s_path = NULL;
+    char *s_path = NULL; /* Autostart file path */
 
     s_path = cfgfile_get_autostart_file_path ();
     
@@ -185,15 +185,13 @@ deffiles_autostart_remove (void)
 int
 deffiles_wm_check_create (void)
 {
-    char *s_path = NULL;
-    int   i_err  = 0;
+    char *s_path = NULL;   /* Window manager info file path */
+    int   i_err  = ERR_OK; /* Error value to return */
 
     s_path = cfgfile_get_wm_info_file_path ();
 
-    i_err = file_check_permissions (s_path);
-    if (i_err == ERR_FILE_EX) {
-        i_err = file_create_with_subdirs (s_path);
-        if (i_err == ERR_OK) {
+    if ((i_err = file_check_permissions (s_path)) == ERR_FILE_EX) {
+        if ((i_err = file_create_with_subdirs (s_path)) == ERR_OK) {
             i_err = save_file_data (s_path, s_default_wm_json);
         }
     }

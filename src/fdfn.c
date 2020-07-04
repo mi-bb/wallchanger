@@ -129,8 +129,8 @@ dir_check_permissions (const char *s_dir)
 static int
 dir_check_permissions_create (const char *s_dir)
 {
-    int i_res  = ERR_OK;
-    int i_res2 = 0;
+    int i_res  = ERR_OK; /* Error info */
+    int i_res2 = 0;      /* Result permissions */
 
     i_res = dir_check_permissions (s_dir);
 
@@ -230,6 +230,8 @@ file_create_with_subdirs (const char *s_fn)
         str_append (&s_new, s_tmp);
         /* Check path permissions and try to create it if necessary */
         if ((i_err = dir_check_permissions_create (s_new)) != ERR_OK) {
+            free (s_dup);
+            free (s_new);
             warn ("%s", s_new);
             return i_err;
         }
