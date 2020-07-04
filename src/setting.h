@@ -152,9 +152,8 @@ static inline uint_fast32_t setting_get_hash (const Setting *st_setting) {
 static inline Setting * setting_get_parent (Setting *st_setting) {
     return st_setting->parent;
 }
-static inline Setting * setting_get_child  (Setting *st_setting) {
-    return st_setting->data.st_child;
-}
+
+Setting * setting_get_child  (Setting *st_setting);
 /*----------------------------------------------------------------------------*/
 /**
  * @fn  Setting * setting_next (Setting *st_setting)
