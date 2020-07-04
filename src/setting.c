@@ -21,7 +21,9 @@
  *
  * @author Michal Babik <michal.babik@pm.me>
  */
+#ifdef DEBUG
 #include <stdio.h>
+#endif
 #include <string.h>
 #include <stdlib.h>
 #include <err.h>
@@ -696,15 +698,12 @@ setting_remove (Setting *st_setting)
 {
     Setting *st_item = NULL;
 
-    puts ("setting prev");
     if (st_setting->prev != NULL) {
         st_setting->prev->next = st_setting->next;
     }
-    puts ("setting next");
     if (st_setting->next != NULL) {
         st_setting->next->prev = st_setting->prev;
     }
-    puts ("setting parent");
     if (st_setting->parent != NULL) {
 
         st_item = st_setting->prev == NULL ?
@@ -713,11 +712,9 @@ setting_remove (Setting *st_setting)
 
         setting_set_child (st_setting->parent, st_item);
     }
-    puts ("freeing child");
     if ((st_item = setting_get_child (st_setting)) != NULL) {
         settings_free_all (st_item);
     }
-    puts ("freeing setting");
     setting_free (st_setting);
 }
 /*----------------------------------------------------------------------------*/
