@@ -829,7 +829,7 @@ about_app_dialog (gpointer data __attribute__ ((unused)))
 {
     GtkWidget *gw_dialog;
     const char *s_authors[] = {"Michal Babik <michal.babik@protonmail.com> "
-                               "http://init6.pomorze.pl", NULL};
+                               "https://init6.pomorze.pl", NULL};
     const char *s_art[]     = {
         "https://fr.wikisource.org/wiki/Le_Tour_de_la_France_par_deux_enfants",
         NULL};

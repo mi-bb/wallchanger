@@ -13,6 +13,15 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+2020-07-09  Michal Babik  <michal.babik@pm.me>
+
+	* fdfn.c (file_create_with_subdirs): Added 2 missing frees on wrong
+	  permissions error.
+	* setting.c, setting.h (setting_get_child): Added checking for
+	  setting type to return child only on setting and array type.
+	* wmsfn.c (wms_update_wm_command): Added missing path free on error.
+	* Some cosmetic code updates.
+
 2020-07-02  Michal Babik  <michal.babik@pm.me>
 
 	* setting.c, setting.h: Changed some ugly macros to funcitons.

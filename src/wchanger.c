@@ -362,8 +362,8 @@ set_wallpaper_ch_interval (const DialogData *dd_data,
 static Setting *
 widgets_get_settings (const DialogData *dd_data)
 {
-    Setting    *st_settings;
-    Setting    *st_sett;       /* Setting to add */
+    Setting    *st_settings;   /* setting list to return */
+    Setting    *st_sett;       /* setting to add */
     const char *s_val  = NULL; /* Value for a string setting */
     int64_t     i_val  = 0;    /* Value for an integer setting */
 
@@ -377,30 +377,30 @@ widgets_get_settings (const DialogData *dd_data)
     /* Get random wallpaper setting */
     i_val = (int64_t) gtk_toggle_button_get_active (
                 GTK_TOGGLE_BUTTON (dd_data->gw_random));
-    st_sett = setting_new_int (get_setting_name (SETTING_RANDOM_OPT), i_val);
-    setting_add_child (st_settings, st_sett);
+    setting_add_child (st_settings,
+            setting_new_int (get_setting_name (SETTING_RANDOM_OPT), i_val));
 
     /* Get last used wallpaper on start setting */
     i_val = (int64_t) gtk_toggle_button_get_active (
                 GTK_TOGGLE_BUTTON (dd_data->gw_lastused));
-    st_sett = setting_new_int (get_setting_name (SETTING_LAST_USED_OPT), i_val);
-    setting_add_child (st_settings, st_sett);
+    setting_add_child (st_settings,
+            setting_new_int (get_setting_name (SETTING_LAST_USED_OPT), i_val));
 
     /* Get time align setting */
     i_val = (int64_t) gtk_toggle_button_get_active (
                 GTK_TOGGLE_BUTTON (dd_data->gw_timealign));
-    st_sett = setting_new_int (get_setting_name (SETTING_TIME_ALIGN_OPT), i_val);
-    setting_add_child (st_settings, st_sett);
+    setting_add_child (st_settings,
+            setting_new_int (get_setting_name (SETTING_TIME_ALIGN_OPT), i_val));
 
     /* Get wallpaper change interval setting */
     i_val = (int64_t) get_wallpaper_ch_interval (dd_data);
-    st_sett = setting_new_int (get_setting_name (SETTING_INTERVAL_VAL), i_val);
-    setting_add_child (st_settings, st_sett);
+    setting_add_child (st_settings,
+            setting_new_int (get_setting_name (SETTING_INTERVAL_VAL), i_val));
 
     /* Get wallpaper set command */
     s_val = gtk_entry_get_text (GTK_ENTRY (dd_data->gw_command));
-    st_sett = setting_new_string (get_setting_name (SETTING_BG_CMD), s_val);
-    setting_add_child (st_settings, st_sett);
+    setting_add_child (st_settings,
+            setting_new_string (get_setting_name (SETTING_BG_CMD), s_val));
 
     return st_settings;
 }
