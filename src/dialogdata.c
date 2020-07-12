@@ -94,15 +94,6 @@ dialogdata_do_config_file_stuff (DialogData *dd_data)
 }
 /*----------------------------------------------------------------------------*/
 /**
- * @brief  Get config file path from DialogData.
- */
-const char *
-dialogdata_get_cfg_file (const DialogData *dd_data)
-{
-    return (const char*) dd_data->s_cfg_file;
-}
-/*----------------------------------------------------------------------------*/
-/**
  * @brief  Get information about config file for status bar.
  */
 char *

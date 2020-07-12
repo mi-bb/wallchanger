@@ -103,8 +103,10 @@ void         dialogdata_do_config_file_stuff   (DialogData       *dd_data);
  * @param[in] dd_data  DialogData object
  * @return    String with config file path
  */
-const char * dialogdata_get_cfg_file           (const DialogData *dd_data)
-             __attribute__((const));
+static inline const char *
+dialogdata_get_cfg_file (const DialogData *dd_data) {
+    return (const char*) dd_data->s_cfg_file;
+}
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Get information about config file for status bar.
