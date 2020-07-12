@@ -310,8 +310,7 @@ process_get_opt (uid_t       uid_id,
 ProcList *
 process_get (const char *s_name)
 {
-    uid_t uid_id  = getuid ();
-    return process_get_opt (uid_id, s_name, PROC_OPT_NONE, 0);
+    return process_get_opt (getuid (), s_name, PROC_OPT_NONE, 0);
 }
 /*----------------------------------------------------------------------------*/
 /**
@@ -344,8 +343,7 @@ process_exists_opt (uid_t       uid_id,
 ProcItem *
 process_exists (const char *s_name)
 {
-    uid_t uid_id  = getuid ();
-    return process_exists_opt (uid_id, s_name, PROC_OPT_NONE, 0);
+    return process_exists_opt (getuid (), s_name, PROC_OPT_NONE, 0);
 }
 /*----------------------------------------------------------------------------*/
 /**
@@ -355,10 +353,9 @@ int
 process_exists_b (const char *s_name)
 {
     int       i_res   = 0;
-    uid_t     uid_id  = getuid ();
     ProcItem *pi_item;
 
-    pi_item = process_exists_opt (uid_id, s_name, PROC_OPT_NONE, 0);
+    pi_item = process_exists_opt (getuid (), s_name, PROC_OPT_NONE, 0);
     if (pi_item != NULL) {
         procitem_free (pi_item);
         i_res = 1;
@@ -391,10 +388,7 @@ process_count_opt (uid_t       uid_id,
 int
 process_count (const char *s_name)
 {
-    uid_t uid_id = 0;
-
-    uid_id  = getuid ();
-    return process_count_opt (uid_id, s_name, PROC_OPT_NONE, 0);
+    return process_count_opt (getuid (), s_name, PROC_OPT_NONE, 0);
 }
 /*----------------------------------------------------------------------------*/
 /**
@@ -404,13 +398,7 @@ process_count (const char *s_name)
 int
 process_count_except_current (const char *s_name)
 {
-    uid_t uid_id = 0;
-    int   i_pid  = 0;
-
-    uid_id = getuid ();
-    i_pid  = getpid ();
-
-    return process_count_opt (uid_id, s_name, PROC_OPT_NONE, i_pid);
+    return process_count_opt (getuid (), s_name, PROC_OPT_NONE, getpid ());
 }
 /*----------------------------------------------------------------------------*/
 /**
@@ -444,11 +432,7 @@ process_kill_opt (uid_t       uid_id,
 void
 process_kill (const char *s_name)
 {
-    uid_t uid_id = 0;
-
-    uid_id = getuid ();
-
-    process_kill_opt (uid_id, s_name, PROC_OPT_NONE, 0);
+    process_kill_opt (getuid (), s_name, PROC_OPT_NONE, 0);
 }
 /*----------------------------------------------------------------------------*/
 /**
@@ -457,13 +441,7 @@ process_kill (const char *s_name)
 void
 process_kill_except_current (const char *s_name)
 {
-    int   i_pid  = 0;
-    uid_t uid_id = 0;
-
-    i_pid  = getpid ();
-    uid_id = getuid ();
-
-    process_kill_opt (uid_id, s_name, PROC_OPT_NONE, i_pid);
+    process_kill_opt (getuid (), s_name, PROC_OPT_NONE, getpid ());
 }
 /*----------------------------------------------------------------------------*/
 /**
@@ -482,7 +460,7 @@ process_kill_all_opt (uid_t       uid_id,
     pid_t          pi_pid = 0;
 
     pl_list = process_get_opt (uid_id, s_name, i_opt, i_exc_pid);
-    i_cnt = proclist_get_cnt (pl_list);
+    i_cnt   = proclist_get_cnt (pl_list);
 
     for (i = 0; i < i_cnt; ++i) {
         pi_pid = atoi (procitem_get_pid (proclist_get_item (pl_list, i)));
@@ -504,11 +482,7 @@ process_kill_all_opt (uid_t       uid_id,
 int
 process_kill_all (const char *s_name)
 {
-    uid_t uid_id = 0;
-
-    uid_id = getuid ();
-
-    return process_kill_all_opt (uid_id, s_name, PROC_OPT_NONE, 0);
+    return process_kill_all_opt (getuid (), s_name, PROC_OPT_NONE, 0);
 }
 /*----------------------------------------------------------------------------*/
 /**
@@ -518,13 +492,7 @@ process_kill_all (const char *s_name)
 int
 process_kill_all_except_current (const char *s_name)
 {
-    int   i_pid  = 0;
-    uid_t uid_id = 0;
-
-    i_pid  = getpid ();
-    uid_id = getuid ();
-
-    return process_kill_all_opt (uid_id, s_name, PROC_OPT_NONE, i_pid);
+    return process_kill_all_opt (getuid (), s_name, PROC_OPT_NONE, getpid ());
 }
 /*----------------------------------------------------------------------------*/
 

@@ -75,17 +75,17 @@ ProcItem {
  * @return     none
  */
 /*----------------------------------------------------------------------------*/
-const char * procitem_get_pid       (const ProcItem   *pi_item)
-             __attribute__ ((pure));
+static inline const char * procitem_get_pid  (const ProcItem *pi_item) {
+    return (const char *) pi_item->s_pid;
+}
+void                       procitem_set_pid  (ProcItem       *pi_item,
+                                              const char     *s_pid);
 
-void         procitem_set_pid       (ProcItem         *pi_item,
-                                     const char       *s_pid);
-
-const char * procitem_get_name      (const ProcItem   *pi_item)
-             __attribute__ ((pure));
-
-void         procitem_set_name      (ProcItem         *pi_item,
-                                     const char       *s_name);
+static inline const char * procitem_get_name (const ProcItem *pi_item) {
+    return (const char *) pi_item->s_name;
+}
+void                       procitem_set_name (ProcItem       *pi_item,
+                                              const char     *s_name);
 /*----------------------------------------------------------------------------*/
 /**
  * @fn  void procitem_free (ProcItem *pi_item)
@@ -127,7 +127,9 @@ ProcItem   * procitem_new_from_data (const char       *s_pid,
                                      const char       *s_name)
              __attribute__ ((returns_nonnull));
 
-ProcItem   * procitem_copy          (const ProcItem   *pi_item);
+static inline ProcItem * procitem_copy (const ProcItem   *pi_item) {
+    return procitem_new_from_data (pi_item->s_pid, pi_item->s_name);
+}
 /*----------------------------------------------------------------------------*/
 #endif
 

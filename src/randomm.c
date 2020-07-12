@@ -52,7 +52,9 @@ static void randomm_set_number (RandMem *rm_mem,
  * @param[out] rm_mem  RandMem object
  * @return     none
  */
-static void randomm_increment_cnt (RandMem *rm_mem);
+static inline void randomm_increment_cnt (RandMem *rm_mem) {
+    rm_mem->i_cnt++;
+}
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Check if number is in random numbers memory
@@ -86,15 +88,6 @@ randomm_set_number (RandMem *rm_mem,
     if (ui_idx < RMMAX) {
         rm_mem->i_rand[ui_idx] |= (1 << ui_pos);
     }
-}
-/*----------------------------------------------------------------------------*/
-/**
- * @brief  Increment random number counts value
- */
-static void
-randomm_increment_cnt (RandMem *rm_mem)
-{
-    rm_mem->i_cnt++;
 }
 /*----------------------------------------------------------------------------*/
 /**
@@ -149,25 +142,6 @@ void
 randomm_free (RandMem *rm_mem)
 {
     free (rm_mem);
-}
-/*----------------------------------------------------------------------------*/
-/**
- * @brief  Set random numbers maximum range.
- */
-void
-randomm_set_range (RandMem *rm_mem,
-                   int32_t  i_rng)
-{
-    rm_mem->i_range = i_rng;
-}
-/*----------------------------------------------------------------------------*/
-/**
- * @brief  Reset random number couts value
- */
-void
-randomm_reset_cnt (RandMem *rm_mem)
-{
-    rm_mem->i_cnt = 0;
 }
 /*----------------------------------------------------------------------------*/
 /**

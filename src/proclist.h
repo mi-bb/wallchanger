@@ -25,6 +25,7 @@
 #define PROCLIST_H
 
 #include <stdint.h>
+#include <stddef.h>
 #include "procitem.h"
 /*----------------------------------------------------------------------------*/
 /**
@@ -64,15 +65,16 @@ void             proclist_free     (ProcList       *pl_list);
 ProcList       * proclist_new      (void);
 /*----------------------------------------------------------------------------*/
 /**
- * @fn  void proclist_insert (ProcList *pl_list,
- *                            ProcItem *pi_item)
- *
  * @brief  Insert ProcItem to ProcList.
  *
  * @param[out] pl_list  ProcList list 
  * @param[in]  pi_item  ProcItem to insert
  * @return     none
- *
+ */
+void             proclist_insert   (ProcList       *pl_list,
+                                    ProcItem       *pi_item);
+/*----------------------------------------------------------------------------*/
+/**
  * @fn  const ProcItem * proclist_get_item (const ProcList *pl_list,
  *                                          uint_fast32_t   pos)
  *
@@ -90,15 +92,13 @@ ProcList       * proclist_new      (void);
  * @return    Number of items in the list
  */
 /*----------------------------------------------------------------------------*/
-void             proclist_insert   (ProcList       *pl_list,
-                                    ProcItem       *pi_item);
-
-const ProcItem * proclist_get_item (const ProcList *pl_list,
-                                    uint_fast32_t   pos)
-                 __attribute__ ((pure));
-
-uint_fast32_t    proclist_get_cnt  (const ProcList *pl_list)
-                 __attribute__ ((pure));
+static inline const ProcItem * proclist_get_item (const ProcList *pl_list,
+                                                  uint_fast32_t   pos) {
+    return pos < pl_list->cnt ? (const ProcItem *) pl_list->pi_list[pos] : NULL;
+}
+static inline uint_fast32_t    proclist_get_cnt  (const ProcList *pl_list) {
+    return pl_list->cnt;
+}
 /*----------------------------------------------------------------------------*/
 #endif
 

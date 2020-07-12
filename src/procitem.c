@@ -41,15 +41,6 @@ procitem_init (ProcItem *pi_item)
 }
 /*----------------------------------------------------------------------------*/
 /**
- * @brief  Get PID string from ProcItem item.
- */
-const char *
-procitem_get_pid (const ProcItem *pi_item)
-{
-    return (const char *) pi_item->s_pid;
-}
-/*----------------------------------------------------------------------------*/
-/**
  * @brief  Set PID in ProcItem item.
  */
 void
@@ -63,15 +54,6 @@ procitem_set_pid (ProcItem   *pi_item,
 
     memcpy (pi_item->s_pid, s_pid, ui_len);
     pi_item->s_pid [ui_len] = '\0';
-}
-/*----------------------------------------------------------------------------*/
-/**
- * @brief  Get name string from ProcItem item.
- */
-const char *
-procitem_get_name (const ProcItem *pi_item)
-{
-    return (const char *) pi_item->s_name;
 }
 /*----------------------------------------------------------------------------*/
 /**
@@ -132,15 +114,6 @@ procitem_new_from_data (const char *s_pid,
     procitem_set_name (pi_new, s_name);
 
     return pi_new;
-}
-/*----------------------------------------------------------------------------*/
-/**
- * @brief  Copy ProcItem item and return it.
- */
-ProcItem *
-procitem_copy (const ProcItem *pi_item)
-{
-    return procitem_new_from_data (pi_item->s_pid, pi_item->s_name);
 }
 /*----------------------------------------------------------------------------*/
 

@@ -232,13 +232,19 @@ void settings_free_all (Setting *st_set);
  * @return     String or null if incorrect type to get
  */
 /*----------------------------------------------------------------------------*/
-int64_t      setting_get_int    (const Setting *st_set) __attribute__ ((pure));
-
-uint64_t     setting_get_uint   (const Setting *st_set) __attribute__ ((pure));
-
-double       setting_get_double (const Setting *st_set) __attribute__ ((pure));
-
-const char * setting_get_string (const Setting *st_set) __attribute__ ((pure));
+static inline int64_t      setting_get_int    (const Setting *st_set) {
+    return setting_get_type (st_set) == SET_VAL_INT ? st_set->data.i_val : 0;
+}
+static inline uint64_t     setting_get_uint   (const Setting *st_set) {
+    return setting_get_type (st_set) == SET_VAL_UINT ? st_set->data.ui_val : 0;
+}
+static inline double       setting_get_double (const Setting *st_set) {
+    return setting_get_type (st_set) == SET_VAL_DOUBLE ? st_set->data.d_val : 0;
+}
+static inline const char * setting_get_string (const Setting *st_set) {
+    return setting_get_type (st_set) == SET_VAL_STRING ? 
+        (const char *) st_set->data.s_val : NULL;
+}
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Set setting to string type and its content to val.

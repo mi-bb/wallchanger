@@ -68,19 +68,6 @@ proclist_new (void)
 }
 /*----------------------------------------------------------------------------*/
 /**
- * @brief  Get ProcItem from list.
- */
-const ProcItem *
-proclist_get_item (const ProcList *pl_list,
-                   uint_fast32_t   pos)
-{
-    if (pos < pl_list->cnt)
-        return (const ProcItem *) pl_list->pi_list[pos];
-    else
-        return NULL;
-}
-/*----------------------------------------------------------------------------*/
-/**
  * @brief  Insert ProcItem to ProcList.
  */
 void
@@ -105,15 +92,6 @@ proclist_insert (ProcList *pl_list,
         pl_list->pi_list = pi_temp;
     }
     pl_list->pi_list [pl_list->cnt++] = pi_item;
-}
-/*----------------------------------------------------------------------------*/
-/**
- * @brief  Get number of items in ProcList.
- */
-uint_fast32_t
-proclist_get_cnt (const ProcList *pl_list)
-{
-    return pl_list->cnt;
 }
 /*----------------------------------------------------------------------------*/
 

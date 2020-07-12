@@ -194,18 +194,16 @@ wpset_change (Setting    *st_settings,
               const char *s_cfg_file)
 {
     Setting    *st_sett = NULL; /* For setting with random opt */
-    const char *s_lastu = NULL; /* For file name of last used wallpaper */
+    const char *s_lu    = NULL; /* For file name of last used wallpaper */
 
     st_sett = settings_find (setting_get_child (st_settings),
                              get_setting_name (SETTING_RANDOM_OPT));
 
-    s_lastu = (st_sett != NULL && setting_get_int (st_sett)) ?
-              wallpaper_set_random (st_settings, rm_rand) : 
-              wallpaper_set_next_in_list (st_settings);
+    s_lu = (st_sett != NULL && setting_get_int (st_sett)) ?
+           wallpaper_set_random (st_settings, rm_rand) : 
+           wallpaper_set_next_in_list (st_settings);
 
-    if (s_lastu != NULL)
-        return setts_update_last_used (s_cfg_file, s_lastu);
-    return ERR_OK;
+    return s_lu != NULL ? setts_update_last_used (s_cfg_file, s_lu) : ERR_OK;
 }
 /*----------------------------------------------------------------------------*/
 /**

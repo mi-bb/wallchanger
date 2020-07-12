@@ -84,6 +84,7 @@ RandMem * randomm_new        (void) __attribute__((malloc));
  * @param[out] rm_mem  RandMem object
  * @return     none
  */
+/*----------------------------------------------------------------------------*/
 void      randomm_free       (RandMem *rm_mem);
 /*----------------------------------------------------------------------------*/
 /**
@@ -93,8 +94,10 @@ void      randomm_free       (RandMem *rm_mem);
  * @param[in]  i_rng   Range value
  * @return     none
  */
-void      randomm_set_range  (RandMem *rm_mem,
-                              int32_t  i_rng);
+static inline void randomm_set_range (RandMem *rm_mem,
+                                      int32_t  i_rng) {
+    rm_mem->i_range = i_rng;
+}
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Reset random number couts value
@@ -102,7 +105,9 @@ void      randomm_set_range  (RandMem *rm_mem,
  * @param[out] rm_mem  RandMem object
  * @return     none
  */
-void      randomm_reset_cnt  (RandMem *rm_mem);
+static inline void randomm_reset_cnt (RandMem *rm_mem) {
+    rm_mem->i_cnt = 0;
+}
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Get random number

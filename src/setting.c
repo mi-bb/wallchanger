@@ -178,54 +178,6 @@ settings_free_all (Setting *st_set)
 }
 /*----------------------------------------------------------------------------*/
 /**
- * @brief  Get integer value stored in Setting
- */
-int64_t
-setting_get_int (const Setting *st_set)
-{
-    if (setting_get_type (st_set) == SET_VAL_INT)
-        return st_set->data.i_val;
-    else
-        return 0;
-}
-/*----------------------------------------------------------------------------*/
-/**
- * @brief  Get unsigned integer value stored in Setting
- */
-uint64_t
-setting_get_uint (const Setting *st_set)
-{
-    if (setting_get_type (st_set) == SET_VAL_UINT)
-        return st_set->data.ui_val;
-    else
-        return 0;
-}
-/*----------------------------------------------------------------------------*/
-/**
- * @brief  Get double type value stored in Setting
- */
-double
-setting_get_double (const Setting *st_set)
-{
-    if (setting_get_type (st_set) == SET_VAL_DOUBLE)
-        return st_set->data.d_val;
-    else
-        return 0;
-}
-/*----------------------------------------------------------------------------*/
-/**
- * @brief  Get text string stored in Setting
- */
-const char *
-setting_get_string (const Setting *st_set)
-{
-    if (setting_get_type (st_set) == SET_VAL_STRING)
-        return (const char *) st_set->data.s_val;
-    else
-        return NULL;
-}
-/*----------------------------------------------------------------------------*/
-/**
  * @brief  Set setting to string type and its content to val.
  */
 void
