@@ -19,9 +19,9 @@
  *
  * Automatic wallpaper changer
  *
- * @date July 02, 2020
+ * @date July 14, 2020
  *
- * @version 1.5.1
+ * @version 1.5.3
  *
  * @author Michal Babik <michal.babik@pm.me>
  */
@@ -738,12 +738,10 @@ static void
 event_autostart_toggled (GtkToggleButton *togglebutton,
                          gpointer         user_data __attribute__ ((unused)))
 {
-    if (gtk_toggle_button_get_active (togglebutton)) {
+    if (gtk_toggle_button_get_active (togglebutton))
         deffiles_autostart_create ();
-    }
-    else {
+    else
         deffiles_autostart_remove ();
-    }
 }
 /*----------------------------------------------------------------------------*/
 /**

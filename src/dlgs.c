@@ -416,8 +416,7 @@ event_save_command_button_clicked (GtkWidget **gw_array)
 
         s_command = textview_get_text (gw_tview);
 
-        i_err = wms_update_wm_command (s_name, s_command);
-        if (i_err != ERR_OK) {
+        if ((i_err = wms_update_wm_command (s_name, s_command)) != ERR_OK) {
             /* err (EXIT_FAILURE, NULL); */
             message_dialog_error (gw_parent, err_get_message (i_err));
         }

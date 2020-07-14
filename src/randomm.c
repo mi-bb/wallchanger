@@ -47,16 +47,6 @@ static void randomm_set_number (RandMem *rm_mem,
                                 int32_t  i_no);
 /*----------------------------------------------------------------------------*/
 /**
- * @brief  Increment random number counts value
- *
- * @param[out] rm_mem  RandMem object
- * @return     none
- */
-static inline void randomm_increment_cnt (RandMem *rm_mem) {
-    rm_mem->i_cnt++;
-}
-/*----------------------------------------------------------------------------*/
-/**
  * @brief  Check if number is in random numbers memory
  */
 static int8_t
@@ -164,7 +154,7 @@ randomm_get_number (RandMem *rm_mem)
     /* set number in memory */
     randomm_set_number (rm_mem, ui_ret);
 
-    randomm_increment_cnt (rm_mem);
+    ++rm_mem->i_cnt;
 
     if (rm_mem->i_cnt >= rm_mem->i_range) {
         randomm_clear (rm_mem);

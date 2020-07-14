@@ -13,6 +13,27 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+2020-07-14  Michal Babik  <michal.babik@pm.me>
+
+	* dialogdata.c, dialogdata.h (dialogdata_get_cfg_file): Changed to static
+	  inline.
+	* procfn.c, procfn.h (process_get): Changed to static inline.
+	  (process_exists, process_exists_b, process_count,
+	  process_count_except_current, process_kill, process_kill_except_current,
+	  process_kill_all_opt, process_kill_all,
+	  process_kill_all_except_current): Code simplified, some variable
+	  cedlarations storing values from function calls replaced with direct
+	  function calls.
+	* procitem.c, procitem.h (procitem_get_pid, procitem_get_name,
+	  procitem_copy): Changed to static inline.
+	* proclist.c, proclist.h (proclist_get_item, proclist_get_cnt): Changed to
+	  static inline.
+	* randomm.c, randomm.h (increment_cnt): Function removed.
+	  (randomm_set_range, randomm_reset_cnt): Changed to static inline.
+	* setting.c, setting.h (setting_get_int, setting_get_uint,
+	  setting_get_double, setting_get_string): Changed to static inline.
+	* wpset.c (wpset_change): Some code compacted.
+
 2020-07-09  Michal Babik  <michal.babik@pm.me>
 
 	* fdfn.c (file_create_with_subdirs): Added 2 missing frees on wrong
