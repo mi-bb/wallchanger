@@ -152,13 +152,12 @@ str_comb (const char *s_str1,
         return strdup (s_str1);
 
     ui_str1 = strlen (s_str1);
-    ui_str2 = strlen (s_str2);
+    ui_str2 = strlen (s_str2) + 1;
 
-    cres ((void**) &s_ret, ui_str1 + ui_str2 + 1, sizeof (char));
+    cres ((void**) &s_ret, ui_str1 + ui_str2, sizeof (char));
 
     memcpy (s_ret, s_str1, ui_str1);
     memcpy (s_ret + ui_str1, s_str2, ui_str2);
-    s_ret[ui_str1 + ui_str2] = '\0';
 
     return s_ret;
 }
@@ -176,15 +175,14 @@ str_append (char       **s_dst,
     if (s_src == NULL)
         return;
     else
-        ui_src = strlen (s_src);
+        ui_src = strlen (s_src) + 1;
 
     if (*s_dst != NULL)
         ui_dst = strlen (*s_dst);
 
-    cres ((void**) s_dst, ui_src + ui_dst + 1, sizeof (char));
+    cres ((void**) s_dst, ui_src + ui_dst, sizeof (char));
 
     memcpy ((*s_dst)+ui_dst, s_src, ui_src);
-    (*s_dst)[ui_src+ui_dst] = '\0';
 }
 /*----------------------------------------------------------------------------*/
 

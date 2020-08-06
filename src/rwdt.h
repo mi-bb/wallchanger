@@ -55,17 +55,17 @@
  * @return     Writting status
  */
 /*----------------------------------------------------------------------------*/
-char * read_file_data      (const char   *s_fname,
-                            int          *i_err)
+char * read_file_data      (const char    *s_fname,
+                            int           *i_err)
                             __attribute__ ((nonnull (1)));
 
-char * read_file_data_hash (const char   *s_fname,
-                            int          *i_err,
-                            uint_fast32_t     *i_hash)
+char * read_file_data_hash (const char    *s_fname,
+                            int           *i_err,
+                            uint_fast32_t *i_hash)
                             __attribute__ ((nonnull (1)));
 
-int    save_file_data      (const char   *s_fname,
-                            const char   *s_buff)
+int    save_file_data      (const char    *s_fname,
+                            const char    *s_buff)
                             __attribute__ ((nonnull (1,2)));
 /*----------------------------------------------------------------------------*/
 #endif

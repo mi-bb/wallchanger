@@ -34,6 +34,15 @@ int    file_check_permissions (const char *s_file)
        __attribute__ ((nonnull (1)));
 /*----------------------------------------------------------------------------*/
 /**
+ * @brief  Check directory permissions, existence and create if needed. 
+ *
+ * @param[in] s_dir  Directory name to check / create
+ * @return    Checking / creating status
+ */
+int    dir_check_permissions (const char *s_file)
+       __attribute__ ((nonnull (1)));
+/*----------------------------------------------------------------------------*/
+/**
  * @brief  Create file with subfolders if it doesn't exist.
  *
  * @param[in] s_fn  File path
@@ -43,11 +52,20 @@ int    file_create_with_subdirs (const char *s_fn)
        __attribute__ ((nonnull (1)));
 /*----------------------------------------------------------------------------*/
 /**
- * @brief  Get user's home dir path.
+ * @brief  Get user's home config path.
  *
- * @return  String with home path, after use it thould be freed using free
+ * @return  String with home config path, after use it thould be freed using
+ *          free.
  */
-char * dir_get_home (void);
+char * dir_get_home_config (void);
+/*----------------------------------------------------------------------------*/
+/**
+ * @brief  Get system data dir path.
+ *
+ * @return  String with system data path, after use it thould be freed using
+ *          free.
+ */
+char * dir_get_data (void) __attribute__ ((malloc));
 /*----------------------------------------------------------------------------*/
 #endif
 

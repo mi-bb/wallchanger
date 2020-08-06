@@ -46,7 +46,7 @@ wms_update_wm_config (Setting *st_wms)
     char *s_path = NULL;   /* Config file path */
     int   i_res  = ERR_OK; /* Error output */
 
-    s_path = cfgfile_get_wm_info_file_path ();
+    s_path = cfgfile_get_wm_info_home_path ();
     i_res  = setts_check_update_file (s_path, st_wms);
     free (s_path);
     return i_res;
@@ -73,7 +73,7 @@ wms_get_xfce_display_list (void)
     f_file = popen ("xfconf-query -c xfce4-desktop -p /backdrop -l", "r");
 
     if (f_file == NULL) {
-        warnx ("Failed to run checking displays");
+        warnx ("Checking displays failed");
     }
     else {
         while (fgets (s_buff, sizeof (s_buff), f_file) != NULL) {
@@ -128,22 +128,68 @@ wms_get_xfce_command (const char *s_disp)
 }
 /*----------------------------------------------------------------------------*/
 /**
- * @brief  Get window manager info from local config file.
+ * @brief  Get window manager info from user's local config file.
  */
 Setting *
-wms_get_wm_info (int *i_err)
+wms_get_wm_info_home (int *i_err)
 {
     Setting *st_wms = NULL; /* Setting list to return */
     char    *s_path = NULL; /* Config file path */
 
     *i_err = 0;
 
-    s_path = cfgfile_get_wm_info_file_path ();
+    s_path = cfgfile_get_wm_info_home_path ();
     st_wms = setts_read (s_path, i_err);
 
     free (s_path);
 
     return st_wms;
+}
+/*----------------------------------------------------------------------------*/
+/**
+ * @brief  Get window manager info from default config file.
+ */
+Setting *
+wms_get_wm_info_data (int *i_err)
+{
+    Setting *st_wms = NULL; /* Setting list to return */
+    char    *s_path = NULL; /* Config file path */
+
+    *i_err = 0;
+
+    if ((s_path = cfgfile_get_wm_info_data_path (i_err)) != NULL) {
+        st_wms = setts_read (s_path, i_err);
+        free (s_path);
+    }
+
+    return st_wms;
+}
+/*----------------------------------------------------------------------------*/
+/**
+ * @brief  Get window manager info from user's config file and if it is not
+ *         present, get data from default config file.
+ */
+Setting *
+wms_get_wm_info (int *i_err)
+{
+    Setting *st_settings = NULL; /* Setting list to return */
+
+    *i_err = 0;
+
+    /* Load user's wm info data */
+    st_settings = wms_get_wm_info_home (i_err);
+
+    if (*i_err == ERR_OK) {
+        return st_settings;
+    }
+    settings_free_all (st_settings);
+
+    warnx ("Loading default window manager info.");
+
+    /* Load app default wm info data */
+    st_settings = wms_get_wm_info_data (i_err);
+
+    return st_settings;
 }
 /*----------------------------------------------------------------------------*/
 /**
@@ -210,9 +256,8 @@ wms_update_wm_command (const char *s_wm_name,
     int      i_err   = ERR_OK; /* Error output */
 
     /* Load settings from config file */
-    s_path = cfgfile_get_wm_info_file_path ();
+    s_path = cfgfile_get_wm_info_home_path ();
     st_wms = setts_read (s_path, &i_err);
-    //st_wms = wms_get_wm_info (&i_err);
     if (i_err != ERR_OK) {
         /* err (EXIT_FAILURE, NULL); */
         free (s_path);
@@ -399,48 +444,47 @@ wms_get_wallpaper_command (const char *s_cfg_file,
  *         in st_settings list.
  */
 int
-wms_check_for_new_wms (const char *s_buff)
+wms_check_for_new_wms (void)
 {
-    Setting *st_settings = NULL;   /* For user's wm info */
-    Setting *st_wms_def  = NULL;   /* For app default wm info */
-    Setting *st_item_set = NULL;   /* Temp for saved data item */
-    Setting *st_item_def = NULL;   /* Temp for default data item */
-    int      i_err       = ERR_OK; /* Error output */
+    Setting *st_home      = NULL;   /* For user's wm info */
+    Setting *st_default   = NULL;   /* For app default wm info */
+    Setting *st_item_home = NULL;   /* Temp for saved data item */
+    Setting *st_item_def  = NULL;   /* Temp for default data item */
+    int      i_err        = ERR_OK; /* Error output */
 
     /* Load user's wm info data */
-    st_settings = wms_get_wm_info (&i_err);
-    if (i_err != ERR_OK)
-        return i_err;
-
+    st_home = wms_get_wm_info_home (&i_err);
     /* Load app default wm info data */
-    st_wms_def = setting_new_setting ("Settings");
-    setts_string_to_settings (s_buff, st_wms_def);
-
+    st_default = wms_get_wm_info_data (&i_err);
+    if (i_err != ERR_OK) {
+        settings_free_all (st_default);
+        settings_free_all (st_home);
+        return i_err;
+    }
     /* Iterate and remove from app default data wms present in user's info */
-    st_item_set = setting_get_child (st_settings);
+    st_item_home = setting_get_child (st_home);
 
-    while (st_item_set != NULL) {
+    while (st_item_home != NULL) {
 
-        st_item_def = setting_get_child (st_wms_def);
+        st_item_def = setting_get_child (st_default);
 
         while (st_item_def != NULL) {
 
-            if (st_item_set->hash == st_item_def->hash) {
+            if (settings_equal_names (st_item_home, st_item_def)) {
                 setting_remove (st_item_def);
                 break;
             }
             st_item_def = st_item_def->next;
         }
-        st_item_set = st_item_set->next;
+        st_item_home = st_item_home->next;
     }
-
     /* If there are some window managers left in app default wm data,
      * update user's wm data with this window managers */
-    if (setting_count_children (st_wms_def) > 0) {
-        i_err = wms_update_wm_config (setting_get_child (st_wms_def));
+    if (setting_count_children (st_default) > 0) {
+        i_err = wms_update_wm_config (setting_get_child (st_default));
     }
-    settings_free_all (st_wms_def);
-    settings_free_all (st_settings);
+    settings_free_all (st_default);
+    settings_free_all (st_home);
     return i_err;
 }
 /*----------------------------------------------------------------------------*/

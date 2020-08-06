@@ -51,9 +51,27 @@ void      wms_free_xfce_display_list (char      **s_list);
 char    * wms_get_xfce_command       (const char *s_disp);
 /*----------------------------------------------------------------------------*/
 /**
- * @brief  Get window manager info from local config file.
+ * @brief  Get window manager info from user's local config file.
  *
- * @return List of Setting items with window manager info
+ * @param[out] i_err  Error output
+ * @return     List of Setting items with window manager info
+ */
+Setting * wms_get_wm_info_home       (int        *i_err);
+/*----------------------------------------------------------------------------*/
+/**
+ * @brief  Get window manager info from default config file.
+ *
+ * @param[out] i_err  Error output
+ * @return     List of Setting items with window manager info
+ */
+Setting * wms_get_wm_info_data       (int        *i_err);
+/*----------------------------------------------------------------------------*/
+/**
+ * @brief  Get window manager info from user's config file and if it is not
+ *         present, get data from default config file.
+ *
+ * @param[out] i_err  Error output
+ * @return     List of Setting items with window manager info
  */
 Setting * wms_get_wm_info            (int        *i_err);
 /*----------------------------------------------------------------------------*/
@@ -94,17 +112,16 @@ char    * wms_get_wallpaper_command  (const char *s_cfg_file,
                                       int        *i_err);
 /*----------------------------------------------------------------------------*/
 /**
- * @brief  Compare setting with wm info with default app wm info.
+ * @brief  Compare user's wm info with default app wm info.
  *
- * Compare setting with wm info with default app wm info, update user's config
+ * Compare user's wm info with default app wm info, update user's config
  * file if there was some new data in default wm info (usually after adding
  * some new window managers in new version).
  *
- * @param[in] s_buff  String with default wm info template
- * @return    Error result
+ * @return  Error result
  */
 /*----------------------------------------------------------------------------*/
-int       wms_check_for_new_wms      (const char *s_buff);
+int       wms_check_for_new_wms      (void);
 /*----------------------------------------------------------------------------*/
 #endif
 

@@ -153,8 +153,7 @@ js_json_obj_to_settings (json_object *val,
  * @param[out] st_settings  List of Setting items
  * @return     none
  */
-//static void
-void
+static void
 js_json_string_to_settings (const char *s_jbuff,
                             Setting    *st_settings)
 {
@@ -317,7 +316,7 @@ js_settings_check_for_update (Setting    *st_settings,
     /*s_buff = read_file_data_hash (s_fname, i_err, &ui_hash);*/
     s_buff = read_file_data (s_fname, i_err);
 
-    if (*i_err != ERR_OK) {
+    if (*i_err != ERR_OK && *i_err != ERR_FILE_EX) {
         free (s_buff);
         return NULL;
     }

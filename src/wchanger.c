@@ -19,9 +19,9 @@
  *
  * Automatic wallpaper changer
  *
- * @date July 14, 2020
+ * @date August 07, 2020
  *
- * @version 1.5.3
+ * @version 1.5.4
  *
  * @author Michal Babik <michal.babik@pm.me>
  */
@@ -43,7 +43,6 @@
 #include "hashfun.h"
 #include "dmfn.h"
 #include "wmsfn.h"
-#include "deffiles.h"
 /*----------------------------------------------------------------------------*/
 /**
  * @fn  static uint32_t get_wallpaper_ch_interval (const DialogData *dd_data)
@@ -738,10 +737,9 @@ static void
 event_autostart_toggled (GtkToggleButton *togglebutton,
                          gpointer         user_data __attribute__ ((unused)))
 {
-    if (gtk_toggle_button_get_active (togglebutton))
-        deffiles_autostart_create ();
-    else
-        deffiles_autostart_remove ();
+    gtk_toggle_button_get_active (togglebutton) ?
+        cfgfile_autostart_create () :
+        cfgfile_autostart_remove ();
 }
 /*----------------------------------------------------------------------------*/
 /**
@@ -1083,7 +1081,7 @@ create_settings_widget (GtkWidget **gw_widget,
     gtk_button_set_label (GTK_BUTTON (gw_autostart_button),
                           "Create autostart entry");
     gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (gw_autostart_button),
-                                  deffiles_autostart_exists ());
+                                  cfgfile_autostart_exists ());
     g_signal_connect (gw_autostart_button, "toggled",
                       G_CALLBACK (event_autostart_toggled), NULL);
 
@@ -1312,14 +1310,11 @@ activate (GtkApplication *app,
     /* Read program settings */
     st_settings = setts_read (dialogdata_get_cfg_file (dd_data), &i_err);
 
-    /* Check window managers config file */
-    if (i_err == ERR_OK)
-        i_err = deffiles_wm_check_create ();
-
-    /* Get window manager data */
-    if (i_err == ERR_OK)
+    /* Check window managers data config file for new wms and */
+    /* get window manager data */
+    if ((i_err = wms_check_for_new_wms ()) == ERR_OK) {
         st_wm = wms_get_wm_info (&i_err);
-
+    }
     if (i_err != ERR_OK) {
         message_dialog_error (NULL, err_get_message (i_err));
         settings_free_all (st_settings);
@@ -1327,7 +1322,6 @@ activate (GtkApplication *app,
         g_application_quit (G_APPLICATION (app));
         return;
     }
-
     setts_check_defaults (st_settings);
 
     widgets_set_settings (dd_data,
@@ -1343,7 +1337,6 @@ activate (GtkApplication *app,
         g_application_quit (G_APPLICATION (app));
         return;
     }
-
     /* Set info about wchangerd deamon presence */
     daemon_monitor (dd_data);
     /* Add gtk thread for checking wchangerd deaemon process presence */

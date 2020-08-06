@@ -32,7 +32,6 @@
 #include "wmsfn.h"
 #include "wpset.h"
 #include "strfun.h"
-#include "deffiles.h"
 #include "dlgs.h"
 /*----------------------------------------------------------------------------*/
 /**
@@ -353,6 +352,7 @@ event_get_default_button_clicked (GtkWidget **gw_array)
     char         *s_cmd       = NULL; /* Wallpaper set command */
     Setting      *st_settings = NULL; /* For window manager setting list */
     Setting      *st_item     = NULL; /* For checking wm name and command */
+    int i_err = 0;
 
     gw_combo  = gw_array[0];
     gw_tview  = gw_array[2];
@@ -361,8 +361,11 @@ event_get_default_button_clicked (GtkWidget **gw_array)
     if (gtk_combo_box_get_active_iter (GTK_COMBO_BOX (gw_combo), &iter)) {
 
         /* Load settings from deffiles template */
-        st_settings = setting_new_setting ("Settings");
-        setts_string_to_settings (deffiles_wm_get_buff (), st_settings);
+        st_settings = wms_get_wm_info_data (&i_err);
+        if (i_err != ERR_OK) {
+            message_dialog_error (gw_parent, err_get_message (i_err));
+            return;
+        }
 
         model = gtk_combo_box_get_model (GTK_COMBO_BOX (gw_combo));
         gtk_tree_model_get (model, &iter, WM_COLUMN_NAME, &s_name, -1);
@@ -416,7 +419,12 @@ event_save_command_button_clicked (GtkWidget **gw_array)
 
         s_command = textview_get_text (gw_tview);
 
-        if ((i_err = wms_update_wm_command (s_name, s_command)) != ERR_OK) {
+        if ((i_err = wms_update_wm_command (s_name, s_command)) == ERR_OK) {
+            gtk_list_store_set (GTK_LIST_STORE (model), &iter,
+                                WM_COLUMN_COMMAND, s_command,
+                                -1);
+        }
+        else {
             /* err (EXIT_FAILURE, NULL); */
             message_dialog_error (gw_parent, err_get_message (i_err));
         }
@@ -594,16 +602,14 @@ cmddialog_run (GtkWindow    *gw_parent,
     Setting   *st_crwm  = NULL;   /* Current window manager info */
     int        i_err    = ERR_OK; /* Error output */
 
-    if ((i_err = wms_check_for_new_wms (deffiles_wm_get_buff ())) == ERR_OK) {
-        st_wms = wms_get_wm_info (&i_err);
-    }
-
-    if (i_err != ERR_OK) {
-        return NULL;
-    }
-
     GtkDialogFlags flags = GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT;
 
+    st_wms = wms_get_wm_info (&i_err);
+
+    if (i_err != ERR_OK) {
+        message_dialog_error (gw_parent, err_get_message (i_err));
+        return NULL;
+    }
     gw_dialog = gtk_dialog_new_with_buttons (
                                       "Wallpaper set command configuraion",
                                       gw_parent,

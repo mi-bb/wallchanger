@@ -35,16 +35,6 @@
  * @param[in] b  String b
  * @return    Compare result
  *
- * @fn  char * str_name_with_number (const char   *s_name,
- *                                          const size_t  ul_no)
- *
- * @brief  Creates string with name made of s_name string and number
- *         ul_no at the end.
- *
- * @param[in]  s_name  Input string
- * @param[out] ul_no   Number to append
- * @return     String with name and number to null if could not alloc memory
- *
  * @fn  char * str_replace_in (const char *s_src,
  *                             const char *s_fr, const char *s_to)
  *

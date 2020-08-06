@@ -42,13 +42,6 @@
  * @param[in] i_mode  Permissions to check
  * @return    Checking status
  *
- * @fn  static int dir_check_permissions (const char *s_dir)
- *
- * @brief  Check directory permissions (read, write, execute), existence. 
- *
- * @param[in] s_dir  Directory name to check
- * @return    Checking status
- *
  * @fn  static int dir_check_permissions_create (const char *s_dir)
  *
  * @brief  Check directory permissions, existence and create if needed. 
@@ -62,21 +55,25 @@
  *
  * @param[in] s_file  Name of file to check / create
  * @return    Checking / creating status
+ *
+ * @fn  static char * dir_get_home (void)
+ *
+ * @brief  Get user's home dir path.
+ *
+ * @return  String with home path, after use it thould be freed using free
  */
 /*----------------------------------------------------------------------------*/
-static int check_permissions             (const char *s_name,
-                                          const int   i_mode)
-                                          __attribute__ ((nonnull (1)));
+static int    check_permissions             (const char *s_name,
+                                             const int   i_mode)
+                                             __attribute__ ((nonnull (1)));
 
+static int    dir_check_permissions_create  (const char *s_dir)
+                                             __attribute__ ((nonnull (1)));
 
-static int dir_check_permissions         (const char *s_dir)
-                                          __attribute__ ((nonnull (1)));
+static int    file_check_permissions_create (const char *s_file)
+                                             __attribute__ ((nonnull (1)));
 
-static int dir_check_permissions_create  (const char *s_dir)
-                                          __attribute__ ((nonnull (1)));
-
-static int file_check_permissions_create (const char *s_file)
-                                          __attribute__ ((nonnull (1)));
+static char * dir_get_home                  (void);
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Check permissions, existence of file or directory. 
@@ -117,7 +114,7 @@ file_check_permissions (const char *s_file)
 /**
  * @brief  Check directory permissions (read, write, execute), existence. 
  */
-static int
+int
 dir_check_permissions (const char *s_dir)
 {
     return check_permissions (s_dir, R_OK | X_OK);
@@ -190,15 +187,50 @@ file_check_permissions_create (const char *s_file)
 /**
  * @brief  Get user's home dir path.
  */
-char *
+static char *
 dir_get_home (void)
 {
-    char *s_home = NULL;
+    char *s_dir = NULL;
     /* Getting user's HOME path */
-    if ((s_home = getenv ("HOME")) == NULL) {
-        s_home = getpwuid (getuid ())->pw_dir;
+    s_dir = getenv ("HOME");
+
+    if (s_dir == NULL || s_dir[0] == '\0') {
+        s_dir = getpwuid (getuid ())->pw_dir;
     }
-    return strdup (s_home);
+    return strdup (s_dir);
+}
+/*----------------------------------------------------------------------------*/
+/**
+ * @brief  Get user's home config path.
+ */
+char *
+dir_get_home_config (void)
+{
+    char *s_dir = NULL;
+    /* Getting user's config path */
+    s_dir = getenv ("XDG_CONFIG_HOME");
+
+    if (s_dir == NULL || s_dir[0] == '\0') {
+        s_dir = dir_get_home ();
+        str_append (&s_dir, "/.config");
+        return s_dir;
+    }
+    return strdup (s_dir);
+}
+/*----------------------------------------------------------------------------*/
+/**
+ * @brief  Get system data dir path.
+ */
+char *
+dir_get_data (void)
+{
+    char *s_dir = NULL;
+    /* Getting system DATA path */
+    s_dir = getenv ("XDG_DATA_DIRS");
+
+    return (s_dir == NULL || s_dir[0] == '\0') ?
+        strdup ("/usr/local/share:/usr/share") :
+        strdup (s_dir);
 }
 /*----------------------------------------------------------------------------*/
 /**

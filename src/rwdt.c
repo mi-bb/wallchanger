@@ -23,6 +23,7 @@
  */
 #include <stdio.h>
 #include <err.h>
+#include <errno.h>
 #include <string.h>
 #include <stdlib.h>
 #include <unistd.h>
@@ -50,7 +51,7 @@ read_file_data (const char  *s_fname,
     f_file = fopen (s_fname, "rb");
     /* Error opening file */
     if (f_file == NULL) {
-        *i_err = ERR_FILE;
+        *i_err = errno == ENOENT ? ERR_FILE_EX : ERR_FILE;
         warn ("%s", s_fname);
         return NULL;
     }
@@ -72,7 +73,7 @@ read_file_data (const char  *s_fname,
         fclose (f_file);
         return NULL;
     }
-    cres ((void**) &s_buff, (size_t) l_size+1, sizeof (char));
+    cres ((void**) &s_buff, (size_t) l_size + 1, sizeof (char));
     s_buff[0] = '\0';
     /* copy the file into the buffer */
     ui_res = fread (s_buff, 1, (size_t) l_size, f_file);

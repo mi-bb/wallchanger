@@ -48,7 +48,7 @@ enum {
  * @param[in]  i_val  Setting enum value
  * @return     String with setting name
  */
-const char * get_setting_name (const int i_val) __attribute__ ((const));
+const char * get_setting_name     (const int   i_val) __attribute__ ((const));
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Check Setting list values and set default ones if needed.
@@ -56,18 +56,7 @@ const char * get_setting_name (const int i_val) __attribute__ ((const));
  * @param[in,out] st_settings  List of Setting items
  * @return        none
  */
-void setts_check_defaults     (Setting    *st_settings);
-/*----------------------------------------------------------------------------*/
-/**
- * @brief  Convert string with raw json data to Setting items and insert them
- *         to st_settings list.
- *
- * @param[in]  s_jbuff      String with json data
- * @param[out] st_settings  List of Setting items
- * @return     none
- */
-void setts_string_to_settings (const char *s_jbuff,
-                               Setting    *st_settings);
+void         setts_check_defaults (Setting    *st_settings);
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Read program settings from a given config file.
@@ -76,9 +65,9 @@ void setts_string_to_settings (const char *s_jbuff,
  * @param[out] i_err       Error output
  * @return     Setting list with settings or null pointer
  */
-Setting * setts_read (const char *s_cfg_file,
-                      int        *i_err)
-                      __attribute__ ((nonnull (1)));
+Setting *    setts_read           (const char *s_cfg_file,
+                                   int        *i_err)
+                                   __attribute__ ((nonnull (1)));
 /*----------------------------------------------------------------------------*/
 /**
  * @fn  int setts_update_last_used (const char *s_cfg_file,
@@ -122,9 +111,9 @@ int setts_update_window_size  (const char *s_cfg_file,
                                const int   i_h);
 /*----------------------------------------------------------------------------*/
 /**
- * @fn  char * settings_check_update      (const char *s_cfg_file,
- *                                         Setting    *st_settings,
- *                                         int        *i_err)
+ * @fn  char * setts_check_update (const char *s_cfg_file,
+ *                                 Setting    *st_settings,
+ *                                 int        *i_err)
  *
  * @brief  Check if settings in SettList are an update to settings
  *         stored in settings file.
@@ -134,8 +123,8 @@ int setts_update_window_size  (const char *s_cfg_file,
  * @param[out] i_err        Error output
  * @return     String with updated settings or null if there is no update.
  *
- * @fn  int settings_update_file (const char *s_cfg_file,
- *                                const char *s_buff)
+ * @fn  int setts_update_file (const char *s_cfg_file,
+ *                             const char *s_buff)
  *
  * @brief  Update file with new data.
  *
@@ -143,8 +132,8 @@ int setts_update_window_size  (const char *s_cfg_file,
  * @param[in] s_buff      String with data to save
  * @return    Saving file status, ERR_OK or error code
  *
- * @fn  int settings_check_update_file (const char *s_cfg_file,
- *                                      Setting    *st_settings)
+ * @fn  int setts_check_update_file (const char *s_cfg_file,
+ *                                   Setting    *st_settings)
  *
  * @brief  Check if settings are an update and update file with new data
  *         if they are.

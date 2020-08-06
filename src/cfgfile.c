@@ -23,20 +23,35 @@
  */
 #include <err.h>
 #include <stdlib.h>
+#include <string.h>
+#include <stdio.h>
 #include "errs.h"
 #include "strfun.h"
 #include "fdfn.h"
+#include "rwdt.h"
 #include "cfgfile.h"
 /*----------------------------------------------------------------------------*/
 /**
- * @def   AUTOSTART_FILE_PATH
- * @brief Path for autostart desktop file for whcnagerd.
+ * @def   PATH_AUTOSTART_DATA
+ * @brief Path for autostart file template in application data directory.
  *
- * @def   WM_JSON_FILE_PATH
- * @brief Path for config file with window manager info.
+ * @def   PATH_AUTOSTART_HOME
+ * @brief Path for user's autostart desktop file for whcnagerd.
+ *
+ * @def   PATH_WMINFO_DATA
+ * @brief Path for window manager info file in application data directory.
+ *
+ * @def   PATH_WMINFO_HOME
+ * @brief Path for user's config file with window manager info.
+ *
+ * @def   PATH_APP_SHARE
+ * @brief Path for application directory in system's data directory.
  */
-#define AUTOSTART_FILE_PATH "/.config/autostart/wchangerd.desktop"
-#define WM_JSON_FILE_PATH   "/.config/wchanger/wms.json"
+#define PATH_AUTOSTART_DATA "/wchangerd.autostart"
+#define PATH_AUTOSTART_HOME "/autostart/wchangerd.desktop"
+#define PATH_WMINFO_DATA    "/wms.json"
+#define PATH_WMINFO_HOME    "/wchanger/wms.json"
+#define PATH_APP_SHARE      "/wchanger"
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Look for config file in paths from list.
@@ -51,7 +66,7 @@ cfgfile_find_config_file (const char **s_cc)
     char *s_tmp  = NULL; /* Temp string */
     char *s_home = NULL; /* Home path string */
 
-    s_home = dir_get_home ();
+    s_home = dir_get_home_config ();
 
     while (*s_cc != NULL) {
         s_tmp = str_comb (s_home, *s_cc);
@@ -70,6 +85,45 @@ cfgfile_find_config_file (const char **s_cc)
 }
 /*----------------------------------------------------------------------------*/
 /**
+ * @brief  Get application data dir.
+ *
+ * @return String application data dir or null.
+ *         After use it should be freed using free.
+ */
+static char *
+cfgfile_find_app_data_path (int *i_err)
+{
+    char  *s_dir  = NULL; /* App share path to return */
+    char  *s_p    = NULL; /* Pointer to separator */
+    char  *s_sh   = NULL; /* System share path */
+    size_t ui_len = 0;    /* Length of path string */
+
+    *i_err = 0;
+    s_sh = dir_get_data ();
+
+    while ((s_p = strchr (s_sh, ':')) != NULL) {
+        *s_p++ = '\0';
+        s_dir = str_comb (s_sh, PATH_APP_SHARE);
+        if ((*i_err = dir_check_permissions (s_dir)) == ERR_OK) {
+            free (s_sh);
+            return s_dir;
+        }
+        ui_len = strlen (s_p);
+        memmove (s_sh, s_p, ui_len);
+        s_sh[ui_len] = '\0';
+        free (s_dir);
+    }
+    s_dir = str_comb (s_sh, PATH_APP_SHARE);
+    if ((*i_err = dir_check_permissions (s_dir)) == ERR_OK) {
+        free (s_sh);
+        return s_dir;
+    }
+    free (s_dir);
+    free (s_sh);
+    return NULL;
+}
+/*----------------------------------------------------------------------------*/
+/**
  * @brief  Checks config file existence, creates default if i_create is set.
  */
 int
@@ -77,9 +131,9 @@ cfgfile_config_file_stuff (char **s_file,
                            int    i_create)
 {
     /* List of possible config paths in home directory */
-    const char *s_cfg_files[] = {"/.config/wchanger/config.json",
-                                 "/.config/wchanger.json",
-                                 "/.config/wchanger/wchanger.json",
+    const char *s_cfg_files[] = {"/wchanger/config.json",
+                                 "/wchanger.json",
+                                 "/wchanger/wchanger.json",
                                  NULL};
     int i_res = 0; /* Function result */
 
@@ -104,7 +158,7 @@ cfgfile_config_file_stuff (char **s_file,
             case C_STATE_SEARCH_DEFAULT: /* No file passed, serch for default */
                 *s_file = cfgfile_find_config_file (s_cfg_files);
                 if (*s_file == NULL && i_create) { /* No file found, create */
-                    *s_file = dir_get_home ();
+                    *s_file = dir_get_home_config ();
                     str_append (&(*s_file), s_cfg_files[0]);
                     c_state = C_STATE_CREATE_CFG_FILE;
                     break;
@@ -157,28 +211,117 @@ cfgfile_config_file_stuff (char **s_file,
  * @brief  Get path for autostart desktop file for wchangerd daemon.
  */
 char *
-cfgfile_get_autostart_file_path (void)
+cfgfile_get_autostart_home_path (void)
 {
     char *s_path = NULL; /* Config file path */
 
-    s_path = dir_get_home ();
-    str_append (&s_path, AUTOSTART_FILE_PATH);
+    s_path = dir_get_home_config ();
+    str_append (&s_path, PATH_AUTOSTART_HOME);
 
     return s_path;
 }
 /*----------------------------------------------------------------------------*/
 /**
- * @brief  Get path for config file with window manager info.
+ * @brief  Get path for user's config file with window manager info.
  */
 char *
-cfgfile_get_wm_info_file_path (void)
+cfgfile_get_wm_info_home_path (void)
 {
     char *s_path = NULL; /* Config file path */
 
-    s_path = dir_get_home ();
-    str_append (&s_path, WM_JSON_FILE_PATH);
+    s_path = dir_get_home_config ();
+    str_append (&s_path, PATH_WMINFO_HOME);
 
     return s_path;
+}
+/*----------------------------------------------------------------------------*/
+/**
+ * @brief  Get path for default config file with window manager info.
+ */
+char *
+cfgfile_get_wm_info_data_path (int *i_err)
+{
+    char *s_path = NULL; /* Config file path */
+
+    *i_err = 0;
+
+    if ((s_path = cfgfile_find_app_data_path (i_err)) == NULL)
+        return NULL;
+
+    str_append (&s_path, PATH_WMINFO_DATA);
+
+    return s_path;
+}
+/*----------------------------------------------------------------------------*/
+/**
+ * @brief  Check if wchangerd daemon desktop file exists in user's autostart
+ *         directory.
+ */
+int
+cfgfile_autostart_exists (void)
+{
+    char *s_path = NULL; /* Autostart file path */
+    int  i_res   = 0;    /* File presence value to return */
+
+    s_path = cfgfile_get_autostart_home_path ();
+
+    if (file_check_permissions (s_path) == ERR_OK) {
+        i_res = 1;
+    }
+    free (s_path);
+
+    return i_res;
+}
+/*----------------------------------------------------------------------------*/
+/**
+ * @brief  Creates wchangerd desktop file in user's autostart directory.
+ */
+int
+cfgfile_autostart_create (void)
+{
+    int   i_err     = ERR_OK; /* Error value to return */
+    char *s_path    = NULL;   /* Autostart data file path */
+    char *s_buff    = NULL;   /* Buffer for file content */
+    char *s_as_path = NULL;   /* User's autostart path */
+
+    if ((s_path = cfgfile_find_app_data_path (&i_err)) == NULL)
+        return i_err;
+
+    s_as_path = cfgfile_get_autostart_home_path ();
+
+    str_append (&s_path, PATH_AUTOSTART_DATA);
+
+    s_buff = read_file_data (s_path, &i_err);
+    if (s_buff != NULL && i_err == ERR_OK) {
+        if ((i_err = file_check_permissions (s_as_path)) == ERR_FILE_EX) {
+            if ((i_err = file_create_with_subdirs (s_as_path)) == ERR_OK) {
+                i_err = save_file_data (s_as_path, s_buff);
+            }
+        }
+    }
+    free (s_buff);
+    free (s_path);
+    free (s_as_path);
+    return i_err;
+}
+/*----------------------------------------------------------------------------*/
+/**
+ * @brief  Removes wchangerd desktop file from user's autostart directory.
+ */
+int
+cfgfile_autostart_remove (void)
+{
+    char *s_path = NULL; /* Autostart file path */
+
+    s_path = cfgfile_get_autostart_home_path ();
+
+    if (remove (s_path) != 0) {
+        warn ("%s", s_path);
+        free (s_path);
+        return ERR_FILE_RM;
+    }
+    free (s_path);
+    return ERR_OK;
 }
 /*----------------------------------------------------------------------------*/
 

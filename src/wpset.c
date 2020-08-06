@@ -122,7 +122,7 @@ wallpaper_set_random (Setting *st_settings,
     if (s_file != NULL) {
         /* Save wallpaper as last used in settings */
         st_sett = setting_new_string (get_setting_name (SETTING_LAST_USED_STR),
-                                       s_file);
+                                      s_file);
         settings_append_or_replace (setting_get_child (st_settings), st_sett);
         /* Set wallpaper */
         st_sett = settings_find (setting_get_child (st_settings), 

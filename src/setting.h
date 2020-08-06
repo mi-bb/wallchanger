@@ -526,6 +526,18 @@ static inline Setting * setting_find_child     (Setting    *st_setting,
     return settings_find (setting_get_child (st_setting), s_name);
 }
 /*----------------------------------------------------------------------------*/
+/**
+ * @brief  Check if settings have equal names.
+ *
+ * @param[in]  st_set1  First setting
+ * @param[in]  st_set2  Second setting
+ * @return     Compare result. 1 if they are qual 0 if they are not
+ */
+static inline int settings_equal_names (Setting *st_set1,
+                                        Setting *st_set2) {
+    return st_set1->hash == st_set2->hash;
+}
+/*----------------------------------------------------------------------------*/
 #ifdef DEBUG
 /*----------------------------------------------------------------------------*/
 /**

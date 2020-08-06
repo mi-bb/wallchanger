@@ -118,16 +118,6 @@ get_setting_name (const int i_val)
 }
 /*----------------------------------------------------------------------------*/
 /**
- * @brief  Convert string with raw json data to Setting items and insert them
- *         to st_settings list.
- */
-void setts_string_to_settings (const char *s_jbuff,
-                               Setting    *st_settings)
-{
-    js_json_string_to_settings (s_jbuff, st_settings);
-}
-/*----------------------------------------------------------------------------*/
-/**
  * @brief  Read program settings. 
  */
 Setting *

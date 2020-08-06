@@ -13,6 +13,68 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+2020-08-07  Michal Babik  <michal.babik@pm.me>
+
+	* cfgfile.c (cfgfile_find_app_data_path): New function for looking for
+	  application directory in system data directories.
+	  (cfgfile_config_file_stuff): Removed .config from paths, .config is
+	  added by dir_get_home_config, dir_get_home changed to
+	  dir_get_home_config.
+	  (cfgfile_get_autostart_file_path): Renamed to
+	  cfgfile_get_autostart_home_path.
+	  (cfgfile_get_wm_info_file_path): Renamed to
+	  cfgfile_get_wm_info_home_path.
+	  (cfgfile_get_wm_info_data_path): New function which returns path to
+	  window manager info file in system data directory.
+	  (cfgfile_autostart_exists): New function that checks for user's
+	  wchangerd autostart file existence.
+	  (cfgfile_autostart_create): New function which copies autostart
+	  file for wchangerd from wchanger system data dir to user's autostart
+	  dir.
+	  (cfgfile_autostart_remove): New function, removes wchangerd autostart
+	  file from user's autostart dir.
+	* deffiles.c, deffiles.h: Files removed from project.
+	* dlgs.c (event_get_default_button_clicked): Changed loading default data,
+	  now it is loaded from file in system data dir instead of program resource.
+	  (event_save_command_button_clicked): Setting command data in wm combobox
+	  if updating was successful.
+	  (cmddialog_run): Removed checking for new wms, it is done on config
+	  dialog startup instead, changed to loading data only.
+	* fdfn.c (dir_get_data): New function for getting system data dirs.
+	  (dir_get_home_config): New function for getting user's config dir.
+	  (dir_get_home): Changed to static as it is not being used outside
+	  anymore.
+	  (dir_check_permissions): Removed static and added in .h file.
+	* jsfun.c (js_settings_check_for_update): Function does not return null if
+	  checked file does not exist.
+	* rwdt.c (read_file_data): Added setting error value to ERR_FILE_EX if
+	  file to read doesn't exist.
+	* setting.h (settings_equal_names): New function for checking names of 2
+	  settings if they are equal.
+	* setts.c (setts_string_to_settings): Removed, not needed anymore.
+	* strfun.c (str_comb, str_append): Minor updates, changed to copy null
+	  sign from source strings instead of setting them after to 0;
+	* wchanger.c (create_settings_widget): Changed call of
+	  deffiles_autostart_exists to cfgfile_autostart_exists.
+	  (activate): Changed checking for wm info files from
+	  deffiles_wm_check_create to wms_check_for_new_wms. Now it checks
+	  presence of new wm info in users config file with config file in
+	  wchanger wm info file in system data dir, instead of data in program
+	  resource.
+	* wmsfn.c (wms_update_wm_config): cfgfile_get_wm_info_file_path changed to
+	  cfgfile_get_wm_info_home_path.
+	  (wms_get_wm_info): Renamed to wms_get_wm_info_home,
+	  cfgfile_get_wm_info_file_path changed to cfgfile_get_wm_info_home_path.
+	  (wms_get_wm_info_data): New function for getting wm info data from
+	  default info file in wchanger system data dir.
+	  (wms_get_wm_info): Function gets info from user's wm info file, if it
+	  fails, function gets data from default data file in wchanger system data
+	  dir.
+	  (wms_update_wm_command): cfgfile_get_wm_info_file_path changed to
+	  cfgfile_get_wm_info_home_path.
+	  (wms_check_for_new_wms): Chaned to check for new wm info with file in
+	  wchanger system data dir instead of program resource.
+
 2020-07-14  Michal Babik  <michal.babik@pm.me>
 
 	* dialogdata.c, dialogdata.h (dialogdata_get_cfg_file): Changed to static
