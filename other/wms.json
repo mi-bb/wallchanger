@@ -1,0 +1,89 @@
+{
+   "Unknown":{
+      "Proc":[
+         ""
+      ],
+      "Command":"feh --bg-fill \"[F]\""
+   },
+   "MATE":{
+      "Proc":[
+         "mate-session"
+      ],
+      "Command":"gsettings set org.mate.background picture-filename \"[F]\""
+   },
+   "Xfce":{
+      "Proc":[
+         "xfce4-session"
+      ],
+      "Command":""
+   },
+   "Gnome":{
+      "Proc":[
+         "gnome-session-b",
+         "gnome-session-binary"
+      ],
+      "Command":"gsettings set org.gnome.desktop.background picture-uri \"file:\/\/[F]\""
+   },
+   "Cinnamon":{
+      "Proc":[
+         "cinnamon-sessio",
+         "cinnamon-session",
+         "cinnamon"
+      ],
+      "Command":"gsettings set org.cinnamon.desktop.background picture-uri \"file:\/\/[F]\""
+   },
+   "KDE Plasma":{
+      "Proc":[
+         "plasma_session"
+      ],
+      "Command":"qdbus org.kde.plasmashell \/PlasmaShell org.kde.PlasmaShell.evaluateScript 'var allDesktops = desktops();print (allDesktops);for (i=0;i<allDesktops.length;i++) {d = allDesktops[i];d.wallpaperPlugin = \"org.kde.image\";d.currentConfigGroup = Array(\"Wallpaper\", \"org.kde.image\", \"General\");d.writeConfig(\"Image\", \"file:\/\/[F]\")}'"
+   },
+   "LXDE":{
+      "Proc":[
+         "lxsession"
+      ],
+      "Command":"pcmanfm --wallpaper-mode crop --set-wallpaper \"[F]\""
+   },
+   "FVWM":{
+      "Proc":[
+         "fvwm2"
+      ],
+      "Command":"feh --bg-fill \"[F]\""
+   },
+   "i3":{
+      "Proc":[
+         "i3"
+      ],
+      "Command":"feh --bg-fill \"[F]\""
+   },
+   "spectrwm":{
+      "Proc":[
+         "spectrwm"
+      ],
+      "Command":"feh --bg-fill \"[F]\""
+   },
+   "Openbox":{
+      "Proc":[
+         "openbox"
+      ],
+      "Command":"feh --bg-fill \"[F]\""
+   },
+   "Fluxbox":{
+      "Proc":[
+         "fluxbox"
+      ],
+      "Command":"feh --bg-fill \"[F]\""
+   },
+   "Window Maker":{
+      "Proc":[
+         "wmaker"
+      ],
+      "Command":"feh --bg-fill \"[F]\""
+   },
+   "dwm":{
+      "Proc":[
+         "dwm"
+      ],
+      "Command":"feh --bg-fill \"[F]\""
+   }
+}

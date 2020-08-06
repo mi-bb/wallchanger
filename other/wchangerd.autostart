@@ -1,0 +1,11 @@
+[Desktop Entry]
+Type=Application
+Name=Wall Changer
+GenericName=Wallpaper Changer
+NoDisplay=true
+Comment=Automatic wallpaper changer
+Icon=wchangercfg
+Exec=wchangerd --restart
+Terminal=false
+StartupNotify=false
+Categories=Utility;DesktopSettings;
