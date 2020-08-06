@@ -21,3 +21,7 @@ dist_desktop_DATA = wchangercfg.desktop
 
 pixmapdir=$(datadir)/pixmaps
 dist_pixmap_DATA=wchangercfg.png
+
+appdatadir=$(datadir)/wchanger
+dist_appdata_DATA=wchangerd.autostart wms.json
+
