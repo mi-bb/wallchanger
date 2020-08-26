@@ -29,12 +29,12 @@
 /**
  * @brief  Check if number is in random numbers memory
  *
- * @param[out] rm_mem  RandMem object
+ * @param[out] rmm  RandMem object
  * @param[in]  i_no    Number to check
  * @return     1 if it is, 0 if it is not
  */
-static int8_t randomm_check_number (RandMem *rm_mem,
-                                    int32_t  i_no);
+static int8_t randomm_check_number (RandMem *rmm,
+                                    size_t  ui_no);
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Store number in random numbers memory
@@ -44,25 +44,27 @@ static int8_t randomm_check_number (RandMem *rm_mem,
  * @return     none
  */
 static void randomm_set_number (RandMem *rm_mem,
-                                int32_t  i_no);
+                                size_t  ui_no);
+/*----------------------------------------------------------------------------*/
+/**
+ * @brief  Initialize random memory object.
+ *
+ * @param[out] rm_mem  RandMem object
+ * @return     none
+ */
+static void randomm_init (RandMem *rm_mem);
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Check if number is in random numbers memory
  */
 static int8_t
-randomm_check_number (RandMem *rm_mem,
-                      int32_t  i_no)
+randomm_check_number (RandMem *rmm,
+                      size_t   ui_no)
 {
-    int8_t  i_res = 0;         /* Result of number check */
-    int32_t i_idx = i_no / 32; /* Number position in array */
-    int32_t i_pos = i_no % 32; /* Number bit position in integer */
+    size_t i_idx = ui_no / 32; /* Number position in array */
+    size_t i_pos = ui_no % 32; /* Number bit position in integer */
 
-    if (i_idx < RMMAX) {
-        if (rm_mem->i_rand[i_idx] & (1 << i_pos)) {
-            i_res = 1;
-        }
-    }
-    return i_res;
+    return (i_idx < rmm->allocn) && (rmm->randm[i_idx] & (1 << i_pos)) ? 1 : 0;
 }
 /*----------------------------------------------------------------------------*/
 /**
@@ -70,45 +72,69 @@ randomm_check_number (RandMem *rm_mem,
  */
 static void
 randomm_set_number (RandMem *rm_mem,
-                    int32_t  i_no)
+                    size_t   ui_no)
 {
-    int64_t ui_idx = i_no / 32; /* Number position in array */
-    int64_t ui_pos = i_no % 32; /* Number bit position in integer */
+    size_t ui_idx = ui_no / 32; /* Number position in array */
+    size_t ui_pos = ui_no % 32; /* Number bit position in integer */
 
-    if (ui_idx < RMMAX) {
-        rm_mem->i_rand[ui_idx] |= (1 << ui_pos);
+    if (ui_idx < rm_mem->allocn) {
+        rm_mem->randm[ui_idx] |= (1 << ui_pos);
     }
-}
-/*----------------------------------------------------------------------------*/
-/**
- * @brief  Clear / reset random memory.
- */
-void
-randomm_clear (RandMem *rm_mem)
-{
-    int i = 0;
-
-    for (i = 0; i < RMMAX; ++i)
-        rm_mem->i_rand[i] = 0;
 }
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Initialize random memory object.
  */
-void
+static void
 randomm_init (RandMem *rm_mem)
 {
-    struct tm t_t0   = {0};
-    double d_diff    = 0;
-    rm_mem->i_cnt    = 0;
-    rm_mem->i_range  = 0;
-    t_t0.tm_year     = 100;
-    t_t0.tm_mday     = 1;
+    struct tm t_t0 = {0};
+    double d_diff  = 0;
+    rm_mem->randm  = NULL;
+    rm_mem->cnt    = 0;
+    rm_mem->allocn = 0;
+    rm_mem->range  = 0;
+    t_t0.tm_year   = 100;
+    t_t0.tm_mday   = 1;
 
     d_diff = difftime (time (NULL), mktime (&t_t0));
 
-    randomm_clear (rm_mem);
     srand ((unsigned int) d_diff);
+}
+/*----------------------------------------------------------------------------*/
+/**
+ * @brief  Reset random memory.
+ */
+void
+randomm_reset (RandMem *rm_mem)
+{
+    size_t i = 0;
+
+    rm_mem->cnt = 0;
+
+    for (i = 0; i < rm_mem->allocn; ++i)
+        rm_mem->randm[i] = 0;
+}
+/*----------------------------------------------------------------------------*/
+void
+randomm_set_range (RandMem *rm_mem,
+                   size_t   ui_rng) {
+
+    rm_mem->allocn = ui_rng / (8 * sizeof (*rm_mem->randm)) + 1;
+
+    rm_mem->range = ui_rng;
+
+    if (rm_mem->randm == NULL) {
+        rm_mem->randm = malloc (rm_mem->allocn * sizeof (*rm_mem->randm));
+    }
+    else {
+        rm_mem->randm = realloc (rm_mem->randm,
+                                 rm_mem->allocn * sizeof (*rm_mem->randm));
+    }
+    if (rm_mem->randm == NULL)
+        err (EXIT_FAILURE, NULL);
+
+    randomm_reset (rm_mem);
 }
 /*----------------------------------------------------------------------------*/
 /**
@@ -122,6 +148,8 @@ randomm_new (void)
     if ((rm_mem = malloc (sizeof (RandMem))) == NULL)
         err (EXIT_FAILURE, NULL);
 
+    randomm_init (rm_mem);
+
     return rm_mem;
 }
 /*----------------------------------------------------------------------------*/
@@ -131,36 +159,36 @@ randomm_new (void)
 void
 randomm_free (RandMem *rm_mem)
 {
+    free (rm_mem->randm);
     free (rm_mem);
 }
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Get random number
  */
-uint32_t
+size_t
 randomm_get_number (RandMem *rm_mem)
 {
-    int32_t ui_ret = 0; /* Random number to return */
+    size_t ui_ret = 0; /* Random number to return */
 
-    if (rm_mem->i_range == 0)
+    if (rm_mem->range == 0)
         return 0;
 
     /* Get random number and check if it is in memory */
     do {
-        ui_ret = (int32_t) rand () % rm_mem->i_range;
+        ui_ret = (size_t) rand () % rm_mem->range;
     }
     while (randomm_check_number (rm_mem, ui_ret));
 
     /* set number in memory */
     randomm_set_number (rm_mem, ui_ret);
 
-    ++rm_mem->i_cnt;
+    ++rm_mem->cnt;
 
-    if (rm_mem->i_cnt >= rm_mem->i_range) {
-        randomm_clear (rm_mem);
-        randomm_reset_cnt (rm_mem);
+    if (rm_mem->cnt >= rm_mem->range) {
+        randomm_reset (rm_mem);
     }
-    return (uint32_t) ui_ret;
+    return ui_ret;
 }
 /*----------------------------------------------------------------------------*/
 

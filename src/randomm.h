@@ -30,46 +30,41 @@
 #ifndef RANDOMM_H
 #define RANDOMM_H
 
-#define RMMAX 500  /**< RMMAX * 32 maximum random number range */
-
 #include <stdint.h>
+#include <stddef.h>
 /*----------------------------------------------------------------------------*/
 /**
  * @struct RandMem
  *
  * @brief  Random memory struct
  *
- * @var   RandMem::i_rand
- * @brief Table to store information which number was randomed
+ * @var   RandMem::randm
+ * @brief Integers to store information which number was randomed
  *
- * @var   RandMem::i_range
+ * @var   RandMem::allocn
+ * @brief Number of alloced integers
+ *
+ * @var   RandMem::range
  * @brief Max random number that will be generated
  *
- * @var   RandMem::i_cnt
+ * @var   RandMem::cnt
  * @brief Number of random number generated in a serie
  */
 typedef struct
 RandMem {
-    int32_t i_rand[RMMAX];
-    int32_t i_range;
-    int32_t i_cnt;
+    uint32_t *randm;
+    size_t    allocn;
+    size_t    range;
+    size_t    cnt;
 } RandMem;
 /*----------------------------------------------------------------------------*/
 /**
- * @brief  Clear / reset random memory.
+ * @brief  Reset random memory.
  *
  * @param[out] rm_mem  RandMem object
  * @return     none
  */
-void      randomm_clear      (RandMem *rm_mem);
-/*----------------------------------------------------------------------------*/
-/**
- * @brief  Initialize random memory object.
- *
- * @param[out] rm_mem  RandMem object
- * @return     none
- */
-void      randomm_init       (RandMem *rm_mem);
+void      randomm_reset      (RandMem *rm_mem);
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Create new RandMem item.
@@ -94,20 +89,8 @@ void      randomm_free       (RandMem *rm_mem);
  * @param[in]  i_rng   Range value
  * @return     none
  */
-static inline void randomm_set_range (RandMem *rm_mem,
-                                      int32_t  i_rng) {
-    rm_mem->i_range = i_rng;
-}
-/*----------------------------------------------------------------------------*/
-/**
- * @brief  Reset random number couts value
- *
- * @param[out] rm_mem  RandMem object
- * @return     none
- */
-static inline void randomm_reset_cnt (RandMem *rm_mem) {
-    rm_mem->i_cnt = 0;
-}
+void randomm_set_range (RandMem *rm_mem,
+                        size_t   ui_rng);
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Get random number
@@ -123,7 +106,7 @@ static inline void randomm_reset_cnt (RandMem *rm_mem) {
  * @param[out] rm_mem  RandMem object
  * @return     Ranom number
  */
-uint32_t  randomm_get_number (RandMem *rm_mem);
+size_t  randomm_get_number (RandMem *rm_mem);
 /*----------------------------------------------------------------------------*/
 #endif
 

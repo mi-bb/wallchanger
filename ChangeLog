@@ -13,6 +13,23 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+2020-08-26  Michal Babik  <michal.babik@pm.me>
+
+	* chkwch.c (check_settings_change_wallpaper): Removed call to randomm_init
+	  as it is not deede now, changed range type in randomm_set_range to
+	  size_t.
+	* randomm.c, randomm.h: Changed RandMem structure, array of integers
+	  for storing randomed numbers changed to pointer, it is now dynamically
+	  changed when setting new range.
+	  (randomm_check_number, randomm_set_number, randomm_init,
+	  randomm_get_number): Functions adapted to use new RandMem structure.
+	  (randomm_reset): New function for reseting memory of randomed numbers.
+	  (randomm_clear): Function removed.
+	  (randomm_set_range): Changed, it allocates integers for storing
+	  randomed numbers, sets number of alloced integers and range.
+	  (randomm_free): Added freeing of random numbers data.
+	* wpset.c (wallpaper_set_random): Changed i_pos to ui_pos, type to size_t.
+
 2020-08-07  Michal Babik  <michal.babik@pm.me>
 
 	* cfgfile.c (cfgfile_find_app_data_path): New function for looking for

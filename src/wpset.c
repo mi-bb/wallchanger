@@ -103,7 +103,7 @@ wallpaper_set_random (Setting *st_settings,
     const char *s_file   = NULL; /* Wallpaper file name */
     Setting    *st_walls = NULL; /* Setting with wallpaper */
     Setting    *st_sett  = NULL; /* For concrete setting */
-    uint32_t    i_pos    = 0;    /* Random wallpaper position */
+    size_t      ui_pos   = 0;    /* Random wallpaper position */
 
     /* Get wallaper list setting */
     st_walls = settings_find (setting_get_child (st_settings),
@@ -113,10 +113,10 @@ wallpaper_set_random (Setting *st_settings,
         return NULL;
 
     /* Get random number */
-    i_pos = randomm_get_number (rm_rand);
+    ui_pos = randomm_get_number (rm_rand);
 
     /* Get the file name at the random position */
-    if ((st_sett = setting_get_at_pos (st_walls, i_pos)) != NULL)
+    if ((st_sett = setting_get_at_pos (st_walls, ui_pos)) != NULL)
         s_file = setting_get_string (st_sett);
 
     if (s_file != NULL) {

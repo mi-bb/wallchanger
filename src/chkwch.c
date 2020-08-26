@@ -226,8 +226,7 @@ check_settings_change_wallpaper (char     *s_cfg_file,
     }
     else {
         /* Wallpaper list length changed, reinit random, change wallpaper */
-        randomm_init (rm_rand);
-        randomm_set_range (rm_rand, (int32_t) ui_nlen);
+        randomm_set_range (rm_rand, (size_t) ui_nlen);
 
         if (ui_len == 0) {
             /* Program startup, previous wallpaper count was 0 */
