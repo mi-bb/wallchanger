@@ -153,7 +153,7 @@ js_json_obj_to_settings (json_object *val,
  * @param[out] st_settings  List of Setting items
  * @return     none
  */
-static void
+void
 js_json_string_to_settings (const char *s_jbuff,
                             Setting    *st_settings)
 {
@@ -164,11 +164,11 @@ js_json_string_to_settings (const char *s_jbuff,
     if (j_obj == NULL ||
         json_object_get_type (j_obj) != json_type_object ||
         j_err != json_tokener_success) {
-        #ifdef DEBUG
+#ifdef DEBUG
         printf ("Json error: %d\n", j_err);
         printf ("Json type:  %d\n", json_object_get_type (j_obj));
         printf ("Error converting json to stlist, wrong json file\n");
-        #endif
+#endif
         if (j_obj != NULL)
             json_object_put (j_obj);
     }
@@ -328,11 +328,11 @@ js_settings_check_for_update (Setting    *st_settings,
         if (j_obj == NULL ||
             json_object_get_type (j_obj) != json_type_object ||
             j_err != json_tokener_success) {
-            #ifdef DEBUG
+#ifdef DEBUG
             printf ("Json error: %d\n", j_err);
             printf ("Json type:  %d\n", json_object_get_type (j_obj));
             printf ("Error, wrong json file\n");
-            #endif
+#endif
             if (j_obj != NULL)
                 json_object_put (j_obj);
             j_obj = json_object_new_object();

@@ -28,6 +28,9 @@
 
 #include "setting.h"
 /*----------------------------------------------------------------------------*/
+void
+js_json_string_to_settings (const char *s_jbuff,
+                            Setting    *st_settings);
 /**
  * @brief  Get settings data from file.
  *

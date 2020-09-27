@@ -204,9 +204,9 @@ wms_get_current_wm (Setting *st_wmsl)
     Setting    *st_wm   = NULL; /* Setting with window manager info */
     Setting    *st_unkn = NULL; /* Setting for unknown window manager */
 
-    #ifdef DEBUG
+#ifdef DEBUG
     printf ("Finding wm\n");
-    #endif
+#endif
     /*st_wm = setting_get_child (st_wmsl);*/
     st_wm = st_wmsl;
 
@@ -217,27 +217,27 @@ wms_get_current_wm (Setting *st_wmsl)
             st_wm = st_wm->next;
             continue;
         }
-        #ifdef DEBUG
+#ifdef DEBUG
         printf ("%s", s_name);
-        #endif
+#endif
         st_proc = setting_find_child (st_wm, "Proc");
         st_proc = setting_get_child (st_proc);
         while (st_proc != NULL) {
             s_proc = setting_get_string (st_proc);
-            #ifdef DEBUG
+#ifdef DEBUG
             printf (" %s", s_proc);
-            #endif
+#endif
             if (process_exists_b (s_proc)) {
-                #ifdef DEBUG
+#ifdef DEBUG
                 printf (" YES!\n");
-                #endif
+#endif
                 return st_wm;
             }
             st_proc = st_proc->next;
         }
-        #ifdef DEBUG
+#ifdef DEBUG
         printf (" nope\n");
-        #endif
+#endif
         st_wm = st_wm->next;
     }
     return st_unkn;
@@ -264,9 +264,9 @@ wms_update_wm_command (const char *s_wm_name,
         settings_free_all (st_wms);
         return i_err;
     }
-    #ifdef DEBUG
+#ifdef DEBUG
     printf ("WM : %s\nCM : %s\n", s_wm_name, s_command);
-    #endif
+#endif
     if ((st_item = setting_find_child (st_wms, s_wm_name)) != NULL) {
         if ((st_item = setting_find_child (st_item, "Command")) != NULL) {
             setting_set_string (st_item, s_command);
@@ -274,9 +274,9 @@ wms_update_wm_command (const char *s_wm_name,
     }
     i_err = setts_check_update_file (s_path, setting_get_child (st_wms));
     free (s_path);
-    #ifdef DEBUG
+#ifdef DEBUG
     settings_print (st_wms);
-    #endif
+#endif
     settings_free_all (st_wms);
     return i_err;
 }
@@ -331,100 +331,100 @@ wms_get_wallpaper_command (const char *s_cfg_file,
     if ((st_cu_wm = wms_get_current_wm (st_wm)) != NULL) {
         s_cu_wm = setting_get_name (st_cu_wm);
     }
-    #ifdef DEBUG
+#ifdef DEBUG
     printf ("WM last used: %s, current: %s\n", s_lu_wm, s_cu_wm);
-    #endif
+#endif
     /* Compare last and currently used window manager, set wallpaper
      * change command for returning */
     while (e_state) {
         switch (e_state) {
             case WM_STATE_CHECK_WM_INFO:
-                #ifdef DEBUG
+#ifdef DEBUG
                 puts (" Checking wm info");
-                #endif
+#endif
                 if (s_cu_wm == NULL && s_lu_wm == NULL) {
-                    #ifdef DEBUG
+#ifdef DEBUG
                     puts ("  All nulls");
-                    #endif
+#endif
                     e_state = WM_STATE_SET_MAIN_DEFAULT;
                 }
                 else if (strcmp (s_cu_wm, s_lu_wm) == 0) {
-                    #ifdef DEBUG
+#ifdef DEBUG
                     puts ("  Current wm equals last used");
-                    #endif
+#endif
                     e_state = WM_STATE_SET_SAVED_BG_CMD;
                 }
                 else {
-                    #ifdef DEBUG
+#ifdef DEBUG
                     puts ("  Current wm differs last used");
-                    #endif
+#endif
                     *i_err = setts_update_last_used_wm (s_cfg_file, s_cu_wm);
                     e_state = WM_STATE_SET_CURR_USED_WM_CMD;
                 }
                 break;
 
             case WM_STATE_SET_CURR_USED_WM_CMD:
-                #ifdef DEBUG
+#ifdef DEBUG
                 puts (" Setting current used wm cmd string");
-                #endif
+#endif
                 st_item = setting_find_child (st_cu_wm, "Command");
                 if (st_item != NULL) {
-                    #ifdef DEBUG
+#ifdef DEBUG
                     puts ("  Current used wm item ok");
-                    #endif
+#endif
                     s_cu_wm_cmd = setting_get_string (st_item);
                     e_state     = WM_STATE_CHECK_CURR_USED_WM_CMD;
                 }
                 else {
-                    #ifdef DEBUG
+#ifdef DEBUG
                     puts ("  Current used wm item null");
-                    #endif
+#endif
                     e_state = WM_STATE_SET_SAVED_BG_CMD;
                 }
                 break;
 
             case WM_STATE_CHECK_CURR_USED_WM_CMD:
-                #ifdef DEBUG
+#ifdef DEBUG
                 puts (" Checking current used wm cmd string");
-                #endif
+#endif
                 if (s_cu_wm_cmd != NULL) {
-                    #ifdef DEBUG
+#ifdef DEBUG
                     puts ("  Current used wm command ok");
-                    #endif
+#endif
                     s_result_cmd = s_cu_wm_cmd;
                     e_state      = WM_STATE_END;
                 }
                 else {
-                    #ifdef DEBUG
+#ifdef DEBUG
                     puts ("  Current used wm command null");
-                    #endif
+#endif
                     e_state = WM_STATE_SET_SAVED_BG_CMD;
                 }
                 break;
 
             case WM_STATE_SET_SAVED_BG_CMD:
-                #ifdef DEBUG
+#ifdef DEBUG
                 puts (" Checking saved wm cmd string");
-                #endif
+#endif
                 if (s_setts_cmd != NULL) {
-                    #ifdef DEBUG
+#ifdef DEBUG
                     puts ("  Saved wm command ok");
-                    #endif
+#endif
                     s_result_cmd = s_setts_cmd;
                     e_state      = WM_STATE_END;
                 }
                 else {
-                    #ifdef DEBUG
+#ifdef DEBUG
                     puts ("  Saved wm command null");
-                    #endif
+#endif
                     e_state = WM_STATE_SET_MAIN_DEFAULT;
                 }
                 break;
 
             case WM_STATE_SET_MAIN_DEFAULT:
-                #ifdef DEBUG
+#ifdef DEBUG
                 puts (" Setting main default cmd string");
-                #endif
+#endif
                 s_result_cmd = DEFAULT_BG_CMD;
                 e_state      = WM_STATE_END;
                 break;

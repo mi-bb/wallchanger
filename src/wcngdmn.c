@@ -19,9 +19,9 @@
  *
  * Automatic wallpaper changer
  *
- * @date August 26, 2020
+ * @date September 27, 2020
  *
- * @version 1.5.5
+ * @version 1.6.0
  *
  * @author Michal Babik <michal.babik@pm.me>
  */

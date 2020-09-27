@@ -97,9 +97,9 @@ get_pbuf_exts_to_ghash (void)
     gsl_formats1 = gdk_pixbuf_get_formats ();
     gsl_formats  = gsl_formats1;
 
-    #ifdef DEBUG
+#ifdef DEBUG
     printf ("Valid extensions : ");
-    #endif
+#endif
 
     while (gsl_formats != NULL) {
 
@@ -109,9 +109,9 @@ get_pbuf_exts_to_ghash (void)
         exts = gdk_pixbuf_format_get_extensions (gpf);
 
         for (it = exts; *it != NULL; it++) {
-            #ifdef DEBUG
+#ifdef DEBUG
             printf ("%s ", *it);
-            #endif
+#endif
             /* Insert extension to hash table */
             g_hash_table_add (gh_res, strdup (*it));
         }
@@ -120,9 +120,9 @@ get_pbuf_exts_to_ghash (void)
 
         gsl_formats = gsl_formats->next;
     }
-    #ifdef DEBUG
+#ifdef DEBUG
     printf ("\n");
-    #endif
+#endif
 
     g_slist_free (gsl_formats1);
 
@@ -185,7 +185,8 @@ get_directory_filtered_content_glist (const char *s_dir,
                 memcpy (s_pthfn + ui_dlen, de->d_name, ui_flen);
                 s_pthfn[ui_dlen + ui_flen] = '\0';
 
-                gl_files = g_list_append (gl_files, s_pthfn);
+                gl_files = g_list_prepend (gl_files, s_pthfn);
+                //gl_files = g_list_append (gl_files, s_pthfn);
             }
         }
     }
@@ -193,7 +194,8 @@ get_directory_filtered_content_glist (const char *s_dir,
 
     closedir(dr);
 
-    return gl_files;
+    return g_list_reverse (gl_files);
+    //return gl_files;
 }
 /*----------------------------------------------------------------------------*/
 /**

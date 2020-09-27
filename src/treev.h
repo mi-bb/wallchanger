@@ -27,20 +27,6 @@
 #include <gtk/gtk.h>
 #include "iminfo.h"
 #include "setting.h"
-//#include "settlist.h"
-/*----------------------------------------------------------------------------*/
-/**
- * @brief  TreeView Columns
- */
-enum {
-    COL_FULL_FILE_NAME,  /**< Full file name with path */
-    COL_FILE_NAME,       /**< Only file name */
-    COL_FILE_PATH,       /**< Only file path */
-    COL_WIDTH_HEIGHT,    /**< String with width x height */
-    COL_WIDTH,           /**< Image width */
-    COL_HEIGHT,          /**< Image height */
-    NUM_COLS             /**< Number of columns */
-};
 /*----------------------------------------------------------------------------*/
 /**
  * @fn  void treeview_add_items_glist (GtkWidget   *gw_tview,

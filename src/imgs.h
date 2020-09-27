@@ -31,6 +31,7 @@
 typedef enum IconImg {
     W_ICON_ADD,      /**< Add images icon */
     W_ICON_ADD_DIR,  /**< Add images from directory icon*/
+    W_ICON_ADD_WEB,  /**< Add images from web icon*/
     W_ICON_REMOVE,   /**< Remove images from list icon */
     W_ICON_UP,       /**< Move up icon */
     W_ICON_DOWN,     /**< Move down icon */

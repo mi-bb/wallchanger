@@ -41,6 +41,15 @@ char *   cmddialog_run            (GtkWindow    *gw_parent,
                                    const GSList *gsl_iinfo);
 /*----------------------------------------------------------------------------*/
 /**
+ * @fn  GList  * add_images_from_web_dilaog (GtkWindow  *gw_parent,
+ *                                           const char *s_cfg_file)
+ *
+ * @brief  Run dialog for getting wallpapers from web.
+ *
+ * @param[in] gw_parent  Parent window
+ * @param[in] s_cfg_file Path to config file
+ * @return    List with images to add.
+ *
  * @fn  char * add_images_folder_dialog (GtkWindow *gw_parent)
  *
  * @brief  Select folder dialog.
@@ -56,30 +65,21 @@ char *   cmddialog_run            (GtkWindow    *gw_parent,
  * @return    List with images.
  */
 /*----------------------------------------------------------------------------*/
-char   * add_images_folder_dialog (GtkWindow    *gw_parent);
+GList  * add_images_from_web_dilaog (GtkWindow  *gw_parent,
+                                     const char *s_cfg_file);
 
-GSList * add_images_dialog        (GtkWindow    *gw_parent);
-/*----------------------------------------------------------------------------*/
-/**
- * @brief  Error message dialog.
- *
- * @param[in] gw_parent  Dialog parent widget
- * @param[in] s_message  Message to show
- * @return    none
- */
-/*----------------------------------------------------------------------------*/
-void     message_dialog_error     (GtkWindow    *gw_parent,
-                                   const char   *s_message)
-         __attribute__ ((nonnull (2)));
+char   * add_images_folder_dialog   (GtkWindow  *gw_parent);
+
+GSList * add_images_dialog          (GtkWindow  *gw_parent);
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Dialog with information about application.
  *
- * @param[in] data  Unused pointer for event call
+ * @param[in] gw_parent  Parent window
  * @return    none
  */
 /*----------------------------------------------------------------------------*/
-void     about_app_dialog         (gpointer     data);
+void     about_app_dialog           (GtkWindow  *gw_parent);
 /*----------------------------------------------------------------------------*/
 #endif
 

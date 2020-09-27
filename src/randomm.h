@@ -64,14 +64,22 @@ RandMem {
  * @param[out] rm_mem  RandMem object
  * @return     none
  */
-void      randomm_reset      (RandMem *rm_mem);
+void      randomm_reset          (RandMem *rm_mem);
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Create new RandMem item.
  *
  * @return New RandMem item
  */
-RandMem * randomm_new        (void) __attribute__((malloc));
+RandMem * randomm_new            (void) __attribute__((malloc));
+/*----------------------------------------------------------------------------*/
+/**
+ * @brief  Create new RandMem item with given range.
+ *
+ * @param[in] ui_range  Random numbers range
+ * @return    New RandMem item
+ */
+RandMem * randomm_new_with_range (size_t ui_range) __attribute__((malloc));
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Free RandMem item.
@@ -80,17 +88,17 @@ RandMem * randomm_new        (void) __attribute__((malloc));
  * @return     none
  */
 /*----------------------------------------------------------------------------*/
-void      randomm_free       (RandMem *rm_mem);
+void      randomm_free           (RandMem *rm_mem);
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Set random numbers maximum range.
  *
  * @param[out] rm_mem  RandMem object
- * @param[in]  i_rng   Range value
+ * @param[in]  ui_rng  Range value
  * @return     none
  */
-void randomm_set_range (RandMem *rm_mem,
-                        size_t   ui_rng);
+void      randomm_set_range      (RandMem *rm_mem,
+                                  size_t   ui_rng);
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Get random number
@@ -106,7 +114,7 @@ void randomm_set_range (RandMem *rm_mem,
  * @param[out] rm_mem  RandMem object
  * @return     Ranom number
  */
-size_t  randomm_get_number (RandMem *rm_mem);
+size_t    randomm_get_number     (RandMem *rm_mem);
 /*----------------------------------------------------------------------------*/
 #endif
 

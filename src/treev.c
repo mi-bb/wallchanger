@@ -26,6 +26,19 @@
 #include "treev.h"
 /*----------------------------------------------------------------------------*/
 /**
+ * @brief  TreeView Columns
+ */
+enum e_tree_view_columns {
+    COL_FULL_FILE_NAME,  /**< Full file name with path */
+    COL_FILE_NAME,       /**< Only file name */
+    COL_FILE_PATH,       /**< Only file path */
+    COL_WIDTH_HEIGHT,    /**< String with width x height */
+    COL_WIDTH,           /**< Image width */
+    COL_HEIGHT,          /**< Image height */
+    NUM_COLS             /**< Number of columns */
+};
+/*----------------------------------------------------------------------------*/
+/**
  * @fn  static void liststore_set_item (GtkListStore    *gls_list,
  *                                      GtkTreeIter     *gti_iter,
  *                                      const ImageInfo *ii_info)
@@ -456,6 +469,14 @@ create_tview (GtkWidget **gw_tview)
                                                            COL_WIDTH_HEIGHT,
                                                            NULL);
     gtk_tree_view_column_set_sort_column_id (gtvc_col, COL_WIDTH_HEIGHT);
+    gtk_tree_view_insert_column (GTK_TREE_VIEW (*gw_tview), gtvc_col, -1);
+    gcr_render = gtk_cell_renderer_text_new ();
+    gtvc_col   = gtk_tree_view_column_new_with_attributes ("Location",
+                                                           gcr_render,
+                                                           "text",
+                                                           COL_FILE_PATH,
+                                                           NULL);
+    gtk_tree_view_column_set_sort_column_id (gtvc_col, COL_FILE_PATH);
     gtk_tree_view_insert_column (GTK_TREE_VIEW (*gw_tview), gtvc_col, -1);
 
     gls_list = gtk_list_store_new (NUM_COLS,

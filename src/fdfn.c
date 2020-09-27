@@ -219,6 +219,57 @@ dir_get_home_config (void)
 }
 /*----------------------------------------------------------------------------*/
 /**
+ * @brief  Get temp dir path.
+ */
+char *
+dir_get_temp (void)
+{
+    char *s_dir = NULL;
+    /* Getting temp path */
+    s_dir = getenv ("TMPDIR");
+
+    return (s_dir == NULL || s_dir[0] == '\0') ?
+        strdup ("/tmp") :
+        strdup (s_dir);
+}
+/*----------------------------------------------------------------------------*/
+/**
+ * @brief  Get user's cache dir path.
+ */
+char *
+dir_get_cache (void)
+{
+    char *s_dir = NULL;
+    /* Getting cache path */
+    s_dir = getenv ("XDG_CACHE_HOME");
+
+    if (s_dir == NULL || s_dir[0] == '\0') {
+        s_dir = dir_get_home ();
+        str_append (&s_dir, "/.cache");
+        return s_dir;
+    }
+    return strdup (s_dir);
+}
+/*----------------------------------------------------------------------------*/
+/**
+ * @brief  Get user's home data dir.
+ */
+char *
+dir_get_home_data (void)
+{
+    char *s_dir = NULL;
+    /* Getting home data path */
+    s_dir = getenv ("XDG_DATA_HOME");
+
+    if (s_dir == NULL || s_dir[0] == '\0') {
+        s_dir = dir_get_home ();
+        str_append (&s_dir, "/.local/share");
+        return s_dir;
+    }
+    return strdup (s_dir);
+}
+/*----------------------------------------------------------------------------*/
+/**
  * @brief  Get system data dir path.
  */
 char *
@@ -231,6 +282,50 @@ dir_get_data (void)
     return (s_dir == NULL || s_dir[0] == '\0') ?
         strdup ("/usr/local/share:/usr/share") :
         strdup (s_dir);
+}
+/*----------------------------------------------------------------------------*/
+int
+dir_create_with_subdirs (const char *s_dn)
+{
+    char  *s_new  = NULL; /* New string with dirs */
+    char  *s_sls  = NULL; /* / position */
+    char  *s_dup  = NULL; /* Duplicate of s_fn */
+    char  *s_tmp  = NULL; /* Pointer to duplicate of s_fn */
+    int    i_err  = 0;    /* Error output */
+    size_t ui_len = 0;    /* Name length */
+
+    s_dup = strdup (s_dn);
+    s_tmp = s_dup;
+
+    /* Skip first / in file path */
+    if (*s_tmp == '/')
+        ++s_tmp;
+
+    /* Find every / in path string */
+    while ((s_sls = strchr (s_tmp, '/')) != NULL) {
+        /* Replace found / with null */
+        *s_sls = '\0';
+        str_append (&s_new, "/");
+        /* Append directory to new string */
+        str_append (&s_new, s_tmp);
+        /* Check path permissions and try to create it if necessary */
+        if ((i_err = dir_check_permissions_create (s_new)) != ERR_OK) {
+            free (s_dup);
+            free (s_new);
+            warn ("%s", s_new);
+            return i_err;
+        }
+        ui_len = (size_t) (s_sls - s_tmp);
+        /* *s_sls = '/'; */
+        s_tmp += ui_len + 1;
+    }
+    free (s_dup);
+    free (s_new);
+    if ((i_err = dir_check_permissions_create (s_dn)) != ERR_OK) {
+        warn ("%s", s_dn);
+        return i_err;
+    }
+    return ERR_OK;
 }
 /*----------------------------------------------------------------------------*/
 /**

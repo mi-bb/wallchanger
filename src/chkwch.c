@@ -62,15 +62,15 @@ check_time_align_val (void)
 
     time (&t_now);
     tm_now = localtime (&t_now);
-    #ifdef DEBUG
+#ifdef DEBUG
     printf ("%s\n", asctime (tm_now));
-    #endif
+#endif
     tm_now->tm_hour += 1;
     tm_now->tm_min   = 0;
     tm_now->tm_sec   = 0;
-    #ifdef DEBUG
+#ifdef DEBUG
     printf ("%s\n", asctime (tm_now));
-    #endif
+#endif
     t_later = mktime (tm_now);
     return (uint32_t) difftime (t_later, t_now);
 }

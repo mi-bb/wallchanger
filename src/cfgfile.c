@@ -30,28 +30,7 @@
 #include "fdfn.h"
 #include "rwdt.h"
 #include "cfgfile.h"
-/*----------------------------------------------------------------------------*/
-/**
- * @def   PATH_AUTOSTART_DATA
- * @brief Path for autostart file template in application data directory.
- *
- * @def   PATH_AUTOSTART_HOME
- * @brief Path for user's autostart desktop file for whcnagerd.
- *
- * @def   PATH_WMINFO_DATA
- * @brief Path for window manager info file in application data directory.
- *
- * @def   PATH_WMINFO_HOME
- * @brief Path for user's config file with window manager info.
- *
- * @def   PATH_APP_SHARE
- * @brief Path for application directory in system's data directory.
- */
-#define PATH_AUTOSTART_DATA "/wchangerd.autostart"
-#define PATH_AUTOSTART_HOME "/autostart/wchangerd.desktop"
-#define PATH_WMINFO_DATA    "/wms.json"
-#define PATH_WMINFO_HOME    "/wchanger/wms.json"
-#define PATH_APP_SHARE      "/wchanger"
+#include "defs.h"
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Look for config file in paths from list.
@@ -249,6 +228,20 @@ cfgfile_get_wm_info_data_path (int *i_err)
         return NULL;
 
     str_append (&s_path, PATH_WMINFO_DATA);
+
+    return s_path;
+}
+/*----------------------------------------------------------------------------*/
+/**
+ * @brief  Get path for saving downloaded wallpapers
+ */
+char *
+cfgfile_get_app_wallpaper_path (void)
+{
+    char *s_path = NULL; /* Config file path */
+
+    s_path = dir_get_home_data ();
+    str_append (&s_path, PATH_WALLPAPERS);
 
     return s_path;
 }

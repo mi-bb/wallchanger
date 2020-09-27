@@ -43,6 +43,14 @@ int    dir_check_permissions (const char *s_file)
        __attribute__ ((nonnull (1)));
 /*----------------------------------------------------------------------------*/
 /**
+ * @brief  Create directory with subfolders if it doesn't exist.
+ *
+ * @param[in] s_dn  Directory path
+ * @return    Process result
+ */
+int    dir_create_with_subdirs (const char *s_dn);
+/*----------------------------------------------------------------------------*/
+/**
  * @brief  Create file with subfolders if it doesn't exist.
  *
  * @param[in] s_fn  File path
@@ -58,6 +66,28 @@ int    file_create_with_subdirs (const char *s_fn)
  *          free.
  */
 char * dir_get_home_config (void);
+/*----------------------------------------------------------------------------*/
+/**
+ * @brief  Get temp dir path.
+ *
+ * @return  String with temp path, after use it thould be freed using free.
+ */
+char * dir_get_temp (void);
+/*----------------------------------------------------------------------------*/
+/**
+ * @brief  Get user's cache dir path.
+ *
+ * @return  String with cache path, after use it thould be freed using free.
+ */
+char * dir_get_cache (void);
+/*----------------------------------------------------------------------------*/
+/**
+ * @brief  Get user's home data dir.
+ *
+ * @return  String with user's home data path, after use it thould be freed
+ *          using free.
+ */
+char * dir_get_home_data (void);
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Get system data dir path.

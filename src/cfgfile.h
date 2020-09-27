@@ -61,6 +61,14 @@ char * cfgfile_get_autostart_home_path (void);
 char * cfgfile_get_wm_info_home_path   (void);
 /*----------------------------------------------------------------------------*/
 /**
+ * @brief  Get path for saving downloaded wallpapers
+ *
+ * @return String with wallpaper save path.
+ *         After use it should be freed using free.
+ */
+char * cfgfile_get_app_wallpaper_path (void);
+/*----------------------------------------------------------------------------*/
+/**
  * @brief  Get path for default config file with window manager info.
  *
  * @param[out] i_err  Error output

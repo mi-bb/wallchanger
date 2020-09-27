@@ -16,7 +16,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 AC_PREREQ([2.69])
-AC_INIT([wallchanger], [1.5.5], [michal.babik@pm.me], [wallchanger],\
+AC_INIT([wallchanger], [1.6.0], [michal.babik@pm.me], [wallchanger],\
         [https://www.nongnu.org/wallchanger/])
 AM_INIT_AUTOMAKE
 AC_CONFIG_SRCDIR([src/setting.c])
@@ -33,6 +33,7 @@ AC_CHECK_LIB([procstat], [procstat_getprocs], [], [], [])
 # Checks for libraries.
 PKG_CHECK_MODULES([GTK],  [gtk+-3.0 >= [3.22.0]])
 PKG_CHECK_MODULES([JSON], [json-c >= [0.12.1]])
+PKG_CHECK_MODULES([CURL], [libcurl >= [7.68.0]])
 
 # Check for bash completion and set its directory.
 PKG_CHECK_VAR(bashcompdir, [bash-completion], [completionsdir], ,
@@ -41,7 +42,7 @@ AC_SUBST(bashcompdir)
 
 # Checks for header files.
 AC_CHECK_HEADERS([inttypes.h stddef.h stdint.h stdlib.h string.h unistd.h\
-                  json-c/json.h sys/param.h])
+                  json-c/json.h sys/param.h curl/curl.h])
 
 # Checks for typedefs, structures, and compiler characteristics.
 AC_C_INLINE

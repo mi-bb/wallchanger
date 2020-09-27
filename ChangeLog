@@ -13,6 +13,41 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+2020-09-27  Michal Babik  <michal.babik@pm.me>
+
+	* cfgfile.c: New define of app wallpaper path PATH_WALLPAPERS.
+	  (cfgfile_get_app_wallpaper_path): Function for getting app wallpaper
+	* defs.h: DEFAULT_WEB_DLG_WIDTH, DEFAULT_WEB_DLG_HEIGHT default value for
+	  wallpaper search dialog dimensions.
+	* dirlist.c (get_directory_filtered_content_glist): Changed adding
+	  items to list from append to prepend-reverse.
+	* dlgs.c (add_images_from_web_dilaog): Dialog for getting wallpapers
+	  from web.
+	  (about_app_dialog): Added parent dialog setting.
+	* dlgsmsg.c, dlgsmsg.h: Message dialog moved here from dlgs.c, dlgs.h
+	* fsfn.c, fdfn.h (dir_get_temp): New function for getting temp dir.
+	  (dir_get_cache): Function for getting user's cache dir.
+	  (dir_get_home_data): Function for getting user's home data dir.
+	  (dir_create_with_subdirs): Function for creating dir with
+	  subdirectories.
+	* imgs.c, imgs.h: Added icon for web page image search.
+	* randomm.c, randomm.h (randomm_new_with_range): New function for creating
+	  new randmem item with given range.
+	* searchitem.c, searchitem.h: New file with SearchItem structiure and
+	  functions for storing wallpaper web search results.
+	* setts.c, setts.h (get_setting_name, setts_check_defaults,
+	  setts_update_pexels_api, setts_update_web_dlg_size): Added handling of
+	  web search dialog dimensions and Pexels API key.
+	* treev.c (create_tview): Added column with image location.
+	* urldata.c, urldata.h: New file with structure and functions for handling
+	  data download using curl.
+	* wchanger.c (event_add_img_web_pressed): Running web wallpaper search
+	  dialog.
+	  (create_buttons_widget): Added button for web wallpaper search, changed
+	  about app dialog call.
+	* webwidget.c, webwidget.h: New file with structure and functions for
+	  wallpaper web search.
+
 2020-08-26  Michal Babik  <michal.babik@pm.me>
 
 	* chkwch.c (check_settings_change_wallpaper): Removed call to randomm_init

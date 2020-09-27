@@ -111,6 +111,18 @@ get_setting_name (const int i_val)
             s_res = "Backgrounds";
             break;
 
+        case SETTING_WEB_DLG_WIDTH:
+            s_res = "Web dilaog width";
+            break;
+
+        case SETTING_WEB_DLG_HEIGHT:
+            s_res = "Web dilaog height";
+            break;
+
+        case SETTING_PEXELS_API:
+            s_res = "Pexels api";
+            break;
+
         default:
             break;
     }
@@ -145,43 +157,43 @@ setts_check_setting (Setting     *st_settings,
     s_name = get_setting_name (sd_data->setting_id);
 
     if ((st_sett = setting_find_child (st_settings, s_name)) == NULL) {
-        #ifdef DEBUG
+#ifdef DEBUG
         printf ("%s", s_name);
         printf (" not present, setting default ");
-        #endif
+#endif
         if (sd_data->setting_type == SET_VAL_INT) {
-            #ifdef DEBUG
+#ifdef DEBUG
             printf ("%" PRId64 "\n", sd_data->default_int);
-            #endif
+#endif
             setting_add_child (st_settings,
                     setting_new_int (s_name, sd_data->default_int));
         }
         else if (sd_data->setting_type == SET_VAL_DOUBLE) {
-            #ifdef DEBUG
+#ifdef DEBUG
             printf ("%f\n", sd_data->default_double);
-            #endif
+#endif
             setting_add_child (st_settings,
                     setting_new_double (s_name, sd_data->default_double));
         }
         else if (sd_data->setting_type == SET_VAL_STRING) {
-            #ifdef DEBUG
+#ifdef DEBUG
             printf ("%s\n", sd_data->default_string);
-            #endif
+#endif
             setting_add_child (st_settings,
                     setting_new_string (s_name, sd_data->default_string));
         }
         else if (sd_data->setting_type == SET_VAL_ARRAY) {
-            #ifdef DEBUG
+#ifdef DEBUG
             printf ("\n");
-            #endif
+#endif
             setting_add_child (st_settings, setting_new_array (s_name));
         }
     }
     else {
-        #ifdef DEBUG
+#ifdef DEBUG
         printf ("%s", s_name);
         printf (" OK\n");
-        #endif
+#endif
     }
 }
 /*----------------------------------------------------------------------------*/
@@ -203,6 +215,9 @@ setts_check_defaults (Setting *st_settings)
         {SETTING_INTERVAL_VAL,   SET_VAL_INT,    DEFAULT_INTERVAL_VAL, 0, ""},
         {SETTING_BG_CMD,         SET_VAL_STRING, 0, 0, DEFAULT_BG_CMD},
         {SETTING_WALL_ARRAY,     SET_VAL_ARRAY,  0, 0, ""},
+        {SETTING_WEB_DLG_WIDTH,  SET_VAL_INT,    DEFAULT_WEB_DLG_WIDTH, 0, ""},
+        {SETTING_WEB_DLG_HEIGHT, SET_VAL_INT,    DEFAULT_WEB_DLG_HEIGHT, 0, ""},
+        {SETTING_PEXELS_API,     SET_VAL_STRING, 0, 0, ""},
         {-1, 0, 0, 0, ""}
     };
 
@@ -248,6 +263,24 @@ setts_update_last_used_wm (const char *s_cfg_file,
 }
 /*----------------------------------------------------------------------------*/
 /**
+ * @brief  Update Pexels API number
+ */
+int
+setts_update_pexels_api (const char *s_cfg_file,
+                         const char *s_pexels_api)
+{
+    Setting  *st_settings;
+    int       i_res = ERR_OK;
+
+    st_settings = setting_new_string (get_setting_name (SETTING_PEXELS_API),
+                                      s_pexels_api);
+
+    i_res = js_settings_check_update_file (st_settings, s_cfg_file);
+    settings_free_all (st_settings);
+    return i_res;
+}
+/*----------------------------------------------------------------------------*/
+/**
  * @brief  Update window size in config file. 
  */
 int
@@ -263,6 +296,29 @@ setts_update_window_size (const char *s_cfg_file,
 
     settings_append (st_settings,
                      setting_new_int (get_setting_name (SETTING_WIN_HEIGHT),
+                                      (int64_t) i_h));
+
+    i_res = js_settings_check_update_file (st_settings, s_cfg_file);
+    settings_free_all (st_settings);
+    return i_res;
+}
+/*----------------------------------------------------------------------------*/
+/**
+ * @brief  Update wallpaper from web dialog size in config file.
+ */
+int
+setts_update_web_dlg_size (const char *s_cfg_file,
+                           const int   i_w,
+                           const int   i_h)
+{
+    Setting  *st_settings;
+    int       i_res = ERR_OK;
+
+    st_settings = setting_new_int (get_setting_name (SETTING_WEB_DLG_WIDTH),
+                                (int64_t) i_w);
+
+    settings_append (st_settings,
+                     setting_new_int (get_setting_name (SETTING_WEB_DLG_HEIGHT),
                                       (int64_t) i_h));
 
     i_res = js_settings_check_update_file (st_settings, s_cfg_file);

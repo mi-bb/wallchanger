@@ -19,9 +19,9 @@
  *
  * Automatic wallpaper changer
  *
- * @date August 26, 2020
+ * @date September 27, 2020
  *
- * @version 1.5.5
+ * @version 1.6.0
  *
  * @author Michal Babik <michal.babik@pm.me>
  */
@@ -33,6 +33,7 @@
 #include "wpset.h"
 #include "imgs.h"
 #include "dlgs.h"
+#include "dlgsmsg.h"
 #include "treev.h"
 #include "dirlist.h"
 #include "preview.h"
@@ -555,6 +556,23 @@ event_add_img_dir_pressed (const DialogData *dd_data)
 }
 /*----------------------------------------------------------------------------*/
 /**
+ * @brief  "Add images from web" button pressed.
+ *
+ * @param[in,out] dd_data  DialogData object with settings and widget data
+ * @return        none
+ */
+static void
+event_add_img_web_pressed (const DialogData *dd_data)
+{
+    GList *gl_list = NULL; /* List with wallpapers to add */
+
+    gl_list = add_images_from_web_dilaog (dd_data->gw_window,
+                                          dd_data->s_cfg_file);
+    treeview_add_items_glist (dd_data->gw_view, gl_list);
+    g_list_free_full (gl_list, (GDestroyNotify) free);
+}
+/*----------------------------------------------------------------------------*/
+/**
  * @brief  "Set wallpaper" button pressed.
  */
 static void
@@ -597,7 +615,7 @@ static void
 event_save_settings_pressed (const DialogData *dd_data)
 {
     Setting *st_settings; /* List of settings */
-    int       i_err = 0;  /* Error value */
+    int      i_err = 0;   /* Error value */
 
     st_settings = widgets_get_settings (dd_data);
     i_err = setts_check_update_file (dialogdata_get_cfg_file (dd_data),
@@ -915,7 +933,17 @@ create_buttons_widget (GtkWidget  **gw_widget,
     gtk_box_pack_start (GTK_BOX (*gw_widget),
                         gw_button,
                         FALSE, FALSE, 4);
-    gw_button = create_image_button (NULL, "Remove images", W_ICON_REMOVE);
+    gw_button = create_image_button (NULL, "Add wallpapers from web",
+                                     W_ICON_ADD_WEB);
+    g_signal_connect_swapped (gw_button,
+                              "clicked",
+                              G_CALLBACK (event_add_img_web_pressed),
+                              dd_data);
+    gtk_box_pack_start (GTK_BOX (*gw_widget),
+                        gw_button,
+                        FALSE, FALSE, 4);
+    gw_button = create_image_button (NULL, "Remove selected images",
+                                     W_ICON_REMOVE);
     gtk_box_pack_start (GTK_BOX (*gw_widget),
                         gw_button,
                         FALSE, FALSE, 4);
@@ -969,7 +997,8 @@ create_buttons_widget (GtkWidget  **gw_widget,
                         FALSE, FALSE, 4);
     g_signal_connect_swapped (gw_button,
                               "clicked",
-                              G_CALLBACK (about_app_dialog), NULL);
+                              G_CALLBACK (about_app_dialog),
+                              GTK_WINDOW (dd_data->gw_window));
     gw_button = create_image_button (NULL, "Exit configuration dialog",
                                      W_ICON_EXIT);
     g_signal_connect_swapped (gw_button,

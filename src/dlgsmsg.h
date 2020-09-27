@@ -1,5 +1,5 @@
 /**
- * @file  errs.h
+ * @file  dlgsmsg.h
  * @copyright Copyright (C) 2019-2020 Michał Bąbik
  *
  * This file is part of Wall Changer.
@@ -17,34 +17,39 @@
  * You should have received a copy of the GNU General Public License
  * along with Wall Changer.  If not, see <https://www.gnu.org/licenses/>.
  *
- * @brief  Error info
+ * @brief  Message dialogs
  *
  * @author Michal Babik <michal.babik@pm.me>
  */
-#ifndef ERRS_H
-#define ERRS_H
+#ifndef DLGSMSG_H
+#define DLGSMSG_H
+
+#include <gtk/gtk.h>
 /*----------------------------------------------------------------------------*/
 /**
- * @brief  My error values.
- */
-enum e_error_values {
-    ERR_OK = 0,  /**< OK */
-    ERR_FILE,    /**< File error (cannot access / bad permissions) */
-    ERR_FILE_RW, /**< File read / write error */
-    ERR_FILE_CR, /**< File can not be created */
-    ERR_FILE_RM, /**< File can not be removed */
-    ERR_FILE_EX, /**< File does not exist */
-    ERR_ALLOC,   /**< Alloc error */
-    ERR_TYPE,    /**< Wrong type */
-    ERR_CFG_NOF  /**< No config file found */
-};
-/*----------------------------------------------------------------------------*/
-/**
- * @brief  Function returns string with error message.
+ * @brief  Error message dialog.
  *
- * @param[in]  i_err   Error number
- * @return     String with message
+ * @param[in] gw_parent  Dialog parent widget
+ * @param[in] s_message  Message to show
+ * @return    none
  */
-const char * err_get_message (const int i_err) __attribute__ ((const));
 /*----------------------------------------------------------------------------*/
+void     message_dialog_error     (GtkWindow    *gw_parent,
+                                   const char   *s_message)
+         __attribute__ ((nonnull (2)));
+/*----------------------------------------------------------------------------*/
+/**
+ * @brief  Warning message dialog.
+ *
+ * @param[in] gw_parent  Dialog parent widget
+ * @param[in] s_message  Message to show
+ * @return    none
+ */
+/*----------------------------------------------------------------------------*/
+void     message_dialog_warning     (GtkWindow    *gw_parent,
+                                     const char   *s_message)
+         __attribute__ ((nonnull (2)));
+/*----------------------------------------------------------------------------*/
+
 #endif
+

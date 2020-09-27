@@ -29,22 +29,22 @@
 /**
  * @brief  Check if number is in random numbers memory
  *
- * @param[out] rmm  RandMem object
- * @param[in]  i_no    Number to check
+ * @param[out] rmm    RandMem object
+ * @param[in]  ui_no  Number to check
  * @return     1 if it is, 0 if it is not
  */
 static int8_t randomm_check_number (RandMem *rmm,
-                                    size_t  ui_no);
+                                    size_t   ui_no);
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Store number in random numbers memory
  *
  * @param[out] rm_mem  RandMem object
- * @param[in]  i_no    Number to check
+ * @param[in]  ui_no   Number to check
  * @return     none
  */
 static void randomm_set_number (RandMem *rm_mem,
-                                size_t  ui_no);
+                                size_t   ui_no);
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Initialize random memory object.
@@ -116,6 +116,9 @@ randomm_reset (RandMem *rm_mem)
         rm_mem->randm[i] = 0;
 }
 /*----------------------------------------------------------------------------*/
+/**
+ * @brief  Set random numbers maximum range.
+ */
 void
 randomm_set_range (RandMem *rm_mem,
                    size_t   ui_rng) {
@@ -149,6 +152,19 @@ randomm_new (void)
         err (EXIT_FAILURE, NULL);
 
     randomm_init (rm_mem);
+
+    return rm_mem;
+}
+/*----------------------------------------------------------------------------*/
+/**
+ * @brief  Create new RandMem item with given range.
+ */
+RandMem *
+randomm_new_with_range (size_t ui_range)
+{
+    RandMem *rm_mem = randomm_new ();
+
+    randomm_set_range (rm_mem, ui_range);
 
     return rm_mem;
 }

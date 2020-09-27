@@ -32,6 +32,9 @@
 #include "wmsfn.h"
 #include "wpset.h"
 #include "strfun.h"
+#include "urldata.h"
+#include "dlgsmsg.h"
+#include "webwidget.h"
 #include "dlgs.h"
 /*----------------------------------------------------------------------------*/
 /**
@@ -40,13 +43,19 @@
  */
 #define PREV_LEN 47
 /*----------------------------------------------------------------------------*/
-enum {
+/**
+ * @brief  Columns for combobox with window manager list.
+ */
+enum e_wm_columns {
     WM_COLUMN_NAME,    /**< Combobox ListStore column for window manager name */
     WM_COLUMN_COMMAND, /**< Combobox ListStore column for wallp set command */
     WM_COLUMN_COUNT    /**< Column count */
 };
 /*----------------------------------------------------------------------------*/
-enum {
+/**
+ * @brief  Columns for combobox with preview wallpapers.
+ */
+enum e_preview_columns {
     PREV_NAME_SHOW,   /**< Combobox ListStore column for shown name */
     PREV_NAME_FULL,   /**< Combobox ListStore column for full file path */
     PREV_COLUMN_COUNT /**< Column count */
@@ -751,6 +760,116 @@ cmddialog_run (GtkWindow    *gw_parent,
 }
 /*----------------------------------------------------------------------------*/
 /**
+ * @brief  Run dialog for getting wallpapers from web
+ */
+GList *
+add_images_from_web_dilaog (GtkWindow  *gw_parent,
+                            const char *s_cfg_file)
+{
+    GtkWidget *gw_dialog;       /* Wallpaper from web dialog */
+    GtkWidget *gw_content_box;  /* Dialog's box */
+    GtkWidget *gw_scrlw;        /* Scrolled window for icon view */
+    WebWidget *ww_widget;       /* WebWidget with widgets and data*/
+    GList     *gl_res   = NULL; /* Result list with wallpapers */
+    Setting   *st_setts = NULL; /* For settings */
+    Setting   *st_st    = NULL; /* For particular setting */
+    int        i_err    = 0;    /* Error output */
+    int        i_w      = 0;    /* Dialog width */
+    int        i_h      = 0;    /* Dialog height */
+
+    GtkDialogFlags flags = GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT;
+
+    /* Get settings for dialog dimensions and info for webwidget */
+    st_setts = setts_read (s_cfg_file, &i_err);
+    setts_check_defaults (st_setts);
+    /* Get dialog width */
+    st_st = setting_find_child (st_setts,
+                                get_setting_name (SETTING_WEB_DLG_WIDTH));
+    if (st_st != NULL) {
+        i_w = (int) setting_get_int (st_st);
+    }
+    /* Get dialog height */
+    st_st = setting_find_child (st_setts,
+                                get_setting_name (SETTING_WEB_DLG_HEIGHT));
+    if (st_st != NULL) {
+        i_h = (int) setting_get_int (st_st);
+    }
+    /* Web widget */
+    ww_widget = webwidget_create (st_setts, s_cfg_file);
+
+    settings_free_all (st_setts);
+
+    /* Main dialog window */
+    gw_dialog = gtk_dialog_new_with_buttons (
+                                      "Get wallpapers from web",
+                                      gw_parent,
+                                      flags,
+                                      "_OK",
+                                      GTK_RESPONSE_ACCEPT,
+                                      "_Cancel",
+                                      GTK_RESPONSE_REJECT,
+                                      NULL);
+    gtk_window_set_default_size (GTK_WINDOW (gw_dialog), i_w, i_h);
+
+    gw_content_box = gtk_dialog_get_content_area (GTK_DIALOG (gw_dialog));
+    gtk_container_set_border_width (GTK_CONTAINER (gw_content_box), 8);
+
+    /* Scrolled window for wallpeper icon view */
+    gw_scrlw = gtk_scrolled_window_new (
+        gtk_scrollable_get_hadjustment (GTK_SCROLLABLE (ww_widget->img_view)),
+        gtk_scrollable_get_vadjustment (GTK_SCROLLABLE (ww_widget->img_view)));
+
+    gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (gw_scrlw),
+                                    GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
+
+    gtk_container_add (GTK_CONTAINER (gw_scrlw), ww_widget->img_view);
+
+    /* Packing dialog widgets */
+    gtk_box_pack_start (GTK_BOX (gw_content_box),
+                        gtk_label_new ("Wallpaper search query: "),
+                        FALSE, FALSE, 4);
+    gtk_box_pack_start (GTK_BOX (gw_content_box),
+                        ww_widget->search_box,
+                        FALSE, FALSE, 4);
+    gtk_box_pack_start (GTK_BOX (gw_content_box),
+                        gtk_separator_new (GTK_ORIENTATION_HORIZONTAL),
+                        FALSE, FALSE, 4);
+    gtk_box_pack_start (GTK_BOX (gw_content_box),
+                        gw_scrlw,
+                        TRUE, TRUE, 4);
+    gtk_box_pack_start (GTK_BOX (gw_content_box),
+                        gtk_separator_new (GTK_ORIENTATION_HORIZONTAL),
+                        FALSE, FALSE, 4);
+    gtk_box_pack_start (GTK_BOX (gw_content_box),
+                        ww_widget->count_label,
+                        FALSE, FALSE, 4);
+    gtk_box_pack_start (GTK_BOX (gw_content_box),
+                        gtk_separator_new (GTK_ORIENTATION_HORIZONTAL),
+                        FALSE, FALSE, 4);
+    gtk_box_pack_start (GTK_BOX (gw_content_box),
+                        ww_widget->nav_box,
+                        FALSE, FALSE, 4);
+    gtk_box_pack_start (GTK_BOX (gw_content_box),
+                        gtk_separator_new (GTK_ORIENTATION_HORIZONTAL),
+                        FALSE, FALSE, 4);
+    gtk_box_pack_start (GTK_BOX (gw_content_box),
+                        ww_widget->selected_box,
+                        FALSE, FALSE, 4);
+
+    gtk_widget_show_all (gw_content_box);
+
+    if (gtk_dialog_run (GTK_DIALOG (gw_dialog)) == GTK_RESPONSE_ACCEPT) {
+        gl_res = save_selected_wallpapers (gw_dialog, ww_widget);
+    }
+    gtk_window_get_size (GTK_WINDOW (gw_dialog), &i_w, &i_h);
+    setts_update_web_dlg_size (s_cfg_file, i_w, i_h);
+
+    webwidget_free (ww_widget);
+    gtk_widget_destroy (gw_dialog);
+    return gl_res;
+}
+/*----------------------------------------------------------------------------*/
+/**
  * @brief  Select folder dialog.
  */
 char *
@@ -809,28 +928,10 @@ add_images_dialog (GtkWindow *gw_parent)
 }
 /*----------------------------------------------------------------------------*/
 /**
- *  @brief  Error message dialog.
- */
-void
-message_dialog_error (GtkWindow  *gw_parent,
-                      const char *s_message)
-{
-    GtkWidget *gw_dialog;
-
-    gw_dialog = gtk_message_dialog_new (gw_parent,
-                                        GTK_DIALOG_DESTROY_WITH_PARENT,
-                                        GTK_MESSAGE_ERROR,
-                                        GTK_BUTTONS_CLOSE,
-                                        "%s", s_message);
-    gtk_dialog_run (GTK_DIALOG (gw_dialog));
-    gtk_widget_destroy (gw_dialog);
-}
-/*----------------------------------------------------------------------------*/
-/**
  * @brief  Dialog with information about application.
  */
 void
-about_app_dialog (gpointer data __attribute__ ((unused)))
+about_app_dialog (GtkWindow *gw_parent)
 {
     GtkWidget *gw_dialog;
     const char *s_authors[] = {"Michal Babik <michal.babik@protonmail.com> "
@@ -840,6 +941,7 @@ about_app_dialog (gpointer data __attribute__ ((unused)))
         NULL};
 
     gw_dialog = gtk_about_dialog_new ();
+    gtk_window_set_transient_for (GTK_WINDOW (gw_dialog), gw_parent);
 
     gtk_about_dialog_set_version (GTK_ABOUT_DIALOG (gw_dialog), APP_VER);
 

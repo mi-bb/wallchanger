@@ -29,7 +29,7 @@
 /**
  * @brief  Settings enum values
  */
-enum {
+enum e_setting_values {
     SETTING_BG_CMD = 0,     /**< Wallpaper set command */
     SETTING_LAST_USED_OPT,  /**< Select last used on start */
     SETTING_LAST_USED_STR,  /**< Last used wallpaper path */
@@ -39,7 +39,10 @@ enum {
     SETTING_RANDOM_OPT,     /**< Random wallpaper select */
     SETTING_INTERVAL_VAL,   /**< Wallpaper change interval */
     SETTING_TIME_ALIGN_OPT, /**< Time align */
-    SETTING_WALL_ARRAY      /**< Array with wallpapers */
+    SETTING_WALL_ARRAY,     /**< Array with wallpapers */
+    SETTING_WEB_DLG_WIDTH,  /**< Web dilaog width */
+    SETTING_WEB_DLG_HEIGHT, /**< Web dilaog height */
+    SETTING_PEXELS_API      /**< Random wallpaper select */
 };
 /*----------------------------------------------------------------------------*/
 /**
@@ -77,7 +80,7 @@ Setting *    setts_read           (const char *s_cfg_file,
  *
  * @param[in] s_cfg_file   Config file path
  * @param[in] s_last_used  Last used file path
- * @return    Updating data in settings file status
+ * @return    Status of data update
  *
  * @fn  int setts_update_last_used_wm (const char *s_cfg_file,
  *                                     const int   i_last_used_wm)
@@ -86,7 +89,7 @@ Setting *    setts_read           (const char *s_cfg_file,
  *
  * @param[in] s_cfg_file      Config file path
  * @param[in] i_last_used_wm  Last used window manager
- * @return    Updating data in settings file status
+ * @return    Status of data update
  *
  * @fn  int setts_update_window_size (const char *s_cfg_file,
  *                                    const int   i_w,
@@ -97,7 +100,18 @@ Setting *    setts_read           (const char *s_cfg_file,
  * @param[in] s_cfg_file  Config file path
  * @param[in] i_w         Window width value
  * @param[in] i_h         Window height value
- * @return    Updating data in settings file status
+ * @return    Status of data update
+ *
+ * @fn  int setts_update_web_dlg_size(const char *s_cfg_file,
+ *                                    const int   i_w,
+ *                                    const int   i_h)
+ *
+ * @brief  Update wallpaper from web dialog size in config file.
+ *
+ * @param[in] s_cfg_file  Config file path
+ * @param[in] i_w         Window width value
+ * @param[in] i_h         Window height value
+ * @return    Status of data update
  */
 /*----------------------------------------------------------------------------*/
 int setts_update_last_used    (const char *s_cfg_file,
@@ -106,7 +120,14 @@ int setts_update_last_used    (const char *s_cfg_file,
 int setts_update_last_used_wm (const char *s_cfg_file,
                                const char *s_last_used_wm);
 
+int setts_update_pexels_api (const char *s_cfg_file,
+                             const char *s_pexels_api);
+
 int setts_update_window_size  (const char *s_cfg_file,
+                               const int   i_w,
+                               const int   i_h);
+
+int setts_update_web_dlg_size (const char *s_cfg_file,
                                const int   i_w,
                                const int   i_h);
 /*----------------------------------------------------------------------------*/
