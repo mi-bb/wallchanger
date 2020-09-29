@@ -96,6 +96,9 @@ event_stop_button_pressed (int *i_stop)
 /**
  * @brief  Prepare file name from directory path and Pexels photo url.
  *
+ * Function combines path where file should be saved with its prepared name.
+ * After that it appends extension got from original download url.
+ *
  * @param[in] s_dir   Directory for file write
  * @param[in] si_item SearchItem with url
  * @result    File path
@@ -126,24 +129,26 @@ static GList *
 download_progress_window (GtkWindow *gw_parent,
                           GList     *gl_item_list)
 {
-    GtkWidget  *gw_window;
-    GtkWidget  *gw_label;
-    GtkWidget  *gw_progress;
-    GtkWidget  *gw_box_main;
-    GtkWidget  *gw_stop_button;
-    SearchItem *si_item;
-    GList      *gl_item  = NULL;
-    GList      *gl_res   = NULL;
+    GtkWidget  *gw_window;       /* Progress window widget */
+    GtkWidget  *gw_label;        /* Label for file name */
+    GtkWidget  *gw_progress;     /* Progress bar */
+    GtkWidget  *gw_box_main;     /* Box for window widgets */
+    GtkWidget  *gw_stop_button;  /* Stop downloading button */
+    SearchItem *si_item;         /* For images from list */
+    GList      *gl_item  = NULL; /* Pointer to list */
+    GList      *gl_res   = NULL; /* Result list with downloaded files */
     const char *s_format = "<span style=\"italic\">%s</span>";
-    char       *s_markup = NULL;
-    char       *s_wpdir  = NULL;
-    char       *s_fn     = NULL;
-    char       *s_err    = NULL;
-    float       f_step   = 0;
-    float       f_frac   = 0;
-    int         i_stop   = 0;
-    int         i_perm   = 0;
+    char       *s_markup = NULL; /* For label's markup */
+    char       *s_wpdir  = NULL; /* Path to wallpaper directory */
+    char       *s_fn     = NULL; /* File path for wallpaper save */
+    char       *s_err    = NULL; /* Error output */
+    float       f_step   = 0;    /* Progress bar step */
+    float       f_frac   = 0;    /* Fraction for progress bar to set */
+    int         i_stop   = 0;    /* To set when stop button is pressed */
+    int         i_perm   = 0;    /* For checking save dir permissions */
 
+    /* Getting wallpaper save path and checking it's permissions, creating if
+     * it doesn't exist */
     s_wpdir = cfgfile_get_app_wallpaper_path ();
     i_perm  = dir_check_permissions (s_wpdir);
 
@@ -154,10 +159,11 @@ download_progress_window (GtkWindow *gw_parent,
         return NULL;
     }
 
+    /* Setting progress step and making a pointer to list */
     f_step  = (float) 1.0 / (float) g_list_length (gl_item_list);
-    f_frac  = 0;
     gl_item = gl_item_list;
 
+    /* Creating progress window with widgets */
     gw_window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
 
     gtk_window_set_transient_for (GTK_WINDOW (gw_window), gw_parent);
@@ -194,6 +200,7 @@ download_progress_window (GtkWindow *gw_parent,
     gtk_container_add (GTK_CONTAINER (gw_window), gw_box_main);
     gtk_widget_show_all (gw_window);
 
+    /* Processing list of wallpapers to download */
     while (gl_item != NULL) {
         if (i_stop == 1)
             break;
@@ -352,7 +359,6 @@ combo_set_active_str (GtkWidget  *gw_combo,
         gls_slstore = GTK_LIST_STORE (gtk_combo_box_get_model (
                     GTK_COMBO_BOX (gw_combo)));
 
-        gtk_list_store_append (gls_slstore, &gti_iter);
         gtk_list_store_set (gls_slstore, &gti_iter, i_col, s_val, -1);
     }
 }
@@ -467,7 +473,7 @@ pexels_settings_dialog (const char *s_cfg_file)
 
     if (i_res == GTK_RESPONSE_ACCEPT) {
         const char *s_api = gtk_entry_get_text (GTK_ENTRY (gw_api_entry));
-        
+
         if ((i_err = setts_update_pexels_api (s_cfg_file, s_api)) == ERR_OK) {
             s_result = strdup (s_api);
         }
@@ -617,9 +623,9 @@ pexels_json_to_webwidget (const char *s_buff,
         if (json_object_object_get_ex (j_obj, "total_results", &j_val) &&
             json_object_get_type (j_val) == json_type_int) {
 
-            ww_widget->found_cnt = json_object_get_int (j_val);
+            ww_widget->i_found_cnt = json_object_get_int (j_val);
 #ifdef DEBUG
-            printf ("found images : %d\n", ww_widget->found_cnt);
+            printf ("found images : %d\n", ww_widget->i_found_cnt);
 #endif
         }
         if (json_object_object_get_ex (j_obj, "photos", &j_arr) &&
@@ -627,13 +633,13 @@ pexels_json_to_webwidget (const char *s_buff,
 
             ui_cnt = json_object_array_length (j_arr);
 
-            if (ui_cnt > (size_t) ww_widget->per_page)
-                ui_cnt = (size_t) ww_widget->per_page;
+            if (ui_cnt > (size_t) ww_widget->i_per_page)
+                ui_cnt = (size_t) ww_widget->i_per_page;
 
             for (i = 0; i < ui_cnt; ++i) {
                 if ((j_val = json_object_array_get_idx (j_arr, i)) != NULL) {
                     si_item = pexels_json_obj_to_searchitem (j_val);
-                    add_searchitem_to_img_view (ww_widget->img_view, si_item);
+                    add_searchitem_to_img_view (ww_widget->gw_img_view, si_item);
                     searchitem_free (si_item);
                 }
             }
@@ -654,22 +660,22 @@ pexels_search (WebWidget *ww_widget)
     UrlData *ud_data;
     char    *s_api = NULL;
 
-    s_api = combo_get_active_str (ww_widget->combo, WW_COMBO_STR_1);
+    s_api = combo_get_active_str (ww_widget->gw_combo, WW_COMBO_STR_1);
 
     if (s_api == NULL || s_api[0] == '\0') {
         message_dialog_warning (NULL, "Pexels API key is not set");
         return;
     }
-    ud_data = urldata_search_pexels (ww_widget->query,
+    ud_data = urldata_search_pexels (ww_widget->s_query,
                                      s_api,
-                                     ww_widget->page,
-                                     ww_widget->per_page);
+                                     ww_widget->i_page,
+                                     ww_widget->i_per_page);
     if (ud_data->errbuf != NULL) {
         message_dialog_error (NULL, ud_data->errbuf);
     }
     else if (urldata_full (ud_data)) {
         gtk_list_store_clear (GTK_LIST_STORE (gtk_icon_view_get_model (
-                        GTK_ICON_VIEW (ww_widget->img_view))));
+                        GTK_ICON_VIEW (ww_widget->gw_img_view))));
         pexels_json_to_webwidget (ud_data->buffer, ww_widget);
     }
     urldata_free (ud_data);
@@ -690,12 +696,13 @@ update_labels (WebWidget *ww_widget)
     char        s_entry[128];
 
     s_markup = g_markup_printf_escaped (s_format_count,
-                                        ww_widget->query, ww_widget->found_cnt);
-    gtk_label_set_markup (GTK_LABEL (ww_widget->count_label), s_markup);
+                                        ww_widget->s_query,
+                                        ww_widget->i_found_cnt);
+    gtk_label_set_markup (GTK_LABEL (ww_widget->gw_count_label), s_markup);
     g_free (s_markup);
 
-    snprintf (s_entry, 128, "%d", ww_widget->page);
-    gtk_entry_set_text (GTK_ENTRY (ww_widget->nav_entry), s_entry);
+    snprintf (s_entry, 128, "%d", ww_widget->i_page);
+    gtk_entry_set_text (GTK_ENTRY (ww_widget->gw_nav_entry), s_entry);
 }
 /*----------------------------------------------------------------------------*/
 /**
@@ -716,7 +723,7 @@ sel_combo_check_exist (GtkTreeModel *gtm_model,
     b_res = gtk_tree_model_get_iter_first (gtm_model, &gti_iter);
 
     while (b_res) {
-    
+
         gtk_tree_model_get (gtm_model, &gti_iter,
                             WW_SELCOMBO_ID, &i_read_id,
                             -1);
@@ -752,9 +759,9 @@ sel_combo_get_list (GtkWidget *gw_selected_combo)
 
         si_item = searchitem_new ();
         gtk_tree_model_get (gtm_model, &gti_iter,
-                            WW_SELCOMBO_NAME, &si_item->name,
-                            WW_SELCOMBO_URL, &si_item->url,
-                            WW_SELCOMBO_WIDTH, &si_item->width,
+                            WW_SELCOMBO_NAME,   &si_item->name,
+                            WW_SELCOMBO_URL,    &si_item->url,
+                            WW_SELCOMBO_WIDTH,  &si_item->width,
                             WW_SELCOMBO_HEIGHT, &si_item->height,
                             -1);
         gl_res = g_list_prepend (gl_res, si_item);
@@ -772,7 +779,7 @@ sel_combo_get_list (GtkWidget *gw_selected_combo)
 static void
 search_web (WebWidget *ww_widget)
 {
-    int i_id = combo_get_active_int (ww_widget->combo, WW_COMBO_ID);
+    int i_id = combo_get_active_int (ww_widget->gw_combo, WW_COMBO_ID);
     switch (i_id) {
         case WEB_WIDGET_PEXELS:
             pexels_search (ww_widget);
@@ -794,15 +801,15 @@ event_search_pressed (WebWidget *ww_widget)
 {
     const char *s_query = NULL;
 
-    s_query = gtk_entry_get_text (GTK_ENTRY (ww_widget->entry));
+    s_query = gtk_entry_get_text (GTK_ENTRY (ww_widget->gw_entry));
     if (s_query[0] == '\0') {
         message_dialog_warning (NULL, "Empty search query");
         return;
     }
-    if (ww_widget->query != NULL)
-        free (ww_widget->query);
-    ww_widget->query = strdup (s_query);
-    ww_widget->page = 1;
+    if (ww_widget->s_query != NULL)
+        free (ww_widget->s_query);
+    ww_widget->s_query = strdup (s_query);
+    ww_widget->i_page = 1;
     search_web (ww_widget);
 }
 /*----------------------------------------------------------------------------*/
@@ -815,8 +822,8 @@ event_search_pressed (WebWidget *ww_widget)
 static void
 event_next_pressed (WebWidget *ww_widget)
 {
-    if (ww_widget->query != NULL && ww_widget->page < INT_MAX) {
-        ++ww_widget->page;
+    if (ww_widget->s_query != NULL && ww_widget->i_page < INT_MAX) {
+        ++ww_widget->i_page;
         search_web (ww_widget);
     }
 }
@@ -830,8 +837,8 @@ event_next_pressed (WebWidget *ww_widget)
 static void
 event_prev_pressed (WebWidget *ww_widget)
 {
-    if (ww_widget->query != NULL && ww_widget->page > 1) {
-        --ww_widget->page;
+    if (ww_widget->s_query != NULL && ww_widget->i_page > 1) {
+        --ww_widget->i_page;
         search_web (ww_widget);
     }
 }
@@ -849,12 +856,12 @@ event_nav_entry_act (GtkWidget *gw_entry,
 {
     const char    *s_val = NULL; /* String from entry */
     long long int  i_val = 0;    /* Int value of entry string */
-    if (ww_widget->query != NULL) {
+    if (ww_widget->s_query != NULL) {
         s_val = gtk_entry_get_text (GTK_ENTRY (gw_entry));
         i_val = strtoll (s_val, NULL, 10);
         if      (i_val < 1)       i_val = 1;
         else if (i_val > INT_MAX) i_val = INT_MAX;
-        ww_widget->page = (int) i_val;
+        ww_widget->i_page = (int) i_val;
         search_web (ww_widget);
     }
 }
@@ -872,14 +879,15 @@ event_settings_pressed (WebWidget *ww_widget)
     int   i_err = 0;    /* Error output */
     int   i_id  = 0;    /* Service id */
 
-    i_id  = combo_get_active_int (ww_widget->combo, WW_COMBO_ID);
+    i_id  = combo_get_active_int (ww_widget->gw_combo, WW_COMBO_ID);
 
     switch (i_id) {
         case WEB_WIDGET_PEXELS:
-            s_api = pexels_settings_dialog (ww_widget->cfg_file);
+            s_api = pexels_settings_dialog (ww_widget->s_cfg_file);
             if (s_api != NULL) {
-                combo_set_active_str (ww_widget->combo, WW_COMBO_STR_1, s_api);
-                i_err = setts_update_pexels_api (ww_widget->cfg_file, s_api);
+                combo_set_active_str (ww_widget->gw_combo,WW_COMBO_STR_1,
+                                      s_api);
+                i_err = setts_update_pexels_api (ww_widget->s_cfg_file, s_api);
                 if (i_err != ERR_OK) {
                     message_dialog_error (NULL, err_get_message (i_err));
                 }
@@ -919,15 +927,16 @@ event_add_selected_pressed (WebWidget *ww_widget)
     float         f_h         = 0;
 
     gtm_combo_model = gtk_combo_box_get_model (
-            GTK_COMBO_BOX (ww_widget->selected_combo));
+            GTK_COMBO_BOX (ww_widget->gw_selected_combo));
 
     gls_slstore = GTK_LIST_STORE (gtk_combo_box_get_model (
-                GTK_COMBO_BOX (ww_widget->selected_combo)));
+                GTK_COMBO_BOX (ww_widget->gw_selected_combo)));
 
-    gtm_model = gtk_icon_view_get_model (GTK_ICON_VIEW (ww_widget->img_view));
+    gtm_model = gtk_icon_view_get_model (GTK_ICON_VIEW (
+                ww_widget->gw_img_view));
 
     gl_selected = gtk_icon_view_get_selected_items (
-            GTK_ICON_VIEW (ww_widget->img_view));
+            GTK_ICON_VIEW (ww_widget->gw_img_view));
 
     gl_item = gl_selected;
 
@@ -982,9 +991,10 @@ event_add_selected_pressed (WebWidget *ww_widget)
     g_list_free_full (gl_selected, (GDestroyNotify) gtk_tree_path_free);
 
     if (gtk_combo_box_get_active (GTK_COMBO_BOX
-                (ww_widget->selected_combo)) == -1) {
+                (ww_widget->gw_selected_combo)) == -1) {
 
-        gtk_combo_box_set_active (GTK_COMBO_BOX (ww_widget->selected_combo), 0);
+        gtk_combo_box_set_active (GTK_COMBO_BOX (
+                    ww_widget->gw_selected_combo), 0);
     }
 }
 /*----------------------------------------------------------------------------*/
@@ -1124,8 +1134,8 @@ webwidget_imgview_create (void)
 void
 webwidget_free (WebWidget *ww_widget)
 {
-    free (ww_widget->cfg_file);
-    free (ww_widget->query);
+    free (ww_widget->s_cfg_file);
+    free (ww_widget->s_query);
     free (ww_widget);
 }
 /*----------------------------------------------------------------------------*/
@@ -1155,7 +1165,7 @@ webwidget_create (Setting    *st_settings,
     if ((ww_widget = malloc (sizeof (WebWidget))) == NULL)
         err (EXIT_FAILURE, NULL);
 
-    ww_widget->cfg_file = strdup (s_cfg_file);
+    ww_widget->s_cfg_file = strdup (s_cfg_file);
 
     gw_web_combo = webwidget_combobox_create (st_settings);
     gw_img_view  = webwidget_imgview_create ();
@@ -1226,19 +1236,19 @@ webwidget_create (Setting    *st_settings,
     g_signal_connect_swapped (gw_add_sltd_button, "clicked",
             G_CALLBACK (event_add_selected_pressed), ww_widget);
 
-    ww_widget->search_box     = gw_search_box;
-    ww_widget->combo          = gw_web_combo;
-    ww_widget->entry          = gw_search_entry;
-    ww_widget->nav_entry      = gw_nav_entry;
-    ww_widget->img_view       = gw_img_view;
-    ww_widget->nav_box        = gw_nav_box;
-    ww_widget->selected_combo = gw_selected_combo;
-    ww_widget->selected_box   = gw_add_sltd_box;
-    ww_widget->count_label    = gw_count_label;
-    ww_widget->query          = NULL;
-    ww_widget->page           = 0;
-    ww_widget->per_page       = IMGS_ON_PAGE;
-    ww_widget->found_cnt      = 0;
+    ww_widget->gw_search_box     = gw_search_box;
+    ww_widget->gw_combo          = gw_web_combo;
+    ww_widget->gw_entry          = gw_search_entry;
+    ww_widget->gw_nav_entry      = gw_nav_entry;
+    ww_widget->gw_img_view       = gw_img_view;
+    ww_widget->gw_nav_box        = gw_nav_box;
+    ww_widget->gw_selected_combo = gw_selected_combo;
+    ww_widget->gw_selected_box   = gw_add_sltd_box;
+    ww_widget->gw_count_label    = gw_count_label;
+    ww_widget->s_query           = NULL;
+    ww_widget->i_page            = 0;
+    ww_widget->i_per_page        = IMGS_ON_PAGE;
+    ww_widget->i_found_cnt       = 0;
     return ww_widget;
 }
 /*----------------------------------------------------------------------------*/
@@ -1252,7 +1262,7 @@ save_selected_wallpapers (GtkWidget *gw_dialog,
     GList *gl_items = NULL; /* List of images selected to download */
     GList *gl_res   = NULL; /* Result list od downloaded wallpapers */
 
-    gl_items = sel_combo_get_list (ww_widget->selected_combo);
+    gl_items = sel_combo_get_list (ww_widget->gw_selected_combo);
     gl_res = download_progress_window (GTK_WINDOW (gw_dialog), gl_items);
     g_list_free_full (gl_items, (GDestroyNotify) searchitem_free);
 

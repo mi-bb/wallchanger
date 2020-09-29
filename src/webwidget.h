@@ -40,64 +40,64 @@ enum e_wall_sites {
  *
  * @brief  Structure with wallpaper web search widgets and data.
  *
- * @var   WebWidget::search_box
+ * @var   WebWidget::gw_search_box
  * @brief Widget with search widgets
  *
- * @var   WebWidget::nav_box
+ * @var   WebWidget::gw_nav_box
  * @brief Widget with page navigation widgets
  *
- * @var   WebWidget::combo
+ * @var   WebWidget::gw_combo
  * @brief Combobox with image services
  *
- * @var   WebWidget::entry
+ * @var   WebWidget::gw_entry
  * @brief Search query entry
  *
- * @var   WebWidget::nav_entry
+ * @var   WebWidget::gw_nav_entry
  * @brief Custom page set entry
  *
- * @var   WebWidget::img_view
+ * @var   WebWidget::gw_img_view
  * @brief Image list icon view
  *
- * @var   WebWidget::selected_combo
+ * @var   WebWidget::gw_selected_combo
  * @brief Combobox with images selected for download
  *
- * @var   WebWidget::selected_box
+ * @var   WebWidget::gw_selected_box
  * @brief Widget with select for download widgets
  *
- * @var   WebWidget::count_label
+ * @var   WebWidget::gw_count_label
  * @brief Label for search results information
  *
- * @var   WebWidget::query
+ * @var   WebWidget::s_query
  * @brief String with search query
  *
- * @var   WebWidget::cfg_file
+ * @var   WebWidget::s_cfg_file
  * @brief String with config file path
  *
- * @var   WebWidget::page
+ * @var   WebWidget::i_page
  * @brief Current page number
  *
- * @var   WebWidget::per_page
+ * @var   WebWidget::i_per_page
  * @brief Number with images per page
  *
- * @var   WebWidget::found_cnt
+ * @var   WebWidget::i_found_cnt
  * @brief Number of found images
  */
 typedef struct
 WebWidget {
-    GtkWidget *search_box;
-    GtkWidget *nav_box;
-    GtkWidget *combo;
-    GtkWidget *entry;
-    GtkWidget *nav_entry;
-    GtkWidget *img_view;
-    GtkWidget *selected_combo;
-    GtkWidget *selected_box;
-    GtkWidget *count_label;
-    char      *query;
-    char      *cfg_file;
-    int        page;
-    int        per_page;
-    int        found_cnt;
+    GtkWidget *gw_search_box;
+    GtkWidget *gw_nav_box;
+    GtkWidget *gw_combo;
+    GtkWidget *gw_entry;
+    GtkWidget *gw_nav_entry;
+    GtkWidget *gw_img_view;
+    GtkWidget *gw_selected_combo;
+    GtkWidget *gw_selected_box;
+    GtkWidget *gw_count_label;
+    char      *s_query;
+    char      *s_cfg_file;
+    int        i_page;
+    int        i_per_page;
+    int        i_found_cnt;
 } WebWidget;
 /*----------------------------------------------------------------------------*/
 /**

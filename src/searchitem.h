@@ -53,13 +53,13 @@
  */
 typedef struct
 SearchItem {
-    int  id;
+    int   id;
     char *name;
     char *markup;
     char *url;
     char *thumb_url;
-    int  width;
-    int  height;
+    int   width;
+    int   height;
 }
 SearchItem;
 /*----------------------------------------------------------------------------*/

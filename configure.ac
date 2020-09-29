@@ -16,7 +16,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 AC_PREREQ([2.69])
-AC_INIT([wallchanger], [1.6.0], [michal.babik@pm.me], [wallchanger],\
+AC_INIT([wallchanger], [1.6.1], [michal.babik@pm.me], [wallchanger],\
         [https://www.nongnu.org/wallchanger/])
 AM_INIT_AUTOMAKE
 AC_CONFIG_SRCDIR([src/setting.c])
@@ -31,10 +31,10 @@ AC_PATH_XTRA
 AC_CHECK_LIB([procstat], [procstat_getprocs], [], [], [])
 
 # Checks for libraries.
+PKG_CHECK_MODULES([X11],  [x11 >= [1.6.9]])
 PKG_CHECK_MODULES([GTK],  [gtk+-3.0 >= [3.22.0]])
 PKG_CHECK_MODULES([JSON], [json-c >= [0.12.1]])
 PKG_CHECK_MODULES([CURL], [libcurl >= [7.68.0]])
-
 # Check for bash completion and set its directory.
 PKG_CHECK_VAR(bashcompdir, [bash-completion], [completionsdir], ,
   bashcompdir="${sysconfdir}/bash_completion.d")

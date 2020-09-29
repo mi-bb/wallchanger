@@ -14,6 +14,11 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 ----------------------------------------------------------------------
+v1.6.1                                                      2020-09-29
+
+    * Corrected API key refresh after setting using config dialog.
+
+----------------------------------------------------------------------
 v1.6.0                                                      2020-09-27
 
     * Added option for getting wallpapers from web.

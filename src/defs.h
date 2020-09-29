@@ -42,7 +42,7 @@
  *
  */
 #define APP_NAME              "Wall Changer"
-#define APP_VER               "1.6.0"
+#define APP_VER               "1.6.1"
 #define APP_WEB               "https://www.nongnu.org/wallchanger/"
 #define APP_DSC               "Wall Changer is an automatic wallpaper changer."
 #define STATUS_CONFIG         "Config file in use: "

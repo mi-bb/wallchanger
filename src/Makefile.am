@@ -42,6 +42,10 @@ wchangercfg_SOURCES=wchanger.c\
                     dialogdata.c dialogdata.h\
                     treev.c treev.h\
                     dlgs.c dlgs.h\
+                    dlgsmsg.c dlgsmsg.h\
+                    webwidget.c webwidget.h\
+                    searchitem.c searchitem.h\
+                    urldata.c urldata.h\
                     iminfo.c iminfo.h\
                     wpset.c wpset.h\
                     setts.c setts.h\
@@ -65,9 +69,10 @@ wchangercfg_SOURCES=wchanger.c\
                     errs.c errs.h\
                     defs.h
 
-wchangercfg_CFLAGS = $(GTK_CFLAGS) $(JSON_CFLAGS) -DG_DISABLE_DEPRECATED
-wchangercfg_LDADD = $(GTK_LIBS) $(JSON_LIBS)
+wchangercfg_CFLAGS = $(GTK_CFLAGS) $(JSON_CFLAGS) $(CURL_CFLAGS) \
+					 -DG_DISABLE_DEPRECATED
+wchangercfg_LDADD = $(GTK_LIBS) $(JSON_LIBS) $(CURL_LIBS)
 
 wchangerd_CFLAGS = $(JSON_CFLAGS) $(X_CFLAGS)
-wchangerd_LDADD = $(JSON_LIBS) -lX11
+wchangerd_LDADD = $(JSON_LIBS) $(X11_LIBS)
 
