@@ -10,7 +10,7 @@
 
 /* If we use autoconf.  */
 #ifdef HAVE_CONFIG_H
-#include "config.h"
+#include "../config.h"
 #endif
 
 #include <stdio.h>
@@ -27,7 +27,7 @@
 
 const char *gengetopt_args_info_purpose = "";
 
-const char *gengetopt_args_info_usage = "Usage: wcahnger [OPTION]...";
+const char *gengetopt_args_info_usage = "Usage: " CMDLINE_PARSER_PACKAGE " [OPTION]...";
 
 const char *gengetopt_args_info_versiontext = "";
 
@@ -40,7 +40,7 @@ const char *gengetopt_args_info_help[] = {
   "      --stop             Stop wchangerd process",
   "      --restart          Restart wchangerd process",
   "      --status           Print wchangerd status",
-  "      --once             Run once and exit",
+  "      --once             Change wallpaper once and exit",
   "      --config=FILENAME  Path to config file",
     0
 };
@@ -562,7 +562,7 @@ cmdline_parser_internal (
               goto failure;
           
           }
-          /* Run once and exit.  */
+          /* Change wallpaper once and exit.  */
           else if (strcmp (long_options[option_index].name, "once") == 0)
           {
           

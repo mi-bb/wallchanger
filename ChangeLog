@@ -13,6 +13,11 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+2020-10-02  Michal Babik  <michal.babik@pm.me>
+
+	* cmdline.c, cmdline.h: Uploaded correct version, somehow older version
+	  got here, there was wrong version showing in daemon.
+
 2020-09-29  Michal Babik  <michal.babik@pm.me>
 
 	* webwidget.c (combo_set_active_str): Corrected bad setting api key.

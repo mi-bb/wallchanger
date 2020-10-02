@@ -10,7 +10,7 @@
 
 /* If we use autoconf.  */
 #ifdef HAVE_CONFIG_H
-#include "config.h"
+#include "../config.h"
 #endif
 
 #include <stdio.h> /* for FILE */
@@ -21,17 +21,21 @@ extern "C" {
 
 #ifndef CMDLINE_PARSER_PACKAGE
 /** @brief the program name (used for printing errors) */
-#define CMDLINE_PARSER_PACKAGE "wcahnger"
+#define CMDLINE_PARSER_PACKAGE PACKAGE
 #endif
 
 #ifndef CMDLINE_PARSER_PACKAGE_NAME
 /** @brief the complete program name (used for help and version) */
-#define CMDLINE_PARSER_PACKAGE_NAME "wcahnger"
+#ifdef PACKAGE_NAME
+#define CMDLINE_PARSER_PACKAGE_NAME PACKAGE_NAME
+#else
+#define CMDLINE_PARSER_PACKAGE_NAME PACKAGE
+#endif
 #endif
 
 #ifndef CMDLINE_PARSER_VERSION
 /** @brief the program version */
-#define CMDLINE_PARSER_VERSION "1.4.0"
+#define CMDLINE_PARSER_VERSION VERSION
 #endif
 
 /** @brief Where the command line options are stored */
@@ -43,7 +47,7 @@ struct gengetopt_args_info
   const char *stop_help; /**< @brief Stop wchangerd process help description.  */
   const char *restart_help; /**< @brief Restart wchangerd process help description.  */
   const char *status_help; /**< @brief Print wchangerd status help description.  */
-  const char *once_help; /**< @brief Run once and exit help description.  */
+  const char *once_help; /**< @brief Change wallpaper once and exit help description.  */
   char * config_arg;	/**< @brief Path to config file.  */
   char * config_orig;	/**< @brief Path to config file original value given at command line.  */
   const char *config_help; /**< @brief Path to config file help description.  */
