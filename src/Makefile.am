@@ -43,7 +43,6 @@ wchangercfg_SOURCES=wchanger.c\
                     treev.c treev.h\
                     dlgs.c dlgs.h\
                     dlgsmsg.c dlgsmsg.h\
-                    webwidget.c webwidget.h\
                     searchitem.c searchitem.h\
                     urldata.c urldata.h\
                     iminfo.c iminfo.h\
@@ -67,12 +66,27 @@ wchangercfg_SOURCES=wchanger.c\
                     proclist.c proclist.h\
                     wmsfn.c wmsfn.h\
                     errs.c errs.h\
+                    fourstrings.c fourstrings.h\
+                    webwidget.c webwidget.h\
+                    webwidget_common.c webwidget_common.h\
+                    webpexels.c webpexels.h\
+                    webflickr.c webflickr.h\
+                    webwidget_s.h\
                     defs.h
 
 wchangercfg_CFLAGS = $(GTK_CFLAGS) $(JSON_CFLAGS) $(CURL_CFLAGS) \
 					 -DG_DISABLE_DEPRECATED
 wchangercfg_LDADD = $(GTK_LIBS) $(JSON_LIBS) $(CURL_LIBS)
 
-wchangerd_CFLAGS = $(JSON_CFLAGS) $(X_CFLAGS)
+if FLICKCURL
+wchangercfg_CFLAGS += $(FLICKCURL_CFLAGS)
+wchangercfg_LDADD += $(FLICKCURL_LIBS)
+if LIBXML
+wchangercfg_CFLAGS += $(LIBXML_CFLAGS)
+wchangercfg_LDADD += $(LIBXML_LIBS)
+endif
+endif
+
+wchangerd_CFLAGS = $(JSON_CFLAGS) $(X11_CFLAGS)
 wchangerd_LDADD = $(JSON_LIBS) $(X11_LIBS)
 

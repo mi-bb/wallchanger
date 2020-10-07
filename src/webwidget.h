@@ -25,6 +25,8 @@
 #define WEBWIDGET_H
 
 #include <gtk/gtk.h>
+#include "../config.h"
+#include "webwidget_s.h"
 #include "setting.h"
 /*----------------------------------------------------------------------------*/
 /**
@@ -32,56 +34,13 @@
  */
 enum e_wall_sites {
     WEB_WIDGET_PEXELS, /**< Pexels */
+#ifdef HAVE_FLICKCURL
+    WEB_WIDGET_FLICKR, /**< Flickr */
+#endif
     WEB_WIDGET_CNT     /**< Services count */
 };
 /*----------------------------------------------------------------------------*/
-/**
- * @struct WebWidget
- *
- * @brief  Structure with wallpaper web search widgets and data.
- *
- * @var   WebWidget::gw_search_box
- * @brief Widget with search widgets
- *
- * @var   WebWidget::gw_nav_box
- * @brief Widget with page navigation widgets
- *
- * @var   WebWidget::gw_combo
- * @brief Combobox with image services
- *
- * @var   WebWidget::gw_entry
- * @brief Search query entry
- *
- * @var   WebWidget::gw_nav_entry
- * @brief Custom page set entry
- *
- * @var   WebWidget::gw_img_view
- * @brief Image list icon view
- *
- * @var   WebWidget::gw_selected_combo
- * @brief Combobox with images selected for download
- *
- * @var   WebWidget::gw_selected_box
- * @brief Widget with select for download widgets
- *
- * @var   WebWidget::gw_count_label
- * @brief Label for search results information
- *
- * @var   WebWidget::s_query
- * @brief String with search query
- *
- * @var   WebWidget::s_cfg_file
- * @brief String with config file path
- *
- * @var   WebWidget::i_page
- * @brief Current page number
- *
- * @var   WebWidget::i_per_page
- * @brief Number with images per page
- *
- * @var   WebWidget::i_found_cnt
- * @brief Number of found images
- */
+/*
 typedef struct
 WebWidget {
     GtkWidget *gw_search_box;
@@ -99,6 +58,7 @@ WebWidget {
     int        i_per_page;
     int        i_found_cnt;
 } WebWidget;
+*/
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Free WebWidget item.

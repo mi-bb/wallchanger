@@ -24,6 +24,8 @@
 #ifndef SEARCHITEM_H
 #define SEARCHITEM_H
 
+#include <stdint.h>
+
 /*----------------------------------------------------------------------------*/
 /**
  * @struct SearchItem
@@ -53,13 +55,16 @@
  */
 typedef struct
 SearchItem {
-    int   id;
-    char *name;
-    char *markup;
-    char *url;
-    char *thumb_url;
-    int   width;
-    int   height;
+    uint64_t i_id;
+    char *s_id;
+    char *s_file_name;
+    char *s_display_name;
+    char *s_display_markup;
+    char *s_page_url;
+    char *s_image_url;
+    char *s_thumb_url;
+    int   i_width;
+    int   i_height;
 }
 SearchItem;
 /*----------------------------------------------------------------------------*/
@@ -85,7 +90,9 @@ void         searchitem_free          (SearchItem *si_item);
  * @param[in]  s_val    Name string to set
  * @return     none
  */
-void         searchitem_set_name      (SearchItem *si_item,
+void         searchitem_set_file_name      (SearchItem *si_item,
+                                       const char *s_val);
+void         searchitem_set_display_name      (SearchItem *si_item,
                                        const char *s_val);
 /*----------------------------------------------------------------------------*/
 /**
@@ -95,9 +102,11 @@ void         searchitem_set_name      (SearchItem *si_item,
  * @param[in]  s_val    Markup string to set
  * @return     none
  */
-void         searchitem_set_markup    (SearchItem *si_item,
-                                       const char *s_val);
+void         searchitem_set_display_markup    (SearchItem *si_item,
+                                               const char *s_val);
 /*----------------------------------------------------------------------------*/
+void searchitem_set_page_url (SearchItem *si_item,
+                              const char *s_val);
 /**
  * @brief  Set SearchItem's url.
  *
@@ -105,9 +114,11 @@ void         searchitem_set_markup    (SearchItem *si_item,
  * @param[in]  s_val    Url string to set
  * @return     none
  */
-void         searchitem_set_url       (SearchItem *si_item,
-                                       const char *s_val);
+void         searchitem_set_page_url       (SearchItem *si_item,
+                                            const char *s_val);
 /*----------------------------------------------------------------------------*/
+void         searchitem_set_image_url       (SearchItem *si_item,
+                                             const char *s_val);
 /**
  * @brief  Set SearchItem's thumb url.
  *
@@ -126,9 +137,9 @@ void         searchitem_set_thumb_url (SearchItem *si_item,
  * @param[in]  val      Id integer value to set
  * @return     none
  */
-static inline void searchitem_set_id (SearchItem *si_item,
-                                      const int   val) {
-    si_item->id = val;
+static inline void searchitem_set_id (SearchItem    *si_item,
+                                      const uint64_t val) {
+    si_item->i_id = val;
 }
 /*----------------------------------------------------------------------------*/
 /**
@@ -140,7 +151,7 @@ static inline void searchitem_set_id (SearchItem *si_item,
  */
 static inline void searchitem_set_width (SearchItem *si_item,
                                          const int   val) {
-    si_item->width = val;
+    si_item->i_width = val;
 }
 /*----------------------------------------------------------------------------*/
 /**
@@ -152,7 +163,7 @@ static inline void searchitem_set_width (SearchItem *si_item,
  */
 static inline void searchitem_set_height (SearchItem *si_item,
                                           const int   val) {
-    si_item->height = val;
+    si_item->i_height = val;
 }
 /*----------------------------------------------------------------------------*/
 #endif

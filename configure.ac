@@ -35,6 +35,16 @@ PKG_CHECK_MODULES([X11],  [x11 >= [1.6.9]])
 PKG_CHECK_MODULES([GTK],  [gtk+-3.0 >= [3.22.0]])
 PKG_CHECK_MODULES([JSON], [json-c >= [0.12.1]])
 PKG_CHECK_MODULES([CURL], [libcurl >= [7.68.0]])
+PKG_CHECK_MODULES([FLICKCURL], [flickcurl >= [1.24]],
+                  [AC_DEFINE([HAVE_FLICKCURL], [1], [Use flickcurl])],
+                  [AC_MSG_WARN("flickrcurl not present")])
+AM_CONDITIONAL(FLICKCURL, test -n "$FLICKCURL_LIBS")
+if test -n "$FLICKCURL_LIBS"; then
+    PKG_CHECK_MODULES([LIBXML], [libxml-2.0 >= [2.9.4]],
+                      [AC_DEFINE([HAVE_LIBXML], [1], [Use libxml])],
+                      [AC_MSG_WARN("libxml not present")])
+fi
+AM_CONDITIONAL(LIBXML, test -n "$LIBXML_LIBS")
 # Check for bash completion and set its directory.
 PKG_CHECK_VAR(bashcompdir, [bash-completion], [completionsdir], ,
   bashcompdir="${sysconfdir}/bash_completion.d")

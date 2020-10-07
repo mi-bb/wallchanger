@@ -123,6 +123,22 @@ get_setting_name (const int i_val)
             s_res = "Pexels api";
             break;
 
+        case SETTING_FLICKR_CLKEY:
+            s_res = "Flickr client key";
+            break;
+
+        case SETTING_FLICKR_CLSEC:
+            s_res = "Flickr client secret";
+            break;
+
+        case SETTING_FLICKR_ACTOK:
+            s_res = "Flickr access token";
+            break;
+
+        case SETTING_FLICKR_ACSEC:
+            s_res = "Flickr access token secret";
+            break;
+
         default:
             break;
     }
@@ -218,6 +234,10 @@ setts_check_defaults (Setting *st_settings)
         {SETTING_WEB_DLG_WIDTH,  SET_VAL_INT,    DEFAULT_WEB_DLG_WIDTH, 0, ""},
         {SETTING_WEB_DLG_HEIGHT, SET_VAL_INT,    DEFAULT_WEB_DLG_HEIGHT, 0, ""},
         {SETTING_PEXELS_API,     SET_VAL_STRING, 0, 0, ""},
+        {SETTING_FLICKR_CLKEY,   SET_VAL_STRING, 0, 0, ""},
+        {SETTING_FLICKR_CLSEC,   SET_VAL_STRING, 0, 0, ""},
+        {SETTING_FLICKR_ACTOK,   SET_VAL_STRING, 0, 0, ""},
+        {SETTING_FLICKR_ACSEC,   SET_VAL_STRING, 0, 0, ""},
         {-1, 0, 0, 0, ""}
     };
 
@@ -256,24 +276,6 @@ setts_update_last_used_wm (const char *s_cfg_file,
 
     st_settings = setting_new_string (get_setting_name (SETTING_LAST_USED_WM),
                                       s_last_used_wm);
-
-    i_res = js_settings_check_update_file (st_settings, s_cfg_file);
-    settings_free_all (st_settings);
-    return i_res;
-}
-/*----------------------------------------------------------------------------*/
-/**
- * @brief  Update Pexels API number
- */
-int
-setts_update_pexels_api (const char *s_cfg_file,
-                         const char *s_pexels_api)
-{
-    Setting  *st_settings;
-    int       i_res = ERR_OK;
-
-    st_settings = setting_new_string (get_setting_name (SETTING_PEXELS_API),
-                                      s_pexels_api);
 
     i_res = js_settings_check_update_file (st_settings, s_cfg_file);
     settings_free_all (st_settings);
@@ -325,6 +327,56 @@ setts_update_web_dlg_size (const char *s_cfg_file,
     settings_free_all (st_settings);
     return i_res;
 }
+/*----------------------------------------------------------------------------*/
+/**
+ * @brief  Update Pexels API key
+ */
+int
+setts_update_pexels_api (const char *s_cfg_file,
+                         const char *s_pexels_api)
+{
+    Setting  *st_settings;
+    int       i_res = ERR_OK;
+
+    st_settings = setting_new_string (get_setting_name (SETTING_PEXELS_API),
+                                      s_pexels_api);
+
+    i_res = js_settings_check_update_file (st_settings, s_cfg_file);
+    settings_free_all (st_settings);
+    return i_res;
+}
+/*----------------------------------------------------------------------------*/
+#ifdef HAVE_FLICKCURL
+/**
+ * @brief  Update Flickr API keys
+ */
+int
+setts_update_flickr_api (const char *s_cfg_file,
+                         const char *s_client_key,
+                         const char *s_client_secret,
+                         const char *s_access_token,
+                         const char *s_access_token_secret)
+{
+    Setting  *st_settings;
+    int       i_res = ERR_OK;
+
+    st_settings = setting_new_string (get_setting_name (SETTING_FLICKR_CLKEY),
+                                      s_client_key);
+    settings_append (st_settings,
+            setting_new_string (get_setting_name (SETTING_FLICKR_CLSEC),
+                                s_client_secret));
+    settings_append (st_settings,
+            setting_new_string (get_setting_name (SETTING_FLICKR_ACTOK),
+                                s_access_token));
+    settings_append (st_settings,
+            setting_new_string (get_setting_name (SETTING_FLICKR_ACSEC),
+                                s_access_token_secret));
+
+    i_res = js_settings_check_update_file (st_settings, s_cfg_file);
+    settings_free_all (st_settings);
+    return i_res;
+}
+#endif
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Check if settings in SettList are an update to settings

@@ -24,6 +24,7 @@
 #ifndef SETTS_H
 #define SETTS_H
 
+#include "../config.h"
 #include "setting.h"
 /*----------------------------------------------------------------------------*/
 /**
@@ -42,7 +43,11 @@ enum e_setting_values {
     SETTING_WALL_ARRAY,     /**< Array with wallpapers */
     SETTING_WEB_DLG_WIDTH,  /**< Web dilaog width */
     SETTING_WEB_DLG_HEIGHT, /**< Web dilaog height */
-    SETTING_PEXELS_API      /**< Random wallpaper select */
+    SETTING_PEXELS_API,     /**< Pexels API key */
+    SETTING_FLICKR_CLKEY,   /**< Flickr API key */
+    SETTING_FLICKR_CLSEC,   /**< Flickr API secret */
+    SETTING_FLICKR_ACTOK,   /**< Flickr API access token */
+    SETTING_FLICKR_ACSEC    /**< Flickr API access token secret */
 };
 /*----------------------------------------------------------------------------*/
 /**
@@ -112,6 +117,14 @@ Setting *    setts_read           (const char *s_cfg_file,
  * @param[in] i_w         Window width value
  * @param[in] i_h         Window height value
  * @return    Status of data update
+ *
+ * @fn  int setts_update_pexels_api (const char *s_cfg_file,
+ *                                   const char *s_pexels_api)
+ * @brief  Update Pexels API key
+ *
+ * @param[in] s_cfg_file    Config file path
+ * @param[in] s_pexels_api  String with Pexels API key
+ * @return    Status of data update
  */
 /*----------------------------------------------------------------------------*/
 int setts_update_last_used    (const char *s_cfg_file,
@@ -120,9 +133,6 @@ int setts_update_last_used    (const char *s_cfg_file,
 int setts_update_last_used_wm (const char *s_cfg_file,
                                const char *s_last_used_wm);
 
-int setts_update_pexels_api (const char *s_cfg_file,
-                             const char *s_pexels_api);
-
 int setts_update_window_size  (const char *s_cfg_file,
                                const int   i_w,
                                const int   i_h);
@@ -130,6 +140,27 @@ int setts_update_window_size  (const char *s_cfg_file,
 int setts_update_web_dlg_size (const char *s_cfg_file,
                                const int   i_w,
                                const int   i_h);
+
+int setts_update_pexels_api   (const char *s_cfg_file,
+                               const char *s_pexels_api);
+/*----------------------------------------------------------------------------*/
+#ifdef HAVE_FLICKCURL
+/**
+ * @brief  Update Flickr API keys
+ *
+ * @param[in] s_cfg_file             Config file path
+ * @param[in] s_client_key           String with Flickr API key
+ * @param[in] s_client_secret        String with Flickr secret key
+ * @param[in] s_access_token         String with Flickr access token
+ * @param[in] s_access_token_secret  String with Flickr access token secret
+ * @return    Status of data update
+ */
+int setts_update_flickr_api (const char *s_cfg_file,
+                             const char *s_client_key,
+                             const char *s_client_secret,
+                             const char *s_access_token,
+                             const char *s_access_token_secret);
+#endif
 /*----------------------------------------------------------------------------*/
 /**
  * @fn  char * setts_check_update (const char *s_cfg_file,

@@ -44,13 +44,16 @@
 static void
 searchitem_init (SearchItem *si_item)
 {
-    si_item->id        = 0;
-    si_item->name      = NULL;
-    si_item->markup    = NULL;
-    si_item->url       = NULL;
-    si_item->thumb_url = NULL;
-    si_item->width     = 0;
-    si_item->height    = 0;
+    si_item->i_id             = 0;
+    si_item->s_id             = NULL;
+    si_item->s_file_name      = NULL;
+    si_item->s_display_name   = NULL;
+    si_item->s_display_markup = NULL;
+    si_item->s_page_url       = NULL;
+    si_item->s_image_url      = NULL;
+    si_item->s_thumb_url      = NULL;
+    si_item->i_width          = 0;
+    si_item->i_height         = 0;
 }
 /*----------------------------------------------------------------------------*/
 /**
@@ -59,10 +62,13 @@ searchitem_init (SearchItem *si_item)
 void
 searchitem_free (SearchItem *si_item)
 {
-    free (si_item->name);
-    free (si_item->markup);
-    free (si_item->url);
-    free (si_item->thumb_url);
+    free (si_item->s_id);
+    free (si_item->s_file_name);
+    free (si_item->s_display_name);
+    free (si_item->s_display_markup);
+    free (si_item->s_page_url);
+    free (si_item->s_image_url);
+    free (si_item->s_thumb_url);
     free (si_item);
 }
 /*----------------------------------------------------------------------------*/
@@ -86,36 +92,54 @@ searchitem_new (void)
  * @brief  Set SearchItem's name.
  */
 void
-searchitem_set_name (SearchItem *si_item,
-                     const char *s_val)
+searchitem_set_file_name (SearchItem *si_item,
+                          const char *s_val)
 {
-    if (si_item->name != NULL)
-        free (si_item->name);
-    si_item->name = strdup (s_val);
+    if (si_item->s_file_name != NULL)
+        free (si_item->s_file_name);
+    si_item->s_file_name = strdup (s_val);
+}
+/*----------------------------------------------------------------------------*/
+void
+searchitem_set_display_name (SearchItem *si_item,
+                             const char *s_val)
+{
+    if (si_item->s_display_name != NULL)
+        free (si_item->s_display_name);
+    si_item->s_display_name = strdup (s_val);
 }
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Set SearchItem's markup.
  */
 void
-searchitem_set_markup (SearchItem *si_item,
+searchitem_set_display_markup (SearchItem *si_item,
                        const char *s_val)
 {
-    if (si_item->markup != NULL)
-        free (si_item->markup);
-    si_item->markup = strdup (s_val);
+    if (si_item->s_display_markup != NULL)
+        free (si_item->s_display_markup);
+    si_item->s_display_markup = strdup (s_val);
+}
+/*----------------------------------------------------------------------------*/
+void
+searchitem_set_page_url (SearchItem *si_item,
+                         const char *s_val)
+{
+    if (si_item->s_page_url != NULL)
+        free (si_item->s_page_url);
+    si_item->s_page_url = strdup (s_val);
 }
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Set SearchItem's url.
  */
 void
-searchitem_set_url (SearchItem *si_item,
-                    const char *s_val)
+searchitem_set_image_url (SearchItem *si_item,
+                          const char *s_val)
 {
-    if (si_item->url != NULL)
-        free (si_item->url);
-    si_item->url = strdup (s_val);
+    if (si_item->s_image_url != NULL)
+        free (si_item->s_image_url);
+    si_item->s_image_url = strdup (s_val);
 }
 /*----------------------------------------------------------------------------*/
 /**
@@ -125,9 +149,9 @@ void
 searchitem_set_thumb_url (SearchItem *si_item,
                           const char *s_val)
 {
-    if (si_item->thumb_url != NULL)
-        free (si_item->thumb_url);
-    si_item->thumb_url = strdup (s_val);
+    if (si_item->s_thumb_url != NULL)
+        free (si_item->s_thumb_url);
+    si_item->s_thumb_url = strdup (s_val);
 }
 /*----------------------------------------------------------------------------*/
 
