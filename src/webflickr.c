@@ -490,31 +490,30 @@ flickr_search (WebWidget         *ww_widget,
     flickcurl_init ();
     fc = flickcurl_new ();
 
-    flickcurl_set_error_handler(fc, my_message_handler, NULL);
+    flickcurl_set_error_handler (fc, my_message_handler, NULL);
 
     flickcurl_set_oauth_client_key    (fc, fs_data->s_str1);
     flickcurl_set_oauth_client_secret (fc, fs_data->s_str2);
     flickcurl_set_oauth_token         (fc, fs_data->s_str3);
     flickcurl_set_oauth_token_secret  (fc, fs_data->s_str4);
 
-    flickcurl_search_params_init(&params);
+    flickcurl_search_params_init (&params);
     strcpy (s_sort, "interestingness-desc");
     params.sort = s_sort;
     params.tags = ww_widget->s_query;
     strcpy (s_media, "photos");
     params.media = s_media;
-    //params.extras = "original_format,o_dims,url_o,url_t";
-    //params.extras = "original_format,url_o,url_t";
 
-    flickcurl_photos_list_params_init(&list_params);
+    flickcurl_photos_list_params_init (&list_params);
     list_params.per_page = ww_widget->i_per_page;
     list_params.page = ww_widget->i_page;
-    //list_params.format = "feed-kml";
-    //list_params.format = "feed-kml_nl";
+    /*
+    list_params.format = "feed-kml";
+    list_params.format = "feed-kml_nl";
+    */
     list_params.extras = "original_format,o_dims,url_o,url_t";
-    //list_params.extras = "original_format,url_o,url_t";
 
-    photos_list = flickcurl_photos_search_params(fc, &params, &list_params);
+    photos_list = flickcurl_photos_search_params (fc, &params, &list_params);
 
     gtk_list_store_clear (GTK_LIST_STORE (gtk_icon_view_get_model (
                     GTK_ICON_VIEW (ww_widget->gw_img_view))));
@@ -527,7 +526,7 @@ flickr_search (WebWidget         *ww_widget,
             add_searchitem_to_img_view (ww_widget->gw_img_view, si_item);
             searchitem_free (si_item);
         }
-        flickcurl_free_photos_list(photos_list);
+        flickcurl_free_photos_list (photos_list);
     }
     flickcurl_free (fc);
     flickcurl_finish ();

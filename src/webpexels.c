@@ -35,6 +35,13 @@
 #include "webwidget_common.h"
 #include "webpexels.h"
 /*----------------------------------------------------------------------------*/
+/**
+ * @brief  Extract base image name from image url.
+ *
+ * @param[in] s_url  Url to process
+ * @return    New string with base name. After use it should be freed using
+ *            free.
+ */
 static char *
 pexels_extract_base_name (const char *s_url)
 {
@@ -55,6 +62,12 @@ pexels_extract_base_name (const char *s_url)
     return s_res;
 }
 /*----------------------------------------------------------------------------*/
+/**
+ * @brief  Create Image name for icon view from base name.
+ *
+ * @param[in] s_bname  Base name to process
+ * @return    New string with name. After use it should be freed using free.
+ */
 static char *
 pexels_create_display_name (const char *s_bname)
 {
@@ -136,12 +149,19 @@ pexels_settings_dialog (FourStrings *fs_data)
     return i_res;
 }
 /*----------------------------------------------------------------------------*/
+/**
+ * @brief  Process SearchIem item with image data and create name for icon view
+ *         and for image file to save.
+ *
+ * @param[in,out] si_item  SearchItem item to process.
+ * @return        none
+ */
 static void
 pexels_process_item_set_names (SearchItem *si_item)
 {
-    char *s_base_name = NULL;
-    char *s_file_name = NULL;
-    char *s_disp_name = NULL;
+    char *s_base_name = NULL; /* Base name for processing */
+    char *s_file_name = NULL; /* Name for file to save */
+    char *s_disp_name = NULL; /* Name to display on list */
     char *s_ext       = NULL; /* Pointer to extension */
 
     if (si_item->s_page_url == NULL)
@@ -160,6 +180,7 @@ pexels_process_item_set_names (SearchItem *si_item)
     /* Display name to show on image list */
     s_disp_name = pexels_create_display_name (s_base_name);
 
+    /* Save names in SearchItem */
     searchitem_set_file_name      (si_item, s_file_name);
     searchitem_set_display_name   (si_item, s_disp_name);
     searchitem_set_display_markup (si_item, s_disp_name);
@@ -310,13 +331,10 @@ pexels_search (WebWidget   *ww_widget,
                const FourStrings *fs_data)
 {
     UrlData *ud_data;
-    //char    *s_api = NULL;
 
-    //s_api = combo_get_active_str (ww_widget->gw_combo, WW_COMBO_STR_1);
-
-    //if (check_empty (s_api, "Pexels API key is not set"))
     if (check_empty (fs_data->s_str1, "Pexels API key is not set"))
         return;
+
     ud_data = urldata_search_pexels (ww_widget->s_query,
                                      fs_data->s_str1,
                                      ww_widget->i_page,
@@ -330,7 +348,6 @@ pexels_search (WebWidget   *ww_widget,
         pexels_json_to_webwidget (ud_data->buffer, ww_widget);
     }
     urldata_free (ud_data);
-    //free (s_api);
 }
 /*----------------------------------------------------------------------------*/
 

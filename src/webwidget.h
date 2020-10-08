@@ -40,26 +40,6 @@ enum e_wall_sites {
     WEB_WIDGET_CNT     /**< Services count */
 };
 /*----------------------------------------------------------------------------*/
-/*
-typedef struct
-WebWidget {
-    GtkWidget *gw_search_box;
-    GtkWidget *gw_nav_box;
-    GtkWidget *gw_combo;
-    GtkWidget *gw_entry;
-    GtkWidget *gw_nav_entry;
-    GtkWidget *gw_img_view;
-    GtkWidget *gw_selected_combo;
-    GtkWidget *gw_selected_box;
-    GtkWidget *gw_count_label;
-    char      *s_query;
-    char      *s_cfg_file;
-    int        i_page;
-    int        i_per_page;
-    int        i_found_cnt;
-} WebWidget;
-*/
-/*----------------------------------------------------------------------------*/
 /**
  * @brief  Free WebWidget item.
  *

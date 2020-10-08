@@ -63,23 +63,6 @@ enum e_services_columns {
 };
 /*----------------------------------------------------------------------------*/
 /**
- * @brief  Image list columns
- */
-//enum e_img_list_columns {
-//    WEB_COL_PIXBUF,    /**< Thumbnail pixbuf */
-//    WEB_COL_WIDTH,     /**< Image width */
-//    WEB_COL_HEIGHT,    /**< Image height */
-//    WEB_COL_ID,        /**< Image id */
-//    WEB_COL_DISP_NAME, /**< Name of image */
-//    WEB_COL_MARKUP,    /**< Markup string */
-//    WEB_COL_FILE_NAME, /**< Name of image */
-//    WEB_COL_PAGE_URL,  /**< Picture page url */
-//    WEB_COL_IMAGE_URL, /**< Full size image url */
-//    WEB_COL_THUMB_URL, /**< Thumbnail url */
-//    WEB_NUM_CNT        /**< Column count */
-//};
-/*----------------------------------------------------------------------------*/
-/**
  * @brief  Selected to download combobox columns
  */
 enum e_selected_columns {
@@ -133,6 +116,10 @@ download_progress_window (GtkWindow *gw_parent,
     float       f_frac   = 0;    /* Fraction for progress bar to set */
     int         i_stop   = 0;    /* To set when stop button is pressed */
     int         i_perm   = 0;    /* For checking save dir permissions */
+    char s_nbuff[512];
+
+    memset (s_nbuff, '\0', 512);
+    memset (s_nbuff, ' ', 60);
 
     /* Getting wallpaper save path and checking it's permissions, creating if
      * it doesn't exist */
@@ -157,7 +144,7 @@ download_progress_window (GtkWindow *gw_parent,
     gtk_window_set_modal (GTK_WINDOW (gw_window), TRUE);
     gtk_window_set_decorated (GTK_WINDOW (gw_window), FALSE);
 
-    gw_label = gtk_label_new (NULL);
+    gw_label = gtk_label_new (s_nbuff);
     gw_stop_button = gtk_button_new_with_label ("Cancel");
     g_signal_connect_swapped (gw_stop_button, "clicked",
                               G_CALLBACK (event_stop_button_pressed),
@@ -187,6 +174,8 @@ download_progress_window (GtkWindow *gw_parent,
     gtk_container_add (GTK_CONTAINER (gw_window), gw_box_main);
     gtk_widget_show_all (gw_window);
 
+    //while (gtk_events_pending ())
+    //    gtk_main_iteration ();
     /* Processing list of wallpapers to download */
     while (gl_item != NULL) {
         if (i_stop == 1)
@@ -194,9 +183,21 @@ download_progress_window (GtkWindow *gw_parent,
 
         f_frac  += f_step;
         si_item  = gl_item->data;
+
+        size_t ui_nlen = g_utf8_strlen (si_item->s_file_name, -1);
+        memset (s_nbuff, '\0', 512);
+
+        if (ui_nlen > 30) {
+            g_utf8_strncpy (s_nbuff, si_item->s_file_name, 30);
+            strcat (s_nbuff, "...");
+        }
+        else {
+            strcpy (s_nbuff, si_item->s_file_name);
+        }
+
         s_fn = str_comb (s_wpdir, "/");
         str_append (&s_fn, si_item->s_file_name);
-        s_markup = g_markup_printf_escaped (s_format, si_item->s_file_name);
+        s_markup = g_markup_printf_escaped (s_format, s_nbuff);
 
         gtk_label_set_markup (GTK_LABEL (gw_label), s_markup);
         g_free (s_markup);
@@ -252,6 +253,13 @@ combo_get_active_int (GtkWidget *gw_combo,
     return i_ret;
 }
 /*----------------------------------------------------------------------------*/
+/**
+ * @brief  Get strings with API key values from Combobox.
+ *
+ * @param[in]  gw_combo  Combobox
+ * @param[out] fs_data   Four strings to write API keys
+ * @return     none
+ */
 static void
 combo_get_active_strings (GtkWidget   *gw_combo,
                           FourStrings *fs_data)
@@ -296,9 +304,16 @@ combo_set_active_str (GtkWidget  *gw_combo,
     }
 }
 /*----------------------------------------------------------------------------*/
+/**
+ * @brief  Set strings with API key values to Combobox.
+ *
+ * @param[in]  gw_combo  Combobox
+ * @param[out] fs_data   Four strings with API keys
+ * @return     none
+ */
 static void
-combo_set_active_strings (GtkWidget   *gw_combo,
-                          FourStrings *fs_data)
+combo_set_active_strings (GtkWidget         *gw_combo,
+                          const FourStrings *fs_data)
 {
     GtkListStore *gls_slstore;
     GtkTreeIter   gti_iter;
@@ -442,17 +457,14 @@ search_web (WebWidget *ww_widget)
 static void
 event_search_pressed (WebWidget *ww_widget)
 {
-    const char *s_query = NULL;
+    const char *s_query = gtk_entry_get_text (GTK_ENTRY (ww_widget->gw_entry));
 
-    s_query = gtk_entry_get_text (GTK_ENTRY (ww_widget->gw_entry));
     if (check_empty (s_query, "Empty search query"))
         return;
-    //if (s_query[0] == '\0') {
-    //    message_dialog_warning (NULL, "Empty search query");
-    //    return;
-    //}
+
     if (ww_widget->s_query != NULL)
         free (ww_widget->s_query);
+
     ww_widget->s_query = strdup (s_query);
     ww_widget->i_page = 1;
     search_web (ww_widget);
@@ -526,7 +538,7 @@ event_settings_pressed (WebWidget *ww_widget)
     int          i_id    = 0;    /* Service id */
     int          i_res   = 0;
 
-    i_id  = combo_get_active_int (ww_widget->gw_combo, WW_COMBO_ID);
+    i_id    = combo_get_active_int (ww_widget->gw_combo, WW_COMBO_ID);
     fs_data = fourstrings_new ();
 
     switch (i_id) {
