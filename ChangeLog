@@ -13,6 +13,16 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+2020-10-08  Michal Babik  <michal.babik@pm.me>
+
+	* fourstrings.c, fourstrings.h: New files with four strings structure.
+	* webflickr.c, webflickr.h: New files with Flickr search functions and
+	  widgets.
+	* webpexels.c, webpexels.h: Pexels search stuff moved here.
+	* webwidget_common.c, webwidget_common.h: New files with functions,
+	  enums used for web search.
+	* webwidget_s.h: Webwidget structure.
+
 2020-10-02  Michal Babik  <michal.babik@pm.me>
 
 	* cmdline.c, cmdline.h: Uploaded correct version, somehow older version
