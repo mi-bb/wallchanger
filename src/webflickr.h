@@ -17,7 +17,7 @@
  * You should have received a copy of the GNU General Public License
  * along with Wall Changer.  If not, see <https://www.gnu.org/licenses/>.
  *
- * @brief  Settings for searching in Flickr website.
+ * @brief  Settings for searching the Flickr website.
  *
  * @author Michal Babik <michal.babik@pm.me>
  */
@@ -32,14 +32,6 @@
 #include "webwidget_s.h"
 /*----------------------------------------------------------------------------*/
 /**
- * @brief  Dialog with Flickr service settings.
- *
- * @param[in,out] fs_data  Four strings to get and write API keys
- * @return        Dialog response
- */
-int  flickr_settings_dialog (FourStrings       *fs_data);
-/*----------------------------------------------------------------------------*/
-/**
  * @brief  Search in Flickr database.
  *
  * @param[in,out] ww_widget  WebWidget with widgets and search data
@@ -48,6 +40,14 @@ int  flickr_settings_dialog (FourStrings       *fs_data);
  */
 void flickr_search          (WebWidget         *ww_widget,
                              const FourStrings *fs_data);
+/*----------------------------------------------------------------------------*/
+/**
+ * @brief  Dialog with Flickr service settings.
+ *
+ * @param[in,out] fs_data  Four strings to get and write API keys
+ * @return        Dialog response
+ */
+int  flickr_settings_dialog (FourStrings       *fs_data);
 /*----------------------------------------------------------------------------*/
 #endif
 #endif

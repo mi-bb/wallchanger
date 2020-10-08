@@ -34,19 +34,19 @@
 #include "fdfn.h"
 #include "defs.h"
 #include "fourstrings.h"
-//#include "../config.h"
-//#ifdef HAVE_JSON_C_JSON_H
-//#include <json-c/json.h>
-//#else
-//#include <json.h>
-//#endif
-//#ifdef HAVE_FLICKCURL
-//#include <flickcurl.h>
-//#endif
 #include "webwidget_common.h"
 #include "webpexels.h"
 #include "webflickr.h"
 #include "webwidget.h"
+/**
+ * @def   NAME_LEN
+ * @brief Lenght of name in download progress window.
+ *
+ * @def   SEL_NAME_LEN
+ * @brief Lenght of name in selected images combobox.
+ */
+#define NAME_LEN 40
+#define SEL_NAME_LEN 60
 
 /*----------------------------------------------------------------------------*/
 /**
@@ -116,10 +116,11 @@ download_progress_window (GtkWindow *gw_parent,
     float       f_frac   = 0;    /* Fraction for progress bar to set */
     int         i_stop   = 0;    /* To set when stop button is pressed */
     int         i_perm   = 0;    /* For checking save dir permissions */
-    char s_nbuff[512];
+    size_t      ui_nlen  = 0;    /* Length of file name */
+    char s_nbuff[NAME_LEN * 4 + 4];
 
-    memset (s_nbuff, '\0', 512);
-    memset (s_nbuff, ' ', 60);
+    memset (s_nbuff, '\0', NAME_LEN * 4 + 4);
+    memset (s_nbuff, ' ',  NAME_LEN + 10);
 
     /* Getting wallpaper save path and checking it's permissions, creating if
      * it doesn't exist */
@@ -174,8 +175,6 @@ download_progress_window (GtkWindow *gw_parent,
     gtk_container_add (GTK_CONTAINER (gw_window), gw_box_main);
     gtk_widget_show_all (gw_window);
 
-    //while (gtk_events_pending ())
-    //    gtk_main_iteration ();
     /* Processing list of wallpapers to download */
     while (gl_item != NULL) {
         if (i_stop == 1)
@@ -184,17 +183,15 @@ download_progress_window (GtkWindow *gw_parent,
         f_frac  += f_step;
         si_item  = gl_item->data;
 
-        size_t ui_nlen = g_utf8_strlen (si_item->s_file_name, -1);
-        memset (s_nbuff, '\0', 512);
+        ui_nlen = (size_t) g_utf8_strlen (si_item->s_file_name, -1);
 
-        if (ui_nlen > 30) {
-            g_utf8_strncpy (s_nbuff, si_item->s_file_name, 30);
+        if (ui_nlen > NAME_LEN) {
+            g_utf8_strncpy (s_nbuff, si_item->s_file_name, NAME_LEN);
             strcat (s_nbuff, "...");
         }
         else {
             strcpy (s_nbuff, si_item->s_file_name);
         }
-
         s_fn = str_comb (s_wpdir, "/");
         str_append (&s_fn, si_item->s_file_name);
         s_markup = g_markup_printf_escaped (s_format, s_nbuff);
@@ -611,6 +608,7 @@ event_add_selected_pressed (WebWidget *ww_widget)
     int           i_h         = 0;
     float         f_w         = 0;
     float         f_h         = 0;
+    char          s_dname[SEL_NAME_LEN * 4 + 4];
 
     gtm_combo_model = gtk_combo_box_get_model (
             GTK_COMBO_BOX (ww_widget->gw_selected_combo));
@@ -650,6 +648,14 @@ event_add_selected_pressed (WebWidget *ww_widget)
                 i_w = gdk_pixbuf_get_width (gp_pbuf);
                 i_h = gdk_pixbuf_get_height (gp_pbuf);
 
+                if (g_utf8_strlen (s_disp_name, -1) > SEL_NAME_LEN) {
+                    g_utf8_strncpy (s_dname, s_disp_name, SEL_NAME_LEN);
+                    strcat (s_dname, "...");
+                }
+                else {
+                    strcpy (s_dname, s_disp_name);
+                }
+
                 if (i_w > i_h) {
                     f_h = (float) i_h / (float) i_w * f_w;
                 }
@@ -667,7 +673,8 @@ event_add_selected_pressed (WebWidget *ww_widget)
                                     WW_SELCOMBO_WIDTH,     i_w,
                                     WW_SELCOMBO_HEIGHT,    i_h,
                                     WW_SELCOMBO_ID,        i_id,
-                                    WW_SELCOMBO_DISP_NAME, s_disp_name,
+                                    /*WW_SELCOMBO_DISP_NAME, s_disp_name,*/
+                                    WW_SELCOMBO_DISP_NAME, s_dname,
                                     WW_SELCOMBO_FILE_NAME, s_file_name,
                                     WW_SELCOMBO_IMAGE_URL, s_image_url,
                                     -1);

@@ -17,7 +17,7 @@
  * You should have received a copy of the GNU General Public License
  * along with Wall Changer.  If not, see <https://www.gnu.org/licenses/>.
  *
- * @brief  Settings for searching in Pexels website.
+ * @brief  Settings for searching the Pexels website.
  *
  * @author Michal Babik <michal.babik@pm.me>
  */
@@ -30,14 +30,6 @@
 
 /*----------------------------------------------------------------------------*/
 /**
- * @brief  Dialog with Pexels service settings.
- *
- * @param[in,out] fs_data  Four strings to get and write API keys
- * @return        Dialog response
- */
-int  pexels_settings_dialog (FourStrings       *fs_data);
-/*----------------------------------------------------------------------------*/
-/**
  * @brief  Search in Pexels database.
  *
  * @param[in,out] ww_widget  WebWidget with widgets and search data
@@ -46,5 +38,13 @@ int  pexels_settings_dialog (FourStrings       *fs_data);
  */
 void pexels_search          (WebWidget         *ww_widget,
                              const FourStrings *fs_data);
+/*----------------------------------------------------------------------------*/
+/**
+ * @brief  Dialog with Pexels service settings.
+ *
+ * @param[in,out] fs_data  Four strings to get and write API keys
+ * @return        Dialog response
+ */
+int  pexels_settings_dialog (FourStrings       *fs_data);
 /*----------------------------------------------------------------------------*/
 #endif

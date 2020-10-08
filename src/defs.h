@@ -39,13 +39,13 @@
  *
  * @def   STATUS_CONFIG
  * @brief Prefix for statusbar config file info
- *
  */
-#define APP_NAME              "Wall Changer"
-#define APP_VER               "1.6.2"
-#define APP_WEB               "https://www.nongnu.org/wallchanger/"
-#define APP_DSC               "Wall Changer is an automatic wallpaper changer."
-#define STATUS_CONFIG         "Config file in use: "
+/*----------------------------------------------------------------------------*/
+#define APP_NAME      "Wall Changer"
+#define APP_VER       "1.6.2"
+#define APP_WEB       "https://www.nongnu.org/wallchanger/"
+#define APP_DSC       "Wall Changer is an automatic wallpaper changer."
+#define STATUS_CONFIG "Config file in use: "
 /*----------------------------------------------------------------------------*/
 /**
  * @def   DEFAULT_BG_CMD
@@ -66,6 +66,7 @@
  * @def   DEFAULT_LAST_USED_WM
  * @brief Default setting for last used window manager
  */
+/*----------------------------------------------------------------------------*/
 #define DEFAULT_BG_CMD        "feh --bg-fill \"[F]\""
 #define DEFAULT_INTERVAL_VAL   30
 #define DEFAULT_LAST_USED_OPT  0
@@ -83,6 +84,7 @@
  * @def   SEL_TH_HEIGHT
  * @brief Thumbnail height size for selected images combo list
  */
+/*----------------------------------------------------------------------------*/
 #define IMGS_ON_PAGE  12
 
 #define SEL_TH_WIDTH  50.0
@@ -101,6 +103,7 @@
  * @def   DEFAULT_WEB_DLG_HEIGHT
  * @brief Default wallpaper web search dialog height
  */
+/*----------------------------------------------------------------------------*/
 #define DEFAULT_WIN_WIDTH      1024
 #define DEFAULT_WIN_HEIGHT     768
 
@@ -126,6 +129,7 @@
  * @def   PATH_WALLPAPERS
  * @brief Wallpaper save path
  */
+/*----------------------------------------------------------------------------*/
 #define PATH_AUTOSTART_DATA "/wchangerd.autostart"
 #define PATH_AUTOSTART_HOME "/autostart/wchangerd.desktop"
 #define PATH_WMINFO_DATA    "/wms.json"

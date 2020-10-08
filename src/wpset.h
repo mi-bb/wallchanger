@@ -70,11 +70,11 @@
  * @return     Wallpaper set status
  */
 /*----------------------------------------------------------------------------*/
-int wpset_change          (Setting    *st_settings,
+int  wpset_change         (Setting    *st_settings,
                            RandMem    *rm_rand,
                            const char *s_cfg_file);
 
-int wpset_startup_set     (Setting    *st_settings,
+int  wpset_startup_set    (Setting    *st_settings,
                            RandMem    *rm_rand,
                            const char *s_cfg_file);
 

@@ -17,7 +17,7 @@
  * You should have received a copy of the GNU General Public License
  * along with Wall Changer.  If not, see <https://www.gnu.org/licenses/>.
  *
- * @brief  Settings for searching in Pexels website.
+ * @brief  Settings for searching the Pexels website.
  *
  * @author Michal Babik <michal.babik@pm.me>
  */
@@ -59,6 +59,7 @@ pexels_extract_base_name (const char *s_url)
         return NULL;
     s_res = strdup (s_repl+1);
     free (s_dup);
+
     return s_res;
 }
 /*----------------------------------------------------------------------------*/
@@ -86,67 +87,6 @@ pexels_create_display_name (const char *s_bname)
     *s_repl = '\0';
 
     return s_res;
-}
-/*----------------------------------------------------------------------------*/
-/**
- * @brief  Dialog with Pexels service settings.
- */
-int
-pexels_settings_dialog (FourStrings *fs_data)
-{
-    GtkWidget *gw_dialog;      /* Pexels settings dialog */
-    GtkWidget *gw_content_box; /* Dialog's box */
-    GtkWidget *gw_api_entry;   /* Entry for API key */
-    int        i_res = 0;      /* Dialog result */
-
-    GtkDialogFlags flags = GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT;
-
-    gw_dialog = gtk_dialog_new_with_buttons ("Pexels configuration",
-                                             NULL,
-                                             flags,
-                                             "_OK",
-                                             GTK_RESPONSE_ACCEPT,
-                                             "_Cancel",
-                                             GTK_RESPONSE_REJECT,
-                                             NULL);
-
-    gw_content_box = gtk_dialog_get_content_area (GTK_DIALOG (gw_dialog));
-    gtk_container_set_border_width (GTK_CONTAINER (gw_content_box), 8);
-
-    gw_api_entry = gtk_entry_new ();
-
-    gtk_entry_set_text (GTK_ENTRY (gw_api_entry), fs_data->s_str1);
-
-    /* Packing dialog widgets */
-    gtk_box_pack_start (GTK_BOX (gw_content_box),
-                        gtk_label_new ("Pexels API key:"),
-                        FALSE, FALSE, 4);
-    gtk_box_pack_start (GTK_BOX (gw_content_box),
-                        gw_api_entry,
-                        FALSE, FALSE, 4);
-    gtk_box_pack_start (GTK_BOX (gw_content_box),
-                        gtk_separator_new (GTK_ORIENTATION_HORIZONTAL),
-                        FALSE, FALSE, 4);
-    gtk_box_pack_start (GTK_BOX (gw_content_box),
-                        gtk_label_new (
-    "To get your API key, you need to be registered on the Pexels website and "
-    " request a key from: "),
-                        FALSE, FALSE, 4);
-    gtk_box_pack_start (GTK_BOX (gw_content_box),
-                        gtk_link_button_new ("https://www.pexels.com/api/new/"),
-                        FALSE, FALSE, 4);
-
-    gtk_widget_show_all (gw_content_box);
-
-    i_res = gtk_dialog_run (GTK_DIALOG (gw_dialog));
-
-    if (i_res == GTK_RESPONSE_ACCEPT) {
-        free (fs_data->s_str1);
-        fs_data->s_str1 = strdup (
-                gtk_entry_get_text (GTK_ENTRY (gw_api_entry)));
-    }
-    gtk_widget_destroy (gw_dialog);
-    return i_res;
 }
 /*----------------------------------------------------------------------------*/
 /**
@@ -322,9 +262,6 @@ pexels_json_to_webwidget (const char *s_buff,
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Search in Pexels database.
- *
- * @param[in,out] ww_widget  WebWidget with widgets and search data
- * @return        none
  */
 void
 pexels_search (WebWidget   *ww_widget,
@@ -348,6 +285,68 @@ pexels_search (WebWidget   *ww_widget,
         pexels_json_to_webwidget (ud_data->buffer, ww_widget);
     }
     urldata_free (ud_data);
+}
+/*----------------------------------------------------------------------------*/
+/**
+ * @brief  Dialog with Pexels service settings.
+ */
+int
+pexels_settings_dialog (FourStrings *fs_data)
+{
+    GtkWidget *gw_dialog;      /* Pexels settings dialog */
+    GtkWidget *gw_content_box; /* Dialog's box */
+    GtkWidget *gw_api_entry;   /* Entry for API key */
+    int        i_res = 0;      /* Dialog result */
+
+    GtkDialogFlags flags = GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT;
+
+    gw_dialog = gtk_dialog_new_with_buttons ("Pexels configuration",
+                                             NULL,
+                                             flags,
+                                             "_OK",
+                                             GTK_RESPONSE_ACCEPT,
+                                             "_Cancel",
+                                             GTK_RESPONSE_REJECT,
+                                             NULL);
+
+    gw_content_box = gtk_dialog_get_content_area (GTK_DIALOG (gw_dialog));
+    gtk_container_set_border_width (GTK_CONTAINER (gw_content_box), 8);
+
+    gw_api_entry = gtk_entry_new ();
+
+    gtk_entry_set_text (GTK_ENTRY (gw_api_entry), fs_data->s_str1);
+
+    /* Packing dialog widgets */
+    gtk_box_pack_start (GTK_BOX (gw_content_box),
+                        gtk_label_new ("Pexels API key:"),
+                        FALSE, FALSE, 4);
+    gtk_box_pack_start (GTK_BOX (gw_content_box),
+                        gw_api_entry,
+                        FALSE, FALSE, 4);
+    gtk_box_pack_start (GTK_BOX (gw_content_box),
+                        gtk_separator_new (GTK_ORIENTATION_HORIZONTAL),
+                        FALSE, FALSE, 4);
+    gtk_box_pack_start (GTK_BOX (gw_content_box),
+                        gtk_label_new (
+    "To get your API key, you need to be registered on the Pexels website and "
+    " request a key from: "),
+                        FALSE, FALSE, 4);
+    gtk_box_pack_start (GTK_BOX (gw_content_box),
+                        gtk_link_button_new ("https://www.pexels.com/api/new/"),
+                        FALSE, FALSE, 4);
+
+    gtk_widget_show_all (gw_content_box);
+
+    i_res = gtk_dialog_run (GTK_DIALOG (gw_dialog));
+
+    if (i_res == GTK_RESPONSE_ACCEPT) {
+        free (fs_data->s_str1);
+        fs_data->s_str1 = strdup (
+                gtk_entry_get_text (GTK_ENTRY (gw_api_entry)));
+    }
+    gtk_widget_destroy (gw_dialog);
+
+    return i_res;
 }
 /*----------------------------------------------------------------------------*/
 

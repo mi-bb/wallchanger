@@ -39,7 +39,7 @@
 /*----------------------------------------------------------------------------*/
 /**
  * @def   PREV_LEN
- * @brief Length of file name preview string for combobox.
+ * @brief Length of file name in preview combobox.
  */
 #define PREV_LEN 47
 /*----------------------------------------------------------------------------*/
