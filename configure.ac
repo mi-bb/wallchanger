@@ -16,7 +16,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 AC_PREREQ([2.69])
-AC_INIT([wallchanger], [1.6.3], [michal.babik@pm.me], [wallchanger],\
+AC_INIT([wallchanger], [1.6.4], [michal.babik@pm.me], [wallchanger],\
         [https://www.nongnu.org/wallchanger/])
 AM_INIT_AUTOMAKE
 AC_CONFIG_SRCDIR([src/setting.c])
@@ -27,7 +27,7 @@ AC_GNU_SOURCE
 AC_PROG_CC
 AC_PATH_XTRA
 
-# Checks for procstat for FreeBSD.
+# Check procstat for FreeBSD.
 AC_CHECK_LIB([procstat], [procstat_getprocs], [], [], [])
 
 # Checks for libraries.

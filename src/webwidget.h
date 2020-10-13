@@ -34,6 +34,7 @@
  */
 enum e_wall_sites {
     WEB_WIDGET_PEXELS, /**< Pexels */
+    WEB_WIDGET_PIXBAY, /**< Pixbay */
 #ifdef HAVE_FLICKCURL
     WEB_WIDGET_FLICKR, /**< Flickr */
 #endif

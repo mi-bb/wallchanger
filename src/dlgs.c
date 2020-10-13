@@ -853,6 +853,12 @@ add_images_from_web_dilaog (GtkWindow  *gw_parent,
                         gtk_separator_new (GTK_ORIENTATION_HORIZONTAL),
                         FALSE, FALSE, 4);
     gtk_box_pack_start (GTK_BOX (gw_content_box),
+                        ww_widget->gw_ii_widget,
+                        FALSE, FALSE, 4);
+    gtk_box_pack_start (GTK_BOX (gw_content_box),
+                        gtk_separator_new (GTK_ORIENTATION_HORIZONTAL),
+                        FALSE, FALSE, 4);
+    gtk_box_pack_start (GTK_BOX (gw_content_box),
                         ww_widget->gw_selected_box,
                         FALSE, FALSE, 4);
 

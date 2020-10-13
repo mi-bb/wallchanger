@@ -1,5 +1,5 @@
 /**
- * @file  webpexels.c
+ * @file  webpixbay.c
  * @copyright Copyright (C) 2019-2020 Michał Bąbik
  *
  * This file is part of Wall Changer.
@@ -17,24 +17,22 @@
  * You should have received a copy of the GNU General Public License
  * along with Wall Changer.  If not, see <https://www.gnu.org/licenses/>.
  *
- * @brief  Settings for searching the Pexels website.
+ * @brief  Settings for searching the Pixbay website.
  *
  * @author Michal Babik <michal.babik@pm.me>
  */
 #include <ctype.h>
-#include <err.h>
 #include "../config.h"
 #ifdef HAVE_JSON_C_JSON_H
 #include <json-c/json.h>
 #else
 #include <json.h>
 #endif
-#include "strfun.h"
-#include "dlgsmsg.h"
-#include "searchitem.h"
 #include "urldata.h"
 #include "webwidget_common.h"
-#include "webpexels.h"
+#include "dlgsmsg.h"
+#include "strfun.h"
+#include "webpixbay.h"
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Extract base image name from image url.
@@ -135,16 +133,15 @@ pexels_process_item_set_names (SearchItem *si_item)
 }
 /*----------------------------------------------------------------------------*/
 /**
- * @brief  Convert Pexels json image info to SearchItem item.
+ * @brief  Convert Pixbay json image info to SearchItem item.
  *
  * @param[in] j_obj  Json object to convert
  * @return    SearchItem item
  */
 static SearchItem *
-pexels_json_obj_to_searchitem (json_object *j_obj)
+pixbay_json_obj_to_searchitem (json_object *j_obj)
 {
     json_object *j_val;
-    json_object *j_val2;
 
     SearchItem *si_item = searchitem_new ();
 
@@ -158,7 +155,7 @@ pexels_json_obj_to_searchitem (json_object *j_obj)
         printf ("photo id : %s\n", si_item->s_id);
 #endif
     }
-    if (json_object_object_get_ex (j_obj, "width", &j_val) &&
+    if (json_object_object_get_ex (j_obj, "imageWidth", &j_val) &&
         json_object_get_type (j_val) == json_type_int) {
 
         searchitem_set_width (si_item, json_object_get_int (j_val));
@@ -166,7 +163,7 @@ pexels_json_obj_to_searchitem (json_object *j_obj)
         printf ("width : %d\n", json_object_get_int (j_val));
 #endif
     }
-    if (json_object_object_get_ex (j_obj, "height", &j_val) &&
+    if (json_object_object_get_ex (j_obj, "imageHeight", &j_val) &&
         json_object_get_type (j_val) == json_type_int) {
 
         searchitem_set_height (si_item, json_object_get_int (j_val));
@@ -174,7 +171,7 @@ pexels_json_obj_to_searchitem (json_object *j_obj)
         printf ("height : %d\n", json_object_get_int (j_val));
 #endif
     }
-    if (json_object_object_get_ex (j_obj, "photographer", &j_val) &&
+    if (json_object_object_get_ex (j_obj, "user", &j_val) &&
         json_object_get_type (j_val) == json_type_string) {
 
         searchitem_set_author_name (si_item, json_object_get_string (j_val));
@@ -182,7 +179,7 @@ pexels_json_obj_to_searchitem (json_object *j_obj)
         printf ("author : %s\n", json_object_get_string (j_val));
 #endif
     }
-    if (json_object_object_get_ex (j_obj, "url", &j_val) &&
+    if (json_object_object_get_ex (j_obj, "pageURL", &j_val) &&
         json_object_get_type (j_val) == json_type_string) {
 
         searchitem_set_page_url (si_item, json_object_get_string (j_val));
@@ -190,39 +187,44 @@ pexels_json_obj_to_searchitem (json_object *j_obj)
         printf ("url : %s\n", json_object_get_string (j_val));
 #endif
     }
-    if (json_object_object_get_ex (j_obj, "src", &j_val) &&
-        json_object_get_type (j_val) == json_type_object) {
+    if (json_object_object_get_ex (j_obj, "imageURL", &j_val) &&
+        json_object_get_type (j_val) == json_type_string) {
 
-        if (json_object_object_get_ex (j_val, "original", &j_val2) &&
-            json_object_get_type (j_val2) == json_type_string) {
-
-            searchitem_set_image_url (si_item, json_object_get_string (j_val2));
+        searchitem_set_image_url (si_item, json_object_get_string (j_val));
 #ifdef DEBUG
-            printf ("original : %s\n", json_object_get_string (j_val2));
+        printf ("image url : %s\n", json_object_get_string (j_val));
 #endif
-        }
-        if (json_object_object_get_ex (j_val, "tiny", &j_val2) &&
-            json_object_get_type (j_val2) == json_type_string) {
-
-            searchitem_set_thumb_url (si_item, json_object_get_string (j_val2));
-#ifdef DEBUG
-            printf ("thumb : %s\n", json_object_get_string (j_val2));
-#endif
-        }
-        pexels_process_item_set_names (si_item);
     }
+    else if (json_object_object_get_ex (j_obj, "largeImageURL", &j_val) &&
+        json_object_get_type (j_val) == json_type_string) {
+
+        searchitem_set_image_url (si_item, json_object_get_string (j_val));
+#ifdef DEBUG
+        printf ("image url : %s\n", json_object_get_string (j_val));
+#endif
+    }
+    if (json_object_object_get_ex (j_obj, "previewURL", &j_val) &&
+        json_object_get_type (j_val) == json_type_string) {
+
+        searchitem_set_thumb_url (si_item, json_object_get_string (j_val));
+#ifdef DEBUG
+        printf ("thumb url : %s\n", json_object_get_string (j_val));
+#endif
+    }
+    pexels_process_item_set_names (si_item);
+
     return si_item;
 }
 /*----------------------------------------------------------------------------*/
 /**
- * @brief  Analyze Pexels json search response and add results to image list.
+ * @brief  Analyze Pixbay json search response and add results to image list.
  *
  * @param[in]  s_buff     String with json data
  * @param[out] ww_widget  Webwidget to set data
  * @return     none
  */
 static void
-pexels_json_to_webwidget (const char *s_buff,
+pixbay_json_to_webwidget (const char *s_buff,
                           WebWidget  *ww_widget)
 {
     json_object *j_obj;
@@ -246,7 +248,7 @@ pexels_json_to_webwidget (const char *s_buff,
             json_object_put (j_obj);
     }
     else {
-        if (json_object_object_get_ex (j_obj, "total_results", &j_val) &&
+        if (json_object_object_get_ex (j_obj, "totalHits", &j_val) &&
             json_object_get_type (j_val) == json_type_int) {
 
             ww_widget->i_found_cnt = json_object_get_int (j_val);
@@ -254,7 +256,7 @@ pexels_json_to_webwidget (const char *s_buff,
             printf ("found images : %d\n", ww_widget->i_found_cnt);
 #endif
         }
-        if (json_object_object_get_ex (j_obj, "photos", &j_arr) &&
+        if (json_object_object_get_ex (j_obj, "hits", &j_arr) &&
             json_object_get_type (j_arr) == json_type_array) {
 
             ui_cnt = json_object_array_length (j_arr);
@@ -264,11 +266,11 @@ pexels_json_to_webwidget (const char *s_buff,
 
             for (i = 0; i < ui_cnt; ++i) {
                 if ((j_val = json_object_array_get_idx (j_arr, i)) != NULL) {
-                    si_item = pexels_json_obj_to_searchitem (j_val);
+                    si_item = pixbay_json_obj_to_searchitem (j_val);
                     add_searchitem_to_img_view (ww_widget->gw_img_view,
                                                 si_item,
                                                 ww_widget->s_thumb_dir,
-                                                "pexels_");
+                                                "pixbay_");
                     searchitem_free (si_item);
                 }
             }
@@ -281,17 +283,17 @@ pexels_json_to_webwidget (const char *s_buff,
  * @brief  Search in Pexels database.
  */
 void
-pexels_search (WebWidget         *ww_widget,
+pixbay_search (WebWidget         *ww_widget,
                const FourStrings *fs_data)
 {
     UrlData *ud_data = NULL; /* For search results */
     char    *s_query = NULL; /* For search query */
 
-    if (check_is_empty (fs_data->s_str1, "Pexels API key is not set"))
+    if (check_is_empty (fs_data->s_str1, "Pixbay API key is not set"))
         return;
 
     s_query = str_replace_in (ww_widget->s_query, " ", "+");
-    ud_data = urldata_search_pexels (s_query,
+    ud_data = urldata_search_pixbay (s_query,
                                      fs_data->s_str1,
                                      ww_widget->i_page,
                                      ww_widget->i_per_page);
@@ -301,26 +303,26 @@ pexels_search (WebWidget         *ww_widget,
     else if (urldata_full (ud_data)) {
         gtk_list_store_clear (GTK_LIST_STORE (gtk_icon_view_get_model (
                         GTK_ICON_VIEW (ww_widget->gw_img_view))));
-        pexels_json_to_webwidget (ud_data->buffer, ww_widget);
+        pixbay_json_to_webwidget (ud_data->buffer, ww_widget);
     }
     urldata_free (ud_data);
     free (s_query);
 }
 /*----------------------------------------------------------------------------*/
 /**
- * @brief  Dialog with Pexels service settings.
+ * @brief  Dialog with Pixbay service settings.
  */
 int
-pexels_settings_dialog (FourStrings *fs_data)
+pixbay_settings_dialog (FourStrings *fs_data)
 {
-    GtkWidget *gw_dialog;      /* Pexels settings dialog */
+    GtkWidget *gw_dialog;      /* Pixbay settings dialog */
     GtkWidget *gw_content_box; /* Dialog's box */
     GtkWidget *gw_api_entry;   /* Entry for API key */
     int        i_res = 0;      /* Dialog result */
 
     GtkDialogFlags flags = GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT;
 
-    gw_dialog = gtk_dialog_new_with_buttons ("Pexels configuration",
+    gw_dialog = gtk_dialog_new_with_buttons ("Pixbay configuration",
                                              NULL,
                                              flags,
                                              "_OK",
@@ -338,7 +340,7 @@ pexels_settings_dialog (FourStrings *fs_data)
 
     /* Packing dialog widgets */
     gtk_box_pack_start (GTK_BOX (gw_content_box),
-                        gtk_label_new ("Pexels API key:"),
+                        gtk_label_new ("Pixbay API key:"),
                         FALSE, FALSE, 4);
     gtk_box_pack_start (GTK_BOX (gw_content_box),
                         gw_api_entry,
@@ -348,11 +350,11 @@ pexels_settings_dialog (FourStrings *fs_data)
                         FALSE, FALSE, 4);
     gtk_box_pack_start (GTK_BOX (gw_content_box),
                         gtk_label_new (
-    "To get your API key, you need to be registered on the Pexels website and "
-    " request a key from: "),
+    "To get your API key, you need to be registered on the Pixbay website and "
+    " paste API key from: "),
                         FALSE, FALSE, 4);
     gtk_box_pack_start (GTK_BOX (gw_content_box),
-                        gtk_link_button_new ("https://www.pexels.com/api/new/"),
+                        gtk_link_button_new ("https://pixabay.com/api/docs/"),
                         FALSE, FALSE, 4);
 
     gtk_widget_show_all (gw_content_box);
@@ -369,4 +371,3 @@ pexels_settings_dialog (FourStrings *fs_data)
     return i_res;
 }
 /*----------------------------------------------------------------------------*/
-

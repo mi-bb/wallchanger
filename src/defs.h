@@ -42,7 +42,7 @@
  */
 /*----------------------------------------------------------------------------*/
 #define APP_NAME      "Wall Changer"
-#define APP_VER       "1.6.2"
+#define APP_VER       "1.6.4"
 #define APP_WEB       "https://www.nongnu.org/wallchanger/"
 #define APP_DSC       "Wall Changer is an automatic wallpaper changer."
 #define STATUS_CONFIG "Config file in use: "
@@ -126,6 +126,9 @@
  * @def   PATH_APP_SHARE
  * @brief Path for application directory in system's data directory.
  *
+ * @def   PATH_APP_CACHE
+ * @brief Path for app cache directory.
+ *
  * @def   PATH_WALLPAPERS
  * @brief Wallpaper save path
  */
@@ -135,6 +138,7 @@
 #define PATH_WMINFO_DATA    "/wms.json"
 #define PATH_WMINFO_HOME    "/wchanger/wms.json"
 #define PATH_APP_SHARE      "/wchanger"
+#define PATH_APP_CACHE      "/wchanger"
 #define PATH_WALLPAPERS     "/wchanger/wallpapers"
 /*----------------------------------------------------------------------------*/
 #endif

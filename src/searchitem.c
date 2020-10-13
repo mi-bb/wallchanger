@@ -23,6 +23,7 @@
  */
 #include <stdlib.h>
 #include <string.h>
+#include <stdio.h>
 #include <err.h>
 
 #include "../config.h"
@@ -45,6 +46,9 @@ static void
 searchitem_init (SearchItem *si_item)
 {
     si_item->i_id             = 0;
+    si_item->s_id             = NULL;
+    si_item->s_author_name    = NULL;
+    si_item->s_author_url     = NULL;
     si_item->s_file_name      = NULL;
     si_item->s_display_name   = NULL;
     si_item->s_display_markup = NULL;
@@ -61,6 +65,9 @@ searchitem_init (SearchItem *si_item)
 void
 searchitem_free (SearchItem *si_item)
 {
+    free (si_item->s_id);
+    free (si_item->s_author_name);
+    free (si_item->s_author_url);
     free (si_item->s_file_name);
     free (si_item->s_display_name);
     free (si_item->s_display_markup);
@@ -84,6 +91,47 @@ searchitem_new (void)
     searchitem_init (si_item);
 
     return si_item;
+}
+/*----------------------------------------------------------------------------*/
+/**
+ * @brief  Set SearchItem's photo id string and int value based on int value.
+ */
+void
+searchitem_set_id_uint (SearchItem    *si_item,
+                        const uint64_t val)
+{
+    char s_tmp[32];
+
+    sprintf (s_tmp, "%" PRIu64, val);
+    si_item->i_id = val;
+    if (si_item->s_id != NULL)
+        free (si_item->s_id);
+    si_item->s_id = strdup (s_tmp);
+}
+/*----------------------------------------------------------------------------*/
+/**
+ * @brief  Set SearchItem's photo id string and int value based on string value.
+ */
+void
+searchitem_set_id_string (SearchItem *si_item,
+                          const char *s_val)
+{
+    si_item->i_id = (uint64_t) strtoull (s_val, NULL, 10);
+    if (si_item->s_id != NULL)
+        free (si_item->s_id);
+    si_item->s_id = strdup (s_val);
+}
+/*----------------------------------------------------------------------------*/
+/**
+ * @brief  Set SearchItem's file name.
+ */
+void
+searchitem_set_author_name (SearchItem *si_item,
+                            const char *s_val)
+{
+    if (si_item->s_author_name != NULL)
+        free (si_item->s_author_name);
+    si_item->s_author_name = strdup (s_val);
 }
 /*----------------------------------------------------------------------------*/
 /**

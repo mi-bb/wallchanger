@@ -58,11 +58,29 @@
  * @var   WebWidget::gw_count_label
  * @brief Label for search results information
  *
+ * @var   WebWidget::gw_ii_widget
+ * @brief Widget with image info widgets
+ *
+ * @var   WebWidget::gw_ii_simage
+ * @brief Widget with image service image
+ *
+ * @var   WebWidget::gw_ii_author_label
+ * @brief Widget with image author name
+ *
+ * @var   WebWidget::gw_ii_page_link
+ * @brief Widget with link to author's page
+ *
+ * @var   WebWidget::gw_ii_dim_label
+ * @brief Widget with image dimensions
+ *
  * @var   WebWidget::s_query
  * @brief String with search query
  *
  * @var   WebWidget::s_cfg_file
  * @brief String with config file path
+ *
+ * @var   WebWidget::s_thumb_dir
+ * @brief String with thumbnail directory
  *
  * @var   WebWidget::i_page
  * @brief Current page number
@@ -72,6 +90,9 @@
  *
  * @var   WebWidget::i_found_cnt
  * @brief Number of found images
+ *
+ * @var   WebWidget::i_active_service
+ * @brief Id of active seaech service
  */
 typedef struct
 WebWidget {
@@ -84,11 +105,18 @@ WebWidget {
     GtkWidget *gw_selected_combo;
     GtkWidget *gw_selected_box;
     GtkWidget *gw_count_label;
+    GtkWidget *gw_ii_widget;
+    GtkWidget *gw_ii_simage;
+    GtkWidget *gw_ii_author_label;
+    GtkWidget *gw_ii_page_link;
+    GtkWidget *gw_ii_dim_label;
     char      *s_query;
     char      *s_cfg_file;
+    char      *s_thumb_dir;
     int        i_page;
     int        i_per_page;
     int        i_found_cnt;
+    int        i_active_service;
 } WebWidget;
 /*----------------------------------------------------------------------------*/
 #endif

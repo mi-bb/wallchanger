@@ -24,6 +24,9 @@
 #ifndef IMGS_H
 #define IMGS_H
 #include <gdk-pixbuf/gdk-pixbuf.h>
+#include "../config.h"
+
+
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  enum for icons and images
@@ -46,6 +49,11 @@ typedef enum IconImg {
     W_IMG_SCREEN_1,  /**< Preview image top part (screen) */
     W_IMG_SCREEN_2,  /**< Preview image middle part (screen) */
     W_IMG_SCREEN_3,  /**< Preview image bottom part (screen) */
+    W_LOGO_PEXELS,   /**< Pexels logo */
+    W_LOGO_PIXBAY,   /**< Pixbay logo */
+#ifdef HAVE_FLICKCURL
+    W_LOGO_FLICKR,   /**< Flickr logo */
+#endif
     W_IMG_COUNT      /**< Number of images */
 } IconImg;
 /*----------------------------------------------------------------------------*/

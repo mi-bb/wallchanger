@@ -44,6 +44,7 @@ enum e_setting_values {
     SETTING_WEB_DLG_WIDTH,  /**< Web dilaog width */
     SETTING_WEB_DLG_HEIGHT, /**< Web dilaog height */
     SETTING_PEXELS_API,     /**< Pexels API key */
+    SETTING_PIXBAY_API,     /**< Pixbay API key */
     SETTING_FLICKR_CLKEY,   /**< Flickr API key */
     SETTING_FLICKR_CLSEC,   /**< Flickr API secret */
     SETTING_FLICKR_ACTOK,   /**< Flickr API access token */
@@ -119,11 +120,19 @@ Setting *    setts_read           (const char *s_cfg_file,
  * @return    Status of data update
  *
  * @fn  int setts_update_pexels_api (const char *s_cfg_file,
- *                                   const char *s_pexels_api)
+ *                                   const char *s_api_key)
  * @brief  Update Pexels API key
  *
- * @param[in] s_cfg_file    Config file path
- * @param[in] s_pexels_api  String with Pexels API key
+ * @param[in] s_cfg_file  Config file path
+ * @param[in] s_api_key   String with Pexels API key
+ * @return    Status of data update
+ *
+ * @fn  int setts_update_pixbay_api (const char *s_cfg_file,
+ *                                   const char *s_api_key)
+ * @brief  Update Pixbay API key
+ *
+ * @param[in] s_cfg_file  Config file path
+ * @param[in] s_api_key   String with Pixbay API key
  * @return    Status of data update
  */
 /*----------------------------------------------------------------------------*/
@@ -142,7 +151,10 @@ int setts_update_web_dlg_size (const char *s_cfg_file,
                                const int   i_h);
 
 int setts_update_pexels_api   (const char *s_cfg_file,
-                               const char *s_pexels_api);
+                               const char *s_api_key);
+
+int setts_update_pixbay_api   (const char *s_cfg_file,
+                               const char *s_api_key);
 /*----------------------------------------------------------------------------*/
 #ifdef HAVE_FLICKCURL
 /**

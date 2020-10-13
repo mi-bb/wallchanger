@@ -32,7 +32,6 @@
 #include "errs.h"
 #include "wmsfn.h"
 #include "chkwch.h"
-/*----------------------------------------------------------------------------*/
 #ifdef DEBUG
 #include <stdio.h>
 #endif

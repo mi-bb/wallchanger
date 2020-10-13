@@ -28,6 +28,7 @@
 #include <flickcurl.h>
 #include <err.h>
 
+#include "strfun.h"
 #include "searchitem.h"
 #include "webwidget_common.h"
 #include "webflickr.h"
@@ -63,14 +64,14 @@ event_flickr_auth_link_generate (GtkWidget **gw_array)
     const char *s_req_sec = NULL; /* Request token secret */
     char       *s_uri     = NULL; /* Authorization url */
     flickcurl  *fc;
-    int rc = 0;
+    int rc __attribute__ ((unused)) = 0 ;
 
     s_cli_key = gtk_entry_get_text (GTK_ENTRY (gw_array[FLA_CLI_KEY]));
     s_cli_sec = gtk_entry_get_text (GTK_ENTRY (gw_array[FLA_CLI_SEC]));
 
-    if (check_empty (s_cli_key, "Empty client key"))
+    if (check_is_empty (s_cli_key, "Empty client key"))
         return;
-    if (check_empty (s_cli_sec, "Empty client secret"))
+    if (check_is_empty (s_cli_sec, "Empty client secret"))
         return;
 
     flickcurl_init ();
@@ -114,7 +115,7 @@ event_flickr_access_keys_generate (GtkWidget **gw_array)
     const char *s_ath_sec  = NULL; /* Access token secret */
     const char *s_verifier = NULL; /* Verify code */
     flickcurl  *fc;
-    int rc = 0;
+    int rc __attribute__ ((unused)) = 0 ;
 
     s_cli_key  = gtk_entry_get_text (GTK_ENTRY (gw_array[FLA_CLI_KEY]));
     s_cli_sec  = gtk_entry_get_text (GTK_ENTRY (gw_array[FLA_CLI_SEC]));
@@ -122,15 +123,15 @@ event_flickr_access_keys_generate (GtkWidget **gw_array)
     s_req_sec  = gtk_entry_get_text (GTK_ENTRY (gw_array[FLA_REQ_SEC]));
     s_verifier = gtk_entry_get_text (GTK_ENTRY (gw_array[FLA_VER_CD]));
 
-    if (check_empty (s_cli_key,  "Empty client key"))
+    if (check_is_empty (s_cli_key,  "Empty client key"))
         return;
-    if (check_empty (s_cli_sec,  "Empty client secret"))
+    if (check_is_empty (s_cli_sec,  "Empty client secret"))
         return;
-    if (check_empty (s_req_tok,  "Empty request token"))
+    if (check_is_empty (s_req_tok,  "Empty request token"))
         return;
-    if (check_empty (s_req_sec,  "Empty request token secret"))
+    if (check_is_empty (s_req_sec,  "Empty request token secret"))
         return;
-    if (check_empty (s_verifier, "Empty verify code"))
+    if (check_is_empty (s_verifier, "Empty verify code"))
         return;
 
     flickcurl_init ();
@@ -184,7 +185,7 @@ flickr_create_file_name (const char *s_disp_name,
 
     /* Alloc space for name, 4 times more because of unicode grow possibility */
     s_tmp = malloc ((4 * ui_slen + ui_elen + 1) * sizeof (char));
-    memset (s_tmp, '\0', 4 * ui_slen);
+    memset (s_tmp, '\0', 4 * ui_slen + ui_elen + 1);
 
     s_first = s_tmp;
 
@@ -208,7 +209,7 @@ flickr_create_file_name (const char *s_disp_name,
     ui_slen = strlen (s_first);
 
     /* Check name length if it is smaller than 255 bytes and shrink if needed */
-    if (ui_slen >= 255) {
+    if (ui_slen + ui_elen >= 255) {
         ui_slen = 255 - ui_elen;
     }
     g_utf8_validate (s_first, (gssize) ui_slen, &s_end);
@@ -236,13 +237,33 @@ my_message_handler(void *user_data __attribute__ ((unused)),
 static SearchItem *
 flickrphoto_to_searchitem (flickcurl_photo *fp_photo)
 {
-    SearchItem *si_item = searchitem_new ();
-    unsigned long long int ll_val = 0;
+    SearchItem *si_item = NULL;
+    char       *s_name  = NULL;
+    const char *s_title = NULL;
 
-    si_item->s_display_name = strdup (
-            fp_photo->fields[PHOTO_FIELD_title].string);
-    si_item->s_display_markup = strdup (si_item->s_display_name);
+    si_item = searchitem_new ();
+    s_title = fp_photo->fields[PHOTO_FIELD_title].string;
+
+    if (fp_photo->fields[PHOTO_FIELD_owner_realname].string != NULL) {
+        searchitem_set_author_name (
+                si_item, fp_photo->fields[PHOTO_FIELD_owner_realname].string);
+    }
+    else if (fp_photo->fields[PHOTO_FIELD_owner_username].string != NULL) {
+        searchitem_set_author_name (
+                si_item, fp_photo->fields[PHOTO_FIELD_owner_username].string);
+    }
+
+    s_name = str_is_empty (s_title) ? strdup (fp_photo->id) : strdup (s_title);
+    remove_non_alpha_space (s_name);
+
+    searchitem_set_display_name (si_item, s_name);
+    searchitem_set_display_markup (si_item, s_name);
+    free (s_name);
+
+    searchitem_set_id_string (si_item, fp_photo->id);
+
     si_item->s_thumb_url = flickcurl_photo_as_source_uri (fp_photo, 'm');
+    si_item->s_page_url  = flickcurl_photo_as_page_uri (fp_photo);
 
     if (fp_photo->fields[PHOTO_FIELD_originalformat].string != NULL)
         si_item->s_image_url = flickcurl_photo_as_source_uri (fp_photo, 'o');
@@ -254,15 +275,39 @@ flickrphoto_to_searchitem (flickcurl_photo *fp_photo)
 #ifdef DEBUG
     printf ("ID : %s\n", fp_photo->id);
     printf ("Title : %s\n", fp_photo->fields[PHOTO_FIELD_title].string);
+    printf ("author1 : %s\n",
+            fp_photo->fields[PHOTO_FIELD_owner_realname].string);
+    printf ("author2 : %s\n",
+            fp_photo->fields[PHOTO_FIELD_owner_username].string);
+    printf ("Author : %s\n",si_item->s_author_name);
+    printf ("Page url : %s\n",si_item->s_page_url);
     printf ("Thumb url : %s\n",si_item->s_thumb_url);
     printf ("Image url : %s\n",si_item->s_image_url);
     printf ("File name : %s\n",si_item->s_file_name);
+    flickcurl_photo_field_type field_type;
+    for(field_type = 0; field_type <= PHOTO_FIELD_LAST; field_type++) {
+      flickcurl_field_value_type datatype = fp_photo->fields[field_type].type;
+
+      if(datatype != VALUE_TYPE_NONE)
+        fprintf(stderr, "field %s (%d) with %s value: '%s' / %d\n", 
+                flickcurl_get_photo_field_label(field_type), (int)field_type,
+                flickcurl_get_field_value_type_label(datatype),
+                fp_photo->fields[field_type].string,
+                fp_photo->fields[field_type].integer);
+    }
+
+    for(int i = 0; i < fp_photo->tags_count; i++) {
+      flickcurl_tag* tag=fp_photo->tags[i];
+      fprintf(stderr,
+              "%d) %s tag: id %s author ID %s name %s raw '%s' "
+              "cooked '%s' count %d\n",
+              i, (tag->machine_tag ? "machine" : "regular"),
+              tag->id, tag->author, 
+              (tag->authorname ? tag->authorname : "(Unknown)"), 
+              tag->raw, tag->cooked,
+              tag->count);
+    }
 #endif
-
-    ll_val = strtoull (fp_photo->id, NULL, 10);
-
-    searchitem_set_id (si_item, (uint64_t) ll_val);
-
     return si_item;
 }
 /*----------------------------------------------------------------------------*/
@@ -273,15 +318,15 @@ void
 flickr_search (WebWidget         *ww_widget,
                const FourStrings *fs_data)
 {
-    SearchItem  *si_item = NULL;
-    flickcurl   *fc      = NULL;
     flickcurl_photos_list_params list_params;
     flickcurl_search_params      params;
     flickcurl_photos_list       *photos_list = NULL;
-    //int rc = 0;
-    char s_sort[64];
-    char s_media[16];
-    int  i = 0;
+    SearchItem  *si_item = NULL;
+    flickcurl   *fc      = NULL;
+    char        *s_tags  = NULL;
+    int          i       = 0;
+    char         s_sort[64];
+    char         s_media[16];
 
     flickcurl_init ();
     fc = flickcurl_new ();
@@ -293,21 +338,19 @@ flickr_search (WebWidget         *ww_widget,
     flickcurl_set_oauth_token         (fc, fs_data->s_str3);
     flickcurl_set_oauth_token_secret  (fc, fs_data->s_str4);
 
-    flickcurl_search_params_init (&params);
     strcpy (s_sort, "interestingness-desc");
-    params.sort = s_sort;
-    params.tags = ww_widget->s_query;
     strcpy (s_media, "photos");
+    s_tags = str_replace_in (ww_widget->s_query, " ", ",");
+
+    flickcurl_search_params_init (&params);
+    params.sort  = s_sort;
+    params.tags  = s_tags;
     params.media = s_media;
 
     flickcurl_photos_list_params_init (&list_params);
     list_params.per_page = ww_widget->i_per_page;
-    list_params.page = ww_widget->i_page;
-    /*
-    list_params.format = "feed-kml";
-    list_params.format = "feed-kml_nl";
-    */
-    list_params.extras = "original_format,o_dims,url_o,url_t";
+    list_params.page     = ww_widget->i_page;
+    list_params.extras   = "original_format,o_dims,url_o,url_t";
 
     photos_list = flickcurl_photos_search_params (fc, &params, &list_params);
 
@@ -319,11 +362,15 @@ flickr_search (WebWidget         *ww_widget,
 
         for(i = 0; i < photos_list->photos_count; ++i) {
             si_item = flickrphoto_to_searchitem (photos_list->photos[i]);
-            add_searchitem_to_img_view (ww_widget->gw_img_view, si_item);
+            add_searchitem_to_img_view (ww_widget->gw_img_view,
+                                        si_item,
+                                        ww_widget->s_thumb_dir,
+                                        "flickr_");
             searchitem_free (si_item);
         }
         flickcurl_free_photos_list (photos_list);
     }
+    free (s_tags);
     flickcurl_free (fc);
     flickcurl_finish ();
 }

@@ -247,6 +247,20 @@ cfgfile_get_app_wallpaper_path (void)
 }
 /*----------------------------------------------------------------------------*/
 /**
+ * @brief  Get app cache directory.
+ */
+char *
+cfgfile_get_app_cache_path (void)
+{
+    char *s_path = NULL; /* Config file path */
+
+    s_path = dir_get_cache ();
+    str_append (&s_path, PATH_APP_CACHE);
+
+    return s_path;
+}
+/*----------------------------------------------------------------------------*/
+/**
  * @brief  Check if wchangerd daemon desktop file exists in user's autostart
  *         directory.
  */

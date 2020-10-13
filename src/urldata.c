@@ -191,18 +191,18 @@ urldata_get_to_file (const char *s_url,
  * @brief  Search Pexels for images.
  */
 UrlData *
-urldata_search_pexels (const char *s_txt,
+urldata_search_pexels (const char *s_query,
                        const char *s_api_key,
                        const int   i_page,
                        const int   i_per_page)
 {
     UrlData  *ud_data = NULL;
-    CURL     *curl;
-    CURLcode  res;
-    char     *s_api = NULL;
-    char     *s_url = NULL;
+    char     *s_api   = NULL;
+    char     *s_url   = NULL;
     char      s_page[64];
     char      s_per_page[64];
+    CURL     *curl;
+    CURLcode  res;
     struct curl_slist *list = NULL;
 
     ud_data = urldata_new ();
@@ -213,7 +213,7 @@ urldata_search_pexels (const char *s_txt,
         sprintf (s_page, "%d", i_page);
         sprintf (s_per_page, "%d", i_per_page);
         s_api = str_comb ("Authorization: ", s_api_key);
-        s_url = str_comb ("https://api.pexels.com/v1/search?query=", s_txt);
+        s_url = str_comb ("https://api.pexels.com/v1/search?query=", s_query);
         str_append (&s_url, "&page=");
         str_append (&s_url, s_page);
         str_append (&s_url, "&per_page=");
@@ -244,6 +244,63 @@ urldata_search_pexels (const char *s_txt,
  
         curl_easy_cleanup (curl);
         free (s_api);
+    }
+    curl_global_cleanup ();
+
+    return ud_data;
+}
+/*----------------------------------------------------------------------------*/
+/**
+ * @brief  Search Pixbay for images.
+ */
+UrlData *
+urldata_search_pixbay (const char *s_query,
+                       const char *s_api_key,
+                       const int   i_page,
+                       const int   i_per_page)
+{
+    UrlData  *ud_data = NULL;
+    char     *s_url   = NULL;
+    char      s_page[64];
+    char      s_per_page[64];
+    CURL     *curl;
+    CURLcode  res;
+
+    ud_data = urldata_new ();
+    curl_global_init (CURL_GLOBAL_ALL);
+    curl = curl_easy_init ();
+
+    if (curl) {
+        sprintf (s_page, "%d", i_page);
+        sprintf (s_per_page, "%d", i_per_page);
+        s_url = str_comb ("https://pixabay.com/api/?key=", s_api_key);
+        str_append (&s_url, "&q=");
+        str_append (&s_url, s_query);
+        str_append (&s_url, "&page=");
+        str_append (&s_url, s_page);
+        str_append (&s_url, "&per_page=");
+        str_append (&s_url, s_per_page);
+        str_append (&s_url, "&image_type=photo");
+
+        curl_easy_setopt (curl, CURLOPT_URL, s_url);
+        curl_easy_setopt (curl, CURLOPT_WRITEDATA, (void *) ud_data);
+        curl_easy_setopt (curl, CURLOPT_WRITEFUNCTION, url_write);
+#ifdef DEBUG
+        curl_easy_setopt(curl, CURLOPT_VERBOSE, 1L);
+#endif
+        res = curl_easy_perform (curl);
+ 
+        if (res != CURLE_OK) {
+            ud_data->errbuf = malloc (CURL_ERROR_SIZE * sizeof (char));
+            if (ud_data->errbuf == NULL)
+                err (EXIT_FAILURE, NULL);
+
+            snprintf (ud_data->errbuf, CURL_ERROR_SIZE, "%s",
+                      curl_easy_strerror (res));
+            fprintf(stderr, "curl failed: %s\n", ud_data->errbuf);
+        }
+ 
+        curl_easy_cleanup (curl);
     }
     curl_global_cleanup ();
 

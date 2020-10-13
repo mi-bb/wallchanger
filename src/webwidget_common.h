@@ -37,6 +37,7 @@ enum e_img_list_columns {
     WEB_COL_HEIGHT,    /**< Image height */
     WEB_COL_ID,        /**< Image id */
     WEB_COL_DISP_NAME, /**< Name of image */
+    WEB_COL_AUTHOR,    /**< Author of image */
     WEB_COL_MARKUP,    /**< Markup string */
     WEB_COL_FILE_NAME, /**< Name of image */
     WEB_COL_PAGE_URL,  /**< Picture page url */
@@ -46,15 +47,46 @@ enum e_img_list_columns {
 };
 /*----------------------------------------------------------------------------*/
 /**
- * @brief  Check if string s_txt is null or empty and show message s_msg
+ * @brief  Check if string s_str is null or empty and show message s_msg
  *         if it is.
  *
- * @param[in]  s_txt  String to check
+ * @param[in]  s_str  String to check
  * @param[in]  s_msg  Message to show
  * @return     1 if string is empty, 0 if it is not.
  */
-int    check_empty                (const char *s_txt,
+int    check_is_empty             (const char *s_str,
                                    const char *s_msg);
+/*----------------------------------------------------------------------------*/
+/**
+ * @brief  Check if string s_str is made of alphanumeric chars and spaces
+ *         and show message s_msg if it is not.
+ *
+ * @param[in]  s_str  String to check
+ * @param[in]  s_msg  Message to show
+ * @return     1 if string is made of alphanumeric chars and spaces,
+ *             0 if it is not.
+ */
+int    check_is_alnum_space       (const char *s_str,
+                                   const char *s_msg);
+/*----------------------------------------------------------------------------*/
+/**
+ * @brief  Check if string s_str is made of unicode chars
+ *         and show message s_msg if it is not.
+ *
+ * @param[in]  s_str  String to check
+ * @param[in]  s_msg  Message to show
+ * @return     1 if string is made of unicode chars, 0 if it is not.
+ */
+int    check_unicode              (const char *s_str,
+                                   const char *s_msg);
+/*----------------------------------------------------------------------------*/
+/**
+ * @brief  Check from string s_str all non alphanumeric chars and non spaces.
+ *
+ * @param[in]  s_str  String to process
+ * @return     none
+ */
+void   remove_non_alpha_space     (char *s_str);
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Get string value from Combobox's active i_col column.
@@ -71,10 +103,14 @@ char * combo_get_active_str       (GtkWidget  *gw_combo,
  *
  * @param[out] gw_iconview  IconView to add image
  * @param[in]  si_item      SearchItem with image data
+ * @param[in]  s_cache_dir  String with app's cache directory
+ * @param[in]  s_prefix     File name prefix
  * @return     none  
  */
 void   add_searchitem_to_img_view (GtkWidget        *gw_iconview,
-                                   const SearchItem *si_item);
+                                   const SearchItem *si_item,
+                                   const char       *s_cache_dir,
+                                   const char       *s_prefix);
 /*----------------------------------------------------------------------------*/
 #endif
 

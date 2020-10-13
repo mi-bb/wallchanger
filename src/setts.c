@@ -123,6 +123,10 @@ get_setting_name (const int i_val)
             s_res = "Pexels api";
             break;
 
+        case SETTING_PIXBAY_API:
+            s_res = "Pixbay api";
+            break;
+
         case SETTING_FLICKR_CLKEY:
             s_res = "Flickr client key";
             break;
@@ -234,6 +238,7 @@ setts_check_defaults (Setting *st_settings)
         {SETTING_WEB_DLG_WIDTH,  SET_VAL_INT,    DEFAULT_WEB_DLG_WIDTH, 0, ""},
         {SETTING_WEB_DLG_HEIGHT, SET_VAL_INT,    DEFAULT_WEB_DLG_HEIGHT, 0, ""},
         {SETTING_PEXELS_API,     SET_VAL_STRING, 0, 0, ""},
+        {SETTING_PIXBAY_API,     SET_VAL_STRING, 0, 0, ""},
         {SETTING_FLICKR_CLKEY,   SET_VAL_STRING, 0, 0, ""},
         {SETTING_FLICKR_CLSEC,   SET_VAL_STRING, 0, 0, ""},
         {SETTING_FLICKR_ACTOK,   SET_VAL_STRING, 0, 0, ""},
@@ -333,13 +338,31 @@ setts_update_web_dlg_size (const char *s_cfg_file,
  */
 int
 setts_update_pexels_api (const char *s_cfg_file,
-                         const char *s_pexels_api)
+                         const char *s_api_key)
 {
     Setting  *st_settings;
     int       i_res = ERR_OK;
 
     st_settings = setting_new_string (get_setting_name (SETTING_PEXELS_API),
-                                      s_pexels_api);
+                                      s_api_key);
+
+    i_res = js_settings_check_update_file (st_settings, s_cfg_file);
+    settings_free_all (st_settings);
+    return i_res;
+}
+/*----------------------------------------------------------------------------*/
+/**
+ * @brief  Update Pixbay API key
+ */
+int
+setts_update_pixbay_api (const char *s_cfg_file,
+                         const char *s_api_key)
+{
+    Setting  *st_settings;
+    int       i_res = ERR_OK;
+
+    st_settings = setting_new_string (get_setting_name (SETTING_PIXBAY_API),
+                                      s_api_key);
 
     i_res = js_settings_check_update_file (st_settings, s_cfg_file);
     settings_free_all (st_settings);

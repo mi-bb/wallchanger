@@ -31,14 +31,73 @@
  *         if it is.
  */
 int
-check_empty (const char *s_txt,
-             const char *s_msg)
+check_is_empty (const char *s_str,
+                const char *s_msg)
 {
-    if (s_txt == NULL || s_txt[0] == '\0') {
-        message_dialog_warning (NULL, s_msg);
+    if (str_is_empty (s_str)) {
+        if (s_msg != NULL)
+            message_dialog_warning (NULL, s_msg);
         return 1;
     }
     return 0;
+}
+/*----------------------------------------------------------------------------*/
+/**
+ * @brief  Check if string s_txt is made of alphanumeric chars and spaces
+ *         and show message s_msg if it is not.
+ */
+int
+check_is_alnum_space (const char *s_str,
+                      const char *s_msg)
+{
+    gunichar u_c; /* Uni char to examine */
+
+    while (*s_str != '\0') {
+        u_c = g_utf8_get_char (s_str);
+        if (!g_unichar_isalnum (u_c) && !g_unichar_isspace (u_c)) {
+            if (s_msg != NULL)
+                message_dialog_warning (NULL, s_msg);
+            return 0;
+        }
+        s_str = g_utf8_find_next_char (s_str, NULL);
+    }
+    return 1;
+}
+/*----------------------------------------------------------------------------*/
+/**
+ * @brief  Check if string s_txt is made of unicode chars
+ *         and show message s_msg if it is not.
+ */
+int
+check_unicode (const char *s_str,
+               const char *s_msg)
+{
+    if (!g_utf8_validate (s_str, -1, NULL)) {
+        if (s_msg != NULL)
+            message_dialog_warning (NULL, s_msg);
+        return 0;
+    }
+    return 1;
+}
+/*----------------------------------------------------------------------------*/
+/**
+ * @brief  Check from string s_txt all non alphanumeric chars and non spaces.
+ */
+void
+remove_non_alpha_space (char *s_str)
+{
+    gunichar u_c; /* Uni char to examine */
+
+    while (*s_str != '\0') {
+        u_c = g_utf8_get_char (s_str);
+        if (!g_unichar_isalnum (u_c) && !g_unichar_isspace (u_c)) {
+            char *s_next = g_utf8_find_next_char (s_str, NULL);
+            memmove (s_str, s_next, strlen (s_next) + 1);
+        }
+        else {
+            s_str = g_utf8_find_next_char (s_str, NULL);
+        }
+    }
 }
 /*----------------------------------------------------------------------------*/
 /**
@@ -118,10 +177,14 @@ combo_get_active_str (GtkWidget *gw_combo,
  */
 void
 add_searchitem_to_img_view (GtkWidget        *gw_iconview,
-                            const SearchItem *si_item)
+                            const SearchItem *si_item,
+                            const char       *s_cache_dir,
+                            const char       *s_prefix)
 {
     GtkListStore *list_store;
-    GdkPixbuf    *gp_pbuf;
+    GdkPixbuf    *gp_pbuf = NULL;
+    GError       *g_error = NULL;
+    char         *s_fn    = NULL;
     GtkTreeIter   iter;
 
     list_store = GTK_LIST_STORE (gtk_icon_view_get_model (
@@ -129,7 +192,25 @@ add_searchitem_to_img_view (GtkWidget        *gw_iconview,
 
     if (si_item->s_thumb_url == NULL)
         return;
-    if ((gp_pbuf = pixbuf_from_url (si_item->s_thumb_url)) != NULL) {
+
+    s_fn = str_comb (s_cache_dir, "/");
+    str_append (&s_fn, s_prefix);
+    str_append (&s_fn, si_item->s_id);
+    str_append (&s_fn, ".jpg");
+
+    gp_pbuf = gdk_pixbuf_new_from_file (s_fn, &g_error);
+
+    if (gp_pbuf == NULL) {
+        gp_pbuf = pixbuf_from_url (si_item->s_thumb_url);
+        if (gp_pbuf != NULL) {
+            g_error = NULL;
+            gdk_pixbuf_save (gp_pbuf, s_fn, "jpeg", &g_error,
+                             "quality", "98", NULL);
+        }
+    }
+    free (s_fn);
+
+    if (gp_pbuf != NULL) {
         gtk_list_store_append(list_store, &iter);
         gtk_list_store_set(list_store, &iter,
                            WEB_COL_PIXBUF,    gp_pbuf,
@@ -137,6 +218,7 @@ add_searchitem_to_img_view (GtkWidget        *gw_iconview,
                            WEB_COL_HEIGHT,    si_item->i_height,
                            WEB_COL_ID,        si_item->i_id,
                            WEB_COL_DISP_NAME, si_item->s_display_name,
+                           WEB_COL_AUTHOR,    si_item->s_author_name,
                            WEB_COL_MARKUP,    si_item->s_display_markup,
                            WEB_COL_FILE_NAME, si_item->s_file_name,
                            WEB_COL_PAGE_URL,  si_item->s_page_url,
@@ -144,7 +226,6 @@ add_searchitem_to_img_view (GtkWidget        *gw_iconview,
                            WEB_COL_THUMB_URL, si_item->s_thumb_url,
                            -1);
         g_object_unref(gp_pbuf);
-        gp_pbuf = NULL;
     }
     while (gtk_events_pending ())
         gtk_main_iteration ();

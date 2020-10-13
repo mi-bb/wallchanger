@@ -13,6 +13,29 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+2020-10-13  Michal Babik  <michal.babik@pm.me>
+
+	* cfgfile.c, cfgfile.h (cfgfile_get_app_cache_path): New function for
+	  getting application cache directory.
+	* imgs.c, imgs.h: Added service images.
+	* searchitem.c, searchitem.h: Added s_id, s_author_name, s_author_url
+	  to SearchItem structure with setters.
+	* setts.c, setts.h: Added Pixbay search config values setting.
+	* strfun.h (str_is_empty): New function to check if string is empty.
+	* urldata.c, urldata.h (urldata_search_pixbay): New function for
+	  searching in Pixbay.
+	* webflickr.c: Some code updates.
+	* webpexels.c: Some code updates.
+	* webwidget.c (search_web, event_settings_pressed,
+	  webwidget_combobox_create): Added handling of Pixbay search.
+	  (event_search_pressed): Added checking string for unicode and
+	  alphanumeric chars.
+	  (event_imgview_activated): Function added for setting image info
+	  widgets.
+	  (webwidget_imageinfo_create): New function, creates image info widgets.
+	* webwidget_s.h: Added widgets for image info gw_ii_widget, gw_ii_simage,
+	  gw_ii_author_label, gw_ii_page_link, gw_ii_dim_label
+
 2020-10-08  Michal Babik  <michal.babik@pm.me>
 
 	* fourstrings.c, fourstrings.h: New files with four strings structure.

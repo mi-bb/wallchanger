@@ -112,5 +112,15 @@ char * str_comb (const char *s_str1,
 void str_append (char       **s_dst,
                  const char  *s_src);
 /*----------------------------------------------------------------------------*/
+/**
+ * @brief  Check if string is empty.
+ *
+ * @param[in] s_str  Input string
+ * @return    1 if string is empty, 0 if not
+ */
+static inline int str_is_empty (const char *s_str) {
+    return (s_str == NULL || s_str[0] == '\0');
+}
+/*----------------------------------------------------------------------------*/
 #endif
 

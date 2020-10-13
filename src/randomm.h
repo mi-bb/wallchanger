@@ -87,7 +87,6 @@ RandMem * randomm_new_with_range (size_t ui_range) __attribute__((malloc));
  * @param[out] rm_mem  RandMem object
  * @return     none
  */
-/*----------------------------------------------------------------------------*/
 void      randomm_free           (RandMem *rm_mem);
 /*----------------------------------------------------------------------------*/
 /**

@@ -66,7 +66,15 @@ char * cfgfile_get_wm_info_home_path   (void);
  * @return String with wallpaper save path.
  *         After use it should be freed using free.
  */
-char * cfgfile_get_app_wallpaper_path (void);
+char * cfgfile_get_app_wallpaper_path  (void);
+/*----------------------------------------------------------------------------*/
+/**
+ * @brief  Get app cache directory.
+ *
+ * @return String with appication cache directory.
+ *         After use it should be freed using free.
+ */
+char * cfgfile_get_app_cache_path      (void);
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Get path for default config file with window manager info.

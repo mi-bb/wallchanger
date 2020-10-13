@@ -24,7 +24,8 @@
 #ifndef SEARCHITEM_H
 #define SEARCHITEM_H
 
-#include <stdint.h>
+//#include <stdint.h>
+#include <inttypes.h>
 
 /*----------------------------------------------------------------------------*/
 /**
@@ -33,7 +34,16 @@
  * @brief  Structure for storing wallpaper search data.
  *
  * @var   SearchItem::i_id
- * @brief Image id
+ * @brief Image id in integer
+ *
+ * @var   SearchItem::s_id
+ * @brief Image id in string
+ *
+ * @var   SearchItem::s_author_name
+ * @brief Name for image author
+ *
+ * @var   SearchItem::s_author_url
+ * @brief Url to author's page
  *
  * @var   SearchItem::s_file_name
  * @brief Name for file save
@@ -62,6 +72,9 @@
 typedef struct
 SearchItem {
     uint64_t i_id;
+    char *s_id;
+    char *s_author_name;
+    char *s_author_url;
     char *s_file_name;
     char *s_display_name;
     char *s_display_markup;
@@ -87,6 +100,36 @@ SearchItem * searchitem_new                (void);
  * @return     none
  */
 void         searchitem_free               (SearchItem *si_item);
+/*----------------------------------------------------------------------------*/
+/**
+ * @brief  Set SearchItem's photo id string and int value based on int value.
+ *
+ * @param[out] si_item  SearchItem item to set author name
+ * @param[in]  val      Image id to set
+ * @return     none
+ */
+void         searchitem_set_id_uint        (SearchItem    *si_item,
+                                            const uint64_t val);
+/*----------------------------------------------------------------------------*/
+/**
+ * @brief  Set SearchItem's photo id string and int value based on string value.
+ *
+ * @param[out] si_item  SearchItem item to set author name
+ * @param[in]  s_val    Image id to set
+ * @return     none
+ */
+void         searchitem_set_id_string      (SearchItem   *si_item,
+                                            const char   *s_val);
+/*----------------------------------------------------------------------------*/
+/**
+ * @brief  Set SearchItem's photo author name.
+ *
+ * @param[out] si_item  SearchItem item to set author name
+ * @param[in]  s_val    Author name string to set
+ * @return     none
+ */
+void         searchitem_set_author_name    (SearchItem *si_item,
+                                            const char *s_val);
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Set SearchItem's file name.
@@ -148,18 +191,6 @@ void         searchitem_set_image_url      (SearchItem *si_item,
 void         searchitem_set_thumb_url      (SearchItem *si_item,
                                             const char *s_val);
 
-/*----------------------------------------------------------------------------*/
-/**
- * @brief  Set SearchItem's id.
- *
- * @param[out] si_item  SearchItem item to set id
- * @param[in]  val      Id integer value to set
- * @return     none
- */
-static inline void searchitem_set_id (SearchItem    *si_item,
-                                      const uint64_t val) {
-    si_item->i_id = val;
-}
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Set SearchItem's width.

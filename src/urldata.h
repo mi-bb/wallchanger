@@ -85,13 +85,27 @@ void      urldata_get_to_file   (const char *s_url,
 /**
  * @brief  Search Pexels for images.
  *
- * @param[in] s_txt       Search query
+ * @param[in] s_query     Search query
  * @param[in] s_api_key   Pexels API key
  * @param[in] i_page      Results page number
  * @param[in] i_per_page  Result images per page
  * @return    UrlData item with downloaded data or error info
  */
-UrlData * urldata_search_pexels (const char *s_txt,
+UrlData * urldata_search_pexels (const char *s_query,
+                                 const char *s_api_key,
+                                 const int   i_page,
+                                 const int   i_per_page);
+/*----------------------------------------------------------------------------*/
+/**
+ * @brief  Search Pixbay for images.
+ *
+ * @param[in] s_query     Search query
+ * @param[in] s_api_key   Pixbay API key
+ * @param[in] i_page      Results page number
+ * @param[in] i_per_page  Result images per page
+ * @return    UrlData item with downloaded data or error info
+ */
+UrlData * urldata_search_pixbay (const char *s_query,
                                  const char *s_api_key,
                                  const int   i_page,
                                  const int   i_per_page);
