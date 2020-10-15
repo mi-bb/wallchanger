@@ -69,9 +69,9 @@ event_flickr_auth_link_generate (GtkWidget **gw_array)
     s_cli_key = gtk_entry_get_text (GTK_ENTRY (gw_array[FLA_CLI_KEY]));
     s_cli_sec = gtk_entry_get_text (GTK_ENTRY (gw_array[FLA_CLI_SEC]));
 
-    if (check_is_empty (s_cli_key, "Empty client key"))
+    if (str_is_empty_msg (s_cli_key, "Empty client key"))
         return;
-    if (check_is_empty (s_cli_sec, "Empty client secret"))
+    else if (str_is_empty_msg (s_cli_sec, "Empty client secret"))
         return;
 
     flickcurl_init ();
@@ -123,15 +123,15 @@ event_flickr_access_keys_generate (GtkWidget **gw_array)
     s_req_sec  = gtk_entry_get_text (GTK_ENTRY (gw_array[FLA_REQ_SEC]));
     s_verifier = gtk_entry_get_text (GTK_ENTRY (gw_array[FLA_VER_CD]));
 
-    if (check_is_empty (s_cli_key,  "Empty client key"))
+    if      (str_is_empty_msg (s_cli_key,  "Empty client key"))
         return;
-    if (check_is_empty (s_cli_sec,  "Empty client secret"))
+    else if (str_is_empty_msg (s_cli_sec,  "Empty client secret"))
         return;
-    if (check_is_empty (s_req_tok,  "Empty request token"))
+    else if (str_is_empty_msg (s_req_tok,  "Empty request token"))
         return;
-    if (check_is_empty (s_req_sec,  "Empty request token secret"))
+    else if (str_is_empty_msg (s_req_sec,  "Empty request token secret"))
         return;
-    if (check_is_empty (s_verifier, "Empty verify code"))
+    else if (str_is_empty_msg (s_verifier, "Empty verify code"))
         return;
 
     flickcurl_init ();

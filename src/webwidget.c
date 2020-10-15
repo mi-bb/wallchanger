@@ -443,10 +443,10 @@ event_search_pressed (WebWidget *ww_widget)
 
     if (!check_unicode (s_query, "Search query is not a valid unicode text"))
         return;
-    if (check_is_empty (s_query, "Empty search query"))
+    else if (str_is_empty_msg (s_query, "Empty search query"))
         return;
-    if (!check_is_alnum_space (s_query,
-                               "Sorry, only alphanumerich characters allowed"))
+    else if (!str_is_alnum_or_space (
+                s_query, "Sorry, only alphanumerich characters allowed"))
         return;
 
     if (ww_widget->s_query != NULL)
@@ -596,25 +596,25 @@ event_settings_pressed (WebWidget *ww_widget)
 static void
 event_add_selected_pressed (WebWidget *ww_widget)
 {
-    GtkListStore *gls_slstore;
-    GtkTreeModel *gtm_model;
-    GtkTreeModel *gtm_combo_model;
-    GdkPixbuf    *gp_pbuf;
-    GdkPixbuf    *gp_pbuf2;
-    GtkTreeIter   gti_iter;
-    GtkTreeIter   gti_iters;
-    GtkTreePath  *gtp_path;
-    GList        *gl_selected = NULL;
-    GList        *gl_item     = NULL;
-    char         *s_disp_name = NULL;
-    char         *s_file_name = NULL;
-    char         *s_image_url = NULL;
-    int           i_id        = 0;
-    int           i_w         = 0;
-    int           i_h         = 0;
-    float         f_w         = 0;
-    float         f_h         = 0;
-    char          s_dname[SEL_NAME_LEN * 4 + 4];
+    GtkListStore *gls_slstore;        /* Combobox ListStore */
+    GtkTreeModel *gtm_model;          /* Iconview tree model */
+    GtkTreeModel *gtm_combo_model;    /* Combobox tree model */
+    GdkPixbuf    *gp_pbuf;            /* Thumbnail pixbuf */
+    GdkPixbuf    *gp_pbuf2;           /* Smaller thumbnail pixbuf */
+    GtkTreeIter   gti_iter;           /* TreeIter */
+    GtkTreeIter   gti_iters;          /* TreeIter */
+    GtkTreePath  *gtp_path;           /* TreePath */
+    GList        *gl_selected = NULL; /* List of selected items */
+    GList        *gl_item     = NULL; /* List item for iteration */
+    char         *s_disp_name = NULL; /* Image display name */
+    char         *s_file_name = NULL; /* Image file name */
+    char         *s_image_url = NULL; /* Image url */
+    int           i_id        = 0;    /* Image id */
+    int           i_w         = 0;    /* Thumbnail width */
+    int           i_h         = 0;    /* Thumbnail height */
+    float         f_w         = 0;    /* Smaller thumbnail width */
+    float         f_h         = 0;    /* Smaller thumbnail height */
+    char          s_dname[SEL_NAME_LEN * 4 + 4]; /* For shorter name in combo */
 
     gtm_combo_model = gtk_combo_box_get_model (
             GTK_COMBO_BOX (ww_widget->gw_selected_combo));

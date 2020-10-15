@@ -31,8 +31,8 @@
  *         if it is.
  */
 int
-check_is_empty (const char *s_str,
-                const char *s_msg)
+str_is_empty_msg (const char *s_str,
+                  const char *s_msg)
 {
     if (str_is_empty (s_str)) {
         if (s_msg != NULL)
@@ -47,8 +47,8 @@ check_is_empty (const char *s_str,
  *         and show message s_msg if it is not.
  */
 int
-check_is_alnum_space (const char *s_str,
-                      const char *s_msg)
+str_is_alnum_or_space (const char *s_str,
+                       const char *s_msg)
 {
     gunichar u_c; /* Uni char to examine */
 

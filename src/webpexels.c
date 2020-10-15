@@ -108,7 +108,7 @@ pexels_process_item_set_names (SearchItem *si_item)
 
     if (si_item->s_page_url == NULL)
         return;
-    if (si_item->s_image_url == NULL)
+    else if (si_item->s_image_url == NULL)
         return;
 
     /* Base name made of picture url */
@@ -287,7 +287,7 @@ pexels_search (WebWidget         *ww_widget,
     UrlData *ud_data = NULL; /* For search results */
     char    *s_query = NULL; /* For search query */
 
-    if (check_is_empty (fs_data->s_str1, "Pexels API key is not set"))
+    if (str_is_empty_msg (fs_data->s_str1, "Pexels API key is not set"))
         return;
 
     s_query = str_replace_in (ww_widget->s_query, " ", "+");

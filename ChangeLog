@@ -13,6 +13,10 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+2020-10-14  Michal Babik  <michal.babik@pm.me>
+
+	* imgs.c: Some images changed to svg, some compacted.
+
 2020-10-13  Michal Babik  <michal.babik@pm.me>
 
 	* cfgfile.c, cfgfile.h (cfgfile_get_app_cache_path): New function for
