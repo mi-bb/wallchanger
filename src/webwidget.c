@@ -40,6 +40,7 @@
 #include "webpixbay.h"
 #include "webflickr.h"
 #include "webwidget.h"
+/*----------------------------------------------------------------------------*/
 /**
  * @def   NAME_LEN
  * @brief Lenght of name in download progress window.
@@ -49,7 +50,6 @@
  */
 #define NAME_LEN     40
 #define SEL_NAME_LEN 60
-
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Services combobox columns
@@ -127,7 +127,7 @@ download_progress_window (GtkWindow *gw_parent,
 
     /* Getting wallpaper save path and checking it's permissions, creating if
      * it doesn't exist */
-    s_wpdir = cfgfile_get_app_wallpaper_path ();
+    s_wpdir = cfgfile_get_app_wallpapers_path ();
     i_perm  = dir_check_permissions (s_wpdir);
 
     if (i_perm == ERR_FILE ||
@@ -1076,6 +1076,7 @@ webwidget_free (WebWidget *ww_widget)
     free (ww_widget->s_query);
     free (ww_widget->s_cfg_file);
     free (ww_widget->s_thumb_dir);
+    free (ww_widget->s_wallp_dir);
     free (ww_widget);
 }
 /*----------------------------------------------------------------------------*/
@@ -1106,8 +1107,8 @@ webwidget_create (Setting    *st_settings,
         err (EXIT_FAILURE, NULL);
 
     ww_widget->s_cfg_file  = strdup (s_cfg_file);
-    ww_widget->s_thumb_dir = cfgfile_get_app_cache_path ();
-    str_append (&ww_widget->s_thumb_dir, "/thumbnails");
+    ww_widget->s_thumb_dir = cfgfile_get_app_thumbnails_path ();
+    ww_widget->s_wallp_dir = cfgfile_get_app_wallpapers_path ();
     dir_create_with_subdirs (ww_widget->s_thumb_dir);
 
     ww_widget->gw_ii_widget = webwidget_imageinfo_create (ww_widget);

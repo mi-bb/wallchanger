@@ -55,6 +55,7 @@ searchitem_init (SearchItem *si_item)
     si_item->s_page_url       = NULL;
     si_item->s_image_url      = NULL;
     si_item->s_thumb_url      = NULL;
+    si_item->s_service_name   = NULL;
     si_item->i_width          = 0;
     si_item->i_height         = 0;
 }
@@ -74,6 +75,7 @@ searchitem_free (SearchItem *si_item)
     free (si_item->s_page_url);
     free (si_item->s_image_url);
     free (si_item->s_thumb_url);
+    free (si_item->s_service_name);
     free (si_item);
 }
 /*----------------------------------------------------------------------------*/
@@ -204,6 +206,18 @@ searchitem_set_thumb_url (SearchItem *si_item,
     if (si_item->s_thumb_url != NULL)
         free (si_item->s_thumb_url);
     si_item->s_thumb_url = strdup (s_val);
+}
+/*----------------------------------------------------------------------------*/
+/**
+ * @brief  Set SearchItem's service name.
+ */
+void
+searchitem_set_service_name (SearchItem *si_item,
+                             const char *s_val)
+{
+    if (si_item->s_service_name != NULL)
+        free (si_item->s_service_name);
+    si_item->s_service_name = strdup (s_val);
 }
 /*----------------------------------------------------------------------------*/
 

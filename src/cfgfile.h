@@ -50,7 +50,7 @@ int    cfgfile_config_file_stuff       (char **s_file,
  * @return String with autostart file path.
  *         After use it should be freed using free.
  */
-char * cfgfile_get_autostart_home_path (void);
+char * cfgfile_get_autostart_home_file_path (void);
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Get path for user's config file with window manager info.
@@ -58,15 +58,15 @@ char * cfgfile_get_autostart_home_path (void);
  * @return String with window manager info file path.
  *         After use it should be freed using free.
  */
-char * cfgfile_get_wm_info_home_path   (void);
+char * cfgfile_get_wm_info_home_file_path   (void);
 /*----------------------------------------------------------------------------*/
 /**
- * @brief  Get path for saving downloaded wallpapers
+ * @brief  Get directory path for downloaded wallpapers
  *
  * @return String with wallpaper save path.
  *         After use it should be freed using free.
  */
-char * cfgfile_get_app_wallpaper_path  (void);
+char * cfgfile_get_app_wallpapers_path  (void);
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Get app cache directory.
@@ -77,13 +77,29 @@ char * cfgfile_get_app_wallpaper_path  (void);
 char * cfgfile_get_app_cache_path      (void);
 /*----------------------------------------------------------------------------*/
 /**
+ * @brief  Get directory path for thumbanils
+ *
+ * @return String with thumbnails path.
+ *         After use it should be freed using free.
+ */
+char * cfgfile_get_app_thumbnails_path  (void);
+/*----------------------------------------------------------------------------*/
+/**
+ * @brief  Get directory with information about images.
+ *
+ * @return String with image information directory.
+ *         After use it should be freed using free.
+ */
+char * cfgfile_get_image_info_path     (void);
+/*----------------------------------------------------------------------------*/
+/**
  * @brief  Get path for default config file with window manager info.
  *
  * @param[out] i_err  Error output
  * @return     String with window manager info file path or null.
  *             After use it should be freed using free.
  */
-char * cfgfile_get_wm_info_data_path   (int *i_err);
+char * cfgfile_get_wm_info_data_file_path   (int *i_err);
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Check if wchangerd daemon desktop file exists in user's autostart

@@ -82,6 +82,9 @@
  * @var   WebWidget::s_thumb_dir
  * @brief String with thumbnail directory
  *
+ * @var   WebWidget::s_wallp_dir
+ * @brief String with wallpaper directory
+ *
  * @var   WebWidget::i_page
  * @brief Current page number
  *
@@ -113,6 +116,7 @@ WebWidget {
     char      *s_query;
     char      *s_cfg_file;
     char      *s_thumb_dir;
+    char      *s_wallp_dir;
     int        i_page;
     int        i_per_page;
     int        i_found_cnt;

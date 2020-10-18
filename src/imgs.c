@@ -224,8 +224,8 @@ static const unsigned char icon_screen[] =
  * @var    icon_exit
  * @brief  Quit icon
  */
-int icon_exit_size = 685;
-uint8_t icon_exit[] =
+static const int icon_exit_size = 685;
+static const unsigned char icon_exit[] =
 {
     0x89,0x50,0x4E,0x47,0x0D,0x0A,0x1A,0x0A,0x00,0x00,0x00,0x0D,0x49,0x48,0x44,
     0x52,0x00,0x00,0x00,0x14,0x00,0x00,0x00,0x14,0x08,0x06,0x00,0x00,0x00,0x8D,
@@ -476,14 +476,14 @@ static const unsigned char image_screen_3[] =
 };
 /*----------------------------------------------------------------------------*/
 /**
- * @var    image_about2_size
+ * @var    image_about_size
  * @brief  Size of application about image
  *
- * @var    image_about2
+ * @var    image_about
  * @brief  Application about image
  */
-static const int image_about2_size = 18264;
-static const unsigned char image_about2[] =
+static const int image_about_size = 18264;
+static const unsigned char image_about[] =
 {
     0xFF,0xD8,0xFF,0xE0,0x00,0x10,0x4A,0x46,0x49,0x46,0x00,0x01,0x01,0x02,0x00,
     0x1C,0x00,0x1C,0x00,0x00,0xFF,0xFE,0x00,0x13,0x43,0x72,0x65,0x61,0x74,0x65,
@@ -1751,7 +1751,7 @@ static const char *stop_svg =
  * @var    logo_pexels
  * @brief  Pexels logo array with data
  */
-static const long int logo_pexels_size = 1046;
+static const int logo_pexels_size = 1046;
 static const unsigned char logo_pexels[] = {
     0x89,0x50,0x4E,0x47,0x0D,0x0A,0x1A,0x0A,0x00,0x00,0x00,0x0D,0x49,0x48,0x44,
     0x52,0x00,0x00,0x00,0x64,0x00,0x00,0x00,0x23,0x08,0x03,0x00,0x00,0x00,0x55,
@@ -1908,6 +1908,20 @@ static const char *logo_flickr_svg =
 #endif
 /*----------------------------------------------------------------------------*/
 /**
+ * @var    check_svg
+ * @brief  Check graphics
+ */
+static const char *check_svg = 
+"<svg width=\"64\" height=\"64\" version=\"1.1\" viewBox=\"0 0 16.933 16.933\" "
+"xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlin"
+"k\"><defs><linearGradient id=\"linearGradient939\" x1=\"1.3229\" x2=\"17.198\""
+" y1=\"15.875\" y2=\"-1.3229\" gradientUnits=\"userSpaceOnUse\"><stop stop-colo"
+"r=\"#4a0\" offset=\"0\"/><stop stop-color=\"#7fff2a\" offset=\"1\"/></linearGr"
+"adient></defs><path d=\"m15.575 2.6458-7.6379 13.229-6.6146-6.6146 1.8521-1.85"
+"21 4.4979 5.8208 5.8208-11.906z\" fill=\"url(#linearGradient939)\" stroke=\"#0"
+"00\" stroke-width=\".26458px\"/></svg>";
+/*----------------------------------------------------------------------------*/
+/**
  * @brief  Make pixbuf from pure data without specific info, scale it to width
  *         of i_dim.
  *
@@ -2033,7 +2047,7 @@ get_image (const IconImg i_img)
             break;
 
         case W_ICON_ABOUT:
-            gp_pbuf = pbuf_from_data (image_about2, image_about2_size);
+            gp_pbuf = pbuf_from_data (image_about, image_about_size);
             break;
 
         case W_IMG_SCREEN_1:
@@ -2058,6 +2072,12 @@ get_image (const IconImg i_img)
             gp_pbuf = pbuf_from_data_scaled ((const unsigned char*) stop_svg,
                                              (gssize) strlen (stop_svg),
                                              25);
+            break;
+
+        case W_IMG_CHECK:
+            gp_pbuf = pbuf_from_data_scaled ((const unsigned char*) check_svg,
+                                             (gssize) strlen (check_svg),
+                                             30);
             break;
 
         case W_LOGO_PEXELS:

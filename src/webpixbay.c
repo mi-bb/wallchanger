@@ -145,6 +145,8 @@ pixbay_json_obj_to_searchitem (json_object *j_obj)
 
     SearchItem *si_item = searchitem_new ();
 
+    searchitem_set_service_name (si_item, "Pixbay");
+
     if (json_object_object_get_ex (j_obj, "id", &j_val) &&
         json_object_get_type (j_val) == json_type_int) {
 
@@ -270,6 +272,7 @@ pixbay_json_to_webwidget (const char *s_buff,
                     add_searchitem_to_img_view (ww_widget->gw_img_view,
                                                 si_item,
                                                 ww_widget->s_thumb_dir,
+                                                ww_widget->s_wallp_dir,
                                                 "pixbay_");
                     searchitem_free (si_item);
                 }

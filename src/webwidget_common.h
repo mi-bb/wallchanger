@@ -103,13 +103,15 @@ char * combo_get_active_str       (GtkWidget  *gw_combo,
  *
  * @param[out] gw_iconview  IconView to add image
  * @param[in]  si_item      SearchItem with image data
- * @param[in]  s_cache_dir  String with app's cache directory
+ * @param[in]  s_thumb_dir  String with app's cache directory
+ * @param[in]  s_wallp_dir  String with app's wallpaper directory
  * @param[in]  s_prefix     File name prefix
  * @return     none  
  */
 void   add_searchitem_to_img_view (GtkWidget        *gw_iconview,
                                    const SearchItem *si_item,
-                                   const char       *s_cache_dir,
+                                   const char       *s_thumb_dir,
+                                   const char       *s_wallp_dir,
                                    const char       *s_prefix);
 /*----------------------------------------------------------------------------*/
 #endif

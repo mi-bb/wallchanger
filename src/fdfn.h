@@ -97,5 +97,13 @@ char * dir_get_home_data (void);
  */
 char * dir_get_data (void) __attribute__ ((malloc));
 /*----------------------------------------------------------------------------*/
+/**
+ * @brief  Get user's autostart dir.
+ *
+ * @return  String with user's autostart path, after use it thould be freed
+ *          using free.
+ */
+char * dir_get_autostart (void);
+/*----------------------------------------------------------------------------*/
 #endif
 

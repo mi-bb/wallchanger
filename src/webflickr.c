@@ -165,7 +165,8 @@ event_flickr_access_keys_generate (GtkWidget **gw_array)
  */
 static char *
 flickr_create_file_name (const char *s_disp_name,
-                         const char *s_image_url)
+                         const char *s_image_url,
+                         const char *s_image_id)
 {
     const char *s_ext   = NULL; /* Pointer to extension */
     const char *s_end   = NULL; /* Pointer to end of valid string */
@@ -174,9 +175,11 @@ flickr_create_file_name (const char *s_disp_name,
     size_t      ui_inc  = 0;    /* Increment step for char write */
     size_t      ui_slen = 0;    /* Length of source display name */
     size_t      ui_elen = 0;    /* Length of extension string */
+    size_t      ui_ilen = 0;    /* Length of id string */
     gunichar    u_c;            /* Uni char to examine */
 
     ui_slen = strlen (s_disp_name);
+    ui_ilen = strlen (s_image_id);
 
     /* Get extension pointer and length */
     s_ext = strrchr (s_image_url, '.');
@@ -184,8 +187,8 @@ flickr_create_file_name (const char *s_disp_name,
         ui_elen = strlen (s_ext);
 
     /* Alloc space for name, 4 times more because of unicode grow possibility */
-    s_tmp = malloc ((4 * ui_slen + ui_elen + 1) * sizeof (char));
-    memset (s_tmp, '\0', 4 * ui_slen + ui_elen + 1);
+    s_tmp = malloc ((4 * ui_slen + ui_ilen + ui_elen + 2) * sizeof (char));
+    memset (s_tmp, '\0', 4 * ui_slen + ui_ilen + ui_elen + 2);
 
     s_first = s_tmp;
 
@@ -209,11 +212,13 @@ flickr_create_file_name (const char *s_disp_name,
     ui_slen = strlen (s_first);
 
     /* Check name length if it is smaller than 255 bytes and shrink if needed */
-    if (ui_slen + ui_elen >= 255) {
-        ui_slen = 255 - ui_elen;
+    if (ui_slen + ui_elen + ui_ilen + 1 >= 255) {
+        ui_slen = 255 - ui_elen - ui_ilen - 1;
     }
     g_utf8_validate (s_first, (gssize) ui_slen, &s_end);
-    memcpy (s_first + (s_end - s_first), s_ext, ui_elen+1);
+    s_first[s_end - s_first] = '-';
+    memcpy (s_first + (s_end - s_first) + 1, s_image_id, ui_ilen);
+    memcpy (s_first + (s_end - s_first) + ui_ilen + 1, s_ext, ui_elen + 1);
 
     return s_first;
 }
@@ -256,6 +261,7 @@ flickrphoto_to_searchitem (flickcurl_photo *fp_photo)
     s_name = str_is_empty (s_title) ? strdup (fp_photo->id) : strdup (s_title);
     remove_non_alpha_space (s_name);
 
+    searchitem_set_service_name (si_item, "Flickr");
     searchitem_set_display_name (si_item, s_name);
     searchitem_set_display_markup (si_item, s_name);
     free (s_name);
@@ -271,7 +277,8 @@ flickrphoto_to_searchitem (flickcurl_photo *fp_photo)
         si_item->s_image_url = flickcurl_photo_as_source_uri (fp_photo, 'b');
 
     si_item->s_file_name = flickr_create_file_name (si_item->s_display_name,
-                                                    si_item->s_image_url);
+                                                    si_item->s_image_url,
+                                                    si_item->s_id);
 #ifdef DEBUG
     printf ("ID : %s\n", fp_photo->id);
     printf ("Title : %s\n", fp_photo->fields[PHOTO_FIELD_title].string);
@@ -365,6 +372,7 @@ flickr_search (WebWidget         *ww_widget,
             add_searchitem_to_img_view (ww_widget->gw_img_view,
                                         si_item,
                                         ww_widget->s_thumb_dir,
+                                        ww_widget->s_wallp_dir,
                                         "flickr_");
             searchitem_free (si_item);
         }
@@ -445,7 +453,7 @@ flickr_settings_dialog (FourStrings *fs_data)
     gw_req_sec_entry = gtk_entry_new ();
     gw_ath_tok_entry = gtk_entry_new ();
     gw_ath_sec_entry = gtk_entry_new ();
-    
+
     gtk_entry_set_width_chars (GTK_ENTRY (gw_cli_key_entry), 35);
     gtk_entry_set_width_chars (GTK_ENTRY (gw_cli_sec_entry), 35);
     gtk_entry_set_width_chars (GTK_ENTRY (gw_req_tok_entry), 35);

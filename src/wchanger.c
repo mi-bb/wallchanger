@@ -19,9 +19,9 @@
  *
  * Automatic wallpaper changer
  *
- * @date October 13, 2020
+ * @date October 18, 2020
  *
- * @version 1.6.4
+ * @version 1.6.5
  *
  * @author Michal Babik <michal.babik@pm.me>
  */
@@ -891,10 +891,10 @@ create_image_button (const char   *s_label,
 
     gw_btn = gtk_button_new ();
 
-    if (s_label != NULL && s_label[0] != '\0')
+    if (!str_is_empty (s_label))
         gtk_button_set_label (GTK_BUTTON (gw_btn), s_label);
 
-    if (s_hint != NULL && s_hint[0] != '\0')
+    if (!str_is_empty (s_hint))
         gtk_widget_set_tooltip_text (gw_btn, s_hint);
 
     if (i_but < W_IMG_COUNT && (gd_pix = get_image (i_but)) != NULL) {

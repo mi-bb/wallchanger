@@ -63,6 +63,9 @@
  * @var   SearchItem::s_thumb_url
  * @brief Url of image thumbnail
  *
+ * @var   SearchItem::s_service_name
+ * @brief Name of image service
+ *
  * @var   SearchItem::i_width
  * @brief Image width
  *
@@ -81,6 +84,7 @@ SearchItem {
     char *s_page_url;
     char *s_image_url;
     char *s_thumb_url;
+    char *s_service_name;
     int   i_width;
     int   i_height;
 }
@@ -189,6 +193,17 @@ void         searchitem_set_image_url      (SearchItem *si_item,
  * @return     none
  */
 void         searchitem_set_thumb_url      (SearchItem *si_item,
+                                            const char *s_val);
+
+/*----------------------------------------------------------------------------*/
+/**
+ * @brief  Set SearchItem's service name.
+ *
+ * @param[out] si_item  SearchItem item to set thumb url
+ * @param[in]  s_val    Service name string to set
+ * @return     none
+ */
+void         searchitem_set_service_name   (SearchItem *si_item,
                                             const char *s_val);
 
 /*----------------------------------------------------------------------------*/

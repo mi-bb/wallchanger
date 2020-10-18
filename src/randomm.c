@@ -206,7 +206,6 @@ randomm_get_number (RandMem *rm_mem)
         }
     }
     --rm_mem->cnt;
-
     /* Set number in memory */
     randomm_set_number (rm_mem, ui_ret);
     return ui_ret;

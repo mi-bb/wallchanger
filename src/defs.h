@@ -42,7 +42,7 @@
  */
 /*----------------------------------------------------------------------------*/
 #define APP_NAME      "Wall Changer"
-#define APP_VER       "1.6.4"
+#define APP_VER       "1.6.5"
 #define APP_WEB       "https://www.nongnu.org/wallchanger/"
 #define APP_DSC       "Wall Changer is an automatic wallpaper changer."
 #define STATUS_CONFIG "Config file in use: "
@@ -111,35 +111,51 @@
 #define DEFAULT_WEB_DLG_HEIGHT 800
 /*----------------------------------------------------------------------------*/
 /**
- * @def   PATH_AUTOSTART_DATA
- * @brief Path for autostart file template in application data directory.
+ * @def   PTH_SEP
+ * @brief Path separator
  *
- * @def   PATH_AUTOSTART_HOME
- * @brief Path for user's autostart desktop file for whcnagerd.
+ * @def   PTH_APP_SHORT
+ * @brief Short name of application, used for app directory names.
  *
- * @def   PATH_WMINFO_DATA
- * @brief Path for window manager info file in application data directory.
+ * @def   PTH_ASTART_FILE_S
+ * @brief Source autostart file name for read.
  *
- * @def   PATH_WMINFO_HOME
- * @brief Path for user's config file with window manager info.
+ * @def   PTH_ASTART_FILE_D
+ * @brief Destination autostart file name for write.
  *
- * @def   PATH_APP_SHARE
- * @brief Path for application directory in system's data directory.
+ * @def   PTH_WMINFO_FILE
+ * @brief Nama of file with window manager info.
  *
- * @def   PATH_APP_CACHE
- * @brief Path for app cache directory.
+ * @def   PTH_CONFIG_FILE
+ * @brief Main configuration file name.
  *
- * @def   PATH_WALLPAPERS
- * @brief Wallpaper save path
+ * @def   PTH_OLDCFG_FILE
+ * @brief Old configuration file name.
+ *
+ * @def   PTH_WALLP_DIR
+ * @brief Name of directory for downloaded wallpapers.
+ *
+ * @def   PTH_THUMB_DIR
+ * @brief Name of thumbnails directory.
+ *
+ * @def   PTH_IINFO_DIR
+ * @brief Directory for storing image info.
+ *
+ * @def   PTH_QUERY_DIR
+ * @brief Directory for image information.
  */
 /*----------------------------------------------------------------------------*/
-#define PATH_AUTOSTART_DATA "/wchangerd.autostart"
-#define PATH_AUTOSTART_HOME "/autostart/wchangerd.desktop"
-#define PATH_WMINFO_DATA    "/wms.json"
-#define PATH_WMINFO_HOME    "/wchanger/wms.json"
-#define PATH_APP_SHARE      "/wchanger"
-#define PATH_APP_CACHE      "/wchanger"
-#define PATH_WALLPAPERS     "/wchanger/wallpapers"
+#define PTH_SEP            "/"
+#define PTH_APP_SHORT      "wchanger"
+#define PTH_ASTART_FILE_S  "wchangerd.autostart"
+#define PTH_ASTART_FILE_D  "wchangerd.desktop"
+#define PTH_WMINFO_FILE    "wms.json"
+#define PTH_CONFIG_FILE    "config.json"
+#define PTH_OLDCFG_FILE    "wchanger.json"
+#define PTH_WALLP_DIR      "wallpapers"
+#define PTH_THUMB_DIR      "thumbnails"
+#define PTH_IINFO_DIR      "iinfo"
+#define PTH_QUERY_DIR      "query"
 /*----------------------------------------------------------------------------*/
 #endif
 

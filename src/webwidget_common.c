@@ -23,6 +23,9 @@
  */
 #include "dlgsmsg.h"
 #include "urldata.h"
+#include "imgs.h"
+#include "fdfn.h"
+#include "errs.h"
 #include "strfun.h"
 #include "webwidget_common.h"
 /*----------------------------------------------------------------------------*/
@@ -178,13 +181,16 @@ combo_get_active_str (GtkWidget *gw_combo,
 void
 add_searchitem_to_img_view (GtkWidget        *gw_iconview,
                             const SearchItem *si_item,
-                            const char       *s_cache_dir,
+                            const char       *s_thumb_dir,
+                            const char       *s_wallp_dir,
                             const char       *s_prefix)
 {
     GtkListStore *list_store;
-    GdkPixbuf    *gp_pbuf = NULL;
-    GError       *g_error = NULL;
-    char         *s_fn    = NULL;
+    GdkPixbuf    *gp_pbuf  = NULL; /* Pixbuf with thumbnail */
+    GdkPixbuf    *gp_check = NULL; /* Pixbuf for check image */
+    GError       *g_error  = NULL; /* For error output */
+    char         *s_thfn   = NULL; /* Thumbnail file path */
+    char         *s_wlfn   = NULL; /* Wallpaper file path */
     GtkTreeIter   iter;
 
     list_store = GTK_LIST_STORE (gtk_icon_view_get_model (
@@ -193,24 +199,42 @@ add_searchitem_to_img_view (GtkWidget        *gw_iconview,
     if (si_item->s_thumb_url == NULL)
         return;
 
-    s_fn = str_comb (s_cache_dir, "/");
-    str_append (&s_fn, s_prefix);
-    str_append (&s_fn, si_item->s_id);
-    str_append (&s_fn, ".jpg");
+    s_thfn = str_comb (s_thumb_dir, "/");
+    str_append (&s_thfn, s_prefix);
+    str_append (&s_thfn, si_item->s_id);
+    str_append (&s_thfn, ".jpg");
 
-    gp_pbuf = gdk_pixbuf_new_from_file (s_fn, &g_error);
+    gp_pbuf = gdk_pixbuf_new_from_file (s_thfn, &g_error);
 
     if (gp_pbuf == NULL) {
         gp_pbuf = pixbuf_from_url (si_item->s_thumb_url);
         if (gp_pbuf != NULL) {
             g_error = NULL;
-            gdk_pixbuf_save (gp_pbuf, s_fn, "jpeg", &g_error,
-                             "quality", "98", NULL);
+            gdk_pixbuf_save (gp_pbuf, s_thfn, "jpeg", &g_error,
+                             "quality", "96", NULL);
         }
     }
-    free (s_fn);
+    free (s_thfn);
 
     if (gp_pbuf != NULL) {
+
+        s_wlfn = str_comb (s_wallp_dir, "/");
+        str_append (&s_wlfn, si_item->s_file_name);
+
+        if (file_check_permissions (s_wlfn) == ERR_OK) {
+
+            gp_check = get_image (W_IMG_CHECK);
+            gdk_pixbuf_composite (gp_check, gp_pbuf,
+                              0, 0,
+                              gdk_pixbuf_get_width (gp_check),
+                              gdk_pixbuf_get_height (gp_check),
+                              0, 0,
+                              1.0, 1.0,
+                              GDK_INTERP_HYPER,
+                              255);
+            g_object_unref (gp_check);
+        }
+
         gtk_list_store_append(list_store, &iter);
         gtk_list_store_set(list_store, &iter,
                            WEB_COL_PIXBUF,    gp_pbuf,
@@ -225,7 +249,8 @@ add_searchitem_to_img_view (GtkWidget        *gw_iconview,
                            WEB_COL_IMAGE_URL, si_item->s_image_url,
                            WEB_COL_THUMB_URL, si_item->s_thumb_url,
                            -1);
-        g_object_unref(gp_pbuf);
+        g_object_unref (gp_pbuf);
+        free (s_wlfn);
     }
     while (gtk_events_pending ())
         gtk_main_iteration ();

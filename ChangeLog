@@ -13,6 +13,27 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+2020-10-18  Michal Babik  <michal.babik@pm.me>
+
+	* cfgfile.c, cfgfile.h (cfgfile_get_app_thumbnails_path): New function
+	  to get application thumbnails directory.
+	  (cfgfile_get_image_info_path): New function for getting image info
+	  directory.
+	* defs.h: Changed path defines, changed functions which call them.
+	* fdfn.c, fdfn.h (dir_get_autostart): Function to get user's autostart
+	  path.
+	* randomm.c, randomm.h: Updated random functions.
+	* searchitem.c, searchitem.h: Added s_service_name string to store
+	  image service name.
+	  (searchitem_set_service_name): Setter for service name.
+	* webflickr.c (flickr_create_file_name): Changed file saving, added
+	  image id to file name.
+	* webwidget_common.c, webwidget_common.h (add_searchitem_to_img_view):
+	  Added checking if selected background was downloaded and is in
+	  application wallpapers directory.
+	* webwidget_s.h: Added s_wallp_dir to WebWidget structure for storing
+	  wallpaper directory path.
+
 2020-10-14  Michal Babik  <michal.babik@pm.me>
 
 	* imgs.c: Some images changed to svg, some compacted.

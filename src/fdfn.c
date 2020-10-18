@@ -284,6 +284,20 @@ dir_get_data (void)
         strdup (s_dir);
 }
 /*----------------------------------------------------------------------------*/
+/**
+ * @brief  Get user's autostart dir.
+ */
+char *
+dir_get_autostart (void)
+{
+    char *s_dir = NULL;
+
+    s_dir = dir_get_home_config ();
+    str_append (&s_dir, "/autostart");
+
+    return s_dir;
+}
+/*----------------------------------------------------------------------------*/
 int
 dir_create_with_subdirs (const char *s_dn)
 {
