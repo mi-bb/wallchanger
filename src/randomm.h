@@ -19,13 +19,7 @@
  *
  * @brief  Random without repeated values
  *
- * Structure and functions for a random number generator without repeating
- * values in a serie of randoming.
- * It gets random numbers until the range of numbers reached, resets memory
- * and starts getting random values again.
- * Maximum available range can be set with RMMAX, it will be RMMAX * 32.
- *
- * @author Michal Babik <michal.babik@pm.me>
+ * @author Michal Babik <michal.babik@protonmail.com>
  */
 #ifndef RANDOMM_H
 #define RANDOMM_H
@@ -41,21 +35,21 @@
  * @var   RandMem::randm
  * @brief Integers to store information which number was randomed
  *
- * @var   RandMem::allocn
- * @brief Number of alloced integers
+ * @var   RandMem::cnt
+ * @brief Number of random number generated in a serie
  *
  * @var   RandMem::range
  * @brief Max random number that will be generated
  *
- * @var   RandMem::cnt
- * @brief Number of random number generated in a serie
+ * @var   RandMem::allocn
+ * @brief Number of alloced integers
  */
 typedef struct
 RandMem {
     uint32_t *randm;
-    size_t    allocn;
-    size_t    range;
     size_t    cnt;
+    size_t    range;
+    size_t    allocn;
 } RandMem;
 /*----------------------------------------------------------------------------*/
 /**
@@ -75,9 +69,9 @@ RandMem * randomm_new            (void) __attribute__((malloc));
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Create new RandMem item with given range.
+ * @param[in]  ui_range  Range value
  *
- * @param[in] ui_range  Random numbers range
- * @return    New RandMem item
+ * @return New RandMem item
  */
 RandMem * randomm_new_with_range (size_t ui_range) __attribute__((malloc));
 /*----------------------------------------------------------------------------*/
@@ -90,7 +84,7 @@ RandMem * randomm_new_with_range (size_t ui_range) __attribute__((malloc));
 void      randomm_free           (RandMem *rm_mem);
 /*----------------------------------------------------------------------------*/
 /**
- * @brief  Set random numbers maximum range.
+ * @brief  Set random numbers range.
  *
  * @param[out] rm_mem  RandMem object
  * @param[in]  ui_rng  Range value

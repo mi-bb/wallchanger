@@ -19,11 +19,10 @@
  *
  * @brief  Random without repeated values
  *
- * @author Michal Babik <michal.babik@pm.me>
+ * @author Michal Babik <michal.babik@protonmail.com>
  */
 #include <stdlib.h>
 #include <time.h>
-#include <err.h>
 #include "randomm.h"
 /*----------------------------------------------------------------------------*/
 /**
@@ -33,8 +32,8 @@
  * @param[in]  ui_no  Number to check
  * @return     1 if it is, 0 if it is not
  */
-static int8_t randomm_check_number (RandMem *rmm,
-                                    size_t   ui_no);
+static int  randomm_check_number (RandMem *rmm,
+                                  size_t   ui_no);
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Store number in random numbers memory
@@ -43,8 +42,8 @@ static int8_t randomm_check_number (RandMem *rmm,
  * @param[in]  ui_no   Number to check
  * @return     none
  */
-static void randomm_set_number (RandMem *rm_mem,
-                                size_t   ui_no);
+static void randomm_set_number   (RandMem *rm_mem,
+                                  size_t   ui_no);
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Initialize random memory object.
@@ -52,12 +51,12 @@ static void randomm_set_number (RandMem *rm_mem,
  * @param[out] rm_mem  RandMem object
  * @return     none
  */
-static void randomm_init (RandMem *rm_mem);
+static void randomm_init         (RandMem *rm_mem);
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Check if number is in random numbers memory
  */
-static int8_t
+static int
 randomm_check_number (RandMem *rmm,
                       size_t   ui_no)
 {
@@ -110,14 +109,14 @@ randomm_reset (RandMem *rm_mem)
 {
     size_t i = 0;
 
-    rm_mem->cnt = 0;
+    rm_mem->cnt = rm_mem->range;
 
     for (i = 0; i < rm_mem->allocn; ++i)
         rm_mem->randm[i] = 0;
 }
 /*----------------------------------------------------------------------------*/
 /**
- * @brief  Set random numbers maximum range.
+ * @brief  Set random numbers range.
  */
 void
 randomm_set_range (RandMem *rm_mem,
@@ -135,7 +134,7 @@ randomm_set_range (RandMem *rm_mem,
                                  rm_mem->allocn * sizeof (*rm_mem->randm));
     }
     if (rm_mem->randm == NULL)
-        err (EXIT_FAILURE, NULL);
+        exit (EXIT_FAILURE);
 
     randomm_reset (rm_mem);
 }
@@ -149,7 +148,7 @@ randomm_new (void)
     RandMem *rm_mem;
 
     if ((rm_mem = malloc (sizeof (RandMem))) == NULL)
-        err (EXIT_FAILURE, NULL);
+        exit (EXIT_FAILURE);
 
     randomm_init (rm_mem);
 
@@ -186,24 +185,30 @@ size_t
 randomm_get_number (RandMem *rm_mem)
 {
     size_t ui_ret = 0; /* Random number to return */
+    size_t ui_rnd = 0; /* Randomed number position to get */
+    size_t      i = 0; /* i */
+    size_t      j = 0; /* j */
 
     if (rm_mem->range == 0)
         return 0;
 
-    /* Get random number and check if it is in memory */
-    do {
-        ui_ret = (size_t) rand () % rm_mem->range;
-    }
-    while (randomm_check_number (rm_mem, ui_ret));
-
-    /* set number in memory */
-    randomm_set_number (rm_mem, ui_ret);
-
-    ++rm_mem->cnt;
-
-    if (rm_mem->cnt >= rm_mem->range) {
+    if (rm_mem->cnt == 0) {
         randomm_reset (rm_mem);
     }
+    ui_rnd = (size_t) rand () % rm_mem->cnt + 1;
+
+    for (i = 0; i < rm_mem->range; ++i) {
+        if (!randomm_check_number (rm_mem, i)) {
+            if (++j == ui_rnd) {
+                ui_ret = i;
+                break;
+            }
+        }
+    }
+    --rm_mem->cnt;
+
+    /* Set number in memory */
+    randomm_set_number (rm_mem, ui_ret);
     return ui_ret;
 }
 /*----------------------------------------------------------------------------*/
