@@ -111,6 +111,8 @@ main (int    argc,
                 ui_atime_val = check_time_align_val ();
                 ui_cnt       = ui_atime_val / ui_ch_int;
                 ui_atime_val = ui_atime_val - (ui_ch_int * ui_cnt);
+                if (ui_atime_val == 0)
+                    ui_atime_val = ui_ch_int;
                 /* If interval is longer than hour set counter to intmax so
                  * it should not get to zero and not count align time */
                 if (ui_ch_int > 3600)
