@@ -40,7 +40,7 @@ const char *gengetopt_args_info_help[] = {
   "      --stop             Stop wchangerd process",
   "      --restart          Restart wchangerd process",
   "      --status           Print wchangerd status",
-  "      --once             Change wallpaper once and exit",
+  "      --once             Changes the wallpaper once and exits",
   "      --config=FILENAME  Path to config file",
     0
 };
@@ -562,7 +562,7 @@ cmdline_parser_internal (
               goto failure;
           
           }
-          /* Change wallpaper once and exit.  */
+          /* Changes the wallpaper once and exits.  */
           else if (strcmp (long_options[option_index].name, "once") == 0)
           {
           
