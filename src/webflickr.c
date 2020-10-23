@@ -29,6 +29,9 @@
 #include <err.h>
 
 #include "strfun.h"
+#include "errs.h"
+#include "dlgsmsg.h"
+#include "chquery.h"
 #include "searchitem.h"
 #include "webwidget_common.h"
 #include "webflickr.h"
@@ -328,12 +331,19 @@ flickr_search (WebWidget         *ww_widget,
     flickcurl_photos_list_params list_params;
     flickcurl_search_params      params;
     flickcurl_photos_list       *photos_list = NULL;
-    SearchItem  *si_item = NULL;
-    flickcurl   *fc      = NULL;
-    char        *s_tags  = NULL;
-    int          i       = 0;
-    char         s_sort[64];
-    char         s_media[16];
+    flickcurl   *fc       = NULL;
+    CacheQuery  *cq_query = NULL; /* For cache saving */
+    SearchItem **si_items = NULL; /* List of item with photo info */
+    SearchItem  *si_item  = NULL; /* Photo information */
+    char        *s_tags   = NULL; /* Query tags */
+    int          i_err    = 0;    /* Error output */
+    int          i        = 0;    /* i */
+    char         s_sort[64];      /* Sorting information */
+    char         s_media[16];     /* Media type to search */
+
+    /* Check if there is a cached info about this search query */
+    if (check_for_cached_query (ww_widget, "Flickr", "flickr_"))
+        return;
 
     flickcurl_init ();
     fc = flickcurl_new ();
@@ -345,7 +355,7 @@ flickr_search (WebWidget         *ww_widget,
     flickcurl_set_oauth_token         (fc, fs_data->s_str3);
     flickcurl_set_oauth_token_secret  (fc, fs_data->s_str4);
 
-    strcpy (s_sort, "interestingness-desc");
+    strcpy (s_sort,  "interestingness-desc");
     strcpy (s_media, "photos");
     s_tags = str_replace_in (ww_widget->s_query, " ", ",");
 
@@ -365,7 +375,14 @@ flickr_search (WebWidget         *ww_widget,
                     GTK_ICON_VIEW (ww_widget->gw_img_view))));
 
     if (photos_list != NULL) {
+        cq_query = cachequery_new ("Flickr",
+                                   ww_widget->s_query,
+                                   ww_widget->i_page,
+                                   ww_widget->i_per_page);
+        si_items = cq_query->si_items;
+
         ww_widget->i_found_cnt = photos_list->total_count;
+        cq_query->i_found_cnt  = ww_widget->i_found_cnt;
 
         for(i = 0; i < photos_list->photos_count; ++i) {
             si_item = flickrphoto_to_searchitem (photos_list->photos[i]);
@@ -374,9 +391,15 @@ flickr_search (WebWidget         *ww_widget,
                                         ww_widget->s_thumb_dir,
                                         ww_widget->s_wallp_dir,
                                         "flickr_");
-            searchitem_free (si_item);
+            *si_items++ = si_item;
+        }
+        i_err = cachequery_save (cq_query);
+
+        if (i_err != ERR_OK) {
+            message_dialog_error (NULL, err_get_message (i_err));
         }
         flickcurl_free_photos_list (photos_list);
+        cachequery_free (cq_query);
     }
     free (s_tags);
     flickcurl_free (fc);

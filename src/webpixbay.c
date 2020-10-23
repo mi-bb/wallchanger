@@ -29,6 +29,8 @@
 #include <json.h>
 #endif
 #include "urldata.h"
+#include "errs.h"
+#include "chquery.h"
 #include "webwidget_common.h"
 #include "dlgsmsg.h"
 #include "strfun.h"
@@ -226,16 +228,17 @@ pixbay_json_obj_to_searchitem (json_object *j_obj)
  * @return     none
  */
 static void
-pixbay_json_to_webwidget (const char *s_buff,
-                          WebWidget  *ww_widget)
+pixbay_json_to_webwidget (const char  *s_buff,
+                          WebWidget   *ww_widget,
+                          SearchItem **si_items)
 {
-    json_object *j_obj;
-    json_object *j_val;
-    json_object *j_arr;
+    json_object *j_obj;            /* Json with search data */
+    json_object *j_val;            /* Some value */
+    json_object *j_arr;            /* For array data */
     enum json_tokener_error j_err; /* Json error output */
-    SearchItem *si_item = NULL;
-    size_t      i       = 0;
-    size_t      ui_cnt  = 0;
+    SearchItem *si_item = NULL;    /* For image info */
+    size_t      i       = 0;       /* i */
+    size_t      ui_cnt  = 0;       /* Elements in array */
 
     j_obj = json_tokener_parse_verbose (s_buff, &j_err);
     if (j_obj == NULL ||
@@ -274,7 +277,7 @@ pixbay_json_to_webwidget (const char *s_buff,
                                                 ww_widget->s_thumb_dir,
                                                 ww_widget->s_wallp_dir,
                                                 "pixbay_");
-                    searchitem_free (si_item);
+                    *si_items++ = si_item;
                 }
             }
         }
@@ -289,13 +292,19 @@ void
 pixbay_search (WebWidget         *ww_widget,
                const FourStrings *fs_data)
 {
-    UrlData *ud_data = NULL; /* For search results */
-    char    *s_query = NULL; /* For search query */
+    UrlData    *ud_data      = NULL; /* For search results */
+    CacheQuery *cq_query     = NULL; /* For cache saving */
+    char       *s_query      = NULL; /* For search query */
+    int         i_err        = 0;    /* Error output */
 
     if (str_is_empty_msg (fs_data->s_str1, "Pixbay API key is not set"))
         return;
+    /* Check if there is a cached info about this search query */
+    if (check_for_cached_query (ww_widget, "Pixbay", "pixbay_"))
+        return;
 
     s_query = str_replace_in (ww_widget->s_query, " ", "+");
+
     ud_data = urldata_search_pixbay (s_query,
                                      fs_data->s_str1,
                                      ww_widget->i_page,
@@ -304,9 +313,24 @@ pixbay_search (WebWidget         *ww_widget,
         message_dialog_error (NULL, ud_data->errbuf);
     }
     else if (urldata_full (ud_data)) {
+        cq_query = cachequery_new ("Pixbay",
+                                   ww_widget->s_query,
+                                   ww_widget->i_page,
+                                   ww_widget->i_per_page);
+
         gtk_list_store_clear (GTK_LIST_STORE (gtk_icon_view_get_model (
                         GTK_ICON_VIEW (ww_widget->gw_img_view))));
-        pixbay_json_to_webwidget (ud_data->buffer, ww_widget);
+
+        pixbay_json_to_webwidget (ud_data->buffer, ww_widget,
+                                  cq_query->si_items);
+        cq_query->i_found_cnt = ww_widget->i_found_cnt;
+
+        i_err = cachequery_save (cq_query);
+
+        if (i_err != ERR_OK) {
+            message_dialog_error (NULL, err_get_message (i_err));
+        }
+        cachequery_free (cq_query);
     }
     urldata_free (ud_data);
     free (s_query);
@@ -358,6 +382,12 @@ pixbay_settings_dialog (FourStrings *fs_data)
                         FALSE, FALSE, 4);
     gtk_box_pack_start (GTK_BOX (gw_content_box),
                         gtk_link_button_new ("https://pixabay.com/api/docs/"),
+                        FALSE, FALSE, 4);
+    gtk_box_pack_start (GTK_BOX (gw_content_box),
+                        gtk_label_new (
+    "You should consider applying for a full access API key on this page, so "
+    "you will get access to full size photos.\n"
+    "Without full access key images will have max width/height of 1280px."),
                         FALSE, FALSE, 4);
 
     gtk_widget_show_all (gw_content_box);

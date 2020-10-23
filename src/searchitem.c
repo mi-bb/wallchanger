@@ -137,6 +137,18 @@ searchitem_set_author_name (SearchItem *si_item,
 }
 /*----------------------------------------------------------------------------*/
 /**
+ * @brief  Set SearchItem's photo author url.
+ */
+void
+searchitem_set_author_url (SearchItem *si_item,
+                           const char *s_val)
+{
+    if (si_item->s_author_url != NULL)
+        free (si_item->s_author_url);
+    si_item->s_author_url = strdup (s_val);
+}
+/*----------------------------------------------------------------------------*/
+/**
  * @brief  Set SearchItem's file name.
  */
 void
@@ -219,5 +231,24 @@ searchitem_set_service_name (SearchItem *si_item,
         free (si_item->s_service_name);
     si_item->s_service_name = strdup (s_val);
 }
+/*----------------------------------------------------------------------------*/
+#ifdef DEBUG
+void
+searchitem_print (SearchItem *si_item)
+{
+    printf ("id          : %s\n", si_item->s_id);
+    printf ("author name : %s\n", si_item->s_author_name);
+    printf ("author url  : %s\n", si_item->s_author_url);
+    printf ("file name   : %s\n", si_item->s_file_name);
+    printf ("displ name  : %s\n", si_item->s_display_name);
+    printf ("displ mkup  : %s\n", si_item->s_display_markup);
+    printf ("page url    : %s\n", si_item->s_page_url);
+    printf ("image url   : %s\n", si_item->s_image_url);
+    printf ("thumb url   : %s\n", si_item->s_thumb_url);
+    printf ("serv name   : %s\n", si_item->s_service_name);
+    printf ("width       : %d\n", si_item->i_width);
+    printf ("height      : %d\n", si_item->i_height);
+}
+#endif
 /*----------------------------------------------------------------------------*/
 

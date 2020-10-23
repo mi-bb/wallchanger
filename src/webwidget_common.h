@@ -25,6 +25,7 @@
 #define WEBWIDGET_COMMON_H
 
 #include <gtk/gtk.h>
+#include "webwidget_s.h"
 #include "searchitem.h"
 
 /*----------------------------------------------------------------------------*/
@@ -101,18 +102,31 @@ char * combo_get_active_str       (GtkWidget  *gw_combo,
 /**
  * @brief  Add image based on si_item data to icon view.
  *
- * @param[out] gw_iconview  IconView to add image
- * @param[in]  si_item      SearchItem with image data
- * @param[in]  s_thumb_dir  String with app's cache directory
- * @param[in]  s_wallp_dir  String with app's wallpaper directory
- * @param[in]  s_prefix     File name prefix
+ * @param[out] gw_iconview       IconView to add image
+ * @param[in]  si_item           SearchItem with image data
+ * @param[in]  s_thumb_dir       String with app's cache directory
+ * @param[in]  s_wallp_dir       String with app's wallpaper directory
+ * @param[in]  s_service_prefix  File name prefix
  * @return     none  
  */
 void   add_searchitem_to_img_view (GtkWidget        *gw_iconview,
                                    const SearchItem *si_item,
                                    const char       *s_thumb_dir,
                                    const char       *s_wallp_dir,
-                                   const char       *s_prefix);
+                                   const char       *s_service_prefix);
+/*----------------------------------------------------------------------------*/
+/**
+ * @brief  Check for search query cached info, get info and add items if info
+ *         was found.
+ *
+ * @param[in,out] ww_widget         WebWidget item
+ * @param[in]     s_service_name    Name of search service
+ * @param[in]     s_service_prefix  File name prefix
+ * @return        1 if cached query was found, 0 if not
+ */
+int    check_for_cached_query     (WebWidget        *ww_widget,
+                                   const char       *s_service_name,
+                                   const char       *s_service_prefix);
 /*----------------------------------------------------------------------------*/
 #endif
 

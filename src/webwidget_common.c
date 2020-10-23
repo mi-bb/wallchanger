@@ -26,6 +26,7 @@
 #include "imgs.h"
 #include "fdfn.h"
 #include "errs.h"
+#include "chquery.h"
 #include "strfun.h"
 #include "webwidget_common.h"
 /*----------------------------------------------------------------------------*/
@@ -89,12 +90,13 @@ check_unicode (const char *s_str,
 void
 remove_non_alpha_space (char *s_str)
 {
-    gunichar u_c; /* Uni char to examine */
+    gunichar  u_c;    /* Uni char to examine */
+    char     *s_next; /* Position of next char */
 
     while (*s_str != '\0') {
         u_c = g_utf8_get_char (s_str);
         if (!g_unichar_isalnum (u_c) && !g_unichar_isspace (u_c)) {
-            char *s_next = g_utf8_find_next_char (s_str, NULL);
+            s_next = g_utf8_find_next_char (s_str, NULL);
             memmove (s_str, s_next, strlen (s_next) + 1);
         }
         else {
@@ -183,7 +185,7 @@ add_searchitem_to_img_view (GtkWidget        *gw_iconview,
                             const SearchItem *si_item,
                             const char       *s_thumb_dir,
                             const char       *s_wallp_dir,
-                            const char       *s_prefix)
+                            const char       *s_service_prefix)
 {
     GtkListStore *list_store;
     GdkPixbuf    *gp_pbuf  = NULL; /* Pixbuf with thumbnail */
@@ -200,7 +202,7 @@ add_searchitem_to_img_view (GtkWidget        *gw_iconview,
         return;
 
     s_thfn = str_comb (s_thumb_dir, "/");
-    str_append (&s_thfn, s_prefix);
+    str_append (&s_thfn, s_service_prefix);
     str_append (&s_thfn, si_item->s_id);
     str_append (&s_thfn, ".jpg");
 
@@ -225,13 +227,13 @@ add_searchitem_to_img_view (GtkWidget        *gw_iconview,
 
             gp_check = get_image (W_IMG_CHECK);
             gdk_pixbuf_composite (gp_check, gp_pbuf,
-                              0, 0,
-                              gdk_pixbuf_get_width (gp_check),
-                              gdk_pixbuf_get_height (gp_check),
-                              0, 0,
-                              1.0, 1.0,
-                              GDK_INTERP_HYPER,
-                              255);
+                                  0, 0,
+                                  gdk_pixbuf_get_width (gp_check),
+                                  gdk_pixbuf_get_height (gp_check),
+                                  0, 0,
+                                  1.0, 1.0,
+                                  GDK_INTERP_HYPER,
+                                  255);
             g_object_unref (gp_check);
         }
 
@@ -256,3 +258,44 @@ add_searchitem_to_img_view (GtkWidget        *gw_iconview,
         gtk_main_iteration ();
 }
 /*----------------------------------------------------------------------------*/
+/**
+ * @brief  Check for search query cached info, get info and add items if info
+ *         was found.
+ */
+int
+check_for_cached_query (WebWidget  *ww_widget,
+                        const char *s_service_name,
+                        const char *s_service_prefix)
+{
+    CacheQuery *cq_query_chk = NULL; /* For checking cache availability */
+    int         i_err        = 0;    /* Error output */
+    int         i            = 0;    /* i */
+
+    cq_query_chk = cachequery_check_query (s_service_name,
+                                           ww_widget->s_query,
+                                           ww_widget->i_page,
+                                           ww_widget->i_per_page,
+                                           &i_err);
+    if (i_err != ERR_OK) {
+        message_dialog_error (NULL, err_get_message (i_err));
+    }
+    if (cq_query_chk != NULL) {
+        gtk_list_store_clear (GTK_LIST_STORE (gtk_icon_view_get_model (
+                        GTK_ICON_VIEW (ww_widget->gw_img_view))));
+
+        ww_widget->i_found_cnt = cq_query_chk->i_found_cnt;
+
+        for (i = 0; i < cq_query_chk->i_per_page; ++i) {
+            add_searchitem_to_img_view (ww_widget->gw_img_view,
+                                        cq_query_chk->si_items[i],
+                                        ww_widget->s_thumb_dir,
+                                        ww_widget->s_wallp_dir,
+                                        s_service_prefix);
+        }
+        cachequery_free (cq_query_chk);
+        return 1;
+    }
+    return 0;
+}
+/*----------------------------------------------------------------------------*/
+

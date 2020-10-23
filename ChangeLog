@@ -13,6 +13,23 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+2020-10-23  Michal Babik  <michal.babik@pm.me>
+
+	* cfgfile.c, cfgfile.h (cfgfile_get_query_path): New function for
+	  getting cached query directory.
+	* chquery.c, chquery.h: New files with structure and functions for
+	  checking and saving information about cached search query.
+	* searchitem.c, searchitem.h (searchitem_set_author_url): Setter
+	  for image author string.
+	* webflickr.c (flickr_search): Modified for checking and saving
+	  cached query info.
+	* webpexels.c (pexels_search, pexels_json_to_webwidget): Modified
+	  for checking and saving cached query info.
+	* webpixbay.c (pixbay_search, pixbay_json_to_webwidget): Modified
+	  for checking and saving cached query info.
+	* webwidget_common.c, webwidget_common.h (check_for_cached_query):
+	  Functionf for checking cached query existence.
+
 2020-10-22  Michal Babik  <michal.babik@pm.me>
 
 	* wcngdmn (main): When using time align added setting of wait time

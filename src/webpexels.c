@@ -30,7 +30,9 @@
 #include <json.h>
 #endif
 #include "strfun.h"
+#include "chquery.h"
 #include "dlgsmsg.h"
+#include "errs.h"
 #include "searchitem.h"
 #include "urldata.h"
 #include "webwidget_common.h"
@@ -213,6 +215,9 @@ pexels_json_obj_to_searchitem (json_object *j_obj)
         }
         pexels_process_item_set_names (si_item);
     }
+#ifdef DEBUG
+    searchitem_print (si_item);
+#endif
     return si_item;
 }
 /*----------------------------------------------------------------------------*/
@@ -224,16 +229,17 @@ pexels_json_obj_to_searchitem (json_object *j_obj)
  * @return     none
  */
 static void
-pexels_json_to_webwidget (const char *s_buff,
-                          WebWidget  *ww_widget)
+pexels_json_to_webwidget (const char  *s_buff,
+                          WebWidget   *ww_widget,
+                          SearchItem **si_items)
 {
-    json_object *j_obj;
-    json_object *j_val;
-    json_object *j_arr;
+    json_object *j_obj;            /* Json with search data */
+    json_object *j_val;            /* Some value */
+    json_object *j_arr;            /* For array data */
     enum json_tokener_error j_err; /* Json error output */
-    SearchItem *si_item = NULL;
-    size_t      i       = 0;
-    size_t      ui_cnt  = 0;
+    SearchItem *si_item = NULL;    /* For image info */
+    size_t      i       = 0;       /* i */
+    size_t      ui_cnt  = 0;       /* Elements in array */
 
     j_obj = json_tokener_parse_verbose (s_buff, &j_err);
     if (j_obj == NULL ||
@@ -272,7 +278,7 @@ pexels_json_to_webwidget (const char *s_buff,
                                                 ww_widget->s_thumb_dir,
                                                 ww_widget->s_wallp_dir,
                                                 "pexels_");
-                    searchitem_free (si_item);
+                    *si_items++ = si_item;
                 }
             }
         }
@@ -287,13 +293,19 @@ void
 pexels_search (WebWidget         *ww_widget,
                const FourStrings *fs_data)
 {
-    UrlData *ud_data = NULL; /* For search results */
-    char    *s_query = NULL; /* For search query */
+    UrlData    *ud_data      = NULL; /* For search results */
+    CacheQuery *cq_query     = NULL; /* For cache saving */
+    char       *s_query      = NULL; /* For search query */
+    int         i_err        = 0;    /* Error output */
 
     if (str_is_empty_msg (fs_data->s_str1, "Pexels API key is not set"))
         return;
+    /* Check if there is a cached info about this search query */
+    if (check_for_cached_query (ww_widget, "Pexels", "pexels_"))
+        return;
 
     s_query = str_replace_in (ww_widget->s_query, " ", "+");
+
     ud_data = urldata_search_pexels (s_query,
                                      fs_data->s_str1,
                                      ww_widget->i_page,
@@ -302,9 +314,24 @@ pexels_search (WebWidget         *ww_widget,
         message_dialog_error (NULL, ud_data->errbuf);
     }
     else if (urldata_full (ud_data)) {
+        cq_query = cachequery_new ("Pexels",
+                                   ww_widget->s_query,
+                                   ww_widget->i_page,
+                                   ww_widget->i_per_page);
+
         gtk_list_store_clear (GTK_LIST_STORE (gtk_icon_view_get_model (
-                        GTK_ICON_VIEW (ww_widget->gw_img_view))));
-        pexels_json_to_webwidget (ud_data->buffer, ww_widget);
+                    GTK_ICON_VIEW (ww_widget->gw_img_view))));
+
+        pexels_json_to_webwidget (ud_data->buffer, ww_widget,
+                                  cq_query->si_items);
+        cq_query->i_found_cnt = ww_widget->i_found_cnt;
+
+        i_err = cachequery_save (cq_query);
+
+        if (i_err != ERR_OK) {
+            message_dialog_error (NULL, err_get_message (i_err));
+        }
+        cachequery_free (cq_query);
     }
     urldata_free (ud_data);
     free (s_query);

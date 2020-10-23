@@ -136,6 +136,16 @@ void         searchitem_set_author_name    (SearchItem *si_item,
                                             const char *s_val);
 /*----------------------------------------------------------------------------*/
 /**
+ * @brief  Set SearchItem's photo author url.
+ *
+ * @param[out] si_item  SearchItem item to set author name
+ * @param[in]  s_val    Author url string to set
+ * @return     none
+ */
+void         searchitem_set_author_url     (SearchItem *si_item,
+                                            const char *s_val);
+/*----------------------------------------------------------------------------*/
+/**
  * @brief  Set SearchItem's file name.
  *
  * @param[out] si_item  SearchItem item to set file name
@@ -230,6 +240,10 @@ static inline void searchitem_set_height (SearchItem *si_item,
                                           const int   val) {
     si_item->i_height = val;
 }
+/*----------------------------------------------------------------------------*/
+#ifdef DEBUG
+void searchitem_print (SearchItem *si_item);
+#endif
 /*----------------------------------------------------------------------------*/
 #endif
 

@@ -247,7 +247,7 @@ combo_get_active_strings (GtkWidget   *gw_combo,
     if (gtk_combo_box_get_active_iter (GTK_COMBO_BOX (gw_combo), &iter)) {
 
         model = gtk_combo_box_get_model (GTK_COMBO_BOX (gw_combo));
-        gtk_tree_model_get (model, &iter,
+        gtk_tree_model_get (model,          &iter,
                             WW_COMBO_STR_1, &fs_data->s_str1,
                             WW_COMBO_STR_2, &fs_data->s_str2,
                             WW_COMBO_STR_3, &fs_data->s_str3,
@@ -300,7 +300,7 @@ combo_set_active_strings (GtkWidget         *gw_combo,
         gls_slstore = GTK_LIST_STORE (gtk_combo_box_get_model (
                     GTK_COMBO_BOX (gw_combo)));
 
-        gtk_list_store_set (gls_slstore, &gti_iter,
+        gtk_list_store_set (gls_slstore,    &gti_iter,
                             WW_COMBO_STR_1, fs_data->s_str1,
                             WW_COMBO_STR_2, fs_data->s_str2,
                             WW_COMBO_STR_3, fs_data->s_str3,
@@ -351,7 +351,7 @@ sel_combo_check_exist (GtkTreeModel *gtm_model,
 
     while (b_res) {
 
-        gtk_tree_model_get (gtm_model, &gti_iter,
+        gtk_tree_model_get (gtm_model,      &gti_iter,
                             WW_SELCOMBO_ID, &i_read_id,
                             -1);
         if (i_id == i_read_id)
@@ -384,7 +384,7 @@ sel_combo_get_list (GtkWidget *gw_selected_combo)
     while (b_res) {
 
         si_item = searchitem_new ();
-        gtk_tree_model_get (gtm_model, &gti_iter,
+        gtk_tree_model_get (gtm_model,             &gti_iter,
                             WW_SELCOMBO_FILE_NAME, &si_item->s_file_name,
                             WW_SELCOMBO_IMAGE_URL, &si_item->s_image_url,
                             -1);
@@ -760,7 +760,6 @@ webwidget_combobox_create (Setting *st_settings)
                                      G_TYPE_STRING,
                                      G_TYPE_STRING,
                                      GDK_TYPE_PIXBUF);
-
     /* Get Pexels API string */
     st_s1 = setting_find_child (st_settings,
                                 get_setting_name (SETTING_PEXELS_API));
@@ -790,7 +789,7 @@ webwidget_combobox_create (Setting *st_settings)
     gp_logo = get_image (W_LOGO_PIXBAY);
 
     gtk_list_store_append (list_store, &iter);
-    gtk_list_store_set (list_store, &iter,
+    gtk_list_store_set (list_store,     &iter,
                         WW_COMBO_ID,    WEB_WIDGET_PIXBAY,
                         WW_COMBO_NAME,  "Pixbay",
                         WW_COMBO_STR_1, s_pixbay_api,
@@ -822,7 +821,7 @@ webwidget_combobox_create (Setting *st_settings)
     gp_logo = get_image (W_LOGO_FLICKR);
 
     gtk_list_store_append (list_store, &iter);
-    gtk_list_store_set (list_store, &iter,
+    gtk_list_store_set (list_store,     &iter,
                         WW_COMBO_ID,    WEB_WIDGET_FLICKR,
                         WW_COMBO_NAME,  "Flickr",
                         WW_COMBO_STR_1, s_flickr_key,
@@ -941,8 +940,8 @@ event_imgview_activated (GtkIconView *iconview,
                                  s_page_url != NULL ? s_page_url : "");
         if (i_w && i_h) {
             sprintf (s_dim, "[%dx%d]", i_w, i_h);
-            gtk_label_set_text (GTK_LABEL (ww_widget->gw_ii_dim_label), s_dim);
         }
+        gtk_label_set_text (GTK_LABEL (ww_widget->gw_ii_dim_label), s_dim);
 
         gtk_image_clear (GTK_IMAGE (ww_widget->gw_ii_simage));
         if (ww_widget->i_active_service == WEB_WIDGET_PEXELS)

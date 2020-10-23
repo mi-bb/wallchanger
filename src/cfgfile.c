@@ -239,7 +239,7 @@ cfgfile_get_wm_info_data_file_path (int *i_err)
 char *
 cfgfile_get_app_wallpapers_path (void)
 {
-    char *s_path = NULL; /* Config file path */
+    char *s_path = NULL; /* Result directory path */
 
     s_path = dir_get_home_data ();
     str_append (&s_path, PTH_SEP PTH_APP_SHORT PTH_SEP PTH_WALLP_DIR);
@@ -253,7 +253,7 @@ cfgfile_get_app_wallpapers_path (void)
 char *
 cfgfile_get_app_cache_path (void)
 {
-    char *s_path = NULL; /* Config file path */
+    char *s_path = NULL; /* Result directory path */
 
     s_path = dir_get_cache ();
     str_append (&s_path, PTH_SEP PTH_APP_SHORT);
@@ -267,7 +267,7 @@ cfgfile_get_app_cache_path (void)
 char *
 cfgfile_get_app_thumbnails_path (void)
 {
-    char *s_path = NULL; /* Config file path */
+    char *s_path = NULL; /* Result directory path */
 
     s_path = dir_get_cache ();
     str_append (&s_path, PTH_SEP PTH_APP_SHORT PTH_SEP PTH_THUMB_DIR);
@@ -281,10 +281,24 @@ cfgfile_get_app_thumbnails_path (void)
 char *
 cfgfile_get_image_info_path (void)
 {
-    char *s_path = NULL; /* Config file path */
+    char *s_path = NULL; /* Result directory path */
 
     s_path = dir_get_cache ();
     str_append (&s_path, PTH_SEP PTH_APP_SHORT PTH_SEP PTH_IINFO_DIR);
+
+    return s_path;
+}
+/*----------------------------------------------------------------------------*/
+/**
+ * @brief  Get directory with cached queries.
+ */
+char *
+cfgfile_get_query_path (void)
+{
+    char *s_path = NULL; /* Result directory path */
+
+    s_path = dir_get_cache ();
+    str_append (&s_path, PTH_SEP PTH_APP_SHORT PTH_SEP PTH_QUERY_DIR);
 
     return s_path;
 }
