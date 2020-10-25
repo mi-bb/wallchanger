@@ -19,6 +19,7 @@ wchangerd_SOURCES=wcngdmn.c\
                   chkwch.c chkwch.h\
                   wpset.c wpset.h\
                   setts.c setts.h\
+                  jsof.c jsof.h\
                   jsfun.c jsfun.h\
                   rwdt.c rwdt.h\
                   randomm.c randomm.h\
@@ -48,6 +49,7 @@ wchangercfg_SOURCES=wchanger.c\
                     iminfo.c iminfo.h\
                     wpset.c wpset.h\
                     setts.c setts.h\
+                    jsof.c jsof.h\
                     jsfun.c jsfun.h\
                     rwdt.c rwdt.h\
                     imgs.c imgs.h\
@@ -69,7 +71,7 @@ wchangercfg_SOURCES=wchanger.c\
                     fourstrings.c fourstrings.h\
                     chquery.c chquery.h\
                     webwidget.c webwidget.h\
-                    webwidget_common.c webwidget_common.h\
+                    webwidget_c.c webwidget_c.h\
                     webpexels.c webpexels.h\
                     webpixbay.c webpixbay.h\
                     webflickr.c webflickr.h\

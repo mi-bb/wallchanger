@@ -35,6 +35,7 @@
 #include "fdfn.h"
 #include "errs.h"
 #include "cfgfile.h"
+#include "jsof.h"
 #include "hashfun.h"
 #include "chquery.h"
 
@@ -43,7 +44,6 @@
 #define JS_PAGE      "page"
 #define JS_PER_PAGE  "per_page"
 #define JS_FOUND_CNT "found_cnt"
-#define JS_ITEMS     "items"
 
 #define JS_ID        "id"
 #define JS_AUTH_NAME "auth_name"
@@ -443,39 +443,17 @@ cachequery_save (CacheQuery *cq_query)
     json_object   *j_val;             /* For getting values */
     json_object   *j_arr;             /* For array with items */
     const char    *s_jbuff = NULL;    /* Json object as string */
-    char          *s_buff  = NULL;    /* File data buffer */
     int            i_err   = ERR_OK;  /* For error output */
     char           s_page[10];        /* Page number as string */
-    enum json_tokener_error j_err;    /* Json error output */
     uint_fast32_t  ui_hash = 0;       /* Json data file hash */
 
     sprintf (s_page, "%d", cq_query->i_page);
 
-    s_buff = read_file_data_hash (cq_query->s_file, &i_err, &ui_hash);
+    j_obj = js_open_file (cq_query->s_file, &ui_hash, &i_err);
 
     if (i_err != ERR_OK && i_err != ERR_FILE_EX) {
-        free (s_buff);
         return i_err;
     }
-    if (s_buff == NULL || s_buff[0] == '\0') {
-        j_obj = json_object_new_object ();
-    }
-    else {
-        j_obj = json_tokener_parse_verbose (s_buff, &j_err);
-        if (j_obj == NULL ||
-            json_object_get_type (j_obj) != json_type_object ||
-            j_err != json_tokener_success) {
-#ifdef DEBUG
-            printf ("Json error: %d\n", j_err);
-            printf ("Json type:  %d\n", json_object_get_type (j_obj));
-            printf ("Error, wrong json file\n");
-#endif
-            if (j_obj != NULL)
-                json_object_put (j_obj);
-            j_obj = json_object_new_object ();
-        }
-    }
-    free (s_buff);
 
     if (json_object_object_get_ex (j_obj, cq_query->s_date, &j_val) &&
         json_object_get_type (j_val) == json_type_object) {
@@ -512,6 +490,72 @@ cachequery_save (CacheQuery *cq_query)
 
     json_object_put (j_obj);
 
+    return i_err;
+}
+/*----------------------------------------------------------------------------*/
+/**
+ * @brief  Check cache query file for entries older that i_days and delete
+ *         them.
+ */
+int
+cachequery_delete_older_than (const char *s_service_name,
+                              const int   i_days)
+{
+    json_object  *j_obj;            /* Json item with query info */
+    GDate        *gd_date;          /* GDate for date count */
+    time_t        t_time;           /* time_t for date count */
+    char          s_date_n[64];     /* Temp date string */
+    char        **s_dates = NULL;   /* List of dates not to delete */
+    char         *s_file  = NULL;   /* Name of file with query info */
+    const char   *s_jbuff = NULL;   /* Json file content buffer */
+    int           i       = 0;      /* i */
+    int           i_ndel  = 0;      /* Item not to delete */
+    int           i_err   = ERR_OK; /* For error output */
+    uint_fast32_t ui_hash = 0;      /* Json file content hash */
+
+    t_time  = time (NULL);
+    gd_date = g_date_new ();
+
+    g_date_set_time_t (gd_date, t_time);
+
+    s_file = cfgfile_get_query_path ();
+    dir_create_with_subdirs (s_file);
+    str_append (&s_file, "/");
+    str_append (&s_file, s_service_name);
+    str_append (&s_file, ".json");
+
+    j_obj = js_open_file (s_file, &ui_hash, &i_err);
+
+    if (j_obj == NULL) {
+        free (s_file);
+        return i_err;
+    }
+    s_dates = malloc ((size_t) i_days * sizeof (char*));
+
+    for (i = 0; i < i_days; ++i) {
+        g_date_strftime (s_date_n, 64, "%Y%m%d", gd_date);
+        s_dates[i] = strdup (s_date_n);
+        g_date_subtract_days (gd_date, 1);
+    }
+    json_object_object_foreach (j_obj, key, val1) {
+        i_ndel = 0;
+        for (i = 0; i < i_days; ++i)
+            i_ndel |= (strcmp (key, s_dates[i]) == 0);
+        if (!i_ndel)
+            json_object_object_del (j_obj, key);
+    }
+    s_jbuff = json_object_to_json_string (j_obj);
+
+    if (hash (s_jbuff) != ui_hash) {
+        i_err = save_file_data (s_file, s_jbuff);
+    }
+    for (i = 0; i < i_days; ++i) {
+        free (s_dates[i]);
+    }
+    free (s_file);
+    free (s_dates);
+    json_object_put (j_obj);
+    g_date_free (gd_date);
     return i_err;
 }
 /*----------------------------------------------------------------------------*/

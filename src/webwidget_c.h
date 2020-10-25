@@ -21,8 +21,8 @@
  *
  * @author Michal Babik <michal.babik@pm.me>
  */
-#ifndef WEBWIDGET_COMMON_H
-#define WEBWIDGET_COMMON_H
+#ifndef WEBWIDGET_C_H
+#define WEBWIDGET_C_H
 
 #include <gtk/gtk.h>
 #include "webwidget_s.h"

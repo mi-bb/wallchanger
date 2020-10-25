@@ -33,7 +33,7 @@
 #include "dlgsmsg.h"
 #include "chquery.h"
 #include "searchitem.h"
-#include "webwidget_common.h"
+#include "webwidget_c.h"
 #include "webflickr.h"
 /*----------------------------------------------------------------------------*/
 /**

@@ -30,7 +30,6 @@
 #include <json.h>
 #endif
 #include <gtk/gtk.h>
-
 #include "searchitem.h"
 /*----------------------------------------------------------------------------*/
 /**
@@ -126,6 +125,17 @@ CacheQuery * cachequery_check_query (const char *s_service_name,
  * @return    Process status
  */
 int          cachequery_save        (CacheQuery *cq_query);
+/*----------------------------------------------------------------------------*/
+/**
+ * @brief  Check cache query file for entries older that i_days and delete
+ *         them.
+ *
+ * @param[in]  s_service_name  Name of image service.
+ * @param[in]  i_days          Entries older that this value will be removed
+ * @return     Process status
+ */
+int          cachequery_delete_older_than (const char *s_service_name,
+                                           const int   i_days);
 /*----------------------------------------------------------------------------*/
 #endif
 

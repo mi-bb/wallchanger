@@ -31,7 +31,7 @@
 #include "urldata.h"
 #include "errs.h"
 #include "chquery.h"
-#include "webwidget_common.h"
+#include "webwidget_c.h"
 #include "dlgsmsg.h"
 #include "strfun.h"
 #include "webpixbay.h"

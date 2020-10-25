@@ -35,7 +35,7 @@
 #include "errs.h"
 #include "searchitem.h"
 #include "urldata.h"
-#include "webwidget_common.h"
+#include "webwidget_c.h"
 #include "webpexels.h"
 /*----------------------------------------------------------------------------*/
 /**
@@ -226,6 +226,7 @@ pexels_json_obj_to_searchitem (json_object *j_obj)
  *
  * @param[in]  s_buff     String with json data
  * @param[out] ww_widget  Webwidget to set data
+ * @param[out] si_items   List of SearchItem items
  * @return     none
  */
 static void

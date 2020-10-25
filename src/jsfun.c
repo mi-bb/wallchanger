@@ -32,6 +32,7 @@
 #include <json.h>
 #endif
 
+#include "jsof.h"
 #include "errs.h"
 #include "setting.h"
 #include "rwdt.h"
@@ -146,41 +147,6 @@ js_json_obj_to_settings (json_object *val,
 }
 /*----------------------------------------------------------------------------*/
 /**
- * @brief  Convert string with raw json data to Setting items and insert them
- *         to st_settings list.
- *
- * @param[in]  s_jbuff      String with json data
- * @param[out] st_settings  List of Setting items
- * @return     none
- */
-void
-js_json_string_to_settings (const char *s_jbuff,
-                            Setting    *st_settings)
-{
-    json_object *j_obj;   /* Json object with data from s_buff */
-    enum json_tokener_error j_err; /* Json error output */
-
-    j_obj = json_tokener_parse_verbose (s_jbuff, &j_err);
-    if (j_obj == NULL ||
-        json_object_get_type (j_obj) != json_type_object ||
-        j_err != json_tokener_success) {
-#ifdef DEBUG
-        printf ("Json error: %d\n", j_err);
-        printf ("Json type:  %d\n", json_object_get_type (j_obj));
-        printf ("Error converting json to stlist, wrong json file\n");
-#endif
-        if (j_obj != NULL)
-            json_object_put (j_obj);
-    }
-    else {
-        json_object_object_foreach (j_obj, key, val) {
-            js_json_obj_to_settings (val, st_settings, key);
-        }
-        json_object_put (j_obj);
-    }
-}
-/*----------------------------------------------------------------------------*/
-/**
  * @brief  Get items from Setting array and save them in Json array object.
  */
 static json_object *
@@ -282,16 +248,20 @@ Setting *
 js_settings_read (const char *s_fname,
                   int        *i_err)
 {
-    Setting *st_settings;   /* Settings to return */
-    char    *s_buff = NULL; /* File data buffer */
+    Setting *st_settings; /* Settings to return */
+    json_object   *j_obj; /* Json object made from file data */
 
+    *i_err      = ERR_OK;
     st_settings = setting_new_setting ("Settings");
-    s_buff      = read_file_data (s_fname, i_err);
+    j_obj       = js_open_file (s_fname, NULL, i_err);
 
-    if (*i_err == ERR_OK && s_buff != NULL) {
-        js_json_string_to_settings (s_buff, st_settings);
+    if (*i_err == ERR_OK && j_obj != NULL) {
+        json_object_object_foreach (j_obj, key, val) {
+            js_json_obj_to_settings (val, st_settings, key);
+        }
     }
-    free (s_buff);
+    if (j_obj != NULL)
+        json_object_put (j_obj);
 
     return st_settings;
 }
@@ -307,40 +277,14 @@ js_settings_check_for_update (Setting    *st_settings,
 {
     json_object   *j_obj;             /* Json object made from file data */
     const char    *s_jbuff    = NULL; /* Json object as string */
-    char          *s_buff     = NULL; /* File data buffer */
     char          *s_res_buff = NULL; /* Result data buffer */
     uint_fast32_t  ui_hash    = 0;    /* Data read hash */
-    enum json_tokener_error j_err;    /* Json error output */
 
     *i_err = ERR_OK;
-    /*s_buff = read_file_data_hash (s_fname, i_err, &ui_hash);*/
-    s_buff = read_file_data (s_fname, i_err);
+    j_obj  = js_open_file (s_fname, &ui_hash, i_err);
 
-    if (*i_err != ERR_OK && *i_err != ERR_FILE_EX) {
-        free (s_buff);
+    if (j_obj == NULL)
         return NULL;
-    }
-    if (s_buff == NULL) {
-        j_obj = json_object_new_object();
-    }
-    else {
-        j_obj = json_tokener_parse_verbose (s_buff, &j_err);
-        if (j_obj == NULL ||
-            json_object_get_type (j_obj) != json_type_object ||
-            j_err != json_tokener_success) {
-#ifdef DEBUG
-            printf ("Json error: %d\n", j_err);
-            printf ("Json type:  %d\n", json_object_get_type (j_obj));
-            printf ("Error, wrong json file\n");
-#endif
-            if (j_obj != NULL)
-                json_object_put (j_obj);
-            j_obj = json_object_new_object();
-        }
-    }
-    free (s_buff);
-
-    ui_hash = hash (json_object_to_json_string (j_obj));
 
     js_settings_add_to_json_obj (st_settings, j_obj);
 

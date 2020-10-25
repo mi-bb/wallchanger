@@ -35,10 +35,11 @@
 #include "defs.h"
 #include "imgs.h"
 #include "fourstrings.h"
-#include "webwidget_common.h"
+#include "webwidget_c.h"
 #include "webpexels.h"
 #include "webpixbay.h"
 #include "webflickr.h"
+#include "chquery.h"
 #include "webwidget.h"
 /*----------------------------------------------------------------------------*/
 /**
@@ -1102,8 +1103,15 @@ webwidget_create (Setting    *st_settings,
     GtkWidget *gw_add_sltd_button;
     GtkWidget *gw_selected_combo;
 
+
     if ((ww_widget = malloc (sizeof (WebWidget))) == NULL)
         err (EXIT_FAILURE, NULL);
+
+    cachequery_delete_older_than ("Pexels", 1);
+    cachequery_delete_older_than ("Pixbay", 1);
+#ifdef HAVE_FLICKCURL
+    cachequery_delete_older_than ("Flickr", 1);
+#endif
 
     ww_widget->s_cfg_file  = strdup (s_cfg_file);
     ww_widget->s_thumb_dir = cfgfile_get_app_thumbnails_path ();
