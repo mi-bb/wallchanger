@@ -341,7 +341,7 @@ cfgfile_autostart_create (void)
 
     str_append (&s_path, PTH_SEP PTH_ASTART_FILE_S);
 
-    s_buff = read_file_data (s_path, &i_err);
+    s_buff = read_file_data (s_path, &i_err, NULL);
     if (s_buff != NULL && i_err == ERR_OK) {
         if ((i_err = file_check_permissions (s_as_path)) == ERR_FILE_EX) {
             if ((i_err = file_create_with_subdirs (s_as_path)) == ERR_OK) {

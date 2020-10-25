@@ -23,12 +23,6 @@
  */
 #ifndef CHQUERY_H
 #define CHQUERY_H
-#include "../config.h"
-#ifdef HAVE_JSON_C_JSON_H
-#include <json-c/json.h>
-#else
-#include <json.h>
-#endif
 #include <gtk/gtk.h>
 #include "searchitem.h"
 /*----------------------------------------------------------------------------*/
@@ -78,10 +72,10 @@ CacheQuery {
  * @param[in] i_per_page      Images per page
  * @return    New CacheQuery item, it should be freed using cachequery_free
  */
-CacheQuery * cachequery_new         (const char *s_service_name,
-                                     const char *s_query,
-                                     const int   i_page,
-                                     const int   i_per_page);
+CacheQuery * cachequery_new               (const char *s_service_name,
+                                           const char *s_query,
+                                           const int   i_page,
+                                           const int   i_per_page);
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Free CacheQuery item.
@@ -89,7 +83,7 @@ CacheQuery * cachequery_new         (const char *s_service_name,
  * @param[out] cq_query  Item to free data
  * @return     none
  */
-void         cachequery_free        (CacheQuery *cq_query);
+void         cachequery_free              (CacheQuery *cq_query);
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Add SearchItem item to list in CacheQuery item.
@@ -98,8 +92,8 @@ void         cachequery_free        (CacheQuery *cq_query);
  * @param[in]  si_item   SearchItem item to add
  * @return     none
  */
-void         cachequery_add_item    (CacheQuery *cq_query,
-                                     SearchItem *si_item);
+void         cachequery_add_item          (CacheQuery *cq_query,
+                                           SearchItem *si_item);
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Check if there is a cached data for query.
@@ -112,11 +106,11 @@ void         cachequery_add_item    (CacheQuery *cq_query,
  * @return     CacheQuery item with search results or null if there is no cached
  *             data, it should be freed using cachequery_free
  */
-CacheQuery * cachequery_check_query (const char *s_service_name,
-                                     const char *s_query,
-                                     const int   i_page,
-                                     const int   i_per_page,
-                                     int        *i_err);
+CacheQuery * cachequery_check_query       (const char *s_service_name,
+                                           const char *s_query,
+                                           const int   i_page,
+                                           const int   i_per_page,
+                                           int        *i_err);
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Save cached search data to a service cache file.
@@ -124,7 +118,7 @@ CacheQuery * cachequery_check_query (const char *s_service_name,
  * @param[in] cq_query  CacheQuery item
  * @return    Process status
  */
-int          cachequery_save        (CacheQuery *cq_query);
+int          cachequery_save              (CacheQuery *cq_query);
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Check cache query file for entries older that i_days and delete

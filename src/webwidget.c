@@ -1103,7 +1103,6 @@ webwidget_create (Setting    *st_settings,
     GtkWidget *gw_add_sltd_button;
     GtkWidget *gw_selected_combo;
 
-
     if ((ww_widget = malloc (sizeof (WebWidget))) == NULL)
         err (EXIT_FAILURE, NULL);
 

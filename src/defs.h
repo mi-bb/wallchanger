@@ -23,6 +23,7 @@
  */
 #ifndef DEFS_H
 #define DEFS_H
+#include "../config.h"
 /*----------------------------------------------------------------------------*/
 /**
  * @def   APP_NAME
@@ -42,7 +43,7 @@
  */
 /*----------------------------------------------------------------------------*/
 #define APP_NAME      "Wall Changer"
-#define APP_VER       "1.6.6"
+#define APP_VER       PACKAGE_VERSION
 #define APP_WEB       "https://www.nongnu.org/wallchanger/"
 #define APP_DSC       "Wall Changer is an automatic wallpaper changer."
 #define STATUS_CONFIG "Config file in use: "

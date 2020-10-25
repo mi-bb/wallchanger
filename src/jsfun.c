@@ -281,9 +281,8 @@ js_settings_check_for_update (Setting    *st_settings,
     uint_fast32_t  ui_hash    = 0;    /* Data read hash */
 
     *i_err = ERR_OK;
-    j_obj  = js_open_file (s_fname, &ui_hash, i_err);
 
-    if (j_obj == NULL)
+    if ((j_obj = js_open_file (s_fname, &ui_hash, i_err)) == NULL)
         return NULL;
 
     js_settings_add_to_json_obj (st_settings, j_obj);

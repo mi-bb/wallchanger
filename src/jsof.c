@@ -47,10 +47,7 @@ js_open_file (const char    *s_file_name,
     if (ui_hash != NULL)
         *ui_hash = 0;
 
-    s_buff = read_file_data (s_file_name, i_err);
-    //s_buff = ui_hash == NULL ?
-    //         read_file_data (s_file_name, i_err) :
-    //         read_file_data_hash (s_file_name, i_err, ui_hash);
+    s_buff = read_file_data (s_file_name, i_err, NULL);
 
     if (*i_err != ERR_OK && *i_err != ERR_FILE_EX) {
         free (s_buff);

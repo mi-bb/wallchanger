@@ -27,19 +27,11 @@
 #include <stdint.h>
 /*----------------------------------------------------------------------------*/
 /**
- * @fn  char * read_file_data (const char *s_fname, int *i_err)
+ * #fn  char * read_file_data (const char    *s_fname,
+ *                             int           *i_err,
+ *                             int           *i_hash)
  *
  * @brief  Read some data from file.
- *
- * @param[in]  s_fname File name
- * @param[out] i_err   Error output
- * @return     Read data
- *
- * @fn  char * read_file_data_hash (const char *s_fname,
- *                                  int        *i_err,
- *                                  uint32_t   *i_hash)
- *
- * @brief  Read some data from file and count hash.
  *
  * @param[in]  s_fname File name
  * @param[out] i_err   Error output
@@ -56,12 +48,8 @@
  */
 /*----------------------------------------------------------------------------*/
 char * read_file_data      (const char    *s_fname,
-                            int           *i_err)
-                            __attribute__ ((nonnull (1)));
-
-char * read_file_data_hash (const char    *s_fname,
                             int           *i_err,
-                            uint_fast32_t *i_hash)
+                            int           *i_hash)
                             __attribute__ ((nonnull (1)));
 
 int    save_file_data      (const char    *s_fname,

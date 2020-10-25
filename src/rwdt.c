@@ -41,12 +41,16 @@
  */
 char *
 read_file_data (const char  *s_fname,
-                int         *i_err)
+                int         *i_err,
+                int         *i_hash)
 {
     char   *s_buff = NULL; /* Result data from file */
     FILE   *f_file;        /* Data file */
     long    l_size = 0;    /* File size */
     size_t  ui_res = 0;    /* Read data count */
+
+    if (i_hash != NULL)
+        *i_hash = 0;
 
     f_file = fopen (s_fname, "rb");
     /* Error opening file */
@@ -86,27 +90,7 @@ read_file_data (const char  *s_fname,
     fclose (f_file);
 
     *i_err = ERR_OK;
-
-    return s_buff;
-}
-/*----------------------------------------------------------------------------*/
-/**
- * @brief  Read some data from file and count hash.
- */
-char *
-read_file_data_hash (const char    *s_fname,
-                     int           *i_err,
-                     uint_fast32_t *i_hash)
-{
-    char *s_buff = NULL; /* Result data */
-
-    *i_hash = 0;
-    s_buff  = read_file_data (s_fname, i_err);
-
-    if (*i_err != ERR_OK)
-        return NULL;
-
-    if (s_buff != NULL)
+    if (i_hash != NULL)
         *i_hash = hash (s_buff);
 
     return s_buff;

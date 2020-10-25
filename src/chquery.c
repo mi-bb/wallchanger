@@ -330,7 +330,6 @@ cachequery_check_query (const char *s_service_name,
 {
     CacheQuery  *cq_query = NULL;  /* Cached query data to return */
     SearchItem  *si_item  = NULL;  /* For image info data */
-    char        *s_buff   = NULL;  /* File data buffer */
     size_t       ui_cnt   = 0;     /* Number of elements in array */
     size_t       i        = 0;     /* i */
     int          i_goon   = 1;     /* Go on */
@@ -341,44 +340,16 @@ cachequery_check_query (const char *s_service_name,
     json_object *j_fnd_cnt;        /* For number of found images */
     json_object *j_items;          /* Array with image info data */
     json_object *j_val;            /* For array tith image info values */
-    enum json_tokener_error j_err; /* Json error output */
     char s_page[10];               /* String with page number */
 
     *i_err   = ERR_OK;
     cq_query = cachequery_new (s_service_name, s_query, i_page, i_per_page);
-    s_buff   = read_file_data (cq_query->s_file, i_err);
     sprintf (s_page, "%d", cq_query->i_page);
 
-    if (*i_err == ERR_FILE_EX)
-        *i_err = ERR_OK;
-
-    if (*i_err != ERR_OK && *i_err != ERR_FILE_EX) {
-        cachequery_free (cq_query);
-        free (s_buff);
-        return NULL;
-    }
-    if (s_buff == NULL) {
+    if ((j_obj = js_open_file (cq_query->s_file, NULL, i_err)) == NULL) {
         cachequery_free (cq_query);
         return NULL;
     }
-    else {
-        j_obj = json_tokener_parse_verbose (s_buff, &j_err);
-        if (j_obj == NULL ||
-            json_object_get_type (j_obj) != json_type_object ||
-            j_err != json_tokener_success) {
-#ifdef DEBUG
-            printf ("Json error: %d\n", j_err);
-            printf ("Json type:  %d\n", json_object_get_type (j_obj));
-            printf ("Error, wrong json file\n");
-#endif
-            if (j_obj != NULL)
-                json_object_put (j_obj);
-            cachequery_free (cq_query);
-            free (s_buff);
-            return NULL;
-        }
-    }
-    free (s_buff);
 
     if (i_goon) {
         i_goon = (json_object_object_get_ex (j_obj, cq_query->s_date, &j_date)
@@ -428,6 +399,7 @@ cachequery_check_query (const char *s_service_name,
         cachequery_free (cq_query);
         cq_query = NULL;
     }
+    *i_err = ERR_OK;
     return cq_query;
 }
 /*----------------------------------------------------------------------------*/
@@ -449,11 +421,8 @@ cachequery_save (CacheQuery *cq_query)
 
     sprintf (s_page, "%d", cq_query->i_page);
 
-    j_obj = js_open_file (cq_query->s_file, &ui_hash, &i_err);
-
-    if (i_err != ERR_OK && i_err != ERR_FILE_EX) {
+    if ((j_obj = js_open_file (cq_query->s_file, &ui_hash, &i_err)) == NULL)
         return i_err;
-    }
 
     if (json_object_object_get_ex (j_obj, cq_query->s_date, &j_val) &&
         json_object_get_type (j_val) == json_type_object) {
@@ -524,9 +493,7 @@ cachequery_delete_older_than (const char *s_service_name,
     str_append (&s_file, s_service_name);
     str_append (&s_file, ".json");
 
-    j_obj = js_open_file (s_file, &ui_hash, &i_err);
-
-    if (j_obj == NULL) {
+    if ((j_obj = js_open_file (s_file, &ui_hash, &i_err)) == NULL) {
         free (s_file);
         return i_err;
     }
