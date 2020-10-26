@@ -13,6 +13,31 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+2020-10-26  Michal Babik  <michal.babik@pm.me>
+
+	* chquery.c (cachequery_check_query, cachequery_save): Change in
+	  checking for and saving query. Velue per page is a container obj
+	  not a value.
+	* imgs.c, imgs.h: Added wallhaven logo.
+	* searchitem.c, searchitem.h: Removed integer id value, id is
+	  stored and used only as a string.
+	* setts.c, setts.h (get_setting_name, setts_check_defaults,
+	  setts_update_wallhaven_api, ): Added wallhaven settings saving
+	  and checking.
+	* urldata.c, urldata.h (urldata_search_wallhaven): Function to
+	  search for images on wallhaven.
+	* webwallhaven.c, webwallhaven.h: New files with functions to
+	  search for images on the wallhaven site.
+	* webwidget.c (sel_combo_check_exist): Changed to compare id strings
+	  instead of integers.
+	  (search_web, event_settings_pressed, webwidget_combobox_create,
+	  webwidget_selected_combobox_create, event_imgview_activated,
+	  webwidget_imgview_create, webwidget_create): Added wallhaven support.
+	  (event_add_selected_pressed): Changed so it uses id string
+	  instead of integer.
+	* webwidget_c.c (add_searchitem_to_img_view): Changed to use id
+	  string not an integer.
+
 2020-10-25  Michal Babik  <michal.babik@pm.me>
 
 	* jsfun.c (js_settings_read, js_settings_check_for_update):
