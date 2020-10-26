@@ -45,6 +45,7 @@ enum e_setting_values {
     SETTING_WEB_DLG_HEIGHT, /**< Web dilaog height */
     SETTING_PEXELS_API,     /**< Pexels API key */
     SETTING_PIXBAY_API,     /**< Pixbay API key */
+    SETTING_WALLHAVEN_API,  /**< Wallhaven API key */
     SETTING_FLICKR_CLKEY,   /**< Flickr API key */
     SETTING_FLICKR_CLSEC,   /**< Flickr API secret */
     SETTING_FLICKR_ACTOK,   /**< Flickr API access token */
@@ -134,27 +135,38 @@ Setting *    setts_read           (const char *s_cfg_file,
  * @param[in] s_cfg_file  Config file path
  * @param[in] s_api_key   String with Pixbay API key
  * @return    Status of data update
+ *
+ * @fn  int setts_update_wallhaven_api (const char *s_cfg_file,
+ *                                      const char *s_api_key)
+ * @brief  Update Wallhaven API key
+ *
+ * @param[in] s_cfg_file  Config file path
+ * @param[in] s_api_key   String with Wallhaven API key
+ * @return    Status of data update
  */
 /*----------------------------------------------------------------------------*/
-int setts_update_last_used    (const char *s_cfg_file,
-                               const char *s_last_used);
+int setts_update_last_used     (const char *s_cfg_file,
+                                const char *s_last_used);
 
-int setts_update_last_used_wm (const char *s_cfg_file,
-                               const char *s_last_used_wm);
+int setts_update_last_used_wm  (const char *s_cfg_file,
+                                const char *s_last_used_wm);
 
-int setts_update_window_size  (const char *s_cfg_file,
-                               const int   i_w,
-                               const int   i_h);
+int setts_update_window_size   (const char *s_cfg_file,
+                                const int   i_w,
+                                const int   i_h);
 
-int setts_update_web_dlg_size (const char *s_cfg_file,
-                               const int   i_w,
-                               const int   i_h);
+int setts_update_web_dlg_size  (const char *s_cfg_file,
+                                const int   i_w,
+                                const int   i_h);
 
-int setts_update_pexels_api   (const char *s_cfg_file,
-                               const char *s_api_key);
+int setts_update_pexels_api    (const char *s_cfg_file,
+                                const char *s_api_key);
 
-int setts_update_pixbay_api   (const char *s_cfg_file,
-                               const char *s_api_key);
+int setts_update_pixbay_api    (const char *s_cfg_file,
+                                const char *s_api_key);
+
+int setts_update_wallhaven_api (const char *s_cfg_file,
+                                const char *s_api_key);
 /*----------------------------------------------------------------------------*/
 #ifdef HAVE_FLICKCURL
 /**

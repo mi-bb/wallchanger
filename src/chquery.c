@@ -341,10 +341,12 @@ cachequery_check_query (const char *s_service_name,
     json_object *j_items;          /* Array with image info data */
     json_object *j_val;            /* For array tith image info values */
     char s_page[10];               /* String with page number */
+    char s_per_page[10];           /* String with items per page number */
 
     *i_err   = ERR_OK;
     cq_query = cachequery_new (s_service_name, s_query, i_page, i_per_page);
-    sprintf (s_page, "%d", cq_query->i_page);
+    sprintf (s_page,     "%d", cq_query->i_page);
+    sprintf (s_per_page, "%d", cq_query->i_per_page);
 
     if ((j_obj = js_open_file (cq_query->s_file, NULL, i_err)) == NULL) {
         cachequery_free (cq_query);
@@ -360,17 +362,12 @@ cachequery_check_query (const char *s_service_name,
             json_object_get_type (j_query) == json_type_object);
     }
     if (i_goon) {
-        i_goon = 0;
-        if (json_object_object_get_ex (j_query, JS_PER_PAGE, &j_per_page)
-            && json_object_get_type (j_per_page) == json_type_int) {
-
-            cq_query->i_per_page = json_object_get_int (j_per_page);
-            i_goon = (cq_query->i_per_page == i_per_page);
-        }
+        i_goon = (json_object_object_get_ex (j_query, s_per_page, &j_per_page) &&
+            json_object_get_type (j_per_page) == json_type_object);
     }
     if (i_goon) {
         i_goon = 0;
-        if (json_object_object_get_ex (j_query, JS_FOUND_CNT, &j_fnd_cnt)
+        if (json_object_object_get_ex (j_per_page, JS_FOUND_CNT, &j_fnd_cnt)
             && json_object_get_type (j_fnd_cnt) == json_type_int) {
 
             cq_query->i_found_cnt = json_object_get_int (j_fnd_cnt);
@@ -379,7 +376,7 @@ cachequery_check_query (const char *s_service_name,
     }
     if (i_goon) {
         i_goon = 0;
-        if (json_object_object_get_ex (j_query, s_page, &j_items) &&
+        if (json_object_object_get_ex (j_per_page, s_page, &j_items) &&
             json_object_get_type (j_items) == json_type_array) {
 
             ui_cnt = json_object_array_length (j_items);
@@ -412,14 +409,17 @@ cachequery_save (CacheQuery *cq_query)
     json_object   *j_obj;             /* Json object made from file data */
     json_object   *j_dates;           /* For query date */
     json_object   *j_queries;         /* For queries */
+    json_object   *j_per_page;        /* For per page */
     json_object   *j_val;             /* For getting values */
     json_object   *j_arr;             /* For array with items */
     const char    *s_jbuff = NULL;    /* Json object as string */
     int            i_err   = ERR_OK;  /* For error output */
     char           s_page[10];        /* Page number as string */
+    char           s_per_page[10];    /* String with items per page number */
     uint_fast32_t  ui_hash = 0;       /* Json data file hash */
 
-    sprintf (s_page, "%d", cq_query->i_page);
+    sprintf (s_page,     "%d", cq_query->i_page);
+    sprintf (s_per_page, "%d", cq_query->i_per_page);
 
     if ((j_obj = js_open_file (cq_query->s_file, &ui_hash, &i_err)) == NULL)
         return i_err;
@@ -443,15 +443,21 @@ cachequery_save (CacheQuery *cq_query)
         j_queries = json_object_new_object ();
         json_object_object_add (j_dates, cq_query->s_query, j_queries);
     }
+    if (json_object_object_get_ex (j_queries, s_per_page, &j_val) &&
+        json_object_get_type (j_val) == json_type_object) {
+
+        j_per_page = j_val;
+    }
+    else {
+        j_per_page = json_object_new_object ();
+        json_object_object_add (j_queries, s_per_page, j_per_page);
+    }
 
     j_val = json_object_new_int (cq_query->i_found_cnt);
-    json_object_object_add (j_queries, JS_FOUND_CNT, j_val);
-
-    j_val = json_object_new_int (cq_query->i_per_page);
-    json_object_object_add (j_queries, JS_PER_PAGE, j_val);
+    json_object_object_add (j_per_page, JS_FOUND_CNT, j_val);
 
     j_arr = cachequery_searchitems_to_json_array (cq_query);
-    json_object_object_add (j_queries, s_page, j_arr);
+    json_object_object_add (j_per_page, s_page, j_arr);
     s_jbuff = json_object_to_json_string (j_obj);
 
     if (hash (s_jbuff) != ui_hash)

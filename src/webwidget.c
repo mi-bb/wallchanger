@@ -38,6 +38,7 @@
 #include "webwidget_c.h"
 #include "webpexels.h"
 #include "webpixbay.h"
+#include "webwallhaven.h"
 #include "webflickr.h"
 #include "chquery.h"
 #include "webwidget.h"
@@ -337,14 +338,14 @@ update_labels (WebWidget *ww_widget)
  * @brief  Check if image with specified id exists on selected to download list.
  *
  * @param[in] gtm_model  TreeModel to check
- * @param[in] i_id       Image id to check
+ * @param[in] s_id       Image id to check
  * @return    1 if exists, 0 if not
  */
 static int
 sel_combo_check_exist (GtkTreeModel *gtm_model,
-                       const int     i_id)
+                       const char   *s_id)
 {
-    int         i_read_id = 0;
+    char       *s_read_id = NULL;
     gboolean    b_res     = FALSE;
     GtkTreeIter gti_iter;
 
@@ -353,10 +354,13 @@ sel_combo_check_exist (GtkTreeModel *gtm_model,
     while (b_res) {
 
         gtk_tree_model_get (gtm_model,      &gti_iter,
-                            WW_SELCOMBO_ID, &i_read_id,
+                            WW_SELCOMBO_ID, &s_read_id,
                             -1);
-        if (i_id == i_read_id)
+        if (strcmp (s_id, s_read_id) == 0) {
+            free (s_read_id);
             return 1;
+        }
+        free (s_read_id);
         b_res = gtk_tree_model_iter_next (gtm_model, &gti_iter);
     }
     return 0;
@@ -418,6 +422,9 @@ search_web (WebWidget *ww_widget)
             break;
         case WEB_WIDGET_PIXBAY:
             pixbay_search (ww_widget, fs_data);
+            break;
+        case WEB_WIDGET_WALLHAVEN:
+            wallhaven_search (ww_widget, fs_data);
             break;
 #ifdef HAVE_FLICKCURL
         case WEB_WIDGET_FLICKR:
@@ -562,6 +569,22 @@ event_settings_pressed (WebWidget *ww_widget)
                 }
             }
             break;
+        case WEB_WIDGET_WALLHAVEN:
+            combo_get_active_strings (ww_widget->gw_combo, fs_data);
+
+            i_res = wallhaven_settings_dialog (fs_data);
+
+            if (i_res == GTK_RESPONSE_ACCEPT) {
+                combo_set_active_str (ww_widget->gw_combo, WW_COMBO_STR_1,
+                                      fs_data->s_str1);
+
+                i_err = setts_update_wallhaven_api (ww_widget->s_cfg_file,
+                                                    fs_data->s_str1);
+                if (i_err != ERR_OK) {
+                    message_dialog_error (NULL, err_get_message (i_err));
+                }
+            }
+            break;
 #ifdef HAVE_FLICKCURL
         case WEB_WIDGET_FLICKR:
             combo_get_active_strings (ww_widget->gw_combo, fs_data);
@@ -610,7 +633,7 @@ event_add_selected_pressed (WebWidget *ww_widget)
     char         *s_disp_name = NULL; /* Image display name */
     char         *s_file_name = NULL; /* Image file name */
     char         *s_image_url = NULL; /* Image url */
-    int           i_id        = 0;    /* Image id */
+    char         *s_id        = NULL; /* Image id */
     int           i_w         = 0;    /* Thumbnail width */
     int           i_h         = 0;    /* Thumbnail height */
     float         f_w         = 0;    /* Smaller thumbnail width */
@@ -644,15 +667,15 @@ event_add_selected_pressed (WebWidget *ww_widget)
                                 WEB_COL_PIXBUF,    &gp_pbuf,
                                 WEB_COL_WIDTH,     &i_w,
                                 WEB_COL_HEIGHT,    &i_h,
-                                WEB_COL_ID,        &i_id,
+                                WEB_COL_ID,        &s_id,
                                 WEB_COL_DISP_NAME, &s_disp_name, 
                                 WEB_COL_FILE_NAME, &s_file_name, 
                                 WEB_COL_IMAGE_URL, &s_image_url, 
                                 -1);
 
-            if (sel_combo_check_exist (gtm_combo_model, i_id) == 0) {
+            if (sel_combo_check_exist (gtm_combo_model, s_id) == 0) {
 
-                i_w = gdk_pixbuf_get_width (gp_pbuf);
+                i_w = gdk_pixbuf_get_width  (gp_pbuf);
                 i_h = gdk_pixbuf_get_height (gp_pbuf);
 
                 if (g_utf8_strlen (s_disp_name, -1) > SEL_NAME_LEN) {
@@ -679,13 +702,14 @@ event_add_selected_pressed (WebWidget *ww_widget)
                                     WW_SELCOMBO_PIXBUF,    gp_pbuf2,
                                     WW_SELCOMBO_WIDTH,     i_w,
                                     WW_SELCOMBO_HEIGHT,    i_h,
-                                    WW_SELCOMBO_ID,        i_id,
+                                    WW_SELCOMBO_ID,        s_id,
                                     WW_SELCOMBO_DISP_NAME, s_dname,
                                     WW_SELCOMBO_FILE_NAME, s_file_name,
                                     WW_SELCOMBO_IMAGE_URL, s_image_url,
                                     -1);
                 g_object_unref(gp_pbuf2);
             }
+            free (s_id);
             free (s_disp_name);
             free (s_file_name);
             free (s_image_url);
@@ -741,6 +765,7 @@ webwidget_combobox_create (Setting *st_settings)
     GdkPixbuf       *gp_logo       = NULL; /* Service logo */
     const char      *s_pexels_api  = NULL; /* Pexels API key */
     const char      *s_pixbay_api  = NULL; /* Pixbay API key */
+    const char      *s_wallha_api  = NULL; /* Wallhaven API key */
     Setting         *st_s1;                /* For individual setting */
 #ifdef HAVE_FLICKCURL
     const char      *s_flickr_key  = NULL; /* Flickr key */
@@ -794,6 +819,25 @@ webwidget_combobox_create (Setting *st_settings)
                         WW_COMBO_ID,    WEB_WIDGET_PIXBAY,
                         WW_COMBO_NAME,  "Pixbay",
                         WW_COMBO_STR_1, s_pixbay_api,
+                        WW_COMBO_STR_2, "",
+                        WW_COMBO_STR_3, "",
+                        WW_COMBO_STR_4, "",
+                        WW_COMBO_LOGO,  gp_logo,
+                        -1);
+    g_object_unref (gp_logo);
+    /* Get Wallhaven API string */
+    st_s1 = setting_find_child (st_settings,
+                                get_setting_name (SETTING_WALLHAVEN_API));
+
+    s_wallha_api = st_s1 == NULL ? "" : setting_get_string (st_s1);
+
+    gp_logo = get_image (W_LOGO_PIXBAY);
+
+    gtk_list_store_append (list_store, &iter);
+    gtk_list_store_set (list_store,     &iter,
+                        WW_COMBO_ID,    WEB_WIDGET_WALLHAVEN,
+                        WW_COMBO_NAME,  "Wallhaven",
+                        WW_COMBO_STR_1, s_wallha_api,
                         WW_COMBO_STR_2, "",
                         WW_COMBO_STR_3, "",
                         WW_COMBO_STR_4, "",
@@ -868,7 +912,7 @@ webwidget_selected_combobox_create (void)
                                      GDK_TYPE_PIXBUF,
                                      G_TYPE_INT,
                                      G_TYPE_INT,
-                                     G_TYPE_INT,
+                                     G_TYPE_STRING,
                                      G_TYPE_STRING,
                                      G_TYPE_STRING,
                                      G_TYPE_STRING);
@@ -915,7 +959,6 @@ event_imgview_activated (GtkIconView *iconview,
     char         *s_image_url    = NULL;
     char         *s_page_url     = NULL;
     char         *s_image_author = NULL;
-    int           i_id           = 0;
     int           i_w            = 0;
     int           i_h            = 0;
     GtkTreeIter   gti_iter;
@@ -928,7 +971,6 @@ event_imgview_activated (GtkIconView *iconview,
         gtk_tree_model_get (gtm_model, &gti_iter,
                             WEB_COL_WIDTH,     &i_w,
                             WEB_COL_HEIGHT,    &i_h,
-                            WEB_COL_ID,        &i_id,
                             WEB_COL_DISP_NAME, &s_disp_name,
                             WEB_COL_AUTHOR,    &s_image_author,
                             WEB_COL_FILE_NAME, &s_file_name,
@@ -949,6 +991,8 @@ event_imgview_activated (GtkIconView *iconview,
             gp_logo = get_image (W_LOGO_PEXELS);
         else if (ww_widget->i_active_service == WEB_WIDGET_PIXBAY)
             gp_logo = get_image (W_LOGO_PIXBAY);
+        else if (ww_widget->i_active_service == WEB_WIDGET_WALLHAVEN)
+            gp_logo = get_image (W_LOGO_WALLHAVEN);
 #ifdef HAVE_FLICKCURL
         else if (ww_widget->i_active_service == WEB_WIDGET_FLICKR)
             gp_logo = get_image (W_LOGO_FLICKR);
@@ -982,7 +1026,7 @@ webwidget_imgview_create (void)
                                      GDK_TYPE_PIXBUF,
                                      G_TYPE_INT,
                                      G_TYPE_INT,
-                                     G_TYPE_INT,
+                                     G_TYPE_STRING,
                                      G_TYPE_STRING,
                                      G_TYPE_STRING,
                                      G_TYPE_STRING,
@@ -1028,7 +1072,6 @@ webwidget_imageinfo_create (WebWidget *ww_widget)
     gtk_widget_set_halign (gw_grid, GTK_ALIGN_CENTER);
     gtk_grid_set_row_spacing (GTK_GRID (gw_grid), 8);
     gtk_grid_set_column_spacing (GTK_GRID (gw_grid), 16);
-
 
     gw_service_image = gtk_image_new ();
     gw_author_label = gtk_label_new (NULL);
@@ -1106,10 +1149,11 @@ webwidget_create (Setting    *st_settings,
     if ((ww_widget = malloc (sizeof (WebWidget))) == NULL)
         err (EXIT_FAILURE, NULL);
 
-    cachequery_delete_older_than ("Pexels", 1);
-    cachequery_delete_older_than ("Pixbay", 1);
+    cachequery_delete_older_than ("Pexels",    1);
+    cachequery_delete_older_than ("Pixbay",    1);
+    cachequery_delete_older_than ("Wallhaven", 1);
 #ifdef HAVE_FLICKCURL
-    cachequery_delete_older_than ("Flickr", 1);
+    cachequery_delete_older_than ("Flickr",    1);
 #endif
 
     ww_widget->s_cfg_file  = strdup (s_cfg_file);

@@ -111,6 +111,20 @@ UrlData * urldata_search_pixbay (const char *s_query,
                                  const int   i_per_page);
 /*----------------------------------------------------------------------------*/
 /**
+ * @brief  Search Wallhaven for images.
+ *
+ * @param[in] s_query     Search query
+ * @param[in] s_api_key   Wallhaven API key
+ * @param[in] i_page      Results page number
+ * @param[in] i_per_page  Result images per page
+ * @return    UrlData item with downloaded data or error info
+ */
+UrlData * urldata_search_wallhaven (const char *s_query,
+                                    const char *s_api_key,
+                                    const int   i_page,
+                                    const int   i_per_page);
+/*----------------------------------------------------------------------------*/
+/**
  * @brief  Check if UrlData's data buffer is not empty.
  *
  * @param[in] ud_data  UrlData item to check

@@ -74,7 +74,7 @@
  */
 typedef struct
 SearchItem {
-    uint64_t i_id;
+//    uint64_t i_id;
     char *s_id;
     char *s_author_name;
     char *s_author_url;

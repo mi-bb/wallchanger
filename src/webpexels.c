@@ -158,7 +158,6 @@ pexels_json_obj_to_searchitem (json_object *j_obj)
         searchitem_set_id_uint (si_item,
                                 (uint64_t) json_object_get_int64 (j_val));
 #ifdef DEBUG
-        printf ("photo id : %d\n", json_object_get_int (j_val));
         printf ("photo id : %s\n", si_item->s_id);
 #endif
     }
@@ -380,7 +379,7 @@ pexels_settings_dialog (FourStrings *fs_data)
     gtk_box_pack_start (GTK_BOX (gw_content_box),
                         gtk_label_new (
     "To get your API key, you need to be registered on the Pexels website and "
-    " request a key from: "),
+    " request it on: "),
                         FALSE, FALSE, 4);
     gtk_box_pack_start (GTK_BOX (gw_content_box),
                         gtk_link_button_new ("https://www.pexels.com/api/new/"),

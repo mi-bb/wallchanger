@@ -75,6 +75,7 @@ wchangercfg_SOURCES=wchanger.c\
                     webpexels.c webpexels.h\
                     webpixbay.c webpixbay.h\
                     webflickr.c webflickr.h\
+                    webwallhaven.c webwallhaven.h\
                     webwidget_s.h\
                     defs.h
 

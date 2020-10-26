@@ -45,7 +45,6 @@
 static void
 searchitem_init (SearchItem *si_item)
 {
-    si_item->i_id             = 0;
     si_item->s_id             = NULL;
     si_item->s_author_name    = NULL;
     si_item->s_author_url     = NULL;
@@ -105,7 +104,7 @@ searchitem_set_id_uint (SearchItem    *si_item,
     char s_tmp[32];
 
     sprintf (s_tmp, "%" PRIu64, val);
-    si_item->i_id = val;
+    //si_item->i_id = val;
     if (si_item->s_id != NULL)
         free (si_item->s_id);
     si_item->s_id = strdup (s_tmp);
@@ -118,7 +117,7 @@ void
 searchitem_set_id_string (SearchItem *si_item,
                           const char *s_val)
 {
-    si_item->i_id = (uint64_t) strtoull (s_val, NULL, 10);
+    //si_item->i_id = (uint64_t) strtoull (s_val, NULL, 10);
     if (si_item->s_id != NULL)
         free (si_item->s_id);
     si_item->s_id = strdup (s_val);
