@@ -43,6 +43,7 @@ enum e_setting_values {
     SETTING_WALL_ARRAY,     /**< Array with wallpapers */
     SETTING_WEB_DLG_WIDTH,  /**< Web dilaog width */
     SETTING_WEB_DLG_HEIGHT, /**< Web dilaog height */
+    SETTING_THUMB_QUALITY,  /**< Thumbnail jpg quality */
     SETTING_PEXELS_API,     /**< Pexels API key */
     SETTING_PIXBAY_API,     /**< Pixbay API key */
     SETTING_WALLHAVEN_API,  /**< Wallhaven API key */
@@ -158,6 +159,9 @@ int setts_update_window_size   (const char *s_cfg_file,
 int setts_update_web_dlg_size  (const char *s_cfg_file,
                                 const int   i_w,
                                 const int   i_h);
+
+int setts_update_thumb_quality (const char *s_cfg_file,
+                                const int   i_jpgq);
 
 int setts_update_pexels_api    (const char *s_cfg_file,
                                 const char *s_api_key);

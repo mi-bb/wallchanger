@@ -273,9 +273,9 @@ pixbay_json_to_webwidget (const char  *s_buff,
                     si_item = pixbay_json_obj_to_searchitem (j_val);
                     add_searchitem_to_img_view (ww_widget->gw_img_view,
                                                 si_item,
-                                                ww_widget->s_thumb_dir,
                                                 ww_widget->s_wallp_dir,
-                                                "pixbay_");
+                                                "Pixbay",
+                                                ww_widget->i_thumb_quality);
                     *si_items++ = si_item;
                 }
             }
@@ -299,7 +299,7 @@ pixbay_search (WebWidget         *ww_widget,
     if (str_is_empty_msg (fs_data->s_str1, "Pixbay API key is not set"))
         return;
     /* Check if there is a cached info about this search query */
-    if (check_for_cached_query (ww_widget, "Pixbay", "pixbay_"))
+    if (check_for_cached_query (ww_widget, "Pixbay"))
         return;
 
     s_query = str_replace_in (ww_widget->s_query, " ", "+");

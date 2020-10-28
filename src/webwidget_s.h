@@ -79,9 +79,6 @@
  * @var   WebWidget::s_cfg_file
  * @brief String with config file path
  *
- * @var   WebWidget::s_thumb_dir
- * @brief String with thumbnail directory
- *
  * @var   WebWidget::s_wallp_dir
  * @brief String with wallpaper directory
  *
@@ -96,6 +93,9 @@
  *
  * @var   WebWidget::i_active_service
  * @brief Id of active seaech service
+ *
+ * @var   WebWidget::i_thumb_quality
+ * @brief Thumbnail jpg quality
  */
 typedef struct
 WebWidget {
@@ -115,12 +115,12 @@ WebWidget {
     GtkWidget *gw_ii_dim_label;
     char      *s_query;
     char      *s_cfg_file;
-    char      *s_thumb_dir;
     char      *s_wallp_dir;
     int        i_page;
     int        i_per_page;
     int        i_found_cnt;
     int        i_active_service;
+    int        i_thumb_quality;
 } WebWidget;
 /*----------------------------------------------------------------------------*/
 #endif

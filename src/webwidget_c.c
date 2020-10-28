@@ -22,6 +22,7 @@
  * @author Michal Babik <michal.babik@pm.me>
  */
 #include "dlgsmsg.h"
+#include "thumbs.h"
 #include "urldata.h"
 #include "imgs.h"
 #include "fdfn.h"
@@ -112,21 +113,21 @@ remove_non_alpha_space (char *s_str)
  * @param[in] i_size  Buffer size
  * @return    Pixbuf with image
  */
-static GdkPixbuf *
-pixbuf_from_data (const unsigned char *s_data,
-                  const gssize         i_size)
-{
-    GdkPixbuf    *g_pbuf = NULL; /* Return pixbuf */
-    GInputStream *stream;        /* Stream for passing data to pixbuf */
-
-    stream = g_memory_input_stream_new ();
-    g_memory_input_stream_add_data (G_MEMORY_INPUT_STREAM (stream),
-                                    s_data, i_size, NULL);
-    g_pbuf = gdk_pixbuf_new_from_stream (stream, NULL, NULL);
-    g_object_unref (stream);
-
-    return g_pbuf;
-}
+//static GdkPixbuf *
+//pixbuf_from_data (const unsigned char *s_data,
+//                  const gssize         i_size)
+//{
+//    GdkPixbuf    *g_pbuf = NULL; /* Return pixbuf */
+//    GInputStream *stream;        /* Stream for passing data to pixbuf */
+//
+//    stream = g_memory_input_stream_new ();
+//    g_memory_input_stream_add_data (G_MEMORY_INPUT_STREAM (stream),
+//                                    s_data, i_size, NULL);
+//    g_pbuf = gdk_pixbuf_new_from_stream (stream, NULL, NULL);
+//    g_object_unref (stream);
+//
+//    return g_pbuf;
+//}
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Create pixbuf from raw data
@@ -134,29 +135,29 @@ pixbuf_from_data (const unsigned char *s_data,
  * @param[in] s_url  Url where should be image for pixbuf
  * @return    Pixbuf with image
  */
-static GdkPixbuf *
-pixbuf_from_url (const char *s_url)
-{
-    GdkPixbuf *g_pbuf  = NULL; /* Pixbuf to return */
-    UrlData   *ud_data = NULL; /* Urldata for getting image data */
-    char      *s_txt   = NULL; /* For error text */
-
-    ud_data = urldata_get_data (s_url);
-
-    if (ud_data->errbuf != NULL) {
-        s_txt = str_comb ("Getting image error:\n",
-                          ud_data->errbuf);
-        message_dialog_error (NULL, s_txt);
-        free (s_txt);
-    }
-    else if (urldata_full (ud_data)) {
-        g_pbuf = pixbuf_from_data ((unsigned char *) ud_data->buffer,
-                                   (gssize) ud_data->size);
-    }
-    urldata_free (ud_data);
-
-    return g_pbuf;
-}
+//static GdkPixbuf *
+//pixbuf_from_url (const char *s_url)
+//{
+//    GdkPixbuf *g_pbuf  = NULL; /* Pixbuf to return */
+//    UrlData   *ud_data = NULL; /* Urldata for getting image data */
+//    char      *s_txt   = NULL; /* For error text */
+//
+//    ud_data = urldata_get_data (s_url);
+//
+//    if (ud_data->errbuf != NULL) {
+//        s_txt = str_comb ("Getting image error:\n",
+//                          ud_data->errbuf);
+//        message_dialog_error (NULL, s_txt);
+//        free (s_txt);
+//    }
+//    else if (urldata_full (ud_data)) {
+//        g_pbuf = pixbuf_from_data ((unsigned char *) ud_data->buffer,
+//                                   (gssize) ud_data->size);
+//    }
+//    urldata_free (ud_data);
+//
+//    return g_pbuf;
+//}
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Get string value from Combobox's active i_col column.
@@ -177,22 +178,45 @@ combo_get_active_str (GtkWidget *gw_combo,
     return s_ret;
 }
 /*----------------------------------------------------------------------------*/
+static void
+wallpaper_check_mark (const char *s_wallp_dir,
+                      const char *s_file_name,
+                      GdkPixbuf  *gp_pbuf)
+{
+    GdkPixbuf *gp_check = NULL; /* Pixbuf for check image */
+    char      *s_wlfn   = NULL; /* Wallpaper file path */
+
+    s_wlfn = str_comb (s_wallp_dir, "/");
+    str_append (&s_wlfn, s_file_name);
+
+    if (file_check_permissions (s_wlfn) == ERR_OK) {
+
+        gp_check = get_image (W_IMG_CHECK);
+        gdk_pixbuf_composite (gp_check, gp_pbuf,
+                              0, 0,
+                              gdk_pixbuf_get_width (gp_check),
+                              gdk_pixbuf_get_height (gp_check),
+                              0, 0,
+                              1.0, 1.0,
+                              GDK_INTERP_HYPER,
+                              255);
+        g_object_unref (gp_check);
+    }
+    free (s_wlfn);
+}
+/*----------------------------------------------------------------------------*/
 /**
  * @brief  Add image based on si_item data to icon view.
  */
 void
 add_searchitem_to_img_view (GtkWidget        *gw_iconview,
                             const SearchItem *si_item,
-                            const char       *s_thumb_dir,
                             const char       *s_wallp_dir,
-                            const char       *s_service_prefix)
+                            const char       *s_service_name,
+                            const int         i_thumb_quality)
 {
     GtkListStore *list_store;
     GdkPixbuf    *gp_pbuf  = NULL; /* Pixbuf with thumbnail */
-    GdkPixbuf    *gp_check = NULL; /* Pixbuf for check image */
-    GError       *g_error  = NULL; /* For error output */
-    char         *s_thfn   = NULL; /* Thumbnail file path */
-    char         *s_wlfn   = NULL; /* Wallpaper file path */
     GtkTreeIter   iter;
 
     list_store = GTK_LIST_STORE (gtk_icon_view_get_model (
@@ -201,41 +225,14 @@ add_searchitem_to_img_view (GtkWidget        *gw_iconview,
     if (si_item->s_thumb_url == NULL)
         return;
 
-    s_thfn = str_comb (s_thumb_dir, "/");
-    str_append (&s_thfn, s_service_prefix);
-    str_append (&s_thfn, si_item->s_id);
-    str_append (&s_thfn, ".jpg");
-
-    gp_pbuf = gdk_pixbuf_new_from_file (s_thfn, &g_error);
-
-    if (gp_pbuf == NULL) {
-        gp_pbuf = pixbuf_from_url (si_item->s_thumb_url);
-        if (gp_pbuf != NULL) {
-            g_error = NULL;
-            gdk_pixbuf_save (gp_pbuf, s_thfn, "jpeg", &g_error,
-                             "quality", "96", NULL);
-        }
-    }
-    free (s_thfn);
+    gp_pbuf = thumbnail_get (s_service_name,
+                             si_item->s_id,
+                             i_thumb_quality,
+                             si_item->s_thumb_url);
 
     if (gp_pbuf != NULL) {
 
-        s_wlfn = str_comb (s_wallp_dir, "/");
-        str_append (&s_wlfn, si_item->s_file_name);
-
-        if (file_check_permissions (s_wlfn) == ERR_OK) {
-
-            gp_check = get_image (W_IMG_CHECK);
-            gdk_pixbuf_composite (gp_check, gp_pbuf,
-                                  0, 0,
-                                  gdk_pixbuf_get_width (gp_check),
-                                  gdk_pixbuf_get_height (gp_check),
-                                  0, 0,
-                                  1.0, 1.0,
-                                  GDK_INTERP_HYPER,
-                                  255);
-            g_object_unref (gp_check);
-        }
+        wallpaper_check_mark (s_wallp_dir, si_item->s_file_name, gp_pbuf);
 
         gtk_list_store_append(list_store, &iter);
         gtk_list_store_set(list_store, &iter,
@@ -252,7 +249,6 @@ add_searchitem_to_img_view (GtkWidget        *gw_iconview,
                            WEB_COL_THUMB_URL, si_item->s_thumb_url,
                            -1);
         g_object_unref (gp_pbuf);
-        free (s_wlfn);
     }
     while (gtk_events_pending ())
         gtk_main_iteration ();
@@ -264,8 +260,7 @@ add_searchitem_to_img_view (GtkWidget        *gw_iconview,
  */
 int
 check_for_cached_query (WebWidget  *ww_widget,
-                        const char *s_service_name,
-                        const char *s_service_prefix)
+                        const char *s_service_name)
 {
     CacheQuery *cq_query_chk = NULL; /* For checking cache availability */
     int         i_err        = 0;    /* Error output */
@@ -288,9 +283,9 @@ check_for_cached_query (WebWidget  *ww_widget,
         for (i = 0; i < cq_query_chk->i_per_page; ++i) {
             add_searchitem_to_img_view (ww_widget->gw_img_view,
                                         cq_query_chk->si_items[i],
-                                        ww_widget->s_thumb_dir,
                                         ww_widget->s_wallp_dir,
-                                        s_service_prefix);
+                                        s_service_name,
+                                        ww_widget->i_thumb_quality);
         }
         cachequery_free (cq_query_chk);
         return 1;

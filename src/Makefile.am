@@ -70,6 +70,7 @@ wchangercfg_SOURCES=wchanger.c\
                     errs.c errs.h\
                     fourstrings.c fourstrings.h\
                     chquery.c chquery.h\
+                    thumbs.c thumbs.h\
                     webwidget.c webwidget.h\
                     webwidget_c.c webwidget_c.h\
                     webpexels.c webpexels.h\

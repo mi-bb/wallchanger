@@ -214,9 +214,9 @@ wallhaven_json_to_webwidget (const char  *s_buff,
                     si_item = wallhaven_json_obj_to_searchitem (j_val);
                     add_searchitem_to_img_view (ww_widget->gw_img_view,
                                                 si_item,
-                                                ww_widget->s_thumb_dir,
                                                 ww_widget->s_wallp_dir,
-                                                "wallhaven_");
+                                                "Wallhaven",
+                                                ww_widget->i_thumb_quality);
                     *si_items++ = si_item;
                 }
             }
@@ -245,7 +245,7 @@ wallhaven_search (WebWidget         *ww_widget,
     ww_widget->i_per_page = 24;
 
     /* Check if there is a cached info about this search query */
-    if (check_for_cached_query (ww_widget, "Wallhaven", "wallhaven_"))
+    if (check_for_cached_query (ww_widget, "Wallhaven"))
         return;
 
     s_query = str_replace_in (ww_widget->s_query, " ", "+");

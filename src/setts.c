@@ -119,6 +119,10 @@ get_setting_name (const int i_val)
             s_res = "Web dilaog height";
             break;
 
+        case SETTING_THUMB_QUALITY:
+            s_res = "Thumbnail quality";
+            break;
+
         case SETTING_PEXELS_API:
             s_res = "Pexels api";
             break;
@@ -241,6 +245,7 @@ setts_check_defaults (Setting *st_settings)
         {SETTING_WALL_ARRAY,     SET_VAL_ARRAY,  0, 0, ""},
         {SETTING_WEB_DLG_WIDTH,  SET_VAL_INT,    DEFAULT_WEB_DLG_WIDTH, 0, ""},
         {SETTING_WEB_DLG_HEIGHT, SET_VAL_INT,    DEFAULT_WEB_DLG_HEIGHT, 0, ""},
+        {SETTING_THUMB_QUALITY,  SET_VAL_INT,    DEFAULT_THUMB_QUALITY, 0, ""},
         {SETTING_PEXELS_API,     SET_VAL_STRING, 0, 0, ""},
         {SETTING_PIXBAY_API,     SET_VAL_STRING, 0, 0, ""},
         {SETTING_WALLHAVEN_API,  SET_VAL_STRING, 0, 0, ""},
@@ -332,6 +337,24 @@ setts_update_web_dlg_size (const char *s_cfg_file,
     settings_append (st_settings,
                      setting_new_int (get_setting_name (SETTING_WEB_DLG_HEIGHT),
                                       (int64_t) i_h));
+
+    i_res = js_settings_check_update_file (st_settings, s_cfg_file);
+    settings_free_all (st_settings);
+    return i_res;
+}
+/*----------------------------------------------------------------------------*/
+/**
+ * @brief  Update thumbnail jpg quality.
+ */
+int
+setts_update_thumb_quality (const char *s_cfg_file,
+                            const int   i_jpgq)
+{
+    Setting  *st_settings;
+    int       i_res = ERR_OK;
+
+    st_settings = setting_new_int (get_setting_name (SETTING_THUMB_QUALITY),
+                                   i_jpgq);
 
     i_res = js_settings_check_update_file (st_settings, s_cfg_file);
     settings_free_all (st_settings);

@@ -342,7 +342,7 @@ flickr_search (WebWidget         *ww_widget,
     char         s_media[16];     /* Media type to search */
 
     /* Check if there is a cached info about this search query */
-    if (check_for_cached_query (ww_widget, "Flickr", "flickr_"))
+    if (check_for_cached_query (ww_widget, "Flickr"))
         return;
 
     flickcurl_init ();
@@ -388,9 +388,9 @@ flickr_search (WebWidget         *ww_widget,
             si_item = flickrphoto_to_searchitem (photos_list->photos[i]);
             add_searchitem_to_img_view (ww_widget->gw_img_view,
                                         si_item,
-                                        ww_widget->s_thumb_dir,
                                         ww_widget->s_wallp_dir,
-                                        "flickr_");
+                                        "Flickr",
+                                        ww_widget->i_thumb_quality);
             *si_items++ = si_item;
         }
         i_err = cachequery_save (cq_query);

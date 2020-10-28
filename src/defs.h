@@ -66,6 +66,9 @@
  *
  * @def   DEFAULT_LAST_USED_WM
  * @brief Default setting for last used window manager
+ *
+ * @def   DEFAULT_THUMB_QUALITY
+ * @brief Default thumbnail jpg quality
  */
 /*----------------------------------------------------------------------------*/
 #define DEFAULT_BG_CMD        "feh --bg-fill \"[F]\""
@@ -74,6 +77,7 @@
 #define DEFAULT_RANDOM_OPT     0
 #define DEFAULT_TIME_ALIGN_OPT 0
 #define DEFAULT_LAST_USED_WM   "Unknown"
+#define DEFAULT_THUMB_QUALITY  96
 /*----------------------------------------------------------------------------*/
 /**
  * @def   IMGS_ON_PAGE

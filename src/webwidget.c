@@ -1118,7 +1118,6 @@ webwidget_free (WebWidget *ww_widget)
 {
     free (ww_widget->s_query);
     free (ww_widget->s_cfg_file);
-    free (ww_widget->s_thumb_dir);
     free (ww_widget->s_wallp_dir);
     free (ww_widget);
 }
@@ -1145,6 +1144,7 @@ webwidget_create (Setting    *st_settings,
     GtkWidget *gw_add_sltd_box;
     GtkWidget *gw_add_sltd_button;
     GtkWidget *gw_selected_combo;
+    Setting *st_sett = NULL;
 
     if ((ww_widget = malloc (sizeof (WebWidget))) == NULL)
         err (EXIT_FAILURE, NULL);
@@ -1156,11 +1156,13 @@ webwidget_create (Setting    *st_settings,
     cachequery_delete_older_than ("Flickr",    1);
 #endif
 
-    ww_widget->s_cfg_file  = strdup (s_cfg_file);
-    ww_widget->s_thumb_dir = cfgfile_get_app_thumbnails_path ();
-    ww_widget->s_wallp_dir = cfgfile_get_app_wallpapers_path ();
-    dir_create_with_subdirs (ww_widget->s_thumb_dir);
+    if ((st_sett = setting_find_child (st_settings,
+                    get_setting_name (SETTING_THUMB_QUALITY))) != NULL) {
+        ww_widget->i_thumb_quality = setting_get_int (st_sett);
+    }
 
+    ww_widget->s_cfg_file   = strdup (s_cfg_file);
+    ww_widget->s_wallp_dir  = cfgfile_get_app_wallpapers_path ();
     ww_widget->gw_ii_widget = webwidget_imageinfo_create (ww_widget);
 
     gw_web_combo = webwidget_combobox_create (st_settings);
