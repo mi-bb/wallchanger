@@ -543,6 +543,9 @@ setting_set_child (Setting *st_parent,
 /*----------------------------------------------------------------------------*/
 Setting * setting_get_child  (Setting *st_setting)
 {
+    if (st_setting == NULL)
+        return NULL;
+
     if (setting_get_type (st_setting) == SET_VAL_SETTING ||
         setting_get_type (st_setting) == SET_VAL_ARRAY) {
 

@@ -76,6 +76,9 @@
  * @var   WebWidget::s_query
  * @brief String with search query
  *
+ * @var   WebWidget::s_search_opts
+ * @brief String with search options
+ *
  * @var   WebWidget::s_cfg_file
  * @brief String with config file path
  *
@@ -114,6 +117,7 @@ WebWidget {
     GtkWidget *gw_ii_page_link;
     GtkWidget *gw_ii_dim_label;
     char      *s_query;
+    char      *s_search_opts;
     char      *s_cfg_file;
     char      *s_wallp_dir;
     int        i_page;

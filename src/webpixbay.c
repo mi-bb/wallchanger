@@ -22,6 +22,7 @@
  * @author Michal Babik <michal.babik@pm.me>
  */
 #include <ctype.h>
+#include <inttypes.h>
 #include "../config.h"
 #ifdef HAVE_JSON_C_JSON_H
 #include <json-c/json.h>
@@ -34,7 +35,70 @@
 #include "webwidget_c.h"
 #include "dlgsmsg.h"
 #include "strfun.h"
+#include "setts.h"
 #include "webpixbay.h"
+/*----------------------------------------------------------------------------*/
+/**
+ * @brief  Enum with available search options.
+ */
+enum e_widgets {
+    GW_CATEGORY,     /**< Image category */
+    GW_ORIENTATION,  /**< Image orientation */
+    GW_ED_CHOICE,    /**< Get editor's choice images */
+    GW_SAFE_SEARCH,  /**< Safe search images */
+    GW_ORDER,        /**< Order of images */
+    GW_MIN_WIDTH,    /**< Spinbutton with min width */
+    GW_MIN_HEIGHT,   /**< Spinbutton with min height */
+    GW_COLOUR,       /**< Colour of image */
+    GW_COLOUR_ENTRY, /**< Entry for colour values */
+    GW_CNT           /**< Number of options */
+};
+/*----------------------------------------------------------------------------*/
+/**
+ * @var   s_opts
+ * @brief Array with option names
+ */
+static const char *s_opts[] = {
+    "category", "orientation", "editors_choice", "safesearch", "order",
+    "min_width", "min_height", "colors"
+};
+/*----------------------------------------------------------------------------*/
+/**
+ * @var   s_category
+ * @brief Array with image categories
+ */
+static const char *s_category[] = {
+    "none", "backgrounds", "fashion", "nature", "science", "education",
+    "feelings", "health", "people", "religion", "places", "animals",
+    "industry", "computer", "food", "sports", "transportation", "travel",
+    "buildings", "business", "music", NULL};
+/*----------------------------------------------------------------------------*/
+/**
+ * @var   s_colour
+ * @brief Array with image colours
+ */
+static const char *s_colour[] = {
+    "any", "grayscale", "transparent", "red", "orange", "yellow", "green",
+    "turquoise", "blue", "lilac", "pink", "white", "gray", "black",
+    "brown", NULL};
+/*----------------------------------------------------------------------------*/
+/**
+ * @var   s_true_false
+ * @brief Array with true and false value
+ */
+static const char *s_true_false[] = {"true", "false", NULL};
+/*----------------------------------------------------------------------------*/
+/**
+ * @var   s_order
+ * @brief Array with image sort orders
+ */
+static const char *s_order[] = {"popular", "latest", NULL};
+/*----------------------------------------------------------------------------*/
+/**
+ * @var   s_orientation
+ * @brief Array with image orientations
+ */
+static const char *s_orientation[] = {"all", "horizontal", "vertical", NULL};
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Extract base image name from image url.
@@ -305,6 +369,7 @@ pixbay_search (WebWidget         *ww_widget,
     s_query = str_replace_in (ww_widget->s_query, " ", "+");
 
     ud_data = urldata_search_pixbay (s_query,
+                                     ww_widget->s_search_opts,
                                      fs_data->s_str1,
                                      ww_widget->i_page,
                                      ww_widget->i_per_page);
@@ -403,3 +468,411 @@ pixbay_settings_dialog (FourStrings *fs_data)
     return i_res;
 }
 /*----------------------------------------------------------------------------*/
+/**
+ * @brief  Get search options from Setting item to widgets.
+ *
+ * @param[out] gw_array  Array with settings widgets
+ * @param[in]  st_setts  Setting item with list of options
+ * @return     none
+ */
+static void
+set_search_opts (GtkWidget **gw_array,
+                 Setting    *st_setts)
+{
+    Setting *st_set  = NULL;
+    Setting *st_item = NULL;
+
+    st_set = setting_get_child (settings_find (st_setts, "Pixbay_opts"));
+
+    if (st_set == NULL) {
+        return;
+    }
+#ifdef DEBUG
+    settings_print (st_set);
+#endif
+    for (int i = 0; i < GW_CNT; ++i) {
+        if (i == GW_COLOUR || i == GW_COLOUR_ENTRY ||
+            i == GW_MIN_WIDTH || i == GW_MIN_HEIGHT)
+            continue;
+        st_item = settings_find (st_set, s_opts[i]);
+        if (st_item != NULL) {
+#ifdef DEBUG
+            printf ("set : %s %s\n", s_opts[i], setting_get_string (st_item));
+#endif
+            gtk_combo_box_set_active_id (GTK_COMBO_BOX (gw_array[i]),
+                                         setting_get_string (st_item));
+        }
+    }
+    st_item = settings_find (st_set, s_opts[GW_COLOUR]);
+    if (st_item != NULL) {
+#ifdef DEBUG
+        printf ("set : %s %s\n",
+                s_opts[GW_COLOUR], setting_get_string (st_item));
+#endif
+        gtk_entry_set_text (GTK_ENTRY (gw_array[GW_COLOUR_ENTRY]),
+                            setting_get_string (st_item));
+    }
+
+    st_item = settings_find (st_set, s_opts[GW_MIN_WIDTH]);
+    if (st_item != NULL) {
+        gtk_spin_button_set_value (GTK_SPIN_BUTTON (gw_array[GW_MIN_WIDTH]),
+                                   (double) setting_get_int (st_item));
+#ifdef DEBUG
+        printf ("set : %s %ld\n",
+                s_opts[GW_MIN_WIDTH], setting_get_int (st_item));
+#endif
+    }
+    st_item = settings_find (st_set, s_opts[GW_MIN_HEIGHT]);
+    if (st_item != NULL) {
+        gtk_spin_button_set_value (GTK_SPIN_BUTTON (gw_array[GW_MIN_HEIGHT]),
+                                   (double) setting_get_int (st_item));
+#ifdef DEBUG
+        printf ("set : %s %ld\n",
+                s_opts[GW_MIN_HEIGHT], setting_get_int (st_item));
+#endif
+    }
+}
+/*----------------------------------------------------------------------------*/
+/**
+ * @brief  Get search options from widgets to Setting item.
+ *
+ * @param[in,out] gw_array  Array with settings widgets
+ * @return        Setting items with search options
+ */
+static Setting *
+get_search_opts (GtkWidget **gw_array)
+{
+    Setting    *st_sett = NULL;
+    char       *s_val   = NULL;
+    const char *s_val2  = NULL;
+    int         i_val   = 0;
+
+    s_val = gtk_combo_box_text_get_active_text (
+            GTK_COMBO_BOX_TEXT (gw_array[GW_ORDER]));
+    st_sett = setting_new_string (s_opts[GW_ORDER], s_val);
+    free (s_val);
+
+    s_val = gtk_combo_box_text_get_active_text (
+            GTK_COMBO_BOX_TEXT (gw_array[GW_ORIENTATION]));
+    if (strcmp (s_val, s_orientation[0]) != 0) {
+        settings_append (st_sett,
+                         setting_new_string (s_opts[GW_ORIENTATION], s_val));
+    }
+    free (s_val);
+
+    s_val = gtk_combo_box_text_get_active_text (
+            GTK_COMBO_BOX_TEXT (gw_array[GW_CATEGORY]));
+    if (strcmp (s_val, s_category[0]) != 0) {
+        settings_append (st_sett,
+                         setting_new_string (s_opts[GW_CATEGORY], s_val));
+    }
+    free (s_val);
+
+    s_val2 = gtk_entry_get_text (GTK_ENTRY (gw_array[GW_COLOUR_ENTRY]));
+    if (s_val2[0] != '\0') {
+        settings_append (st_sett,
+                         setting_new_string (s_opts[GW_COLOUR], s_val2));
+    }
+    s_val = gtk_combo_box_text_get_active_text (
+            GTK_COMBO_BOX_TEXT (gw_array[GW_ED_CHOICE]));
+    settings_append (st_sett, setting_new_string (s_opts[GW_ED_CHOICE], s_val));
+    free (s_val);
+
+    s_val = gtk_combo_box_text_get_active_text (
+            GTK_COMBO_BOX_TEXT (gw_array[GW_SAFE_SEARCH]));
+    settings_append (st_sett,
+                     setting_new_string (s_opts[GW_SAFE_SEARCH], s_val));
+    free (s_val);
+
+    i_val = gtk_spin_button_get_value_as_int (
+            GTK_SPIN_BUTTON (gw_array[GW_MIN_WIDTH]));
+    if (i_val > 0) {
+        settings_append (st_sett,
+                         setting_new_int (s_opts[GW_MIN_WIDTH], i_val));
+    }
+
+    i_val = gtk_spin_button_get_value_as_int (
+            GTK_SPIN_BUTTON (gw_array[GW_MIN_HEIGHT]));
+    if (i_val > 0) {
+        settings_append (st_sett,
+                         setting_new_int (s_opts[GW_MIN_HEIGHT], i_val));
+    }
+
+    return st_sett;
+}
+/*----------------------------------------------------------------------------*/
+/**
+ * @brief  Converts image search options in Setting format to string for url.
+ */
+char *
+pixbay_search_opts_to_string (const Setting *st_setts)
+{
+    char          *s_res   = NULL;
+    const Setting *st_item = NULL;
+    char           s_buff[32];
+
+    s_res   = strdup ("");
+    st_item = st_setts;
+
+    while (st_item != NULL) {
+        str_append (&s_res, "&");
+        str_append (&s_res, setting_get_name (st_item));
+        str_append (&s_res, "=");
+        if (setting_get_type (st_item) == SET_VAL_INT) {
+            sprintf (s_buff, "%" PRId64, setting_get_int (st_item));
+            str_append (&s_res, s_buff);
+        }
+        else if (setting_get_type (st_item) == SET_VAL_STRING) {
+            str_append (&s_res, setting_get_string (st_item));
+        }
+        st_item = st_item->next;
+    }
+    return s_res;
+}
+/*----------------------------------------------------------------------------*/
+/**
+ * @brief  Colour combobox changed, add colour to colour entry.
+ *
+ * @param[in,out] gw_array  Array with settings widgets
+ * @return        none
+ */
+static void
+event_combo_changed (GtkWidget **gw_array)
+{
+    char *s_entxt = NULL;
+    char *s_txt   = NULL;
+
+    s_txt = gtk_combo_box_text_get_active_text (
+            GTK_COMBO_BOX_TEXT (gw_array[GW_COLOUR]));
+
+    if (s_txt != NULL && strcmp (s_txt, s_colour[0]) != 0) {
+        s_entxt = strdup (gtk_entry_get_text (GTK_ENTRY (
+                          gw_array[GW_COLOUR_ENTRY])));
+        if (s_entxt[0] != '\0')
+            str_append (&s_entxt, ",");
+        str_append (&s_entxt, s_txt);
+
+        gtk_entry_set_text (GTK_ENTRY (gw_array[GW_COLOUR_ENTRY]), s_entxt);
+        free (s_entxt);
+    }
+    free (s_txt);
+}
+/*----------------------------------------------------------------------------*/
+/**
+ * @brief  Options for image search dialog.
+ */
+char *
+pixbay_search_opts_dialog (WebWidget *ww_widget)
+{
+    GtkAdjustment *ga_adjust1;         /* Adjustment for spinbutton */
+    GtkAdjustment *ga_adjust2;         /* Adjustment for spinbutton */
+    GtkWidget     *gw_array[GW_CNT];   /* Array with widgets */
+    GtkWidget     *gw_dialog;          /* Pixbay settings dialog */
+    GtkWidget     *gw_content_box;     /* Dialog's box */
+    GtkWidget     *gw_box;             /* Box for widgets */
+    GtkWidget     *gw_hbox;            /* Horizontal box for widgets */
+    Setting       *st_settings = NULL; /* Settings */
+    char          *s_res       = NULL; /* Result string */
+    int            i_err       = 0;    /* Error output */
+    int            i_res       = 0;    /* Dialog result */
+    int            i           = 0;    /* i */
+
+    GtkDialogFlags flags = GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT;
+
+    ga_adjust1 = gtk_adjustment_new (0.0, 0.0, 10000.0, 1.0, 100.0, 0.0);
+    ga_adjust2 = gtk_adjustment_new (0.0, 0.0, 10000.0, 1.0, 100.0, 0.0);
+
+    gw_dialog = gtk_dialog_new_with_buttons ("Pixbay search options",
+                                             NULL,
+                                             flags,
+                                             "_OK",
+                                             GTK_RESPONSE_ACCEPT,
+                                             "_Cancel",
+                                             GTK_RESPONSE_REJECT,
+                                             NULL);
+
+    gw_content_box = gtk_dialog_get_content_area (GTK_DIALOG (gw_dialog));
+    gtk_container_set_border_width (GTK_CONTAINER (gw_content_box), 8);
+    gw_hbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 8);
+
+    /* Orientation combobox */
+    gw_array[GW_ORIENTATION] = gtk_combo_box_text_new ();
+    gtk_widget_set_tooltip_text (gw_array[GW_ORIENTATION],
+        "Whether an image is wider than it is tall, or taller than it is wide");
+    for (i = 0; s_orientation[i] != NULL; ++i) {
+        gtk_combo_box_text_append (GTK_COMBO_BOX_TEXT (gw_array[GW_ORIENTATION]),
+                                   s_orientation[i], s_orientation[i]);
+    }
+    gtk_combo_box_set_active_id (GTK_COMBO_BOX (gw_array[GW_ORIENTATION]),
+                                                s_orientation[0]);
+    /* Box for orientation */
+    gw_box = gtk_box_new (GTK_ORIENTATION_VERTICAL, 8);
+    gtk_box_pack_start (GTK_BOX (gw_box),
+                        gtk_label_new ("Orientation:"),
+                        FALSE, FALSE, 4);
+    gtk_box_pack_start (GTK_BOX (gw_box),
+                        gw_array[GW_ORIENTATION],
+                        FALSE, FALSE, 4);
+    gtk_box_pack_start (GTK_BOX (gw_hbox), gw_box, FALSE, FALSE, 4);
+
+    /* Category combobox */
+    gw_array[GW_CATEGORY] = gtk_combo_box_text_new ();
+    gtk_widget_set_tooltip_text (gw_array[GW_CATEGORY],
+                                 "Filter results by category");
+    for (i = 0; s_category[i] != NULL; ++i) {
+        gtk_combo_box_text_append (GTK_COMBO_BOX_TEXT (gw_array[GW_CATEGORY]),
+                                   s_category[i], s_category[i]);
+    }
+    gtk_combo_box_set_active_id (GTK_COMBO_BOX (gw_array[GW_CATEGORY]),
+                                 s_category[0]);
+    /* Box for category */
+    gw_box = gtk_box_new (GTK_ORIENTATION_VERTICAL, 8);
+    gtk_box_pack_start (GTK_BOX (gw_box),
+                        gtk_label_new ("Category:"),
+                        FALSE, FALSE, 4);
+    gtk_box_pack_start (GTK_BOX (gw_box),
+                        gw_array[GW_CATEGORY],
+                        FALSE, FALSE, 4);
+    gtk_box_pack_start (GTK_BOX (gw_hbox), gw_box, FALSE, FALSE, 4);
+
+    /* Editor's choice combobox */
+    gw_array[GW_ED_CHOICE] = gtk_combo_box_text_new ();
+    gtk_widget_set_tooltip_text (gw_array[GW_ED_CHOICE],
+            "Select images that have received an Editor's Choice award");
+    for (i = 0; s_true_false[i] != NULL; ++i) {
+        gtk_combo_box_text_append (GTK_COMBO_BOX_TEXT (gw_array[GW_ED_CHOICE]),
+                                   s_true_false[i], s_true_false[i]);
+    }
+    gtk_combo_box_set_active_id (GTK_COMBO_BOX (gw_array[GW_ED_CHOICE]),
+                                 s_true_false[1]);
+    /* Box for editor's choice */
+    gw_box = gtk_box_new (GTK_ORIENTATION_VERTICAL, 8);
+    gtk_box_pack_start (GTK_BOX (gw_box),
+                        gtk_label_new ("Editor's choice:"),
+                        FALSE, FALSE, 4);
+    gtk_box_pack_start (GTK_BOX (gw_box),
+                        gw_array[GW_ED_CHOICE],
+                        FALSE, FALSE, 4);
+    gtk_box_pack_start (GTK_BOX (gw_hbox), gw_box, FALSE, FALSE, 4);
+
+    /* Safe search combobox */
+    gw_array[GW_SAFE_SEARCH] = gtk_combo_box_text_new ();
+    gtk_widget_set_tooltip_text (gw_array[GW_SAFE_SEARCH],
+        "A flag indicating that only images suitable for all ages should be "
+        "returned");
+    for (i = 0; s_true_false[i] != NULL; ++i) {
+        gtk_combo_box_text_append (GTK_COMBO_BOX_TEXT (gw_array[GW_SAFE_SEARCH]),
+                                   s_true_false[i], s_true_false[i]);
+    }
+    gtk_combo_box_set_active_id (GTK_COMBO_BOX (gw_array[GW_SAFE_SEARCH]),
+                                 s_true_false[1]);
+    /* Box for safe search */
+    gw_box = gtk_box_new (GTK_ORIENTATION_VERTICAL, 8);
+    gtk_box_pack_start (GTK_BOX (gw_box),
+                        gtk_label_new ("Safe search:"),
+                        FALSE, FALSE, 4);
+    gtk_box_pack_start (GTK_BOX (gw_box),
+                        gw_array[GW_SAFE_SEARCH],
+                        FALSE, FALSE, 4);
+    gtk_box_pack_start (GTK_BOX (gw_hbox), gw_box, FALSE, FALSE, 4);
+
+    /* Order combobox */
+    gw_array[GW_ORDER] = gtk_combo_box_text_new ();
+    gtk_widget_set_tooltip_text (gw_array[GW_ORDER],
+                                 "How the results should be ordered");
+    for (i = 0; s_order[i] != NULL; ++i) {
+        gtk_combo_box_text_append (GTK_COMBO_BOX_TEXT (gw_array[GW_ORDER]),
+                                   s_order[i], s_order[i]);
+    }
+    gtk_combo_box_set_active_id (GTK_COMBO_BOX (gw_array[GW_ORDER]),
+                                 s_order[0]);
+    /* Box for order */
+    gw_box = gtk_box_new (GTK_ORIENTATION_VERTICAL, 8);
+    gtk_box_pack_start (GTK_BOX (gw_box),
+                        gtk_label_new ("Order:"),
+                        FALSE, FALSE, 4);
+    gtk_box_pack_start (GTK_BOX (gw_box),
+                        gw_array[GW_ORDER],
+                        FALSE, FALSE, 4);
+    gtk_box_pack_start (GTK_BOX (gw_hbox), gw_box, FALSE, FALSE, 4);
+
+    /* Min image width and height */
+    gw_array[GW_MIN_WIDTH]  = gtk_spin_button_new (ga_adjust1, 1.0, 0);
+    gw_array[GW_MIN_HEIGHT] = gtk_spin_button_new (ga_adjust2, 1.0, 0);
+    gw_box = gtk_box_new (GTK_ORIENTATION_VERTICAL, 8);
+    gtk_box_pack_start (GTK_BOX (gw_box),
+                        gtk_label_new ("Min width:"),
+                        FALSE, FALSE, 4);
+    gtk_box_pack_start (GTK_BOX (gw_box),
+                        gw_array[GW_MIN_WIDTH],
+                        FALSE, FALSE, 4);
+    gtk_box_pack_start (GTK_BOX (gw_hbox), gw_box, FALSE, FALSE, 4);
+
+    gw_box = gtk_box_new (GTK_ORIENTATION_VERTICAL, 8);
+    gtk_box_pack_start (GTK_BOX (gw_box),
+                        gtk_label_new ("Min height:"),
+                        FALSE, FALSE, 4);
+    gtk_box_pack_start (GTK_BOX (gw_box),
+                        gw_array[GW_MIN_HEIGHT],
+                        FALSE, FALSE, 4);
+    gtk_box_pack_start (GTK_BOX (gw_hbox), gw_box, FALSE, FALSE, 4);
+
+    gtk_box_pack_start (GTK_BOX (gw_content_box), gw_hbox, FALSE, FALSE, 4);
+
+    /* Box for colour */
+    gw_hbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 8);
+
+    /* Colour combobox */
+    gw_array[GW_COLOUR] = gtk_combo_box_text_new ();
+    gtk_widget_set_tooltip_text (gw_array[GW_COLOUR],
+            "Filter images by color properties");
+    for (i = 0; s_colour[i] != NULL; ++i) {
+        gtk_combo_box_text_append (GTK_COMBO_BOX_TEXT (gw_array[GW_COLOUR]),
+                                   s_colour[i], s_colour[i]);
+    }
+    gtk_combo_box_set_active_id (GTK_COMBO_BOX (gw_array[GW_COLOUR]),
+                                 s_colour[0]);
+    g_signal_connect_swapped (gw_array[GW_COLOUR], "changed",
+                              G_CALLBACK (event_combo_changed), gw_array);
+    gtk_box_pack_start (GTK_BOX (gw_hbox),
+                        gtk_label_new ("Colour:"),
+                        FALSE, FALSE, 4);
+    gtk_box_pack_start (GTK_BOX (gw_hbox),
+                        gw_array[GW_COLOUR],
+                        FALSE, FALSE, 4);
+    /* Colour entry */
+    gw_array[GW_COLOUR_ENTRY] = gtk_entry_new ();
+    gtk_box_pack_start (GTK_BOX (gw_hbox),
+                        gw_array[GW_COLOUR_ENTRY],
+                        TRUE, TRUE, 4);
+
+    gtk_box_pack_start (GTK_BOX (gw_content_box), gw_hbox, FALSE, FALSE, 4);
+
+    st_settings = setts_read (ww_widget->s_cfg_file, &i_err);
+    set_search_opts (gw_array, setting_get_child (st_settings));
+    settings_free_all (st_settings);
+
+    gtk_widget_show_all (gw_content_box);
+
+    i_res = gtk_dialog_run (GTK_DIALOG (gw_dialog));
+
+    if (i_res == GTK_RESPONSE_ACCEPT) {
+        st_settings = setting_new_setting ("Pixbay_opts");
+
+        setting_add_child (st_settings, get_search_opts (gw_array));
+#ifdef DEBUG
+        settings_print (st_settings);
+#endif
+        setts_check_update_file (ww_widget->s_cfg_file, st_settings);
+        s_res = pixbay_search_opts_to_string (st_settings);
+        settings_free_all (st_settings);
+    }
+    else {
+        s_res = strdup ("");
+    }
+    gtk_widget_destroy (gw_dialog);
+
+    return s_res;
+}
+/*----------------------------------------------------------------------------*/
+

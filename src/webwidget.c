@@ -466,6 +466,39 @@ event_search_pressed (WebWidget *ww_widget)
 }
 /*----------------------------------------------------------------------------*/
 /**
+ * @brief  Search options button pressed.
+ *
+ * @param[in,out] ww_widget  WebWidget with widgets and search data
+ * @return        none
+ */
+static void
+event_search_opts_pressed (WebWidget *ww_widget)
+{
+    int          i_id    = 0;    /* Service id */
+
+    i_id    = ww_widget->i_active_service;
+
+    switch (i_id) {
+        case WEB_WIDGET_PEXELS:
+            pexels_search_opts_dialog (ww_widget);
+            break;
+        case WEB_WIDGET_PIXBAY:
+            ww_widget->s_search_opts = pixbay_search_opts_dialog (ww_widget);
+            break;
+        case WEB_WIDGET_WALLHAVEN:
+            wallhaven_search_opts_dialog (ww_widget);
+            break;
+#ifdef HAVE_FLICKCURL
+        case WEB_WIDGET_FLICKR:
+            flickr_search_opts_dialog (ww_widget);
+            break;
+#endif
+        default:
+            break;
+    }
+}
+/*----------------------------------------------------------------------------*/
+/**
  * @brief  Next page button pressed.
  *
  * @param[in,out] ww_widget  WebWidget with widgets and search data
@@ -728,6 +761,40 @@ event_add_selected_pressed (WebWidget *ww_widget)
 }
 /*----------------------------------------------------------------------------*/
 /**
+ * @brief  Refresh string with search options for active seach service.
+ *
+ * @param[in,out] ww_widget  WebWidget item
+ * @return        none
+ */
+static void
+refresh_service_opts (WebWidget *ww_widget)
+{
+    Setting *st_settings = NULL;
+    Setting *st_item     = NULL;
+    char    *s_name      = NULL;
+    int      i_err       = 0;
+
+    s_name = combo_get_active_str (ww_widget->gw_combo, WW_COMBO_NAME);
+    str_append (&s_name, "_opts");
+    printf ("%s\n", s_name);
+
+    st_settings = setts_read (ww_widget->s_cfg_file, &i_err);
+    st_item     = setting_get_child (st_settings);
+    st_item     = setting_get_child (settings_find (st_item, s_name));
+
+    if (st_item != NULL) {
+        puts ("sett not nuol");
+        if (ww_widget->i_active_service == WEB_WIDGET_PIXBAY) {
+            free (ww_widget->s_search_opts);
+            ww_widget->s_search_opts = pixbay_search_opts_to_string (st_item);
+            printf ("loaded : %s\n", ww_widget->s_search_opts);
+        }
+    }
+    settings_free_all (st_settings);
+    free (s_name);
+}
+/*----------------------------------------------------------------------------*/
+/**
  * @brief  Changed cobo box with image search service, sets active service
  *         i_active_service value in WebWidget.
  *
@@ -736,8 +803,8 @@ event_add_selected_pressed (WebWidget *ww_widget)
  * @return     none
  */
 static void
-event_combo_changed (GtkComboBox *gw_combo,
-                     WebWidget   *ww_widget)
+event_service_combo_changed (GtkComboBox *gw_combo,
+                             WebWidget   *ww_widget)
 {
     GtkTreeModel *model;
     GtkTreeIter   iter;
@@ -747,6 +814,9 @@ event_combo_changed (GtkComboBox *gw_combo,
         model = gtk_combo_box_get_model (gw_combo);
         gtk_tree_model_get (model, &iter,
                 WW_COMBO_ID, &ww_widget->i_active_service, -1);
+
+        refresh_service_opts (ww_widget);
+
     }
 }
 /*----------------------------------------------------------------------------*/
@@ -1117,6 +1187,7 @@ void
 webwidget_free (WebWidget *ww_widget)
 {
     free (ww_widget->s_query);
+    free (ww_widget->s_search_opts);
     free (ww_widget->s_cfg_file);
     free (ww_widget->s_wallp_dir);
     free (ww_widget);
@@ -1136,6 +1207,7 @@ webwidget_create (Setting    *st_settings,
     GtkWidget *gw_sett_button;
     GtkWidget *gw_search_entry;
     GtkWidget *gw_search_button;
+    GtkWidget *gw_search_opts_btn;
     GtkWidget *gw_nav_box;
     GtkWidget *gw_nav_prev;
     GtkWidget *gw_nav_next;
@@ -1169,23 +1241,26 @@ webwidget_create (Setting    *st_settings,
     gw_img_view  = webwidget_imgview_create ();
 
     g_signal_connect (gw_web_combo, "changed",
-            G_CALLBACK (event_combo_changed), ww_widget);
+            G_CALLBACK (event_service_combo_changed), ww_widget);
     g_signal_connect (gw_img_view, "item-activated",
             G_CALLBACK (event_imgview_activated), ww_widget);
 
     gw_count_label = gtk_label_new ("Search query:   Found 0 results");
 
     /* Search box */
-    gw_search_box    = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 4);
-    gw_sett_button   = gtk_button_new_with_label ("Settings");
-    gw_search_entry  = gtk_search_entry_new ();
-    gw_search_button = gtk_button_new_with_label ("Search");
-    g_signal_connect_swapped (gw_sett_button,   "clicked",
+    gw_search_box      = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 4);
+    gw_search_entry    = gtk_search_entry_new ();
+    gw_sett_button     = gtk_button_new_with_label ("Settings");
+    gw_search_button   = gtk_button_new_with_label ("Search");
+    gw_search_opts_btn = gtk_button_new_with_label ("Search opts");
+    g_signal_connect_swapped (gw_sett_button,    "clicked",
             G_CALLBACK (event_settings_pressed), ww_widget);
-    g_signal_connect_swapped (gw_search_entry,  "activate",
+    g_signal_connect_swapped (gw_search_entry,   "activate",
             G_CALLBACK (event_search_pressed),   ww_widget);
-    g_signal_connect_swapped (gw_search_button, "clicked",
+    g_signal_connect_swapped (gw_search_button,  "clicked",
             G_CALLBACK (event_search_pressed),   ww_widget);
+    g_signal_connect_swapped (gw_search_opts_btn,  "clicked",
+            G_CALLBACK (event_search_opts_pressed), ww_widget);
 
     gtk_box_pack_start (GTK_BOX (gw_search_box),
                         gw_web_combo,
@@ -1198,6 +1273,9 @@ webwidget_create (Setting    *st_settings,
                         TRUE, TRUE, 4);
     gtk_box_pack_start (GTK_BOX (gw_search_box),
                         gw_search_button,
+                        FALSE, FALSE, 4);
+    gtk_box_pack_start (GTK_BOX (gw_search_box),
+                        gw_search_opts_btn,
                         FALSE, FALSE, 4);
 
     /* Navigation box */
@@ -1260,10 +1338,13 @@ webwidget_create (Setting    *st_settings,
     ww_widget->gw_selected_box   = gw_add_sltd_box;
     ww_widget->gw_count_label    = gw_count_label;
     ww_widget->s_query           = NULL;
+    ww_widget->s_search_opts     = NULL;
     ww_widget->i_page            = 0;
     ww_widget->i_per_page        = IMGS_ON_PAGE;
     ww_widget->i_found_cnt       = 0;
     ww_widget->i_active_service  = WEB_WIDGET_PEXELS;
+
+    refresh_service_opts (ww_widget);
 
     return ww_widget;
 }
@@ -1279,7 +1360,7 @@ save_selected_wallpapers (GtkWidget *gw_dialog,
     GList *gl_res   = NULL; /* Result list od downloaded wallpapers */
 
     gl_items = sel_combo_get_list (ww_widget->gw_selected_combo);
-    gl_res = download_progress_window (GTK_WINDOW (gw_dialog), gl_items);
+    gl_res   = download_progress_window (GTK_WINDOW (gw_dialog), gl_items);
     g_list_free_full (gl_items, (GDestroyNotify) searchitem_free);
 
     return gl_res;

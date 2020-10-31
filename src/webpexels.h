@@ -47,4 +47,6 @@ void pexels_search          (WebWidget         *ww_widget,
  */
 int  pexels_settings_dialog (FourStrings       *fs_data);
 /*----------------------------------------------------------------------------*/
+void pexels_search_opts_dialog (WebWidget *ww_widget);
+/*----------------------------------------------------------------------------*/
 #endif

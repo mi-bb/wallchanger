@@ -46,5 +46,7 @@ void wallhaven_search          (WebWidget         *ww_widget,
  */
 int  wallhaven_settings_dialog (FourStrings       *fs_data);
 /*----------------------------------------------------------------------------*/
+void wallhaven_search_opts_dialog (WebWidget *ww_widget);
+/*----------------------------------------------------------------------------*/
 #endif 
 

@@ -107,59 +107,6 @@ remove_non_alpha_space (char *s_str)
 }
 /*----------------------------------------------------------------------------*/
 /**
- * @brief  Create pixbuf from raw data.
- *
- * @param[in] s_data  Buffer with image data
- * @param[in] i_size  Buffer size
- * @return    Pixbuf with image
- */
-//static GdkPixbuf *
-//pixbuf_from_data (const unsigned char *s_data,
-//                  const gssize         i_size)
-//{
-//    GdkPixbuf    *g_pbuf = NULL; /* Return pixbuf */
-//    GInputStream *stream;        /* Stream for passing data to pixbuf */
-//
-//    stream = g_memory_input_stream_new ();
-//    g_memory_input_stream_add_data (G_MEMORY_INPUT_STREAM (stream),
-//                                    s_data, i_size, NULL);
-//    g_pbuf = gdk_pixbuf_new_from_stream (stream, NULL, NULL);
-//    g_object_unref (stream);
-//
-//    return g_pbuf;
-//}
-/*----------------------------------------------------------------------------*/
-/**
- * @brief  Create pixbuf from raw data
- *
- * @param[in] s_url  Url where should be image for pixbuf
- * @return    Pixbuf with image
- */
-//static GdkPixbuf *
-//pixbuf_from_url (const char *s_url)
-//{
-//    GdkPixbuf *g_pbuf  = NULL; /* Pixbuf to return */
-//    UrlData   *ud_data = NULL; /* Urldata for getting image data */
-//    char      *s_txt   = NULL; /* For error text */
-//
-//    ud_data = urldata_get_data (s_url);
-//
-//    if (ud_data->errbuf != NULL) {
-//        s_txt = str_comb ("Getting image error:\n",
-//                          ud_data->errbuf);
-//        message_dialog_error (NULL, s_txt);
-//        free (s_txt);
-//    }
-//    else if (urldata_full (ud_data)) {
-//        g_pbuf = pixbuf_from_data ((unsigned char *) ud_data->buffer,
-//                                   (gssize) ud_data->size);
-//    }
-//    urldata_free (ud_data);
-//
-//    return g_pbuf;
-//}
-/*----------------------------------------------------------------------------*/
-/**
  * @brief  Get string value from Combobox's active i_col column.
  */
 char *

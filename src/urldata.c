@@ -255,6 +255,7 @@ urldata_search_pexels (const char *s_query,
  */
 UrlData *
 urldata_search_pixbay (const char *s_query,
+                       const char *s_search_opts,
                        const char *s_api_key,
                        const int   i_page,
                        const int   i_per_page)
@@ -271,7 +272,7 @@ urldata_search_pixbay (const char *s_query,
     curl = curl_easy_init ();
 
     if (curl) {
-        sprintf (s_page, "%d", i_page);
+        sprintf (s_page,     "%d", i_page);
         sprintf (s_per_page, "%d", i_per_page);
         s_url = str_comb ("https://pixabay.com/api/?key=", s_api_key);
         str_append (&s_url, "&q=");
@@ -281,6 +282,8 @@ urldata_search_pixbay (const char *s_query,
         str_append (&s_url, "&per_page=");
         str_append (&s_url, s_per_page);
         str_append (&s_url, "&image_type=photo");
+        if (s_search_opts != NULL)
+            str_append (&s_url, s_search_opts);
 
         curl_easy_setopt (curl, CURLOPT_URL, s_url);
         curl_easy_setopt (curl, CURLOPT_WRITEDATA, (void *) ud_data);

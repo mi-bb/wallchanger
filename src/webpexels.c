@@ -399,4 +399,10 @@ pexels_settings_dialog (FourStrings *fs_data)
     return i_res;
 }
 /*----------------------------------------------------------------------------*/
+void
+pexels_search_opts_dialog (WebWidget *ww_widget)
+{
+
+}
+/*----------------------------------------------------------------------------*/
 

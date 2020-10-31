@@ -358,12 +358,12 @@ cachequery_check_query (const char *s_service_name,
             && json_object_get_type (j_date) == json_type_object);
     }
     if (i_goon) {
-        i_goon = (json_object_object_get_ex (j_date, s_query, &j_query) &&
-            json_object_get_type (j_query) == json_type_object);
+        i_goon = (json_object_object_get_ex (j_date, s_query, &j_query)
+                  && json_object_get_type (j_query) == json_type_object);
     }
     if (i_goon) {
-        i_goon = (json_object_object_get_ex (j_query, s_per_page, &j_per_page) &&
-            json_object_get_type (j_per_page) == json_type_object);
+        i_goon = (json_object_object_get_ex (j_query, s_per_page, &j_per_page)
+                  && json_object_get_type (j_per_page) == json_type_object);
     }
     if (i_goon) {
         i_goon = 0;

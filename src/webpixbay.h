@@ -24,6 +24,7 @@
 #ifndef WEBPIXBAY_H
 #define WEBPIXBAY_H
 
+#include "setting.h"
 #include "fourstrings.h"
 #include "webwidget_s.h"
 /*----------------------------------------------------------------------------*/
@@ -34,8 +35,8 @@
  * @param[in]     fs_data    Four strings with API keys
  * @return        none
  */
-void pixbay_search          (WebWidget         *ww_widget,
-                             const FourStrings *fs_data);
+void   pixbay_search                (WebWidget         *ww_widget,
+                                     const FourStrings *fs_data);
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Dialog with Pixbay service settings.
@@ -43,7 +44,25 @@ void pixbay_search          (WebWidget         *ww_widget,
  * @param[in,out] fs_data  Four strings to get and write API keys
  * @return        Dialog response
  */
-int  pixbay_settings_dialog (FourStrings       *fs_data);
+int    pixbay_settings_dialog       (FourStrings       *fs_data);
+/*----------------------------------------------------------------------------*/
+/**
+ * @brief  Converts image search options in Setting format to string for url.
+ *
+ * @param[in,out] ww_widget  WebWidget with widgets and search data
+ * @return        String with image options. After use it should be freed
+ *                using free.
+ */
+char * pixbay_search_opts_to_string (const Setting     *st_setts);
+/*----------------------------------------------------------------------------*/
+/**
+ * @brief  Options for image search dialog.
+ *
+ * @param[in,out] ww_widget  WebWidget with widgets and search data
+ * @return        String with image options. After use it should be freed
+ *                using free.
+ */
+char * pixbay_search_opts_dialog    (WebWidget         *ww_widget);
 /*----------------------------------------------------------------------------*/
 #endif
 
