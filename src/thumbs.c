@@ -29,7 +29,7 @@
 #include "fdfn.h"
 #include "cfgfile.h"
 #include "dlgsmsg.h"
-#include "chthumb.h"
+#include "thumbs.h"
 
 /*----------------------------------------------------------------------------*/
 /**

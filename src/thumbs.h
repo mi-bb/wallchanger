@@ -21,8 +21,8 @@
  *
  * @author Michal Babik <michal.babik@pm.me>
  */
-#ifndef CHTHUMB_H
-#define CHTHUMB_H
+#ifndef THUMBS_H
+#define THUMBS_H
 #include <gtk/gtk.h>
 /*----------------------------------------------------------------------------*/
 GdkPixbuf * thumbnail_get (const char *s_service_name,
