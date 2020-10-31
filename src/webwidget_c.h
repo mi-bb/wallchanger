@@ -103,7 +103,6 @@ char * combo_get_active_str       (GtkWidget  *gw_combo,
  *
  * @param[out] gw_iconview       IconView to add image
  * @param[in]  si_item           SearchItem with image data
- * @param[in]  s_thumb_dir       String with app's cache directory
  * @param[in]  s_wallp_dir       String with app's wallpaper directory
  * @param[in]  s_service_name    Name of search service
  * @param[in]  i_thumb_quality   Thumbnail jpg quality

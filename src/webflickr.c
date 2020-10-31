@@ -295,27 +295,26 @@ flickrphoto_to_searchitem (flickcurl_photo *fp_photo)
     printf ("Image url : %s\n",si_item->s_image_url);
     printf ("File name : %s\n",si_item->s_file_name);
     flickcurl_photo_field_type field_type;
-    for(field_type = 0; field_type <= PHOTO_FIELD_LAST; field_type++) {
-      flickcurl_field_value_type datatype = fp_photo->fields[field_type].type;
+    for (field_type = 0; field_type <= PHOTO_FIELD_LAST; field_type++) {
+        flickcurl_field_value_type datatype = fp_photo->fields[field_type].type;
 
-      if(datatype != VALUE_TYPE_NONE)
-        fprintf(stderr, "field %s (%d) with %s value: '%s' / %d\n", 
-                flickcurl_get_photo_field_label(field_type), (int)field_type,
-                flickcurl_get_field_value_type_label(datatype),
-                fp_photo->fields[field_type].string,
-                fp_photo->fields[field_type].integer);
+        if (datatype != VALUE_TYPE_NONE)
+            printf("field %s (%d) with %s value: '%s' / %d\n", 
+                   flickcurl_get_photo_field_label(field_type), (int)field_type,
+                   flickcurl_get_field_value_type_label(datatype),
+                   fp_photo->fields[field_type].string,
+                   fp_photo->fields[field_type].integer);
     }
 
     for(int i = 0; i < fp_photo->tags_count; i++) {
-      flickcurl_tag* tag=fp_photo->tags[i];
-      fprintf(stderr,
-              "%d) %s tag: id %s author ID %s name %s raw '%s' "
-              "cooked '%s' count %d\n",
-              i, (tag->machine_tag ? "machine" : "regular"),
-              tag->id, tag->author, 
-              (tag->authorname ? tag->authorname : "(Unknown)"), 
-              tag->raw, tag->cooked,
-              tag->count);
+        flickcurl_tag* tag=fp_photo->tags[i];
+        printf ("%d) %s tag: id %s author ID %s name %s raw '%s' "
+               "cooked '%s' count %d\n",
+               i, (tag->machine_tag ? "machine" : "regular"),
+               tag->id, tag->author, 
+               (tag->authorname ? tag->authorname : "(Unknown)"), 
+               tag->raw, tag->cooked,
+               tag->count);
     }
 #endif
     return si_item;
@@ -365,7 +364,7 @@ flickr_search (WebWidget         *ww_widget,
     params.media = s_media;
 
     flickcurl_photos_list_params_init (&list_params);
-    list_params.per_page = ww_widget->i_per_page;
+    list_params.per_page = 12;
     list_params.page     = ww_widget->i_page;
     list_params.extras   = "original_format,o_dims,url_o,url_t";
 
@@ -377,8 +376,8 @@ flickr_search (WebWidget         *ww_widget,
     if (photos_list != NULL) {
         cq_query = cachequery_new ("Flickr",
                                    ww_widget->s_query,
-                                   ww_widget->i_page,
-                                   ww_widget->i_per_page);
+                                   ww_widget->s_search_opts,
+                                   ww_widget->i_page);
         si_items = cq_query->si_items;
 
         ww_widget->i_found_cnt = photos_list->total_count;

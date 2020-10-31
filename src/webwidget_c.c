@@ -215,8 +215,8 @@ check_for_cached_query (WebWidget  *ww_widget,
 
     cq_query_chk = cachequery_check_query (s_service_name,
                                            ww_widget->s_query,
+                                           ww_widget->s_search_opts,
                                            ww_widget->i_page,
-                                           ww_widget->i_per_page,
                                            &i_err);
     if (i_err != ERR_OK) {
         message_dialog_error (NULL, err_get_message (i_err));
@@ -227,7 +227,7 @@ check_for_cached_query (WebWidget  *ww_widget,
 
         ww_widget->i_found_cnt = cq_query_chk->i_found_cnt;
 
-        for (i = 0; i < cq_query_chk->i_per_page; ++i) {
+        for (i = 0; i < cq_query_chk->i_sicnt; ++i) {
             add_searchitem_to_img_view (ww_widget->gw_img_view,
                                         cq_query_chk->si_items[i],
                                         ww_widget->s_wallp_dir,

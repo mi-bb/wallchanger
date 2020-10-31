@@ -49,6 +49,7 @@ enum e_widgets {
     GW_ORDER,        /**< Order of images */
     GW_MIN_WIDTH,    /**< Spinbutton with min width */
     GW_MIN_HEIGHT,   /**< Spinbutton with min height */
+    GW_PER_PAGE,     /**< Spinbutton with images per page */
     GW_COLOUR,       /**< Colour of image */
     GW_COLOUR_ENTRY, /**< Entry for colour values */
     GW_CNT           /**< Number of options */
@@ -60,7 +61,7 @@ enum e_widgets {
  */
 static const char *s_opts[] = {
     "category", "orientation", "editors_choice", "safesearch", "order",
-    "min_width", "min_height", "colors"
+    "min_width", "min_height", "per_page", "colors"
 };
 /*----------------------------------------------------------------------------*/
 /**
@@ -293,7 +294,7 @@ pixbay_json_obj_to_searchitem (json_object *j_obj)
 static void
 pixbay_json_to_webwidget (const char  *s_buff,
                           WebWidget   *ww_widget,
-                          SearchItem **si_items)
+                          CacheQuery  *cq_query)
 {
     json_object *j_obj;            /* Json with search data */
     json_object *j_val;            /* Some value */
@@ -329,8 +330,8 @@ pixbay_json_to_webwidget (const char  *s_buff,
 
             ui_cnt = json_object_array_length (j_arr);
 
-            if (ui_cnt > (size_t) ww_widget->i_per_page)
-                ui_cnt = (size_t) ww_widget->i_per_page;
+            //if (ui_cnt > (size_t) ww_widget->i_per_page)
+            //    ui_cnt = (size_t) ww_widget->i_per_page;
 
             for (i = 0; i < ui_cnt; ++i) {
                 if ((j_val = json_object_array_get_idx (j_arr, i)) != NULL) {
@@ -340,7 +341,8 @@ pixbay_json_to_webwidget (const char  *s_buff,
                                                 ww_widget->s_wallp_dir,
                                                 "Pixbay",
                                                 ww_widget->i_thumb_quality);
-                    *si_items++ = si_item;
+                    //*si_items++ = si_item;
+                    cachequery_append_item (cq_query, si_item);
                 }
             }
         }
@@ -368,25 +370,29 @@ pixbay_search (WebWidget         *ww_widget,
 
     s_query = str_replace_in (ww_widget->s_query, " ", "+");
 
+#ifdef DEBUG
+    printf ("query : %s\n", ww_widget->s_query);
+    printf ("search opts : %s\n", ww_widget->s_search_opts);
+#endif
+
     ud_data = urldata_search_pixbay (s_query,
                                      ww_widget->s_search_opts,
                                      fs_data->s_str1,
-                                     ww_widget->i_page,
-                                     ww_widget->i_per_page);
+                                     ww_widget->i_page);
     if (ud_data->errbuf != NULL) {
         message_dialog_error (NULL, ud_data->errbuf);
     }
     else if (urldata_full (ud_data)) {
         cq_query = cachequery_new ("Pixbay",
                                    ww_widget->s_query,
-                                   ww_widget->i_page,
-                                   ww_widget->i_per_page);
+                                   ww_widget->s_search_opts,
+                                   ww_widget->i_page);
 
         gtk_list_store_clear (GTK_LIST_STORE (gtk_icon_view_get_model (
                         GTK_ICON_VIEW (ww_widget->gw_img_view))));
 
         pixbay_json_to_webwidget (ud_data->buffer, ww_widget,
-                                  cq_query->si_items);
+                                  cq_query);
         cq_query->i_found_cnt = ww_widget->i_found_cnt;
 
         i_err = cachequery_save (cq_query);
@@ -492,7 +498,7 @@ set_search_opts (GtkWidget **gw_array,
 #endif
     for (int i = 0; i < GW_CNT; ++i) {
         if (i == GW_COLOUR || i == GW_COLOUR_ENTRY ||
-            i == GW_MIN_WIDTH || i == GW_MIN_HEIGHT)
+            i == GW_MIN_WIDTH || i == GW_MIN_HEIGHT || i == GW_PER_PAGE)
             continue;
         st_item = settings_find (st_set, s_opts[i]);
         if (st_item != NULL) {
@@ -529,6 +535,15 @@ set_search_opts (GtkWidget **gw_array,
 #ifdef DEBUG
         printf ("set : %s %ld\n",
                 s_opts[GW_MIN_HEIGHT], setting_get_int (st_item));
+#endif
+    }
+    st_item = settings_find (st_set, s_opts[GW_PER_PAGE]);
+    if (st_item != NULL) {
+        gtk_spin_button_set_value (GTK_SPIN_BUTTON (gw_array[GW_PER_PAGE]),
+                                   (double) setting_get_int (st_item));
+#ifdef DEBUG
+        printf ("set : %s %ld\n",
+                s_opts[GW_PER_PAGE], setting_get_int (st_item));
 #endif
     }
 }
@@ -597,6 +612,9 @@ get_search_opts (GtkWidget **gw_array)
         settings_append (st_sett,
                          setting_new_int (s_opts[GW_MIN_HEIGHT], i_val));
     }
+    i_val = gtk_spin_button_get_value_as_int (
+            GTK_SPIN_BUTTON (gw_array[GW_PER_PAGE]));
+    settings_append (st_sett, setting_new_int (s_opts[GW_PER_PAGE], i_val));
 
     return st_sett;
 }
@@ -664,8 +682,9 @@ event_combo_changed (GtkWidget **gw_array)
 char *
 pixbay_search_opts_dialog (WebWidget *ww_widget)
 {
-    GtkAdjustment *ga_adjust1;         /* Adjustment for spinbutton */
-    GtkAdjustment *ga_adjust2;         /* Adjustment for spinbutton */
+    GtkAdjustment *ga_adjust1;         /* Adjustment for max w spinbutton */
+    GtkAdjustment *ga_adjust2;         /* Adjustment for max h spinbutton */
+    GtkAdjustment *ga_adjust3;         /* Adjustment for per page spinbutton */
     GtkWidget     *gw_array[GW_CNT];   /* Array with widgets */
     GtkWidget     *gw_dialog;          /* Pixbay settings dialog */
     GtkWidget     *gw_content_box;     /* Dialog's box */
@@ -681,6 +700,7 @@ pixbay_search_opts_dialog (WebWidget *ww_widget)
 
     ga_adjust1 = gtk_adjustment_new (0.0, 0.0, 10000.0, 1.0, 100.0, 0.0);
     ga_adjust2 = gtk_adjustment_new (0.0, 0.0, 10000.0, 1.0, 100.0, 0.0);
+    ga_adjust3 = gtk_adjustment_new (12.0, 3.0, 200.0, 1.0, 2.0, 0.0);
 
     gw_dialog = gtk_dialog_new_with_buttons ("Pixbay search options",
                                              NULL,
@@ -846,6 +866,15 @@ pixbay_search_opts_dialog (WebWidget *ww_widget)
                         gw_array[GW_COLOUR_ENTRY],
                         TRUE, TRUE, 4);
 
+    /* Per page */
+    gw_array[GW_PER_PAGE] = gtk_spin_button_new (ga_adjust3, 1.0, 0);
+    gtk_box_pack_start (GTK_BOX (gw_hbox),
+                        gtk_label_new ("Images per page:"),
+                        FALSE, FALSE, 4);
+    gtk_box_pack_start (GTK_BOX (gw_hbox),
+                        gw_array[GW_PER_PAGE],
+                        FALSE, FALSE, 4);
+
     gtk_box_pack_start (GTK_BOX (gw_content_box), gw_hbox, FALSE, FALSE, 4);
 
     st_settings = setts_read (ww_widget->s_cfg_file, &i_err);
@@ -864,7 +893,7 @@ pixbay_search_opts_dialog (WebWidget *ww_widget)
         settings_print (st_settings);
 #endif
         setts_check_update_file (ww_widget->s_cfg_file, st_settings);
-        s_res = pixbay_search_opts_to_string (st_settings);
+        s_res = pixbay_search_opts_to_string (setting_get_child (st_settings));
         settings_free_all (st_settings);
     }
     else {

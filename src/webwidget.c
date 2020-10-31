@@ -484,6 +484,9 @@ event_search_opts_pressed (WebWidget *ww_widget)
             break;
         case WEB_WIDGET_PIXBAY:
             ww_widget->s_search_opts = pixbay_search_opts_dialog (ww_widget);
+#ifdef DEBUG
+            printf ("now opts : %s\n", ww_widget->s_search_opts);
+#endif
             break;
         case WEB_WIDGET_WALLHAVEN:
             wallhaven_search_opts_dialog (ww_widget);
@@ -776,19 +779,28 @@ refresh_service_opts (WebWidget *ww_widget)
 
     s_name = combo_get_active_str (ww_widget->gw_combo, WW_COMBO_NAME);
     str_append (&s_name, "_opts");
+#ifdef DEBUG
     printf ("%s\n", s_name);
+#endif
 
     st_settings = setts_read (ww_widget->s_cfg_file, &i_err);
     st_item     = setting_get_child (st_settings);
     st_item     = setting_get_child (settings_find (st_item, s_name));
 
     if (st_item != NULL) {
-        puts ("sett not nuol");
         if (ww_widget->i_active_service == WEB_WIDGET_PIXBAY) {
             free (ww_widget->s_search_opts);
             ww_widget->s_search_opts = pixbay_search_opts_to_string (st_item);
+#ifdef DEBUG
             printf ("loaded : %s\n", ww_widget->s_search_opts);
+#endif
         }
+        else {
+            ww_widget->s_search_opts = strdup ("");
+        }
+    }
+    else {
+        ww_widget->s_search_opts = strdup ("");
     }
     settings_free_all (st_settings);
     free (s_name);
@@ -1193,6 +1205,19 @@ webwidget_free (WebWidget *ww_widget)
     free (ww_widget);
 }
 /*----------------------------------------------------------------------------*/
+void
+webwidget_init (WebWidget *ww_widget)
+{
+    ww_widget->s_query          = NULL;
+    ww_widget->s_search_opts    = NULL;
+    ww_widget->s_cfg_file       = NULL;
+    ww_widget->s_wallp_dir      = NULL;
+    ww_widget->i_page           = 0;
+    ww_widget->i_found_cnt      = 0;
+    ww_widget->i_active_service = 0;
+    ww_widget->i_thumb_quality  = 0;
+}
+/*----------------------------------------------------------------------------*/
 /**
  * @brief  Create WebWidget item with widgets and data for wallpaper search.
  */
@@ -1221,6 +1246,8 @@ webwidget_create (Setting    *st_settings,
     if ((ww_widget = malloc (sizeof (WebWidget))) == NULL)
         err (EXIT_FAILURE, NULL);
 
+    webwidget_init (ww_widget);
+
     cachequery_delete_older_than ("Pexels",    1);
     cachequery_delete_older_than ("Pixbay",    1);
     cachequery_delete_older_than ("Wallhaven", 1);
@@ -1229,7 +1256,7 @@ webwidget_create (Setting    *st_settings,
 #endif
 
     if ((st_sett = setting_find_child (st_settings,
-                    get_setting_name (SETTING_THUMB_QUALITY))) != NULL) {
+                   get_setting_name (SETTING_THUMB_QUALITY))) != NULL) {
         ww_widget->i_thumb_quality = setting_get_int (st_sett);
     }
 
@@ -1337,11 +1364,6 @@ webwidget_create (Setting    *st_settings,
     ww_widget->gw_selected_combo = gw_selected_combo;
     ww_widget->gw_selected_box   = gw_add_sltd_box;
     ww_widget->gw_count_label    = gw_count_label;
-    ww_widget->s_query           = NULL;
-    ww_widget->s_search_opts     = NULL;
-    ww_widget->i_page            = 0;
-    ww_widget->i_per_page        = IMGS_ON_PAGE;
-    ww_widget->i_found_cnt       = 0;
     ww_widget->i_active_service  = WEB_WIDGET_PEXELS;
 
     refresh_service_opts (ww_widget);

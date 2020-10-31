@@ -229,9 +229,9 @@ pexels_json_obj_to_searchitem (json_object *j_obj)
  * @return     none
  */
 static void
-pexels_json_to_webwidget (const char  *s_buff,
-                          WebWidget   *ww_widget,
-                          SearchItem **si_items)
+pexels_json_to_webwidget (const char *s_buff,
+                          WebWidget  *ww_widget,
+                          CacheQuery *cq_query)
 {
     json_object *j_obj;            /* Json with search data */
     json_object *j_val;            /* Some value */
@@ -267,9 +267,6 @@ pexels_json_to_webwidget (const char  *s_buff,
 
             ui_cnt = json_object_array_length (j_arr);
 
-            if (ui_cnt > (size_t) ww_widget->i_per_page)
-                ui_cnt = (size_t) ww_widget->i_per_page;
-
             for (i = 0; i < ui_cnt; ++i) {
                 if ((j_val = json_object_array_get_idx (j_arr, i)) != NULL) {
                     si_item = pexels_json_obj_to_searchitem (j_val);
@@ -278,7 +275,7 @@ pexels_json_to_webwidget (const char  *s_buff,
                                                 ww_widget->s_wallp_dir,
                                                 "Pexels",
                                                 ww_widget->i_thumb_quality);
-                    *si_items++ = si_item;
+                    cachequery_append_item (cq_query, si_item);
                 }
             }
         }
@@ -307,23 +304,22 @@ pexels_search (WebWidget         *ww_widget,
     s_query = str_replace_in (ww_widget->s_query, " ", "+");
 
     ud_data = urldata_search_pexels (s_query,
+                                     ww_widget->s_search_opts,
                                      fs_data->s_str1,
-                                     ww_widget->i_page,
-                                     ww_widget->i_per_page);
+                                     ww_widget->i_page);
     if (ud_data->errbuf != NULL) {
         message_dialog_error (NULL, ud_data->errbuf);
     }
     else if (urldata_full (ud_data)) {
         cq_query = cachequery_new ("Pexels",
                                    ww_widget->s_query,
-                                   ww_widget->i_page,
-                                   ww_widget->i_per_page);
+                                   ww_widget->s_search_opts,
+                                   ww_widget->i_page);
 
         gtk_list_store_clear (GTK_LIST_STORE (gtk_icon_view_get_model (
                     GTK_ICON_VIEW (ww_widget->gw_img_view))));
 
-        pexels_json_to_webwidget (ud_data->buffer, ww_widget,
-                                  cq_query->si_items);
+        pexels_json_to_webwidget (ud_data->buffer, ww_widget, cq_query);
         cq_query->i_found_cnt = ww_widget->i_found_cnt;
 
         i_err = cachequery_save (cq_query);

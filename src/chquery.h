@@ -58,9 +58,11 @@ CacheQuery {
     char        *s_file;
     char        *s_date;
     char        *s_query;
+    char        *s_search_opts;
     int          i_page;
-    int          i_per_page;
+    //int          i_per_page;
     int          i_found_cnt;
+    int          i_sicnt;
 } CacheQuery;
 /*----------------------------------------------------------------------------*/
 /**
@@ -74,8 +76,8 @@ CacheQuery {
  */
 CacheQuery * cachequery_new               (const char *s_service_name,
                                            const char *s_query,
-                                           const int   i_page,
-                                           const int   i_per_page);
+                                           const char *s_search_opts,
+                                           const int   i_page);
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Free CacheQuery item.
@@ -92,9 +94,11 @@ void         cachequery_free              (CacheQuery *cq_query);
  * @param[in]  si_item   SearchItem item to add
  * @return     none
  */
-void         cachequery_add_item          (CacheQuery *cq_query,
-                                           SearchItem *si_item);
+//void         cachequery_add_item2          (CacheQuery *cq_query,
+//                                           SearchItem *si_item);
 /*----------------------------------------------------------------------------*/
+void cachequery_append_item (CacheQuery *cq_query,
+                        SearchItem *si_item);
 /**
  * @brief  Check if there is a cached data for query.
  *
@@ -108,8 +112,8 @@ void         cachequery_add_item          (CacheQuery *cq_query,
  */
 CacheQuery * cachequery_check_query       (const char *s_service_name,
                                            const char *s_query,
+                                           const char *s_search_opts,
                                            const int   i_page,
-                                           const int   i_per_page,
                                            int        *i_err);
 /*----------------------------------------------------------------------------*/
 /**

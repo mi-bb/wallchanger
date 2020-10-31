@@ -88,9 +88,6 @@
  * @var   WebWidget::i_page
  * @brief Current page number
  *
- * @var   WebWidget::i_per_page
- * @brief Number with images per page
- *
  * @var   WebWidget::i_found_cnt
  * @brief Number of found images
  *
@@ -121,7 +118,6 @@ WebWidget {
     char      *s_cfg_file;
     char      *s_wallp_dir;
     int        i_page;
-    int        i_per_page;
     int        i_found_cnt;
     int        i_active_service;
     int        i_thumb_quality;

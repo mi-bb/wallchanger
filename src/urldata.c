@@ -192,15 +192,14 @@ urldata_get_to_file (const char *s_url,
  */
 UrlData *
 urldata_search_pexels (const char *s_query,
+                       const char *s_search_opts,
                        const char *s_api_key,
-                       const int   i_page,
-                       const int   i_per_page)
+                       const int   i_page)
 {
     UrlData  *ud_data = NULL;
     char     *s_api   = NULL;
     char     *s_url   = NULL;
     char      s_page[64];
-    char      s_per_page[64];
     CURL     *curl;
     CURLcode  res;
     struct curl_slist *list = NULL;
@@ -211,13 +210,14 @@ urldata_search_pexels (const char *s_query,
 
     if (curl) {
         sprintf (s_page, "%d", i_page);
-        sprintf (s_per_page, "%d", i_per_page);
         s_api = str_comb ("Authorization: ", s_api_key);
         s_url = str_comb ("https://api.pexels.com/v1/search?query=", s_query);
         str_append (&s_url, "&page=");
         str_append (&s_url, s_page);
-        str_append (&s_url, "&per_page=");
-        str_append (&s_url, s_per_page);
+        if (s_search_opts != NULL && s_search_opts[0] != '\0')
+            str_append (&s_url, s_search_opts);
+        else 
+            str_append (&s_url, "&per_page=12");
 
         list = curl_slist_append (list, s_api);
 
@@ -257,13 +257,12 @@ UrlData *
 urldata_search_pixbay (const char *s_query,
                        const char *s_search_opts,
                        const char *s_api_key,
-                       const int   i_page,
-                       const int   i_per_page)
+                       const int   i_page)
 {
     UrlData  *ud_data = NULL;
     char     *s_url   = NULL;
     char      s_page[64];
-    char      s_per_page[64];
+    //char      s_per_page[64];
     CURL     *curl;
     CURLcode  res;
 
@@ -273,17 +272,17 @@ urldata_search_pixbay (const char *s_query,
 
     if (curl) {
         sprintf (s_page,     "%d", i_page);
-        sprintf (s_per_page, "%d", i_per_page);
+        //sprintf (s_per_page, "%d", i_per_page);
         s_url = str_comb ("https://pixabay.com/api/?key=", s_api_key);
         str_append (&s_url, "&q=");
         str_append (&s_url, s_query);
         str_append (&s_url, "&page=");
         str_append (&s_url, s_page);
-        str_append (&s_url, "&per_page=");
-        str_append (&s_url, s_per_page);
         str_append (&s_url, "&image_type=photo");
-        if (s_search_opts != NULL)
+        if (s_search_opts != NULL && s_search_opts[0] != '\0')
             str_append (&s_url, s_search_opts);
+        else
+            str_append (&s_url, "&per_page=12");
 
         curl_easy_setopt (curl, CURLOPT_URL, s_url);
         curl_easy_setopt (curl, CURLOPT_WRITEDATA, (void *) ud_data);
@@ -315,14 +314,13 @@ urldata_search_pixbay (const char *s_query,
  */
 UrlData *
 urldata_search_wallhaven (const char *s_query,
+                          const char *s_search_opts,
                           const char *s_api_key,
-                          const int   i_page,
-                          const int   i_per_page)
+                          const int   i_page)
 {
     UrlData  *ud_data = NULL;
     char     *s_url   = NULL;
     char      s_page[64];
-    char      s_per_page[64];
     CURL     *curl;
     CURLcode  res;
     struct curl_slist *list = NULL;
@@ -332,14 +330,16 @@ urldata_search_wallhaven (const char *s_query,
     curl = curl_easy_init ();
     if (curl) {
         sprintf (s_page, "%d", i_page);
-        sprintf (s_per_page, "%d", i_per_page);
         s_url = str_comb ("https://wallhaven.cc/api/v1/search?apikey=",
                           s_api_key);
         str_append (&s_url, "&q=");
         str_append (&s_url, s_query);
         str_append (&s_url, "&page=");
         str_append (&s_url, s_page);
-        str_append (&s_url, "&sorting=relevance");
+        if (s_search_opts != NULL && s_search_opts[0] != '\0')
+            str_append (&s_url, s_search_opts);
+        else
+            str_append (&s_url, "&sorting=relevance");
 
         curl_easy_setopt (curl, CURLOPT_URL, s_url);
         curl_easy_setopt (curl, CURLOPT_WRITEDATA, (void *) ud_data);
