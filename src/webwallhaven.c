@@ -159,6 +159,7 @@ wallhaven_json_obj_to_searchitem (json_object *j_obj)
  *
  * @param[in]  s_buff     String with json data
  * @param[out] ww_widget  Webwidget to set data
+ * @param[out] cq_query   CacheQuery item to insert SearchItem items
  * @return     none
  */
 static void

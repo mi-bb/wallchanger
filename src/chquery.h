@@ -43,11 +43,14 @@
  * @var   CacheQuery::s_query
  * @brief Query string
  *
+ * @var   CacheQuery::s_search_opts
+ * @brief String with search options
+ *
+ * @var   CacheQuery::i_sicnt
+ * @brief Number of SearchItem images
+ *
  * @var   CacheQuery::i_page
  * @brief Page number
- *
- * @var   CacheQuery::i_per_page
- * @brief Number of images per page
  *
  * @var   CacheQuery::i_found_cnt
  * @brief Number of found images
@@ -59,10 +62,9 @@ CacheQuery {
     char        *s_date;
     char        *s_query;
     char        *s_search_opts;
-    int          i_page;
-    //int          i_per_page;
-    int          i_found_cnt;
     int          i_sicnt;
+    int          i_page;
+    int          i_found_cnt;
 } CacheQuery;
 /*----------------------------------------------------------------------------*/
 /**
@@ -70,8 +72,8 @@ CacheQuery {
  *
  * @param[in] s_service_name  Name of image service.
  * @param[in] s_query         Search query
+ * @param[in] s_search_opts   Search options
  * @param[in] i_page          Page number
- * @param[in] i_per_page      Images per page
  * @return    New CacheQuery item, it should be freed using cachequery_free
  */
 CacheQuery * cachequery_new               (const char *s_service_name,
@@ -88,23 +90,21 @@ CacheQuery * cachequery_new               (const char *s_service_name,
 void         cachequery_free              (CacheQuery *cq_query);
 /*----------------------------------------------------------------------------*/
 /**
- * @brief  Add SearchItem item to list in CacheQuery item.
+ * @brief  Append SearchItem item to list.
  *
  * @param[out] cq_query  CacheQuery item
  * @param[in]  si_item   SearchItem item to add
  * @return     none
  */
-//void         cachequery_add_item2          (CacheQuery *cq_query,
-//                                           SearchItem *si_item);
+void         cachequery_append_item       (CacheQuery *cq_query,
+                                           SearchItem *si_item);
 /*----------------------------------------------------------------------------*/
-void cachequery_append_item (CacheQuery *cq_query,
-                        SearchItem *si_item);
 /**
  * @brief  Check if there is a cached data for query.
  *
  * @param[in]  s_service_name  Name of image service.
  * @param[in]  s_query         Search query
- * @param[in]  i_page          Page number
+ * @param[in]  s_search_opts   Search options
  * @param[in]  i_per_page      Images per page
  * @param[out] i_err           Errot output
  * @return     CacheQuery item with search results or null if there is no cached

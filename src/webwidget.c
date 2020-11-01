@@ -480,7 +480,10 @@ event_search_opts_pressed (WebWidget *ww_widget)
 
     switch (i_id) {
         case WEB_WIDGET_PEXELS:
-            pexels_search_opts_dialog (ww_widget);
+            ww_widget->s_search_opts = pexels_search_opts_dialog (ww_widget);
+#ifdef DEBUG
+            printf ("now opts : %s\n", ww_widget->s_search_opts);
+#endif
             break;
         case WEB_WIDGET_PIXBAY:
             ww_widget->s_search_opts = pixbay_search_opts_dialog (ww_widget);
@@ -788,16 +791,21 @@ refresh_service_opts (WebWidget *ww_widget)
     st_item     = setting_get_child (settings_find (st_item, s_name));
 
     if (st_item != NULL) {
-        if (ww_widget->i_active_service == WEB_WIDGET_PIXBAY) {
-            free (ww_widget->s_search_opts);
-            ww_widget->s_search_opts = pixbay_search_opts_to_string (st_item);
+        free (ww_widget->s_search_opts);
+        switch (ww_widget->i_active_service) {
+            case WEB_WIDGET_PEXELS:
+                ww_widget->s_search_opts = pexels_search_opts_to_str (st_item);
+                break;
+            case WEB_WIDGET_PIXBAY:
+                ww_widget->s_search_opts = pixbay_search_opts_to_str (st_item);
+                break;
+            default:
+                ww_widget->s_search_opts = strdup ("");
+                break;
+        }
 #ifdef DEBUG
-            printf ("loaded : %s\n", ww_widget->s_search_opts);
+        printf ("loaded : %s\n", ww_widget->s_search_opts);
 #endif
-        }
-        else {
-            ww_widget->s_search_opts = strdup ("");
-        }
     }
     else {
         ww_widget->s_search_opts = strdup ("");
@@ -1257,7 +1265,7 @@ webwidget_create (Setting    *st_settings,
 
     if ((st_sett = setting_find_child (st_settings,
                    get_setting_name (SETTING_THUMB_QUALITY))) != NULL) {
-        ww_widget->i_thumb_quality = setting_get_int (st_sett);
+        ww_widget->i_thumb_quality = (int) setting_get_int (st_sett);
     }
 
     ww_widget->s_cfg_file   = strdup (s_cfg_file);

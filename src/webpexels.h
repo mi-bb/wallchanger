@@ -25,6 +25,7 @@
 #define WEBPEXELS_H
 
 #include <gtk/gtk.h>
+#include "setting.h"
 #include "fourstrings.h"
 #include "webwidget_s.h"
 
@@ -36,8 +37,8 @@
  * @param[in]     fs_data    Four strings with API keys
  * @return        none
  */
-void pexels_search          (WebWidget         *ww_widget,
-                             const FourStrings *fs_data);
+void   pexels_search             (WebWidget         *ww_widget,
+                                  const FourStrings *fs_data);
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Dialog with Pexels service settings.
@@ -45,8 +46,24 @@ void pexels_search          (WebWidget         *ww_widget,
  * @param[in,out] fs_data  Four strings to get and write API keys
  * @return        Dialog response
  */
-int  pexels_settings_dialog (FourStrings       *fs_data);
+int    pexels_settings_dialog    (FourStrings       *fs_data);
 /*----------------------------------------------------------------------------*/
-void pexels_search_opts_dialog (WebWidget *ww_widget);
+/**
+ * @brief  Converts image search options in Setting format to string for url.
+ *
+ * @param[in] st_setts  Setting item with search options
+ * @return    String with image options. After use it should be freed
+ *            using free.
+ */
+char * pexels_search_opts_to_str (const Setting     *st_setts);
+/*----------------------------------------------------------------------------*/
+/**
+ * @brief  Options for image search dialog.
+ *
+ * @param[in,out] ww_widget  WebWidget with widgets and search data
+ * @return        String with image options. After use it should be freed
+ *                using free.
+ */
+char * pexels_search_opts_dialog (WebWidget         *ww_widget);
 /*----------------------------------------------------------------------------*/
 #endif

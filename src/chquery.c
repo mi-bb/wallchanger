@@ -39,10 +39,6 @@
 #include "hashfun.h"
 #include "chquery.h"
 
-#define JS_QUERY     "query"
-#define JS_DATE      "date"
-#define JS_PAGE      "page"
-#define JS_PER_PAGE  "per_page"
 #define JS_FOUND_CNT "found_cnt"
 
 #define JS_ID        "id"
@@ -230,12 +226,9 @@ cachequery_searchitems_to_json_array (const CacheQuery *cq_query)
 
     j_arr = json_object_new_array ();
 
-    //for (i = 0; i < cq_query->i_per_page; ++i) {
     for (i = 0; i < cq_query->i_sicnt; ++i) {
-//        if (cq_query->si_items[i] != NULL) {
-            j_val = chquery_searchitem_to_json (cq_query->si_items[i]);
-            json_object_array_add (j_arr, j_val);
- //       }
+        j_val = chquery_searchitem_to_json (cq_query->si_items[i]);
+        json_object_array_add (j_arr, j_val);
     }
     return j_arr;
 }
@@ -257,6 +250,12 @@ cachequery_free (CacheQuery *cq_query)
     free (cq_query);
 }
 /*----------------------------------------------------------------------------*/
+/**
+ * @brief  Init CacheQuery item.
+ *
+ * @param[out] cq_query  Item to init
+ * @return     none
+ */
 static void
 cachequery_init (CacheQuery *cq_query)
 {
@@ -298,12 +297,11 @@ cachequery_new (const char *s_service_name,
     printf ("%s %s %s\n", s_date, s_query, s_search_opts);
 #endif
 
-    cq_query->s_date      = strdup (s_date);
-    cq_query->s_query     = strdup (s_query);
+    cq_query->s_date        = strdup (s_date);
+    cq_query->s_query       = strdup (s_query);
     cq_query->s_search_opts = strdup (s_search_opts);
-    cq_query->i_page      = i_page;
-
-    cq_query->s_file = cfgfile_get_query_path ();
+    cq_query->i_page        = i_page;
+    cq_query->s_file        = cfgfile_get_query_path ();
     dir_create_with_subdirs (cq_query->s_file);
     str_append (&cq_query->s_file, "/");
     str_append (&cq_query->s_file, s_service_name);
@@ -313,31 +311,21 @@ cachequery_new (const char *s_service_name,
 }
 /*----------------------------------------------------------------------------*/
 /**
- * @brief  Add SearchItem item to list in CacheQuery item.
+ * @brief  Append SearchItem item to list.
  */
-//void
-//cachequery_add_item2 (CacheQuery *cq_query,
-//                     SearchItem *si_item)
-//{
-//    for (int i = 0; i < cq_query->i_per_page; ++i) {
-//        if (cq_query->si_items[i] == NULL) {
-//            cq_query->si_items[i] = si_item;
-//            break;
-//        }
-//    }
-//}
-/*----------------------------------------------------------------------------*/
 void
 cachequery_append_item (CacheQuery *cq_query,
                         SearchItem *si_item)
 {
     SearchItem **si_tmp = NULL;
+    size_t       ui_alc = 0;
 
-    if (cq_query->i_sicnt == 0)
-        si_tmp = malloc ((cq_query->i_sicnt + 1) * sizeof (SearchItem*));
-    else
-        si_tmp = realloc (cq_query->si_items,
-                          (cq_query->i_sicnt + 1) * sizeof (SearchItem*));
+    ui_alc = (size_t) (cq_query->i_sicnt + 1) * sizeof (SearchItem*);
+
+    si_tmp = cq_query->i_sicnt == 0 ?
+             malloc (ui_alc) :
+             realloc (cq_query->si_items, ui_alc);
+
     if (si_tmp == NULL)
         err (EXIT_FAILURE, NULL);
 
@@ -356,11 +344,6 @@ cachequery_check_query (const char *s_service_name,
                         const int   i_page,
                         int        *i_err)
 {
-    CacheQuery  *cq_query = NULL;  /* Cached query data to return */
-    SearchItem  *si_item  = NULL;  /* For image info data */
-    size_t       ui_cnt   = 0;     /* Number of elements in array */
-    size_t       i        = 0;     /* i */
-    int          i_goon   = 1;     /* Go on */
     json_object *j_obj;            /* Json object made from file data */
     json_object *j_date;           /* Date of search */
     json_object *j_query;          /* Query text */
@@ -368,6 +351,11 @@ cachequery_check_query (const char *s_service_name,
     json_object *j_fnd_cnt;        /* For number of found images */
     json_object *j_items;          /* Array with image info data */
     json_object *j_val;            /* For array tith image info values */
+    CacheQuery  *cq_query = NULL;  /* Cached query data to return */
+    SearchItem  *si_item  = NULL;  /* For image info data */
+    size_t       ui_cnt   = 0;     /* Number of elements in array */
+    size_t       i        = 0;     /* i */
+    int          i_goon   = 1;     /* Go on */
     char s_page[10];               /* String with page number */
 
     *i_err   = ERR_OK;
@@ -439,13 +427,11 @@ cachequery_save (CacheQuery *cq_query)
     json_object   *j_val;             /* For getting values */
     json_object   *j_arr;             /* For array with items */
     const char    *s_jbuff = NULL;    /* Json object as string */
+    uint_fast32_t  ui_hash = 0;       /* Json data file hash */
     int            i_err   = ERR_OK;  /* For error output */
     char           s_page[10];        /* Page number as string */
-    //char           s_per_page[10];    /* String with items per page number */
-    uint_fast32_t  ui_hash = 0;       /* Json data file hash */
 
     sprintf (s_page,     "%d", cq_query->i_page);
-    //sprintf (s_per_page, "%d", cq_query->i_per_page);
 
     if ((j_obj = js_open_file (cq_query->s_file, &ui_hash, &i_err)) == NULL)
         return i_err;

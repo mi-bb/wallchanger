@@ -289,6 +289,7 @@ pixbay_json_obj_to_searchitem (json_object *j_obj)
  *
  * @param[in]  s_buff     String with json data
  * @param[out] ww_widget  Webwidget to set data
+ * @param[out] cq_query   CacheQuery item to insert SearchItem items
  * @return     none
  */
 static void
@@ -623,7 +624,7 @@ get_search_opts (GtkWidget **gw_array)
  * @brief  Converts image search options in Setting format to string for url.
  */
 char *
-pixbay_search_opts_to_string (const Setting *st_setts)
+pixbay_search_opts_to_str (const Setting *st_setts)
 {
     char          *s_res   = NULL;
     const Setting *st_item = NULL;
@@ -893,7 +894,7 @@ pixbay_search_opts_dialog (WebWidget *ww_widget)
         settings_print (st_settings);
 #endif
         setts_check_update_file (ww_widget->s_cfg_file, st_settings);
-        s_res = pixbay_search_opts_to_string (setting_get_child (st_settings));
+        s_res = pixbay_search_opts_to_str (setting_get_child (st_settings));
         settings_free_all (st_settings);
     }
     else {

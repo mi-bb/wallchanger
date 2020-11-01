@@ -35,6 +35,7 @@
 #include "errs.h"
 #include "searchitem.h"
 #include "urldata.h"
+#include "setts.h"
 #include "webwidget_c.h"
 #include "webpexels.h"
 /*----------------------------------------------------------------------------*/
@@ -225,7 +226,7 @@ pexels_json_obj_to_searchitem (json_object *j_obj)
  *
  * @param[in]  s_buff     String with json data
  * @param[out] ww_widget  Webwidget to set data
- * @param[out] si_items   List of SearchItem items
+ * @param[out] cq_query   CacheQuery item to insert SearchItem items
  * @return     none
  */
 static void
@@ -395,9 +396,154 @@ pexels_settings_dialog (FourStrings *fs_data)
     return i_res;
 }
 /*----------------------------------------------------------------------------*/
-void
+/**
+ * @brief  Get search options from Setting item to widgets.
+ *
+ * @param[out] gw_per_page  Widget with images per page
+ * @param[in]  st_setts  Setting item with list of options
+ * @return     none
+ */
+static void
+set_search_opts (GtkWidget *gw_per_page,
+                 Setting   *st_setts)
+{
+    Setting *st_set  = NULL;
+    Setting *st_item = NULL;
+
+    st_set = setting_get_child (settings_find (st_setts, "Pexels_opts"));
+
+    if (st_set == NULL) {
+        return;
+    }
+#ifdef DEBUG
+    settings_print (st_set);
+#endif
+    st_item = settings_find (st_set, "per_page");
+    if (st_item != NULL) {
+        gtk_spin_button_set_value (GTK_SPIN_BUTTON (gw_per_page),
+                                   (double) setting_get_int (st_item));
+#ifdef DEBUG
+        printf ("set : %s %ld\n", "per_page", setting_get_int (st_item));
+#endif
+    }
+}
+/*----------------------------------------------------------------------------*/
+/**
+ * @brief  Get search options from widgets to Setting item.
+ *
+ * @param[in] gw_per_page  Widget with images per page
+ * @return    Setting items with search options
+ */
+static Setting *
+get_search_opts (GtkWidget *gw_per_page)
+{
+    Setting    *st_sett = NULL;
+    int         i_val   = 0;
+
+    i_val = gtk_spin_button_get_value_as_int (GTK_SPIN_BUTTON (gw_per_page));
+    st_sett = setting_new_int ("per_page", i_val);
+
+    return st_sett;
+}
+/*----------------------------------------------------------------------------*/
+/**
+ * @brief  Converts image search options in Setting format to string for url.
+ */
+char *
+pexels_search_opts_to_str (const Setting *st_setts)
+{
+    char          *s_res   = NULL;
+    const Setting *st_item = NULL;
+    char           s_buff[32];
+
+    s_res   = strdup ("");
+    st_item = st_setts;
+
+    while (st_item != NULL) {
+        str_append (&s_res, "&");
+        str_append (&s_res, setting_get_name (st_item));
+        str_append (&s_res, "=");
+        if (setting_get_type (st_item) == SET_VAL_INT) {
+            sprintf (s_buff, "%" PRId64, setting_get_int (st_item));
+            str_append (&s_res, s_buff);
+        }
+        else if (setting_get_type (st_item) == SET_VAL_STRING) {
+            str_append (&s_res, setting_get_string (st_item));
+        }
+        st_item = st_item->next;
+    }
+    return s_res;
+}
+/*----------------------------------------------------------------------------*/
+/**
+ * @brief  Options for image search dialog.
+ */
+char *
 pexels_search_opts_dialog (WebWidget *ww_widget)
 {
+    GtkAdjustment *ga_adjust1;         /* Adjustment for per page spinbutton */
+    GtkWidget     *gw_per_page;        /* Spin button for per page */
+    GtkWidget     *gw_dialog;          /* Pexels settings dialog */
+    GtkWidget     *gw_content_box;     /* Dialog's box */
+    GtkWidget     *gw_hbox;            /* Horizontal box for widgets */
+    Setting       *st_settings = NULL; /* Settings */
+    char          *s_res       = NULL; /* Result string */
+    int            i_err       = 0;    /* Error output */
+    int            i_res       = 0;    /* Dialog result */
+
+    GtkDialogFlags flags = GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT;
+
+    ga_adjust1 = gtk_adjustment_new (12.0, 1.0, 80.0, 1.0, 2.0, 0.0);
+
+    gw_dialog = gtk_dialog_new_with_buttons ("Pexels search options",
+                                             NULL,
+                                             flags,
+                                             "_OK",
+                                             GTK_RESPONSE_ACCEPT,
+                                             "_Cancel",
+                                             GTK_RESPONSE_REJECT,
+                                             NULL);
+
+    gw_content_box = gtk_dialog_get_content_area (GTK_DIALOG (gw_dialog));
+    gtk_container_set_border_width (GTK_CONTAINER (gw_content_box), 8);
+    gw_hbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 8);
+
+    /* Images per page */
+    gw_per_page = gtk_spin_button_new (ga_adjust1, 1.0, 0);
+    gtk_box_pack_start (GTK_BOX (gw_hbox),
+                        gtk_label_new ("Images per page:"),
+                        FALSE, FALSE, 4);
+    gtk_box_pack_start (GTK_BOX (gw_hbox),
+                        gw_per_page,
+                        FALSE, FALSE, 4);
+
+    gtk_box_pack_start (GTK_BOX (gw_content_box), gw_hbox, FALSE, FALSE, 4);
+
+    st_settings = setts_read (ww_widget->s_cfg_file, &i_err);
+    set_search_opts (gw_per_page, setting_get_child (st_settings));
+    settings_free_all (st_settings);
+
+    gtk_widget_show_all (gw_content_box);
+
+    i_res = gtk_dialog_run (GTK_DIALOG (gw_dialog));
+
+    if (i_res == GTK_RESPONSE_ACCEPT) {
+        st_settings = setting_new_setting ("Pexels_opts");
+
+        setting_add_child (st_settings, get_search_opts (gw_per_page));
+#ifdef DEBUG
+        settings_print (st_settings);
+#endif
+        setts_check_update_file (ww_widget->s_cfg_file, st_settings);
+        s_res = pexels_search_opts_to_str (setting_get_child (st_settings));
+        settings_free_all (st_settings);
+    }
+    else {
+        s_res = strdup ("");
+    }
+    gtk_widget_destroy (gw_dialog);
+
+    return s_res;
 
 }
 /*----------------------------------------------------------------------------*/
