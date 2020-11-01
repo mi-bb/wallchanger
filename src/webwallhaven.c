@@ -35,6 +35,7 @@
 #include "errs.h"
 #include "searchitem.h"
 #include "setts.h"
+#include "setting.h"
 #include "urldata.h"
 #include "webwidget_c.h"
 #include "webpexels.h"
@@ -51,7 +52,6 @@
  */
 enum e_options {
     GW_CATEGORIES,  /**< Image category */
-    GW_PURITY,      /**< Image purity */
     GW_SORTING,     /**< Sorting method */
     GW_ORDER,       /**< Order of images */
     GW_TOPRANGE,    /**< Top range val */
@@ -59,6 +59,12 @@ enum e_options {
     GW_RESOLUTIONS, /**< List of resolutions */
     GW_RATIOS,      /**< Image ratios */
     GW_COLORS,      /**< Colour of image */
+    GW_CATEG1,      /**< Image category 1 */
+    GW_CATEG2,      /**< Image category 2 */
+    GW_CATEG3,      /**< Image category 3 */
+    GW_PURITY1,     /**< Purity 1 */
+    GW_PURITY2,     /**< Purity 2 */
+    GW_PURITY3,     /**< Purity 3 */
     GW_CNT          /**< Number of options */
 };
 /*----------------------------------------------------------------------------*/
@@ -67,8 +73,8 @@ enum e_options {
  * @brief Array with option names
  */
 static const char *s_opts[] = {
-    "categories", "purity", "sorting", "order", "topRange", "atleast",
-    "resolutions", "ratios", "colors", NULL
+    "categories",  "sorting", "order", "topRange", "atleast", "resolutions",
+    "ratios", "colors", "categories", NULL, NULL, "purity", NULL
 };
 /*----------------------------------------------------------------------------*/
 /**
@@ -84,6 +90,12 @@ static const char *s_sort[] = {
  * @brief Sorting order
  */
 static const char *s_order[] = {"desc", "asc", NULL};
+/*----------------------------------------------------------------------------*/
+/**
+ * @var   s_toprange
+ * @brief Top range options
+ */
+static const char *s_toprange[] = {"1d", "3d", "1w", "1M" , "3M", "6M", "1y"};
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Process SearchIem item with image data and create name for icon view
@@ -394,8 +406,10 @@ static void
 set_search_opts (GtkWidget **gw_array,
                  Setting    *st_setts)
 {
-    Setting *st_set  = NULL;
-    Setting *st_item = NULL;
+    Setting    *st_set  = NULL;
+    Setting    *st_item = NULL;
+    const char *s_val   = NULL;
+    int i = 0;
 
     st_set = setting_get_child (settings_find (st_setts, SERV_NAME "_opts"));
 
@@ -406,8 +420,7 @@ set_search_opts (GtkWidget **gw_array,
     settings_print (st_set);
 #endif
 
-    st_item = settings_find (st_set, s_opts[GW_SORTING]);
-    if (st_item != NULL) {
+    if ((st_item = settings_find (st_set, s_opts[GW_SORTING])) != NULL) {
 #ifdef DEBUG
         printf ("set : %s %s\n", s_opts[GW_SORTING],
                 setting_get_string (st_item));
@@ -415,14 +428,73 @@ set_search_opts (GtkWidget **gw_array,
         gtk_combo_box_set_active_id (GTK_COMBO_BOX (gw_array[GW_SORTING]),
                                      setting_get_string (st_item));
     }
-    st_item = settings_find (st_set, s_opts[GW_ORDER]);
-    if (st_item != NULL) {
+    if ((st_item = settings_find (st_set, s_opts[GW_TOPRANGE])) != NULL) {
+#ifdef DEBUG
+        printf ("set : %s %s\n", s_opts[GW_TOPRANGE],
+                setting_get_string (st_item));
+#endif
+        gtk_combo_box_set_active_id (GTK_COMBO_BOX (gw_array[GW_TOPRANGE]),
+                                     setting_get_string (st_item));
+    }
+    if ((st_item = settings_find (st_set, s_opts[GW_ORDER])) != NULL) {
 #ifdef DEBUG
         printf ("set : %s %s\n", s_opts[GW_ORDER],
                 setting_get_string (st_item));
 #endif
         gtk_combo_box_set_active_id (GTK_COMBO_BOX (gw_array[GW_ORDER]),
                                      setting_get_string (st_item));
+    }
+    if ((st_item = settings_find (st_set, s_opts[GW_ATLEAST])) != NULL) {
+#ifdef DEBUG
+        printf ("set : %s %s\n",
+                s_opts[GW_ATLEAST], setting_get_string (st_item));
+#endif
+        gtk_entry_set_text (GTK_ENTRY (gw_array[GW_ATLEAST]),
+                            setting_get_string (st_item));
+    }
+    if ((st_item = settings_find (st_set, s_opts[GW_RESOLUTIONS])) != NULL) {
+#ifdef DEBUG
+        printf ("set : %s %s\n",
+                s_opts[GW_RESOLUTIONS], setting_get_string (st_item));
+#endif
+        gtk_entry_set_text (GTK_ENTRY (gw_array[GW_RESOLUTIONS]),
+                            setting_get_string (st_item));
+    }
+    if ((st_item = settings_find (st_set, s_opts[GW_RATIOS])) != NULL) {
+#ifdef DEBUG
+        printf ("set : %s %s\n",
+                s_opts[GW_RATIOS], setting_get_string (st_item));
+#endif
+        gtk_entry_set_text (GTK_ENTRY (gw_array[GW_RATIOS]),
+                            setting_get_string (st_item));
+    }
+    if ((st_item = settings_find (st_set, s_opts[GW_CATEG1])) != NULL) {
+#ifdef DEBUG
+        printf ("set : %s %s\n",
+                s_opts[GW_CATEG1], setting_get_string (st_item));
+#endif
+        s_val = setting_get_string (st_item);
+        if (strlen (s_val) != 3)
+            return;
+        for (i = GW_CATEG1; i <= GW_CATEG3; ++i) {
+            gtk_check_menu_item_set_active (
+                    GTK_CHECK_MENU_ITEM (gw_array[i]),
+                    s_val[i - GW_CATEG1] == '1' ? TRUE : FALSE);
+        }
+    }
+    if ((st_item = settings_find (st_set, s_opts[GW_PURITY1])) != NULL) {
+#ifdef DEBUG
+        printf ("set : %s %s\n",
+                s_opts[GW_PURITY1], setting_get_string (st_item));
+#endif
+        s_val = setting_get_string (st_item);
+        if (strlen (s_val) != 3)
+            return;
+        for (i = GW_PURITY1; i <= GW_PURITY3; ++i) {
+            gtk_check_menu_item_set_active (
+                    GTK_CHECK_MENU_ITEM (gw_array[i]),
+                    s_val[i - GW_PURITY1] == '1' ? TRUE : FALSE);
+        }
     }
 }
 /*----------------------------------------------------------------------------*/
@@ -437,12 +509,25 @@ get_search_opts (GtkWidget **gw_array)
 {
     Setting    *st_sett = NULL;
     char       *s_val   = NULL;
+    char       *s_val2  = NULL;
+    const char *s_cval  = NULL;
+    gboolean    b_val   = FALSE;
 
+    /* Getting sorting info */
     s_val = gtk_combo_box_text_get_active_text (
             GTK_COMBO_BOX_TEXT (gw_array[GW_SORTING]));
     st_sett = setting_new_string (s_opts[GW_SORTING], s_val);
+    /* If toplist is set */
+    if (strcmp (s_val, s_sort[5]) == 0) {
+        s_val2 = gtk_combo_box_text_get_active_text (
+                 GTK_COMBO_BOX_TEXT (gw_array[GW_TOPRANGE]));
+        settings_append (st_sett,
+                         setting_new_string (s_opts[GW_TOPRANGE], s_val2));
+        free (s_val2);
+    }
     free (s_val);
 
+    /* Getting order value */
     s_val = gtk_combo_box_text_get_active_text (
             GTK_COMBO_BOX_TEXT (gw_array[GW_ORDER]));
     if (strcmp (s_val, s_order[0]) != 0) {
@@ -451,36 +536,44 @@ get_search_opts (GtkWidget **gw_array)
     }
     free (s_val);
 
-    return st_sett;
-}
-/*----------------------------------------------------------------------------*/
-/**
- * @brief  Converts image search options in Setting format to string for url.
- */
-char *
-wallhaven_search_opts_to_str (const Setting *st_setts)
-{
-    char          *s_res   = NULL;
-    const Setting *st_item = NULL;
-    char           s_buff[32];
-
-    s_res   = strdup ("");
-    st_item = st_setts;
-
-    while (st_item != NULL) {
-        str_append (&s_res, "&");
-        str_append (&s_res, setting_get_name (st_item));
-        str_append (&s_res, "=");
-        if (setting_get_type (st_item) == SET_VAL_INT) {
-            sprintf (s_buff, "%" PRId64, setting_get_int (st_item));
-            str_append (&s_res, s_buff);
-        }
-        else if (setting_get_type (st_item) == SET_VAL_STRING) {
-            str_append (&s_res, setting_get_string (st_item));
-        }
-        st_item = st_item->next;
+    /* Getting at least value */
+    s_cval = gtk_entry_get_text (GTK_ENTRY (gw_array[GW_ATLEAST]));
+    if (s_cval[0] != '\0') {
+        settings_append (st_sett,
+                         setting_new_string (s_opts[GW_ATLEAST], s_cval));
     }
-    return s_res;
+    /* Getting resolutions */
+    s_cval = gtk_entry_get_text (GTK_ENTRY (gw_array[GW_RESOLUTIONS]));
+    if (s_cval[0] != '\0') {
+        settings_append (st_sett,
+                         setting_new_string (s_opts[GW_RESOLUTIONS], s_cval));
+    }
+    /* Getting ratios */
+    s_cval = gtk_entry_get_text (GTK_ENTRY (gw_array[GW_RATIOS]));
+    if (s_cval[0] != '\0') {
+        settings_append (st_sett,
+                         setting_new_string (s_opts[GW_RATIOS], s_cval));
+    }
+    /* Getting category value */
+    s_val = strdup ("");
+    for (int i = GW_CATEG1; i <= GW_CATEG3; ++i) {
+        b_val = gtk_check_menu_item_get_active (
+                GTK_CHECK_MENU_ITEM (gw_array[i]));
+        str_append (&s_val, b_val ? "1" : "0");
+    }
+    settings_append (st_sett, setting_new_string (s_opts[GW_CATEG1], s_val));
+    free (s_val);
+    /* Getting purity value */
+    s_val = strdup ("");
+    for (int i = GW_PURITY1; i <= GW_PURITY3; ++i) {
+        b_val = gtk_check_menu_item_get_active (
+                GTK_CHECK_MENU_ITEM (gw_array[i]));
+        str_append (&s_val, b_val ? "1" : "0");
+    }
+    settings_append (st_sett, setting_new_string (s_opts[GW_PURITY1], s_val));
+    free (s_val);
+
+    return st_sett;
 }
 /*----------------------------------------------------------------------------*/
 /**
@@ -494,6 +587,8 @@ wallhaven_search_opts_dialog (WebWidget *ww_widget)
     GtkWidget     *gw_content_box;     /* Dialog's box */
     GtkWidget     *gw_box;             /* Box for widgets */
     GtkWidget     *gw_hbox;            /* Horizontal box for widgets */
+    GtkWidget     *gw_menu;
+    GtkWidget     *gw_mbutton;
     Setting       *st_settings = NULL; /* Settings */
     char          *s_res       = NULL; /* Result string */
     int            i_err       = 0;    /* Error output */
@@ -515,10 +610,61 @@ wallhaven_search_opts_dialog (WebWidget *ww_widget)
     gtk_container_set_border_width (GTK_CONTAINER (gw_content_box), 8);
     gw_hbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 8);
 
+    /* Box for categories and purity */
+    gw_box = gtk_box_new (GTK_ORIENTATION_VERTICAL, 8);
+    /* Categories */
+    gw_menu    = gtk_menu_new ();
+    gw_mbutton = gtk_menu_button_new ();
+    gtk_button_set_label (GTK_BUTTON (gw_mbutton), "Category");
+    gw_array[GW_CATEG1] = gtk_check_menu_item_new_with_label ("General");
+    gw_array[GW_CATEG2] = gtk_check_menu_item_new_with_label ("Anime");
+    gw_array[GW_CATEG3] = gtk_check_menu_item_new_with_label ("People");
+    gtk_menu_shell_append (GTK_MENU_SHELL (gw_menu), gw_array[GW_CATEG1]);
+    gtk_menu_shell_append (GTK_MENU_SHELL (gw_menu), gw_array[GW_CATEG2]);
+    gtk_menu_shell_append (GTK_MENU_SHELL (gw_menu), gw_array[GW_CATEG3]);
+    gtk_widget_show (gw_array[GW_CATEG1]);
+    gtk_widget_show (gw_array[GW_CATEG2]);
+    gtk_widget_show (gw_array[GW_CATEG3]);
+    gtk_check_menu_item_set_active (
+            GTK_CHECK_MENU_ITEM (gw_array[GW_CATEG1]), TRUE);
+    gtk_check_menu_item_set_active (
+            GTK_CHECK_MENU_ITEM (gw_array[GW_CATEG2]), TRUE);
+    gtk_check_menu_item_set_active (
+            GTK_CHECK_MENU_ITEM (gw_array[GW_CATEG3]), TRUE);
+    gtk_menu_button_set_popup (GTK_MENU_BUTTON (gw_mbutton), gw_menu);
+    //gtk_menu_button_set_direction (GTK_MENU_BUTTON (gw_mbutton), GTK_ARROW_UP);
+    gtk_box_pack_start (GTK_BOX (gw_box), gw_mbutton, FALSE, FALSE, 4);
+
+    /* Purity */
+    gw_menu    = gtk_menu_new ();
+    gw_mbutton = gtk_menu_button_new ();
+    gtk_button_set_label (GTK_BUTTON (gw_mbutton), "Purity");
+    /* Categories */
+    gw_array[GW_PURITY1] = gtk_check_menu_item_new_with_label ("sfw");
+    gw_array[GW_PURITY2] = gtk_check_menu_item_new_with_label ("sketchy");
+    gw_array[GW_PURITY3] = gtk_check_menu_item_new_with_label ("nsfw");
+    gtk_menu_shell_append (GTK_MENU_SHELL (gw_menu), gw_array[GW_PURITY1]);
+    gtk_menu_shell_append (GTK_MENU_SHELL (gw_menu), gw_array[GW_PURITY2]);
+    gtk_menu_shell_append (GTK_MENU_SHELL (gw_menu), gw_array[GW_PURITY3]);
+    gtk_widget_show (gw_array[GW_PURITY1]);
+    gtk_widget_show (gw_array[GW_PURITY2]);
+    gtk_widget_show (gw_array[GW_PURITY3]);
+    gtk_check_menu_item_set_active (
+            GTK_CHECK_MENU_ITEM (gw_array[GW_PURITY1]), TRUE);
+    gtk_check_menu_item_set_active (
+            GTK_CHECK_MENU_ITEM (gw_array[GW_PURITY2]), FALSE);
+    gtk_check_menu_item_set_active (
+            GTK_CHECK_MENU_ITEM (gw_array[GW_PURITY3]), FALSE);
+    gtk_menu_button_set_popup (GTK_MENU_BUTTON (gw_mbutton), gw_menu);
+    //gtk_menu_button_set_direction (GTK_MENU_BUTTON (gw_mbutton), GTK_ARROW_UP);
+    gtk_box_pack_start (GTK_BOX (gw_box), gw_mbutton, FALSE, FALSE, 4);
+
+    gtk_box_pack_start (GTK_BOX (gw_hbox), gw_box, FALSE, FALSE, 4);
+
     /* Sorting combobox */
     gw_array[GW_SORTING] = gtk_combo_box_text_new ();
     gtk_widget_set_tooltip_text (gw_array[GW_SORTING],
-        "Method of sorting results");
+        "Method of sorting results.");
     for (i = 0; s_sort[i] != NULL; ++i) {
         gtk_combo_box_text_append (GTK_COMBO_BOX_TEXT (gw_array[GW_SORTING]),
                                    s_sort[i], s_sort[i]);
@@ -538,7 +684,7 @@ wallhaven_search_opts_dialog (WebWidget *ww_widget)
     /* Order combobox */
     gw_array[GW_ORDER] = gtk_combo_box_text_new ();
     gtk_widget_set_tooltip_text (gw_array[GW_ORDER],
-        "Sorting order");
+        "Sorting order.");
     for (i = 0; s_order[i] != NULL; ++i) {
         gtk_combo_box_text_append (GTK_COMBO_BOX_TEXT (gw_array[GW_ORDER]),
                                    s_order[i], s_order[i]);
@@ -547,6 +693,7 @@ wallhaven_search_opts_dialog (WebWidget *ww_widget)
                                                 s_order[0]);
     /* Box for sorting */
     gw_box = gtk_box_new (GTK_ORIENTATION_VERTICAL, 8);
+
     gtk_box_pack_start (GTK_BOX (gw_box),
                         gtk_label_new ("Sort order:"),
                         FALSE, FALSE, 4);
@@ -555,6 +702,73 @@ wallhaven_search_opts_dialog (WebWidget *ww_widget)
                         FALSE, FALSE, 4);
     gtk_box_pack_start (GTK_BOX (gw_hbox), gw_box, FALSE, FALSE, 4);
 
+    /* Top range combobox */
+    gw_array[GW_TOPRANGE] = gtk_combo_box_text_new ();
+    gtk_widget_set_tooltip_text (gw_array[GW_TOPRANGE],
+          "Sorting must be set to 'toplist' for this setting to be activated");
+    for (i = 0; s_toprange[i] != NULL; ++i) {
+        gtk_combo_box_text_append (GTK_COMBO_BOX_TEXT (gw_array[GW_TOPRANGE]),
+                                   s_toprange[i], s_toprange[i]);
+    }
+    gtk_combo_box_set_active_id (GTK_COMBO_BOX (gw_array[GW_TOPRANGE]),
+                                                s_toprange[3]);
+    /* Box for Top range */
+    gw_box = gtk_box_new (GTK_ORIENTATION_VERTICAL, 8);
+
+    gtk_box_pack_start (GTK_BOX (gw_box),
+                        gtk_label_new ("Top range:"),
+                        FALSE, FALSE, 4);
+    gtk_box_pack_start (GTK_BOX (gw_box),
+                        gw_array[GW_TOPRANGE],
+                        FALSE, FALSE, 4);
+    gtk_box_pack_start (GTK_BOX (gw_hbox), gw_box, FALSE, FALSE, 4);
+
+    /* Atleast entry */
+    gw_array[GW_ATLEAST] = gtk_entry_new ();
+    gtk_widget_set_tooltip_text (gw_array[GW_ATLEAST],
+        "Minimum resolution allowed\ne.g. 1920x1080\n"
+        "When this field is empty, all widths are allowed.");
+    /* Box for atleast */
+    gw_box = gtk_box_new (GTK_ORIENTATION_VERTICAL, 8);
+    gtk_box_pack_start (GTK_BOX (gw_box),
+                        gtk_label_new ("At least:"),
+                        FALSE, FALSE, 4);
+    gtk_box_pack_start (GTK_BOX (gw_box),
+                        gw_array[GW_ATLEAST],
+                        FALSE, FALSE, 4);
+    gtk_box_pack_start (GTK_BOX (gw_hbox), gw_box, FALSE, FALSE, 4);
+
+    /* Resolution entry */
+    gw_array[GW_RESOLUTIONS] = gtk_entry_new ();
+    gtk_widget_set_tooltip_text (gw_array[GW_RESOLUTIONS],
+        "List of exact wallpaper resolutions. Single resolution allowed.\n"
+        "e.g. 1920x1080,1920x1200\n"
+        "When this field is empty, all widths are allowed.");
+    /* Box for resolution */
+    gw_box = gtk_box_new (GTK_ORIENTATION_VERTICAL, 8);
+    gtk_box_pack_start (GTK_BOX (gw_box),
+                        gtk_label_new ("Resolutions:"),
+                        FALSE, FALSE, 4);
+    gtk_box_pack_start (GTK_BOX (gw_box),
+                        gw_array[GW_RESOLUTIONS],
+                        FALSE, FALSE, 4);
+    gtk_box_pack_start (GTK_BOX (gw_hbox), gw_box, FALSE, FALSE, 4);
+
+    /* Ratios entry */
+    gw_array[GW_RATIOS] = gtk_entry_new ();
+    gtk_widget_set_tooltip_text (gw_array[GW_RATIOS],
+        "List of aspect ratios. Single ratio allowed.\n"
+        "e.g. 16x9,16x10\n"
+        "When this field is empty, all ratios are allowed.");
+    /* Box for ratios */
+    gw_box = gtk_box_new (GTK_ORIENTATION_VERTICAL, 8);
+    gtk_box_pack_start (GTK_BOX (gw_box),
+                        gtk_label_new ("Ratios:"),
+                        FALSE, FALSE, 4);
+    gtk_box_pack_start (GTK_BOX (gw_box),
+                        gw_array[GW_RATIOS],
+                        FALSE, FALSE, 4);
+    gtk_box_pack_start (GTK_BOX (gw_hbox), gw_box, FALSE, FALSE, 4);
 
     gtk_box_pack_start (GTK_BOX (gw_content_box), gw_hbox, FALSE, FALSE, 4);
 
@@ -574,7 +788,7 @@ wallhaven_search_opts_dialog (WebWidget *ww_widget)
         settings_print (st_settings);
 #endif
         setts_check_update_file (ww_widget->s_cfg_file, st_settings);
-        s_res = wallhaven_search_opts_to_str (setting_get_child (st_settings));
+        s_res = search_opts_to_str (setting_get_child (st_settings));
         settings_free_all (st_settings);
     }
     else {

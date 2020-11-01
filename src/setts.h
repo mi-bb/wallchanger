@@ -31,26 +31,26 @@
  * @brief  Settings enum values
  */
 enum e_setting_values {
-    SETTING_BG_CMD = 0,     /**< Wallpaper set command */
-    SETTING_LAST_USED_OPT,  /**< Select last used on start */
-    SETTING_LAST_USED_STR,  /**< Last used wallpaper path */
-    SETTING_LAST_USED_WM,   /**< Id of last used window manager */
-    SETTING_WIN_WIDTH,      /**< Window width */
-    SETTING_WIN_HEIGHT,     /**< Window height */
-    SETTING_RANDOM_OPT,     /**< Random wallpaper select */
-    SETTING_INTERVAL_VAL,   /**< Wallpaper change interval */
-    SETTING_TIME_ALIGN_OPT, /**< Time align */
-    SETTING_WALL_ARRAY,     /**< Array with wallpapers */
-    SETTING_WEB_DLG_WIDTH,  /**< Web dilaog width */
-    SETTING_WEB_DLG_HEIGHT, /**< Web dilaog height */
-    SETTING_THUMB_QUALITY,  /**< Thumbnail jpg quality */
-    SETTING_PEXELS_API,     /**< Pexels API key */
-    SETTING_PIXBAY_API,     /**< Pixbay API key */
-    SETTING_WALLHAVEN_API,  /**< Wallhaven API key */
-    SETTING_FLICKR_CLKEY,   /**< Flickr API key */
-    SETTING_FLICKR_CLSEC,   /**< Flickr API secret */
-    SETTING_FLICKR_ACTOK,   /**< Flickr API access token */
-    SETTING_FLICKR_ACSEC    /**< Flickr API access token secret */
+    SETT_BG_CMD = 0,     /**< Wallpaper set command */
+    SETT_LAST_USED_OPT,  /**< Select last used on start */
+    SETT_LAST_USED_STR,  /**< Last used wallpaper path */
+    SETT_LAST_USED_WM,   /**< Id of last used window manager */
+    SETT_WIN_WIDTH,      /**< Window width */
+    SETT_WIN_HEIGHT,     /**< Window height */
+    SETT_RANDOM_OPT,     /**< Random wallpaper select */
+    SETT_INTERVAL_VAL,   /**< Wallpaper change interval */
+    SETT_TIME_ALIGN_OPT, /**< Time align */
+    SETT_WALL_ARRAY,     /**< Array with wallpapers */
+    SETT_WEB_DLG_WIDTH,  /**< Web dilaog width */
+    SETT_WEB_DLG_HEIGHT, /**< Web dilaog height */
+    SETT_THUMB_QUALITY,  /**< Thumbnail jpg quality */
+    SETT_PEXELS_API,     /**< Pexels API key */
+    SETT_PIXBAY_API,     /**< Pixbay API key */
+    SETT_WALLHAVEN_API,  /**< Wallhaven API key */
+    SETT_FLICKR_CLKEY,   /**< Flickr API key */
+    SETT_FLICKR_CLSEC,   /**< Flickr API secret */
+    SETT_FLICKR_ACTOK,   /**< Flickr API access token */
+    SETT_FLICKR_ACSEC    /**< Flickr API access token secret */
 };
 /*----------------------------------------------------------------------------*/
 /**

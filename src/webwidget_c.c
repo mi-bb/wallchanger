@@ -240,4 +240,33 @@ check_for_cached_query (WebWidget  *ww_widget,
     return 0;
 }
 /*----------------------------------------------------------------------------*/
+/**
+ * @brief  Converts image search options in Setting format to string for url.
+ */
+char *
+search_opts_to_str (const Setting *st_setts)
+{
+    char          *s_res   = NULL;
+    const Setting *st_item = NULL;
+    char           s_buff[32];
+
+    s_res   = strdup ("");
+    st_item = st_setts;
+
+    while (st_item != NULL) {
+        str_append (&s_res, "&");
+        str_append (&s_res, setting_get_name (st_item));
+        str_append (&s_res, "=");
+        if (setting_get_type (st_item) == SET_VAL_INT) {
+            sprintf (s_buff, "%" PRId64, setting_get_int (st_item));
+            str_append (&s_res, s_buff);
+        }
+        else if (setting_get_type (st_item) == SET_VAL_STRING) {
+            str_append (&s_res, setting_get_string (st_item));
+        }
+        st_item = st_item->next;
+    }
+    return s_res;
+}
+/*----------------------------------------------------------------------------*/
 

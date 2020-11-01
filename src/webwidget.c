@@ -320,12 +320,11 @@ combo_set_active_strings (GtkWidget         *gw_combo,
 static void
 update_labels (WebWidget *ww_widget)
 {
-    const char *s_format_count = "Search query: %s,  Found %d images";
+    const char *s_format_count = "Found %d images";
     char       *s_markup       = NULL;
     char        s_entry[128];
 
     s_markup = g_markup_printf_escaped (s_format_count,
-                                        ww_widget->s_query,
                                         ww_widget->i_found_cnt);
     gtk_label_set_markup (GTK_LABEL (ww_widget->gw_count_label), s_markup);
     g_free (s_markup);
@@ -474,8 +473,8 @@ event_search_pressed (WebWidget *ww_widget)
 static void
 event_search_opts_pressed (WebWidget *ww_widget)
 {
-    char *s_search_opts = NULL;
-    int          i_id    = 0;    /* Service id */
+    char *s_search_opts = NULL; /* Search options string */
+    int   i_id          = 0;    /* Service id */
 
     i_id    = ww_widget->i_active_service;
 
@@ -491,7 +490,7 @@ event_search_opts_pressed (WebWidget *ww_widget)
             break;
 #ifdef HAVE_FLICKCURL
         case WEB_WIDGET_FLICKR:
-            flickr_search_opts_dialog (ww_widget);
+            //flickr_search_opts_dialog (ww_widget);
             break;
 #endif
         default:
@@ -799,13 +798,13 @@ refresh_service_opts (WebWidget *ww_widget)
     if (st_item != NULL) {
         switch (ww_widget->i_active_service) {
             case WEB_WIDGET_PEXELS:
-                s_search_opts = pexels_search_opts_to_str (st_item);
+                s_search_opts = search_opts_to_str (st_item);
                 break;
             case WEB_WIDGET_PIXBAY:
-                s_search_opts = pixbay_search_opts_to_str (st_item);
+                s_search_opts = search_opts_to_str (st_item);
                 break;
             case WEB_WIDGET_WALLHAVEN:
-                s_search_opts = wallhaven_search_opts_to_str (st_item);
+                s_search_opts = search_opts_to_str (st_item);
                 break;
             default:
                 break;
@@ -890,7 +889,7 @@ webwidget_combobox_create (Setting *st_settings)
                                      GDK_TYPE_PIXBUF);
     /* Get Pexels API string */
     st_s1 = setting_find_child (st_settings,
-                                get_setting_name (SETTING_PEXELS_API));
+                                get_setting_name (SETT_PEXELS_API));
 
     s_pexels_api = st_s1 == NULL ? "" : setting_get_string (st_s1);
 
@@ -910,7 +909,7 @@ webwidget_combobox_create (Setting *st_settings)
 
     /* Get Pixbay API string */
     st_s1 = setting_find_child (st_settings,
-                                get_setting_name (SETTING_PIXBAY_API));
+                                get_setting_name (SETT_PIXBAY_API));
 
     s_pixbay_api = st_s1 == NULL ? "" : setting_get_string (st_s1);
 
@@ -929,7 +928,7 @@ webwidget_combobox_create (Setting *st_settings)
     g_object_unref (gp_logo);
     /* Get Wallhaven API string */
     st_s1 = setting_find_child (st_settings,
-                                get_setting_name (SETTING_WALLHAVEN_API));
+                                get_setting_name (SETT_WALLHAVEN_API));
 
     s_wallha_api = st_s1 == NULL ? "" : setting_get_string (st_s1);
 
@@ -949,16 +948,16 @@ webwidget_combobox_create (Setting *st_settings)
 #ifdef HAVE_FLICKCURL
     /* Get Flickr API key string */
     st_s1 = setting_find_child (st_settings,
-                                get_setting_name (SETTING_FLICKR_CLKEY));
+                                get_setting_name (SETT_FLICKR_CLKEY));
     /* Get Flickr API secret string */
     st_s2 = setting_find_child (st_settings,
-                                get_setting_name (SETTING_FLICKR_CLSEC));
+                                get_setting_name (SETT_FLICKR_CLSEC));
     /* Get Flickr API access token */
     st_s3 = setting_find_child (st_settings,
-                                get_setting_name (SETTING_FLICKR_ACTOK));
+                                get_setting_name (SETT_FLICKR_ACTOK));
     /* Get Flickr API access token */
     st_s4 = setting_find_child (st_settings,
-                                get_setting_name (SETTING_FLICKR_ACSEC));
+                                get_setting_name (SETT_FLICKR_ACSEC));
 
     s_flickr_key  = st_s1 == NULL ? "" : setting_get_string (st_s1);
     s_flickr_sec  = st_s2 == NULL ? "" : setting_get_string (st_s2);
@@ -1276,7 +1275,7 @@ webwidget_create (Setting    *st_settings,
 #endif
 
     if ((st_sett = setting_find_child (st_settings,
-                   get_setting_name (SETTING_THUMB_QUALITY))) != NULL) {
+                   get_setting_name (SETT_THUMB_QUALITY))) != NULL) {
         ww_widget->i_thumb_quality = (int) setting_get_int (st_sett);
     }
 
@@ -1292,7 +1291,7 @@ webwidget_create (Setting    *st_settings,
     g_signal_connect (gw_img_view, "item-activated",
             G_CALLBACK (event_imgview_activated), ww_widget);
 
-    gw_count_label = gtk_label_new ("Search query:   Found 0 results");
+    gw_count_label = gtk_label_new ("Found 0 images");
 
     /* Search box */
     gw_search_box      = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 4);
@@ -1300,13 +1299,13 @@ webwidget_create (Setting    *st_settings,
     gw_sett_button     = gtk_button_new_with_label ("Settings");
     gw_search_button   = gtk_button_new_with_label ("Search");
     gw_search_opts_btn = gtk_button_new_with_label ("Search opts");
-    g_signal_connect_swapped (gw_sett_button,    "clicked",
+    g_signal_connect_swapped (gw_sett_button, "clicked",
             G_CALLBACK (event_settings_pressed), ww_widget);
-    g_signal_connect_swapped (gw_search_entry,   "activate",
-            G_CALLBACK (event_search_pressed),   ww_widget);
-    g_signal_connect_swapped (gw_search_button,  "clicked",
-            G_CALLBACK (event_search_pressed),   ww_widget);
-    g_signal_connect_swapped (gw_search_opts_btn,  "clicked",
+    g_signal_connect_swapped (gw_search_entry, "activate",
+            G_CALLBACK (event_search_pressed), ww_widget);
+    g_signal_connect_swapped (gw_search_button, "clicked",
+            G_CALLBACK (event_search_pressed), ww_widget);
+    g_signal_connect_swapped (gw_search_opts_btn, "clicked",
             G_CALLBACK (event_search_opts_pressed), ww_widget);
 
     gtk_box_pack_start (GTK_BOX (gw_search_box),
@@ -1342,17 +1341,7 @@ webwidget_create (Setting    *st_settings,
                      1,0,1,1);
     gtk_grid_attach (GTK_GRID (gw_nav_box), gw_nav_next,
                      2,0,1,1);
-    /*
-    gtk_box_pack_start (GTK_BOX (gw_nav_box),
-                        gw_nav_prev,
-                        FALSE, FALSE, 4);
-    gtk_box_pack_start (GTK_BOX (gw_nav_box),
-                        gw_nav_entry,
-                        FALSE, FALSE, 4);
-    gtk_box_pack_start (GTK_BOX (gw_nav_box),
-                        gw_nav_next,
-                        FALSE, FALSE, 4);
-    */
+
     g_signal_connect_swapped (gw_nav_prev, "clicked",
             G_CALLBACK (event_prev_pressed), ww_widget);
     g_signal_connect_swapped (gw_nav_next, "clicked",

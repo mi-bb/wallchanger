@@ -19,9 +19,9 @@
  *
  * Automatic wallpaper changer
  *
- * @date October 26, 2020
+ * @date November 1, 2020
  *
- * @version 1.6.8
+ * @version 1.6.9
  *
  * @author Michal Babik <michal.babik@pm.me>
  */
@@ -370,7 +370,7 @@ widgets_get_settings (const DialogData *dd_data)
     st_settings = setting_new_setting ("Settings");
 
     /* Get wallpaper list from treeview and add to settlist */
-    st_sett = setting_new_array (get_setting_name (SETTING_WALL_ARRAY));
+    st_sett = setting_new_array (get_setting_name (SETT_WALL_ARRAY));
     treeview_get_setting_data (dd_data->gw_view, st_sett);
     setting_add_child (st_settings, st_sett);
 
@@ -378,29 +378,29 @@ widgets_get_settings (const DialogData *dd_data)
     i_val = (int64_t) gtk_toggle_button_get_active (
                 GTK_TOGGLE_BUTTON (dd_data->gw_random));
     setting_add_child (st_settings,
-            setting_new_int (get_setting_name (SETTING_RANDOM_OPT), i_val));
+            setting_new_int (get_setting_name (SETT_RANDOM_OPT), i_val));
 
     /* Get last used wallpaper on start setting */
     i_val = (int64_t) gtk_toggle_button_get_active (
                 GTK_TOGGLE_BUTTON (dd_data->gw_lastused));
     setting_add_child (st_settings,
-            setting_new_int (get_setting_name (SETTING_LAST_USED_OPT), i_val));
+            setting_new_int (get_setting_name (SETT_LAST_USED_OPT), i_val));
 
     /* Get time align setting */
     i_val = (int64_t) gtk_toggle_button_get_active (
                 GTK_TOGGLE_BUTTON (dd_data->gw_timealign));
     setting_add_child (st_settings,
-            setting_new_int (get_setting_name (SETTING_TIME_ALIGN_OPT), i_val));
+            setting_new_int (get_setting_name (SETT_TIME_ALIGN_OPT), i_val));
 
     /* Get wallpaper change interval setting */
     i_val = (int64_t) get_wallpaper_ch_interval (dd_data);
     setting_add_child (st_settings,
-            setting_new_int (get_setting_name (SETTING_INTERVAL_VAL), i_val));
+            setting_new_int (get_setting_name (SETT_INTERVAL_VAL), i_val));
 
     /* Get wallpaper set command */
     s_val = gtk_entry_get_text (GTK_ENTRY (dd_data->gw_command));
     setting_add_child (st_settings,
-            setting_new_string (get_setting_name (SETTING_BG_CMD), s_val));
+            setting_new_string (get_setting_name (SETT_BG_CMD), s_val));
 
     return st_settings;
 }
@@ -436,46 +436,43 @@ widgets_set_settings (const DialogData *dd_data,
 
     /* Set last used wallpaper on start setting */
     st_item = settings_find (st_settings,
-                             get_setting_name (SETTING_LAST_USED_OPT));
+                             get_setting_name (SETT_LAST_USED_OPT));
     if (st_item != NULL) {
         gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (dd_data->gw_lastused),
                                       (gboolean) setting_get_int (st_item));
     }
     /* Set minutes/hours of wallpaper change interval */
-    st_item = settings_find (st_settings,
-                             get_setting_name (SETTING_INTERVAL_VAL));
+    st_item = settings_find (st_settings, get_setting_name (SETT_INTERVAL_VAL));
     if (st_item != NULL) {
         set_wallpaper_ch_interval (dd_data,
                                    (uint32_t) setting_get_int (st_item));
     }
     /* Set wallpaper random choose setting */
-    st_item = settings_find (st_settings,
-                             get_setting_name (SETTING_RANDOM_OPT));
+    st_item = settings_find (st_settings, get_setting_name (SETT_RANDOM_OPT));
     if (st_item != NULL) {
         gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (dd_data->gw_random),
                                       (gboolean) setting_get_int (st_item));
     }
     /* Set time align setting */
     st_item = settings_find (st_settings,
-                             get_setting_name (SETTING_TIME_ALIGN_OPT));
+                             get_setting_name (SETT_TIME_ALIGN_OPT));
     if (st_item != NULL) {
         gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (dd_data->gw_timealign),
                                       (gboolean) setting_get_int (st_item));
     }
     /* Get wallpaper list and add to treeview */
     st_item = settings_find (st_settings,
-                             get_setting_name (SETTING_WALL_ARRAY));
+                             get_setting_name (SETT_WALL_ARRAY));
     if (st_item != NULL) {
         treeview_add_items_setting (dd_data->gw_view,
                                     setting_get_child (st_item));
     }
     /* Set window dimensions */
-    st_item = settings_find (st_settings, get_setting_name (SETTING_WIN_WIDTH));
+    st_item = settings_find (st_settings, get_setting_name (SETT_WIN_WIDTH));
     if (st_item != NULL) {
         i_w = (int) setting_get_int (st_item);
     }
-    st_item = settings_find (st_settings,
-                             get_setting_name (SETTING_WIN_HEIGHT));
+    st_item = settings_find (st_settings, get_setting_name (SETT_WIN_HEIGHT));
     if (st_item != NULL) {
         i_h = (int) setting_get_int (st_item);
     }
@@ -484,7 +481,7 @@ widgets_set_settings (const DialogData *dd_data,
     /* Check if there is last used wallpaper info, if it is select it on
      * list and make a preview image */
     st_item = settings_find (st_settings,
-                             get_setting_name (SETTING_LAST_USED_STR));
+                             get_setting_name (SETT_LAST_USED_STR));
     if (st_item != NULL)
         s_lastused = setting_get_string (st_item);
 

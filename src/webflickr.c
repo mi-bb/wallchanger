@@ -37,6 +37,12 @@
 #include "webflickr.h"
 /*----------------------------------------------------------------------------*/
 /**
+ * @def   SERV_NAME
+ * @brief Service name
+ */
+#define SERV_NAME "Flickr" 
+/*----------------------------------------------------------------------------*/
+/**
  * @brief  Indexes of widgets in supporting array.
  */
 enum e_flickr_array {
@@ -624,11 +630,6 @@ flickr_settings_dialog (FourStrings *fs_data)
     return i_res;
 }
 /*----------------------------------------------------------------------------*/
-void
-flickr_search_opts_dialog (WebWidget *ww_widget)
-{
 
-}
-/*----------------------------------------------------------------------------*/
 #endif
 

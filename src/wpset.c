@@ -107,7 +107,7 @@ wallpaper_set_random (Setting *st_settings,
 
     /* Get wallaper list setting */
     st_walls = settings_find (setting_get_child (st_settings),
-                              get_setting_name (SETTING_WALL_ARRAY));
+                              get_setting_name (SETT_WALL_ARRAY));
     /* Exit function if there is no wallpapers in an array */
     if ((st_walls = setting_get_child (st_walls)) == NULL)
         return NULL;
@@ -121,12 +121,12 @@ wallpaper_set_random (Setting *st_settings,
 
     if (s_file != NULL) {
         /* Save wallpaper as last used in settings */
-        st_sett = setting_new_string (get_setting_name (SETTING_LAST_USED_STR),
+        st_sett = setting_new_string (get_setting_name (SETT_LAST_USED_STR),
                                       s_file);
         settings_append_or_replace (setting_get_child (st_settings), st_sett);
         /* Set wallpaper */
         st_sett = settings_find (setting_get_child (st_settings), 
-                                 get_setting_name (SETTING_BG_CMD));
+                                 get_setting_name (SETT_BG_CMD));
         if (st_sett != NULL) {
             wallpaper_set_file (setting_get_string (st_sett), s_file);
         }
@@ -148,13 +148,13 @@ wallpaper_set_next_in_list (Setting *st_settings)
 
     /* Get wallaper list setting */
     st_walls = settings_find (setting_get_child (st_settings),
-                              get_setting_name (SETTING_WALL_ARRAY));
+                              get_setting_name (SETT_WALL_ARRAY));
     /* Exit function if there is no wallpapers in an array */
     if ((st_walls = setting_get_child (st_walls)) == NULL)
         return NULL;
     /* Get last used wallpaper setting and file path */
     st_sett = settings_find (setting_get_child (st_settings),
-                             get_setting_name (SETTING_LAST_USED_STR));
+                             get_setting_name (SETT_LAST_USED_STR));
     if (st_sett != NULL) {
         ui_hash = hash (setting_get_string (st_sett));
     }
@@ -173,12 +173,12 @@ wallpaper_set_next_in_list (Setting *st_settings)
     s_file = st_sett->next != NULL ? setting_get_string (st_sett->next) :
                                      setting_get_string (st_walls);
     /* Save wallpaper as last used in settings */
-    st_sett = setting_new_string (get_setting_name (SETTING_LAST_USED_STR),
+    st_sett = setting_new_string (get_setting_name (SETT_LAST_USED_STR),
                                   s_file);
     settings_append_or_replace (setting_get_child (st_settings), st_sett);
     /* Set wallpaper */
     st_sett = settings_find (setting_get_child (st_settings), 
-                             get_setting_name (SETTING_BG_CMD));
+                             get_setting_name (SETT_BG_CMD));
     if (st_sett != NULL) {
         wallpaper_set_file (setting_get_string (st_sett), s_file);
     }
@@ -197,7 +197,7 @@ wpset_change (Setting    *st_settings,
     const char *s_lu    = NULL; /* For file name of last used wallpaper */
 
     st_sett = settings_find (setting_get_child (st_settings),
-                             get_setting_name (SETTING_RANDOM_OPT));
+                             get_setting_name (SETT_RANDOM_OPT));
 
     s_lu = (st_sett != NULL && setting_get_int (st_sett)) ?
            wallpaper_set_random (st_settings, rm_rand) : 
@@ -219,11 +219,11 @@ wpset_startup_set (Setting    *st_settings,
     Setting *st_cmd  = NULL; /* For wallpaper set command */
 
     st_opt  = settings_find (setting_get_child (st_settings),
-                             get_setting_name (SETTING_LAST_USED_OPT));
+                             get_setting_name (SETT_LAST_USED_OPT));
     st_sett = settings_find (setting_get_child (st_settings),
-                             get_setting_name (SETTING_LAST_USED_STR));
+                             get_setting_name (SETT_LAST_USED_STR));
     st_cmd  = settings_find (setting_get_child (st_settings),
-                             get_setting_name (SETTING_BG_CMD));
+                             get_setting_name (SETT_BG_CMD));
 
     if (st_opt != NULL && st_sett != NULL && st_cmd != NULL &&
         setting_get_int (st_opt)) {

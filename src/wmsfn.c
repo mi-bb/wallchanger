@@ -317,13 +317,13 @@ wms_get_wallpaper_command (const char *s_cfg_file,
     st_wm = st_wmlist;
 
     /* Getting saved wallpaper set command setting and string */
-    st_bgcmd = settings_find (st_settings, get_setting_name (SETTING_BG_CMD));
+    st_bgcmd = settings_find (st_settings, get_setting_name (SETT_BG_CMD));
     if (st_bgcmd != NULL) {
         s_setts_cmd = setting_get_string (st_bgcmd);
     }
     /* Getting last used window manager setting and name string */
     st_lu_wm = settings_find (st_settings,
-                              get_setting_name (SETTING_LAST_USED_WM));
+                              get_setting_name (SETT_LAST_USED_WM));
     if (st_lu_wm != NULL) {
         s_lu_wm = setting_get_string (st_lu_wm);
     }

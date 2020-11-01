@@ -24,7 +24,6 @@
 #ifndef WEBPIXBAY_H
 #define WEBPIXBAY_H
 
-#include "setting.h"
 #include "fourstrings.h"
 #include "webwidget_s.h"
 /*----------------------------------------------------------------------------*/
@@ -45,15 +44,6 @@ void   pixbay_search              (WebWidget         *ww_widget,
  * @return        Dialog response
  */
 int    pixbay_settings_dialog     (FourStrings       *fs_data);
-/*----------------------------------------------------------------------------*/
-/**
- * @brief  Converts image search options in Setting format to string for url.
- *
- * @param[in] st_setts  Setting item with search options
- * @return    String with image options. After use it should be freed
- *            using free.
- */
-char *  pixbay_search_opts_to_str (const Setting     *st_setts);
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Options for image search dialog.

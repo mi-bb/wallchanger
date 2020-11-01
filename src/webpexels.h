@@ -25,7 +25,6 @@
 #define WEBPEXELS_H
 
 #include <gtk/gtk.h>
-#include "setting.h"
 #include "fourstrings.h"
 #include "webwidget_s.h"
 
@@ -47,15 +46,6 @@ void   pexels_search             (WebWidget         *ww_widget,
  * @return        Dialog response
  */
 int    pexels_settings_dialog    (FourStrings       *fs_data);
-/*----------------------------------------------------------------------------*/
-/**
- * @brief  Converts image search options in Setting format to string for url.
- *
- * @param[in] st_setts  Setting item with search options
- * @return    String with image options. After use it should be freed
- *            using free.
- */
-char * pexels_search_opts_to_str (const Setting     *st_setts);
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Options for image search dialog.

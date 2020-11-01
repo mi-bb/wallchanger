@@ -35,6 +35,7 @@
 #include "webwidget_c.h"
 #include "dlgsmsg.h"
 #include "strfun.h"
+#include "setting.h"
 #include "setts.h"
 #include "webpixbay.h"
 /*----------------------------------------------------------------------------*/
@@ -507,8 +508,7 @@ set_search_opts (GtkWidget **gw_array,
         if (i == GW_COLOUR || i == GW_COLOUR_ENTRY ||
             i == GW_MIN_WIDTH || i == GW_MIN_HEIGHT || i == GW_PER_PAGE)
             continue;
-        st_item = settings_find (st_set, s_opts[i]);
-        if (st_item != NULL) {
+        if ((st_item = settings_find (st_set, s_opts[i])) != NULL) {
 #ifdef DEBUG
             printf ("set : %s %s\n", s_opts[i], setting_get_string (st_item));
 #endif
@@ -516,8 +516,7 @@ set_search_opts (GtkWidget **gw_array,
                                          setting_get_string (st_item));
         }
     }
-    st_item = settings_find (st_set, s_opts[GW_COLOUR]);
-    if (st_item != NULL) {
+    if ((st_item = settings_find (st_set, s_opts[GW_COLOUR])) != NULL) {
 #ifdef DEBUG
         printf ("set : %s %s\n",
                 s_opts[GW_COLOUR], setting_get_string (st_item));
@@ -526,8 +525,7 @@ set_search_opts (GtkWidget **gw_array,
                             setting_get_string (st_item));
     }
 
-    st_item = settings_find (st_set, s_opts[GW_MIN_WIDTH]);
-    if (st_item != NULL) {
+    if ((st_item = settings_find (st_set, s_opts[GW_MIN_WIDTH])) != NULL) {
         gtk_spin_button_set_value (GTK_SPIN_BUTTON (gw_array[GW_MIN_WIDTH]),
                                    (double) setting_get_int (st_item));
 #ifdef DEBUG
@@ -535,8 +533,7 @@ set_search_opts (GtkWidget **gw_array,
                 s_opts[GW_MIN_WIDTH], setting_get_int (st_item));
 #endif
     }
-    st_item = settings_find (st_set, s_opts[GW_MIN_HEIGHT]);
-    if (st_item != NULL) {
+    if ((st_item = settings_find (st_set, s_opts[GW_MIN_HEIGHT])) != NULL) {
         gtk_spin_button_set_value (GTK_SPIN_BUTTON (gw_array[GW_MIN_HEIGHT]),
                                    (double) setting_get_int (st_item));
 #ifdef DEBUG
@@ -544,8 +541,7 @@ set_search_opts (GtkWidget **gw_array,
                 s_opts[GW_MIN_HEIGHT], setting_get_int (st_item));
 #endif
     }
-    st_item = settings_find (st_set, s_opts[GW_PER_PAGE]);
-    if (st_item != NULL) {
+    if ((st_item = settings_find (st_set, s_opts[GW_PER_PAGE])) != NULL) {
         gtk_spin_button_set_value (GTK_SPIN_BUTTON (gw_array[GW_PER_PAGE]),
                                    (double) setting_get_int (st_item));
 #ifdef DEBUG
@@ -624,35 +620,6 @@ get_search_opts (GtkWidget **gw_array)
     settings_append (st_sett, setting_new_int (s_opts[GW_PER_PAGE], i_val));
 
     return st_sett;
-}
-/*----------------------------------------------------------------------------*/
-/**
- * @brief  Converts image search options in Setting format to string for url.
- */
-char *
-pixbay_search_opts_to_str (const Setting *st_setts)
-{
-    char          *s_res   = NULL;
-    const Setting *st_item = NULL;
-    char           s_buff[32];
-
-    s_res   = strdup ("");
-    st_item = st_setts;
-
-    while (st_item != NULL) {
-        str_append (&s_res, "&");
-        str_append (&s_res, setting_get_name (st_item));
-        str_append (&s_res, "=");
-        if (setting_get_type (st_item) == SET_VAL_INT) {
-            sprintf (s_buff, "%" PRId64, setting_get_int (st_item));
-            str_append (&s_res, s_buff);
-        }
-        else if (setting_get_type (st_item) == SET_VAL_STRING) {
-            str_append (&s_res, setting_get_string (st_item));
-        }
-        st_item = st_item->next;
-    }
-    return s_res;
 }
 /*----------------------------------------------------------------------------*/
 /**
@@ -826,6 +793,10 @@ pixbay_search_opts_dialog (WebWidget *ww_widget)
     /* Min image width and height */
     gw_array[GW_MIN_WIDTH]  = gtk_spin_button_new (ga_adjust1, 1.0, 0);
     gw_array[GW_MIN_HEIGHT] = gtk_spin_button_new (ga_adjust2, 1.0, 0);
+    gtk_widget_set_tooltip_text (gw_array[GW_MIN_WIDTH],
+          "Minimum image width. If 0 value is set, all widths are allowed.");
+    gtk_widget_set_tooltip_text (gw_array[GW_MIN_HEIGHT],
+          "Minimum image height. If 0 value is set, all heights are allowed.");
     gw_box = gtk_box_new (GTK_ORIENTATION_VERTICAL, 8);
     gtk_box_pack_start (GTK_BOX (gw_box),
                         gtk_label_new ("Min width:"),
@@ -869,12 +840,17 @@ pixbay_search_opts_dialog (WebWidget *ww_widget)
                         FALSE, FALSE, 4);
     /* Colour entry */
     gw_array[GW_COLOUR_ENTRY] = gtk_entry_new ();
+    gtk_widget_set_tooltip_text (gw_array[GW_COLOUR_ENTRY],
+            "Filter images by color properties. A comma separated list of "
+            "values may be used to select multiple properties.");
     gtk_box_pack_start (GTK_BOX (gw_hbox),
                         gw_array[GW_COLOUR_ENTRY],
                         TRUE, TRUE, 4);
 
     /* Per page */
     gw_array[GW_PER_PAGE] = gtk_spin_button_new (ga_adjust3, 1.0, 0);
+    gtk_widget_set_tooltip_text (gw_array[GW_PER_PAGE],
+            "Determine the number of results per page (3-200).");
     gtk_box_pack_start (GTK_BOX (gw_hbox),
                         gtk_label_new ("Images per page:"),
                         FALSE, FALSE, 4);
@@ -900,7 +876,7 @@ pixbay_search_opts_dialog (WebWidget *ww_widget)
         settings_print (st_settings);
 #endif
         setts_check_update_file (ww_widget->s_cfg_file, st_settings);
-        s_res = pixbay_search_opts_to_str (setting_get_child (st_settings));
+        s_res = search_opts_to_str (setting_get_child (st_settings));
         settings_free_all (st_settings);
     }
     else {

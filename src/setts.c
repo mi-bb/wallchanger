@@ -71,83 +71,83 @@ get_setting_name (const int i_val)
     const char *s_res = NULL;
 
     switch (i_val) {
-        case SETTING_BG_CMD:
+        case SETT_BG_CMD:
             s_res = "Background set command";
             break;
 
-        case SETTING_LAST_USED_OPT:
+        case SETT_LAST_USED_OPT:
             s_res = "Set last used wallpaper";
             break;
         
-        case SETTING_LAST_USED_STR:
+        case SETT_LAST_USED_STR:
             s_res = "Last used wallpaper file";
             break;
 
-        case SETTING_LAST_USED_WM:
+        case SETT_LAST_USED_WM:
             s_res = "Last used window manager";
             break;
 
-        case SETTING_WIN_WIDTH:
+        case SETT_WIN_WIDTH:
             s_res = "Window width";
             break;
 
-        case SETTING_WIN_HEIGHT:
+        case SETT_WIN_HEIGHT:
             s_res = "Window height";
             break;
 
-        case SETTING_RANDOM_OPT:
+        case SETT_RANDOM_OPT:
             s_res = "Random wallpaper";
             break;
 
-        case SETTING_INTERVAL_VAL:
+        case SETT_INTERVAL_VAL:
             s_res = "Wallpaper change interval";
             break;
 
-        case SETTING_TIME_ALIGN_OPT:
+        case SETT_TIME_ALIGN_OPT:
             s_res = "Time align";
             break;
 
-        case SETTING_WALL_ARRAY:
+        case SETT_WALL_ARRAY:
             s_res = "Backgrounds";
             break;
 
-        case SETTING_WEB_DLG_WIDTH:
+        case SETT_WEB_DLG_WIDTH:
             s_res = "Web dilaog width";
             break;
 
-        case SETTING_WEB_DLG_HEIGHT:
+        case SETT_WEB_DLG_HEIGHT:
             s_res = "Web dilaog height";
             break;
 
-        case SETTING_THUMB_QUALITY:
+        case SETT_THUMB_QUALITY:
             s_res = "Thumbnail quality";
             break;
 
-        case SETTING_PEXELS_API:
+        case SETT_PEXELS_API:
             s_res = "Pexels api";
             break;
 
-        case SETTING_PIXBAY_API:
+        case SETT_PIXBAY_API:
             s_res = "Pixbay api";
             break;
 
-        case SETTING_WALLHAVEN_API:
+        case SETT_WALLHAVEN_API:
             s_res = "Wallhaven api";
             break;
 
-        case SETTING_FLICKR_CLKEY:
+        case SETT_FLICKR_CLKEY:
             s_res = "Flickr client key";
             break;
 
-        case SETTING_FLICKR_CLSEC:
+        case SETT_FLICKR_CLSEC:
             s_res = "Flickr client secret";
             break;
 
-        case SETTING_FLICKR_ACTOK:
+        case SETT_FLICKR_ACTOK:
             s_res = "Flickr access token";
             break;
 
-        case SETTING_FLICKR_ACSEC:
+        case SETT_FLICKR_ACSEC:
             s_res = "Flickr access token secret";
             break;
 
@@ -234,25 +234,25 @@ setts_check_defaults (Setting *st_settings)
     SettingData *sd_data;
 
     SettingData sdd[] = {
-        {SETTING_LAST_USED_OPT,  SET_VAL_INT,    DEFAULT_LAST_USED_OPT, 0, ""},
-        {SETTING_LAST_USED_WM,   SET_VAL_STRING, 0, 0, DEFAULT_LAST_USED_WM},
-        {SETTING_RANDOM_OPT,     SET_VAL_INT,    DEFAULT_RANDOM_OPT, 0, ""},
-        {SETTING_TIME_ALIGN_OPT, SET_VAL_INT,    DEFAULT_TIME_ALIGN_OPT, 0, ""},
-        {SETTING_WIN_WIDTH,      SET_VAL_INT,    DEFAULT_WIN_WIDTH, 0, ""},
-        {SETTING_WIN_HEIGHT,     SET_VAL_INT,    DEFAULT_WIN_HEIGHT, 0, ""},
-        {SETTING_INTERVAL_VAL,   SET_VAL_INT,    DEFAULT_INTERVAL_VAL, 0, ""},
-        {SETTING_BG_CMD,         SET_VAL_STRING, 0, 0, DEFAULT_BG_CMD},
-        {SETTING_WALL_ARRAY,     SET_VAL_ARRAY,  0, 0, ""},
-        {SETTING_WEB_DLG_WIDTH,  SET_VAL_INT,    DEFAULT_WEB_DLG_WIDTH, 0, ""},
-        {SETTING_WEB_DLG_HEIGHT, SET_VAL_INT,    DEFAULT_WEB_DLG_HEIGHT, 0, ""},
-        {SETTING_THUMB_QUALITY,  SET_VAL_INT,    DEFAULT_THUMB_QUALITY, 0, ""},
-        {SETTING_PEXELS_API,     SET_VAL_STRING, 0, 0, ""},
-        {SETTING_PIXBAY_API,     SET_VAL_STRING, 0, 0, ""},
-        {SETTING_WALLHAVEN_API,  SET_VAL_STRING, 0, 0, ""},
-        {SETTING_FLICKR_CLKEY,   SET_VAL_STRING, 0, 0, ""},
-        {SETTING_FLICKR_CLSEC,   SET_VAL_STRING, 0, 0, ""},
-        {SETTING_FLICKR_ACTOK,   SET_VAL_STRING, 0, 0, ""},
-        {SETTING_FLICKR_ACSEC,   SET_VAL_STRING, 0, 0, ""},
+        {SETT_LAST_USED_OPT,  SET_VAL_INT,    DEFAULT_LAST_USED_OPT, 0, ""},
+        {SETT_LAST_USED_WM,   SET_VAL_STRING, 0, 0, DEFAULT_LAST_USED_WM},
+        {SETT_RANDOM_OPT,     SET_VAL_INT,    DEFAULT_RANDOM_OPT, 0, ""},
+        {SETT_TIME_ALIGN_OPT, SET_VAL_INT,    DEFAULT_TIME_ALIGN_OPT, 0, ""},
+        {SETT_WIN_WIDTH,      SET_VAL_INT,    DEFAULT_WIN_WIDTH, 0, ""},
+        {SETT_WIN_HEIGHT,     SET_VAL_INT,    DEFAULT_WIN_HEIGHT, 0, ""},
+        {SETT_INTERVAL_VAL,   SET_VAL_INT,    DEFAULT_INTERVAL_VAL, 0, ""},
+        {SETT_BG_CMD,         SET_VAL_STRING, 0, 0, DEFAULT_BG_CMD},
+        {SETT_WALL_ARRAY,     SET_VAL_ARRAY,  0, 0, ""},
+        {SETT_WEB_DLG_WIDTH,  SET_VAL_INT,    DEFAULT_WEB_DLG_WIDTH, 0, ""},
+        {SETT_WEB_DLG_HEIGHT, SET_VAL_INT,    DEFAULT_WEB_DLG_HEIGHT, 0, ""},
+        {SETT_THUMB_QUALITY,  SET_VAL_INT,    DEFAULT_THUMB_QUALITY, 0, ""},
+        {SETT_PEXELS_API,     SET_VAL_STRING, 0, 0, ""},
+        {SETT_PIXBAY_API,     SET_VAL_STRING, 0, 0, ""},
+        {SETT_WALLHAVEN_API,  SET_VAL_STRING, 0, 0, ""},
+        {SETT_FLICKR_CLKEY,   SET_VAL_STRING, 0, 0, ""},
+        {SETT_FLICKR_CLSEC,   SET_VAL_STRING, 0, 0, ""},
+        {SETT_FLICKR_ACTOK,   SET_VAL_STRING, 0, 0, ""},
+        {SETT_FLICKR_ACSEC,   SET_VAL_STRING, 0, 0, ""},
         {-1, 0, 0, 0, ""}
     };
 
@@ -271,7 +271,7 @@ setts_update_last_used (const char *s_cfg_file,
     Setting  *st_settings;
     int       i_res = ERR_OK;
 
-    st_settings = setting_new_string (get_setting_name (SETTING_LAST_USED_STR),
+    st_settings = setting_new_string (get_setting_name (SETT_LAST_USED_STR),
                                       s_last_used);
 
     i_res = js_settings_check_update_file (st_settings, s_cfg_file);
@@ -289,7 +289,7 @@ setts_update_last_used_wm (const char *s_cfg_file,
     Setting  *st_settings;
     int       i_res = ERR_OK;
 
-    st_settings = setting_new_string (get_setting_name (SETTING_LAST_USED_WM),
+    st_settings = setting_new_string (get_setting_name (SETT_LAST_USED_WM),
                                       s_last_used_wm);
 
     i_res = js_settings_check_update_file (st_settings, s_cfg_file);
@@ -308,11 +308,11 @@ setts_update_window_size (const char *s_cfg_file,
     Setting  *st_settings;
     int       i_res = ERR_OK;
 
-    st_settings = setting_new_int (get_setting_name (SETTING_WIN_WIDTH),
+    st_settings = setting_new_int (get_setting_name (SETT_WIN_WIDTH),
                                 (int64_t) i_w);
 
     settings_append (st_settings,
-                     setting_new_int (get_setting_name (SETTING_WIN_HEIGHT),
+                     setting_new_int (get_setting_name (SETT_WIN_HEIGHT),
                                       (int64_t) i_h));
 
     i_res = js_settings_check_update_file (st_settings, s_cfg_file);
@@ -331,11 +331,11 @@ setts_update_web_dlg_size (const char *s_cfg_file,
     Setting  *st_settings;
     int       i_res = ERR_OK;
 
-    st_settings = setting_new_int (get_setting_name (SETTING_WEB_DLG_WIDTH),
+    st_settings = setting_new_int (get_setting_name (SETT_WEB_DLG_WIDTH),
                                 (int64_t) i_w);
 
     settings_append (st_settings,
-                     setting_new_int (get_setting_name (SETTING_WEB_DLG_HEIGHT),
+                     setting_new_int (get_setting_name (SETT_WEB_DLG_HEIGHT),
                                       (int64_t) i_h));
 
     i_res = js_settings_check_update_file (st_settings, s_cfg_file);
@@ -353,7 +353,7 @@ setts_update_thumb_quality (const char *s_cfg_file,
     Setting  *st_settings;
     int       i_res = ERR_OK;
 
-    st_settings = setting_new_int (get_setting_name (SETTING_THUMB_QUALITY),
+    st_settings = setting_new_int (get_setting_name (SETT_THUMB_QUALITY),
                                    i_jpgq);
 
     i_res = js_settings_check_update_file (st_settings, s_cfg_file);
@@ -371,7 +371,7 @@ setts_update_pexels_api (const char *s_cfg_file,
     Setting  *st_settings;
     int       i_res = ERR_OK;
 
-    st_settings = setting_new_string (get_setting_name (SETTING_PEXELS_API),
+    st_settings = setting_new_string (get_setting_name (SETT_PEXELS_API),
                                       s_api_key);
 
     i_res = js_settings_check_update_file (st_settings, s_cfg_file);
@@ -389,7 +389,7 @@ setts_update_pixbay_api (const char *s_cfg_file,
     Setting  *st_settings;
     int       i_res = ERR_OK;
 
-    st_settings = setting_new_string (get_setting_name (SETTING_PIXBAY_API),
+    st_settings = setting_new_string (get_setting_name (SETT_PIXBAY_API),
                                       s_api_key);
 
     i_res = js_settings_check_update_file (st_settings, s_cfg_file);
@@ -407,7 +407,7 @@ setts_update_wallhaven_api (const char *s_cfg_file,
     Setting  *st_settings;
     int       i_res = ERR_OK;
 
-    st_settings = setting_new_string (get_setting_name (SETTING_WALLHAVEN_API),
+    st_settings = setting_new_string (get_setting_name (SETT_WALLHAVEN_API),
                                       s_api_key);
 
     i_res = js_settings_check_update_file (st_settings, s_cfg_file);
@@ -429,16 +429,16 @@ setts_update_flickr_api (const char *s_cfg_file,
     Setting  *st_settings;
     int       i_res = ERR_OK;
 
-    st_settings = setting_new_string (get_setting_name (SETTING_FLICKR_CLKEY),
+    st_settings = setting_new_string (get_setting_name (SETT_FLICKR_CLKEY),
                                       s_client_key);
     settings_append (st_settings,
-            setting_new_string (get_setting_name (SETTING_FLICKR_CLSEC),
+            setting_new_string (get_setting_name (SETT_FLICKR_CLSEC),
                                 s_client_secret));
     settings_append (st_settings,
-            setting_new_string (get_setting_name (SETTING_FLICKR_ACTOK),
+            setting_new_string (get_setting_name (SETT_FLICKR_ACTOK),
                                 s_access_token));
     settings_append (st_settings,
-            setting_new_string (get_setting_name (SETTING_FLICKR_ACSEC),
+            setting_new_string (get_setting_name (SETT_FLICKR_ACSEC),
                                 s_access_token_secret));
 
     i_res = js_settings_check_update_file (st_settings, s_cfg_file);

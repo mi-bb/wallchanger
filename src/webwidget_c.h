@@ -26,6 +26,7 @@
 
 #include <gtk/gtk.h>
 #include "webwidget_s.h"
+#include "setting.h"
 #include "searchitem.h"
 /*----------------------------------------------------------------------------*/
 /**
@@ -124,6 +125,15 @@ void   add_searchitem_to_img_view (GtkWidget        *gw_iconview,
  */
 int    check_for_cached_query     (WebWidget        *ww_widget,
                                    const char       *s_service_name);
+/*----------------------------------------------------------------------------*/
+/**
+ * @brief  Converts image search options in Setting format to string for url.
+ *
+ * @param[in] st_setts  Setting item with search options
+ * @return    String with image options. After use it should be freed
+ *            using free.
+ */
+char * search_opts_to_str         (const Setting    *st_setts);
 /*----------------------------------------------------------------------------*/
 #endif
 

@@ -768,6 +768,8 @@ add_images_from_web_dilaog (GtkWindow  *gw_parent,
 {
     GtkWidget *gw_dialog;       /* Wallpaper from web dialog */
     GtkWidget *gw_content_box;  /* Dialog's box */
+    GtkWidget *gw_box;  /* box */
+    GtkWidget *gw_hbox;  /* box */
     GtkWidget *gw_scrlw;        /* Scrolled window for icon view */
     WebWidget *ww_widget;       /* WebWidget with widgets and data*/
     GList     *gl_res   = NULL; /* Result list with wallpapers */
@@ -784,13 +786,13 @@ add_images_from_web_dilaog (GtkWindow  *gw_parent,
     setts_check_defaults (st_setts);
     /* Get dialog width */
     st_st = setting_find_child (st_setts,
-                                get_setting_name (SETTING_WEB_DLG_WIDTH));
+                                get_setting_name (SETT_WEB_DLG_WIDTH));
     if (st_st != NULL) {
         i_w = (int) setting_get_int (st_st);
     }
     /* Get dialog height */
     st_st = setting_find_child (st_setts,
-                                get_setting_name (SETTING_WEB_DLG_HEIGHT));
+                                get_setting_name (SETT_WEB_DLG_HEIGHT));
     if (st_st != NULL) {
         i_h = (int) setting_get_int (st_st);
     }
@@ -824,6 +826,25 @@ add_images_from_web_dilaog (GtkWindow  *gw_parent,
 
     gtk_container_add (GTK_CONTAINER (gw_scrlw), ww_widget->gw_img_view);
 
+    /* Boxes for result label, nav widget and image info */
+    gw_hbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 4);
+    gw_box  = gtk_box_new (GTK_ORIENTATION_VERTICAL,   4);
+    gtk_box_pack_start (GTK_BOX (gw_box),
+                        ww_widget->gw_count_label,
+                        FALSE, FALSE, 4);
+    gtk_box_pack_start (GTK_BOX (gw_box),
+                        ww_widget->gw_nav_box,
+                        FALSE, FALSE, 4);
+    gtk_box_pack_start (GTK_BOX (gw_hbox),
+                        gw_box,
+                        FALSE, FALSE, 4);
+    gtk_box_pack_start (GTK_BOX (gw_hbox),
+                        gtk_separator_new (GTK_ORIENTATION_VERTICAL),
+                        FALSE, FALSE, 4);
+    gtk_box_pack_start (GTK_BOX (gw_hbox),
+                        ww_widget->gw_ii_widget,
+                        FALSE, FALSE, 4);
+
     /* Packing dialog widgets */
     gtk_box_pack_start (GTK_BOX (gw_content_box),
                         gtk_label_new ("Wallpaper search query: "),
@@ -840,21 +861,24 @@ add_images_from_web_dilaog (GtkWindow  *gw_parent,
     gtk_box_pack_start (GTK_BOX (gw_content_box),
                         gtk_separator_new (GTK_ORIENTATION_HORIZONTAL),
                         FALSE, FALSE, 4);
+//    gtk_box_pack_start (GTK_BOX (gw_content_box),
+//                        ww_widget->gw_count_label,
+//                        FALSE, FALSE, 4);
+//    gtk_box_pack_start (GTK_BOX (gw_content_box),
+//                        gtk_separator_new (GTK_ORIENTATION_HORIZONTAL),
+//                        FALSE, FALSE, 4);
     gtk_box_pack_start (GTK_BOX (gw_content_box),
-                        ww_widget->gw_count_label,
+                        gw_hbox,
                         FALSE, FALSE, 4);
-    gtk_box_pack_start (GTK_BOX (gw_content_box),
-                        gtk_separator_new (GTK_ORIENTATION_HORIZONTAL),
-                        FALSE, FALSE, 4);
-    gtk_box_pack_start (GTK_BOX (gw_content_box),
-                        ww_widget->gw_nav_box,
-                        FALSE, FALSE, 4);
-    gtk_box_pack_start (GTK_BOX (gw_content_box),
-                        gtk_separator_new (GTK_ORIENTATION_HORIZONTAL),
-                        FALSE, FALSE, 4);
-    gtk_box_pack_start (GTK_BOX (gw_content_box),
-                        ww_widget->gw_ii_widget,
-                        FALSE, FALSE, 4);
+//    gtk_box_pack_start (GTK_BOX (gw_content_box),
+//                        ww_widget->gw_nav_box,
+//                        FALSE, FALSE, 4);
+//    gtk_box_pack_start (GTK_BOX (gw_content_box),
+//                        gtk_separator_new (GTK_ORIENTATION_HORIZONTAL),
+//                        FALSE, FALSE, 4);
+//    gtk_box_pack_start (GTK_BOX (gw_content_box),
+//                        ww_widget->gw_ii_widget,
+//                        FALSE, FALSE, 4);
     gtk_box_pack_start (GTK_BOX (gw_content_box),
                         gtk_separator_new (GTK_ORIENTATION_HORIZONTAL),
                         FALSE, FALSE, 4);

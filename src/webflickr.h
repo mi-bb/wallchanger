@@ -49,8 +49,6 @@ void flickr_search          (WebWidget         *ww_widget,
  */
 int  flickr_settings_dialog (FourStrings       *fs_data);
 /*----------------------------------------------------------------------------*/
-void flickr_search_opts_dialog (WebWidget *ww_widget);
-/*----------------------------------------------------------------------------*/
 #endif
 #endif
 

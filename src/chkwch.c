@@ -190,7 +190,7 @@ check_settings_change_wallpaper (char     *s_cfg_file,
 
     /* Get number of wallpapers in list */
     ui_nlen = (uint32_t) setting_count_children (
-            settings_find (st_c, get_setting_name (SETTING_WALL_ARRAY)));
+            settings_find (st_c, get_setting_name (SETT_WALL_ARRAY)));
     if (ui_nlen == 0) {
         free_and_exit (s_cfg_file, rm_rand, st_setts, st_wm,
                        EXIT_FAILURE, "Empty wallpaper list");
@@ -201,18 +201,18 @@ check_settings_change_wallpaper (char     *s_cfg_file,
     /* Update wallpaper set command in settings */
     if (s_cmd != NULL) {
         if ((st_st = settings_find (st_c,
-                    get_setting_name (SETTING_BG_CMD))) != NULL) {
+                    get_setting_name (SETT_BG_CMD))) != NULL) {
             setting_set_string (st_st, s_cmd);
         }
         free (s_cmd);
     }
     /* Get time align info */
-    st_st = settings_find (st_c, get_setting_name (SETTING_TIME_ALIGN_OPT));
+    st_st = settings_find (st_c, get_setting_name (SETT_TIME_ALIGN_OPT));
     if (st_st != NULL) {
         *i_algntime = (int) setting_get_int (st_st);
     }
     /* Get wallpaper change inerval value */
-    st_st = settings_find (st_c, get_setting_name (SETTING_INTERVAL_VAL));
+    st_st = settings_find (st_c, get_setting_name (SETT_INTERVAL_VAL));
     if (st_st != NULL) {
         ui_inter = (uint32_t) setting_get_int (st_st);
     }

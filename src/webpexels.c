@@ -36,6 +36,7 @@
 #include "searchitem.h"
 #include "urldata.h"
 #include "setts.h"
+#include "setting.h"
 #include "webwidget_c.h"
 #include "webpexels.h"
 /*----------------------------------------------------------------------------*/
@@ -424,8 +425,7 @@ set_search_opts (GtkWidget *gw_per_page,
 #ifdef DEBUG
     settings_print (st_set);
 #endif
-    st_item = settings_find (st_set, "per_page");
-    if (st_item != NULL) {
+    if ((st_item = settings_find (st_set, "per_page")) != NULL) {
         gtk_spin_button_set_value (GTK_SPIN_BUTTON (gw_per_page),
                                    (double) setting_get_int (st_item));
 #ifdef DEBUG
@@ -450,35 +450,6 @@ get_search_opts (GtkWidget *gw_per_page)
     st_sett = setting_new_int ("per_page", i_val);
 
     return st_sett;
-}
-/*----------------------------------------------------------------------------*/
-/**
- * @brief  Converts image search options in Setting format to string for url.
- */
-char *
-pexels_search_opts_to_str (const Setting *st_setts)
-{
-    char          *s_res   = NULL;
-    const Setting *st_item = NULL;
-    char           s_buff[32];
-
-    s_res   = strdup ("");
-    st_item = st_setts;
-
-    while (st_item != NULL) {
-        str_append (&s_res, "&");
-        str_append (&s_res, setting_get_name (st_item));
-        str_append (&s_res, "=");
-        if (setting_get_type (st_item) == SET_VAL_INT) {
-            sprintf (s_buff, "%" PRId64, setting_get_int (st_item));
-            str_append (&s_res, s_buff);
-        }
-        else if (setting_get_type (st_item) == SET_VAL_STRING) {
-            str_append (&s_res, setting_get_string (st_item));
-        }
-        st_item = st_item->next;
-    }
-    return s_res;
 }
 /*----------------------------------------------------------------------------*/
 /**
@@ -541,7 +512,7 @@ pexels_search_opts_dialog (WebWidget *ww_widget)
         settings_print (st_settings);
 #endif
         setts_check_update_file (ww_widget->s_cfg_file, st_settings);
-        s_res = pexels_search_opts_to_str (setting_get_child (st_settings));
+        s_res = search_opts_to_str (setting_get_child (st_settings));
         settings_free_all (st_settings);
     }
     else {
