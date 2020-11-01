@@ -474,25 +474,20 @@ event_search_pressed (WebWidget *ww_widget)
 static void
 event_search_opts_pressed (WebWidget *ww_widget)
 {
+    char *s_search_opts = NULL;
     int          i_id    = 0;    /* Service id */
 
     i_id    = ww_widget->i_active_service;
 
     switch (i_id) {
         case WEB_WIDGET_PEXELS:
-            ww_widget->s_search_opts = pexels_search_opts_dialog (ww_widget);
-#ifdef DEBUG
-            printf ("now opts : %s\n", ww_widget->s_search_opts);
-#endif
+            s_search_opts = pexels_search_opts_dialog (ww_widget);
             break;
         case WEB_WIDGET_PIXBAY:
-            ww_widget->s_search_opts = pixbay_search_opts_dialog (ww_widget);
-#ifdef DEBUG
-            printf ("now opts : %s\n", ww_widget->s_search_opts);
-#endif
+            s_search_opts = pixbay_search_opts_dialog (ww_widget);
             break;
         case WEB_WIDGET_WALLHAVEN:
-            wallhaven_search_opts_dialog (ww_widget);
+            s_search_opts = wallhaven_search_opts_dialog (ww_widget);
             break;
 #ifdef HAVE_FLICKCURL
         case WEB_WIDGET_FLICKR:
@@ -502,6 +497,16 @@ event_search_opts_pressed (WebWidget *ww_widget)
         default:
             break;
     }
+    if (s_search_opts != NULL &&
+        strcmp (s_search_opts, ww_widget->s_search_opts) != 0) {
+
+        free (ww_widget->s_search_opts);
+        ww_widget->s_search_opts = strdup (s_search_opts);
+    }
+#ifdef DEBUG
+            printf ("now opts : %s\n", ww_widget->s_search_opts);
+#endif
+    free (s_search_opts);
 }
 /*----------------------------------------------------------------------------*/
 /**
@@ -775,10 +780,11 @@ event_add_selected_pressed (WebWidget *ww_widget)
 static void
 refresh_service_opts (WebWidget *ww_widget)
 {
-    Setting *st_settings = NULL;
-    Setting *st_item     = NULL;
-    char    *s_name      = NULL;
-    int      i_err       = 0;
+    Setting *st_settings   = NULL;
+    Setting *st_item       = NULL;
+    char    *s_name        = NULL;
+    char    *s_search_opts = NULL;
+    int      i_err         = 0;
 
     s_name = combo_get_active_str (ww_widget->gw_combo, WW_COMBO_NAME);
     str_append (&s_name, "_opts");
@@ -791,27 +797,33 @@ refresh_service_opts (WebWidget *ww_widget)
     st_item     = setting_get_child (settings_find (st_item, s_name));
 
     if (st_item != NULL) {
-        free (ww_widget->s_search_opts);
         switch (ww_widget->i_active_service) {
             case WEB_WIDGET_PEXELS:
-                ww_widget->s_search_opts = pexels_search_opts_to_str (st_item);
+                s_search_opts = pexels_search_opts_to_str (st_item);
                 break;
             case WEB_WIDGET_PIXBAY:
-                ww_widget->s_search_opts = pixbay_search_opts_to_str (st_item);
+                s_search_opts = pixbay_search_opts_to_str (st_item);
+                break;
+            case WEB_WIDGET_WALLHAVEN:
+                s_search_opts = wallhaven_search_opts_to_str (st_item);
                 break;
             default:
-                ww_widget->s_search_opts = strdup ("");
                 break;
         }
-#ifdef DEBUG
-        printf ("loaded : %s\n", ww_widget->s_search_opts);
-#endif
-    }
-    else {
-        ww_widget->s_search_opts = strdup ("");
     }
     settings_free_all (st_settings);
     free (s_name);
+
+    if (s_search_opts != NULL &&
+        strcmp (s_search_opts, ww_widget->s_search_opts) != 0) {
+
+        free (ww_widget->s_search_opts);
+        ww_widget->s_search_opts = strdup (s_search_opts);
+    }
+#ifdef DEBUG
+    printf ("now opts : %s\n", ww_widget->s_search_opts);
+#endif
+    free (s_search_opts);
 }
 /*----------------------------------------------------------------------------*/
 /**
@@ -1373,6 +1385,7 @@ webwidget_create (Setting    *st_settings,
     ww_widget->gw_selected_box   = gw_add_sltd_box;
     ww_widget->gw_count_label    = gw_count_label;
     ww_widget->i_active_service  = WEB_WIDGET_PEXELS;
+    ww_widget->s_search_opts     = strdup ("");
 
     refresh_service_opts (ww_widget);
 

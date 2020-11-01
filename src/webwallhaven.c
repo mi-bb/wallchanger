@@ -34,10 +34,56 @@
 #include "dlgsmsg.h"
 #include "errs.h"
 #include "searchitem.h"
+#include "setts.h"
 #include "urldata.h"
 #include "webwidget_c.h"
 #include "webpexels.h"
 #include "webwallhaven.h"
+/*----------------------------------------------------------------------------*/
+/**
+ * @def   SERV_NAME
+ * @brief Service name
+ */
+#define SERV_NAME "Wallhaven" 
+/*----------------------------------------------------------------------------*/
+/**
+ * @brief  Enum with available search options.
+ */
+enum e_options {
+    GW_CATEGORIES,  /**< Image category */
+    GW_PURITY,      /**< Image purity */
+    GW_SORTING,     /**< Sorting method */
+    GW_ORDER,       /**< Order of images */
+    GW_TOPRANGE,    /**< Top range val */
+    GW_ATLEAST,     /**< Min resolution */
+    GW_RESOLUTIONS, /**< List of resolutions */
+    GW_RATIOS,      /**< Image ratios */
+    GW_COLORS,      /**< Colour of image */
+    GW_CNT          /**< Number of options */
+};
+/*----------------------------------------------------------------------------*/
+/**
+ * @var   s_opts
+ * @brief Array with option names
+ */
+static const char *s_opts[] = {
+    "categories", "purity", "sorting", "order", "topRange", "atleast",
+    "resolutions", "ratios", "colors", NULL
+};
+/*----------------------------------------------------------------------------*/
+/**
+ * @var   s_sort
+ * @brief Sorting options
+ */
+static const char *s_sort[] = {
+    "date_added", "relevance", "random", "views", "favorites", "toplist", NULL
+};
+/*----------------------------------------------------------------------------*/
+/**
+ * @var   s_order
+ * @brief Sorting order
+ */
+static const char *s_order[] = {"desc", "asc", NULL};
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Process SearchIem item with image data and create name for icon view
@@ -95,7 +141,7 @@ wallhaven_json_obj_to_searchitem (json_object *j_obj)
 
     SearchItem *si_item = searchitem_new ();
 
-    searchitem_set_service_name (si_item, "Wallhaven");
+    searchitem_set_service_name (si_item, SERV_NAME);
 
     if (json_object_object_get_ex (j_obj, "id", &j_val) &&
         json_object_get_type (j_val) == json_type_string) {
@@ -213,7 +259,7 @@ wallhaven_json_to_webwidget (const char *s_buff,
                     add_searchitem_to_img_view (ww_widget->gw_img_view,
                                                 si_item,
                                                 ww_widget->s_wallp_dir,
-                                                "Wallhaven",
+                                                SERV_NAME,
                                                 ww_widget->i_thumb_quality);
                     cachequery_append_item (cq_query, si_item);
                 }
@@ -235,11 +281,11 @@ wallhaven_search (WebWidget         *ww_widget,
     char       *s_query  = NULL; /* For search query */
     int         i_err    = 0;    /* Error output */
 
-    if (str_is_empty_msg (fs_data->s_str1, "Wallhaven API key is not set"))
+    if (str_is_empty_msg (fs_data->s_str1, SERV_NAME " API key is not set"))
         return;
 
     /* Check if there is a cached info about this search query */
-    if (check_for_cached_query (ww_widget, "Wallhaven"))
+    if (check_for_cached_query (ww_widget, SERV_NAME))
         return;
 
     s_query = str_replace_in (ww_widget->s_query, " ", "+");
@@ -252,7 +298,7 @@ wallhaven_search (WebWidget         *ww_widget,
         message_dialog_error (NULL, ud_data->errbuf);
     }
     else if (urldata_full (ud_data)) {
-        cq_query = cachequery_new ("Wallhaven",
+        cq_query = cachequery_new (SERV_NAME,
                                    ww_widget->s_query,
                                    ww_widget->s_search_opts,
                                    ww_widget->i_page);
@@ -287,7 +333,7 @@ wallhaven_settings_dialog (FourStrings *fs_data)
 
     GtkDialogFlags flags = GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT;
 
-    gw_dialog = gtk_dialog_new_with_buttons ("Wallhaven configuration",
+    gw_dialog = gtk_dialog_new_with_buttons (SERV_NAME " configuration",
                                              NULL,
                                              flags,
                                              "_OK",
@@ -305,7 +351,7 @@ wallhaven_settings_dialog (FourStrings *fs_data)
 
     /* Packing dialog widgets */
     gtk_box_pack_start (GTK_BOX (gw_content_box),
-                        gtk_label_new ("Wallhaven API key:"),
+                        gtk_label_new (SERV_NAME " API key:"),
                         FALSE, FALSE, 4);
     gtk_box_pack_start (GTK_BOX (gw_content_box),
                         gw_api_entry,
@@ -337,10 +383,207 @@ wallhaven_settings_dialog (FourStrings *fs_data)
     return i_res;
 }
 /*----------------------------------------------------------------------------*/
-void
-wallhaven_search_opts_dialog (WebWidget *ww_widget)
+/**
+ * @brief  Get search options from Setting item to widgets.
+ *
+ * @param[out] gw_array  Array with settings widgets
+ * @param[in]  st_setts  Setting item with list of options
+ * @return     none
+ */
+static void
+set_search_opts (GtkWidget **gw_array,
+                 Setting    *st_setts)
 {
+    Setting *st_set  = NULL;
+    Setting *st_item = NULL;
 
+    st_set = setting_get_child (settings_find (st_setts, SERV_NAME "_opts"));
+
+    if (st_set == NULL) {
+        return;
+    }
+#ifdef DEBUG
+    settings_print (st_set);
+#endif
+
+    st_item = settings_find (st_set, s_opts[GW_SORTING]);
+    if (st_item != NULL) {
+#ifdef DEBUG
+        printf ("set : %s %s\n", s_opts[GW_SORTING],
+                setting_get_string (st_item));
+#endif
+        gtk_combo_box_set_active_id (GTK_COMBO_BOX (gw_array[GW_SORTING]),
+                                     setting_get_string (st_item));
+    }
+    st_item = settings_find (st_set, s_opts[GW_ORDER]);
+    if (st_item != NULL) {
+#ifdef DEBUG
+        printf ("set : %s %s\n", s_opts[GW_ORDER],
+                setting_get_string (st_item));
+#endif
+        gtk_combo_box_set_active_id (GTK_COMBO_BOX (gw_array[GW_ORDER]),
+                                     setting_get_string (st_item));
+    }
 }
 /*----------------------------------------------------------------------------*/
+/**
+ * @brief  Get search options from widgets to Setting item.
+ *
+ * @param[in,out] gw_array  Array with settings widgets
+ * @return        Setting items with search options
+ */
+static Setting *
+get_search_opts (GtkWidget **gw_array)
+{
+    Setting    *st_sett = NULL;
+    char       *s_val   = NULL;
+
+    s_val = gtk_combo_box_text_get_active_text (
+            GTK_COMBO_BOX_TEXT (gw_array[GW_SORTING]));
+    st_sett = setting_new_string (s_opts[GW_SORTING], s_val);
+    free (s_val);
+
+    s_val = gtk_combo_box_text_get_active_text (
+            GTK_COMBO_BOX_TEXT (gw_array[GW_ORDER]));
+    if (strcmp (s_val, s_order[0]) != 0) {
+        settings_append (st_sett,
+                         setting_new_string (s_opts[GW_ORDER], s_val));
+    }
+    free (s_val);
+
+    return st_sett;
+}
+/*----------------------------------------------------------------------------*/
+/**
+ * @brief  Converts image search options in Setting format to string for url.
+ */
+char *
+wallhaven_search_opts_to_str (const Setting *st_setts)
+{
+    char          *s_res   = NULL;
+    const Setting *st_item = NULL;
+    char           s_buff[32];
+
+    s_res   = strdup ("");
+    st_item = st_setts;
+
+    while (st_item != NULL) {
+        str_append (&s_res, "&");
+        str_append (&s_res, setting_get_name (st_item));
+        str_append (&s_res, "=");
+        if (setting_get_type (st_item) == SET_VAL_INT) {
+            sprintf (s_buff, "%" PRId64, setting_get_int (st_item));
+            str_append (&s_res, s_buff);
+        }
+        else if (setting_get_type (st_item) == SET_VAL_STRING) {
+            str_append (&s_res, setting_get_string (st_item));
+        }
+        st_item = st_item->next;
+    }
+    return s_res;
+}
+/*----------------------------------------------------------------------------*/
+/**
+ * @brief  Options for image search dialog.
+ */
+char *
+wallhaven_search_opts_dialog (WebWidget *ww_widget)
+{
+    GtkWidget     *gw_array[GW_CNT];   /* Array with widgets */
+    GtkWidget     *gw_dialog;          /* Pixbay settings dialog */
+    GtkWidget     *gw_content_box;     /* Dialog's box */
+    GtkWidget     *gw_box;             /* Box for widgets */
+    GtkWidget     *gw_hbox;            /* Horizontal box for widgets */
+    Setting       *st_settings = NULL; /* Settings */
+    char          *s_res       = NULL; /* Result string */
+    int            i_err       = 0;    /* Error output */
+    int            i_res       = 0;    /* Dialog result */
+    int            i           = 0;    /* i */
+
+    GtkDialogFlags flags = GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT;
+
+    gw_dialog = gtk_dialog_new_with_buttons (SERV_NAME " search options",
+                                             NULL,
+                                             flags,
+                                             "_OK",
+                                             GTK_RESPONSE_ACCEPT,
+                                             "_Cancel",
+                                             GTK_RESPONSE_REJECT,
+                                             NULL);
+
+    gw_content_box = gtk_dialog_get_content_area (GTK_DIALOG (gw_dialog));
+    gtk_container_set_border_width (GTK_CONTAINER (gw_content_box), 8);
+    gw_hbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 8);
+
+    /* Sorting combobox */
+    gw_array[GW_SORTING] = gtk_combo_box_text_new ();
+    gtk_widget_set_tooltip_text (gw_array[GW_SORTING],
+        "Method of sorting results");
+    for (i = 0; s_sort[i] != NULL; ++i) {
+        gtk_combo_box_text_append (GTK_COMBO_BOX_TEXT (gw_array[GW_SORTING]),
+                                   s_sort[i], s_sort[i]);
+    }
+    gtk_combo_box_set_active_id (GTK_COMBO_BOX (gw_array[GW_SORTING]),
+                                                s_sort[0]);
+    /* Box for sorting */
+    gw_box = gtk_box_new (GTK_ORIENTATION_VERTICAL, 8);
+    gtk_box_pack_start (GTK_BOX (gw_box),
+                        gtk_label_new ("Sorting:"),
+                        FALSE, FALSE, 4);
+    gtk_box_pack_start (GTK_BOX (gw_box),
+                        gw_array[GW_SORTING],
+                        FALSE, FALSE, 4);
+    gtk_box_pack_start (GTK_BOX (gw_hbox), gw_box, FALSE, FALSE, 4);
+
+    /* Order combobox */
+    gw_array[GW_ORDER] = gtk_combo_box_text_new ();
+    gtk_widget_set_tooltip_text (gw_array[GW_ORDER],
+        "Sorting order");
+    for (i = 0; s_order[i] != NULL; ++i) {
+        gtk_combo_box_text_append (GTK_COMBO_BOX_TEXT (gw_array[GW_ORDER]),
+                                   s_order[i], s_order[i]);
+    }
+    gtk_combo_box_set_active_id (GTK_COMBO_BOX (gw_array[GW_ORDER]),
+                                                s_order[0]);
+    /* Box for sorting */
+    gw_box = gtk_box_new (GTK_ORIENTATION_VERTICAL, 8);
+    gtk_box_pack_start (GTK_BOX (gw_box),
+                        gtk_label_new ("Sort order:"),
+                        FALSE, FALSE, 4);
+    gtk_box_pack_start (GTK_BOX (gw_box),
+                        gw_array[GW_ORDER],
+                        FALSE, FALSE, 4);
+    gtk_box_pack_start (GTK_BOX (gw_hbox), gw_box, FALSE, FALSE, 4);
+
+
+    gtk_box_pack_start (GTK_BOX (gw_content_box), gw_hbox, FALSE, FALSE, 4);
+
+    st_settings = setts_read (ww_widget->s_cfg_file, &i_err);
+    set_search_opts (gw_array, setting_get_child (st_settings));
+    settings_free_all (st_settings);
+
+    gtk_widget_show_all (gw_content_box);
+
+    i_res = gtk_dialog_run (GTK_DIALOG (gw_dialog));
+
+    if (i_res == GTK_RESPONSE_ACCEPT) {
+        st_settings = setting_new_setting (SERV_NAME "_opts");
+
+        setting_add_child (st_settings, get_search_opts (gw_array));
+#ifdef DEBUG
+        settings_print (st_settings);
+#endif
+        setts_check_update_file (ww_widget->s_cfg_file, st_settings);
+        s_res = wallhaven_search_opts_to_str (setting_get_child (st_settings));
+        settings_free_all (st_settings);
+    }
+    else {
+        s_res = NULL;
+    }
+    gtk_widget_destroy (gw_dialog);
+
+    return s_res;
+}
+/*----------------------------------------------------------------------------*/
+
 

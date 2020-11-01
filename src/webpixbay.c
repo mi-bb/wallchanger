@@ -39,9 +39,15 @@
 #include "webpixbay.h"
 /*----------------------------------------------------------------------------*/
 /**
+ * @def   SERV_NAME
+ * @brief Service name
+ */
+#define SERV_NAME "Pixbay" 
+/*----------------------------------------------------------------------------*/
+/**
  * @brief  Enum with available search options.
  */
-enum e_widgets {
+enum e_options {
     GW_CATEGORY,     /**< Image category */
     GW_ORIENTATION,  /**< Image orientation */
     GW_ED_CHOICE,    /**< Get editor's choice images */
@@ -87,7 +93,7 @@ static const char *s_colour[] = {
  * @var   s_true_false
  * @brief Array with true and false value
  */
-static const char *s_true_false[] = {"true", "false", NULL};
+static const char *s_true_false[] = {"false", "true", NULL};
 /*----------------------------------------------------------------------------*/
 /**
  * @var   s_order
@@ -212,7 +218,7 @@ pixbay_json_obj_to_searchitem (json_object *j_obj)
 
     SearchItem *si_item = searchitem_new ();
 
-    searchitem_set_service_name (si_item, "Pixbay");
+    searchitem_set_service_name (si_item, SERV_NAME);
 
     if (json_object_object_get_ex (j_obj, "id", &j_val) &&
         json_object_get_type (j_val) == json_type_int) {
@@ -340,7 +346,7 @@ pixbay_json_to_webwidget (const char  *s_buff,
                     add_searchitem_to_img_view (ww_widget->gw_img_view,
                                                 si_item,
                                                 ww_widget->s_wallp_dir,
-                                                "Pixbay",
+                                                SERV_NAME,
                                                 ww_widget->i_thumb_quality);
                     //*si_items++ = si_item;
                     cachequery_append_item (cq_query, si_item);
@@ -363,10 +369,10 @@ pixbay_search (WebWidget         *ww_widget,
     char       *s_query      = NULL; /* For search query */
     int         i_err        = 0;    /* Error output */
 
-    if (str_is_empty_msg (fs_data->s_str1, "Pixbay API key is not set"))
+    if (str_is_empty_msg (fs_data->s_str1, SERV_NAME " API key is not set"))
         return;
     /* Check if there is a cached info about this search query */
-    if (check_for_cached_query (ww_widget, "Pixbay"))
+    if (check_for_cached_query (ww_widget, SERV_NAME))
         return;
 
     s_query = str_replace_in (ww_widget->s_query, " ", "+");
@@ -384,7 +390,7 @@ pixbay_search (WebWidget         *ww_widget,
         message_dialog_error (NULL, ud_data->errbuf);
     }
     else if (urldata_full (ud_data)) {
-        cq_query = cachequery_new ("Pixbay",
+        cq_query = cachequery_new (SERV_NAME,
                                    ww_widget->s_query,
                                    ww_widget->s_search_opts,
                                    ww_widget->i_page);
@@ -420,7 +426,7 @@ pixbay_settings_dialog (FourStrings *fs_data)
 
     GtkDialogFlags flags = GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT;
 
-    gw_dialog = gtk_dialog_new_with_buttons ("Pixbay configuration",
+    gw_dialog = gtk_dialog_new_with_buttons (SERV_NAME " configuration",
                                              NULL,
                                              flags,
                                              "_OK",
@@ -438,7 +444,7 @@ pixbay_settings_dialog (FourStrings *fs_data)
 
     /* Packing dialog widgets */
     gtk_box_pack_start (GTK_BOX (gw_content_box),
-                        gtk_label_new ("Pixbay API key:"),
+                        gtk_label_new (SERV_NAME " API key:"),
                         FALSE, FALSE, 4);
     gtk_box_pack_start (GTK_BOX (gw_content_box),
                         gw_api_entry,
@@ -489,7 +495,7 @@ set_search_opts (GtkWidget **gw_array,
     Setting *st_set  = NULL;
     Setting *st_item = NULL;
 
-    st_set = setting_get_child (settings_find (st_setts, "Pixbay_opts"));
+    st_set = setting_get_child (settings_find (st_setts, SERV_NAME "_opts"));
 
     if (st_set == NULL) {
         return;
@@ -703,7 +709,7 @@ pixbay_search_opts_dialog (WebWidget *ww_widget)
     ga_adjust2 = gtk_adjustment_new (0.0, 0.0, 10000.0, 1.0, 100.0, 0.0);
     ga_adjust3 = gtk_adjustment_new (12.0, 3.0, 200.0, 1.0, 2.0, 0.0);
 
-    gw_dialog = gtk_dialog_new_with_buttons ("Pixbay search options",
+    gw_dialog = gtk_dialog_new_with_buttons (SERV_NAME " search options",
                                              NULL,
                                              flags,
                                              "_OK",
@@ -765,7 +771,7 @@ pixbay_search_opts_dialog (WebWidget *ww_widget)
                                    s_true_false[i], s_true_false[i]);
     }
     gtk_combo_box_set_active_id (GTK_COMBO_BOX (gw_array[GW_ED_CHOICE]),
-                                 s_true_false[1]);
+                                 s_true_false[0]);
     /* Box for editor's choice */
     gw_box = gtk_box_new (GTK_ORIENTATION_VERTICAL, 8);
     gtk_box_pack_start (GTK_BOX (gw_box),
@@ -786,7 +792,7 @@ pixbay_search_opts_dialog (WebWidget *ww_widget)
                                    s_true_false[i], s_true_false[i]);
     }
     gtk_combo_box_set_active_id (GTK_COMBO_BOX (gw_array[GW_SAFE_SEARCH]),
-                                 s_true_false[1]);
+                                 s_true_false[0]);
     /* Box for safe search */
     gw_box = gtk_box_new (GTK_ORIENTATION_VERTICAL, 8);
     gtk_box_pack_start (GTK_BOX (gw_box),
@@ -887,7 +893,7 @@ pixbay_search_opts_dialog (WebWidget *ww_widget)
     i_res = gtk_dialog_run (GTK_DIALOG (gw_dialog));
 
     if (i_res == GTK_RESPONSE_ACCEPT) {
-        st_settings = setting_new_setting ("Pixbay_opts");
+        st_settings = setting_new_setting (SERV_NAME "_opts");
 
         setting_add_child (st_settings, get_search_opts (gw_array));
 #ifdef DEBUG
@@ -898,7 +904,7 @@ pixbay_search_opts_dialog (WebWidget *ww_widget)
         settings_free_all (st_settings);
     }
     else {
-        s_res = strdup ("");
+        s_res = NULL;
     }
     gtk_widget_destroy (gw_dialog);
 
