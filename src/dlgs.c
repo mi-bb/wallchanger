@@ -1083,6 +1083,7 @@ other_settings_dialog (GtkWindow  *gw_parent,
 
     /* Cache directories paths and sized */
     gw_grid = gtk_grid_new ();
+    gtk_widget_set_halign (gw_grid, GTK_ALIGN_CENTER);
     gtk_grid_set_row_spacing    (GTK_GRID (gw_grid), 8);
     gtk_grid_set_column_spacing (GTK_GRID (gw_grid), 8);
     /* Title */
@@ -1147,6 +1148,10 @@ other_settings_dialog (GtkWindow  *gw_parent,
 
     gtk_box_pack_start (GTK_BOX (gw_content_box),
                         gw_grid,
+                        FALSE, FALSE, 4);
+
+    gtk_box_pack_start (GTK_BOX (gw_content_box),
+                        gtk_separator_new (GTK_ORIENTATION_HORIZONTAL),
                         FALSE, FALSE, 4);
 
     gw_array[GW_SETT_IMG_O]    = gw_image_o;
