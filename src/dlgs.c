@@ -1149,10 +1149,6 @@ other_settings_dialog (GtkWindow  *gw_parent,
                         gw_grid,
                         FALSE, FALSE, 4);
 
-    gtk_box_pack_start (GTK_BOX (gw_content_box),
-                        gw_grid,
-                        FALSE, FALSE, 4);
-
     gw_array[GW_SETT_IMG_O]    = gw_image_o;
     gw_array[GW_SETT_IMG_P]    = gw_image_p;
     gw_array[GW_SETT_JPG_SPIN] = gw_jpg_spin;
