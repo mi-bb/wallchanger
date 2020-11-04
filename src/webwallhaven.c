@@ -95,7 +95,9 @@ static const char *s_order[] = {"desc", "asc", NULL};
  * @var   s_toprange
  * @brief Top range options
  */
-static const char *s_toprange[] = {"1d", "3d", "1w", "1M" , "3M", "6M", "1y"};
+static const char *s_toprange[] = {
+    "1d", "3d", "1w", "1M" , "3M", "6M", "1y", NULL
+};
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Process SearchIem item with image data and create name for icon view

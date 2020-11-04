@@ -38,9 +38,36 @@
 #include "jsof.h"
 #include "hashfun.h"
 #include "chquery.h"
-
+/*----------------------------------------------------------------------------*/
+/**
+ * @def   JS_FOUND_CNT
+ * @brief Name of number of found items field
+ * @def   JS_ID
+ * @brief Name of id field
+ * @def   JS_AUTH_NAME
+ * @brief Name of author field
+ * @def   JS_AUTH_URL
+ * @brief Name of author url field
+ * @def   JS_FILE_NAME
+ * @brief Name of file name field
+ * @def   JS_DISP_NAME
+ * @brief Name of display name field
+ * @def   JS_DISP_MKUP
+ * @brief Name of display markup field
+ * @def   JS_PAGE_URL
+ * @brief Name of image page url field
+ * @def   JS_IMAGE_URL
+ * @brief Name of image url field
+ * @def   JS_THUMB_URL
+ * @brief Name of image thumbnail url field
+ * @def   JS_SERV_NAME
+ * @brief Name of service name field
+ * @def   JS_WIDTH
+ * @brief Name of image width field
+ * @def   JS_HEIGHT
+ * @brief Name of image height field
+ */
 #define JS_FOUND_CNT "found_cnt"
-
 #define JS_ID        "id"
 #define JS_AUTH_NAME "auth_name"
 #define JS_AUTH_URL  "auth_url"
@@ -302,7 +329,6 @@ cachequery_new (const char *s_service_name,
     cq_query->s_search_opts = strdup (s_search_opts);
     cq_query->i_page        = i_page;
     cq_query->s_file        = cfgfile_get_query_path ();
-    dir_create_with_subdirs (cq_query->s_file);
     str_append (&cq_query->s_file, "/");
     str_append (&cq_query->s_file, s_service_name);
     str_append (&cq_query->s_file, ".json");
@@ -506,7 +532,6 @@ cachequery_delete_older_than (const char *s_service_name,
     g_date_set_time_t (gd_date, t_time);
 
     s_file = cfgfile_get_query_path ();
-    dir_create_with_subdirs (s_file);
     str_append (&s_file, "/");
     str_append (&s_file, s_service_name);
     str_append (&s_file, ".json");

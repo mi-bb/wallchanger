@@ -27,7 +27,7 @@
 #include <stdint.h>
 /*----------------------------------------------------------------------------*/
 /**
- * #fn  char * read_file_data (const char    *s_fname,
+ * @fn  char * read_file_data (const char    *s_fname,
  *                             int           *i_err,
  *                             int           *i_hash)
  *

@@ -21,13 +21,13 @@
  *
  * @author Michal Babik <michal.babik@pm.me>
  */
-#ifndef FDOPS_H
-#define FDOPS_H
+#ifndef DIRLIST_H
+#define DIRLIST_H
 
 #include <gmodule.h>
 /*----------------------------------------------------------------------------*/
 /**
- * @brief  Get list of files in directory, filter out non images and
+ * @brief  Get list of files in a directory, filter out non images and
  *         return list in GList format.
  *
  * @param[in]  s_dir  Directory path to scan
@@ -35,6 +35,23 @@
  */
 GList * get_dir_content_filter_images   (const char *s_dir)
                                          __attribute__ ((nonnull (1)));
+/*----------------------------------------------------------------------------*/
+/**
+ * @brief  Get size of all files in a directory.
+ *
+ * @param[in]  s_path  Directory path to scan
+ * @return     Size of files in folder
+ */
+goffset dirlist_get_directory_size      (const char *s_path)
+                                         __attribute__ ((nonnull (1)));
+/*----------------------------------------------------------------------------*/
+/**
+ * @brief  Delete files in given directory.
+ *
+ * @param[in]  s_path  Directory path to scan
+ * @return     none
+ */
+void dirlist_delete_directory_content (const char *s_path);
 /*----------------------------------------------------------------------------*/
 #endif
 

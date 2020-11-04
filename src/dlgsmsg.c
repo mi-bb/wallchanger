@@ -59,3 +59,23 @@ message_dialog_warning (GtkWindow  *gw_parent,
     gtk_widget_destroy (gw_dialog);
 }
 /*----------------------------------------------------------------------------*/
+/**
+ *  @brief  Question message dialog.
+ */
+int
+message_dialog_question (GtkWindow  *gw_parent,
+                         const char *s_message)
+{
+    GtkWidget *gw_dialog;
+    int i_res = 0;
+
+    gw_dialog = gtk_message_dialog_new (gw_parent,
+                                        GTK_DIALOG_DESTROY_WITH_PARENT,
+                                        GTK_MESSAGE_QUESTION,
+                                        GTK_BUTTONS_YES_NO,
+                                        "%s", s_message);
+    i_res = gtk_dialog_run (GTK_DIALOG (gw_dialog));
+    gtk_widget_destroy (gw_dialog);
+    return i_res;
+}
+/*----------------------------------------------------------------------------*/

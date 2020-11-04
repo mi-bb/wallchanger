@@ -76,7 +76,7 @@ UrlData * urldata_get_data      (const char *s_url);
  * @param[in]  s_url  Url to download data
  * @param[in]  s_fn   File where data should be saved
  * @param[out] s_err  String for error output
- * @return    none
+ * @return     none
  */
 void      urldata_get_to_file   (const char *s_url,
                                  const char *s_fn,
@@ -85,9 +85,10 @@ void      urldata_get_to_file   (const char *s_url,
 /**
  * @brief  Search Pexels for images.
  *
- * @param[in] s_query     Search query
- * @param[in] s_api_key   Pexels API key
- * @param[in] i_page      Results page number
+ * @param[in] s_query        Search query
+ * @param[in] s_search_opts  Search options
+ * @param[in] s_api_key      Pexels API key
+ * @param[in] i_page         Results page number
  * @return    UrlData item with downloaded data or error info
  */
 UrlData * urldata_search_pexels (const char *s_query,
@@ -112,9 +113,10 @@ UrlData * urldata_search_pixbay (const char *s_query,
 /**
  * @brief  Search Wallhaven for images.
  *
- * @param[in] s_query     Search query
- * @param[in] s_api_key   Wallhaven API key
- * @param[in] i_page      Results page number
+ * @param[in] s_query        Search query
+ * @param[in] s_search_opts  Search options
+ * @param[in] s_api_key      Wallhaven API key
+ * @param[in] i_page         Results page number
  * @return    UrlData item with downloaded data or error info
  */
 UrlData * urldata_search_wallhaven (const char *s_query,

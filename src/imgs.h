@@ -42,6 +42,7 @@ typedef enum IconImg {
     W_ICON_SCREEN,   /**< Set wallpaper screen icon */
     W_ICON_DUPL,     /**< Remove duplicates icon */
     W_ICON_INFO,     /**< Info about application icon */
+    W_ICON_SETTING,  /**< Settings icon */
     W_ICON_EXIT,     /**< Exit app icon */
     W_ICON_ABOUT,    /**< About app dialog image */
     W_ICON_PLAY,     /**< Play icon */

@@ -338,9 +338,6 @@ pixbay_json_to_webwidget (const char  *s_buff,
 
             ui_cnt = json_object_array_length (j_arr);
 
-            //if (ui_cnt > (size_t) ww_widget->i_per_page)
-            //    ui_cnt = (size_t) ww_widget->i_per_page;
-
             for (i = 0; i < ui_cnt; ++i) {
                 if ((j_val = json_object_array_get_idx (j_arr, i)) != NULL) {
                     si_item = pixbay_json_obj_to_searchitem (j_val);
@@ -349,7 +346,6 @@ pixbay_json_to_webwidget (const char  *s_buff,
                                                 ww_widget->s_wallp_dir,
                                                 SERV_NAME,
                                                 ww_widget->i_thumb_quality);
-                    //*si_items++ = si_item;
                     cachequery_append_item (cq_query, si_item);
                 }
             }

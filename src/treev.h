@@ -158,5 +158,13 @@ void treeview_find_select_item  (GtkWidget  *gw_tview,
  */
 void create_tview (GtkWidget **gw_tview);
 /*----------------------------------------------------------------------------*/
+/**
+ * @brief  Get one file path from wallpaper list.
+ *
+ * @param[in] gw_tview  Treeview with wallpaper list
+ * @return    Wallpaper image path. After use it should be freed using free.
+ */
+char * treeview_get_one_file (GtkWidget *gw_tview);
+/*----------------------------------------------------------------------------*/
 #endif
 

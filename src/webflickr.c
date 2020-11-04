@@ -169,6 +169,7 @@ event_flickr_access_keys_generate (GtkWidget **gw_array)
  *
  * @param[in]  s_disp_name  Diaplay name (image title)
  * @param[in]  s_image_url  Image url (used for getting extension)
+ * @param[in]  s_image_id   Image id
  * @return     New string with name for saving file. After use it should be
  *             freed using free.
  */

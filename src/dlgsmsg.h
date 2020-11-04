@@ -46,9 +46,19 @@ void     message_dialog_error     (GtkWindow    *gw_parent,
  * @return    none
  */
 /*----------------------------------------------------------------------------*/
-void     message_dialog_warning     (GtkWindow    *gw_parent,
-                                     const char   *s_message)
+void     message_dialog_warning     (GtkWindow  *gw_parent,
+                                     const char *s_message)
          __attribute__ ((nonnull (2)));
+/*----------------------------------------------------------------------------*/
+/**
+ *  @brief  Question message dialog.
+ *
+ * @param[in] gw_parent  Dialog parent widget
+ * @param[in] s_message  Message to show
+ * @return    Dialog response
+ */
+int      message_dialog_question    (GtkWindow  *gw_parent,
+                                     const char *s_message);
 /*----------------------------------------------------------------------------*/
 
 #endif

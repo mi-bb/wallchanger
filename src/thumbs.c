@@ -30,7 +30,6 @@
 #include "cfgfile.h"
 #include "dlgsmsg.h"
 #include "thumbs.h"
-
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Create pixbuf from raw data.
@@ -85,6 +84,9 @@ pixbuf_from_url (const char *s_url)
     return g_pbuf;
 }
 /*----------------------------------------------------------------------------*/
+/**
+ * @brief  Get thumbnail image from cached data or from web.
+ */
 GdkPixbuf *
 thumbnail_get (const char *s_service_name,
                const char *s_id,

@@ -120,7 +120,6 @@ download_progress_window (GtkWindow *gw_parent,
     float       f_step   = 0;    /* Progress bar step */
     float       f_frac   = 0;    /* Fraction for progress bar to set */
     int         i_stop   = 0;    /* To set when stop button is pressed */
-    int         i_perm   = 0;    /* For checking save dir permissions */
     size_t      ui_nlen  = 0;    /* Length of file name */
     char s_nbuff[NAME_LEN * 4 + 4];
 
@@ -130,14 +129,6 @@ download_progress_window (GtkWindow *gw_parent,
     /* Getting wallpaper save path and checking it's permissions, creating if
      * it doesn't exist */
     s_wpdir = cfgfile_get_app_wallpapers_path ();
-    i_perm  = dir_check_permissions (s_wpdir);
-
-    if (i_perm == ERR_FILE ||
-       (i_perm == ERR_FILE_EX && dir_create_with_subdirs (s_wpdir) != ERR_OK)) {
-        message_dialog_error (NULL, err_get_message (i_perm));
-        free (s_wpdir);
-        return NULL;
-    }
 
     /* Setting progress step and making a pointer to list */
     f_step  = (float) 1.0 / (float) g_list_length (gl_item_list);
@@ -1224,7 +1215,13 @@ webwidget_free (WebWidget *ww_widget)
     free (ww_widget);
 }
 /*----------------------------------------------------------------------------*/
-void
+/**
+ * @brief  Init WebWidget item.
+ *
+ * @param[out] ww_widget  WebWidget item
+ * @return     none
+ */
+static void
 webwidget_init (WebWidget *ww_widget)
 {
     ww_widget->s_query          = NULL;
@@ -1260,6 +1257,8 @@ webwidget_create (Setting    *st_settings,
     GtkWidget *gw_add_sltd_box;
     GtkWidget *gw_add_sltd_button;
     GtkWidget *gw_selected_combo;
+    GtkWidget *gw_img;
+    GdkPixbuf *gp_pbuf = NULL;
     Setting *st_sett = NULL;
 
     if ((ww_widget = malloc (sizeof (WebWidget))) == NULL)
@@ -1296,9 +1295,16 @@ webwidget_create (Setting    *st_settings,
     /* Search box */
     gw_search_box      = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 4);
     gw_search_entry    = gtk_search_entry_new ();
-    gw_sett_button     = gtk_button_new_with_label ("Settings");
     gw_search_button   = gtk_button_new_with_label ("Search");
     gw_search_opts_btn = gtk_button_new_with_label ("Search opts");
+    //gw_sett_button     = gtk_button_new_with_label ("Settings");
+    gw_sett_button     = gtk_button_new ();
+    gtk_widget_set_tooltip_text (gw_sett_button, "Service settings");
+    gp_pbuf = get_image (W_ICON_SETTING);
+    gw_img = gtk_image_new_from_pixbuf (gp_pbuf);
+    gtk_button_set_image (GTK_BUTTON (gw_sett_button), gw_img);
+    g_object_unref (gp_pbuf);
+
     g_signal_connect_swapped (gw_sett_button, "clicked",
             G_CALLBACK (event_settings_pressed), ww_widget);
     g_signal_connect_swapped (gw_search_entry, "activate",

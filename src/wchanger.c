@@ -36,6 +36,7 @@
 #include "dlgsmsg.h"
 #include "treev.h"
 #include "dirlist.h"
+#include "fdfn.h"
 #include "preview.h"
 #include "strfun.h"
 #include "errs.h"
@@ -310,6 +311,48 @@ static GtkWidget * create_daemon_widget        (DialogData        *dd_data);
 /*----------------------------------------------------------------------------*/
 static void        activate                    (GtkApplication    *app,
                                                 DialogData        *dd_data);
+/*----------------------------------------------------------------------------*/
+/**
+ * @brief  Create application directories, return error message on error.
+ *
+ * @return String with error info or null if there was no error.
+ *         After use, it should be freed using free.
+ */
+static char *
+cfgfile_check_create_dirs (void)
+{
+    char *s_dir = NULL;
+    int   i_err = ERR_OK;
+
+    s_dir = cfgfile_get_query_path ();
+    i_err = dir_create_with_subdirs (s_dir);
+    if (i_err != ERR_OK) {
+        str_append (&s_dir, "\n");
+        str_append (&s_dir, err_get_message (i_err));
+        return s_dir;
+    }
+    free (s_dir);
+
+    s_dir = cfgfile_get_app_thumbnails_path ();
+    i_err = dir_create_with_subdirs (s_dir);
+    if (i_err != ERR_OK) {
+        str_append (&s_dir, "\n");
+        str_append (&s_dir, err_get_message (i_err));
+        return s_dir;
+    }
+    free (s_dir);
+
+    s_dir = cfgfile_get_app_wallpapers_path ();
+    i_err = dir_create_with_subdirs (s_dir);
+    if (i_err != ERR_OK) {
+        str_append (&s_dir, "\n");
+        str_append (&s_dir, err_get_message (i_err));
+        return s_dir;
+    }
+    free (s_dir);
+
+    return NULL;
+}
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Get wallpaper change minutes interval from widgets
@@ -831,6 +874,20 @@ event_stop_daemon_pressed (DialogData *dd_data)
 }
 /*----------------------------------------------------------------------------*/
 /**
+ * @brief  Other settings button pressed.
+ *
+ * @param[in,out] dd_data  DialogData object with widgets and settings info
+ * @return        none
+ */
+static void
+event_other_settings_pressed (DialogData *dd_data)
+{
+    char *s_fn = treeview_get_one_file (dd_data->gw_view);
+    other_settings_dialog (dd_data->gw_window, dd_data->s_cfg_file, s_fn);
+    free (s_fn);
+}
+/*----------------------------------------------------------------------------*/
+/**
  * @brief  Monitors running of wchangerd daemon.
  */
 static gboolean
@@ -987,6 +1044,14 @@ create_buttons_widget (GtkWidget  **gw_widget,
     g_signal_connect_swapped (gw_button,
                               "clicked",
                               G_CALLBACK (event_save_settings_pressed),
+                              dd_data);
+    gw_button = create_image_button (NULL, "Other settings", W_ICON_SETTING);
+    gtk_box_pack_start (GTK_BOX (*gw_widget),
+                        gw_button,
+                        FALSE, FALSE, 4);
+    g_signal_connect_swapped (gw_button,
+                              "clicked",
+                              G_CALLBACK (event_other_settings_pressed),
                               dd_data);
     gw_button = create_image_button (NULL, "About Wall Changer", W_ICON_INFO);
     gtk_box_pack_start (GTK_BOX (*gw_widget),
@@ -1214,6 +1279,7 @@ create_daemon_widget (DialogData *dd_data)
     return gw_widget;
 }
 /*----------------------------------------------------------------------------*/
+
 /**
  * @brief  Application activate signal.
  */
@@ -1235,6 +1301,7 @@ activate (GtkApplication *app,
     Setting    *st_settings;        /* Program settings */
     Setting    *st_wm      = NULL;  /* Window manager info */
     GdkPixbuf  *gd_pix     = NULL;  /* Default widget icon */
+    char       *s_err      = NULL;  /* For error output */
     int         i_err      = 0;     /* For error output */
 
     /* Find config file and set config file name */
@@ -1252,6 +1319,13 @@ activate (GtkApplication *app,
                       G_CALLBACK (event_on_delete), dd_data);
     dd_data->gw_window = GTK_WINDOW (gw_window);
 
+    /* Create application directories */
+    if ((s_err = cfgfile_check_create_dirs ()) != NULL) {
+        message_dialog_error (dd_data->gw_window, s_err);
+        free (s_err);
+        g_application_quit (G_APPLICATION (app));
+        return;
+    }
     /* Default widget icon */
     if ((gd_pix = get_image (W_ICON_ABOUT)) != NULL) {
         gtk_window_set_default_icon (gd_pix);

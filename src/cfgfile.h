@@ -61,6 +61,14 @@ char * cfgfile_get_autostart_home_file_path (void);
 char * cfgfile_get_wm_info_home_file_path   (void);
 /*----------------------------------------------------------------------------*/
 /**
+ * @brief  Get application config path
+ *
+ * @return String with wallpaper save path.
+ *         After use it should be freed using free.
+ */
+char * cfgfile_get_app_config_path  (void);
+/*----------------------------------------------------------------------------*/
+/**
  * @brief  Get directory path for downloaded wallpapers
  *
  * @return String with wallpaper save path.

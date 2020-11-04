@@ -234,6 +234,20 @@ cfgfile_get_wm_info_data_file_path (int *i_err)
 }
 /*----------------------------------------------------------------------------*/
 /**
+ * @brief  Get application config path
+ */
+char *
+cfgfile_get_app_config_path (void)
+{
+    char *s_path = NULL; /* Result directory path */
+
+    s_path = dir_get_home_config ();
+    str_append (&s_path, PTH_SEP PTH_APP_SHORT);
+
+    return s_path;
+}
+/*----------------------------------------------------------------------------*/
+/**
  * @brief  Get directory path for downloaded wallpapers
  */
 char *
@@ -374,4 +388,3 @@ cfgfile_autostart_remove (void)
     return ERR_OK;
 }
 /*----------------------------------------------------------------------------*/
-

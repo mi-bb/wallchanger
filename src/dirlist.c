@@ -186,7 +186,6 @@ get_directory_filtered_content_glist (const char *s_dir,
                 s_pthfn[ui_dlen + ui_flen] = '\0';
 
                 gl_files = g_list_prepend (gl_files, s_pthfn);
-                //gl_files = g_list_append (gl_files, s_pthfn);
             }
         }
     }
@@ -195,7 +194,6 @@ get_directory_filtered_content_glist (const char *s_dir,
     closedir(dr);
 
     return g_list_reverse (gl_files);
-    //return gl_files;
 }
 /*----------------------------------------------------------------------------*/
 /**
@@ -216,6 +214,127 @@ get_dir_content_filter_images (const char *s_dir)
 
     g_hash_table_destroy (gh_exts);
     return gl_files;
+}
+/*----------------------------------------------------------------------------*/
+/**
+ * @brief  Enumerate folder content and get size of files.
+ *
+ * @param[in]  gf_dir       Gfile of directory to scan
+ * @param[in]  i_recursive  Scan also subfilders
+ * @param[out] i_size       Size output
+ * @return     none
+ */
+static void
+enumerate_folder_get_size (GFile    *gf_dir,
+                           const int i_recursive,
+                           goffset  *i_size)
+{
+    GFileEnumerator *f_enum;
+    GError          *g_err;
+    GFile           *g_file;
+    GFileInfo       *f_info;
+    GFileType        f_type;
+
+    #ifdef DEBUG
+        printf ("Enumerating folder %s\n", g_file_peek_path (gf_dir));
+    #endif
+
+    f_enum = g_file_enumerate_children (gf_dir,
+                                        "standard::*",
+                                        G_FILE_QUERY_INFO_NONE,
+                                        NULL,
+                                        &g_err);
+    do {
+        g_file_enumerator_iterate (f_enum, &f_info, &g_file, NULL, &g_err);
+        if (f_info != NULL) {
+            f_type = g_file_info_get_file_type (f_info);
+            if (f_type == G_FILE_TYPE_DIRECTORY && i_recursive) {
+                enumerate_folder_get_size (g_file, i_recursive, i_size);
+                }
+            if (f_type == G_FILE_TYPE_REGULAR) {
+                *i_size += g_file_info_get_size (f_info);
+            }
+        }
+    }
+    while (f_info != NULL);
+
+    g_object_unref (f_enum);
+}
+/*----------------------------------------------------------------------------*/
+/**
+ * @brief  Enumerate and delete folder content.
+ *
+ * @param[in]  gf_dir       Gfile of directory to scan
+ * @param[in]  i_recursive  Scan also subfilders
+ * @return     none
+ */
+static void
+enumerate_folder_delete (GFile    *gf_dir,
+                         const int i_recursive)
+{
+    GFileEnumerator *f_enum;
+    GError          *g_err;
+    GFile           *g_file;
+    GFileInfo       *f_info;
+    GFileType        f_type;
+
+    #ifdef DEBUG
+        printf ("Enumerating folder %s\n", g_file_peek_path (gf_dir));
+    #endif
+
+    f_enum = g_file_enumerate_children (gf_dir,
+                                        "standard::*",
+                                        G_FILE_QUERY_INFO_NONE,
+                                        NULL,
+                                        &g_err);
+    do {
+        g_file_enumerator_iterate (f_enum, &f_info, &g_file, NULL, &g_err);
+        if (f_info != NULL) {
+            f_type = g_file_info_get_file_type (f_info);
+            if (f_type == G_FILE_TYPE_DIRECTORY && i_recursive) {
+                enumerate_folder_delete (g_file, i_recursive);
+                }
+            if (f_type == G_FILE_TYPE_REGULAR) {
+                g_file_delete (g_file, NULL, NULL);
+            }
+        }
+    }
+    while (f_info != NULL);
+
+    g_object_unref (f_enum);
+}
+/*----------------------------------------------------------------------------*/
+/**
+ * @brief  Get size of all files in a directory.
+ */
+goffset
+dirlist_get_directory_size (const char *s_path)
+{
+    GFile   *g_path;
+    goffset  i_size = 0;
+
+    g_path = g_file_new_for_path (s_path);
+
+    enumerate_folder_get_size (g_path, 0, &i_size);
+
+    g_object_unref (g_path);
+
+    return i_size;
+}
+/*----------------------------------------------------------------------------*/
+/**
+ * @brief  Delete files in given directory.
+ */
+void
+dirlist_delete_directory_content (const char *s_path)
+{
+    GFile   *g_path;
+
+    g_path = g_file_new_for_path (s_path);
+
+    enumerate_folder_delete (g_path, 0);
+
+    g_object_unref (g_path);
 }
 /*----------------------------------------------------------------------------*/
 

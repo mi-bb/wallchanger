@@ -493,4 +493,26 @@ create_tview (GtkWidget **gw_tview)
     g_object_unref(gls_list);
 }
 /*----------------------------------------------------------------------------*/
+/**
+ * @brief  Get one file path from wallpaper list.
+ */
+char *
+treeview_get_one_file (GtkWidget *gw_tview)
+{
+    GtkTreeModel *gtm_model;
+    GtkTreeIter   gti_iter;
+    gboolean      b_res = FALSE;
+    char         *s_fn  = NULL;
+
+    gtm_model = gtk_tree_view_get_model (GTK_TREE_VIEW (gw_tview));
+    b_res     = gtk_tree_model_get_iter_first (gtm_model, &gti_iter);
+
+    if (b_res) {
+        gtk_tree_model_get (gtm_model, &gti_iter,
+                            COL_FULL_FILE_NAME, &s_fn, 
+                            -1);
+    }
+    return s_fn;
+}
+/*----------------------------------------------------------------------------*/
 

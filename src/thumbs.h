@@ -23,8 +23,18 @@
  */
 #ifndef THUMBS_H
 #define THUMBS_H
+
 #include <gtk/gtk.h>
 /*----------------------------------------------------------------------------*/
+/**
+ * @brief  Get thumbnail image from cached data or from web.
+ *
+ * @param[in] s_service_name  Name of image search service
+ * @param[in] s_id            Image id
+ * @param[in] i_jpgq          Thumbnail JPG save quality
+ * @param[in] s_thumb_url     Thumbnail url
+ * @return    Pixbuf with thumbnail image
+ */
 GdkPixbuf * thumbnail_get (const char *s_service_name,
                            const char *s_id,
                            const int   i_jpgq,
