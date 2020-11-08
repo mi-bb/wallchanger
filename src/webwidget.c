@@ -484,11 +484,11 @@ event_search_opts_pressed (WebWidget *ww_widget)
             s_search_opts = wallhaven_search_opts_dialog (ww_widget);
             break;
         case WEB_WIDGET_WALLABYSS:
-            //s_search_opts = wallpaperabyss_search_opts_dialog (ww_widget);
+            s_search_opts = wallpaperabyss_search_opts_dialog (ww_widget);
             break;
 #ifdef HAVE_FLICKCURL
         case WEB_WIDGET_FLICKR:
-            //flickr_search_opts_dialog (ww_widget);
+            /* flickr_search_opts_dialog (ww_widget); */
             break;
 #endif
         default:
@@ -835,6 +835,10 @@ refresh_service_opts (WebWidget *ww_widget)
 
         free (ww_widget->s_search_opts);
         ww_widget->s_search_opts = strdup (s_search_opts);
+    }
+    else {
+        free (ww_widget->s_search_opts);
+        ww_widget->s_search_opts = strdup ("");
     }
 #ifdef DEBUG
     printf ("now opts : %s\n", ww_widget->s_search_opts);

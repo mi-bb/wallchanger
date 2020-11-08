@@ -57,6 +57,31 @@ ww_name (const int i_site)
 }
 /*----------------------------------------------------------------------------*/
 /**
+ * @brief  Get webwidget options name.
+ */
+const char *
+ww_opts (const int i_site)
+{
+    switch (i_site) {
+        case WEB_WIDGET_PEXELS:
+            return "Pexels_opts";
+        case WEB_WIDGET_PIXBAY:
+            return "Pixbay_opts";
+        case WEB_WIDGET_WALLHAVEN:
+            return "Wallhaven_opts";
+        case WEB_WIDGET_WALLABYSS:
+            return "WallpaperAbyss_opts";
+#ifdef HAVE_FLICKCURL
+        case WEB_WIDGET_FLICKR:
+            return "Flickr_opts";
+#endif
+        default:
+            break;
+    }
+    return NULL;
+}
+/*----------------------------------------------------------------------------*/
+/**
  * @brief  Check if string s_txt is null or empty and show message s_msg
  *         if it is.
  */

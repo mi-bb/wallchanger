@@ -40,11 +40,17 @@
 #include "webwidget_c.h"
 #include "webabyss.h"
 /*----------------------------------------------------------------------------*/
+enum e_options {
+    GW_WIDTH,    /**< Spinbutton with width */
+    GW_HEIGHT,   /**< Spinbutton with height */
+    GW_CNT       /**< Number of options */
+};
+/*----------------------------------------------------------------------------*/
 /**
- * @def   SERV_NAME
- * @brief Service name
+ * @var   s_opts
+ * @brief Array with option names
  */
-#define SERV_NAME "WallpaperAbyss" 
+static const char *s_opts[] = {"width", "height", NULL};
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Process SearchIem item with image data and create name for icon view
@@ -56,7 +62,6 @@
 static void
 wallpaperabyss_process_item_set_names (SearchItem *si_item)
 {
-    char *s_base_name = NULL; /* Base name for processing */
     char *s_file_name = NULL; /* Name for file to save */
     char *s_disp_name = NULL; /* Name to display on list */
     char *s_ext       = NULL; /* Pointer to extension */
@@ -67,13 +72,11 @@ wallpaperabyss_process_item_set_names (SearchItem *si_item)
     else if (si_item->s_image_url == NULL)
         return;
 
-    /* Base name made of picture url */
-    s_base_name = si_item->s_id;
-
     /* Create file name, add image extension to base name */
     s_ext = strrchr (si_item->s_image_url, '.');
     if (s_ext != NULL) {
-        s_file_name = str_comb (SERV_NAME "_", si_item->s_id);
+        s_file_name = str_comb (ww_name (WEB_WIDGET_WALLABYSS), "_");
+        str_append (&s_file_name, si_item->s_id);
         str_append (&s_file_name, s_ext);
     }
     /* Display name to show on image list */
@@ -104,7 +107,7 @@ wallpaperabyss_json_obj_to_searchitem (json_object *j_obj)
 
     SearchItem *si_item = searchitem_new ();
 
-    searchitem_set_service_name (si_item, SERV_NAME);
+    searchitem_set_service_name (si_item, ww_name (WEB_WIDGET_WALLABYSS));
 
     if (json_object_object_get_ex (j_obj, "id", &j_val) &&
         json_object_get_type (j_val) == json_type_string) {
@@ -234,7 +237,7 @@ wallpaperabyss_json_to_webwidget (const char *s_buff,
                     add_searchitem_to_img_view (ww_widget->gw_img_view,
                                                 si_item,
                                                 ww_widget->s_wallp_dir,
-                                                SERV_NAME,
+                                                ww_name (WEB_WIDGET_WALLABYSS),
                                                 ww_widget->i_thumb_quality);
                     cachequery_append_item (cq_query, si_item);
                 }
@@ -245,7 +248,7 @@ wallpaperabyss_json_to_webwidget (const char *s_buff,
 }
 /*----------------------------------------------------------------------------*/
 /**
- * @brief  Search in Wallhaven database.
+ * @brief  Search in Wallpaper Abyss database.
  */
 void
 wallpaperabyss_search (WebWidget         *ww_widget,
@@ -256,11 +259,11 @@ wallpaperabyss_search (WebWidget         *ww_widget,
     char       *s_query  = NULL; /* For search query */
     int         i_err    = 0;    /* Error output */
 
-    if (str_is_empty_msg (fs_data->s_str1, SERV_NAME " API key is not set"))
+    if (str_is_empty_msg (fs_data->s_str1, "Wallpaper Abyss API key is not set"))
         return;
 
     /* Check if there is a cached info about this search query */
-    if (check_for_cached_query (ww_widget, SERV_NAME))
+    if (check_for_cached_query (ww_widget, ww_name (WEB_WIDGET_WALLABYSS)))
         return;
 
     s_query = str_replace_in (ww_widget->s_query, " ", "+");
@@ -273,7 +276,7 @@ wallpaperabyss_search (WebWidget         *ww_widget,
         message_dialog_error (NULL, ud_data->errbuf);
     }
     else if (urldata_full (ud_data)) {
-        cq_query = cachequery_new (SERV_NAME,
+        cq_query = cachequery_new (ww_name (WEB_WIDGET_WALLABYSS),
                                    ww_widget->s_query,
                                    ww_widget->s_search_opts,
                                    ww_widget->i_page);
@@ -309,7 +312,7 @@ wallpaperabyss_settings_dialog (FourStrings *fs_data)
 
     GtkDialogFlags flags = GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT;
 
-    gw_dialog = gtk_dialog_new_with_buttons (SERV_NAME " configuration",
+    gw_dialog = gtk_dialog_new_with_buttons ("Wallpaper Abyss configuration",
                                              NULL,
                                              flags,
                                              "_OK",
@@ -327,7 +330,7 @@ wallpaperabyss_settings_dialog (FourStrings *fs_data)
 
     /* Packing dialog widgets */
     gtk_box_pack_start (GTK_BOX (gw_content_box),
-                        gtk_label_new (SERV_NAME " API key:"),
+                        gtk_label_new ("Wallpaper Abyss API key:"),
                         FALSE, FALSE, 4);
     gtk_box_pack_start (GTK_BOX (gw_content_box),
                         gw_api_entry,
@@ -357,6 +360,162 @@ wallpaperabyss_settings_dialog (FourStrings *fs_data)
     gtk_widget_destroy (gw_dialog);
 
     return i_res;
+}
+/*----------------------------------------------------------------------------*/
+/**
+ * @brief  Get search options from Setting item to widgets.
+ *
+ * @param[out] gw_array  Array with settings widgets
+ * @param[in]  st_setts  Setting item with list of options
+ * @return     none
+ */
+static void
+set_search_opts (GtkWidget **gw_array,
+                 Setting    *st_setts)
+{
+    Setting *st_set  = NULL;
+    Setting *st_item = NULL;
+
+    st_set = setting_get_child (settings_find (st_setts,
+                                               ww_opts (WEB_WIDGET_WALLABYSS)));
+
+    if (st_set == NULL) {
+        return;
+    }
+#ifdef DEBUG
+    settings_print (st_set);
+#endif
+    if ((st_item = settings_find (st_set, s_opts[GW_WIDTH])) != NULL) {
+        gtk_spin_button_set_value (GTK_SPIN_BUTTON (gw_array[GW_WIDTH]),
+                                   (double) setting_get_int (st_item));
+#ifdef DEBUG
+        printf ("set : %s %ld\n",
+                s_opts[GW_WIDTH], setting_get_int (st_item));
+#endif
+    }
+    if ((st_item = settings_find (st_set, s_opts[GW_HEIGHT])) != NULL) {
+        gtk_spin_button_set_value (GTK_SPIN_BUTTON (gw_array[GW_HEIGHT]),
+                                   (double) setting_get_int (st_item));
+#ifdef DEBUG
+        printf ("set : %s %ld\n",
+                s_opts[GW_HEIGHT], setting_get_int (st_item));
+#endif
+    }
+}
+/*----------------------------------------------------------------------------*/
+/**
+ * @brief  Get search options from widgets to Setting item.
+ *
+ * @param[in,out] gw_array  Array with settings widgets
+ * @return        Setting items with search options
+ */
+static Setting *
+get_search_opts (GtkWidget **gw_array)
+{
+    Setting *st_sett = NULL;
+    int      i_valw  = 0;
+    int      i_valh  = 0;
+
+    i_valw = gtk_spin_button_get_value_as_int (
+             GTK_SPIN_BUTTON (gw_array[GW_WIDTH]));
+    i_valh = gtk_spin_button_get_value_as_int (
+             GTK_SPIN_BUTTON (gw_array[GW_HEIGHT]));
+
+    if (i_valw > 0 && i_valh > 0) {
+        st_sett = setting_new_int (s_opts[GW_WIDTH], i_valw);
+        settings_append (st_sett, setting_new_int (s_opts[GW_HEIGHT], i_valh));
+    }
+    return st_sett;
+}
+/*----------------------------------------------------------------------------*/
+/**
+ * @brief  Options for image search dialog.
+ */
+char *
+wallpaperabyss_search_opts_dialog (WebWidget *ww_widget)
+{
+    GtkAdjustment *ga_adjust1;         /* Adjustment for width spinbutton */
+    GtkAdjustment *ga_adjust2;         /* Adjustment for height spinbutton */
+    GtkWidget     *gw_array[GW_CNT];   /* Array with widgets */
+    GtkWidget     *gw_dialog;          /* Pixbay settings dialog */
+    GtkWidget     *gw_content_box;     /* Dialog's box */
+    GtkWidget     *gw_box;             /* Box for widgets */
+    GtkWidget     *gw_hbox;            /* Horizontal box for widgets */
+    Setting       *st_settings = NULL; /* Settings */
+    char          *s_res       = NULL; /* Result string */
+    int            i_err       = 0;    /* Error output */
+    int            i_res       = 0;    /* Dialog result */
+
+    GtkDialogFlags flags = GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT;
+
+    ga_adjust1 = gtk_adjustment_new (0.0, 0.0, 10000.0, 1.0, 100.0, 0.0);
+    ga_adjust2 = gtk_adjustment_new (0.0, 0.0, 10000.0, 1.0, 100.0, 0.0);
+
+    gw_dialog = gtk_dialog_new_with_buttons ("Wallpaper Abyss search options",
+                                             NULL,
+                                             flags,
+                                             "_OK",
+                                             GTK_RESPONSE_ACCEPT,
+                                             "_Cancel",
+                                             GTK_RESPONSE_REJECT,
+                                             NULL);
+
+    gw_content_box = gtk_dialog_get_content_area (GTK_DIALOG (gw_dialog));
+    gtk_container_set_border_width (GTK_CONTAINER (gw_content_box), 8);
+    gw_hbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 8);
+
+    /* Min image width and height */
+    gw_array[GW_WIDTH]  = gtk_spin_button_new (ga_adjust1, 1.0, 0);
+    gw_array[GW_HEIGHT] = gtk_spin_button_new (ga_adjust2, 1.0, 0);
+    gtk_widget_set_tooltip_text (gw_array[GW_WIDTH],
+          "Image width. If 0 value is set, all widths are allowed.");
+    gtk_widget_set_tooltip_text (gw_array[GW_HEIGHT],
+          "Image height. If 0 value is set, all heights are allowed.");
+    gw_box = gtk_box_new (GTK_ORIENTATION_VERTICAL, 8);
+    gtk_box_pack_start (GTK_BOX (gw_box),
+                        gtk_label_new ("Image width:"),
+                        FALSE, FALSE, 4);
+    gtk_box_pack_start (GTK_BOX (gw_box),
+                        gw_array[GW_WIDTH],
+                        FALSE, FALSE, 4);
+    gtk_box_pack_start (GTK_BOX (gw_hbox), gw_box, FALSE, FALSE, 4);
+
+    gw_box = gtk_box_new (GTK_ORIENTATION_VERTICAL, 8);
+    gtk_box_pack_start (GTK_BOX (gw_box),
+                        gtk_label_new ("Image height:"),
+                        FALSE, FALSE, 4);
+    gtk_box_pack_start (GTK_BOX (gw_box),
+                        gw_array[GW_HEIGHT],
+                        FALSE, FALSE, 4);
+    gtk_box_pack_start (GTK_BOX (gw_hbox), gw_box, FALSE, FALSE, 4);
+
+    gtk_box_pack_start (GTK_BOX (gw_content_box), gw_hbox, FALSE, FALSE, 4);
+
+    st_settings = setts_read (ww_widget->s_cfg_file, &i_err);
+    set_search_opts (gw_array, setting_get_child (st_settings));
+    settings_free_all (st_settings);
+
+    gtk_widget_show_all (gw_content_box);
+
+    i_res = gtk_dialog_run (GTK_DIALOG (gw_dialog));
+
+    if (i_res == GTK_RESPONSE_ACCEPT) {
+        st_settings = setting_new_setting (ww_opts (WEB_WIDGET_WALLABYSS));
+
+        setting_add_child (st_settings, get_search_opts (gw_array));
+#ifdef DEBUG
+        settings_print (st_settings);
+#endif
+        setts_check_update_file (ww_widget->s_cfg_file, st_settings);
+        s_res = search_opts_to_str (setting_get_child (st_settings));
+        settings_free_all (st_settings);
+    }
+    else {
+        s_res = NULL;
+    }
+    gtk_widget_destroy (gw_dialog);
+
+    return s_res;
 }
 /*----------------------------------------------------------------------------*/
 

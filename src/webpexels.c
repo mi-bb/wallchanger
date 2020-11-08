@@ -41,12 +41,6 @@
 #include "webpexels.h"
 /*----------------------------------------------------------------------------*/
 /**
- * @def   SERV_NAME
- * @brief Service name
- */
-#define SERV_NAME "Pexels" 
-/*----------------------------------------------------------------------------*/
-/**
  * @brief  Extract base image name from image url.
  *
  * @param[in] s_url  Url to process
@@ -158,7 +152,7 @@ pexels_json_obj_to_searchitem (json_object *j_obj)
 
     SearchItem *si_item = searchitem_new ();
 
-    searchitem_set_service_name (si_item, SERV_NAME);
+    searchitem_set_service_name (si_item, ww_name (WEB_WIDGET_PEXELS));
 
     if (json_object_object_get_ex (j_obj, "id", &j_val) &&
         json_object_get_type (j_val) == json_type_int) {
@@ -281,7 +275,7 @@ pexels_json_to_webwidget (const char *s_buff,
                     add_searchitem_to_img_view (ww_widget->gw_img_view,
                                                 si_item,
                                                 ww_widget->s_wallp_dir,
-                                                SERV_NAME,
+                                                ww_name (WEB_WIDGET_PEXELS),
                                                 ww_widget->i_thumb_quality);
                     cachequery_append_item (cq_query, si_item);
                 }
@@ -303,10 +297,10 @@ pexels_search (WebWidget         *ww_widget,
     char       *s_query      = NULL; /* For search query */
     int         i_err        = 0;    /* Error output */
 
-    if (str_is_empty_msg (fs_data->s_str1, SERV_NAME " API key is not set"))
+    if (str_is_empty_msg (fs_data->s_str1, "Pexels API key is not set"))
         return;
     /* Check if there is a cached info about this search query */
-    if (check_for_cached_query (ww_widget, SERV_NAME))
+    if (check_for_cached_query (ww_widget, ww_name (WEB_WIDGET_PEXELS)))
         return;
 
     s_query = str_replace_in (ww_widget->s_query, " ", "+");
@@ -319,7 +313,7 @@ pexels_search (WebWidget         *ww_widget,
         message_dialog_error (NULL, ud_data->errbuf);
     }
     else if (urldata_full (ud_data)) {
-        cq_query = cachequery_new (SERV_NAME,
+        cq_query = cachequery_new (ww_name (WEB_WIDGET_PEXELS),
                                    ww_widget->s_query,
                                    ww_widget->s_search_opts,
                                    ww_widget->i_page);
@@ -354,7 +348,7 @@ pexels_settings_dialog (FourStrings *fs_data)
 
     GtkDialogFlags flags = GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT;
 
-    gw_dialog = gtk_dialog_new_with_buttons (SERV_NAME " configuration",
+    gw_dialog = gtk_dialog_new_with_buttons ("Pexels configuration",
                                              NULL,
                                              flags,
                                              "_OK",
@@ -372,7 +366,7 @@ pexels_settings_dialog (FourStrings *fs_data)
 
     /* Packing dialog widgets */
     gtk_box_pack_start (GTK_BOX (gw_content_box),
-                        gtk_label_new (SERV_NAME " API key:"),
+                        gtk_label_new ("Pexels API key:"),
                         FALSE, FALSE, 4);
     gtk_box_pack_start (GTK_BOX (gw_content_box),
                         gw_api_entry,
@@ -417,8 +411,8 @@ set_search_opts (GtkWidget *gw_per_page,
     Setting *st_set  = NULL;
     Setting *st_item = NULL;
 
-    st_set = setting_get_child (settings_find (st_setts, SERV_NAME "_opts"));
-
+    st_set = setting_get_child (settings_find (st_setts,
+                                               ww_opts (WEB_WIDGET_PEXELS)));
     if (st_set == NULL) {
         return;
     }
@@ -472,7 +466,7 @@ pexels_search_opts_dialog (WebWidget *ww_widget)
 
     ga_adjust1 = gtk_adjustment_new (12.0, 1.0, 80.0, 1.0, 2.0, 0.0);
 
-    gw_dialog = gtk_dialog_new_with_buttons (SERV_NAME " search options",
+    gw_dialog = gtk_dialog_new_with_buttons ("Pexels search options",
                                              NULL,
                                              flags,
                                              "_OK",
@@ -505,7 +499,7 @@ pexels_search_opts_dialog (WebWidget *ww_widget)
     i_res = gtk_dialog_run (GTK_DIALOG (gw_dialog));
 
     if (i_res == GTK_RESPONSE_ACCEPT) {
-        st_settings = setting_new_setting (SERV_NAME "_opts");
+        st_settings = setting_new_setting (ww_opts (WEB_WIDGET_PEXELS));
 
         setting_add_child (st_settings, get_search_opts (gw_per_page));
 #ifdef DEBUG

@@ -13,6 +13,23 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+2020-11-08  Michal Babik  <michal.babik@pm.me>
+
+	* dirlist.c dirlist.h (dirlist_get_directory_size): renamed to
+	  dirlist_get_dir_size.
+	  (dirlist_delete_directory_content): renamed to
+	  dirlist_delete_dir_content.
+	* imgs.c, imgs.h: Added Wallpaper Abyss logo.
+	* rwdt.c, rwdt.h (read_file_data): Changed type of i_hash to
+	  uint_fast32_t.
+	* setts.c, setts.h: Added Wallpaper Abyss API saving and getting.
+	* urldata.c, urldata.h (urldata_search_wallabyss): New function for
+	  searching on Wallpaer Abyss.
+	* wcngdmn.c (main): Added ui_sleep for storing sleep value.
+	* webabyss.c, webabyss.h: New files used for searching wallpapers on
+	  Wallpaper Abyss site.
+	* webwidget.c, webwidget_c.c: Added support for Wallpaper Abyss.
+
 2020-10-26  Michal Babik  <michal.babik@pm.me>
 
 	* chquery.c (cachequery_check_query, cachequery_save): Change in

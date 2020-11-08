@@ -67,7 +67,15 @@ enum e_img_list_columns {
  * @param[in] i_site  Site id
  * @return    String with webwidget name
  */
-const char * ww_name (const int i_site);
+const char * ww_name (const int i_site) __attribute__ ((const));
+/*----------------------------------------------------------------------------*/
+/**
+ * @brief  Get webwidget options name.
+ *
+ * @param[in] i_site  Site id
+ * @return    String with webwidget name
+ */
+const char * ww_opts (const int i_site) __attribute__ ((const));
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Check if string s_str is null or empty and show message s_msg

@@ -41,12 +41,6 @@
 #include "webwallhaven.h"
 /*----------------------------------------------------------------------------*/
 /**
- * @def   SERV_NAME
- * @brief Service name
- */
-#define SERV_NAME "Wallhaven" 
-/*----------------------------------------------------------------------------*/
-/**
  * @brief  Enum with available search options.
  */
 enum e_options {
@@ -119,15 +113,12 @@ wallhaven_process_item_set_names (SearchItem *si_item)
     else if (si_item->s_image_url == NULL)
         return;
 
-    /* Base name made of picture url */
-    //s_base_name = si_item->s_id;
-
     /* Create file name, add image extension to base name */
     s_ext = strrchr (si_item->s_image_url, '.');
     if (s_ext != NULL) {
-        s_file_name = str_comb (SERV_NAME "_", si_item->s_id);
+        s_file_name = str_comb (ww_name (WEB_WIDGET_WALLHAVEN), "_");
+        str_append (&s_file_name, si_item->s_id);
         str_append (&s_file_name, s_ext);
-        //s_file_name = str_comb (s_base_name, s_ext);
     }
     /* Display name to show on image list */
     s_disp_name = si_item->s_id;
@@ -156,7 +147,7 @@ wallhaven_json_obj_to_searchitem (json_object *j_obj)
 
     SearchItem *si_item = searchitem_new ();
 
-    searchitem_set_service_name (si_item, SERV_NAME);
+    searchitem_set_service_name (si_item, ww_name (WEB_WIDGET_WALLHAVEN));
 
     if (json_object_object_get_ex (j_obj, "id", &j_val) &&
         json_object_get_type (j_val) == json_type_string) {
@@ -274,7 +265,7 @@ wallhaven_json_to_webwidget (const char *s_buff,
                     add_searchitem_to_img_view (ww_widget->gw_img_view,
                                                 si_item,
                                                 ww_widget->s_wallp_dir,
-                                                SERV_NAME,
+                                                ww_name (WEB_WIDGET_WALLHAVEN),
                                                 ww_widget->i_thumb_quality);
                     cachequery_append_item (cq_query, si_item);
                 }
@@ -296,11 +287,11 @@ wallhaven_search (WebWidget         *ww_widget,
     char       *s_query  = NULL; /* For search query */
     int         i_err    = 0;    /* Error output */
 
-    if (str_is_empty_msg (fs_data->s_str1, SERV_NAME " API key is not set"))
+    if (str_is_empty_msg (fs_data->s_str1, "Wallhaven API key is not set"))
         return;
 
     /* Check if there is a cached info about this search query */
-    if (check_for_cached_query (ww_widget, SERV_NAME))
+    if (check_for_cached_query (ww_widget, ww_name (WEB_WIDGET_WALLHAVEN)))
         return;
 
     s_query = str_replace_in (ww_widget->s_query, " ", "+");
@@ -313,7 +304,7 @@ wallhaven_search (WebWidget         *ww_widget,
         message_dialog_error (NULL, ud_data->errbuf);
     }
     else if (urldata_full (ud_data)) {
-        cq_query = cachequery_new (SERV_NAME,
+        cq_query = cachequery_new (ww_name (WEB_WIDGET_WALLHAVEN),
                                    ww_widget->s_query,
                                    ww_widget->s_search_opts,
                                    ww_widget->i_page);
@@ -348,7 +339,7 @@ wallhaven_settings_dialog (FourStrings *fs_data)
 
     GtkDialogFlags flags = GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT;
 
-    gw_dialog = gtk_dialog_new_with_buttons (SERV_NAME " configuration",
+    gw_dialog = gtk_dialog_new_with_buttons ("Wallhaven configuration",
                                              NULL,
                                              flags,
                                              "_OK",
@@ -366,7 +357,7 @@ wallhaven_settings_dialog (FourStrings *fs_data)
 
     /* Packing dialog widgets */
     gtk_box_pack_start (GTK_BOX (gw_content_box),
-                        gtk_label_new (SERV_NAME " API key:"),
+                        gtk_label_new ("Wallhaven API key:"),
                         FALSE, FALSE, 4);
     gtk_box_pack_start (GTK_BOX (gw_content_box),
                         gw_api_entry,
@@ -414,7 +405,8 @@ set_search_opts (GtkWidget **gw_array,
     const char *s_val   = NULL;
     int i = 0;
 
-    st_set = setting_get_child (settings_find (st_setts, SERV_NAME "_opts"));
+    st_set = setting_get_child (settings_find (st_setts,
+                                               ww_opts (WEB_WIDGET_WALLHAVEN)));
 
     if (st_set == NULL) {
         return;
@@ -600,7 +592,7 @@ wallhaven_search_opts_dialog (WebWidget *ww_widget)
 
     GtkDialogFlags flags = GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT;
 
-    gw_dialog = gtk_dialog_new_with_buttons (SERV_NAME " search options",
+    gw_dialog = gtk_dialog_new_with_buttons ("Wallhaven search options",
                                              NULL,
                                              flags,
                                              "_OK",
@@ -635,7 +627,6 @@ wallhaven_search_opts_dialog (WebWidget *ww_widget)
     gtk_check_menu_item_set_active (
             GTK_CHECK_MENU_ITEM (gw_array[GW_CATEG3]), TRUE);
     gtk_menu_button_set_popup (GTK_MENU_BUTTON (gw_mbutton), gw_menu);
-    //gtk_menu_button_set_direction (GTK_MENU_BUTTON (gw_mbutton), GTK_ARROW_UP);
     gtk_box_pack_start (GTK_BOX (gw_box), gw_mbutton, FALSE, FALSE, 4);
 
     /* Purity */
@@ -659,7 +650,6 @@ wallhaven_search_opts_dialog (WebWidget *ww_widget)
     gtk_check_menu_item_set_active (
             GTK_CHECK_MENU_ITEM (gw_array[GW_PURITY3]), FALSE);
     gtk_menu_button_set_popup (GTK_MENU_BUTTON (gw_mbutton), gw_menu);
-    //gtk_menu_button_set_direction (GTK_MENU_BUTTON (gw_mbutton), GTK_ARROW_UP);
     gtk_box_pack_start (GTK_BOX (gw_box), gw_mbutton, FALSE, FALSE, 4);
 
     gtk_box_pack_start (GTK_BOX (gw_hbox), gw_box, FALSE, FALSE, 4);
@@ -784,7 +774,7 @@ wallhaven_search_opts_dialog (WebWidget *ww_widget)
     i_res = gtk_dialog_run (GTK_DIALOG (gw_dialog));
 
     if (i_res == GTK_RESPONSE_ACCEPT) {
-        st_settings = setting_new_setting (SERV_NAME "_opts");
+        st_settings = setting_new_setting (ww_opts (WEB_WIDGET_WALLHAVEN));
 
         setting_add_child (st_settings, get_search_opts (gw_array));
 #ifdef DEBUG
@@ -802,5 +792,4 @@ wallhaven_search_opts_dialog (WebWidget *ww_widget)
     return s_res;
 }
 /*----------------------------------------------------------------------------*/
-
 
