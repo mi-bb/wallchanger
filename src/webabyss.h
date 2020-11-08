@@ -1,5 +1,5 @@
 /**
- * @file  dirlist.h
+ * @file  webabyss.h
  * @copyright Copyright (C) 2019-2020 Michał Bąbik
  *
  * This file is part of Wall Changer.
@@ -17,41 +17,42 @@
  * You should have received a copy of the GNU General Public License
  * along with Wall Changer.  If not, see <https://www.gnu.org/licenses/>.
  *
- * @brief  Getting directory content functions
+ * @brief  Settings for searching the Wallpaper Abyss website.
  *
  * @author Michal Babik <michal.babik@pm.me>
  */
-#ifndef DIRLIST_H
-#define DIRLIST_H
+#ifndef WEBABYSS_H
+#define WEBABYSS_H
 
-#include <gmodule.h>
+#include "fourstrings.h"
+#include "webwidget_s.h"
 /*----------------------------------------------------------------------------*/
 /**
- * @brief  Get list of files in a directory, filter out non images and
- *         return list in GList format.
+ * @brief  Search in Wallpaper Abyss database.
  *
- * @param[in]  s_dir  Directory path to scan
- * @return     GList with file names 
+ * @param[in,out] ww_widget  WebWidget with widgets and search data
+ * @param[in]     fs_data    Four strings with API keys
+ * @return        none
  */
-GList * get_dir_content_filter_images   (const char *s_dir)
-                                         __attribute__ ((nonnull (1)));
+void   wallpaperabyss_search             (WebWidget         *ww_widget,
+                                          const FourStrings *fs_data);
 /*----------------------------------------------------------------------------*/
 /**
- * @brief  Get size of all files in a directory.
+ * @brief  Dialog with Wallpaper Abyss service settings.
  *
- * @param[in]  s_path  Directory path to scan
- * @return     Size of files in folder
+ * @param[in,out] fs_data  Four strings to get and write API keys
+ * @return        Dialog response
  */
-goffset dirlist_get_dir_size            (const char *s_path)
-                                         __attribute__ ((nonnull (1)));
+int    wallpaperabyss_settings_dialog    (FourStrings       *fs_data);
 /*----------------------------------------------------------------------------*/
 /**
- * @brief  Delete files in given directory.
+ * @brief  Options for image search dialog.
  *
- * @param[in]  s_path  Directory path to scan
- * @return     none
+ * @param[in,out] ww_widget  WebWidget with widgets and search data
+ * @return        String with image options. After use it should be freed
+ *                using free.
  */
-void dirlist_delete_dir_content         (const char *s_path);
+char * wallpaperabyss_search_opts_dialog (WebWidget         *ww_widget);
 /*----------------------------------------------------------------------------*/
 #endif
 

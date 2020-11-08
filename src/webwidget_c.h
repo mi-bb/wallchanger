@@ -1,5 +1,5 @@
 /**
- * @file  webwidget_common.h
+ * @file  webwidget_c.h
  * @copyright Copyright (C) 2019-2020 Michał Bąbik
  *
  * This file is part of Wall Changer.
@@ -30,6 +30,20 @@
 #include "searchitem.h"
 /*----------------------------------------------------------------------------*/
 /**
+ * @brief  Numbers of image search services.
+ */
+enum e_wall_sites {
+    WEB_WIDGET_PEXELS,    /**< Pexels */
+    WEB_WIDGET_PIXBAY,    /**< Pixbay */
+    WEB_WIDGET_WALLHAVEN, /**< Wallhaven */
+    WEB_WIDGET_WALLABYSS, /**< Wallpaper Abyss */
+#ifdef HAVE_FLICKCURL
+    WEB_WIDGET_FLICKR,    /**< Flickr */
+#endif
+    WEB_WIDGET_CNT        /**< Services count */
+};
+/*----------------------------------------------------------------------------*/
+/**
  * @brief  Image list columns
  */
 enum e_img_list_columns {
@@ -46,6 +60,14 @@ enum e_img_list_columns {
     WEB_COL_THUMB_URL, /**< Thumbnail url */
     WEB_NUM_CNT        /**< Column count */
 };
+/*----------------------------------------------------------------------------*/
+/**
+ * @brief  Get webwidget name.
+ *
+ * @param[in] i_site  Site id
+ * @return    String with webwidget name
+ */
+const char * ww_name (const int i_site);
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Check if string s_str is null or empty and show message s_msg

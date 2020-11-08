@@ -40,9 +40,9 @@
  * @brief  Read some data from file.
  */
 char *
-read_file_data (const char  *s_fname,
-                int         *i_err,
-                int         *i_hash)
+read_file_data (const char    *s_fname,
+                int           *i_err,
+                uint_fast32_t  *i_hash)
 {
     char   *s_buff = NULL; /* Result data from file */
     FILE   *f_file;        /* Data file */

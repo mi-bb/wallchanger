@@ -1,5 +1,5 @@
 /**
- * @file  webwidget_common.c
+ * @file  webwidget_c.c
  * @copyright Copyright (C) 2019-2020 Michał Bąbik
  *
  * This file is part of Wall Changer.
@@ -30,6 +30,31 @@
 #include "chquery.h"
 #include "strfun.h"
 #include "webwidget_c.h"
+/*----------------------------------------------------------------------------*/
+/**
+ * @brief  Get webwidget name.
+ */
+const char *
+ww_name (const int i_site)
+{
+    switch (i_site) {
+        case WEB_WIDGET_PEXELS:
+            return "Pexels";
+        case WEB_WIDGET_PIXBAY:
+            return "Pixbay";
+        case WEB_WIDGET_WALLHAVEN:
+            return "Wallhaven";
+        case WEB_WIDGET_WALLABYSS:
+            return "WallpaperAbyss";
+#ifdef HAVE_FLICKCURL
+        case WEB_WIDGET_FLICKR:
+            return "Flickr";
+#endif
+        default:
+            break;
+    }
+    return NULL;
+}
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Check if string s_txt is null or empty and show message s_msg

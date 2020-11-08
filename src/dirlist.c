@@ -308,7 +308,7 @@ enumerate_folder_delete (GFile    *gf_dir,
  * @brief  Get size of all files in a directory.
  */
 goffset
-dirlist_get_directory_size (const char *s_path)
+dirlist_get_dir_size (const char *s_path)
 {
     GFile   *g_path;
     goffset  i_size = 0;
@@ -326,7 +326,7 @@ dirlist_get_directory_size (const char *s_path)
  * @brief  Delete files in given directory.
  */
 void
-dirlist_delete_directory_content (const char *s_path)
+dirlist_delete_dir_content (const char *s_path)
 {
     GFile   *g_path;
 

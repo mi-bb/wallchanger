@@ -39,6 +39,7 @@
 #include "webpexels.h"
 #include "webpixbay.h"
 #include "webwallhaven.h"
+#include "webabyss.h"
 #include "webflickr.h"
 #include "chquery.h"
 #include "webwidget.h"
@@ -416,6 +417,9 @@ search_web (WebWidget *ww_widget)
         case WEB_WIDGET_WALLHAVEN:
             wallhaven_search (ww_widget, fs_data);
             break;
+        case WEB_WIDGET_WALLABYSS:
+            wallpaperabyss_search (ww_widget, fs_data);
+            break;
 #ifdef HAVE_FLICKCURL
         case WEB_WIDGET_FLICKR:
             flickr_search (ww_widget, fs_data);
@@ -478,6 +482,9 @@ event_search_opts_pressed (WebWidget *ww_widget)
             break;
         case WEB_WIDGET_WALLHAVEN:
             s_search_opts = wallhaven_search_opts_dialog (ww_widget);
+            break;
+        case WEB_WIDGET_WALLABYSS:
+            //s_search_opts = wallpaperabyss_search_opts_dialog (ww_widget);
             break;
 #ifdef HAVE_FLICKCURL
         case WEB_WIDGET_FLICKR:
@@ -613,6 +620,22 @@ event_settings_pressed (WebWidget *ww_widget)
                                       fs_data->s_str1);
 
                 i_err = setts_update_wallhaven_api (ww_widget->s_cfg_file,
+                                                    fs_data->s_str1);
+                if (i_err != ERR_OK) {
+                    message_dialog_error (NULL, err_get_message (i_err));
+                }
+            }
+            break;
+        case WEB_WIDGET_WALLABYSS:
+            combo_get_active_strings (ww_widget->gw_combo, fs_data);
+
+            i_res = wallpaperabyss_settings_dialog (fs_data);
+
+            if (i_res == GTK_RESPONSE_ACCEPT) {
+                combo_set_active_str (ww_widget->gw_combo, WW_COMBO_STR_1,
+                                      fs_data->s_str1);
+
+                i_err = setts_update_wallabyss_api (ww_widget->s_cfg_file,
                                                     fs_data->s_str1);
                 if (i_err != ERR_OK) {
                     message_dialog_error (NULL, err_get_message (i_err));
@@ -797,6 +820,9 @@ refresh_service_opts (WebWidget *ww_widget)
             case WEB_WIDGET_WALLHAVEN:
                 s_search_opts = search_opts_to_str (st_item);
                 break;
+            case WEB_WIDGET_WALLABYSS:
+                s_search_opts = search_opts_to_str (st_item);
+                break;
             default:
                 break;
         }
@@ -858,6 +884,7 @@ webwidget_combobox_create (Setting *st_settings)
     const char      *s_pexels_api  = NULL; /* Pexels API key */
     const char      *s_pixbay_api  = NULL; /* Pixbay API key */
     const char      *s_wallha_api  = NULL; /* Wallhaven API key */
+    const char      *s_wallab_api  = NULL; /* Wallpaer Abyss API key */
     Setting         *st_s1;                /* For individual setting */
 #ifdef HAVE_FLICKCURL
     const char      *s_flickr_key  = NULL; /* Flickr key */
@@ -889,7 +916,7 @@ webwidget_combobox_create (Setting *st_settings)
     gtk_list_store_append (list_store, &iter);
     gtk_list_store_set (list_store, &iter,
                         WW_COMBO_ID,    WEB_WIDGET_PEXELS,
-                        WW_COMBO_NAME,  "Pexels",
+                        WW_COMBO_NAME,  ww_name (WEB_WIDGET_PEXELS),
                         WW_COMBO_STR_1, s_pexels_api,
                         WW_COMBO_STR_2, "",
                         WW_COMBO_STR_3, "",
@@ -909,7 +936,7 @@ webwidget_combobox_create (Setting *st_settings)
     gtk_list_store_append (list_store, &iter);
     gtk_list_store_set (list_store,     &iter,
                         WW_COMBO_ID,    WEB_WIDGET_PIXBAY,
-                        WW_COMBO_NAME,  "Pixbay",
+                        WW_COMBO_NAME,  ww_name (WEB_WIDGET_PIXBAY),
                         WW_COMBO_STR_1, s_pixbay_api,
                         WW_COMBO_STR_2, "",
                         WW_COMBO_STR_3, "",
@@ -917,19 +944,39 @@ webwidget_combobox_create (Setting *st_settings)
                         WW_COMBO_LOGO,  gp_logo,
                         -1);
     g_object_unref (gp_logo);
+
     /* Get Wallhaven API string */
     st_s1 = setting_find_child (st_settings,
                                 get_setting_name (SETT_WALLHAVEN_API));
 
     s_wallha_api = st_s1 == NULL ? "" : setting_get_string (st_s1);
 
-    gp_logo = get_image (W_LOGO_PIXBAY);
+    gp_logo = get_image (W_LOGO_WALLHAVEN);
 
     gtk_list_store_append (list_store, &iter);
     gtk_list_store_set (list_store,     &iter,
                         WW_COMBO_ID,    WEB_WIDGET_WALLHAVEN,
-                        WW_COMBO_NAME,  "Wallhaven",
+                        WW_COMBO_NAME,  ww_name (WEB_WIDGET_WALLHAVEN),
                         WW_COMBO_STR_1, s_wallha_api,
+                        WW_COMBO_STR_2, "",
+                        WW_COMBO_STR_3, "",
+                        WW_COMBO_STR_4, "",
+                        WW_COMBO_LOGO,  gp_logo,
+                        -1);
+    g_object_unref (gp_logo);
+
+    /* Get Wallpaper Abyss API string */
+    st_s1 = setting_find_child (st_settings,
+                                get_setting_name (SETT_WALLABYSS_API));
+
+    s_wallab_api = st_s1 == NULL ? "" : setting_get_string (st_s1);
+    gp_logo = get_image (W_LOGO_WALLABYSS);
+
+    gtk_list_store_append (list_store, &iter);
+    gtk_list_store_set (list_store,     &iter,
+                        WW_COMBO_ID,    WEB_WIDGET_WALLABYSS,
+                        WW_COMBO_NAME,  ww_name (WEB_WIDGET_WALLABYSS),
+                        WW_COMBO_STR_1, s_wallab_api,
                         WW_COMBO_STR_2, "",
                         WW_COMBO_STR_3, "",
                         WW_COMBO_STR_4, "",
@@ -960,7 +1007,7 @@ webwidget_combobox_create (Setting *st_settings)
     gtk_list_store_append (list_store, &iter);
     gtk_list_store_set (list_store,     &iter,
                         WW_COMBO_ID,    WEB_WIDGET_FLICKR,
-                        WW_COMBO_NAME,  "Flickr",
+                        WW_COMBO_NAME,  ww_name (WEB_WIDGET_FLICKR),
                         WW_COMBO_STR_1, s_flickr_key,
                         WW_COMBO_STR_2, s_flickr_sec,
                         WW_COMBO_STR_3, s_flickr_acct,
@@ -969,7 +1016,6 @@ webwidget_combobox_create (Setting *st_settings)
                         -1);
     g_object_unref (gp_logo);
 #endif
-
     gw_combo = gtk_combo_box_new_with_model (GTK_TREE_MODEL (list_store));
 
     g_object_unref (G_OBJECT (list_store));
@@ -1085,6 +1131,8 @@ event_imgview_activated (GtkIconView *iconview,
             gp_logo = get_image (W_LOGO_PIXBAY);
         else if (ww_widget->i_active_service == WEB_WIDGET_WALLHAVEN)
             gp_logo = get_image (W_LOGO_WALLHAVEN);
+        else if (ww_widget->i_active_service == WEB_WIDGET_WALLABYSS)
+            gp_logo = get_image (W_LOGO_WALLABYSS);
 #ifdef HAVE_FLICKCURL
         else if (ww_widget->i_active_service == WEB_WIDGET_FLICKR)
             gp_logo = get_image (W_LOGO_FLICKR);
@@ -1259,18 +1307,19 @@ webwidget_create (Setting    *st_settings,
     GtkWidget *gw_selected_combo;
     GtkWidget *gw_img;
     GdkPixbuf *gp_pbuf = NULL;
-    Setting *st_sett = NULL;
+    Setting   *st_sett = NULL;
 
     if ((ww_widget = malloc (sizeof (WebWidget))) == NULL)
         err (EXIT_FAILURE, NULL);
 
     webwidget_init (ww_widget);
 
-    cachequery_delete_older_than ("Pexels",    1);
-    cachequery_delete_older_than ("Pixbay",    1);
-    cachequery_delete_older_than ("Wallhaven", 1);
+    cachequery_delete_older_than (ww_name (WEB_WIDGET_PEXELS),    1);
+    cachequery_delete_older_than (ww_name (WEB_WIDGET_PIXBAY),    1);
+    cachequery_delete_older_than (ww_name (WEB_WIDGET_WALLHAVEN), 1);
+    cachequery_delete_older_than (ww_name (WEB_WIDGET_WALLABYSS), 1);
 #ifdef HAVE_FLICKCURL
-    cachequery_delete_older_than ("Flickr",    1);
+    cachequery_delete_older_than (ww_name (WEB_WIDGET_FLICKR),    1);
 #endif
 
     if ((st_sett = setting_find_child (st_settings,

@@ -38,7 +38,6 @@
 #include "setting.h"
 #include "urldata.h"
 #include "webwidget_c.h"
-#include "webpexels.h"
 #include "webwallhaven.h"
 /*----------------------------------------------------------------------------*/
 /**
@@ -109,7 +108,7 @@ static const char *s_toprange[] = {
 static void
 wallhaven_process_item_set_names (SearchItem *si_item)
 {
-    char *s_base_name = NULL; /* Base name for processing */
+    //char *s_base_name = NULL; /* Base name for processing */
     char *s_file_name = NULL; /* Name for file to save */
     char *s_disp_name = NULL; /* Name to display on list */
     char *s_ext       = NULL; /* Pointer to extension */
@@ -121,12 +120,14 @@ wallhaven_process_item_set_names (SearchItem *si_item)
         return;
 
     /* Base name made of picture url */
-    s_base_name = si_item->s_id;
+    //s_base_name = si_item->s_id;
 
     /* Create file name, add image extension to base name */
     s_ext = strrchr (si_item->s_image_url, '.');
     if (s_ext != NULL) {
-        s_file_name = str_comb (s_base_name, s_ext);
+        s_file_name = str_comb (SERV_NAME "_", si_item->s_id);
+        str_append (&s_file_name, s_ext);
+        //s_file_name = str_comb (s_base_name, s_ext);
     }
     /* Display name to show on image list */
     s_disp_name = si_item->s_id;

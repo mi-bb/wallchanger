@@ -49,7 +49,7 @@
 /*----------------------------------------------------------------------------*/
 char * read_file_data      (const char    *s_fname,
                             int           *i_err,
-                            int           *i_hash)
+                            uint_fast32_t  *i_hash)
                             __attribute__ ((nonnull (1)));
 
 int    save_file_data      (const char    *s_fname,

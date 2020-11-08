@@ -125,6 +125,20 @@ UrlData * urldata_search_wallhaven (const char *s_query,
                                     const int   i_page);
 /*----------------------------------------------------------------------------*/
 /**
+ * @brief  Search Wallpaper Abyss for images.
+ *
+ * @param[in] s_query        Search query
+ * @param[in] s_search_opts  Search options
+ * @param[in] s_api_key      Wallhaven API key
+ * @param[in] i_page         Results page number
+ * @return    UrlData item with downloaded data or error info
+ */
+UrlData * urldata_search_wallabyss (const char *s_query,
+                                    const char *s_search_opts,
+                                    const char *s_api_key,
+                                    const int   i_page);
+/*----------------------------------------------------------------------------*/
+/**
  * @brief  Check if UrlData's data buffer is not empty.
  *
  * @param[in] ud_data  UrlData item to check

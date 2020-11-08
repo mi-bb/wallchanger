@@ -368,4 +368,62 @@ urldata_search_wallhaven (const char *s_query,
     return ud_data;
 }
 /*----------------------------------------------------------------------------*/
+/**
+ * @brief  Search Wallpaper Abyss for images.
+ */
+UrlData *
+urldata_search_wallabyss (const char *s_query,
+                          const char *s_search_opts,
+                          const char *s_api_key,
+                          const int   i_page)
+{
+    UrlData  *ud_data = NULL;
+    char     *s_url   = NULL;
+    char      s_page[64];
+    CURL     *curl;
+    CURLcode  res;
+    struct curl_slist *list = NULL;
+
+    ud_data = urldata_new ();
+    curl_global_init (CURL_GLOBAL_ALL);
+    curl = curl_easy_init ();
+    if (curl) {
+        sprintf (s_page, "%d", i_page);
+        s_url = str_comb ("https://wall.alphacoders.com/api2.0/get.php?auth=",
+                          s_api_key);
+        str_append (&s_url, "&method=search&term=");
+        str_append (&s_url, s_query);
+        str_append (&s_url, "&info_level=2&page=");
+        str_append (&s_url, s_page);
+        if (s_search_opts != NULL && s_search_opts[0] != '\0')
+            str_append (&s_url, s_search_opts);
+
+        curl_easy_setopt (curl, CURLOPT_URL, s_url);
+        curl_easy_setopt (curl, CURLOPT_WRITEDATA, (void *) ud_data);
+        curl_easy_setopt (curl, CURLOPT_WRITEFUNCTION, url_write);
+#ifdef DEBUG
+        curl_easy_setopt(curl, CURLOPT_VERBOSE, 1L);
+#endif
+ 
+        res = curl_easy_perform (curl);
+ 
+        if (res != CURLE_OK) {
+            ud_data->errbuf = malloc (CURL_ERROR_SIZE * sizeof (char));
+            if (ud_data->errbuf == NULL)
+                err (EXIT_FAILURE, NULL);
+
+            snprintf (ud_data->errbuf, CURL_ERROR_SIZE, "%s",
+                      curl_easy_strerror (res));
+            fprintf(stderr, "curl failed: %s\n", ud_data->errbuf);
+        }
+        curl_slist_free_all (list);
+ 
+        curl_easy_cleanup (curl);
+    }
+    curl_global_cleanup ();
+
+    return ud_data;
+}
+/*----------------------------------------------------------------------------*/
+ 
  

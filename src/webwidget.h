@@ -30,19 +30,6 @@
 #include "setting.h"
 /*----------------------------------------------------------------------------*/
 /**
- * @brief  Numbers of image search services.
- */
-enum e_wall_sites {
-    WEB_WIDGET_PEXELS,    /**< Pexels */
-    WEB_WIDGET_PIXBAY,    /**< Pixbay */
-    WEB_WIDGET_WALLHAVEN, /**< Wallhaven */
-#ifdef HAVE_FLICKCURL
-    WEB_WIDGET_FLICKR,    /**< Flickr */
-#endif
-    WEB_WIDGET_CNT        /**< Services count */
-};
-/*----------------------------------------------------------------------------*/
-/**
  * @brief  Free WebWidget item.
  *
  * @param[out] ww_widget  WebWidget item to free

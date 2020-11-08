@@ -54,6 +54,7 @@ typedef enum IconImg {
     W_LOGO_PEXELS,   /**< Pexels logo */
     W_LOGO_PIXBAY,   /**< Pixbay logo */
     W_LOGO_WALLHAVEN,/**< Wallhaven logo */
+    W_LOGO_WALLABYSS,/**< Wallpaper Abyss logo */
 #ifdef HAVE_FLICKCURL
     W_LOGO_FLICKR,   /**< Flickr logo */
 #endif

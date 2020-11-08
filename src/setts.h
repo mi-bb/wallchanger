@@ -47,6 +47,7 @@ enum e_setting_values {
     SETT_PEXELS_API,     /**< Pexels API key */
     SETT_PIXBAY_API,     /**< Pixbay API key */
     SETT_WALLHAVEN_API,  /**< Wallhaven API key */
+    SETT_WALLABYSS_API,  /**< Wallpaper Abyss API key */
     SETT_FLICKR_CLKEY,   /**< Flickr API key */
     SETT_FLICKR_CLSEC,   /**< Flickr API secret */
     SETT_FLICKR_ACTOK,   /**< Flickr API access token */
@@ -144,6 +145,14 @@ Setting *    setts_read           (const char *s_cfg_file,
  * @param[in] s_cfg_file  Config file path
  * @param[in] s_api_key   String with Wallhaven API key
  * @return    Status of data update
+ *
+ * @fn  int setts_update_wallabyss_api (const char *s_cfg_file,
+ *                                      const char *s_api_key)
+ * @brief  Update Wallpaper Abyss API key
+ *
+ * @param[in] s_cfg_file  Config file path
+ * @param[in] s_api_key   String with Wallhaven API key
+ * @return    Status of data update
  */
 /*----------------------------------------------------------------------------*/
 int setts_update_last_used     (const char *s_cfg_file,
@@ -170,6 +179,9 @@ int setts_update_pixbay_api    (const char *s_cfg_file,
                                 const char *s_api_key);
 
 int setts_update_wallhaven_api (const char *s_cfg_file,
+                                const char *s_api_key);
+
+int setts_update_wallabyss_api (const char *s_cfg_file,
                                 const char *s_api_key);
 /*----------------------------------------------------------------------------*/
 #ifdef HAVE_FLICKCURL

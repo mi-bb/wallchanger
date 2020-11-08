@@ -135,6 +135,10 @@ get_setting_name (const int i_val)
             s_res = "Wallhaven api";
             break;
 
+        case SETT_WALLABYSS_API:
+            s_res = "Wallpaper Abyss api";
+            break;
+
         case SETT_FLICKR_CLKEY:
             s_res = "Flickr client key";
             break;
@@ -249,6 +253,7 @@ setts_check_defaults (Setting *st_settings)
         {SETT_PEXELS_API,     SET_VAL_STRING, 0, 0, ""},
         {SETT_PIXBAY_API,     SET_VAL_STRING, 0, 0, ""},
         {SETT_WALLHAVEN_API,  SET_VAL_STRING, 0, 0, ""},
+        {SETT_WALLABYSS_API,  SET_VAL_STRING, 0, 0, ""},
         {SETT_FLICKR_CLKEY,   SET_VAL_STRING, 0, 0, ""},
         {SETT_FLICKR_CLSEC,   SET_VAL_STRING, 0, 0, ""},
         {SETT_FLICKR_ACTOK,   SET_VAL_STRING, 0, 0, ""},
@@ -408,6 +413,24 @@ setts_update_wallhaven_api (const char *s_cfg_file,
     int       i_res = ERR_OK;
 
     st_settings = setting_new_string (get_setting_name (SETT_WALLHAVEN_API),
+                                      s_api_key);
+
+    i_res = js_settings_check_update_file (st_settings, s_cfg_file);
+    settings_free_all (st_settings);
+    return i_res;
+}
+/*----------------------------------------------------------------------------*/
+/**
+ * @brief  Update Wallpaper Abyss API key
+ */
+int
+setts_update_wallabyss_api (const char *s_cfg_file,
+                            const char *s_api_key)
+{
+    Setting  *st_settings;
+    int       i_res = ERR_OK;
+
+    st_settings = setting_new_string (get_setting_name (SETT_WALLABYSS_API),
                                       s_api_key);
 
     i_res = js_settings_check_update_file (st_settings, s_cfg_file);

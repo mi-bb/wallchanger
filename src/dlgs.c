@@ -27,6 +27,7 @@
 #include "errs.h"
 #include "setts.h"
 #include "defs.h"
+#include "dmfn.h"
 #include "imgs.h"
 #include "iminfo.h"
 #include "wmsfn.h"
@@ -811,7 +812,7 @@ refresh_preview (GtkWidget **gw_array)
                                        "quality", s_qual, NULL)) {
             stream = g_memory_input_stream_new ();
             g_memory_input_stream_add_data (G_MEMORY_INPUT_STREAM (stream),
-                                            s_buffer, ui_bfsize, NULL);
+                                            s_buffer, (gssize) ui_bfsize, NULL);
             gp_jpg = gdk_pixbuf_new_from_stream (stream, NULL, NULL);
             free (s_buffer);
             g_input_stream_close (stream, NULL, NULL);
@@ -841,9 +842,9 @@ event_delete_query_data (GtkWidget **gw_array)
 
     s_path = gtk_label_get_text (
             GTK_LABEL (gw_array[GW_SETT_QUERY_PATH_LABEL]));
-    dirlist_delete_directory_content (s_path);
-    i_size = dirlist_get_directory_size (s_path);
-    s_size = g_format_size (i_size);
+    dirlist_delete_dir_content (s_path);
+    i_size = dirlist_get_dir_size (s_path);
+    s_size = g_format_size ((guint64) i_size);
     gtk_label_set_text (GTK_LABEL (gw_array[GW_SETT_QUERY_SIZE_LABEL]), s_size);
     free (s_size);
 }
@@ -863,9 +864,9 @@ event_delete_thumb_data (GtkWidget **gw_array)
 
     s_path = gtk_label_get_text (
             GTK_LABEL (gw_array[GW_SETT_THUMB_PATH_LABEL]));
-    dirlist_delete_directory_content (s_path);
-    i_size = dirlist_get_directory_size (s_path);
-    s_size = g_format_size (i_size);
+    dirlist_delete_dir_content (s_path);
+    i_size = dirlist_get_dir_size (s_path);
+    s_size = g_format_size ((guint64) i_size);
     gtk_label_set_text (GTK_LABEL (gw_array[GW_SETT_THUMB_SIZE_LABEL]), s_size);
     free (s_size);
 }
@@ -888,8 +889,8 @@ event_delete_wallpapers (GtkWidget **gw_array)
 
         s_path = gtk_label_get_text (
                 GTK_LABEL (gw_array[GW_SETT_WALL_PATH_LABEL]));
-        dirlist_delete_directory_content (s_path);
-        s_size = g_format_size (dirlist_get_directory_size (s_path));
+        dirlist_delete_dir_content (s_path);
+        s_size = g_format_size ((guint64) dirlist_get_dir_size (s_path));
         gtk_label_set_text (GTK_LABEL (gw_array[GW_SETT_WALL_SIZE_LABEL]),
                             s_size);
         free (s_size);
@@ -914,11 +915,12 @@ event_delete_config_files (GtkWidget **gw_array)
 
         s_path = gtk_label_get_text (
                 GTK_LABEL (gw_array[GW_SETT_CONF_PATH_LABEL]));
-        dirlist_delete_directory_content (s_path);
-        s_size = g_format_size (dirlist_get_directory_size (s_path));
+        dirlist_delete_dir_content (s_path);
+        s_size = g_format_size ((guint64) dirlist_get_dir_size (s_path));
         gtk_label_set_text (GTK_LABEL (gw_array[GW_SETT_CONF_SIZE_LABEL]),
                             s_size);
         free (s_size);
+        dmfn_kill ();
         exit (EXIT_SUCCESS);
     }
 }
@@ -991,10 +993,10 @@ other_settings_dialog (GtkWindow  *gw_parent,
     s_query_path = cfgfile_get_query_path ();
     s_conf_path  = cfgfile_get_app_config_path ();
     s_wall_path  = cfgfile_get_app_wallpapers_path ();
-    s_thumb_size = g_format_size (dirlist_get_directory_size (s_thumb_path));
-    s_query_size = g_format_size (dirlist_get_directory_size (s_query_path));
-    s_conf_size  = g_format_size (dirlist_get_directory_size (s_conf_path));
-    s_wall_size  = g_format_size (dirlist_get_directory_size (s_wall_path));
+    s_thumb_size = g_format_size ((guint64) dirlist_get_dir_size (s_thumb_path));
+    s_query_size = g_format_size ((guint64) dirlist_get_dir_size (s_query_path));
+    s_conf_size  = g_format_size ((guint64) dirlist_get_dir_size (s_conf_path));
+    s_wall_size  = g_format_size ((guint64) dirlist_get_dir_size (s_wall_path));
     gw_array[GW_SETT_THUMB_PATH_LABEL] = gtk_label_new (s_thumb_path);
     gw_array[GW_SETT_THUMB_SIZE_LABEL] = gtk_label_new (s_thumb_size);
     gw_array[GW_SETT_QUERY_PATH_LABEL] = gtk_label_new (s_query_path);
@@ -1088,7 +1090,7 @@ other_settings_dialog (GtkWindow  *gw_parent,
     gtk_grid_set_column_spacing (GTK_GRID (gw_grid), 8);
     /* Title */
     gtk_grid_attach (GTK_GRID (gw_grid),
-                     gtk_label_new ("Cache directories"),
+                     gtk_label_new ("Application directories"),
                      0,0,4,1);
     /* Query cache */
     gtk_grid_attach (GTK_GRID (gw_grid),
@@ -1118,7 +1120,8 @@ other_settings_dialog (GtkWindow  *gw_parent,
                      3,3,1,1);
     /* Wallpapers */
     gtk_grid_attach (GTK_GRID (gw_grid),
-                     gtk_label_new ("Application data directories"),
+                     gtk_separator_new (GTK_ORIENTATION_HORIZONTAL),
+                     //gtk_label_new ("Application data directories"),
                      0,4,4,1);
     gtk_grid_attach (GTK_GRID (gw_grid),
                      gtk_label_new ("Wallpapers:"),

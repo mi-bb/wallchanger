@@ -49,6 +49,7 @@ main (int    argc,
       char **argv)
 {
     uint32_t  ui_cnt       = 0;    /* Time align parts counter */
+    uint32_t  ui_sleep     = 0;    /* Sleep time */
     uint32_t  ui_ch_int    = 0;    /* Change interval value */
     uint32_t  ui_ch_int_n  = 0;    /* New change interval value */
     int       i_opt        = 0;    /* Command line options */
@@ -98,6 +99,7 @@ main (int    argc,
         dmfn_daemonize ();
     }
     while (1) {
+        ui_sleep = ui_ch_int;
         /* Time align enabled */
         if (i_atime_opt) {
             /* If counter gets to 0 count time of align sleep and
@@ -105,7 +107,6 @@ main (int    argc,
              * to full hour */
             if (ui_cnt > 0) {
                 --ui_cnt;
-                sleep (ui_ch_int);
             }
             else {
                 ui_atime_val = check_time_align_val ();
@@ -117,13 +118,10 @@ main (int    argc,
                  * it should not get to zero and not count align time */
                 if (ui_ch_int > 3600)
                     ui_cnt = UINT32_MAX;
-                sleep (ui_atime_val);
+                ui_sleep = ui_atime_val;
             }
         }
-        /* Time align disabled */
-        else {
-            sleep (ui_ch_int);
-        }
+        sleep (ui_sleep);
         ui_ch_int_n = check_settings_change_wallpaper (s_cfgfile,
                                                        rm_rand,
                                                        &i_atime_opt);
