@@ -26,6 +26,7 @@
 
 #include <gtk/gtk.h>
 #include "webwidget_s.h"
+#include "fourstrings.h"
 #include "setting.h"
 #include "searchitem.h"
 /*----------------------------------------------------------------------------*/
@@ -67,7 +68,7 @@ enum e_img_list_columns {
  * @param[in] i_site  Site id
  * @return    String with webwidget name
  */
-const char * ww_name (const int i_site) __attribute__ ((const));
+const char * ww_name    (const int i_site) __attribute__ ((const));
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Get webwidget options name.
@@ -75,7 +76,25 @@ const char * ww_name (const int i_site) __attribute__ ((const));
  * @param[in] i_site  Site id
  * @return    String with webwidget name
  */
-const char * ww_opts (const int i_site) __attribute__ ((const));
+const char * ww_opts    (const int i_site) __attribute__ ((const));
+/*----------------------------------------------------------------------------*/
+/**
+ * @brief  Get webwidget logo image id based on webwidget if.
+ *
+ * @param[in] i_site  Site id
+ * @return    Logo id
+ */
+int          ww_logo_id (const int i_site) __attribute__ ((const));
+/*----------------------------------------------------------------------------*/
+/**
+ * @brief  Get API key data of given service from settings.
+ *
+ * @param[in] st_settings  Settings item
+ * @param[in] i_site       Image service id
+ * @return    FourStrings item with API key data
+ */
+FourStrings * ww_get_api_key_data (Setting  *st_settings,
+                                   const int i_site);
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Check if string s_str is null or empty and show message s_msg

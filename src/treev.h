@@ -153,10 +153,9 @@ void treeview_find_select_item  (GtkWidget  *gw_tview,
 /**
  * @brief  Create treeview for image list.
  *
- * @param[out]  gw_tview  Pointer to Treeview to set
- * @return      none
+ * @return Result TreeView
  */
-void create_tview (GtkWidget **gw_tview);
+GtkWidget * create_tview (void);
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Get one file path from wallpaper list.

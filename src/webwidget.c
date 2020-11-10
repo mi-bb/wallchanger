@@ -569,101 +569,70 @@ event_nav_entry_act (GtkWidget *gw_entry,
 static void
 event_settings_pressed (WebWidget *ww_widget)
 {
-    FourStrings *fs_data = NULL; /* Four strings for API key data */
-    int          i_err   = 0;    /* Error output */
-    int          i_id    = 0;    /* Service id */
-    int          i_res   = 0;    /* Dialog result */
+    FourStrings *fs_data = NULL;   /* Four strings for API key data */
+    int          i_err   = ERR_OK; /* Error output */
+    int          i_id    = 0;      /* Service id */
+    int          i_res   = 0;      /* Dialog result */
 
     i_id    = ww_widget->i_active_service;
     fs_data = fourstrings_new ();
 
+    combo_get_active_strings (ww_widget->gw_combo, fs_data);
+
     switch (i_id) {
         case WEB_WIDGET_PEXELS:
-            combo_get_active_strings (ww_widget->gw_combo, fs_data);
-
             i_res = pexels_settings_dialog (fs_data);
 
             if (i_res == GTK_RESPONSE_ACCEPT) {
-                combo_set_active_str (ww_widget->gw_combo, WW_COMBO_STR_1,
-                                      fs_data->s_str1);
-
                 i_err = setts_update_pexels_api (ww_widget->s_cfg_file,
                                                  fs_data->s_str1);
-                if (i_err != ERR_OK) {
-                    message_dialog_error (NULL, err_get_message (i_err));
-                }
             }
             break;
         case WEB_WIDGET_PIXBAY:
-            combo_get_active_strings (ww_widget->gw_combo, fs_data);
-
             i_res = pixbay_settings_dialog (fs_data);
 
             if (i_res == GTK_RESPONSE_ACCEPT) {
-                combo_set_active_str (ww_widget->gw_combo, WW_COMBO_STR_1,
-                                      fs_data->s_str1);
-
                 i_err = setts_update_pixbay_api (ww_widget->s_cfg_file,
                                                  fs_data->s_str1);
-                if (i_err != ERR_OK) {
-                    message_dialog_error (NULL, err_get_message (i_err));
-                }
             }
             break;
         case WEB_WIDGET_WALLHAVEN:
-            combo_get_active_strings (ww_widget->gw_combo, fs_data);
-
             i_res = wallhaven_settings_dialog (fs_data);
 
             if (i_res == GTK_RESPONSE_ACCEPT) {
-                combo_set_active_str (ww_widget->gw_combo, WW_COMBO_STR_1,
-                                      fs_data->s_str1);
-
                 i_err = setts_update_wallhaven_api (ww_widget->s_cfg_file,
                                                     fs_data->s_str1);
-                if (i_err != ERR_OK) {
-                    message_dialog_error (NULL, err_get_message (i_err));
-                }
             }
             break;
         case WEB_WIDGET_WALLABYSS:
-            combo_get_active_strings (ww_widget->gw_combo, fs_data);
-
             i_res = wallpaperabyss_settings_dialog (fs_data);
 
             if (i_res == GTK_RESPONSE_ACCEPT) {
-                combo_set_active_str (ww_widget->gw_combo, WW_COMBO_STR_1,
-                                      fs_data->s_str1);
-
                 i_err = setts_update_wallabyss_api (ww_widget->s_cfg_file,
                                                     fs_data->s_str1);
-                if (i_err != ERR_OK) {
-                    message_dialog_error (NULL, err_get_message (i_err));
-                }
             }
             break;
 #ifdef HAVE_FLICKCURL
         case WEB_WIDGET_FLICKR:
-            combo_get_active_strings (ww_widget->gw_combo, fs_data);
-
             i_res = flickr_settings_dialog (fs_data);
 
             if (i_res == GTK_RESPONSE_ACCEPT) {
-                combo_set_active_strings (ww_widget->gw_combo, fs_data);
-
                 i_err = setts_update_flickr_api (ww_widget->s_cfg_file,
                                                  fs_data->s_str1,
                                                  fs_data->s_str2,
                                                  fs_data->s_str3,
                                                  fs_data->s_str4);
-                if (i_err != ERR_OK) {
-                    message_dialog_error (NULL, err_get_message (i_err));
-                }
             }
             break;
 #endif
         default:
             break;
+    }
+    if (i_res == GTK_RESPONSE_ACCEPT) {
+        combo_set_active_strings (ww_widget->gw_combo, fs_data);
+    }
+    if (i_err != ERR_OK) {
+        message_dialog_error (NULL, err_get_message (i_err));
     }
     fourstrings_free (fs_data);
 }
@@ -793,57 +762,22 @@ event_add_selected_pressed (WebWidget *ww_widget)
 static void
 refresh_service_opts (WebWidget *ww_widget)
 {
-    Setting *st_settings   = NULL;
-    Setting *st_item       = NULL;
-    char    *s_name        = NULL;
-    char    *s_search_opts = NULL;
-    int      i_err         = 0;
-
-    s_name = combo_get_active_str (ww_widget->gw_combo, WW_COMBO_NAME);
-    str_append (&s_name, "_opts");
-#ifdef DEBUG
-    printf ("%s\n", s_name);
-#endif
+    Setting *st_settings = NULL;
+    Setting *st_item     = NULL;
+    int      i_err       = 0;
 
     st_settings = setts_read (ww_widget->s_cfg_file, &i_err);
-    st_item     = setting_get_child (st_settings);
-    st_item     = setting_get_child (settings_find (st_item, s_name));
+    st_item = setting_get_child (st_settings);
+    st_item = setting_get_child (
+            settings_find (st_item, ww_opts (ww_widget->i_active_service)));
 
-    if (st_item != NULL) {
-        switch (ww_widget->i_active_service) {
-            case WEB_WIDGET_PEXELS:
-                s_search_opts = search_opts_to_str (st_item);
-                break;
-            case WEB_WIDGET_PIXBAY:
-                s_search_opts = search_opts_to_str (st_item);
-                break;
-            case WEB_WIDGET_WALLHAVEN:
-                s_search_opts = search_opts_to_str (st_item);
-                break;
-            case WEB_WIDGET_WALLABYSS:
-                s_search_opts = search_opts_to_str (st_item);
-                break;
-            default:
-                break;
-        }
-    }
+    free (ww_widget->s_search_opts);
+    ww_widget->s_search_opts = st_item == NULL ? strdup ("") :
+                               search_opts_to_str (st_item);
     settings_free_all (st_settings);
-    free (s_name);
-
-    if (s_search_opts != NULL &&
-        strcmp (s_search_opts, ww_widget->s_search_opts) != 0) {
-
-        free (ww_widget->s_search_opts);
-        ww_widget->s_search_opts = strdup (s_search_opts);
-    }
-    else {
-        free (ww_widget->s_search_opts);
-        ww_widget->s_search_opts = strdup ("");
-    }
 #ifdef DEBUG
     printf ("now opts : %s\n", ww_widget->s_search_opts);
 #endif
-    free (s_search_opts);
 }
 /*----------------------------------------------------------------------------*/
 /**
@@ -868,7 +802,6 @@ event_service_combo_changed (GtkComboBox *gw_combo,
                 WW_COMBO_ID, &ww_widget->i_active_service, -1);
 
         refresh_service_opts (ww_widget);
-
     }
 }
 /*----------------------------------------------------------------------------*/
@@ -880,25 +813,13 @@ event_service_combo_changed (GtkComboBox *gw_combo,
 static GtkWidget *
 webwidget_combobox_create (Setting *st_settings)
 {
-    GtkWidget       *gw_combo;             /* Result ComboBox */
-    GtkCellRenderer *cell;                 /* CellRenderer */
-    GtkListStore    *list_store;           /* ListStore for combobox data */
-    GtkTreeIter      iter;                 /* TreeIter */
-    GdkPixbuf       *gp_logo       = NULL; /* Service logo */
-    const char      *s_pexels_api  = NULL; /* Pexels API key */
-    const char      *s_pixbay_api  = NULL; /* Pixbay API key */
-    const char      *s_wallha_api  = NULL; /* Wallhaven API key */
-    const char      *s_wallab_api  = NULL; /* Wallpaer Abyss API key */
-    Setting         *st_s1;                /* For individual setting */
-#ifdef HAVE_FLICKCURL
-    const char      *s_flickr_key  = NULL; /* Flickr key */
-    const char      *s_flickr_sec  = NULL; /* Flickr secret */
-    const char      *s_flickr_acct = NULL; /* Flickr access token */
-    const char      *s_flickr_accs = NULL; /* Flickr access token secret */
-    Setting         *st_s2;                /* For individual setting */
-    Setting         *st_s3;                /* For individual setting */
-    Setting         *st_s4;                /* For individual setting */
-#endif
+    GtkWidget       *gw_combo;       /* Result ComboBox */
+    GtkCellRenderer *cell;           /* CellRenderer */
+    GtkListStore    *list_store;     /* ListStore for combobox data */
+    GtkTreeIter      iter;           /* TreeIter */
+    GdkPixbuf       *gp_logo = NULL; /* Service logo */
+    FourStrings     *fs_data = NULL; /* For API keys */
+    int              i       = 0;    /* i */
 
     /* Liststore for service data */
     list_store = gtk_list_store_new (WW_COMBO_CNT,
@@ -909,117 +830,23 @@ webwidget_combobox_create (Setting *st_settings)
                                      G_TYPE_STRING,
                                      G_TYPE_STRING,
                                      GDK_TYPE_PIXBUF);
-    /* Get Pexels API string */
-    st_s1 = setting_find_child (st_settings,
-                                get_setting_name (SETT_PEXELS_API));
 
-    s_pexels_api = st_s1 == NULL ? "" : setting_get_string (st_s1);
-
-    gp_logo = get_image (W_LOGO_PEXELS);
-
-    gtk_list_store_append (list_store, &iter);
-    gtk_list_store_set (list_store, &iter,
-                        WW_COMBO_ID,    WEB_WIDGET_PEXELS,
-                        WW_COMBO_NAME,  ww_name (WEB_WIDGET_PEXELS),
-                        WW_COMBO_STR_1, s_pexels_api,
-                        WW_COMBO_STR_2, "",
-                        WW_COMBO_STR_3, "",
-                        WW_COMBO_STR_4, "",
-                        WW_COMBO_LOGO,  gp_logo,
-                        -1);
-    g_object_unref (gp_logo);
-
-    /* Get Pixbay API string */
-    st_s1 = setting_find_child (st_settings,
-                                get_setting_name (SETT_PIXBAY_API));
-
-    s_pixbay_api = st_s1 == NULL ? "" : setting_get_string (st_s1);
-
-    gp_logo = get_image (W_LOGO_PIXBAY);
-
-    gtk_list_store_append (list_store, &iter);
-    gtk_list_store_set (list_store,     &iter,
-                        WW_COMBO_ID,    WEB_WIDGET_PIXBAY,
-                        WW_COMBO_NAME,  ww_name (WEB_WIDGET_PIXBAY),
-                        WW_COMBO_STR_1, s_pixbay_api,
-                        WW_COMBO_STR_2, "",
-                        WW_COMBO_STR_3, "",
-                        WW_COMBO_STR_4, "",
-                        WW_COMBO_LOGO,  gp_logo,
-                        -1);
-    g_object_unref (gp_logo);
-
-    /* Get Wallhaven API string */
-    st_s1 = setting_find_child (st_settings,
-                                get_setting_name (SETT_WALLHAVEN_API));
-
-    s_wallha_api = st_s1 == NULL ? "" : setting_get_string (st_s1);
-
-    gp_logo = get_image (W_LOGO_WALLHAVEN);
-
-    gtk_list_store_append (list_store, &iter);
-    gtk_list_store_set (list_store,     &iter,
-                        WW_COMBO_ID,    WEB_WIDGET_WALLHAVEN,
-                        WW_COMBO_NAME,  ww_name (WEB_WIDGET_WALLHAVEN),
-                        WW_COMBO_STR_1, s_wallha_api,
-                        WW_COMBO_STR_2, "",
-                        WW_COMBO_STR_3, "",
-                        WW_COMBO_STR_4, "",
-                        WW_COMBO_LOGO,  gp_logo,
-                        -1);
-    g_object_unref (gp_logo);
-
-    /* Get Wallpaper Abyss API string */
-    st_s1 = setting_find_child (st_settings,
-                                get_setting_name (SETT_WALLABYSS_API));
-
-    s_wallab_api = st_s1 == NULL ? "" : setting_get_string (st_s1);
-    gp_logo = get_image (W_LOGO_WALLABYSS);
-
-    gtk_list_store_append (list_store, &iter);
-    gtk_list_store_set (list_store,     &iter,
-                        WW_COMBO_ID,    WEB_WIDGET_WALLABYSS,
-                        WW_COMBO_NAME,  ww_name (WEB_WIDGET_WALLABYSS),
-                        WW_COMBO_STR_1, s_wallab_api,
-                        WW_COMBO_STR_2, "",
-                        WW_COMBO_STR_3, "",
-                        WW_COMBO_STR_4, "",
-                        WW_COMBO_LOGO,  gp_logo,
-                        -1);
-    g_object_unref (gp_logo);
-#ifdef HAVE_FLICKCURL
-    /* Get Flickr API key string */
-    st_s1 = setting_find_child (st_settings,
-                                get_setting_name (SETT_FLICKR_CLKEY));
-    /* Get Flickr API secret string */
-    st_s2 = setting_find_child (st_settings,
-                                get_setting_name (SETT_FLICKR_CLSEC));
-    /* Get Flickr API access token */
-    st_s3 = setting_find_child (st_settings,
-                                get_setting_name (SETT_FLICKR_ACTOK));
-    /* Get Flickr API access token */
-    st_s4 = setting_find_child (st_settings,
-                                get_setting_name (SETT_FLICKR_ACSEC));
-
-    s_flickr_key  = st_s1 == NULL ? "" : setting_get_string (st_s1);
-    s_flickr_sec  = st_s2 == NULL ? "" : setting_get_string (st_s2);
-    s_flickr_acct = st_s3 == NULL ? "" : setting_get_string (st_s3);
-    s_flickr_accs = st_s4 == NULL ? "" : setting_get_string (st_s4);
-
-    gp_logo = get_image (W_LOGO_FLICKR);
-
-    gtk_list_store_append (list_store, &iter);
-    gtk_list_store_set (list_store,     &iter,
-                        WW_COMBO_ID,    WEB_WIDGET_FLICKR,
-                        WW_COMBO_NAME,  ww_name (WEB_WIDGET_FLICKR),
-                        WW_COMBO_STR_1, s_flickr_key,
-                        WW_COMBO_STR_2, s_flickr_sec,
-                        WW_COMBO_STR_3, s_flickr_acct,
-                        WW_COMBO_STR_4, s_flickr_accs,
-                        WW_COMBO_LOGO,  gp_logo,
-                        -1);
-    g_object_unref (gp_logo);
-#endif
+    for (i = 0; i < WEB_WIDGET_CNT; ++i) {
+        gp_logo = get_image (ww_logo_id (i));
+        fs_data = ww_get_api_key_data (st_settings, i);
+        gtk_list_store_append (list_store, &iter);
+        gtk_list_store_set (list_store, &iter,
+                            WW_COMBO_ID,    i,
+                            WW_COMBO_NAME,  ww_name (i),
+                            WW_COMBO_STR_1, fs_data->s_str1,
+                            WW_COMBO_STR_2, fs_data->s_str2,
+                            WW_COMBO_STR_3, fs_data->s_str3,
+                            WW_COMBO_STR_4, fs_data->s_str4,
+                            WW_COMBO_LOGO,  gp_logo,
+                            -1);
+        g_object_unref (gp_logo);
+        fourstrings_free (fs_data);
+    }
     gw_combo = gtk_combo_box_new_with_model (GTK_TREE_MODEL (list_store));
 
     g_object_unref (G_OBJECT (list_store));
@@ -1029,7 +856,6 @@ webwidget_combobox_create (Setting *st_settings)
     gtk_cell_layout_pack_start (GTK_CELL_LAYOUT (gw_combo), cell, TRUE);
     gtk_cell_layout_add_attribute (GTK_CELL_LAYOUT (gw_combo),
                                    cell, "text", WW_COMBO_NAME);
-
 
     if (gtk_tree_model_get_iter_first (GTK_TREE_MODEL (list_store), &iter))
         gtk_combo_box_set_active_iter (GTK_COMBO_BOX (gw_combo), &iter);
@@ -1129,18 +955,9 @@ event_imgview_activated (GtkIconView *iconview,
         gtk_label_set_text (GTK_LABEL (ww_widget->gw_ii_dim_label), s_dim);
 
         gtk_image_clear (GTK_IMAGE (ww_widget->gw_ii_simage));
-        if (ww_widget->i_active_service == WEB_WIDGET_PEXELS)
-            gp_logo = get_image (W_LOGO_PEXELS);
-        else if (ww_widget->i_active_service == WEB_WIDGET_PIXBAY)
-            gp_logo = get_image (W_LOGO_PIXBAY);
-        else if (ww_widget->i_active_service == WEB_WIDGET_WALLHAVEN)
-            gp_logo = get_image (W_LOGO_WALLHAVEN);
-        else if (ww_widget->i_active_service == WEB_WIDGET_WALLABYSS)
-            gp_logo = get_image (W_LOGO_WALLABYSS);
-#ifdef HAVE_FLICKCURL
-        else if (ww_widget->i_active_service == WEB_WIDGET_FLICKR)
-            gp_logo = get_image (W_LOGO_FLICKR);
-#endif
+
+        gp_logo = get_image (ww_logo_id (ww_widget->i_active_service));
+
         if (gp_logo != NULL) {
             gtk_image_set_from_pixbuf (GTK_IMAGE (ww_widget->gw_ii_simage),
                                        gp_logo);
@@ -1204,23 +1021,21 @@ static GtkWidget *
 webwidget_imageinfo_create (WebWidget *ww_widget)
 {
     GtkWidget *gw_widget;
-
     GtkWidget *gw_service_image;
     GtkWidget *gw_author_label;
     GtkWidget *gw_dim_label;
     GtkWidget *gw_image_link;
     GtkWidget *gw_grid;
 
-    gw_grid = gtk_grid_new ();
+    gw_service_image = gtk_image_new ();
+    gw_author_label  = gtk_label_new (NULL);
+    gw_dim_label     = gtk_label_new (NULL);
+    gw_image_link    = gtk_link_button_new ("Image page");
+    gw_grid          = gtk_grid_new ();
 
     gtk_widget_set_halign (gw_grid, GTK_ALIGN_CENTER);
     gtk_grid_set_row_spacing (GTK_GRID (gw_grid), 8);
     gtk_grid_set_column_spacing (GTK_GRID (gw_grid), 16);
-
-    gw_service_image = gtk_image_new ();
-    gw_author_label = gtk_label_new (NULL);
-    gw_dim_label = gtk_label_new (NULL);
-    gw_image_link = gtk_link_button_new ("Image page");
 
     gtk_grid_attach (GTK_GRID (gw_grid),
                      gtk_label_new ("Image provided by:"),
@@ -1350,7 +1165,6 @@ webwidget_create (Setting    *st_settings,
     gw_search_entry    = gtk_search_entry_new ();
     gw_search_button   = gtk_button_new_with_label ("Search");
     gw_search_opts_btn = gtk_button_new_with_label ("Search opts");
-    //gw_sett_button     = gtk_button_new_with_label ("Settings");
     gw_sett_button     = gtk_button_new ();
     gtk_widget_set_tooltip_text (gw_sett_button, "Service settings");
     gp_pbuf = get_image (W_ICON_SETTING);

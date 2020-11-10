@@ -309,26 +309,26 @@ treeview_remove_duplicates (GtkWidget *gw_tview)
         gti_next = gti_iter;
         b_res2 = gtk_tree_model_iter_next (gtm_model, &gti_next);
 
-        gtk_tree_model_get_value(gtm_model, &gti_iter,
-                                 COL_FULL_FILE_NAME, &value);
-        s_val = (const char*) g_value_get_string(&value);
+        gtk_tree_model_get_value (gtm_model, &gti_iter,
+                                  COL_FULL_FILE_NAME, &value);
+        s_val = (const char*) g_value_get_string (&value);
 
         while (b_res2) {
 
             gti_act = gti_next;
             b_res2 = gtk_tree_model_iter_next (gtm_model, &gti_next);
 
-            gtk_tree_model_get_value(gtm_model, &gti_act,
-                                     COL_FULL_FILE_NAME, &value2);
-            s_val2 = (const char*) g_value_get_string(&value2);
+            gtk_tree_model_get_value (gtm_model, &gti_act,
+                                      COL_FULL_FILE_NAME, &value2);
+            s_val2 = (const char*) g_value_get_string (&value2);
 
             if (str_compare (s_val, s_val2) == 0) {
 
                 gtk_list_store_remove (GTK_LIST_STORE (gtm_model), &gti_act);
             }
-            g_value_unset(&value2);
+            g_value_unset (&value2);
         }
-        g_value_unset(&value);
+        g_value_unset (&value);
         b_res = gtk_tree_model_iter_next (gtm_model, &gti_iter);
     }
 }
@@ -441,16 +441,17 @@ treeview_move_down (GtkWidget *gw_tview)
 /**
  * @brief  Create treeview for image list.
  */
-void
-create_tview (GtkWidget **gw_tview)
+GtkWidget *
+create_tview (void)
 {
+    GtkWidget         *gw_tview;
     GtkCellRenderer   *gcr_render;
     GtkListStore      *gls_list;
     GtkTreeSelection  *gts_sele;
     GtkTreeViewColumn *gtvc_col;
 
-    *gw_tview = gtk_tree_view_new ();
-    gts_sele  = gtk_tree_view_get_selection (GTK_TREE_VIEW (*gw_tview));
+    gw_tview = gtk_tree_view_new ();
+    gts_sele  = gtk_tree_view_get_selection (GTK_TREE_VIEW (gw_tview));
     gtk_tree_selection_set_mode (gts_sele, GTK_SELECTION_MULTIPLE);
 
     gcr_render = gtk_cell_renderer_text_new ();
@@ -460,7 +461,7 @@ create_tview (GtkWidget **gw_tview)
                                                            COL_FILE_NAME,
                                                            NULL);
     gtk_tree_view_column_set_sort_column_id (gtvc_col, COL_FILE_NAME);
-    gtk_tree_view_insert_column (GTK_TREE_VIEW (*gw_tview), gtvc_col, -1);
+    gtk_tree_view_insert_column (GTK_TREE_VIEW (gw_tview), gtvc_col, -1);
 
     gcr_render = gtk_cell_renderer_text_new ();
     gtvc_col   = gtk_tree_view_column_new_with_attributes ("Dimensions",
@@ -469,7 +470,8 @@ create_tview (GtkWidget **gw_tview)
                                                            COL_WIDTH_HEIGHT,
                                                            NULL);
     gtk_tree_view_column_set_sort_column_id (gtvc_col, COL_WIDTH_HEIGHT);
-    gtk_tree_view_insert_column (GTK_TREE_VIEW (*gw_tview), gtvc_col, -1);
+    gtk_tree_view_insert_column (GTK_TREE_VIEW (gw_tview), gtvc_col, -1);
+
     gcr_render = gtk_cell_renderer_text_new ();
     gtvc_col   = gtk_tree_view_column_new_with_attributes ("Location",
                                                            gcr_render,
@@ -477,7 +479,7 @@ create_tview (GtkWidget **gw_tview)
                                                            COL_FILE_PATH,
                                                            NULL);
     gtk_tree_view_column_set_sort_column_id (gtvc_col, COL_FILE_PATH);
-    gtk_tree_view_insert_column (GTK_TREE_VIEW (*gw_tview), gtvc_col, -1);
+    gtk_tree_view_insert_column (GTK_TREE_VIEW (gw_tview), gtvc_col, -1);
 
     gls_list = gtk_list_store_new (NUM_COLS,
                                    G_TYPE_STRING,
@@ -487,10 +489,12 @@ create_tview (GtkWidget **gw_tview)
                                    G_TYPE_INT,
                                    G_TYPE_INT);
 
-    gtk_tree_view_set_model (GTK_TREE_VIEW (*gw_tview),
+    gtk_tree_view_set_model (GTK_TREE_VIEW (gw_tview),
                              GTK_TREE_MODEL (gls_list));
 
-    g_object_unref(gls_list);
+    g_object_unref (gls_list);
+
+    return gw_tview;
 }
 /*----------------------------------------------------------------------------*/
 /**

@@ -82,6 +82,120 @@ ww_opts (const int i_site)
 }
 /*----------------------------------------------------------------------------*/
 /**
+ * @brief  Get webwidget logo image id based on webwidget if.
+ */
+int
+ww_logo_id (const int i_site)
+{
+    switch (i_site) {
+        case WEB_WIDGET_PEXELS:
+            return W_LOGO_PEXELS;
+        case WEB_WIDGET_PIXBAY:
+            return W_LOGO_PIXBAY;
+        case WEB_WIDGET_WALLHAVEN:
+            return W_LOGO_WALLHAVEN;
+        case WEB_WIDGET_WALLABYSS:
+            return W_LOGO_WALLABYSS;
+#ifdef HAVE_FLICKCURL
+        case WEB_WIDGET_FLICKR:
+            return W_LOGO_FLICKR;
+#endif
+        default:
+            break;
+    }
+    return -1;
+}
+/*----------------------------------------------------------------------------*/
+/**
+ * @brief  Get settings API names.
+ *
+ * @param[in] i_site  Site id
+ * @return    FourStrings item with API names
+ */
+static FourStrings *
+ww_get_api_key_names (const int i_site)
+{
+    FourStrings *fs_data = NULL;
+
+    fs_data = fourstrings_new ();
+
+    fs_data->s_str2 = strdup ("");
+    fs_data->s_str3 = strdup ("");
+    fs_data->s_str4 = strdup ("");
+
+    switch (i_site) {
+        case WEB_WIDGET_PEXELS:
+            fs_data->s_str1 = strdup ("Pexels api");
+            break;
+        case WEB_WIDGET_PIXBAY:
+            fs_data->s_str1 = strdup ("Pixbay api");
+            break;
+        case WEB_WIDGET_WALLHAVEN:
+            fs_data->s_str1 = strdup ("Wallhaven api");
+            break;
+        case WEB_WIDGET_WALLABYSS:
+            fs_data->s_str1 = strdup ("Wallpaper Abyss api");
+            break;
+#ifdef HAVE_FLICKCURL
+        case WEB_WIDGET_FLICKR:
+            fs_data->s_str1 = strdup ("Flickr client key");
+            str_append (&fs_data->s_str2, "Flickr client secret");
+            str_append (&fs_data->s_str3, "Flickr access token");
+            str_append (&fs_data->s_str4, "Flickr access token secret");
+            break;
+#endif
+        default:
+            break;
+    }
+    return fs_data;
+}
+/*----------------------------------------------------------------------------*/
+/**
+ * @brief  Get API key data of given service from settings.
+ */
+FourStrings *
+ww_get_api_key_data (Setting  *st_settings,
+                     const int i_site)
+{
+    FourStrings *fs_key_names = NULL;  /* API key names in settings */
+    FourStrings *fs_data      = NULL;  /* Data to rerutn */
+    Setting     *st_sett      = NULL;  /* For individual setting */
+    const char  *s_api        = NULL;  /* For API key */
+
+    fs_key_names = ww_get_api_key_names (i_site);
+    fs_data      = fourstrings_new ();
+
+    fs_data->s_str1 = strdup ("");
+    fs_data->s_str2 = strdup ("");
+    fs_data->s_str3 = strdup ("");
+    fs_data->s_str4 = strdup ("");
+
+    if (fs_key_names->s_str1[0] != '\0') {
+        st_sett = setting_find_child (st_settings, fs_key_names->s_str1);
+        s_api   = st_sett == NULL ? "" : setting_get_string (st_sett);
+        str_append (&fs_data->s_str1, s_api);
+    }
+    if (fs_key_names->s_str2[0] != '\0') {
+        st_sett = setting_find_child (st_settings, fs_key_names->s_str2);
+        s_api   = st_sett == NULL ? "" : setting_get_string (st_sett);
+        str_append (&fs_data->s_str2, s_api);
+    }
+    if (fs_key_names->s_str3[0] != '\0') {
+        st_sett = setting_find_child (st_settings, fs_key_names->s_str3);
+        s_api   = st_sett == NULL ? "" : setting_get_string (st_sett);
+        str_append (&fs_data->s_str3, s_api);
+    }
+    if (fs_key_names->s_str4[0] != '\0') {
+        st_sett = setting_find_child (st_settings, fs_key_names->s_str4);
+        s_api   = st_sett == NULL ? "" : setting_get_string (st_sett);
+        str_append (&fs_data->s_str4, s_api);
+    }
+    fourstrings_free (fs_key_names);
+
+    return fs_data;
+}
+/*----------------------------------------------------------------------------*/
+/**
  * @brief  Check if string s_txt is null or empty and show message s_msg
  *         if it is.
  */
@@ -175,6 +289,15 @@ combo_get_active_str (GtkWidget *gw_combo,
     return s_ret;
 }
 /*----------------------------------------------------------------------------*/
+/**
+ * @brief  Check if given wallpaper is already in wallpaper dir and mark gp_pbuf
+ *         with check mark if it is.
+ *
+ * @param[in]  s_wallp_dir  Wallpaper directory
+ * @param[in]  s_file_name  Wallpaper file to check
+ * @param[out] gp_pbuf      Thumbnail pixbuf
+ * @retutn     none
+ */
 static void
 wallpaper_check_mark (const char *s_wallp_dir,
                       const char *s_file_name,

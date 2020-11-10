@@ -40,6 +40,9 @@
 #include "webwidget_c.h"
 #include "webabyss.h"
 /*----------------------------------------------------------------------------*/
+/**
+ * @brief  Enum with available search options.
+ */
 enum e_options {
     GW_WIDTH,    /**< Spinbutton with width */
     GW_HEIGHT,   /**< Spinbutton with height */
