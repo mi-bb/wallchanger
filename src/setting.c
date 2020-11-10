@@ -193,70 +193,6 @@ setting_set_string (Setting    *st_set,
 }
 /*----------------------------------------------------------------------------*/
 /**
- * @brief  Copy data from one Setting object to another
- */
-static void
-setting_copy2 (Setting       *st_dest,
-               const Setting *st_src)
-{
-    setting_init (st_dest);
-    if (st_src->s_name != NULL)
-        st_dest->s_name = strdup (st_src->s_name);
-    st_dest->v_type = st_src->v_type;
-    st_dest->hash   = st_src->hash;
-    st_dest->prev   = st_src->prev;
-    st_dest->next   = st_src->next;
-    st_dest->parent = st_src->parent;
-
-    switch (st_src->v_type) {
-
-        case SET_VAL_INT:
-            st_dest->data.i_val = st_src->data.i_val;
-            break;
-
-        case SET_VAL_UINT:
-            st_dest->data.ui_val = st_src->data.ui_val;
-            break;
-
-        case SET_VAL_DOUBLE:
-            st_dest->data.d_val = st_src->data.d_val;
-            break;
-
-        case SET_VAL_STRING:
-            st_dest->data.s_val = strdup (st_src->data.s_val);
-            break;
-
-        case SET_VAL_ARRAY:
-            st_dest->data.st_child = st_src->data.st_child;
-            break;
-
-        case SET_VAL_SETTING:
-            st_dest->data.st_child = st_src->data.st_child;
-            break;
-
-        default:
-            break;
-    }
-}
-/*----------------------------------------------------------------------------*/
-/**
- * @brief  Duplicates a Setting
- */
-Setting *
-setting_copy (const Setting *st_src)
-{
-    Setting *st_ret = NULL;
-
-    if ((st_ret = malloc (sizeof (Setting))) == NULL)
-        err (EXIT_FAILURE, NULL);
-
-    setting_init (st_ret);
-    setting_copy2 (st_ret, st_src);
-
-    return st_ret;
-}
-/*----------------------------------------------------------------------------*/
-/**
  * @brief  Create default Setting.
  */
 static Setting *
@@ -446,6 +382,9 @@ void
 setting_replace (Setting *st_old,
                  Setting *st_new)
 {
+    if (st_old == NULL || st_new == NULL)
+        return;
+
     if (st_old->prev != NULL)
         st_old->prev->next = st_new;
     if (st_old->next != NULL)
@@ -469,6 +408,9 @@ settings_append_or_ignore (Setting *st_list,
 {
     Setting *st_item = NULL;
 
+    if (st_setting == NULL)
+        return;
+
     st_item = st_list;
 
     while (st_item != NULL) {
@@ -490,6 +432,9 @@ settings_append_or_replace (Setting *st_list,
 {
     Setting *st_item = NULL;
 
+    if (st_setting == NULL)
+        return;
+
     st_item = st_list;
 
     while (st_item != NULL) {
@@ -510,9 +455,12 @@ settings_find_replace (Setting   *st_list,
                        Setting   *st_setting,
                        const int  i_multi)
 {
-    int i_cnt = 0;
 
     Setting *st_item = NULL;
+    int      i_cnt   = 0;
+
+    if (st_setting == NULL)
+        return 0;
 
     st_item = st_list;
 
@@ -543,8 +491,8 @@ setting_set_child (Setting *st_parent,
 /*----------------------------------------------------------------------------*/
 Setting * setting_get_child  (Setting *st_setting)
 {
-    if (st_setting == NULL)
-        return NULL;
+    //if (st_setting == NULL)
+    //    return NULL;
 
     if (setting_get_type (st_setting) == SET_VAL_SETTING ||
         setting_get_type (st_setting) == SET_VAL_ARRAY) {
@@ -562,6 +510,9 @@ setting_add_child (Setting *st_parent,
                    Setting *st_child)
 {
     Setting *st_temp = NULL;
+
+    if (st_child == NULL)
+        return;
 
     if (setting_get_type (st_parent) == SET_VAL_SETTING ||
         setting_get_type (st_parent) == SET_VAL_ARRAY) {
@@ -664,6 +615,9 @@ void
 setting_remove (Setting *st_setting)
 {
     Setting *st_item = NULL;
+
+    if (st_setting == NULL)
+        return;
 
     if (st_setting->prev != NULL) {
         st_setting->prev->next = st_setting->next;

@@ -290,10 +290,6 @@ wallhaven_search (WebWidget         *ww_widget,
     if (str_is_empty_msg (fs_data->s_str1, "Wallhaven API key is not set"))
         return;
 
-    /* Check if there is a cached info about this search query */
-    if (check_for_cached_query (ww_widget, ww_name (WEB_WIDGET_WALLHAVEN)))
-        return;
-
     s_query = str_replace_in (ww_widget->s_query, " ", "+");
 
     ud_data = urldata_search_wallhaven (s_query,

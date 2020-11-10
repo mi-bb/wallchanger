@@ -347,10 +347,6 @@ flickr_search (WebWidget         *ww_widget,
     char         s_sort[64];      /* Sorting information */
     char         s_media[16];     /* Media type to search */
 
-    /* Check if there is a cached info about this search query */
-    if (check_for_cached_query (ww_widget, "Flickr"))
-        return;
-
     flickcurl_init ();
     fc = flickcurl_new ();
 

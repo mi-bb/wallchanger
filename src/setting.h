@@ -46,6 +46,7 @@ SetValType {
     SET_VAL_STRING,  /**< string */
     SET_VAL_SETTING, /**< setting type */
     SET_VAL_ARRAY,   /**< array of values */
+    SET_VAL_NULL     /**< null item */
 } SetValType;
 /*----------------------------------------------------------------------------*/
 /**
@@ -124,13 +125,13 @@ Setting {
  */
 /*----------------------------------------------------------------------------*/
 static inline SetValType    setting_get_type (const Setting *st_setting) {
-    return st_setting->v_type;
+    return st_setting != NULL ? st_setting->v_type : SET_VAL_NULL;
 }
 static inline const char  * setting_get_name (const Setting *st_setting) {
-    return st_setting->s_name;
+    return st_setting != NULL ? st_setting->s_name : NULL;
 }
 static inline uint_fast32_t setting_get_hash (const Setting *st_setting) {
-    return st_setting->hash;
+    return st_setting != NULL ? st_setting->hash : 0;
 }
 /*----------------------------------------------------------------------------*/
 /**
@@ -150,7 +151,7 @@ static inline uint_fast32_t setting_get_hash (const Setting *st_setting) {
  */
 /*----------------------------------------------------------------------------*/
 static inline Setting * setting_get_parent (Setting *st_setting) {
-    return st_setting->parent;
+    return st_setting != NULL ? st_setting->parent : NULL;
 }
 
 Setting * setting_get_child  (Setting *st_setting);
@@ -172,10 +173,10 @@ Setting * setting_get_child  (Setting *st_setting);
  */
 /*----------------------------------------------------------------------------*/
 static inline Setting * setting_next (Setting *st_setting) {
-    return st_setting->next;
+    return st_setting != NULL ? st_setting->next : NULL;
 }
 static inline Setting * setting_prev (Setting *st_setting) {
-    return st_setting->prev;
+    return st_setting != NULL ? st_setting->prev : NULL;
 }
 /*----------------------------------------------------------------------------*/
 /**
@@ -318,15 +319,6 @@ Setting * setting_new_double  (const char *s_name,
 
 Setting * setting_new_string  (const char *s_name,
                                const char *val)
-          __attribute__ ((returns_nonnull));
-/*----------------------------------------------------------------------------*/
-/**
- * @brief  Duplicates a Setting
- *
- * @param[in]  st_src  Source Setting object
- * @return     New copy of Setting or null
- */
-Setting * setting_copy (const Setting *st_src)
           __attribute__ ((returns_nonnull));
 /*----------------------------------------------------------------------------*/
 /**

@@ -251,31 +251,6 @@ combo_get_active_strings (GtkWidget   *gw_combo,
 }
 /*----------------------------------------------------------------------------*/
 /**
- * @brief  Set string in Combobox's active i_col column.
- *
- * @param[out] gw_combo  Combobox
- * @param[in]  i_col     Column to set data
- * @param[in]  s_val     String value
- * @return     none
- */
-static void
-combo_set_active_str (GtkWidget  *gw_combo,
-                      const int   i_col,
-                      const char *s_val)
-{
-    GtkListStore *gls_slstore;
-    GtkTreeIter   gti_iter;
-
-    if (gtk_combo_box_get_active_iter (GTK_COMBO_BOX (gw_combo), &gti_iter)) {
-
-        gls_slstore = GTK_LIST_STORE (gtk_combo_box_get_model (
-                    GTK_COMBO_BOX (gw_combo)));
-
-        gtk_list_store_set (gls_slstore, &gti_iter, i_col, s_val, -1);
-    }
-}
-/*----------------------------------------------------------------------------*/
-/**
  * @brief  Set strings with API key values to Combobox.
  *
  * @param[in]  gw_combo  Combobox
@@ -400,14 +375,17 @@ static void
 search_web (WebWidget *ww_widget)
 {
     FourStrings *fs_data = NULL; /* Four strings for API key data */
-    int          i_id    = 0;    /* Service id */
 
-    i_id    = ww_widget->i_active_service;
+    /* Check if there is a cached info about this search query */
+    if (check_for_cached_query (ww_widget,
+                                ww_name (ww_widget->i_active_service)))
+        return;
+
     fs_data = fourstrings_new ();
 
     combo_get_active_strings (ww_widget->gw_combo, fs_data);
 
-    switch (i_id) {
+    switch (ww_widget->i_active_service) {
         case WEB_WIDGET_PEXELS:
             pexels_search (ww_widget, fs_data);
             break;
@@ -582,53 +560,28 @@ event_settings_pressed (WebWidget *ww_widget)
     switch (i_id) {
         case WEB_WIDGET_PEXELS:
             i_res = pexels_settings_dialog (fs_data);
-
-            if (i_res == GTK_RESPONSE_ACCEPT) {
-                i_err = setts_update_pexels_api (ww_widget->s_cfg_file,
-                                                 fs_data->s_str1);
-            }
             break;
         case WEB_WIDGET_PIXBAY:
             i_res = pixbay_settings_dialog (fs_data);
-
-            if (i_res == GTK_RESPONSE_ACCEPT) {
-                i_err = setts_update_pixbay_api (ww_widget->s_cfg_file,
-                                                 fs_data->s_str1);
-            }
             break;
         case WEB_WIDGET_WALLHAVEN:
             i_res = wallhaven_settings_dialog (fs_data);
-
-            if (i_res == GTK_RESPONSE_ACCEPT) {
-                i_err = setts_update_wallhaven_api (ww_widget->s_cfg_file,
-                                                    fs_data->s_str1);
-            }
             break;
         case WEB_WIDGET_WALLABYSS:
             i_res = wallpaperabyss_settings_dialog (fs_data);
-
-            if (i_res == GTK_RESPONSE_ACCEPT) {
-                i_err = setts_update_wallabyss_api (ww_widget->s_cfg_file,
-                                                    fs_data->s_str1);
-            }
             break;
 #ifdef HAVE_FLICKCURL
         case WEB_WIDGET_FLICKR:
             i_res = flickr_settings_dialog (fs_data);
-
-            if (i_res == GTK_RESPONSE_ACCEPT) {
-                i_err = setts_update_flickr_api (ww_widget->s_cfg_file,
-                                                 fs_data->s_str1,
-                                                 fs_data->s_str2,
-                                                 fs_data->s_str3,
-                                                 fs_data->s_str4);
-            }
             break;
 #endif
         default:
             break;
     }
     if (i_res == GTK_RESPONSE_ACCEPT) {
+        i_err = ww_update_api_key_data (ww_widget->s_cfg_file,
+                                        fs_data,
+                                        ww_widget->i_active_service);
         combo_set_active_strings (ww_widget->gw_combo, fs_data);
     }
     if (i_err != ERR_OK) {

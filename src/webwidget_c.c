@@ -29,6 +29,7 @@
 #include "errs.h"
 #include "chquery.h"
 #include "strfun.h"
+#include "setts.h"
 #include "webwidget_c.h"
 /*----------------------------------------------------------------------------*/
 /**
@@ -193,6 +194,40 @@ ww_get_api_key_data (Setting  *st_settings,
     fourstrings_free (fs_key_names);
 
     return fs_data;
+}
+/*----------------------------------------------------------------------------*/
+/**
+ * @brief  Update API key data in settings.
+ */
+int
+ww_update_api_key_data (const char  *s_cfg_file,
+                        FourStrings *fs_key_data,
+                        const int    i_site)
+{
+    Setting     *st_setts;
+    FourStrings *fs_key_names;
+    int          i_res = ERR_OK;
+
+    fs_key_names = ww_get_api_key_names (i_site);
+
+    st_setts = setting_new_string (fs_key_names->s_str1, fs_key_data->s_str1);
+
+#ifdef HAVE_FLICKCURL
+    if (i_site == WEB_WIDGET_FLICKR) {
+        settings_append (st_setts,
+            setting_new_string (fs_key_names->s_str2, fs_key_data->s_str2));
+        settings_append (st_setts,
+            setting_new_string (fs_key_names->s_str3, fs_key_data->s_str3));
+        settings_append (st_setts,
+            setting_new_string (fs_key_names->s_str4, fs_key_data->s_str4));
+    }
+#endif
+    i_res = setts_check_update_file (s_cfg_file, st_setts);
+    settings_free_all (st_setts);
+
+    fourstrings_free (fs_key_names);
+
+    return i_res;
 }
 /*----------------------------------------------------------------------------*/
 /**
