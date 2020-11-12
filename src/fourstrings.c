@@ -41,6 +41,11 @@ fourstrings_new (void)
     fs_data->s_str3 = NULL;
     fs_data->s_str4 = NULL;
 
+    fs_data->s_str[0] = &fs_data->s_str1;
+    fs_data->s_str[1] = &fs_data->s_str2;
+    fs_data->s_str[2] = &fs_data->s_str3;
+    fs_data->s_str[3] = &fs_data->s_str4;
+
     return fs_data;
 }
 /*----------------------------------------------------------------------------*/

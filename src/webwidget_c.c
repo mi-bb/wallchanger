@@ -120,26 +120,25 @@ ww_get_api_key_names (const int i_site)
 
     fs_data = fourstrings_new ();
 
-    fs_data->s_str2 = strdup ("");
-    fs_data->s_str3 = strdup ("");
-    fs_data->s_str4 = strdup ("");
-
+    for (int i = 0; i < 4; ++i) {
+        *fs_data->s_str[i] = strdup ("");
+    }
     switch (i_site) {
         case WEB_WIDGET_PEXELS:
-            fs_data->s_str1 = strdup ("Pexels api");
+            str_append (&fs_data->s_str1, "Pexels api");
             break;
         case WEB_WIDGET_PIXBAY:
-            fs_data->s_str1 = strdup ("Pixbay api");
+            str_append (&fs_data->s_str1, "Pixbay api");
             break;
         case WEB_WIDGET_WALLHAVEN:
-            fs_data->s_str1 = strdup ("Wallhaven api");
+            str_append (&fs_data->s_str1, "Wallhaven api");
             break;
         case WEB_WIDGET_WALLABYSS:
-            fs_data->s_str1 = strdup ("Wallpaper Abyss api");
+            str_append (&fs_data->s_str1, "Wallpaper Abyss api");
             break;
 #ifdef HAVE_FLICKCURL
         case WEB_WIDGET_FLICKR:
-            fs_data->s_str1 = strdup ("Flickr client key");
+            str_append (&fs_data->s_str1, "Flickr client key");
             str_append (&fs_data->s_str2, "Flickr client secret");
             str_append (&fs_data->s_str3, "Flickr access token");
             str_append (&fs_data->s_str4, "Flickr access token secret");
@@ -166,31 +165,41 @@ ww_get_api_key_data (Setting  *st_settings,
     fs_key_names = ww_get_api_key_names (i_site);
     fs_data      = fourstrings_new ();
 
-    fs_data->s_str1 = strdup ("");
-    fs_data->s_str2 = strdup ("");
-    fs_data->s_str3 = strdup ("");
-    fs_data->s_str4 = strdup ("");
+    for (int i = 0; i < 4; ++i) {
+        *fs_data->s_str[i] = strdup ("");
+    }
+//    fs_data->s_str1 = strdup ("");
+//    fs_data->s_str2 = strdup ("");
+//    fs_data->s_str3 = strdup ("");
+//    fs_data->s_str4 = strdup ("");
 
-    if (fs_key_names->s_str1[0] != '\0') {
-        st_sett = setting_find_child (st_settings, fs_key_names->s_str1);
-        s_api   = st_sett == NULL ? "" : setting_get_string (st_sett);
-        str_append (&fs_data->s_str1, s_api);
+    for (int i = 0; i < 4; ++i) {
+        if (*fs_key_names->s_str[i][0] != '\0') {
+            st_sett = settings_find (st_settings, *fs_key_names->s_str[i]);
+            s_api   = st_sett == NULL ? "" : setting_get_string (st_sett);
+            str_append (fs_data->s_str[i], s_api);
+        }
     }
-    if (fs_key_names->s_str2[0] != '\0') {
-        st_sett = setting_find_child (st_settings, fs_key_names->s_str2);
-        s_api   = st_sett == NULL ? "" : setting_get_string (st_sett);
-        str_append (&fs_data->s_str2, s_api);
-    }
-    if (fs_key_names->s_str3[0] != '\0') {
-        st_sett = setting_find_child (st_settings, fs_key_names->s_str3);
-        s_api   = st_sett == NULL ? "" : setting_get_string (st_sett);
-        str_append (&fs_data->s_str3, s_api);
-    }
-    if (fs_key_names->s_str4[0] != '\0') {
-        st_sett = setting_find_child (st_settings, fs_key_names->s_str4);
-        s_api   = st_sett == NULL ? "" : setting_get_string (st_sett);
-        str_append (&fs_data->s_str4, s_api);
-    }
+//    if (fs_key_names->s_str1[0] != '\0') {
+//        st_sett = settings_find (st_settings, fs_key_names->s_str1);
+//        s_api   = st_sett == NULL ? "" : setting_get_string (st_sett);
+//        str_append (&fs_data->s_str1, s_api);
+//    }
+//    if (fs_key_names->s_str2[0] != '\0') {
+//        st_sett = settings_find (st_settings, fs_key_names->s_str2);
+//        s_api   = st_sett == NULL ? "" : setting_get_string (st_sett);
+//        str_append (&fs_data->s_str2, s_api);
+//    }
+//    if (fs_key_names->s_str3[0] != '\0') {
+//        st_sett = settings_find (st_settings, fs_key_names->s_str3);
+//        s_api   = st_sett == NULL ? "" : setting_get_string (st_sett);
+//        str_append (&fs_data->s_str3, s_api);
+//    }
+//    if (fs_key_names->s_str4[0] != '\0') {
+//        st_sett = settings_find (st_settings, fs_key_names->s_str4);
+//        s_api   = st_sett == NULL ? "" : setting_get_string (st_sett);
+//        str_append (&fs_data->s_str4, s_api);
+//    }
     fourstrings_free (fs_key_names);
 
     return fs_data;
@@ -214,11 +223,16 @@ ww_update_api_key_data (const char  *s_cfg_file,
 
 #ifdef HAVE_FLICKCURL
     if (i_site == WEB_WIDGET_FLICKR) {
-        settings_append (st_setts,
+//        for (int i = 1; i < 4; ++i) {
+//            st_setts = settings_append (st_setts,
+//                setting_new_string (*fs_key_names->s_str[i],
+//                                    *fs_key_data->s_str[i]));
+//        }
+        st_setts = settings_append (st_setts,
             setting_new_string (fs_key_names->s_str2, fs_key_data->s_str2));
-        settings_append (st_setts,
+        st_setts = settings_append (st_setts,
             setting_new_string (fs_key_names->s_str3, fs_key_data->s_str3));
-        settings_append (st_setts,
+        st_setts = settings_append (st_setts,
             setting_new_string (fs_key_names->s_str4, fs_key_data->s_str4));
     }
 #endif

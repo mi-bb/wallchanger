@@ -507,12 +507,13 @@ get_search_opts (GtkWidget **gw_array)
     /* Getting sorting info */
     s_val = gtk_combo_box_text_get_active_text (
             GTK_COMBO_BOX_TEXT (gw_array[GW_SORTING]));
-    st_sett = setting_new_string (s_opts[GW_SORTING], s_val);
+    st_sett = settings_append (st_sett,
+            setting_new_string (s_opts[GW_SORTING], s_val));
     /* If toplist is set */
     if (strcmp (s_val, s_sort[5]) == 0) {
         s_val2 = gtk_combo_box_text_get_active_text (
                  GTK_COMBO_BOX_TEXT (gw_array[GW_TOPRANGE]));
-        settings_append (st_sett,
+        st_sett = settings_append (st_sett,
                          setting_new_string (s_opts[GW_TOPRANGE], s_val2));
         free (s_val2);
     }
@@ -522,7 +523,7 @@ get_search_opts (GtkWidget **gw_array)
     s_val = gtk_combo_box_text_get_active_text (
             GTK_COMBO_BOX_TEXT (gw_array[GW_ORDER]));
     if (strcmp (s_val, s_order[0]) != 0) {
-        settings_append (st_sett,
+        st_sett = settings_append (st_sett,
                          setting_new_string (s_opts[GW_ORDER], s_val));
     }
     free (s_val);
@@ -530,19 +531,19 @@ get_search_opts (GtkWidget **gw_array)
     /* Getting at least value */
     s_cval = gtk_entry_get_text (GTK_ENTRY (gw_array[GW_ATLEAST]));
     if (s_cval[0] != '\0') {
-        settings_append (st_sett,
+        st_sett = settings_append (st_sett,
                          setting_new_string (s_opts[GW_ATLEAST], s_cval));
     }
     /* Getting resolutions */
     s_cval = gtk_entry_get_text (GTK_ENTRY (gw_array[GW_RESOLUTIONS]));
     if (s_cval[0] != '\0') {
-        settings_append (st_sett,
+        st_sett = settings_append (st_sett,
                          setting_new_string (s_opts[GW_RESOLUTIONS], s_cval));
     }
     /* Getting ratios */
     s_cval = gtk_entry_get_text (GTK_ENTRY (gw_array[GW_RATIOS]));
     if (s_cval[0] != '\0') {
-        settings_append (st_sett,
+        st_sett = settings_append (st_sett,
                          setting_new_string (s_opts[GW_RATIOS], s_cval));
     }
     /* Getting category value */
@@ -552,7 +553,8 @@ get_search_opts (GtkWidget **gw_array)
                 GTK_CHECK_MENU_ITEM (gw_array[i]));
         str_append (&s_val, b_val ? "1" : "0");
     }
-    settings_append (st_sett, setting_new_string (s_opts[GW_CATEG1], s_val));
+    st_sett = settings_append (st_sett,
+            setting_new_string (s_opts[GW_CATEG1], s_val));
     free (s_val);
     /* Getting purity value */
     s_val = strdup ("");
@@ -561,7 +563,8 @@ get_search_opts (GtkWidget **gw_array)
                 GTK_CHECK_MENU_ITEM (gw_array[i]));
         str_append (&s_val, b_val ? "1" : "0");
     }
-    settings_append (st_sett, setting_new_string (s_opts[GW_PURITY1], s_val));
+    st_sett = settings_append (st_sett,
+            setting_new_string (s_opts[GW_PURITY1], s_val));
     free (s_val);
 
     return st_sett;
@@ -762,7 +765,7 @@ wallhaven_search_opts_dialog (WebWidget *ww_widget)
     gtk_box_pack_start (GTK_BOX (gw_content_box), gw_hbox, FALSE, FALSE, 4);
 
     st_settings = setts_read (ww_widget->s_cfg_file, &i_err);
-    set_search_opts (gw_array, setting_get_child (st_settings));
+    set_search_opts (gw_array, st_settings);
     settings_free_all (st_settings);
 
     gtk_widget_show_all (gw_content_box);

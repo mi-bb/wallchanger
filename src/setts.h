@@ -44,14 +44,6 @@ enum e_setting_values {
     SETT_WEB_DLG_WIDTH,  /**< Web dilaog width */
     SETT_WEB_DLG_HEIGHT, /**< Web dilaog height */
     SETT_THUMB_QUALITY,  /**< Thumbnail jpg quality */
-    SETT_PEXELS_API,     /**< Pexels API key */
-    SETT_PIXBAY_API,     /**< Pixbay API key */
-    SETT_WALLHAVEN_API,  /**< Wallhaven API key */
-    SETT_WALLABYSS_API,  /**< Wallpaper Abyss API key */
-    SETT_FLICKR_CLKEY,   /**< Flickr API key */
-    SETT_FLICKR_CLSEC,   /**< Flickr API secret */
-    SETT_FLICKR_ACTOK,   /**< Flickr API access token */
-    SETT_FLICKR_ACSEC    /**< Flickr API access token secret */
 };
 /*----------------------------------------------------------------------------*/
 /**
@@ -121,38 +113,6 @@ Setting *    setts_read           (const char *s_cfg_file,
  * @param[in] i_w         Window width value
  * @param[in] i_h         Window height value
  * @return    Status of data update
- *
- * @fn  int setts_update_pexels_api (const char *s_cfg_file,
- *                                   const char *s_api_key)
- * @brief  Update Pexels API key
- *
- * @param[in] s_cfg_file  Config file path
- * @param[in] s_api_key   String with Pexels API key
- * @return    Status of data update
- *
- * @fn  int setts_update_pixbay_api (const char *s_cfg_file,
- *                                   const char *s_api_key)
- * @brief  Update Pixbay API key
- *
- * @param[in] s_cfg_file  Config file path
- * @param[in] s_api_key   String with Pixbay API key
- * @return    Status of data update
- *
- * @fn  int setts_update_wallhaven_api (const char *s_cfg_file,
- *                                      const char *s_api_key)
- * @brief  Update Wallhaven API key
- *
- * @param[in] s_cfg_file  Config file path
- * @param[in] s_api_key   String with Wallhaven API key
- * @return    Status of data update
- *
- * @fn  int setts_update_wallabyss_api (const char *s_cfg_file,
- *                                      const char *s_api_key)
- * @brief  Update Wallpaper Abyss API key
- *
- * @param[in] s_cfg_file  Config file path
- * @param[in] s_api_key   String with Wallhaven API key
- * @return    Status of data update
  */
 /*----------------------------------------------------------------------------*/
 int setts_update_last_used     (const char *s_cfg_file,
@@ -172,35 +132,6 @@ int setts_update_web_dlg_size  (const char *s_cfg_file,
 int setts_update_thumb_quality (const char *s_cfg_file,
                                 const int   i_jpgq);
 
-int setts_update_pexels_api    (const char *s_cfg_file,
-                                const char *s_api_key);
-
-int setts_update_pixbay_api    (const char *s_cfg_file,
-                                const char *s_api_key);
-
-int setts_update_wallhaven_api (const char *s_cfg_file,
-                                const char *s_api_key);
-
-int setts_update_wallabyss_api (const char *s_cfg_file,
-                                const char *s_api_key);
-/*----------------------------------------------------------------------------*/
-#ifdef HAVE_FLICKCURL
-/**
- * @brief  Update Flickr API keys
- *
- * @param[in] s_cfg_file             Config file path
- * @param[in] s_client_key           String with Flickr API key
- * @param[in] s_client_secret        String with Flickr secret key
- * @param[in] s_access_token         String with Flickr access token
- * @param[in] s_access_token_secret  String with Flickr access token secret
- * @return    Status of data update
- */
-int setts_update_flickr_api (const char *s_cfg_file,
-                             const char *s_client_key,
-                             const char *s_client_secret,
-                             const char *s_access_token,
-                             const char *s_access_token_secret);
-#endif
 /*----------------------------------------------------------------------------*/
 /**
  * @fn  char * setts_check_update (const char *s_cfg_file,

@@ -45,9 +45,9 @@ static void imageinfo_init (ImageInfo *ii_info);
 static void
 imageinfo_init (ImageInfo *ii_info)
 {
-    ii_info->s_full_path    = NULL;
-    ii_info->s_file_name    = NULL;
     ii_info->s_file_path    = NULL;
+    ii_info->s_file_name    = NULL;
+    ii_info->s_file_dir     = NULL;
     ii_info->s_width_height = NULL;
     ii_info->i_height       = 0;
     ii_info->i_width        = 0;
@@ -82,17 +82,17 @@ imageinfo_new_from_file (const char *s_fname)
     int        i_h     = 0;    /* Image height */
 
     ii_info = imageinfo_new ();
-    imageinfo_set_full_name (ii_info, s_fname);
+    imageinfo_set_file_path (ii_info, s_fname);
 
     if ((s_p = strrchr (s_fname, '/')) == NULL) {
         imageinfo_set_file_name (ii_info, s_fname);
-        imageinfo_set_file_path (ii_info, "");
+        imageinfo_set_file_dir (ii_info, "");
     }
     else {
         ++s_p;
         imageinfo_set_file_name (ii_info, s_p);
         s_path = strndup (s_fname, (size_t) (s_p - s_fname));
-        imageinfo_set_file_path (ii_info, s_path);
+        imageinfo_set_file_dir (ii_info, s_path);
         free (s_path);
     }
 
@@ -114,9 +114,9 @@ imageinfo_new_from_file (const char *s_fname)
 void
 imageinfo_free (ImageInfo *ii_info)
 {
-    g_free (ii_info->s_full_path);
-    g_free (ii_info->s_file_name);
     g_free (ii_info->s_file_path);
+    g_free (ii_info->s_file_name);
+    g_free (ii_info->s_file_dir);
     g_free (ii_info->s_width_height);
     g_free (ii_info);
 }
@@ -152,16 +152,16 @@ file_paths_to_imageinfo (const GSList *gsl_files1)
 }
 /*----------------------------------------------------------------------------*/
 /**
- * @brief  Set the full file name string (path + file name)
+ * @brief  Set the full file name string (dir + file name)
  */
 void
-imageinfo_set_full_name (ImageInfo  *ii_info, 
+imageinfo_set_file_path (ImageInfo  *ii_info, 
                          const char *s_name)
 {
-    if (ii_info->s_full_path != NULL)
-        free (ii_info->s_full_path);
+    if (ii_info->s_file_path != NULL)
+        free (ii_info->s_file_path);
 
-    ii_info->s_full_path = strdup (s_name);
+    ii_info->s_file_path = strdup (s_name);
 }
 /*----------------------------------------------------------------------------*/
 /**
@@ -178,16 +178,16 @@ imageinfo_set_file_name (ImageInfo  *ii_info,
 }
 /*----------------------------------------------------------------------------*/
 /**
- * @brief  Set the file path string
+ * @brief  Set the file dir string
  */
 void
-imageinfo_set_file_path (ImageInfo  *ii_info, 
-                         const char *s_name)
+imageinfo_set_file_dir (ImageInfo  *ii_info, 
+                        const char *s_name)
 {
-    if (ii_info->s_file_path != NULL)
-        free (ii_info->s_file_path);
+    if (ii_info->s_file_dir != NULL)
+        free (ii_info->s_file_dir);
 
-    ii_info->s_file_path = strdup (s_name);
+    ii_info->s_file_dir = strdup (s_name);
 }
 /*----------------------------------------------------------------------------*/
 /**

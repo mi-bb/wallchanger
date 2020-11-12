@@ -25,6 +25,7 @@
 #define WEBWIDGET_C_H
 
 #include <gtk/gtk.h>
+#include "../config.h"
 #include "webwidget_s.h"
 #include "fourstrings.h"
 #include "setting.h"

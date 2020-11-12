@@ -421,8 +421,10 @@ get_search_opts (GtkWidget **gw_array)
              GTK_SPIN_BUTTON (gw_array[GW_HEIGHT]));
 
     if (i_valw > 0 && i_valh > 0) {
-        st_sett = setting_new_int (s_opts[GW_WIDTH], i_valw);
-        settings_append (st_sett, setting_new_int (s_opts[GW_HEIGHT], i_valh));
+        st_sett = settings_append (st_sett,
+                setting_new_int (s_opts[GW_WIDTH], i_valw));
+        st_sett = settings_append (st_sett,
+                setting_new_int (s_opts[GW_HEIGHT], i_valh));
     }
     return st_sett;
 }
@@ -491,7 +493,7 @@ wallpaperabyss_search_opts_dialog (WebWidget *ww_widget)
     gtk_box_pack_start (GTK_BOX (gw_content_box), gw_hbox, FALSE, FALSE, 4);
 
     st_settings = setts_read (ww_widget->s_cfg_file, &i_err);
-    set_search_opts (gw_array, setting_get_child (st_settings));
+    set_search_opts (gw_array, st_settings);
     settings_free_all (st_settings);
 
     gtk_widget_show_all (gw_content_box);

@@ -387,18 +387,18 @@ size_t    settings_count         (const Setting *st_settings);
  * @brief  Remove Setting from list.
  *
  * @param[in] st_setting  Setting to remove
- * @return    none
+ * @return    Pointer to begining of list
  */
-void      setting_remove         (Setting *st_setting);
+Setting * setting_remove         (Setting *st_setting);
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Replace Setting st_old in list with st_new.
  *
  * @param[in,out] st_old  Old Setting item to be replaced
  * @param[in,out] st_new  New Setting item to replace old one
- * @return        none
+ * @return        Pointer to first element in Setting list
  */
-void      setting_replace        (Setting       *st_old,
+Setting * setting_replace        (Setting       *st_old,
                                   Setting       *st_new);
 /*----------------------------------------------------------------------------*/
 /**
@@ -408,14 +408,14 @@ void      setting_replace        (Setting       *st_old,
  * name of st_setting Setting. After finding such setting it will be replaced
  * with st_seting. If i_multi is set to 0, fuction stops after first replace,
  * if i_multi is set to 1, funciton replaces all found settings. Function
- * returns number of replaces performed.
+ * returns beginning of Setting list.
  *
  * @param[in,out] st_list     List of Setting items
  * @param[in,out] st_setting  Destination Setting
  * @param[in]     i_multi     Multiple replaces value
- * @return        Number of replaces performed.
+ * @return        Beginning of Setting list
  */
-int       settings_find_replace  (Setting       *st_list,
+Setting * settings_find_replace  (Setting       *st_list,
                                   Setting       *st_setting,
                                   const int      i_multi);
 /*----------------------------------------------------------------------------*/
@@ -468,20 +468,20 @@ int       settings_find_replace  (Setting       *st_list,
  * @return     none
  */
 /*----------------------------------------------------------------------------*/
-void setting_add_child          (Setting *st_parent,
-                                 Setting *st_child);
+void      setting_add_child          (Setting *st_parent,
+                                      Setting *st_child);
 
-void settings_prepend           (Setting *st_list,
-                                 Setting *st_setting);
+Setting * settings_prepend           (Setting *st_list,
+                                      Setting *st_setting);
 
-void settings_append            (Setting *st_list,
-                                 Setting *st_setting);
+Setting * settings_append            (Setting *st_list,
+                                      Setting *st_setting);
 
-void settings_append_or_ignore  (Setting *st_list,
-                                 Setting *st_setting);
+void      settings_append_or_ignore  (Setting *st_list,
+                                      Setting *st_setting);
 
-void settings_append_or_replace (Setting *st_list,
-                                 Setting *st_setting);
+Setting * settings_append_or_replace (Setting *st_list,
+                                      Setting *st_setting);
 /*----------------------------------------------------------------------------*/
 /**
  * @fn  Setting * setting_get_top_level (Setting *st_setting)

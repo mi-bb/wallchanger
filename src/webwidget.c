@@ -720,9 +720,8 @@ refresh_service_opts (WebWidget *ww_widget)
     int      i_err       = 0;
 
     st_settings = setts_read (ww_widget->s_cfg_file, &i_err);
-    st_item = setting_get_child (st_settings);
     st_item = setting_get_child (
-            settings_find (st_item, ww_opts (ww_widget->i_active_service)));
+            settings_find (st_settings, ww_opts (ww_widget->i_active_service)));
 
     free (ww_widget->s_search_opts);
     ww_widget->s_search_opts = st_item == NULL ? strdup ("") :
@@ -1094,7 +1093,7 @@ webwidget_create (Setting    *st_settings,
     cachequery_delete_older_than (ww_name (WEB_WIDGET_FLICKR),    1);
 #endif
 
-    if ((st_sett = setting_find_child (st_settings,
+    if ((st_sett = settings_find (st_settings,
                    get_setting_name (SETT_THUMB_QUALITY))) != NULL) {
         ww_widget->i_thumb_quality = (int) setting_get_int (st_sett);
     }
@@ -1203,6 +1202,17 @@ webwidget_create (Setting    *st_settings,
     ww_widget->s_search_opts     = strdup ("");
 
     refresh_service_opts (ww_widget);
+
+    FourStrings *fs_test = fourstrings_new ();
+
+    fs_test->s_str1 = strdup ("1111");
+    fs_test->s_str2 = strdup ("2222");
+    fs_test->s_str3 = strdup ("3333");
+    fs_test->s_str4 = strdup ("4444");
+
+    printf ("fs : %s\n", *fs_test->s_str[1]);
+
+    fourstrings_free (fs_test);
 
     return ww_widget;
 }

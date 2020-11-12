@@ -29,13 +29,13 @@
  * @brief  TreeView Columns
  */
 enum e_tree_view_columns {
-    COL_FULL_FILE_NAME,  /**< Full file name with path */
-    COL_FILE_NAME,       /**< Only file name */
-    COL_FILE_PATH,       /**< Only file path */
-    COL_WIDTH_HEIGHT,    /**< String with width x height */
-    COL_WIDTH,           /**< Image width */
-    COL_HEIGHT,          /**< Image height */
-    NUM_COLS             /**< Number of columns */
+    COL_FILE_PATH,     /**< Full file name with path */
+    COL_FILE_NAME,     /**< Only file name */
+    COL_FILE_DIR,     /**< Only file path */
+    COL_WIDTH_HEIGHT,  /**< String with width x height */
+    COL_WIDTH,         /**< Image width */
+    COL_HEIGHT,        /**< Image height */
+    NUM_COLS           /**< Number of columns */
 };
 /*----------------------------------------------------------------------------*/
 /**
@@ -79,12 +79,12 @@ liststore_set_item (GtkListStore    *gls_list,
                     const ImageInfo *ii_info)
 {
     gtk_list_store_set (gls_list, gti_iter,
-                        COL_FULL_FILE_NAME, imageinfo_get_full_name (ii_info),
-                        COL_FILE_NAME,      imageinfo_get_file_name (ii_info),
-                        COL_FILE_PATH,      imageinfo_get_file_path (ii_info),
-                        COL_WIDTH_HEIGHT,   imageinfo_get_wxh       (ii_info),
-                        COL_WIDTH,          imageinfo_get_width     (ii_info),
-                        COL_HEIGHT,         imageinfo_get_height    (ii_info),
+                        COL_FILE_PATH,    imageinfo_get_file_path (ii_info),
+                        COL_FILE_NAME,    imageinfo_get_file_name (ii_info),
+                        COL_FILE_DIR,     imageinfo_get_file_dir  (ii_info),
+                        COL_WIDTH_HEIGHT, imageinfo_get_wxh       (ii_info),
+                        COL_WIDTH,        imageinfo_get_width     (ii_info),
+                        COL_HEIGHT,       imageinfo_get_height    (ii_info),
                         -1);
 }
 /*----------------------------------------------------------------------------*/
@@ -190,12 +190,12 @@ treemodel_get_data (GtkTreeModel *gtm_model,
     ImageInfo *ii_info = imageinfo_new (); 
 
     gtk_tree_model_get (gtm_model, &gti_iter,
-            COL_FULL_FILE_NAME, &ii_info->s_full_path, 
-            COL_FILE_NAME,      &ii_info->s_file_name,
-            COL_FILE_PATH,      &ii_info->s_file_path,
-            COL_WIDTH_HEIGHT,   &ii_info->s_width_height,
-            COL_WIDTH,          &ii_info->i_width,
-            COL_HEIGHT,         &ii_info->i_height,
+            COL_FILE_PATH,     &ii_info->s_file_path, 
+            COL_FILE_NAME,     &ii_info->s_file_name,
+            COL_FILE_DIR,      &ii_info->s_file_dir,
+            COL_WIDTH_HEIGHT,  &ii_info->s_width_height,
+            COL_WIDTH,         &ii_info->i_width,
+            COL_HEIGHT,        &ii_info->i_height,
             -1);
     return ii_info;
 }
@@ -224,27 +224,27 @@ treeview_get_data (GtkWidget *gw_tview)
     return gsl_iinfo;
 }
 /*----------------------------------------------------------------------------*/
-void
-treeview_get_setting_data (GtkWidget *gw_tview,
-                           Setting   *st_wallpapers)
+Setting *
+treeview_get_setting_data (GtkWidget *gw_tview)
 {
     GtkTreeModel *gtm_model;
     ImageInfo    *ii_info;
     GtkTreeIter   gti_iter;
-    gboolean      b_res     = FALSE;
-    Setting      *st_data;
+    gboolean      b_res   = FALSE;
+    Setting      *st_data = NULL;
 
     gtm_model = gtk_tree_view_get_model (GTK_TREE_VIEW (gw_tview));
     b_res     = gtk_tree_model_get_iter_first (gtm_model, &gti_iter);
 
     while (b_res) {
         ii_info = treemodel_get_data (gtm_model, gti_iter);
-        st_data = setting_new_string (NULL, imageinfo_get_full_name (ii_info));
-        setting_add_child (st_wallpapers, st_data);
+        st_data = settings_append (st_data,
+                setting_new_string (NULL, imageinfo_get_file_path (ii_info)));
         imageinfo_free (ii_info);
 
         b_res = gtk_tree_model_iter_next (gtm_model, &gti_iter);
     }
+    return st_data;
 }
 /*----------------------------------------------------------------------------*/
 /**
@@ -254,19 +254,19 @@ void
 treeview_find_select_item (GtkWidget  *gw_tview,
                            const char *s_file)
 {
-    GtkTreeModel     *gtm_model;
-    GtkTreePath      *path;
-    GtkTreeIter       gti_iter;
-    gboolean          b_res     = FALSE;
-    GValue            value     = {0,};
-    const char       *s_val     = NULL;
+    GtkTreeModel *gtm_model;
+    GtkTreePath  *path;
+    GtkTreeIter   gti_iter;
+    gboolean      b_res     = FALSE;
+    GValue        value     = {0,};
+    const char   *s_val     = NULL;
 
     gtm_model = gtk_tree_view_get_model (GTK_TREE_VIEW (gw_tview));
     b_res     = gtk_tree_model_get_iter_first (gtm_model, &gti_iter);
 
     while (b_res) {
         gtk_tree_model_get_value (gtm_model, &gti_iter,
-                                  COL_FULL_FILE_NAME, &value);
+                                  COL_FILE_PATH, &value);
 
         s_val = (const char*) g_value_get_string (&value);
 
@@ -290,16 +290,16 @@ treeview_find_select_item (GtkWidget  *gw_tview,
 void
 treeview_remove_duplicates (GtkWidget *gw_tview)
 {
-    GtkTreeModel   *gtm_model;
-    GtkTreeIter     gti_iter;
-    GtkTreeIter     gti_next;
-    GtkTreeIter     gti_act;
-    gboolean        b_res     = FALSE;
-    gboolean        b_res2    = FALSE;
-    GValue          value     = {0,};
-    GValue          value2    = {0,};
-    const char     *s_val     = NULL;
-    const char     *s_val2    = NULL;
+    GtkTreeModel *gtm_model;
+    GtkTreeIter   gti_iter;
+    GtkTreeIter   gti_next;
+    GtkTreeIter   gti_act;
+    gboolean      b_res     = FALSE;
+    gboolean      b_res2    = FALSE;
+    GValue        value     = {0,};
+    GValue        value2    = {0,};
+    const char   *s_val     = NULL;
+    const char   *s_val2    = NULL;
 
     gtm_model = gtk_tree_view_get_model (GTK_TREE_VIEW (gw_tview));
     b_res     = gtk_tree_model_get_iter_first (gtm_model, &gti_iter);
@@ -310,7 +310,7 @@ treeview_remove_duplicates (GtkWidget *gw_tview)
         b_res2 = gtk_tree_model_iter_next (gtm_model, &gti_next);
 
         gtk_tree_model_get_value (gtm_model, &gti_iter,
-                                  COL_FULL_FILE_NAME, &value);
+                                  COL_FILE_PATH, &value);
         s_val = (const char*) g_value_get_string (&value);
 
         while (b_res2) {
@@ -319,7 +319,7 @@ treeview_remove_duplicates (GtkWidget *gw_tview)
             b_res2 = gtk_tree_model_iter_next (gtm_model, &gti_next);
 
             gtk_tree_model_get_value (gtm_model, &gti_act,
-                                      COL_FULL_FILE_NAME, &value2);
+                                      COL_FILE_PATH, &value2);
             s_val2 = (const char*) g_value_get_string (&value2);
 
             if (str_compare (s_val, s_val2) == 0) {
@@ -476,10 +476,12 @@ create_tview (void)
     gtvc_col   = gtk_tree_view_column_new_with_attributes ("Location",
                                                            gcr_render,
                                                            "text",
-                                                           COL_FILE_PATH,
+                                                           COL_FILE_DIR,
                                                            NULL);
-    gtk_tree_view_column_set_sort_column_id (gtvc_col, COL_FILE_PATH);
+    gtk_tree_view_column_set_sort_column_id (gtvc_col, COL_FILE_DIR);
     gtk_tree_view_insert_column (GTK_TREE_VIEW (gw_tview), gtvc_col, -1);
+
+    gtk_tree_view_set_search_column (GTK_TREE_VIEW (gw_tview), COL_FILE_NAME);
 
     gls_list = gtk_list_store_new (NUM_COLS,
                                    G_TYPE_STRING,
@@ -507,14 +509,16 @@ treeview_get_one_file (GtkWidget *gw_tview)
     GtkTreeIter   gti_iter;
     gboolean      b_res = FALSE;
     char         *s_fn  = NULL;
+    int           i_cnt = 0;
+    int           i_val = 0;
 
     gtm_model = gtk_tree_view_get_model (GTK_TREE_VIEW (gw_tview));
-    b_res     = gtk_tree_model_get_iter_first (gtm_model, &gti_iter);
+    i_cnt = gtk_tree_model_iter_n_children (gtm_model, NULL);
+    i_val = g_random_int_range (0, i_cnt);
+    b_res = gtk_tree_model_iter_nth_child (gtm_model, &gti_iter, NULL, i_val);
 
     if (b_res) {
-        gtk_tree_model_get (gtm_model, &gti_iter,
-                            COL_FULL_FILE_NAME, &s_fn, 
-                            -1);
+        gtk_tree_model_get (gtm_model, &gti_iter, COL_FILE_PATH, &s_fn, -1);
     }
     return s_fn;
 }

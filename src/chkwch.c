@@ -165,43 +165,41 @@ check_settings_change_wallpaper (char     *s_cfg_file,
     int              i_err    = 0;    /* Error output */
     uint32_t         ui_nlen  = 0;    /* Actual wallpaper list length */
     uint32_t         ui_inter = 0;    /* Result change interval */
-    Setting         *st_setts = NULL; /* For settings */
     Setting         *st_c     = NULL; /* For setting list */
     Setting         *st_wm    = NULL; /* Window manager info */
     Setting         *st_st    = NULL; /* For particular setting */
     char            *s_cmd    = NULL; /* For wallpaper change command */
 
     /* Read settings, check for empty config file, set defaults */
-    st_setts = setts_read (s_cfg_file, &i_err);
+    st_c = setts_read (s_cfg_file, &i_err);
     /* Get settings with window manager info */
     if (i_err == ERR_OK)
         st_wm = wms_get_wm_info (&i_err);
 
     if (i_err != ERR_OK) {
-        free_and_exit (s_cfg_file, rm_rand, st_setts, st_wm,
-                       EXIT_FAILURE, NULL);
+        free_and_exit (s_cfg_file, rm_rand, st_c, st_wm, EXIT_FAILURE, NULL);
     }
-    if ((st_c = setting_get_child (st_setts)) == NULL) {
-        free_and_exit (s_cfg_file, rm_rand, st_setts, st_wm,
+    if (st_c == NULL) {
+        free_and_exit (s_cfg_file, rm_rand, st_c, st_wm,
                        EXIT_FAILURE, "Empty config file");
     }
     /* Check settings, set default values if some are missing */
-    setts_check_defaults (st_setts);
+    setts_check_defaults (st_c);
 
     /* Get number of wallpapers in list */
     ui_nlen = (uint32_t) setting_count_children (
             settings_find (st_c, get_setting_name (SETT_WALL_ARRAY)));
     if (ui_nlen == 0) {
-        free_and_exit (s_cfg_file, rm_rand, st_setts, st_wm,
+        free_and_exit (s_cfg_file, rm_rand, st_c, st_wm,
                        EXIT_FAILURE, "Empty wallpaper list");
     }
     /* Get wallpaper set command depending on used window manager */
-    s_cmd = wms_get_wallpaper_command (s_cfg_file, st_c,
-                                       setting_get_child (st_wm), &i_err);
+    s_cmd = wms_get_wallpaper_command (s_cfg_file, st_c, st_wm, &i_err);
+                                       //setting_get_child (st_wm), &i_err);
     /* Update wallpaper set command in settings */
     if (s_cmd != NULL) {
-        if ((st_st = settings_find (st_c,
-                    get_setting_name (SETT_BG_CMD))) != NULL) {
+        if ((st_st = settings_find (
+                        st_c, get_setting_name (SETT_BG_CMD))) != NULL) {
             setting_set_string (st_st, s_cmd);
         }
         free (s_cmd);
@@ -218,8 +216,8 @@ check_settings_change_wallpaper (char     *s_cfg_file,
     }
     if (ui_len == ui_nlen) {
         /* Wallpaper list length did not changed, change wallpaper */
-        if (wpset_change (st_setts, rm_rand, s_cfg_file) != ERR_OK) {
-            free_and_exit (s_cfg_file, rm_rand, st_setts, st_wm,
+        if (wpset_change (st_c, rm_rand, s_cfg_file) != ERR_OK) {
+            free_and_exit (s_cfg_file, rm_rand, st_c, st_wm,
                            EXIT_FAILURE, NULL);
         }
     }
@@ -229,22 +227,22 @@ check_settings_change_wallpaper (char     *s_cfg_file,
 
         if (ui_len == 0) {
             /* Program startup, previous wallpaper count was 0 */
-            if (wpset_startup_set (st_setts, rm_rand, s_cfg_file) != ERR_OK) {
-                free_and_exit (s_cfg_file, rm_rand, st_setts, st_wm,
+            if (wpset_startup_set (st_c, rm_rand, s_cfg_file) != ERR_OK) {
+                free_and_exit (s_cfg_file, rm_rand, st_c, st_wm,
                                EXIT_FAILURE, NULL);
             }
         }
         else {
             /* Change during progam work, previous wallpaper count was not 0 */
-            if (wpset_change (st_setts, rm_rand, s_cfg_file) != ERR_OK) {
-                free_and_exit (s_cfg_file, rm_rand, st_setts, st_wm,
+            if (wpset_change (st_c, rm_rand, s_cfg_file) != ERR_OK) {
+                free_and_exit (s_cfg_file, rm_rand, st_c, st_wm,
                                EXIT_FAILURE, NULL);
             }
         }
         ui_len = ui_nlen;
     }
     settings_free_all (st_wm);
-    settings_free_all (st_setts);
+    settings_free_all (st_c);
     return ui_inter * 60;
 }
 /*----------------------------------------------------------------------------*/

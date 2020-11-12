@@ -311,7 +311,7 @@ preview_combo (const GSList *gsl_iinfo)
         gtk_list_store_append (list_store, &iter);
         gtk_list_store_set (list_store, &iter,
                                 PREV_NAME_SHOW, s_prev,
-                                PREV_NAME_FULL, ii_info->s_full_path,
+                                PREV_NAME_FULL, ii_info->s_file_path,
                                 -1);
         gl_ii = gl_ii->next;
     }
@@ -396,7 +396,6 @@ event_get_default_button_clicked (GtkWidget **gw_array)
             message_dialog_error (gw_parent, err_get_message (i_err));
             return;
         }
-
         model = gtk_combo_box_get_model (GTK_COMBO_BOX (gw_combo));
         gtk_tree_model_get (model, &iter, WM_COLUMN_NAME, &s_name, -1);
 
@@ -537,8 +536,8 @@ xfce_dialog_run (GtkWindow *gw_parent)
     GtkWidget   *gw_dialog;              /* Xfce command dialog */
     GtkWidget   *gw_tlabel;              /* Title label */
     GtkWidget   *gw_content_box;         /* Dialog's box */
-    GtkWidget   *gw_radiobutton  = NULL; /* Radiobutton */
-    GtkToggleButton *gtb_button  = NULL; /* ToggleButton */
+    GtkWidget   *gw_radiobtn     = NULL; /* Radiobutton */
+    GtkToggleButton *gtb_btn     = NULL; /* ToggleButton */
     GSList      *gs_list         = NULL; /* List for buttons */
     char        *s_res           = NULL; /* Result command string */
     int          i_res           = 0;    /* Dialog result */
@@ -571,11 +570,11 @@ xfce_dialog_run (GtkWindow *gw_parent)
                         FALSE, FALSE, 4);
 
     for (s_it = s_displays; *s_it != NULL; ++s_it) {
-        gw_radiobutton = gtk_radio_button_new_with_label_from_widget (
-                GTK_RADIO_BUTTON (gw_radiobutton), *s_it);
-        gtk_widget_set_name (gw_radiobutton, *s_it);
+        gw_radiobtn = gtk_radio_button_new_with_label_from_widget (
+                GTK_RADIO_BUTTON (gw_radiobtn), *s_it);
+        gtk_widget_set_name (gw_radiobtn, *s_it);
 
-        gtk_box_pack_start (GTK_BOX (gw_content_box), gw_radiobutton,
+        gtk_box_pack_start (GTK_BOX (gw_content_box), gw_radiobtn,
                         FALSE, FALSE, 4);
     }
     wms_free_xfce_display_list (s_displays);
@@ -584,13 +583,12 @@ xfce_dialog_run (GtkWindow *gw_parent)
 
     i_res = gtk_dialog_run (GTK_DIALOG (gw_dialog));
 
-    if (i_res == GTK_RESPONSE_ACCEPT && gw_radiobutton != NULL) {
-        gs_list = gtk_radio_button_get_group (
-                GTK_RADIO_BUTTON (gw_radiobutton));
+    if (i_res == GTK_RESPONSE_ACCEPT && gw_radiobtn != NULL) {
+        gs_list = gtk_radio_button_get_group (GTK_RADIO_BUTTON (gw_radiobtn));
         while (gs_list != NULL) {
-            gtb_button = gs_list->data;
-            if (gtk_toggle_button_get_active (gtb_button)) {
-                s_disp = gtk_widget_get_name (GTK_WIDGET (gtb_button));
+            gtb_btn = gs_list->data;
+            if (gtk_toggle_button_get_active (gtb_btn)) {
+                s_disp = gtk_widget_get_name (GTK_WIDGET (gtb_btn));
                 break;
             }
             gs_list = gs_list->next;
@@ -652,7 +650,7 @@ cmddialog_run (GtkWindow    *gw_parent,
 
     gw_wm_label      = gtk_label_new (NULL);
     gw_tview         = create_command_textview ();
-    gw_wm_combo      = wm_combo (setting_get_child (st_wms));
+    gw_wm_combo      = wm_combo (st_wms);
     gw_get_sav_btn   = gtk_button_new_with_label ("Get saved");
     gw_get_def_btn   = gtk_button_new_with_label ("Get app default");
     gw_save_def_btn  = gtk_button_new_with_label (
@@ -696,7 +694,7 @@ cmddialog_run (GtkWindow    *gw_parent,
 
     /* Trying to detect what window manager is in use and set wm label text and
      * combobox active index to found wm */
-    if ((st_crwm = wms_get_current_wm (setting_get_child (st_wms))) != NULL) {
+    if ((st_crwm = wms_get_current_wm (st_wms)) != NULL) {
         combo_set_active_by_wm_name (gw_wm_combo, setting_get_name (st_crwm));
         wm_label_set_text (gw_wm_label, setting_get_name (st_crwm));
     }
@@ -885,7 +883,6 @@ event_delete_wallpapers (GtkWidget **gw_array)
 
     if (message_dialog_question (NULL, "Do you really want to delete all "
                 "downloaded wallpapers ?") == GTK_RESPONSE_YES) {
-        puts ("ok we delete wallpapers");
 
         s_path = gtk_label_get_text (
                 GTK_LABEL (gw_array[GW_SETT_WALL_PATH_LABEL]));
@@ -947,7 +944,6 @@ other_settings_dialog (GtkWindow  *gw_parent,
     GtkWidget *gw_image_p   = NULL; /* JPG thumb image */
     GdkPixbuf *gp_pbuf      = NULL; /* Pixbuf */
     GError    *g_error      = NULL; /* For error output */
-    Setting   *st_setts     = NULL; /* For settings */
     Setting   *st_sett      = NULL; /* For setting */
     Setting   *st_st        = NULL; /* For particular setting */
     char      *s_thumb_path = NULL; /* Thumbnails directory */
@@ -965,15 +961,14 @@ other_settings_dialog (GtkWindow  *gw_parent,
     GtkDialogFlags flags = GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT;
 
     /* Get settings for dialog dimensions and info for webwidget */
-    st_setts = setts_read (s_cfg_file, &i_err);
-    setts_check_defaults (st_setts);
+    st_sett = setts_read (s_cfg_file, &i_err);
+    setts_check_defaults (st_sett);
 
-    st_sett = setting_get_child (st_setts);
     if ((st_st = settings_find (
                     st_sett, get_setting_name (SETT_THUMB_QUALITY))) != NULL) {
         i_jpg_qual = (int) setting_get_int (st_st);
     }
-    settings_free_all (st_setts);
+    settings_free_all (st_sett);
 
     /* Main dialog window */
     gw_dialog = gtk_dialog_new_with_buttons (
@@ -1052,37 +1047,39 @@ other_settings_dialog (GtkWindow  *gw_parent,
                         gw_hbox,
                         FALSE, FALSE, 4);
 
-    gp_pbuf = gdk_pixbuf_new_from_file_at_size (s_fn, 250, 250, &g_error);
-    g_clear_error (&g_error);
-    if (gp_pbuf != NULL) {
-        gw_image_o = gtk_image_new_from_pixbuf (gp_pbuf);
-        gw_image_p = gtk_image_new_from_pixbuf (gp_pbuf);
-        g_object_unref (gp_pbuf);
-
-        gw_grid = gtk_grid_new ();
-        gtk_grid_set_row_spacing    (GTK_GRID (gw_grid), 8);
-        gtk_grid_set_column_spacing (GTK_GRID (gw_grid), 8);
-        gtk_widget_set_halign (gw_grid, GTK_ALIGN_CENTER);
-        gtk_grid_attach (GTK_GRID (gw_grid),
-                         gtk_label_new ("Original:"),
-                         0,0,1,1);
-        gtk_grid_attach (GTK_GRID (gw_grid),
-                         gtk_label_new ("JPG Preview:"),
-                         1,0,1,1);
-        gtk_grid_attach (GTK_GRID (gw_grid),
-                         gw_image_o,
-                         0,1,1,1);
-        gtk_grid_attach (GTK_GRID (gw_grid),
-                         gw_image_p,
-                         1,1,1,1);
+    if (s_fn != NULL) {
+        gp_pbuf = gdk_pixbuf_new_from_file_at_size (s_fn, 250, 250, &g_error);
+        g_clear_error (&g_error);
+        if (gp_pbuf != NULL) {
+            gw_image_o = gtk_image_new_from_pixbuf (gp_pbuf);
+            gw_image_p = gtk_image_new_from_pixbuf (gp_pbuf);
+            g_object_unref (gp_pbuf);
+    
+            gw_grid = gtk_grid_new ();
+            gtk_grid_set_row_spacing    (GTK_GRID (gw_grid), 8);
+            gtk_grid_set_column_spacing (GTK_GRID (gw_grid), 8);
+            gtk_widget_set_halign (gw_grid, GTK_ALIGN_CENTER);
+            gtk_grid_attach (GTK_GRID (gw_grid),
+                             gtk_label_new ("Original:"),
+                             0,0,1,1);
+            gtk_grid_attach (GTK_GRID (gw_grid),
+                             gtk_label_new ("JPG Preview:"),
+                             1,0,1,1);
+            gtk_grid_attach (GTK_GRID (gw_grid),
+                             gw_image_o,
+                             0,1,1,1);
+            gtk_grid_attach (GTK_GRID (gw_grid),
+                             gw_image_p,
+                             1,1,1,1);
+            gtk_box_pack_start (GTK_BOX (gw_content_box),
+                                gw_grid,
+                                FALSE, FALSE, 4);
+        }
         gtk_box_pack_start (GTK_BOX (gw_content_box),
-                            gw_grid,
+                            gtk_separator_new (GTK_ORIENTATION_HORIZONTAL),
                             FALSE, FALSE, 4);
     }
-    gtk_box_pack_start (GTK_BOX (gw_content_box),
-                        gtk_separator_new (GTK_ORIENTATION_HORIZONTAL),
-                        FALSE, FALSE, 4);
-
+    
     /* Cache directories paths and sized */
     gw_grid = gtk_grid_new ();
     gtk_widget_set_halign (gw_grid, GTK_ALIGN_CENTER);
@@ -1172,10 +1169,10 @@ other_settings_dialog (GtkWindow  *gw_parent,
     if (gtk_dialog_run (GTK_DIALOG (gw_dialog)) == GTK_RESPONSE_ACCEPT) {
         i_jpg_qual = gtk_spin_button_get_value_as_int (
             GTK_SPIN_BUTTON (gw_jpg_spin));
-        st_setts = setting_new_int (get_setting_name (SETT_THUMB_QUALITY),
+        st_sett = setting_new_int (get_setting_name (SETT_THUMB_QUALITY),
                                     i_jpg_qual);
-        setts_check_update_file (s_cfg_file, st_setts);
-        settings_free_all (st_setts);
+        setts_check_update_file (s_cfg_file, st_sett);
+        settings_free_all (st_sett);
     }
     gtk_widget_destroy (gw_dialog);
 }
@@ -1206,14 +1203,12 @@ add_images_from_web_dilaog (GtkWindow  *gw_parent,
     st_setts = setts_read (s_cfg_file, &i_err);
     setts_check_defaults (st_setts);
     /* Get dialog width */
-    st_st = setting_find_child (st_setts,
-                                get_setting_name (SETT_WEB_DLG_WIDTH));
+    st_st = settings_find (st_setts, get_setting_name (SETT_WEB_DLG_WIDTH));
     if (st_st != NULL) {
         i_w = (int) setting_get_int (st_st);
     }
     /* Get dialog height */
-    st_st = setting_find_child (st_setts,
-                                get_setting_name (SETT_WEB_DLG_HEIGHT));
+    st_st = settings_find (st_setts, get_setting_name (SETT_WEB_DLG_HEIGHT));
     if (st_st != NULL) {
         i_h = (int) setting_get_int (st_st);
     }

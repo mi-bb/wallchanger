@@ -96,8 +96,7 @@ ImageInfo * treemodel_get_data           (GtkTreeModel   *gtm_model,
 
 GSList    * treeview_get_data            (GtkWidget      *gw_tview);
 
-void        treeview_get_setting_data    (GtkWidget      *gw_tview,
-                                          Setting        *st_wallpapers);
+Setting *   treeview_get_setting_data    (GtkWidget      *gw_tview);
 /*----------------------------------------------------------------------------*/
 /**
  * @fn  void treeview_remove_duplicates (GtkWidget *gw_tview)

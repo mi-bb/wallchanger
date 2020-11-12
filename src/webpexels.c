@@ -488,7 +488,7 @@ pexels_search_opts_dialog (WebWidget *ww_widget)
     gtk_box_pack_start (GTK_BOX (gw_content_box), gw_hbox, FALSE, FALSE, 4);
 
     st_settings = setts_read (ww_widget->s_cfg_file, &i_err);
-    set_search_opts (gw_per_page, setting_get_child (st_settings));
+    set_search_opts (gw_per_page, st_settings);
     settings_free_all (st_settings);
 
     gtk_widget_show_all (gw_content_box);

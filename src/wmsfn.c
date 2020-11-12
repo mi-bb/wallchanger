@@ -207,7 +207,6 @@ wms_get_current_wm (Setting *st_wmsl)
 #ifdef DEBUG
     printf ("Finding wm\n");
 #endif
-    /*st_wm = setting_get_child (st_wmsl);*/
     st_wm = st_wmsl;
 
     while (st_wm != NULL) {
@@ -267,7 +266,7 @@ wms_update_wm_command (const char *s_wm_name,
 #ifdef DEBUG
     printf ("WM : %s\nCM : %s\n", s_wm_name, s_command);
 #endif
-    if ((st_item = setting_find_child (st_wms, s_wm_name)) != NULL) {
+    if ((st_item = settings_find (st_wms, s_wm_name)) != NULL) {
         if ((st_item = setting_find_child (st_item, "Command")) != NULL) {
             setting_set_string (st_item, s_command);
         }
@@ -348,18 +347,19 @@ wms_get_wallpaper_command (const char *s_cfg_file,
 #endif
                     e_state = WM_STATE_SET_MAIN_DEFAULT;
                 }
-                else if (strcmp (s_cu_wm, s_lu_wm) == 0) {
-#ifdef DEBUG
-                    puts ("  Current wm equals last used");
-#endif
-                    e_state = WM_STATE_SET_SAVED_BG_CMD;
-                }
-                else {
+                else if (s_lu_wm == NULL || s_cu_wm == NULL || 
+                         strcmp (s_cu_wm, s_lu_wm) != 0) {
 #ifdef DEBUG
                     puts ("  Current wm differs last used");
 #endif
                     *i_err = setts_update_last_used_wm (s_cfg_file, s_cu_wm);
                     e_state = WM_STATE_SET_CURR_USED_WM_CMD;
+                }
+                else {
+#ifdef DEBUG
+                    puts ("  Current wm equals last used");
+#endif
+                    e_state = WM_STATE_SET_SAVED_BG_CMD;
                 }
                 break;
 
@@ -447,6 +447,7 @@ int
 wms_check_for_new_wms (void)
 {
     Setting *st_home      = NULL;   /* For user's wm info */
+    Setting *st_nxt       = NULL;   /* Next setting in list */
     Setting *st_default   = NULL;   /* For app default wm info */
     Setting *st_item_home = NULL;   /* Temp for saved data item */
     Setting *st_item_def  = NULL;   /* Temp for default data item */
@@ -462,26 +463,31 @@ wms_check_for_new_wms (void)
         return i_err;
     }
     /* Iterate and remove from app default data wms present in user's info */
-    st_item_home = setting_get_child (st_home);
+    st_item_home = st_home;
 
     while (st_item_home != NULL) {
 
-        st_item_def = setting_get_child (st_default);
+        st_item_def = st_default;
 
         while (st_item_def != NULL) {
 
+            st_nxt = st_item_def->next;
+
             if (settings_equal_names (st_item_home, st_item_def)) {
-                setting_remove (st_item_def);
+#ifdef DEBUG
+                printf ("Removing %s\n", st_item_def->s_name);
+#endif
+                st_default = setting_remove (st_item_def);
                 break;
             }
-            st_item_def = st_item_def->next;
+            st_item_def = st_nxt;
         }
         st_item_home = st_item_home->next;
     }
     /* If there are some window managers left in app default wm data,
      * update user's wm data with this window managers */
     if (setting_count_children (st_default) > 0) {
-        i_err = wms_update_wm_config (setting_get_child (st_default));
+        i_err = wms_update_wm_config (st_default);
     }
     settings_free_all (st_default);
     settings_free_all (st_home);

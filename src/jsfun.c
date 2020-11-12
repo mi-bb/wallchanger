@@ -41,17 +41,6 @@
 #include "jsfun.h"
 /*----------------------------------------------------------------------------*/
 /**
- * @fn  static void js_json_obj_to_settings (json_object   *val,
- *                                           Setting       *st_settings,
- *                                           const char    *s_name)
- *
- * @brief  Convert Json object to Setting object and add to st_settings list.
- *
- * @param[in]  val          Json object to process
- * @param[out] st_settings  List of Setting items
- * @param[in]  s_name       Destination Setting name
- * @return     none
- *
  * @fn  static json_object * js_setting_to_json_obj (const Setting *st_sett)
  *
  * @brief  Convert Setting object to Json object
@@ -59,48 +48,16 @@
  * @param[in] st_sett   Setting item to convert
  * @return    Json object
  */
-/*----------------------------------------------------------------------------*/
-static void          js_json_obj_to_settings (json_object   *val,
-                                              Setting       *st_settings,
-                                              const char    *s_name);
-
 static json_object * js_setting_to_json_obj  (Setting *st_sett);
 /*----------------------------------------------------------------------------*/
-/**
- * @brief  Get items from Json array and add them to list with Setting items.
- *
- * @param[in]  j_array       Array of Json objects
- * @param[out] st_settings   List of Setting items
- * @param[in]  s_array_name  Name of array for the elements
- * @return     none
- */
-static void
-js_json_array_to_settings (json_object *j_array,
-                           Setting     *st_settings,
-                           const char  *s_array_name)
+static Setting *
+js_json_obj_to_setting (json_object *val,
+                        const char  *s_name)
 {
-    json_object *j_val;         /* Json object read from Json array */
+    json_object *j_idx;         /* Json object read from Json array */
+    Setting     *st_set = NULL; /* Setting item to return */
     size_t       ui_cnt = 0;    /* Length of Json array */
     size_t            i = 0;    /* i */
-
-    ui_cnt = json_object_array_length (j_array);
-
-    for (i = 0; i < ui_cnt; ++i) {
-        if ((j_val = json_object_array_get_idx (j_array, i)) != NULL) {
-            js_json_obj_to_settings (j_val, st_settings, s_array_name);
-        }
-    }
-}
-/*----------------------------------------------------------------------------*/
-/**
- * @brief  Convert Json object to Setting object and add to st_settings list.
- */
-static void
-js_json_obj_to_settings (json_object *val,
-                         Setting     *st_settings,
-                         const char  *s_name)
-{
-    Setting *st_set;
 
     int i_val_type = json_object_get_type (val);
 
@@ -108,42 +65,40 @@ js_json_obj_to_settings (json_object *val,
 
         case json_type_null:
             break;
-
         case json_type_boolean:
             st_set = setting_new_int (s_name,
                                       (int64_t) json_object_get_int64 (val));
-            setting_add_child (st_settings, st_set);
             break;
-
         case json_type_double:
             st_set = setting_new_double (s_name, json_object_get_double (val));
-            setting_add_child (st_settings, st_set);
             break;
-
         case json_type_int:
             st_set = setting_new_int (s_name,
                                       (int64_t) json_object_get_int64 (val));
-            setting_add_child (st_settings, st_set);
             break;
-
         case json_type_string:
             st_set = setting_new_string (s_name, json_object_get_string (val));
-            setting_add_child (st_settings, st_set);
             break;
         case json_type_object:
             st_set = setting_new_setting (s_name);
-            setting_add_child (st_settings, st_set);
             json_object_object_foreach (val, key, val1) {
-                js_json_obj_to_settings (val1, st_set, key);
+                setting_add_child (st_set, js_json_obj_to_setting (val1, key));
             }
             break;
         case json_type_array:
             st_set = setting_new_array (s_name);
-            setting_add_child (st_settings, st_set);
-            js_json_array_to_settings (val, st_set, s_name);
+            ui_cnt = json_object_array_length (val);
+            for (i = 0; i < ui_cnt; ++i) {
+                if ((j_idx = json_object_array_get_idx (val, i)) != NULL) {
+                    setting_add_child (st_set, 
+                                       js_json_obj_to_setting (j_idx, NULL));
+                }
+            }
+            break;
         default:
             break;
     }
+    return st_set;
 }
 /*----------------------------------------------------------------------------*/
 /**
@@ -212,6 +167,9 @@ js_setting_to_json_obj (Setting *st_sett)
             j_obj = js_settings_array_to_json (st_sett);
             return j_obj;
 
+        case SET_VAL_NULL:
+            break;
+
         default:
             break;
     }
@@ -248,17 +206,22 @@ Setting *
 js_settings_read (const char *s_fname,
                   int        *i_err)
 {
-    Setting *st_settings; /* Settings to return */
-    json_object   *j_obj; /* Json object made from file data */
+    Setting     *st_settings = NULL; /* Settings to return */
+    json_object *j_obj;              /* Json object made from file data */
 
     *i_err      = ERR_OK;
-    st_settings = setting_new_setting ("Settings");
     j_obj       = js_open_file (s_fname, NULL, i_err);
 
     if (*i_err == ERR_OK && j_obj != NULL) {
         json_object_object_foreach (j_obj, key, val) {
-            js_json_obj_to_settings (val, st_settings, key);
+            st_settings = settings_append (st_settings,
+                        js_json_obj_to_setting (val, key));
         }
+#ifdef DEBUG
+        printf ("-> Settings read start\n");
+        settings_print (st_settings);
+        printf ("-> Settings read end\n");
+#endif
     }
     if (j_obj != NULL)
         json_object_put (j_obj);

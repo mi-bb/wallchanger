@@ -123,38 +123,6 @@ get_setting_name (const int i_val)
             s_res = "Thumbnail quality";
             break;
 
-        case SETT_PEXELS_API:
-            s_res = "Pexels api";
-            break;
-
-        case SETT_PIXBAY_API:
-            s_res = "Pixbay api";
-            break;
-
-        case SETT_WALLHAVEN_API:
-            s_res = "Wallhaven api";
-            break;
-
-        case SETT_WALLABYSS_API:
-            s_res = "Wallpaper Abyss api";
-            break;
-
-        case SETT_FLICKR_CLKEY:
-            s_res = "Flickr client key";
-            break;
-
-        case SETT_FLICKR_CLSEC:
-            s_res = "Flickr client secret";
-            break;
-
-        case SETT_FLICKR_ACTOK:
-            s_res = "Flickr access token";
-            break;
-
-        case SETT_FLICKR_ACSEC:
-            s_res = "Flickr access token secret";
-            break;
-
         default:
             break;
     }
@@ -188,7 +156,7 @@ setts_check_setting (Setting     *st_settings,
 
     s_name = get_setting_name (sd_data->setting_id);
 
-    if ((st_sett = setting_find_child (st_settings, s_name)) == NULL) {
+    if ((st_sett = settings_find (st_settings, s_name)) == NULL) {
 #ifdef DEBUG
         printf ("%s", s_name);
         printf (" not present, setting default ");
@@ -197,28 +165,29 @@ setts_check_setting (Setting     *st_settings,
 #ifdef DEBUG
             printf ("%" PRId64 "\n", sd_data->default_int);
 #endif
-            setting_add_child (st_settings,
+            st_settings = settings_append (st_settings,
                     setting_new_int (s_name, sd_data->default_int));
         }
         else if (sd_data->setting_type == SET_VAL_DOUBLE) {
 #ifdef DEBUG
             printf ("%f\n", sd_data->default_double);
 #endif
-            setting_add_child (st_settings,
+            st_settings = settings_append (st_settings,
                     setting_new_double (s_name, sd_data->default_double));
         }
         else if (sd_data->setting_type == SET_VAL_STRING) {
 #ifdef DEBUG
             printf ("%s\n", sd_data->default_string);
 #endif
-            setting_add_child (st_settings,
+            st_settings = settings_append (st_settings,
                     setting_new_string (s_name, sd_data->default_string));
         }
         else if (sd_data->setting_type == SET_VAL_ARRAY) {
 #ifdef DEBUG
             printf ("\n");
 #endif
-            setting_add_child (st_settings, setting_new_array (s_name));
+            st_settings = settings_append (st_settings,
+                          setting_new_array (s_name));
         }
     }
     else {
@@ -250,14 +219,6 @@ setts_check_defaults (Setting *st_settings)
         {SETT_WEB_DLG_WIDTH,  SET_VAL_INT,    DEFAULT_WEB_DLG_WIDTH, 0, ""},
         {SETT_WEB_DLG_HEIGHT, SET_VAL_INT,    DEFAULT_WEB_DLG_HEIGHT, 0, ""},
         {SETT_THUMB_QUALITY,  SET_VAL_INT,    DEFAULT_THUMB_QUALITY, 0, ""},
-        {SETT_PEXELS_API,     SET_VAL_STRING, 0, 0, ""},
-        {SETT_PIXBAY_API,     SET_VAL_STRING, 0, 0, ""},
-        {SETT_WALLHAVEN_API,  SET_VAL_STRING, 0, 0, ""},
-        {SETT_WALLABYSS_API,  SET_VAL_STRING, 0, 0, ""},
-        {SETT_FLICKR_CLKEY,   SET_VAL_STRING, 0, 0, ""},
-        {SETT_FLICKR_CLSEC,   SET_VAL_STRING, 0, 0, ""},
-        {SETT_FLICKR_ACTOK,   SET_VAL_STRING, 0, 0, ""},
-        {SETT_FLICKR_ACSEC,   SET_VAL_STRING, 0, 0, ""},
         {-1, 0, 0, 0, ""}
     };
 
@@ -310,13 +271,13 @@ setts_update_window_size (const char *s_cfg_file,
                           const int   i_w,
                           const int   i_h)
 {
-    Setting  *st_settings;
+    Setting  *st_settings = NULL;
     int       i_res = ERR_OK;
 
-    st_settings = setting_new_int (get_setting_name (SETT_WIN_WIDTH),
-                                (int64_t) i_w);
-
-    settings_append (st_settings,
+    st_settings = settings_append (st_settings,
+                     setting_new_int (get_setting_name (SETT_WIN_WIDTH),
+                                      (int64_t) i_w));
+    st_settings = settings_append (st_settings,
                      setting_new_int (get_setting_name (SETT_WIN_HEIGHT),
                                       (int64_t) i_h));
 
@@ -333,13 +294,13 @@ setts_update_web_dlg_size (const char *s_cfg_file,
                            const int   i_w,
                            const int   i_h)
 {
-    Setting  *st_settings;
+    Setting  *st_settings = NULL;
     int       i_res = ERR_OK;
 
-    st_settings = setting_new_int (get_setting_name (SETT_WEB_DLG_WIDTH),
-                                (int64_t) i_w);
-
-    settings_append (st_settings,
+    st_settings = settings_append (st_settings,
+                     setting_new_int (get_setting_name (SETT_WEB_DLG_WIDTH),
+                                      (int64_t) i_w));
+    st_settings = settings_append (st_settings,
                      setting_new_int (get_setting_name (SETT_WEB_DLG_HEIGHT),
                                       (int64_t) i_h));
 
@@ -365,110 +326,6 @@ setts_update_thumb_quality (const char *s_cfg_file,
     settings_free_all (st_settings);
     return i_res;
 }
-/*----------------------------------------------------------------------------*/
-/**
- * @brief  Update Pexels API key
- */
-int
-setts_update_pexels_api (const char *s_cfg_file,
-                         const char *s_api_key)
-{
-    Setting  *st_settings;
-    int       i_res = ERR_OK;
-
-    st_settings = setting_new_string (get_setting_name (SETT_PEXELS_API),
-                                      s_api_key);
-
-    i_res = js_settings_check_update_file (st_settings, s_cfg_file);
-    settings_free_all (st_settings);
-    return i_res;
-}
-/*----------------------------------------------------------------------------*/
-/**
- * @brief  Update Pixbay API key
- */
-int
-setts_update_pixbay_api (const char *s_cfg_file,
-                         const char *s_api_key)
-{
-    Setting  *st_settings;
-    int       i_res = ERR_OK;
-
-    st_settings = setting_new_string (get_setting_name (SETT_PIXBAY_API),
-                                      s_api_key);
-
-    i_res = js_settings_check_update_file (st_settings, s_cfg_file);
-    settings_free_all (st_settings);
-    return i_res;
-}
-/*----------------------------------------------------------------------------*/
-/**
- * @brief  Update Wallhaven API key
- */
-int
-setts_update_wallhaven_api (const char *s_cfg_file,
-                            const char *s_api_key)
-{
-    Setting  *st_settings;
-    int       i_res = ERR_OK;
-
-    st_settings = setting_new_string (get_setting_name (SETT_WALLHAVEN_API),
-                                      s_api_key);
-
-    i_res = js_settings_check_update_file (st_settings, s_cfg_file);
-    settings_free_all (st_settings);
-    return i_res;
-}
-/*----------------------------------------------------------------------------*/
-/**
- * @brief  Update Wallpaper Abyss API key
- */
-int
-setts_update_wallabyss_api (const char *s_cfg_file,
-                            const char *s_api_key)
-{
-    Setting  *st_settings;
-    int       i_res = ERR_OK;
-
-    st_settings = setting_new_string (get_setting_name (SETT_WALLABYSS_API),
-                                      s_api_key);
-
-    i_res = js_settings_check_update_file (st_settings, s_cfg_file);
-    settings_free_all (st_settings);
-    return i_res;
-}
-/*----------------------------------------------------------------------------*/
-#ifdef HAVE_FLICKCURL
-/**
- * @brief  Update Flickr API keys
- */
-int
-setts_update_flickr_api (const char *s_cfg_file,
-                         const char *s_client_key,
-                         const char *s_client_secret,
-                         const char *s_access_token,
-                         const char *s_access_token_secret)
-{
-    Setting  *st_settings;
-    int       i_res = ERR_OK;
-
-    st_settings = setting_new_string (get_setting_name (SETT_FLICKR_CLKEY),
-                                      s_client_key);
-    settings_append (st_settings,
-            setting_new_string (get_setting_name (SETT_FLICKR_CLSEC),
-                                s_client_secret));
-    settings_append (st_settings,
-            setting_new_string (get_setting_name (SETT_FLICKR_ACTOK),
-                                s_access_token));
-    settings_append (st_settings,
-            setting_new_string (get_setting_name (SETT_FLICKR_ACSEC),
-                                s_access_token_secret));
-
-    i_res = js_settings_check_update_file (st_settings, s_cfg_file);
-    settings_free_all (st_settings);
-    return i_res;
-}
-#endif
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Check if settings in SettList are an update to settings

@@ -39,16 +39,6 @@
 static void setting_init (Setting *st_set);
 /*----------------------------------------------------------------------------*/
 /**
- * @brief  Copy data from one Setting object to another
- *
- * @param[out] st_dest  Destination Setting object
- * @param[in]  st_src   Source Setting object
- * @return     none
- */
-static void setting_copy2 (Setting       *st_dest,
-                           const Setting *st_src);
-/*----------------------------------------------------------------------------*/
-/**
  * @brief  Create default Setting.
  *
  * @param[in] s_name  Setting's name
@@ -335,55 +325,67 @@ setting_last (Setting *st_settings)
 /**
  * @brief  Prepend st_setting item to st_list list.
  */
-void
+Setting *
 settings_prepend (Setting *st_list,
                   Setting *st_setting)
 {
-    Setting *st_first = NULL;
+    Setting *st_first    = NULL;
+    Setting *st_add_last = NULL;
 
-    if (st_list == NULL || st_setting == NULL)
-        return;
+    if (st_list == NULL)
+        return st_setting;
 
-    st_first = setting_first (st_list);
+    if (st_setting == NULL)
+        return st_list;
 
-    st_first->prev     = st_setting;
+    st_add_last = setting_last (st_setting);
+    st_first    = setting_first (st_list);
+
+    st_first->prev     = st_add_last;
+    st_add_last->next  = st_first;
     st_setting->prev   = NULL;
-    st_setting->next   = st_first;
     st_setting->parent = st_first->parent;
     if (st_setting->parent != NULL) {
         st_setting->parent->data.st_child = st_setting;
     }
+    return st_setting;
 }
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Append st_setting item to st_list list.
  */
-void
+Setting *
 settings_append (Setting *st_list,
                  Setting *st_setting)
 {
-    Setting *st_last = NULL;
+    Setting *st_last      = NULL;
+    Setting *st_add_first = NULL;
 
-    if (st_list == NULL || st_setting == NULL)
-        return;
+    if (st_list == NULL)
+        return st_setting;
 
-    st_last = setting_last (st_list);
+    if (st_setting == NULL)
+        return st_list;
 
-    st_last->next      = st_setting;
-    st_setting->next   = NULL;
-    st_setting->prev   = st_last;
-    st_setting->parent = st_last->parent;
+    st_last      = setting_last (st_list);
+    st_add_first = setting_first (st_setting);
+
+    st_last->next        = st_add_first;
+    st_add_first->prev   = st_last;
+    st_add_first->parent = st_last->parent;
+
+    return setting_first (st_list);
 }
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Replace Setting st_old in list with st_new.
  */
-void
+Setting *
 setting_replace (Setting *st_old,
                  Setting *st_new)
 {
     if (st_old == NULL || st_new == NULL)
-        return;
+        return NULL;
 
     if (st_old->prev != NULL)
         st_old->prev->next = st_new;
@@ -396,6 +398,8 @@ setting_replace (Setting *st_old,
     st_old->prev   = NULL;
     st_old->next   = NULL;
     settings_free_all (st_old);
+
+    return setting_first (st_new);
 }
 /*----------------------------------------------------------------------------*/
 /**
@@ -426,53 +430,61 @@ settings_append_or_ignore (Setting *st_list,
  * @brief  Append Setting item to st_list list and replace if
  *         setting with same name exists on it.
  */
-void
+Setting *
 settings_append_or_replace (Setting *st_list,
                             Setting *st_setting)
 {
+    Setting *st_ret  = NULL;
     Setting *st_item = NULL;
 
     if (st_setting == NULL)
-        return;
+        return NULL;
 
+    st_ret  = st_list;
     st_item = st_list;
 
     while (st_item != NULL) {
         if (setting_get_hash (st_item) == setting_get_hash (st_setting)) {
             setting_replace (st_item, st_setting);
-            return;
+            if (st_setting->prev == NULL)
+                st_ret = st_setting;
+            return st_ret;
         }
         st_item = st_item->next;
     }
     settings_append (st_list, st_setting);
+    return st_ret;
 }
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Find setting in list and replace.
  */
-int
+Setting *
 settings_find_replace (Setting   *st_list,
                        Setting   *st_setting,
                        const int  i_multi)
 {
-
+    Setting *st_ret  = NULL;
     Setting *st_item = NULL;
+    Setting *st_next = NULL;
     int      i_cnt   = 0;
 
     if (st_setting == NULL)
         return 0;
 
+    st_ret  = st_list;
     st_item = st_list;
 
     while (st_item != NULL) {
+        st_next = st_item->next;
         if (setting_get_hash (st_item) == setting_get_hash (st_setting)) {
-            setting_replace (st_item, st_setting);
+            st_ret = setting_replace (st_item, st_setting);
             ++i_cnt;
             if (!i_multi) break;
         }
-        st_item = st_item->next;
+        st_item = st_next;
     }
-    return i_cnt;
+    return st_ret;
 }
 /*----------------------------------------------------------------------------*/
 /**
@@ -491,9 +503,6 @@ setting_set_child (Setting *st_parent,
 /*----------------------------------------------------------------------------*/
 Setting * setting_get_child  (Setting *st_setting)
 {
-    //if (st_setting == NULL)
-    //    return NULL;
-
     if (setting_get_type (st_setting) == SET_VAL_SETTING ||
         setting_get_type (st_setting) == SET_VAL_ARRAY) {
 
@@ -531,6 +540,9 @@ Setting *
 setting_get_top_parent (Setting *st_setting)
 {
     Setting *st_top = NULL;
+
+    if (st_setting == NULL)
+        return NULL;
 
     st_top = st_setting;
 
@@ -611,17 +623,22 @@ setting_get_at_pos (Setting      *st_settings,
 /**
  * @brief  Remove Setting from list.
  */
-void
+Setting *
 setting_remove (Setting *st_setting)
 {
     Setting *st_item = NULL;
+    Setting *st_ret  = NULL;
 
     if (st_setting == NULL)
-        return;
+        return NULL;
 
     if (st_setting->prev != NULL) {
         st_setting->prev->next = st_setting->next;
+        st_ret = setting_first (st_setting->prev);
     }
+    else
+        st_ret = st_setting->next;
+
     if (st_setting->next != NULL) {
         st_setting->next->prev = st_setting->prev;
     }
@@ -637,6 +654,7 @@ setting_remove (Setting *st_setting)
         settings_free_all (st_item);
     }
     setting_free (st_setting);
+    return st_ret;
 }
 /*----------------------------------------------------------------------------*/
 #ifdef DEBUG
@@ -684,8 +702,11 @@ setting_print (Setting *st_set)
                 printf (" par=%s\n", st_set->parent->s_name);
             else
                 printf ("\n");
-            if (setting_get_child (st_set) != NULL)
+            if (setting_get_child (st_set) != NULL) {
+                printf ("[\n");
                 settings_print (setting_get_child (st_set));
+                printf ("]\n");
+            }
             break;
         case SET_VAL_ARRAY:
             printf ("array, val=%s, n=%s",
@@ -695,8 +716,12 @@ setting_print (Setting *st_set)
                 printf (" par=%s\n", st_set->parent->s_name);
             else
                 printf ("\n");
+            printf ("[\n");
             if (setting_get_child (st_set) != NULL)
                 settings_print (setting_get_child (st_set));
+            printf ("]\n");
+            break;
+        case SET_VAL_NULL:
             break;
         default:
             break;

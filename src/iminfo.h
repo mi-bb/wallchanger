@@ -34,14 +34,14 @@
  *
  * @brief  ImageInfo data structure
  *
- * @var   ImageInfo::s_full_path
+ * @var   ImageInfo::s_file_path
  * @brief Full file name with path
  *
  * @var   ImageInfo::s_file_name
  * @brief File name only
  *
- * @var   ImageInfo::s_file_path
- * @brief File path only
+ * @var   ImageInfo::s_file_dir
+ * @brief File dir only
  *
  * @var   ImageInfo::s_width_height
  * @brief String with Width x Height
@@ -54,12 +54,12 @@
  */
 typedef struct
 ImageInfo {
-    char    *s_full_path;     /* Full file name with path */
-    char    *s_file_name;     /* File name only */
-    char    *s_file_path;     /* File path */
-    char    *s_width_height;  /* Width x Height in string */
-    int      i_width;         /* Image width in uint */
-    int      i_height;        /* Image height in uint */
+    char    *s_file_path;    /* Full file name with path */
+    char    *s_file_name;    /* File name only */
+    char    *s_file_dir;     /* File path */
+    char    *s_width_height; /* Width x Height in string */
+    int      i_width;        /* Image width in uint */
+    int      i_height;       /* Image height in uint */
 } ImageInfo;
 /*----------------------------------------------------------------------------*/
 /**
@@ -102,9 +102,9 @@ void         imageinfo_free           (ImageInfo        *ii_info);
 GSList     * file_paths_to_imageinfo  (const GSList     *gsl_files1);
 /*----------------------------------------------------------------------------*/
 /**
- * @fn  void imageinfo_set_full_name (ImageInfo *ii_info, const char *s_name)
+ * @fn  void imageinfo_set_file_path (ImageInfo *ii_info, const char *s_name)
  *
- * @brief  Set the full file name string (path + file name)
+ * @brief  Set the full file name string (dir + file name)
  *
  * @param[out] ii_info  ImageInfo object to set data
  * @param[in]  s_name   String to set as full file name
@@ -140,9 +140,9 @@ GSList     * file_paths_to_imageinfo  (const GSList     *gsl_files1);
  * @param[in]  s_name   String to set as file path
  * @return     none
  *
- * @fn  const char * imageinfo_get_file_path (const ImageInfo *ii_info)
+ * @fn  const char * imageinfo_get_file_dir (const ImageInfo *ii_info)
  *
- * @brief  Get the file path string
+ * @brief  Get the file dir string
  *
  * @param[out] ii_info  ImageInfo object with data to get
  * @return     File path string
@@ -185,12 +185,12 @@ GSList     * file_paths_to_imageinfo  (const GSList     *gsl_files1);
  * @return     String with image dimensions
  */
 /*----------------------------------------------------------------------------*/
-void imageinfo_set_full_name (ImageInfo       *ii_info,
+void imageinfo_set_file_path (ImageInfo       *ii_info,
                               const char      *s_name)
      __attribute__ ((nonnull (2)));
 
-static inline const char * imageinfo_get_full_name (const ImageInfo *ii_info) {
-     return (const char*) ii_info->s_full_path;       
+static inline const char * imageinfo_get_file_path (const ImageInfo *ii_info) {
+     return (const char*) ii_info->s_file_path;       
 }
 /*----------------------------------------------------------------------------*/
 void imageinfo_set_file_name  (ImageInfo        *ii_info,
@@ -201,12 +201,12 @@ static inline const char * imageinfo_get_file_name (const ImageInfo *ii_info) {
      return (const char*) ii_info->s_file_name;
 }
 /*----------------------------------------------------------------------------*/
-void imageinfo_set_file_path  (ImageInfo        *ii_info,
-                               const char       *s_name)
+void imageinfo_set_file_dir  (ImageInfo        *ii_info,
+                              const char       *s_name)
      __attribute__ ((nonnull (2)));
 
-static inline const char * imageinfo_get_file_path (const ImageInfo *ii_info) {
-     return (const char*) ii_info->s_file_path;       
+static inline const char * imageinfo_get_file_dir (const ImageInfo *ii_info) {
+     return (const char*) ii_info->s_file_dir;       
 }
 /*----------------------------------------------------------------------------*/
 static inline void imageinfo_set_width (ImageInfo        *ii_info,

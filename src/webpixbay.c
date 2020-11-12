@@ -561,51 +561,53 @@ get_search_opts (GtkWidget **gw_array)
     s_val = gtk_combo_box_text_get_active_text (
             GTK_COMBO_BOX_TEXT (gw_array[GW_ORIENTATION]));
     if (strcmp (s_val, s_orientation[0]) != 0) {
-        settings_append (st_sett,
-                         setting_new_string (s_opts[GW_ORIENTATION], s_val));
+        st_sett = settings_append (st_sett,
+                setting_new_string (s_opts[GW_ORIENTATION], s_val));
     }
     free (s_val);
 
     s_val = gtk_combo_box_text_get_active_text (
             GTK_COMBO_BOX_TEXT (gw_array[GW_CATEGORY]));
     if (strcmp (s_val, s_category[0]) != 0) {
-        settings_append (st_sett,
+        st_sett = settings_append (st_sett,
                          setting_new_string (s_opts[GW_CATEGORY], s_val));
     }
     free (s_val);
 
     s_val2 = gtk_entry_get_text (GTK_ENTRY (gw_array[GW_COLOUR_ENTRY]));
     if (s_val2[0] != '\0') {
-        settings_append (st_sett,
+        st_sett = settings_append (st_sett,
                          setting_new_string (s_opts[GW_COLOUR], s_val2));
     }
     s_val = gtk_combo_box_text_get_active_text (
             GTK_COMBO_BOX_TEXT (gw_array[GW_ED_CHOICE]));
-    settings_append (st_sett, setting_new_string (s_opts[GW_ED_CHOICE], s_val));
+    st_sett = settings_append (st_sett,
+            setting_new_string (s_opts[GW_ED_CHOICE], s_val));
     free (s_val);
 
     s_val = gtk_combo_box_text_get_active_text (
             GTK_COMBO_BOX_TEXT (gw_array[GW_SAFE_SEARCH]));
-    settings_append (st_sett,
+    st_sett = settings_append (st_sett,
                      setting_new_string (s_opts[GW_SAFE_SEARCH], s_val));
     free (s_val);
 
     i_val = gtk_spin_button_get_value_as_int (
             GTK_SPIN_BUTTON (gw_array[GW_MIN_WIDTH]));
     if (i_val > 0) {
-        settings_append (st_sett,
+        st_sett = settings_append (st_sett,
                          setting_new_int (s_opts[GW_MIN_WIDTH], i_val));
     }
 
     i_val = gtk_spin_button_get_value_as_int (
             GTK_SPIN_BUTTON (gw_array[GW_MIN_HEIGHT]));
     if (i_val > 0) {
-        settings_append (st_sett,
+        st_sett = settings_append (st_sett,
                          setting_new_int (s_opts[GW_MIN_HEIGHT], i_val));
     }
     i_val = gtk_spin_button_get_value_as_int (
             GTK_SPIN_BUTTON (gw_array[GW_PER_PAGE]));
-    settings_append (st_sett, setting_new_int (s_opts[GW_PER_PAGE], i_val));
+    st_sett = settings_append (st_sett,
+            setting_new_int (s_opts[GW_PER_PAGE], i_val));
 
     return st_sett;
 }
@@ -849,7 +851,7 @@ pixbay_search_opts_dialog (WebWidget *ww_widget)
     gtk_box_pack_start (GTK_BOX (gw_content_box), gw_hbox, FALSE, FALSE, 4);
 
     st_settings = setts_read (ww_widget->s_cfg_file, &i_err);
-    set_search_opts (gw_array, setting_get_child (st_settings));
+    set_search_opts (gw_array, st_settings);
     settings_free_all (st_settings);
 
     gtk_widget_show_all (gw_content_box);

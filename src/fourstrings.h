@@ -40,6 +40,9 @@
  *
  * @var   FourStrings::s_str4
  * @brief Fourth string
+ *
+ * @var   FourStrings::s_str
+ * @brief Pointer array to strings
  */
 typedef struct
 FourStrings {
@@ -47,6 +50,7 @@ FourStrings {
     char *s_str2;
     char *s_str3;
     char *s_str4;
+    char **s_str[4];
 } FourStrings;
 /*----------------------------------------------------------------------------*/
 /**
