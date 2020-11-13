@@ -15,6 +15,10 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 2020-11-13  Michal Babik  <michal.babik@pm.me>
 
+	* webflickr.c (flickr_search): Fixed searching, changed adding of
+	  SearchItem to CacheQuery item.
+	* webwidget (search_web): Corrected showing page number when 
+	  getting data from cache.
 	* setting.c, setting.h: Removed setting_copy. Added SET_VAL_NULL to
 	  SetValType.
 	  (setting_get_type, setting_get_name, setting_get_hash,

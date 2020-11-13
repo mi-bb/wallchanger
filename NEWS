@@ -16,6 +16,9 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ----------------------------------------------------------------------
 v1.6.12                                                     2020-11-13
 
+    * Corrected page number showing when getting data from cache on
+      wallpaper search page.
+    * Corrected Flickr search crash.
     * Source code updates.
 
 ----------------------------------------------------------------------

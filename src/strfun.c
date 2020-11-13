@@ -185,4 +185,15 @@ str_append (char       **s_dst,
     memcpy ((*s_dst)+ui_dst, s_src, ui_src);
 }
 /*----------------------------------------------------------------------------*/
+/**
+ * @brief  Replace newline 0A characters in s_str string to space.
+ */
+void
+newline_to_space (char *s_str)
+{
+    while ((s_str = strchr (s_str, '\n')) != NULL) {
+        *s_str++ = ' ';
+    }
+}
+/*----------------------------------------------------------------------------*/
 

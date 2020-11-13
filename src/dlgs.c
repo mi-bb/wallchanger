@@ -92,20 +92,6 @@ enum e_sett_dial_widgets {
 static char * xfce_dialog_run (GtkWindow *gw_parent);
 /*----------------------------------------------------------------------------*/
 /**
- * @brief  Replace newline 0A characters in s_str string to space.
- *
- * @param[in,out] s_str  String to process
- * @return        none
- */
-static void
-newline_to_space (char *s_str)
-{
-    while ((s_str = strchr (s_str, '\n')) != NULL) {
-        *s_str++ = ' ';
-    }
-}
-/*----------------------------------------------------------------------------*/
-/**
  * @brief  Set active combobox position based on wm's name.
  *
  * @param[in,out] gw_combo ComboBox item

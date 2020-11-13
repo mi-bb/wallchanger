@@ -378,10 +378,12 @@ search_web (WebWidget *ww_widget)
 
     /* Check if there is a cached info about this search query */
     if (check_for_cached_query (ww_widget,
-                                ww_name (ww_widget->i_active_service)))
+                                ww_name (ww_widget->i_active_service))) {
+        update_labels (ww_widget);
         return;
+    }
 
-    fs_data = fourstrings_new ();
+    fs_data = fourstrings_new (FS_VAL_NULL);
 
     combo_get_active_strings (ww_widget->gw_combo, fs_data);
 
@@ -449,7 +451,7 @@ event_search_opts_pressed (WebWidget *ww_widget)
     char *s_search_opts = NULL; /* Search options string */
     int   i_id          = 0;    /* Service id */
 
-    i_id    = ww_widget->i_active_service;
+    i_id = ww_widget->i_active_service;
 
     switch (i_id) {
         case WEB_WIDGET_PEXELS:
@@ -553,7 +555,7 @@ event_settings_pressed (WebWidget *ww_widget)
     int          i_res   = 0;      /* Dialog result */
 
     i_id    = ww_widget->i_active_service;
-    fs_data = fourstrings_new ();
+    fs_data = fourstrings_new (FS_VAL_NULL);
 
     combo_get_active_strings (ww_widget->gw_combo, fs_data);
 

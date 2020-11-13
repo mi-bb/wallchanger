@@ -118,11 +118,8 @@ ww_get_api_key_names (const int i_site)
 {
     FourStrings *fs_data = NULL;
 
-    fs_data = fourstrings_new ();
+    fs_data = fourstrings_new (FS_VAL_EMPTY);
 
-    for (int i = 0; i < 4; ++i) {
-        *fs_data->s_str[i] = strdup ("");
-    }
     switch (i_site) {
         case WEB_WIDGET_PEXELS:
             str_append (&fs_data->s_str1, "Pexels api");
@@ -163,11 +160,8 @@ ww_get_api_key_data (Setting  *st_settings,
     const char  *s_api        = NULL;  /* For API key */
 
     fs_key_names = ww_get_api_key_names (i_site);
-    fs_data      = fourstrings_new ();
+    fs_data      = fourstrings_new (FS_VAL_EMPTY);
 
-    for (int i = 0; i < 4; ++i) {
-        *fs_data->s_str[i] = strdup ("");
-    }
     for (int i = 0; i < 4; ++i) {
         if (*fs_key_names->s_str[i][0] != '\0') {
             st_sett = settings_find (st_settings, *fs_key_names->s_str[i]);

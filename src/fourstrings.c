@@ -29,23 +29,29 @@
  * @brief  Create new FourStrings item.
  */
 FourStrings *
-fourstrings_new (void)
+fourstrings_new (const int i_type)
 {
     FourStrings *fs_data = NULL;
 
     if ((fs_data = malloc (sizeof (FourStrings))) == NULL)
         err (EXIT_FAILURE, NULL);
 
-    fs_data->s_str1 = NULL;
-    fs_data->s_str2 = NULL;
-    fs_data->s_str3 = NULL;
-    fs_data->s_str4 = NULL;
-
     fs_data->s_str[0] = &fs_data->s_str1;
     fs_data->s_str[1] = &fs_data->s_str2;
     fs_data->s_str[2] = &fs_data->s_str3;
     fs_data->s_str[3] = &fs_data->s_str4;
 
+    if (i_type == FS_VAL_NULL) {
+        for (int i = 0; i < 4; ++i) {
+            *fs_data->s_str[i] = NULL;
+        }
+    }
+    else {
+        for (int i = 0; i < 4; ++i) {
+            *fs_data->s_str[i] = malloc (sizeof (char));
+            *fs_data->s_str[i][0] = '\0';
+        }
+    }
     return fs_data;
 }
 /*----------------------------------------------------------------------------*/

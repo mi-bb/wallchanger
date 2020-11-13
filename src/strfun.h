@@ -113,6 +113,14 @@ void str_append (char       **s_dst,
                  const char  *s_src);
 /*----------------------------------------------------------------------------*/
 /**
+ * @brief  Replace newline 0A characters in s_str string to space.
+ *
+ * @param[in,out] s_str  String to process
+ * @return        none
+ */
+void newline_to_space (char *s_str);
+/*----------------------------------------------------------------------------*/
+/**
  * @brief  Check if string is empty.
  *
  * @param[in] s_str  Input string

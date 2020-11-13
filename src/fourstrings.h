@@ -25,6 +25,14 @@
 #define FOURSTRINGS_H
 /*----------------------------------------------------------------------------*/
 /**
+ * Type of strings to create.
+ */
+enum e_fourstring_type {
+    FS_VAL_NULL,  /**< Create null strings */
+    FS_VAL_EMPTY  /**< Create empty string */
+};
+/*----------------------------------------------------------------------------*/
+/**
  * @struct FourStrings
  *
  * @brief  Structure for storing four strings.
@@ -56,9 +64,10 @@ FourStrings {
 /**
  * @brief  Create new FourStrings item.
  *
+ * @param[in] i_type  Type of strings
  * @return  New FourStrings item.
  */
-FourStrings * fourstrings_new  (void);
+FourStrings * fourstrings_new  (const int i_type);
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Free FourStrings item data.

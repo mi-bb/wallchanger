@@ -271,7 +271,7 @@ flickrphoto_to_searchitem (flickcurl_photo *fp_photo)
     s_name = str_is_empty (s_title) ? strdup (fp_photo->id) : strdup (s_title);
     remove_non_alpha_space (s_name);
 
-    searchitem_set_service_name (si_item, "Flickr");
+    searchitem_set_service_name (si_item, ww_name (WEB_WIDGET_FLICKR));
     searchitem_set_display_name (si_item, s_name);
     searchitem_set_display_markup (si_item, s_name);
     free (s_name);
@@ -339,7 +339,6 @@ flickr_search (WebWidget         *ww_widget,
     flickcurl_photos_list       *photos_list = NULL;
     flickcurl   *fc       = NULL;
     CacheQuery  *cq_query = NULL; /* For cache saving */
-    SearchItem **si_items = NULL; /* List of item with photo info */
     SearchItem  *si_item  = NULL; /* Photo information */
     char        *s_tags   = NULL; /* Query tags */
     int          i_err    = 0;    /* Error output */
@@ -377,11 +376,10 @@ flickr_search (WebWidget         *ww_widget,
                     GTK_ICON_VIEW (ww_widget->gw_img_view))));
 
     if (photos_list != NULL) {
-        cq_query = cachequery_new ("Flickr",
+        cq_query = cachequery_new (ww_name (WEB_WIDGET_FLICKR),
                                    ww_widget->s_query,
                                    ww_widget->s_search_opts,
                                    ww_widget->i_page);
-        si_items = cq_query->si_items;
 
         ww_widget->i_found_cnt = photos_list->total_count;
         cq_query->i_found_cnt  = ww_widget->i_found_cnt;
@@ -391,9 +389,9 @@ flickr_search (WebWidget         *ww_widget,
             add_searchitem_to_img_view (ww_widget->gw_img_view,
                                         si_item,
                                         ww_widget->s_wallp_dir,
-                                        "Flickr",
+                                        ww_name (WEB_WIDGET_FLICKR),
                                         ww_widget->i_thumb_quality);
-            *si_items++ = si_item;
+            cachequery_append_item (cq_query, si_item);
         }
         i_err = cachequery_save (cq_query);
 
