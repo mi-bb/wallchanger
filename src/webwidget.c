@@ -1203,17 +1203,6 @@ webwidget_create (Setting    *st_settings,
 
     refresh_service_opts (ww_widget);
 
-    FourStrings *fs_test = fourstrings_new ();
-
-    fs_test->s_str1 = strdup ("1111");
-    fs_test->s_str2 = strdup ("2222");
-    fs_test->s_str3 = strdup ("3333");
-    fs_test->s_str4 = strdup ("4444");
-
-    printf ("fs : %s\n", *fs_test->s_str[1]);
-
-    fourstrings_free (fs_test);
-
     return ww_widget;
 }
 /*----------------------------------------------------------------------------*/

@@ -283,7 +283,6 @@ wallpaperabyss_search (WebWidget         *ww_widget,
         gtk_list_store_clear (GTK_LIST_STORE (gtk_icon_view_get_model (
                     GTK_ICON_VIEW (ww_widget->gw_img_view))));
 
-        printf ("res : %s\n", ud_data->buffer);
         wallpaperabyss_json_to_webwidget (ud_data->buffer, ww_widget, cq_query);
         cq_query->i_found_cnt = ww_widget->i_found_cnt;
 

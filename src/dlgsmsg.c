@@ -76,6 +76,7 @@ message_dialog_question (GtkWindow  *gw_parent,
                                         "%s", s_message);
     i_res = gtk_dialog_run (GTK_DIALOG (gw_dialog));
     gtk_widget_destroy (gw_dialog);
-    return i_res;
+
+    return i_res == GTK_RESPONSE_YES ? 1 : 0;
 }
 /*----------------------------------------------------------------------------*/

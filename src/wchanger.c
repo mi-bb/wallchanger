@@ -19,9 +19,9 @@
  *
  * Automatic wallpaper changer
  *
- * @date November 8, 2020
+ * @date November 13, 2020
  *
- * @version 1.6.11
+ * @version 1.6.12
  *
  * @author Michal Babik <michal.babik@pm.me>
  */
@@ -317,20 +317,21 @@ cfgfile_check_create_dirs (void)
 {
     char *s_ret = NULL;
     int   i_err = ERR_OK;
+    int   i     = 0;
     char *s_dirs[3];
 
     s_dirs[0] = cfgfile_get_query_path ();
     s_dirs[1] = cfgfile_get_app_thumbnails_path ();
     s_dirs[2] = cfgfile_get_app_wallpapers_path ();
 
-    for (int i = 0; i < 3; ++i) {
+    for (i = 0; i < 3; ++i) {
         if ((i_err = dir_create_with_subdirs (s_dirs[i])) != ERR_OK) {
             s_ret = str_comb (s_dirs[i], "\n");
             str_append (&s_ret, err_get_message (i_err));
             break;
         }
     }
-    for (int i = 0; i < 3; ++i) {
+    for (i = 0; i < 3; ++i) {
         free (s_dirs[i]);
     }
     return s_ret;
@@ -534,11 +535,8 @@ event_add_img_pressed (const DialogData *dd_data)
     GSList *gsl_files = NULL; /* List with files from dialog */
 
     /* Run image select dialog and get selected files */
-    gsl_files = add_images_dialog (dd_data->gw_window);
-
-    /* Add items to TreeView */
-    if (gsl_files != NULL) {
-
+    if ((gsl_files = add_images_dialog (dd_data->gw_window)) != NULL) {
+        /* Add items to TreeView */
         treeview_add_items_gslist (dd_data->gw_view, gsl_files);
         g_slist_free_full (gsl_files, g_free);
     }
@@ -554,13 +552,9 @@ event_add_img_dir_pressed (const DialogData *dd_data)
     GList *gl_files = NULL;  /* Images in directory */
 
     /* Run directory select dialog and get selected directory name */
-    s_folder = add_images_folder_dialog (dd_data->gw_window);
-
-    if (s_folder != NULL) {
+    if ((s_folder = add_images_folder_dialog (dd_data->gw_window)) != NULL) {
         /* Scan directory for files and append them to file list */
-        gl_files = get_dir_content_filter_images (s_folder);
-
-        if (gl_files != NULL) {
+        if ((gl_files = get_dir_content_filter_images (s_folder)) != NULL) {
             /* Add items to TreeView */
             treeview_add_items_glist (dd_data->gw_view, gl_files);
             g_list_free_full (gl_files, g_free);
@@ -634,7 +628,6 @@ event_save_settings_pressed (const DialogData *dd_data)
     st_settings = widgets_get_settings (dd_data);
     i_err = setts_check_update_file (dialogdata_get_cfg_file (dd_data),
                                      st_settings);
-                                     //setting_get_child (st_settings));
     settings_free_all (st_settings);
 
     if (i_err != ERR_OK) {

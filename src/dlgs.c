@@ -882,7 +882,7 @@ event_delete_wallpapers (GtkWidget **gw_array)
     const char *s_path = NULL;
 
     if (message_dialog_question (NULL, "Do you really want to delete all "
-                "downloaded wallpapers ?") == GTK_RESPONSE_YES) {
+                "downloaded wallpapers ?")) {
 
         s_path = gtk_label_get_text (
                 GTK_LABEL (gw_array[GW_SETT_WALL_PATH_LABEL]));
@@ -908,7 +908,7 @@ event_delete_config_files (GtkWidget **gw_array)
 
     if (message_dialog_question (NULL, "Do you really want to delete all "
                 "applicatoin configuration files ?\nThis will result in the"
-                "termination of the application.") == GTK_RESPONSE_YES) {
+                "termination of the application.")) {
 
         s_path = gtk_label_get_text (
                 GTK_LABEL (gw_array[GW_SETT_CONF_PATH_LABEL]));

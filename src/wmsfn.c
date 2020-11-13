@@ -219,8 +219,7 @@ wms_get_current_wm (Setting *st_wmsl)
 #ifdef DEBUG
         printf ("%s", s_name);
 #endif
-        st_proc = setting_find_child (st_wm, "Proc");
-        st_proc = setting_get_child (st_proc);
+        st_proc = setting_get_child (setting_find_child (st_wm, "Proc"));
         while (st_proc != NULL) {
             s_proc = setting_get_string (st_proc);
 #ifdef DEBUG

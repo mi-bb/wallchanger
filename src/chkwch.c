@@ -195,7 +195,6 @@ check_settings_change_wallpaper (char     *s_cfg_file,
     }
     /* Get wallpaper set command depending on used window manager */
     s_cmd = wms_get_wallpaper_command (s_cfg_file, st_c, st_wm, &i_err);
-                                       //setting_get_child (st_wm), &i_err);
     /* Update wallpaper set command in settings */
     if (s_cmd != NULL) {
         if ((st_st = settings_find (

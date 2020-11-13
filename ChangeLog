@@ -13,6 +13,19 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+2020-11-13  Michal Babik  <michal.babik@pm.me>
+
+	* setting.c, setting.h: Removed setting_copy. Added SET_VAL_NULL to
+	  SetValType.
+	  (setting_get_type, setting_get_name, setting_get_hash,
+	  setting_get_parent, setting_next, setting_prev): Changed to
+	  handle null setting.
+	  (setting_remove, setting_replace, settings_find_replace,
+	  settings_prepend, settings_append, settings_append_or_replace):
+	  Functions return begining of setting list.
+	* treev.c (create_tview): Set dynamic search column to file name.
+	* Other code updates I forgot to mention.
+
 2020-11-08  Michal Babik  <michal.babik@pm.me>
 
 	* dirlist.c dirlist.h (dirlist_get_directory_size): renamed to

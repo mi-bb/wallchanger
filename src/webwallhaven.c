@@ -503,6 +503,7 @@ get_search_opts (GtkWidget **gw_array)
     char       *s_val2  = NULL;
     const char *s_cval  = NULL;
     gboolean    b_val   = FALSE;
+    int         i       = 0;
 
     /* Getting sorting info */
     s_val = gtk_combo_box_text_get_active_text (
@@ -548,7 +549,7 @@ get_search_opts (GtkWidget **gw_array)
     }
     /* Getting category value */
     s_val = strdup ("");
-    for (int i = GW_CATEG1; i <= GW_CATEG3; ++i) {
+    for (i = GW_CATEG1; i <= GW_CATEG3; ++i) {
         b_val = gtk_check_menu_item_get_active (
                 GTK_CHECK_MENU_ITEM (gw_array[i]));
         str_append (&s_val, b_val ? "1" : "0");
@@ -558,7 +559,7 @@ get_search_opts (GtkWidget **gw_array)
     free (s_val);
     /* Getting purity value */
     s_val = strdup ("");
-    for (int i = GW_PURITY1; i <= GW_PURITY3; ++i) {
+    for (i = GW_PURITY1; i <= GW_PURITY3; ++i) {
         b_val = gtk_check_menu_item_get_active (
                 GTK_CHECK_MENU_ITEM (gw_array[i]));
         str_append (&s_val, b_val ? "1" : "0");

@@ -55,7 +55,7 @@ void     message_dialog_warning     (GtkWindow  *gw_parent,
  *
  * @param[in] gw_parent  Dialog parent widget
  * @param[in] s_message  Message to show
- * @return    Dialog response
+ * @return    1 if Yes pressed 0 if No
  */
 int      message_dialog_question    (GtkWindow  *gw_parent,
                                      const char *s_message);
