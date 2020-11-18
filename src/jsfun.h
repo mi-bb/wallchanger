@@ -65,7 +65,7 @@ Setting * js_settings_read (const char *s_fname,
  *
  * @fn  int js_settings_update_file (const char *s_buff, const char *s_fname)
  *
- * @brief  Update file with new data
+ * @brief  Update file with new data.
  *
  * @param[in]  s_buff   String with data to save
  * @param[in]  s_fname  File name to save data

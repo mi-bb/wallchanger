@@ -117,11 +117,47 @@ static void        statusbar_push_config_info  (const DialogData *dd_data);
  * @param[in] event    Event that triggered signal
  * @param[in] dd_data  DialogData object with widgets and settings info
  * @return    Stop or propagate event further 
+ *
+ * @fn  static void shutdown (GtkApplication *application, DialogData *dd_data);
+ *
+ * @brief  Application shutdown signal.
+ *
+ * @param[in,out] application  Pointer to GtkApplication
+ * @param[in,out] dd_data      DialogData object with widgets and settings info
+ * @return        none
+ *
+ * @fn  static gint local_options (GApplication *application,
+ *                                 GVariantDict *options,
+ *                                 DialogData   *dd_data)
+ *
+ * @brief  Handling command line options.
+ *
+ * @param[in,out] application  Pointer to GtkApplication
+ * @param[in]     options      Options dictionary
+ * @param[in,out] dd_data      DialogData object with widgets and settings info
+ *
+ * @fn  static void activate (GtkApplication *app, DialogData *dd_data)
+ *
+ * @brief  Application activate signal.
+ *
+ * @param[in,out] app      Pointer to GtkApplication
+ * @param[in,out] dd_data  DialogData object with settings and widget data
+ * @return        none
  */
 /*----------------------------------------------------------------------------*/
 static gboolean    event_on_delete             (GtkWidget         *window,
                                                 GdkEvent          *event,
                                                 const DialogData  *dd_data);
+
+static void        shutdown                    (GtkApplication    *application,
+                                                DialogData        *dd_data);
+
+static gint        local_options               (GApplication      *application,
+                                                GVariantDict      *options,
+                                                DialogData        *dd_data);
+
+static void        activate                    (GtkApplication    *app,
+                                                DialogData        *dd_data);
 /*----------------------------------------------------------------------------*/
 /**
  * @fn  static void event_add_img_pressed (const DialogData *dd_data)
@@ -134,6 +170,13 @@ static gboolean    event_on_delete             (GtkWidget         *window,
  * @fn  static void event_add_img_dir_pressed (const DialogData *dd_data)
  *
  * @brief  "Add images from folder" button pressed.
+ *
+ * @param[in,out] dd_data  DialogData object with settings and widget data
+ * @return        none
+ *
+ * @fn  static void event_add_img_web_pressed (const DialogData *dd_data)
+ *
+ * @brief  "Add images from web" button pressed.
  *
  * @param[in,out] dd_data  DialogData object with settings and widget data
  * @return        none
@@ -174,11 +217,22 @@ static gboolean    event_on_delete             (GtkWidget         *window,
  * @param[in]     widget   The object which received the signal
  * @param[in]     event    The event which triggered this signal
  * @param[in,out] dd_data  DialogData object with widgets and settings info
+ *
+ * @fn  static void event_autostart_toggled (GtkToggleButton   *togglebutton,
+ *                                           gpointer           user_data)
+ *
+ * @brief  Changed active state of autostart checkbox
+ *
+ * @param[in] togglebutton  Togglebutton which changed state
+ * @param[in] user_data     Data passed to function
+ * @return    none
  */
 /*----------------------------------------------------------------------------*/
 static void        event_add_img_pressed       (const DialogData  *dd_data);
 
 static void        event_add_img_dir_pressed   (const DialogData  *dd_data);
+
+static void        event_add_img_web_pressed   (const DialogData  *dd_data);
 
 static void        event_set_wallpaper_pressed (const DialogData  *dd_data);
 
@@ -192,6 +246,9 @@ static void        event_img_list_activated    (GtkTreeView       *tree_view,
 static gboolean    event_treeview_key_press    (GtkWidget         *widget,
                                                 GdkEventKey       *event,
                                                 const DialogData  *dd_data);
+
+static void        event_autostart_toggled     (GtkToggleButton   *togglebutton,
+                                                gpointer           user_data);
 /*----------------------------------------------------------------------------*/
 /**
  * @fn  static void event_interval_changed (GtkSpinButton    *spin_button,
@@ -223,6 +280,13 @@ static gboolean    event_treeview_key_press    (GtkWidget         *widget,
  *
  * @param[in,out] dd_data  DialogData object with settings and widget data
  * @return        none
+ *
+ * @fn  static void event_other_settings_pressed (DialogData *dd_data)
+ *
+ * @brief  Other settings button pressed.
+ *
+ * @param[in,out] dd_data  DialogData object with widgets and settings info
+ * @return        none
  */
 /*----------------------------------------------------------------------------*/
 static void        event_interval_changed       (GtkSpinButton     *spin_button,
@@ -233,6 +297,8 @@ static void        event_command_button_pressed (const DialogData  *dd_data);
 static void        event_start_daemon_pressed   (DialogData        *dd_data);
 
 static void        event_stop_daemon_pressed    (DialogData        *dd_data);
+
+static void        event_other_settings_pressed (DialogData        *dd_data);
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Monitors running of wchangerd daemon.
@@ -292,19 +358,6 @@ static GtkWidget * create_buttons_widget       (DialogData        *dd_data);
 static GtkWidget * create_settings_widget      (DialogData        *dd_data);
 
 static GtkWidget * create_daemon_widget        (DialogData        *dd_data);
-/*----------------------------------------------------------------------------*/
-/**
- * @fn  static void activate (GtkApplication *app, DialogData *dd_data)
- *
- * @brief  Application activate signal.
- *
- * @param[in,out] app      Pointer to GtkApplication
- * @param[in,out] dd_data  DialogData object with settings and widget data
- * @return        none
- */
-/*----------------------------------------------------------------------------*/
-static void        activate                    (GtkApplication    *app,
-                                                DialogData        *dd_data);
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Create application directories, return error message on error.
@@ -565,9 +618,6 @@ event_add_img_dir_pressed (const DialogData *dd_data)
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  "Add images from web" button pressed.
- *
- * @param[in,out] dd_data  DialogData object with settings and widget data
- * @return        none
  */
 static void
 event_add_img_web_pressed (const DialogData *dd_data)
@@ -681,54 +731,50 @@ static void
 event_interval_changed (GtkSpinButton    *spin_button,
                         const DialogData *dd_data)
 {
-    static int i_prev = 0; /* Previous interval value */
-    int        i_val  = 0; /* Actual interval value */
-    int        i_act  = 0; /* Active interval combo index */
+    static int    i_prev   = 0;    /* Previous interval value */
+    GtkTreeModel *gtm_model;       /* TreeModel */
+    GtkComboBox  *gcb_box;         /* ComboBox */
+    GtkTreeIter   gti_iter;        /* TreeIter */
+    char         *s_min    = NULL; /* String for minute entry */
+    char         *s_hour   = NULL; /* String for hour entry */
+    int           i_val    = 0;    /* Actual interval value */
+    int           i_id     = 0;    /* id position */
+    int           i_en     = 0;    /* entry position */
+    int           i_change = 0;    /* Change text or not */
 
-    i_val = gtk_spin_button_get_value_as_int (spin_button);
+    gcb_box = GTK_COMBO_BOX (dd_data->gw_inter_combo);
+    s_min   = strdup ("minute");
+    s_hour  = strdup ("hour");
+    i_val   = gtk_spin_button_get_value_as_int (spin_button);
 
     if (i_prev == 1 && i_val != 1) {
-
-        i_act = gtk_combo_box_get_active (
-                GTK_COMBO_BOX (dd_data->gw_inter_combo));
-
-        gtk_combo_box_text_remove_all (
-                GTK_COMBO_BOX_TEXT (dd_data->gw_inter_combo));
-
-        gtk_combo_box_text_append (
-                GTK_COMBO_BOX_TEXT (dd_data->gw_inter_combo),
-                NULL,
-                "minutes");
-
-        gtk_combo_box_text_append (
-                GTK_COMBO_BOX_TEXT (dd_data->gw_inter_combo),
-                NULL,
-                "hours");
-
-        gtk_combo_box_set_active (GTK_COMBO_BOX (dd_data->gw_inter_combo),
-                                                 i_act);
+        i_change = 1;
+        str_append (&s_min,  "s");
+        str_append (&s_hour, "s");
     }
     else if (i_prev != 1 && i_val == 1) {
-
-        i_act = gtk_combo_box_get_active (
-                GTK_COMBO_BOX (dd_data->gw_inter_combo));
-
-        gtk_combo_box_text_remove_all (
-                GTK_COMBO_BOX_TEXT (dd_data->gw_inter_combo));
-
-        gtk_combo_box_text_append (
-                GTK_COMBO_BOX_TEXT (dd_data->gw_inter_combo),
-                NULL,
-                "minute");
-
-        gtk_combo_box_text_append (
-                GTK_COMBO_BOX_TEXT (dd_data->gw_inter_combo),
-                NULL,
-                "hour");
-
-        gtk_combo_box_set_active (GTK_COMBO_BOX (dd_data->gw_inter_combo),
-                                                 i_act);
+        i_change = 1;
     }
+    if (i_change) {
+        gtm_model = gtk_combo_box_get_model (gcb_box);
+        i_id      = gtk_combo_box_get_id_column (gcb_box);
+        i_en      = gtk_combo_box_get_entry_text_column (gcb_box);
+
+        if (gtk_tree_model_get_iter_first (gtm_model, &gti_iter)) {
+            gtk_list_store_set (GTK_LIST_STORE (gtm_model), &gti_iter,
+                        i_id, s_min,
+                        i_en, s_min,
+                        -1);
+            if (gtk_tree_model_iter_next (gtm_model, &gti_iter)) {
+                gtk_list_store_set (GTK_LIST_STORE (gtm_model), &gti_iter,
+                        i_id, s_hour,
+                        i_en, s_hour,
+                        -1);
+            }
+        }
+    }
+    free (s_min);
+    free (s_hour);
     i_prev = i_val;
 }
 /*----------------------------------------------------------------------------*/
@@ -754,10 +800,6 @@ event_command_button_pressed (const DialogData *dd_data)
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Changed active state of autostart checkbox
- *
- * @param[in] togglebutton  Togglebutton which changed state
- * @param[in] user_data     Data passed to function
- * @return    none
  */
 static void
 event_autostart_toggled (GtkToggleButton *togglebutton,
@@ -843,9 +885,6 @@ event_stop_daemon_pressed (DialogData *dd_data)
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Other settings button pressed.
- *
- * @param[in,out] dd_data  DialogData object with widgets and settings info
- * @return        none
  */
 static void
 event_other_settings_pressed (DialogData *dd_data)
@@ -1417,10 +1456,6 @@ activate (GtkApplication *app,
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Application shutdown signal.
- *
- * @param[in,out] application  Pointer to GtkApplication
- * @param[in,out] dd_data      DialogData object with widgets and settings info
- * @return        none
  */
 static void
 shutdown (GtkApplication *application __attribute__ ((unused)),
@@ -1431,10 +1466,6 @@ shutdown (GtkApplication *application __attribute__ ((unused)),
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Handling command line options.
- *
- * @param[in,out] application  Pointer to GtkApplication
- * @param[in]     options      Options dictionary
- * @param[in,out] dd_data      DialogData object with widgets and settings info
  */
 static gint
 local_options (GApplication *application __attribute__ ((unused)),

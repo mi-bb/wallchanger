@@ -1,5 +1,5 @@
 /**
- * @file  dirlist.h
+ * @file  nstrings.h
  * @copyright Copyright (C) 2019-2020 Michał Bąbik
  *
  * This file is part of Wall Changer.
@@ -17,41 +17,56 @@
  * You should have received a copy of the GNU General Public License
  * along with Wall Changer.  If not, see <https://www.gnu.org/licenses/>.
  *
- * @brief  Getting directory content functions
+ * @brief  n strings structure and functions
  *
  * @author Michal Babik <michal.babik@pm.me>
  */
-#ifndef DIRLIST_H
-#define DIRLIST_H
-
-#include <gmodule.h>
+#ifndef NSTRINGS_H
+#define NSTRINGS_H
+#include <stddef.h>
 /*----------------------------------------------------------------------------*/
 /**
- * @brief  Get list of files in a directory, filter out non images and
- *         return list in GList format.
- *
- * @param[in]  s_dir  Directory path to scan
- * @return     GList with file names 
+ * Type of strings to create.
  */
-GList * get_dir_content_filter_images   (const char *s_dir)
-                                         __attribute__ ((nonnull (1)));
+enum e_nstring_type {
+    NS_VAL_NULL,  /**< Create null strings */
+    NS_VAL_EMPTY  /**< Create empty string */
+};
 /*----------------------------------------------------------------------------*/
 /**
- * @brief  Get size of all files in a directory.
+ * @struct NStrings
  *
- * @param[in]  s_path  Directory path to scan
- * @return     Size of files in folder
+ * @brief  Structure for storing n strings.
+ *
+ * @var   NStrings::s_str
+ * @brief Array of strings
+ *
+ * @var   NStrings::ui_cnt
+ * @brief Number of strings
  */
-goffset dirlist_get_dir_size            (const char *s_path)
-                                         __attribute__ ((nonnull (1)));
+typedef struct
+NStrings {
+    char   **s_str;
+    size_t   ui_cnt;
+} NStrings;
 /*----------------------------------------------------------------------------*/
 /**
- * @brief  Delete files in given directory.
+ * @brief  Create new NStrings item.
  *
- * @param[in]  s_path  Directory path to scan
+ * @param[in] ui_cnt  Number of strings
+ * @param[in] i_type  Type of strings
+ * @return  New NStrings item.
+ */
+NStrings * nstrings_new  (const size_t ui_cnt,
+                          const int    i_type);
+/*----------------------------------------------------------------------------*/
+/**
+ * @brief  Free NStrings item data.
+ *
+ * @param[out] ns_data  NStrings item to free.
  * @return     none
  */
-void    dirlist_delete_dir_content      (const char *s_path);
+void       nstrings_free (NStrings    *ns_data);
 /*----------------------------------------------------------------------------*/
 #endif
 

@@ -1,5 +1,5 @@
 /**
- * @file  webflickr.h
+ * @file  nstrings.c
  * @copyright Copyright (C) 2019-2020 Michał Bąbik
  *
  * This file is part of Wall Changer.
@@ -17,38 +17,57 @@
  * You should have received a copy of the GNU General Public License
  * along with Wall Changer.  If not, see <https://www.gnu.org/licenses/>.
  *
- * @brief  Settings for searching the Flickr website.
+ * @brief  n strings structure and functions
  *
  * @author Michal Babik <michal.babik@pm.me>
  */
-#ifndef WEBFLICKR_H
-#define WEBFLICKR_H
-
-#include "../config.h"
-
-#ifdef HAVE_FLICKCURL
-
+#include <stdlib.h>
+#include <err.h>
 #include "nstrings.h"
-#include "webwidget_s.h"
 /*----------------------------------------------------------------------------*/
 /**
- * @brief  Search in Flickr database.
- *
- * @param[in,out] ww_widget  WebWidget with widgets and search data
- * @param[in]     ns_data    N strings with API keys
- * @return        none
+ * @brief  Create new NStrings item.
  */
-void flickr_search          (WebWidget      *ww_widget,
-                             const NStrings *ns_data);
+NStrings *
+nstrings_new (const size_t ui_cnt,
+              const int    i_type)
+{
+    NStrings *ns_data = NULL;
+    size_t          i = 0;
+
+    if ((ns_data = malloc (sizeof (NStrings))) == NULL)
+        err (EXIT_FAILURE, NULL);
+
+    if ((ns_data->s_str = malloc ((ui_cnt + 1) * sizeof (char*))) == NULL)
+        err (EXIT_FAILURE, NULL);
+
+    if (i_type == NS_VAL_NULL) {
+        for (i = 0; i < ui_cnt; ++i) {
+            ns_data->s_str[i] = NULL;
+        }
+    }
+    else {
+        for (i = 0; i < ui_cnt; ++i) {
+            ns_data->s_str[i] = malloc (sizeof (char));
+            ns_data->s_str[i][0] = '\0';
+        }
+    }
+    ns_data->ui_cnt = ui_cnt;
+    ns_data->s_str[ui_cnt] = NULL;
+
+    return ns_data;
+}
 /*----------------------------------------------------------------------------*/
 /**
- * @brief  Dialog with Flickr service settings.
- *
- * @param[in,out] ns_data  N strings to get and write API keys
- * @return        Dialog response
+ * @brief  Free NStrings item data.
  */
-int  flickr_settings_dialog (NStrings       *ns_data);
+void
+nstrings_free (NStrings *ns_data)
+{
+    for (size_t i = 0; i < ns_data->ui_cnt; ++i) {
+        free (ns_data->s_str[i]);
+    }
+    free (ns_data);
+}
 /*----------------------------------------------------------------------------*/
-#endif
-#endif
 

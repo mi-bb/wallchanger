@@ -24,26 +24,26 @@
 #ifndef WEBPIXBAY_H
 #define WEBPIXBAY_H
 
-#include "fourstrings.h"
+#include "nstrings.h"
 #include "webwidget_s.h"
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Search in Pixbay database.
  *
  * @param[in,out] ww_widget  WebWidget with widgets and search data
- * @param[in]     fs_data    Four strings with API keys
+ * @param[in]     ns_data    N strings with API keys
  * @return        none
  */
-void   pixbay_search              (WebWidget         *ww_widget,
-                                   const FourStrings *fs_data);
+void   pixbay_search              (WebWidget      *ww_widget,
+                                   const NStrings *ns_data);
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Dialog with Pixbay service settings.
  *
- * @param[in,out] fs_data  Four strings to get and write API keys
+ * @param[in,out] ns_data  N strings to get and write API keys
  * @return        Dialog response
  */
-int    pixbay_settings_dialog     (FourStrings       *fs_data);
+int    pixbay_settings_dialog     (NStrings       *ns_data);
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Options for image search dialog.
@@ -52,7 +52,7 @@ int    pixbay_settings_dialog     (FourStrings       *fs_data);
  * @return        String with image options. After use it should be freed
  *                using free.
  */
-char *  pixbay_search_opts_dialog (WebWidget         *ww_widget);
+char * pixbay_search_opts_dialog  (WebWidget      *ww_widget);
 /*----------------------------------------------------------------------------*/
 #endif
 

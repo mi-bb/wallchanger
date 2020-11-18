@@ -34,7 +34,7 @@
 #include "fdfn.h"
 #include "defs.h"
 #include "imgs.h"
-#include "fourstrings.h"
+#include "nstrings.h"
 #include "webwidget_c.h"
 #include "webpexels.h"
 #include "webpixbay.h"
@@ -228,12 +228,12 @@ download_progress_window (GtkWindow *gw_parent,
  * @brief  Get strings with API key values from Combobox.
  *
  * @param[in]  gw_combo  Combobox
- * @param[out] fs_data   Four strings to write API keys
+ * @param[out] ns_data   n strings to write API keys
  * @return     none
  */
 static void
-combo_get_active_strings (GtkWidget   *gw_combo,
-                          FourStrings *fs_data)
+combo_get_active_strings (GtkWidget *gw_combo,
+                          NStrings  *ns_data)
 {
     GtkTreeModel *model;
     GtkTreeIter   iter;
@@ -242,10 +242,10 @@ combo_get_active_strings (GtkWidget   *gw_combo,
 
         model = gtk_combo_box_get_model (GTK_COMBO_BOX (gw_combo));
         gtk_tree_model_get (model,          &iter,
-                            WW_COMBO_STR_1, &fs_data->s_str1,
-                            WW_COMBO_STR_2, &fs_data->s_str2,
-                            WW_COMBO_STR_3, &fs_data->s_str3,
-                            WW_COMBO_STR_4, &fs_data->s_str4,
+                            WW_COMBO_STR_1, &ns_data->s_str[0],
+                            WW_COMBO_STR_2, &ns_data->s_str[1],
+                            WW_COMBO_STR_3, &ns_data->s_str[2],
+                            WW_COMBO_STR_4, &ns_data->s_str[3],
                             -1);
     }
 }
@@ -254,12 +254,12 @@ combo_get_active_strings (GtkWidget   *gw_combo,
  * @brief  Set strings with API key values to Combobox.
  *
  * @param[in]  gw_combo  Combobox
- * @param[out] fs_data   Four strings with API keys
+ * @param[out] ns_data   n strings with API keys
  * @return     none
  */
 static void
-combo_set_active_strings (GtkWidget         *gw_combo,
-                          const FourStrings *fs_data)
+combo_set_active_strings (GtkWidget      *gw_combo,
+                          const NStrings *ns_data)
 {
     GtkListStore *gls_slstore;
     GtkTreeIter   gti_iter;
@@ -270,10 +270,10 @@ combo_set_active_strings (GtkWidget         *gw_combo,
                     GTK_COMBO_BOX (gw_combo)));
 
         gtk_list_store_set (gls_slstore,    &gti_iter,
-                            WW_COMBO_STR_1, fs_data->s_str1,
-                            WW_COMBO_STR_2, fs_data->s_str2,
-                            WW_COMBO_STR_3, fs_data->s_str3,
-                            WW_COMBO_STR_4, fs_data->s_str4,
+                            WW_COMBO_STR_1, ns_data->s_str[0],
+                            WW_COMBO_STR_2, ns_data->s_str[1],
+                            WW_COMBO_STR_3, ns_data->s_str[2],
+                            WW_COMBO_STR_4, ns_data->s_str[3],
                             -1);
     }
 }
@@ -374,7 +374,7 @@ sel_combo_get_list (GtkWidget *gw_selected_combo)
 static void
 search_web (WebWidget *ww_widget)
 {
-    FourStrings *fs_data = NULL; /* Four strings for API key data */
+    NStrings *ns_data = NULL; /* For 4 strings for API key data */
 
     /* Check if there is a cached info about this search query */
     if (check_for_cached_query (ww_widget,
@@ -383,32 +383,32 @@ search_web (WebWidget *ww_widget)
         return;
     }
 
-    fs_data = fourstrings_new (FS_VAL_NULL);
+    ns_data = nstrings_new (4, NS_VAL_NULL);
 
-    combo_get_active_strings (ww_widget->gw_combo, fs_data);
+    combo_get_active_strings (ww_widget->gw_combo, ns_data);
 
     switch (ww_widget->i_active_service) {
         case WEB_WIDGET_PEXELS:
-            pexels_search (ww_widget, fs_data);
+            pexels_search (ww_widget, ns_data);
             break;
         case WEB_WIDGET_PIXBAY:
-            pixbay_search (ww_widget, fs_data);
+            pixbay_search (ww_widget, ns_data);
             break;
         case WEB_WIDGET_WALLHAVEN:
-            wallhaven_search (ww_widget, fs_data);
+            wallhaven_search (ww_widget, ns_data);
             break;
         case WEB_WIDGET_WALLABYSS:
-            wallpaperabyss_search (ww_widget, fs_data);
+            wallpaperabyss_search (ww_widget, ns_data);
             break;
 #ifdef HAVE_FLICKCURL
         case WEB_WIDGET_FLICKR:
-            flickr_search (ww_widget, fs_data);
+            flickr_search (ww_widget, ns_data);
             break;
 #endif
         default:
             break;
     }
-    fourstrings_free (fs_data);
+    nstrings_free (ns_data);
     update_labels (ww_widget);
 }
 /*----------------------------------------------------------------------------*/
@@ -549,32 +549,32 @@ event_nav_entry_act (GtkWidget *gw_entry,
 static void
 event_settings_pressed (WebWidget *ww_widget)
 {
-    FourStrings *fs_data = NULL;   /* Four strings for API key data */
-    int          i_err   = ERR_OK; /* Error output */
-    int          i_id    = 0;      /* Service id */
-    int          i_res   = 0;      /* Dialog result */
+    NStrings *ns_data = NULL;   /* Four strings for API key data */
+    int       i_err   = ERR_OK; /* Error output */
+    int       i_id    = 0;      /* Service id */
+    int       i_res   = 0;      /* Dialog result */
 
     i_id    = ww_widget->i_active_service;
-    fs_data = fourstrings_new (FS_VAL_NULL);
+    ns_data = nstrings_new (4, NS_VAL_NULL);
 
-    combo_get_active_strings (ww_widget->gw_combo, fs_data);
+    combo_get_active_strings (ww_widget->gw_combo, ns_data);
 
     switch (i_id) {
         case WEB_WIDGET_PEXELS:
-            i_res = pexels_settings_dialog (fs_data);
+            i_res = pexels_settings_dialog (ns_data);
             break;
         case WEB_WIDGET_PIXBAY:
-            i_res = pixbay_settings_dialog (fs_data);
+            i_res = pixbay_settings_dialog (ns_data);
             break;
         case WEB_WIDGET_WALLHAVEN:
-            i_res = wallhaven_settings_dialog (fs_data);
+            i_res = wallhaven_settings_dialog (ns_data);
             break;
         case WEB_WIDGET_WALLABYSS:
-            i_res = wallpaperabyss_settings_dialog (fs_data);
+            i_res = wallpaperabyss_settings_dialog (ns_data);
             break;
 #ifdef HAVE_FLICKCURL
         case WEB_WIDGET_FLICKR:
-            i_res = flickr_settings_dialog (fs_data);
+            i_res = flickr_settings_dialog (ns_data);
             break;
 #endif
         default:
@@ -582,14 +582,14 @@ event_settings_pressed (WebWidget *ww_widget)
     }
     if (i_res == GTK_RESPONSE_ACCEPT) {
         i_err = ww_update_api_key_data (ww_widget->s_cfg_file,
-                                        fs_data,
+                                        ns_data,
                                         ww_widget->i_active_service);
-        combo_set_active_strings (ww_widget->gw_combo, fs_data);
+        combo_set_active_strings (ww_widget->gw_combo, ns_data);
     }
     if (i_err != ERR_OK) {
         message_dialog_error (NULL, err_get_message (i_err));
     }
-    fourstrings_free (fs_data);
+    nstrings_free (ns_data);
 }
 /*----------------------------------------------------------------------------*/
 /**
@@ -772,7 +772,7 @@ webwidget_combobox_create (Setting *st_settings)
     GtkListStore    *list_store;     /* ListStore for combobox data */
     GtkTreeIter      iter;           /* TreeIter */
     GdkPixbuf       *gp_logo = NULL; /* Service logo */
-    FourStrings     *fs_data = NULL; /* For API keys */
+    NStrings        *ns_data = NULL; /* For API keys */
     int              i       = 0;    /* i */
 
     /* Liststore for service data */
@@ -787,19 +787,19 @@ webwidget_combobox_create (Setting *st_settings)
 
     for (i = 0; i < WEB_WIDGET_CNT; ++i) {
         gp_logo = get_image (ww_logo_id (i));
-        fs_data = ww_get_api_key_data (st_settings, i);
+        ns_data = ww_get_api_key_data (st_settings, i);
         gtk_list_store_append (list_store, &iter);
         gtk_list_store_set (list_store, &iter,
                             WW_COMBO_ID,    i,
                             WW_COMBO_NAME,  ww_name (i),
-                            WW_COMBO_STR_1, fs_data->s_str1,
-                            WW_COMBO_STR_2, fs_data->s_str2,
-                            WW_COMBO_STR_3, fs_data->s_str3,
-                            WW_COMBO_STR_4, fs_data->s_str4,
+                            WW_COMBO_STR_1, ns_data->s_str[0],
+                            WW_COMBO_STR_2, ns_data->s_str[1],
+                            WW_COMBO_STR_3, ns_data->s_str[2],
+                            WW_COMBO_STR_4, ns_data->s_str[3],
                             WW_COMBO_LOGO,  gp_logo,
                             -1);
         g_object_unref (gp_logo);
-        fourstrings_free (fs_data);
+        nstrings_free (ns_data);
     }
     gw_combo = gtk_combo_box_new_with_model (GTK_TREE_MODEL (list_store));
 
@@ -1099,7 +1099,6 @@ webwidget_create (Setting    *st_settings,
                    get_setting_name (SETT_THUMB_QUALITY))) != NULL) {
         ww_widget->i_thumb_quality = (int) setting_get_int (st_sett);
     }
-
     ww_widget->s_cfg_file   = strdup (s_cfg_file);
     ww_widget->s_wallp_dir  = cfgfile_get_app_wallpapers_path ();
     ww_widget->gw_ii_widget = webwidget_imageinfo_create (ww_widget);

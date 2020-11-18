@@ -66,6 +66,7 @@ cfgfile_find_config_file (const char **s_cc)
 /**
  * @brief  Get application data dir.
  *
+ * @param[out] i_err  Error output
  * @return String application data dir or null.
  *         After use it should be freed using free.
  */

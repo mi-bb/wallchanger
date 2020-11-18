@@ -111,99 +111,100 @@ ww_logo_id (const int i_site)
  * @brief  Get settings API names.
  *
  * @param[in] i_site  Site id
- * @return    FourStrings item with API names
+ * @return    NStrings item with API names
  */
-static FourStrings *
+static NStrings *
 ww_get_api_key_names (const int i_site)
 {
-    FourStrings *fs_data = NULL;
+    NStrings *ns_data = NULL;
 
-    fs_data = fourstrings_new (FS_VAL_EMPTY);
+    ns_data = nstrings_new (4, NS_VAL_EMPTY);
 
     switch (i_site) {
         case WEB_WIDGET_PEXELS:
-            str_append (&fs_data->s_str1, "Pexels api");
+            str_append (&ns_data->s_str[0], "Pexels api");
             break;
         case WEB_WIDGET_PIXBAY:
-            str_append (&fs_data->s_str1, "Pixbay api");
+            str_append (&ns_data->s_str[0], "Pixbay api");
             break;
         case WEB_WIDGET_WALLHAVEN:
-            str_append (&fs_data->s_str1, "Wallhaven api");
+            str_append (&ns_data->s_str[0], "Wallhaven api");
             break;
         case WEB_WIDGET_WALLABYSS:
-            str_append (&fs_data->s_str1, "Wallpaper Abyss api");
+            str_append (&ns_data->s_str[0], "Wallpaper Abyss api");
             break;
 #ifdef HAVE_FLICKCURL
         case WEB_WIDGET_FLICKR:
-            str_append (&fs_data->s_str1, "Flickr client key");
-            str_append (&fs_data->s_str2, "Flickr client secret");
-            str_append (&fs_data->s_str3, "Flickr access token");
-            str_append (&fs_data->s_str4, "Flickr access token secret");
+            str_append (&ns_data->s_str[0], "Flickr client key");
+            str_append (&ns_data->s_str[1], "Flickr client secret");
+            str_append (&ns_data->s_str[2], "Flickr access token");
+            str_append (&ns_data->s_str[3], "Flickr access token secret");
             break;
 #endif
         default:
             break;
     }
-    return fs_data;
+    return ns_data;
 }
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Get API key data of given service from settings.
  */
-FourStrings *
+NStrings *
 ww_get_api_key_data (Setting  *st_settings,
                      const int i_site)
 {
-    FourStrings *fs_key_names = NULL;  /* API key names in settings */
-    FourStrings *fs_data      = NULL;  /* Data to rerutn */
-    Setting     *st_sett      = NULL;  /* For individual setting */
-    const char  *s_api        = NULL;  /* For API key */
+    NStrings   *ns_key_names = NULL;  /* API key names in settings */
+    NStrings   *ns_data      = NULL;  /* Data to rerutn */
+    Setting    *st_sett      = NULL;  /* For individual setting */
+    const char *s_api        = NULL;  /* For API key */
 
-    fs_key_names = ww_get_api_key_names (i_site);
-    fs_data      = fourstrings_new (FS_VAL_EMPTY);
+    ns_key_names = ww_get_api_key_names (i_site);
+    ns_data      = nstrings_new (4, NS_VAL_EMPTY);
 
     for (int i = 0; i < 4; ++i) {
-        if (*fs_key_names->s_str[i][0] != '\0') {
-            st_sett = settings_find (st_settings, *fs_key_names->s_str[i]);
+        if (ns_key_names->s_str[i][0] != '\0') {
+            st_sett = settings_find (st_settings, ns_key_names->s_str[i]);
             s_api   = st_sett == NULL ? "" : setting_get_string (st_sett);
-            str_append (fs_data->s_str[i], s_api);
+            str_append (&ns_data->s_str[i], s_api);
         }
     }
-    fourstrings_free (fs_key_names);
+    nstrings_free (ns_key_names);
 
-    return fs_data;
+    return ns_data;
 }
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Update API key data in settings.
  */
 int
-ww_update_api_key_data (const char  *s_cfg_file,
-                        FourStrings *fs_key_data,
-                        const int    i_site)
+ww_update_api_key_data (const char *s_cfg_file,
+                        NStrings   *ns_key_data,
+                        const int   i_site)
 {
-    Setting     *st_setts;
-    FourStrings *fs_key_names;
-    int          i_res = ERR_OK;
+    Setting  *st_setts;
+    NStrings *ns_key_names;
+    int       i_res = ERR_OK;
 
-    fs_key_names = ww_get_api_key_names (i_site);
+    ns_key_names = ww_get_api_key_names (i_site);
 
-    st_setts = setting_new_string (fs_key_names->s_str1, fs_key_data->s_str1);
+    st_setts = setting_new_string (ns_key_names->s_str[0],
+                                   ns_key_data->s_str[0]);
 
 #ifdef HAVE_FLICKCURL
     if (i_site == WEB_WIDGET_FLICKR) {
         st_setts = settings_append (st_setts,
-            setting_new_string (fs_key_names->s_str2, fs_key_data->s_str2));
+            setting_new_string (ns_key_names->s_str[1], ns_key_data->s_str[1]));
         st_setts = settings_append (st_setts,
-            setting_new_string (fs_key_names->s_str3, fs_key_data->s_str3));
+            setting_new_string (ns_key_names->s_str[2], ns_key_data->s_str[2]));
         st_setts = settings_append (st_setts,
-            setting_new_string (fs_key_names->s_str4, fs_key_data->s_str4));
+            setting_new_string (ns_key_names->s_str[3], ns_key_data->s_str[3]));
     }
 #endif
     i_res = setts_check_update_file (s_cfg_file, st_setts);
     settings_free_all (st_setts);
 
-    fourstrings_free (fs_key_names);
+    nstrings_free (ns_key_names);
 
     return i_res;
 }
@@ -309,7 +310,7 @@ combo_get_active_str (GtkWidget *gw_combo,
  * @param[in]  s_wallp_dir  Wallpaper directory
  * @param[in]  s_file_name  Wallpaper file to check
  * @param[out] gp_pbuf      Thumbnail pixbuf
- * @retutn     none
+ * @return     none
  */
 static void
 wallpaper_check_mark (const char *s_wallp_dir,

@@ -41,15 +41,47 @@
 #include "jsfun.h"
 /*----------------------------------------------------------------------------*/
 /**
- * @fn  static json_object * js_setting_to_json_obj (const Setting *st_sett)
+ * @brief  Convert json object to Setting item.
  *
- * @brief  Convert Setting object to Json object
+ * @param[in] val     Json object to convert
+ * @param[in] s_name  Name of Setting item
+ * @retrn     New setting item
+ */
+static Setting * js_json_obj_to_setting (json_object *val,
+                                         const char  *s_name);
+/*----------------------------------------------------------------------------*/
+/**
+ * @brief  Get items from Setting array or object and save them in Json array 
+ *         or object item.
+ *
+ * @param[in]  st_setting  Setting item
+ * @return     New json object
+ */
+static json_object * js_settings_array_to_json (Setting *st_setting);
+/*----------------------------------------------------------------------------*/
+/**
+ * @fn  static json_object * js_setting_to_json_obj (Setting *st_sett)
+ *
+ * @brief  Convert Setting object to Json object.
  *
  * @param[in] st_sett   Setting item to convert
  * @return    Json object
  */
 static json_object * js_setting_to_json_obj  (Setting *st_sett);
 /*----------------------------------------------------------------------------*/
+/**
+ * @brief  Convert Setting items from SettList and put them in Json object.
+ *
+ * @param[in]  st_settings  List of Setting items
+ * @param[out] j_obj        Json object to insert data
+ * @return     none
+ */
+static void js_settings_add_to_json_obj (Setting     *st_settings,
+                                         json_object *j_obj);
+/*----------------------------------------------------------------------------*/
+/**
+ * @brief  Convert json object to Setting item.
+ */
 static Setting *
 js_json_obj_to_setting (json_object *val,
                         const char  *s_name)
@@ -102,7 +134,8 @@ js_json_obj_to_setting (json_object *val,
 }
 /*----------------------------------------------------------------------------*/
 /**
- * @brief  Get items from Setting array and save them in Json array object.
+ * @brief  Get items from Setting array or object and save them in Json array 
+ *         or object item.
  */
 static json_object *
 js_settings_array_to_json (Setting *st_setting)
@@ -133,7 +166,7 @@ js_settings_array_to_json (Setting *st_setting)
 }
 /*----------------------------------------------------------------------------*/
 /**
- * @brief  Convert Setting object to Json object
+ * @brief  Convert Setting object to Json object.
  */
 static json_object *
 js_setting_to_json_obj (Setting *st_sett)
@@ -177,11 +210,7 @@ js_setting_to_json_obj (Setting *st_sett)
 }
 /*----------------------------------------------------------------------------*/
 /**
- * @brief  Convert Setting items from SettList and put them in Json object
- *
- * @param[in]  st_settings  List of Setting items
- * @param[out] j_obj        Json object to insert data
- * @return     none
+ * @brief  Convert Setting items from SettList and put them in Json object.
  */
 static void
 js_settings_add_to_json_obj (Setting     *st_settings,
@@ -209,8 +238,8 @@ js_settings_read (const char *s_fname,
     Setting     *st_settings = NULL; /* Settings to return */
     json_object *j_obj;              /* Json object made from file data */
 
-    *i_err      = ERR_OK;
-    j_obj       = js_open_file (s_fname, NULL, i_err);
+    *i_err = ERR_OK;
+    j_obj  = js_open_file (s_fname, NULL, i_err);
 
     if (*i_err == ERR_OK && j_obj != NULL) {
         json_object_object_foreach (j_obj, key, val) {
@@ -262,7 +291,7 @@ js_settings_check_for_update (Setting    *st_settings,
 }
 /*----------------------------------------------------------------------------*/
 /**
- * @brief  Update file with new data
+ * @brief  Update file with new data.
  */
 int
 js_settings_update_file (const char *s_buff,

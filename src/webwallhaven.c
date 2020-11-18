@@ -279,22 +279,22 @@ wallhaven_json_to_webwidget (const char *s_buff,
  * @brief  Search in Wallhaven database.
  */
 void
-wallhaven_search (WebWidget         *ww_widget,
-                  const FourStrings *fs_data)
+wallhaven_search (WebWidget      *ww_widget,
+                  const NStrings *ns_data)
 {
     UrlData    *ud_data  = NULL; /* For search results */
     CacheQuery *cq_query = NULL; /* For cache saving */
     char       *s_query  = NULL; /* For search query */
     int         i_err    = 0;    /* Error output */
 
-    if (str_is_empty_msg (fs_data->s_str1, "Wallhaven API key is not set"))
+    if (str_is_empty_msg (ns_data->s_str[0], "Wallhaven API key is not set"))
         return;
 
     s_query = str_replace_in (ww_widget->s_query, " ", "+");
 
     ud_data = urldata_search_wallhaven (s_query,
                                         ww_widget->s_search_opts,
-                                        fs_data->s_str1,
+                                        ns_data->s_str[0],
                                         ww_widget->i_page);
     if (ud_data->errbuf != NULL) {
         message_dialog_error (NULL, ud_data->errbuf);
@@ -326,7 +326,7 @@ wallhaven_search (WebWidget         *ww_widget,
  * @brief  Dialog with Wallhaven service settings.
  */
 int
-wallhaven_settings_dialog (FourStrings *fs_data)
+wallhaven_settings_dialog (NStrings *ns_data)
 {
     GtkWidget *gw_dialog;      /* Wallhaven settings dialog */
     GtkWidget *gw_content_box; /* Dialog's box */
@@ -349,7 +349,7 @@ wallhaven_settings_dialog (FourStrings *fs_data)
 
     gw_api_entry = gtk_entry_new ();
 
-    gtk_entry_set_text (GTK_ENTRY (gw_api_entry), fs_data->s_str1);
+    gtk_entry_set_text (GTK_ENTRY (gw_api_entry), ns_data->s_str[0]);
 
     /* Packing dialog widgets */
     gtk_box_pack_start (GTK_BOX (gw_content_box),
@@ -376,8 +376,8 @@ wallhaven_settings_dialog (FourStrings *fs_data)
     i_res = gtk_dialog_run (GTK_DIALOG (gw_dialog));
 
     if (i_res == GTK_RESPONSE_ACCEPT) {
-        free (fs_data->s_str1);
-        fs_data->s_str1 = strdup (
+        free (ns_data->s_str[0]);
+        ns_data->s_str[0] = strdup (
                 gtk_entry_get_text (GTK_ENTRY (gw_api_entry)));
     }
     gtk_widget_destroy (gw_dialog);

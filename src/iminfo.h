@@ -98,7 +98,6 @@ void         imageinfo_free           (ImageInfo        *ii_info);
  * @param[in]  gsl_files1  File list to process
  * @return     List of ImageInfo items
  */
-/*----------------------------------------------------------------------------*/
 GSList     * file_paths_to_imageinfo  (const GSList     *gsl_files1);
 /*----------------------------------------------------------------------------*/
 /**
@@ -110,7 +109,7 @@ GSList     * file_paths_to_imageinfo  (const GSList     *gsl_files1);
  * @param[in]  s_name   String to set as full file name
  * @return     none
  *
- * @fn  const char * imageinfo_get_full_name (const ImageInfo *ii_info)
+ * @fn  const char * imageinfo_get_file_path (const ImageInfo *ii_info)
  *
  * @brief  Get the full file name string (path + file name)
  *
@@ -132,7 +131,7 @@ GSList     * file_paths_to_imageinfo  (const GSList     *gsl_files1);
  * @param[out] ii_info  ImageInfo object with data to get
  * @return     File name string
  *
- * @fn  void imageinfo_set_file_path (ImageInfo *ii_info, const char *s_name)
+ * @fn  void imageinfo_set_file_dir (ImageInfo *ii_info, const char *s_name)
  *
  * @brief  Set the file path string
  *
