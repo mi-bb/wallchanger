@@ -148,8 +148,8 @@ setts_read (const char *s_cfg_file,
  * @return        none
  */
 static void
-setts_check_setting (Setting     *st_settings,
-                     SettingData *sd_data)
+setts_check_setting (Setting           *st_settings,
+                     const SettingData *sd_data)
 {
     const char *s_name = NULL;
     Setting    *st_sett;
@@ -332,9 +332,9 @@ setts_update_thumb_quality (const char *s_cfg_file,
  *         stored in settings file.
  */
 char *
-setts_check_update (const char *s_cfg_file,
-                    Setting    *st_settings,
-                    int        *i_err)
+setts_check_update (const char    *s_cfg_file,
+                    const Setting *st_settings,
+                    int           *i_err)
 {
     return js_settings_check_for_update (st_settings, s_cfg_file, i_err);
 }
@@ -354,8 +354,8 @@ setts_update_file (const char *s_cfg_file,
  *         if they are.
  */
 int
-setts_check_update_file (const char *s_cfg_file,
-                         Setting    *st_settings)
+setts_check_update_file (const char    *s_cfg_file,
+                         const Setting *st_settings)
 {
     return js_settings_check_update_file (st_settings, s_cfg_file);
 }

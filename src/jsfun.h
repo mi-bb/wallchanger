@@ -44,9 +44,9 @@ Setting * js_settings_read (const char *s_fname,
                             __attribute__ ((nonnull (1)));
 /*----------------------------------------------------------------------------*/
 /**
- * @fn  char * js_settings_check_for_update  (Setting     *st_settings,
- *                                            const char  *s_fname,
- *                                            int         *i_err)
+ * @fn  char * js_settings_check_for_update  (const Setting *st_settings,
+ *                                            const char    *s_fname,
+ *                                            int           *i_err)
  *
  * @brief  Check if settings in list are an update to settings stored in
  *         settings file.
@@ -85,17 +85,17 @@ Setting * js_settings_read (const char *s_fname,
  * @return     Saving file status, ERR_OK or error code
  */
 /*----------------------------------------------------------------------------*/
-char * js_settings_check_for_update  (Setting     *st_settings,
-                                      const char  *s_fname,
-                                      int         *i_err)
+char * js_settings_check_for_update  (const Setting *st_settings,
+                                      const char    *s_fname,
+                                      int           *i_err)
                                       __attribute__ ((nonnull (2)));
 
-int    js_settings_update_file       (const char  *s_buff,
-                                      const char  *s_fname)
+int    js_settings_update_file       (const char    *s_buff,
+                                      const char    *s_fname)
                                       __attribute__ ((nonnull (1, 2)));
 
-int    js_settings_check_update_file (Setting    *st_settings,
-                                      const char *s_fname)
+int    js_settings_check_update_file (const Setting *st_settings,
+                                      const char    *s_fname)
                                       __attribute__ ((nonnull (2)));
 /*----------------------------------------------------------------------------*/
 #endif

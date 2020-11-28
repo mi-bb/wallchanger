@@ -57,17 +57,15 @@ static Setting * js_json_obj_to_setting (json_object *val,
  * @param[in]  st_setting  Setting item
  * @return     New json object
  */
-static json_object * js_settings_array_to_json (Setting *st_setting);
+static json_object * js_settings_array_to_json (const Setting *st_setting);
 /*----------------------------------------------------------------------------*/
 /**
- * @fn  static json_object * js_setting_to_json_obj (Setting *st_sett)
- *
  * @brief  Convert Setting object to Json object.
  *
  * @param[in] st_sett   Setting item to convert
  * @return    Json object
  */
-static json_object * js_setting_to_json_obj  (Setting *st_sett);
+static json_object * js_setting_to_json_obj  (const Setting *st_sett);
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Convert Setting items from SettList and put them in Json object.
@@ -76,8 +74,8 @@ static json_object * js_setting_to_json_obj  (Setting *st_sett);
  * @param[out] j_obj        Json object to insert data
  * @return     none
  */
-static void js_settings_add_to_json_obj (Setting     *st_settings,
-                                         json_object *j_obj);
+static void js_settings_add_to_json_obj (const Setting *st_settings,
+                                         json_object   *j_obj);
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Convert json object to Setting item.
@@ -138,7 +136,7 @@ js_json_obj_to_setting (json_object *val,
  *         or object item.
  */
 static json_object *
-js_settings_array_to_json (Setting *st_setting)
+js_settings_array_to_json (const Setting *st_setting)
 {
     json_object *j_array;  /* Json array to return */
     json_object *j_obj;    /* Json object made from Setting */
@@ -169,7 +167,7 @@ js_settings_array_to_json (Setting *st_setting)
  * @brief  Convert Setting object to Json object.
  */
 static json_object *
-js_setting_to_json_obj (Setting *st_sett)
+js_setting_to_json_obj (const Setting *st_sett)
 {
     json_object *j_obj;
     SetValType   i_type = setting_get_type (st_sett);
@@ -213,11 +211,11 @@ js_setting_to_json_obj (Setting *st_sett)
  * @brief  Convert Setting items from SettList and put them in Json object.
  */
 static void
-js_settings_add_to_json_obj (Setting     *st_settings,
-                             json_object *j_obj)
+js_settings_add_to_json_obj (const Setting *st_settings,
+                             json_object   *j_obj)
 {
     json_object *j_val;   /* Json object made from Setting */
-    Setting     *st_main; /* List of main settings in st_list */
+    const Setting     *st_main; /* List of main settings in st_list */
 
     st_main = st_settings;
 
@@ -263,9 +261,9 @@ js_settings_read (const char *s_fname,
  *         settings file.
  */
 char *
-js_settings_check_for_update (Setting    *st_settings,
-                              const char *s_fname,
-                              int        *i_err)
+js_settings_check_for_update (const Setting *st_settings,
+                              const char    *s_fname,
+                              int           *i_err)
 {
     json_object   *j_obj;             /* Json object made from file data */
     const char    *s_jbuff    = NULL; /* Json object as string */
@@ -305,8 +303,8 @@ js_settings_update_file (const char *s_buff,
  *         new data if they are.
  */
 int
-js_settings_check_update_file (Setting    *st_settings,
-                               const char *s_fname)
+js_settings_check_update_file (const Setting *st_settings,
+                               const char    *s_fname)
 {
     int   i_err  = ERR_OK; /* Possible error to return */
     char *s_buff = NULL;   /* Result of update check, if it is not null there

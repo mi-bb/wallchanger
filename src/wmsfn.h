@@ -83,7 +83,7 @@ Setting * wms_get_wm_info            (int        *i_err);
  * return     Setting item with info about window manager.
  *            After use it should be freed using free.
  */
-Setting * wms_get_current_wm         (Setting    *st_wmsl);
+const Setting * wms_get_current_wm   (const Setting *st_wmsl);
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Update wallpaper set command in window manager info config file.

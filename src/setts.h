@@ -134,9 +134,9 @@ int setts_update_thumb_quality (const char *s_cfg_file,
 
 /*----------------------------------------------------------------------------*/
 /**
- * @fn  char * setts_check_update (const char *s_cfg_file,
- *                                 Setting    *st_settings,
- *                                 int        *i_err)
+ * @fn  char * setts_check_update (const char    *s_cfg_file,
+ *                                 const Setting *st_settings,
+ *                                 int           *i_err)
  *
  * @brief  Check if settings in SettList are an update to settings
  *         stored in settings file.
@@ -155,8 +155,8 @@ int setts_update_thumb_quality (const char *s_cfg_file,
  * @param[in] s_buff      String with data to save
  * @return    Saving file status, ERR_OK or error code
  *
- * @fn  int setts_check_update_file (const char *s_cfg_file,
- *                                   Setting    *st_settings)
+ * @fn  int setts_check_update_file (const char    *s_cfg_file,
+ *                                   const Setting *st_settings)
  *
  * @brief  Check if settings are an update and update file with new data
  *         if they are.
@@ -166,17 +166,17 @@ int setts_update_thumb_quality (const char *s_cfg_file,
  * @return    Saving file status, ERR_OK or error code
  */
 /*----------------------------------------------------------------------------*/
-char * setts_check_update      (const char *s_cfg_file,
-                                Setting    *st_settings,
-                                int        *i_err)
+char * setts_check_update      (const char    *s_cfg_file,
+                                const Setting *st_settings,
+                                int           *i_err)
                                 __attribute__ ((nonnull (1)));
 
-int    setts_update_file       (const char *s_cfg_file,
-                                const char *s_buff)
+int    setts_update_file       (const char    *s_cfg_file,
+                                const char    *s_buff)
                                 __attribute__ ((nonnull (1, 2)));
 
-int    setts_check_update_file (const char *s_cfg_file,
-                                Setting    *st_settings)
+int    setts_check_update_file (const char    *s_cfg_file,
+                                const Setting *st_settings)
                                 __attribute__ ((nonnull (1)));
 /*----------------------------------------------------------------------------*/
 #endif

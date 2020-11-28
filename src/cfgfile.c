@@ -40,11 +40,20 @@
  *            after use it should be freed using free
  */
 static char *
-cfgfile_find_config_file (const char **s_cc)
+//cfgfile_find_config_file (const char **s_cc)
+cfgfile_find_config_file (void)
 {
+    const char **s_cc = NULL;
     char *s_tmp  = NULL; /* Temp string */
     char *s_home = NULL; /* Home path string */
+    /* List of possible config paths in home directory */
+    const char *s_cfg_files[] = {
+        PTH_SEP PTH_APP_SHORT PTH_SEP PTH_CONFIG_FILE,
+        PTH_SEP PTH_OLDCFG_FILE,
+        PTH_SEP PTH_APP_SHORT PTH_SEP PTH_OLDCFG_FILE,
+        NULL};
 
+    s_cc   = s_cfg_files;
     s_home = dir_get_home_config ();
 
     while (*s_cc != NULL) {
@@ -59,8 +68,9 @@ cfgfile_find_config_file (const char **s_cc)
         free (s_tmp);
         ++s_cc;
     }
+    s_tmp = str_comb (s_home, s_cfg_files[0]);
     free (s_home);
-    return NULL;
+    return s_tmp;
 }
 /*----------------------------------------------------------------------------*/
 /**
@@ -110,80 +120,25 @@ int
 cfgfile_config_file_stuff (char **s_file,
                            int    i_create)
 {
-    /* List of possible config paths in home directory */
-    const char *s_cfg_files[] = {
-        PTH_SEP PTH_APP_SHORT PTH_SEP PTH_CONFIG_FILE,
-        PTH_SEP PTH_OLDCFG_FILE,
-        PTH_SEP PTH_APP_SHORT PTH_SEP PTH_OLDCFG_FILE,
-        NULL};
     int i_res = 0; /* Function result */
 
-    enum cfg_state {
-        C_STATE_END = 0,         /* End of checking */
-        C_STATE_CHECK_CFG_NAME,  /* Check config name for null */
-        C_STATE_SEARCH_DEFAULT,  /* Search for config file */
-        C_STATE_CHECK_CFG_PERM,  /* Check config path permissions */
-        C_STATE_CREATE_CFG_FILE, /* Create config file */
-        C_STATE_WARN_RETURN_ERR  /* Show warning and end verifying */
-    };
+    if (*s_file == NULL) {
+        *s_file = cfgfile_find_config_file ();
+    }
+    i_res = file_check_permissions (*s_file);
 
-    enum cfg_state c_state = C_STATE_CHECK_CFG_NAME;
-
-    while (c_state) {
-        switch (c_state) {
-            case C_STATE_CHECK_CFG_NAME: /* Checking config name */
-                c_state = *s_file == NULL ?
-                          C_STATE_SEARCH_DEFAULT :
-                          C_STATE_CHECK_CFG_PERM;
-                break;
-            case C_STATE_SEARCH_DEFAULT: /* No file passed, serch for default */
-                *s_file = cfgfile_find_config_file (s_cfg_files);
-                if (*s_file == NULL && i_create) { /* No file found, create */
-                    *s_file = dir_get_home_config ();
-                    str_append (&(*s_file), s_cfg_files[0]);
-                    c_state = C_STATE_CREATE_CFG_FILE;
-                    break;
-                }
-                if (*s_file == NULL) {
-                    i_res   = ERR_CFG_NOF;
-                    c_state = C_STATE_WARN_RETURN_ERR;
-                    break;
-                }
-                i_res   = ERR_OK;
-                c_state = C_STATE_END;
-                break;
-            case C_STATE_CHECK_CFG_PERM: /* Config file passed, check it */
-                i_res = file_check_permissions (*s_file);
-                if (i_res == ERR_FILE_EX && i_create) { /* Try to create */
-                    c_state = C_STATE_CREATE_CFG_FILE;
-                    break;
-                }
-                else if (i_res != ERR_OK) { /* Other error */
-                    c_state = C_STATE_WARN_RETURN_ERR;
-                    break;
-                }
-                i_res   = ERR_OK;
-                c_state = C_STATE_END;
-                break;
-            case C_STATE_CREATE_CFG_FILE: /* Try to create config file */
-                if ((i_res = file_create_with_subdirs (*s_file)) != ERR_OK) {
-                    c_state = C_STATE_WARN_RETURN_ERR;
-                    break;
-                }
-                i_res   = ERR_OK;
-                c_state = C_STATE_END;
-                break;
-            case C_STATE_WARN_RETURN_ERR: /* Warn, free and return error */
-                warn ("%s", *s_file);
-                free (*s_file);
-                *s_file = NULL;
-                c_state = C_STATE_END;
-                break;
-            case C_STATE_END:
-                break;
-            default:
-                break;
+    if (i_res == ERR_FILE_EX) {
+        if (i_create) {
+            i_res = file_create_with_subdirs (*s_file);
+            }
+        else {
+            i_res = ERR_CFG_NOF;
         }
+    }
+    if (i_res != ERR_OK) {
+        warn ("%s", *s_file);
+        free (*s_file);
+        *s_file = NULL;
     }
     return i_res;
 }

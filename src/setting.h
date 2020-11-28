@@ -498,7 +498,8 @@ Setting * settings_append_or_replace (Setting *st_list,
  * @param[in]  st_setting  Setting from list
  * @return     Number of items in List
  *
- * @fn  Setting * setting_find_child (Setting *st_setting, const char *s_name)
+ * @fn  Setting * setting_find_child (const Setting *st_setting,
+ *                                    const char *s_name)
  *
  * @brief  Find child with given name in Setting object or array
  *
@@ -513,7 +514,7 @@ static inline Setting * setting_get_top_level  (Setting       *st_setting) {
 static inline size_t    setting_count_children (const Setting *st_setting) {
     return settings_count (setting_get_child (st_setting));
 }
-static inline Setting * setting_find_child     (Setting       *st_setting,
+static inline Setting * setting_find_child     (const Setting *st_setting,
                                                 const char    *s_name) {
     return settings_find (setting_get_child (st_setting), s_name);
 }

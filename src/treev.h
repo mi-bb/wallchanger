@@ -72,8 +72,8 @@
  * @param[in] gw_tview   TreeView from which data should be taken
  * @return    List with  ImageInfo data of TreeView's TreeModel items
  *
- * @fn void treeview_get_setting_data (GtkWidget *gw_tview,
-                                       Setting   *st_wallpapers)
+ * @fn void treeview_get_setting_data (GtkWidget     *gw_tview,
+                                       const Setting *st_wallpapers)
 
  * @brief  Get data out of TreeView to Setting list.
  *
@@ -89,7 +89,7 @@ void        treeview_add_items_gslist    (GtkWidget      *gw_tview,
                                           const GSList   *gl_files);
 
 void        treeview_add_items_setting   (GtkWidget      *gw_tview,
-                                          Setting        *st_wallpapers);
+                                          const Setting  *st_wallpapers);
 
 ImageInfo * treemodel_get_data           (GtkTreeModel   *gtm_model,
                                           GtkTreeIter     gti_iter);

@@ -349,7 +349,7 @@ other_settings_dialog (GtkWindow  *gw_parent,
                             gtk_separator_new (GTK_ORIENTATION_HORIZONTAL),
                             FALSE, FALSE, 4);
     }
-    
+
     /* Cache directories paths and sized */
     gw_grid = gtk_grid_new ();
     gtk_widget_set_halign (gw_grid, GTK_ALIGN_CENTER);

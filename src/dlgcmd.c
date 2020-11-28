@@ -582,10 +582,10 @@ cmddialog_run (GtkWindow    *gw_parent,
     GtkWidget *gw_test_btn;       /* Button for testing wallpaper command */
     GtkWidget *gw_test_box;       /* Box for test button and wallpaper list */
     GtkWidget *gw_array[4];       /* Array with widgets for clicked events */
+    const Setting *st_crwm = NULL;/* Current window manager info */
+    Setting   *st_wms   = NULL;   /* Window manager info list */
     char      *s_result = NULL;   /* Result string with wall set command */
     int        i_res    = 0;      /* Config dialog result */
-    Setting   *st_wms   = NULL;   /* Window manager info list */
-    Setting   *st_crwm  = NULL;   /* Current window manager info */
     int        i_err    = ERR_OK; /* Error output */
 
     GtkDialogFlags flags = GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT;
@@ -733,6 +733,7 @@ cmddialog_run (GtkWindow    *gw_parent,
         s_result = textview_get_text (gw_tview);
     }
     gtk_widget_destroy (gw_dialog);
+
     return s_result;
 }
 /*----------------------------------------------------------------------------*/

@@ -160,10 +160,10 @@ treeview_add_items_gslist (GtkWidget    *gw_tview,
  * @brief  Insert multiple data items to GtkTreeView.
  */
 void
-treeview_add_items_setting (GtkWidget *gw_tview,
-                            Setting   *st_wallpapers)
+treeview_add_items_setting (GtkWidget     *gw_tview,
+                            const Setting *st_wallpapers)
 {
-    Setting    *st_item;         /* For setting iteration */
+    const Setting    *st_item;         /* For setting iteration */
     const char *s_fn     = NULL; /* File name to process */
     ImageInfo  *ii_info;         /* ImageInfo wallpaper info */
 

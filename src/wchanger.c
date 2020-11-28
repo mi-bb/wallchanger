@@ -861,7 +861,7 @@ event_on_delete (GtkWidget        *window,
         }
         free (s_buff);
     }
-    setts_update_window_size (dialogdata_get_cfg_file(dd_data), i_w, i_h);
+    setts_update_window_size (dialogdata_get_cfg_file (dd_data), i_w, i_h);
     return FALSE;
 }
 /*----------------------------------------------------------------------------*/
