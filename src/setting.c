@@ -65,8 +65,8 @@ static void setting_set_child (Setting *st_parent,
  * @return    none
  */
 static inline void
-setting_set_type (Setting    *st_setting,
-                  SetValType  val)
+setting_set_type (Setting          *st_setting,
+                  const SetValType  val)
 {
     st_setting->v_type = val;
 }
@@ -230,8 +230,8 @@ setting_new_array (const char *s_name)
 }
 /*----------------------------------------------------------------------------*/
 Setting *
-setting_new_int (const char *s_name,
-                 int64_t     val)
+setting_new_int (const char    *s_name,
+                 const int64_t  val)
 {
     Setting *st_set = NULL;
 
@@ -244,8 +244,8 @@ setting_new_int (const char *s_name,
 }
 /*----------------------------------------------------------------------------*/
 Setting *
-setting_new_uint (const char *s_name,
-                  uint64_t    val)
+setting_new_uint (const char     *s_name,
+                  const uint64_t  val)
 {
     Setting *st_set = NULL;
 
@@ -258,8 +258,8 @@ setting_new_uint (const char *s_name,
 }
 /*----------------------------------------------------------------------------*/
 Setting *
-setting_new_double (const char *s_name,
-                    double      val)
+setting_new_double (const char   *s_name,
+                    const double  val)
 {
     Setting *st_set = NULL;
 
@@ -501,7 +501,7 @@ setting_set_child (Setting *st_parent,
     }
 }
 /*----------------------------------------------------------------------------*/
-Setting * setting_get_child  (Setting *st_setting)
+Setting * setting_get_child  (const Setting *st_setting)
 {
     if (setting_get_type (st_setting) == SET_VAL_SETTING ||
         setting_get_type (st_setting) == SET_VAL_ARRAY) {

@@ -43,6 +43,8 @@ wchangercfg_SOURCES=wchanger.c\
                     dialogdata.c dialogdata.h\
                     treev.c treev.h\
                     dlgs.c dlgs.h\
+                    dlgcmd.c dlgcmd.h\
+                    dlgothsett.c dlgothsett.h\
                     dlgsmsg.c dlgsmsg.h\
                     searchitem.c searchitem.h\
                     urldata.c urldata.h\

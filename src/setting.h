@@ -135,14 +135,14 @@ static inline uint_fast32_t setting_get_hash (const Setting *st_setting) {
 }
 /*----------------------------------------------------------------------------*/
 /**
- * @fn  Setting * setting_get_parent (Setting *st_setting)
+ * @fn  Setting * setting_get_parent (const Setting *st_setting)
  *
  * @brief  Get Setting's parent Setting
  *
  * @param[in] st_setting  Setting item
  * @return    Parent Setting
  *
- * @fn  Setting * setting_get_child (Setting *st_setting)
+ * @fn  Setting * setting_get_child (const Setting *st_setting)
  *
  * @brief  Get Setting's child Setting
  *
@@ -150,21 +150,21 @@ static inline uint_fast32_t setting_get_hash (const Setting *st_setting) {
  * @return    Child Setting
  */
 /*----------------------------------------------------------------------------*/
-static inline Setting * setting_get_parent (Setting *st_setting) {
+static inline Setting * setting_get_parent (const Setting *st_setting) {
     return st_setting != NULL ? st_setting->parent : NULL;
 }
 
-Setting * setting_get_child  (Setting *st_setting);
+Setting * setting_get_child  (const Setting *st_setting);
 /*----------------------------------------------------------------------------*/
 /**
- * @fn  Setting * setting_next (Setting *st_setting)
+ * @fn  Setting * setting_next (const Setting *st_setting)
  *
  * @brief  Get next Setting in list
  *
  * @param[in] st_setting  Setting item
  * @return    Next Setting in list or null
  *
- * @fn  Setting * setting_prev (Setting *st_setting)
+ * @fn  Setting * setting_prev (const Setting *st_setting)
  *
  * @brief  Get previous Setting in list
  *
@@ -172,10 +172,10 @@ Setting * setting_get_child  (Setting *st_setting);
  * @return    Previous Setting in list or null
  */
 /*----------------------------------------------------------------------------*/
-static inline Setting * setting_next (Setting *st_setting) {
+static inline Setting * setting_next (const Setting *st_setting) {
     return st_setting != NULL ? st_setting->next : NULL;
 }
-static inline Setting * setting_prev (Setting *st_setting) {
+static inline Setting * setting_prev (const Setting *st_setting) {
     return st_setting != NULL ? st_setting->prev : NULL;
 }
 /*----------------------------------------------------------------------------*/
@@ -270,21 +270,21 @@ void         setting_set_string (Setting       *st_set,
  * @param[in]  s_name  Name of the setting (should be longer than 2 letters)
  * @return     New Setting object
  *
- * @fn  Setting * setting_new_int (const char *s_name, const int64_t i_val)
+ * @fn  Setting * setting_new_int (const char *s_name, const int64_t val)
  * @brief      Create new Setting object for an integer (64 bit), set its
  *             value to val and name to s_name.
  * @param[in]  s_name  Name of the setting (should be longer than 2 letters)
  * @param[in]  val     Value to store in setting
  * @return     New Setting object
  *
- * @fn  Setting * setting_new_uint (const char *s_name, const uint64_t i_val)
+ * @fn  Setting * setting_new_uint (const char *s_name, const uint64_t val)
  * @brief      Create new Setting object for an unsigned integer (64 bit),
  *             set its value to i_val and name to s_name.
  * @param[in]  s_name  Name of the setting (should be longer than 2 letters)
  * @param[in]  val     Value to store in setting
  * @return     New Setting object
  *
- * @fn  Setting * setting_new_double (const char *s_name, const double d_val)
+ * @fn  Setting * setting_new_double (const char *s_name, const double val)
  * @brief      Create new Setting object for a double, set its value to val
  *             and name to s_name.
  * @param[in]  s_name  Name of the setting (should be longer than 2 letters)
@@ -299,26 +299,26 @@ void         setting_set_string (Setting       *st_set,
  * @return     New Setting object
  */
 /*----------------------------------------------------------------------------*/
-Setting * setting_new_setting (const char *s_name)
+Setting * setting_new_setting (const char     *s_name)
           __attribute__ ((returns_nonnull));
 
-Setting * setting_new_array   (const char *s_name)
+Setting * setting_new_array   (const char     *s_name)
           __attribute__ ((returns_nonnull));
 
-Setting * setting_new_int     (const char *s_name,
-                               int64_t     val)
+Setting * setting_new_int     (const char     *s_name,
+                               const int64_t   val)
           __attribute__ ((returns_nonnull));
 
-Setting * setting_new_uint    (const char *s_name,
-                               uint64_t    val)
+Setting * setting_new_uint    (const char     *s_name,
+                               const uint64_t  val)
           __attribute__ ((returns_nonnull));
 
-Setting * setting_new_double  (const char *s_name,
-                               double      val)
+Setting * setting_new_double  (const char     *s_name,
+                               const double    val)
           __attribute__ ((returns_nonnull));
 
-Setting * setting_new_string  (const char *s_name,
-                               const char *val)
+Setting * setting_new_string  (const char     *s_name,
+                               const char     *val)
           __attribute__ ((returns_nonnull));
 /*----------------------------------------------------------------------------*/
 /**
@@ -491,7 +491,7 @@ Setting * settings_append_or_replace (Setting *st_list,
  * @param[in]  st_setting  Setting from list
  * @return     Top level setting in list
  *
- * @fn  size_t setting_count_children (Setting *st_setting)
+ * @fn  size_t setting_count_children (const Setting *st_setting)
  *
  * @brief  Count children in Setting object or array
  *
@@ -507,14 +507,14 @@ Setting * settings_append_or_replace (Setting *st_list,
  * @return     Found Setting item or null of not found
  */
 /*----------------------------------------------------------------------------*/
-static inline Setting * setting_get_top_level  (Setting    *st_setting) {
+static inline Setting * setting_get_top_level  (Setting       *st_setting) {
     return setting_first (setting_get_top_parent (st_setting));
 }
-static inline size_t    setting_count_children (Setting    *st_setting) {
+static inline size_t    setting_count_children (const Setting *st_setting) {
     return settings_count (setting_get_child (st_setting));
 }
-static inline Setting * setting_find_child     (Setting    *st_setting,
-                                                const char *s_name) {
+static inline Setting * setting_find_child     (Setting       *st_setting,
+                                                const char    *s_name) {
     return settings_find (setting_get_child (st_setting), s_name);
 }
 /*----------------------------------------------------------------------------*/
@@ -525,8 +525,8 @@ static inline Setting * setting_find_child     (Setting    *st_setting,
  * @param[in]  st_set2  Second setting
  * @return     Compare result. 1 if they are qual 0 if they are not
  */
-static inline int settings_equal_names (Setting *st_set1,
-                                        Setting *st_set2) {
+static inline int settings_equal_names (const Setting *st_set1,
+                                        const Setting *st_set2) {
     return st_set1->hash == st_set2->hash;
 }
 /*----------------------------------------------------------------------------*/

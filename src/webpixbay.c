@@ -62,7 +62,7 @@ enum e_options {
  */
 static const char *s_opts[] = {
     "category", "orientation", "editors_choice", "safesearch", "order",
-    "min_width", "min_height", "per_page", "colors"
+    "min_width", "min_height", "per_page", "colors", NULL
 };
 /*----------------------------------------------------------------------------*/
 /**
@@ -73,7 +73,8 @@ static const char *s_category[] = {
     "none", "backgrounds", "fashion", "nature", "science", "education",
     "feelings", "health", "people", "religion", "places", "animals",
     "industry", "computer", "food", "sports", "transportation", "travel",
-    "buildings", "business", "music", NULL};
+    "buildings", "business", "music", NULL
+};
 /*----------------------------------------------------------------------------*/
 /**
  * @var   s_colour
@@ -82,7 +83,8 @@ static const char *s_category[] = {
 static const char *s_colour[] = {
     "any", "grayscale", "transparent", "red", "orange", "yellow", "green",
     "turquoise", "blue", "lilac", "pink", "white", "gray", "black",
-    "brown", NULL};
+    "brown", NULL
+};
 /*----------------------------------------------------------------------------*/
 /**
  * @var   s_true_false

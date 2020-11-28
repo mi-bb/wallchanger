@@ -34,6 +34,8 @@
 #include "imgs.h"
 #include "dlgs.h"
 #include "dlgsmsg.h"
+#include "dlgcmd.h"
+#include "dlgothsett.h"
 #include "treev.h"
 #include "dirlist.h"
 #include "fdfn.h"

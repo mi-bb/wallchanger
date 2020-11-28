@@ -27,32 +27,6 @@
 #include <gtk/gtk.h>
 /*----------------------------------------------------------------------------*/
 /**
- * @brief  Run wallpaper set command configuration dialog.
- *
- * @param[in] gw_parent     Window widget for setting dialog modal
- * @param[in] s_current_cmd Current wallpaper set command
- * @param[in] gsl_iinfo     List with wallpapers
- * @return    String with wallpaper set command or null. It should be
- *            freed after use using free.
- */
-/*----------------------------------------------------------------------------*/
-char *   cmddialog_run            (GtkWindow    *gw_parent,
-                                   const char   *s_current_cmd,
-                                   const GSList *gsl_iinfo);
-/*----------------------------------------------------------------------------*/
-/**
- * @brief  Dialog with other settings.
- *
- * @param[in] gw_parent  Parent window
- * @param[in] s_cfg_file Path to config file
- * @param[in] s_fn       Path to sample wallpaper file
- * @return    none
- */
-void     other_settings_dialog    (GtkWindow  *gw_parent,
-                                   const char *s_cfg_file,
-                                   const char *s_fn);
-/*----------------------------------------------------------------------------*/
-/**
  * @fn  GList  * add_images_from_web_dilaog (GtkWindow  *gw_parent,
  *                                           const char *s_cfg_file)
  *
