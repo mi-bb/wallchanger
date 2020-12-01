@@ -35,12 +35,10 @@
 /**
  * @brief  Look for config file in paths from list.
  *
- * @param[in] s_cc  Null terminated list with config file paths
- * @return    Config file path string or null if config files were not found,
+ * @return    Config file path string,
  *            after use it should be freed using free
  */
 static char *
-//cfgfile_find_config_file (const char **s_cc)
 cfgfile_find_config_file (void)
 {
     const char **s_cc = NULL;

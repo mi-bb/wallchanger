@@ -663,7 +663,7 @@ setting_remove (Setting *st_setting)
  * @brief  Print setting info
  */
 void
-setting_print (Setting *st_set)
+setting_print (const Setting *st_set)
 {
     switch (st_set->v_type) {
         case SET_VAL_INT:
@@ -729,7 +729,7 @@ setting_print (Setting *st_set)
 }
 /*----------------------------------------------------------------------------*/
 void
-settings_print (Setting *st_set)
+settings_print (const Setting *st_set)
 {
     while (st_set != NULL) {
         setting_print (st_set);

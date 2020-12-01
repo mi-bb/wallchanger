@@ -539,9 +539,9 @@ static inline int settings_equal_names (const Setting *st_set1,
  * @param[out]  st_set  Setting object
  * @return      none
  */
-void setting_print  (Setting *st_set);
+void setting_print  (const Setting *st_set);
 
-void settings_print (Setting *st_set);
+void settings_print (const Setting *st_set);
 /*----------------------------------------------------------------------------*/
 #endif
 #endif
