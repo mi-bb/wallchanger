@@ -106,7 +106,7 @@ thumbnail_get (const char *s_service_name,
 
     dir_create_with_subdirs (s_thumb_file);
     if (isupper (s_prefix[0]))
-        s_prefix[0] = tolower (s_prefix[0]);
+        s_prefix[0] = (char) tolower (s_prefix[0]);
 
     str_append (&s_thumb_file, "/");
     str_append (&s_thumb_file, s_prefix);

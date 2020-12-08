@@ -13,6 +13,45 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+2020-12-07  Michal Babik  <michal.babik@pm.me>
+
+	* cfgfile.c (cfgfile_find_config_file): Config file list moved to
+	  function, removed list parameter.
+	  (cfgfile_config_file_stuff): Function simplified.
+	* dlgcmd.c, dlgcmd.h: Functions to set wallpaper change command
+	  moved here from dlgs.c, dlgs.h.
+	* dlgothsett.c, dlgothsett.h: Other settings dialog and functions
+	  moved here from dlgs.c, dlgs.h.
+	* imgs.c: Updated setting icon.
+	* wchanger.c (event_interval_changed): Changed interval combo
+	  decsription setting.
+	* webabyss.c, webabyss.h (wallpaperabyss_search,
+	  wallpaperabyss_settings_dialog):
+	  FourStrings parameter changed to NStrings.
+	* webflickr.c, webflickr.h (flickr_search, flickr_settings_dialog):
+	  FourStrings parameter changed to NStrings.
+	* webpexels.c, webpexels.h (pexels_search, pexels_settings_dialog):
+	  FourStrings parameter changed to NStrings.
+	* webpixbay.c, webpixbay.h (pixbay_search, pixbay_settings_dialog):
+	  FourStrings parameter changed to NStrings.
+	* webwallhaven.c, webwallhaven.h (wallhaven_search,
+	  wallhaven_settings_dialog):
+	  FourStrings parameter changed to NStrings.
+	* webwidget.c (combo_get_active_strings, combo_set_active_strings):
+	  FourStrings parameter changed to NStrings.
+	  (search_web, event_settings_pressed, webwidget_combobox_create):
+	  FourStrings changed to NStrings.
+	* webwidget_c.c (ww_get_api_key_names, ww_get_api_key_data):
+	  Return type changed from FourStrings to NStrings.
+	  (ww_update_api_key_data): FourStrings parameter changed to NStrings.
+	* wmsfn.c (wms_get_wallpaper_command): Function simplified.
+
+2020-11-14  Michal Babik  <michal.babik@pm.me>
+
+	* nstrings.c, nstrings.h: Created based on previous fourstrings.
+	  Files with functions to create n strings item. Changed calls
+	  in files that used fourstrings.
+
 2020-11-13  Michal Babik  <michal.babik@pm.me>
 
 	* webflickr.c (flickr_search): Fixed searching, changed adding of
