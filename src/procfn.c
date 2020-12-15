@@ -40,7 +40,6 @@
 #include <sys/stat.h>
 #include <signal.h>
 #include <ctype.h>
-#include "cres.h"
 #include "procfn.h"
 /*----------------------------------------------------------------------------*/
 #if defined(__linux__)
@@ -105,7 +104,6 @@ read_proc_file_data (const char  *s_fname,
     char   *s_data = NULL;          /* Result data from file */
     FILE   *f_file;                 /* Data file */
     size_t  ui_count = 0;           /* Read data count */
-    size_t  ui_alloc = 0;           /* Size to alloc */
     char    s_buff [BUFF_SIZE + 1]; /* Buffer for data */
 
     f_file = fopen (s_fname, "rb");
@@ -115,14 +113,12 @@ read_proc_file_data (const char  *s_fname,
         /* warn ("%s", s_fname); */
         return NULL;
     }
-    do {
-        ui_count = fread (s_buff, 1, BUFF_SIZE, f_file);
-        ui_alloc += ui_count;
-        cres ((void**) &s_data, ui_alloc + 1, sizeof (char));
-        memcpy (s_data + ui_alloc - ui_count, s_buff, ui_count);
+    ui_count = fread (s_buff, 1, BUFF_SIZE, f_file);
+    if ((s_data = malloc ((ui_count + 1) * sizeof (char))) == NULL) {
+        err (EXIT_FAILURE, NULL);
     }
-    while (!feof (f_file));
-    s_data [ui_alloc] = '\0';
+    memcpy (s_data, s_buff, ui_count);
+    s_data[ui_count] = '\0';
     fclose (f_file);
     *i_err = 0;
 

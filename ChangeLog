@@ -13,6 +13,13 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+2020-12-15  Michal Babik  <michal.babik@pm.me>
+
+	* procfn.c (read_proc_file_data): Changed reading type from
+	  reading until eof to reading just bunch of data. Once a while
+	  it could not read eof in a proc comm file and got stuck in an
+	  infinite loop.
+
 2020-12-07  Michal Babik  <michal.babik@pm.me>
 
 	* cfgfile.c (cfgfile_find_config_file): Config file list moved to

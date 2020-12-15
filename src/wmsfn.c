@@ -212,14 +212,14 @@ wms_get_current_wm (const Setting *st_wmsl)
 
     while (st_wm != NULL) {
         s_name = setting_get_name (st_wm);
+#ifdef DEBUG
+        printf ("%s\n", s_name);
+#endif
         if (strcmp (s_name, "Unknown") == 0) {
             st_unkn = st_wm;
             st_wm = st_wm->next;
             continue;
         }
-#ifdef DEBUG
-        printf ("%s", s_name);
-#endif
         st_proc = setting_get_child (setting_find_child (st_wm, "Proc"));
         while (st_proc != NULL) {
             s_proc = setting_get_string (st_proc);
