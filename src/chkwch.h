@@ -34,9 +34,13 @@ void print_now (void);
 /**
  * @brief  Count time to align intervals to next full hour.
  *
- * @return Time in seconds
+ * @param[in]      ui_ch_int  Wallpepr change interval 
+ * @param[in,out]  ui_cnt     Number of changes before next align count
+ *
+ * @return Sleep time in seconds
  */
-uint32_t check_time_align_val (void);
+uint32_t check_time_align_val (const uint32_t  ui_ch_int,
+                               uint32_t       *ui_cnt);
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Sleep for 500 milliseconds.
@@ -76,9 +80,9 @@ void check_config_file (char **s_file);
  * @param[in,out] i_algntime  For time align option value
  * @return    Wallpaper change interval
  */
-uint32_t check_settings_change_wallpaper (char     *s_cfg_file,
-                                          RandMem  *rm_rand,
-                                          int      *i_algntime);
+uint32_t chk_setts_ch_wall (char     *s_cfg_file,
+                            RandMem  *rm_rand,
+                            int      *i_algntime);
 /*----------------------------------------------------------------------------*/
 #endif
 

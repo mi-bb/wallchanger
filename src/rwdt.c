@@ -52,6 +52,8 @@ read_file_data (const char    *s_fname,
     if (i_hash != NULL)
         *i_hash = 0;
 
+    errno = 0;
+
     f_file = fopen (s_fname, "rb");
     /* Error opening file */
     if (f_file == NULL) {
@@ -114,7 +116,7 @@ save_file_data (const char *s_fname,
         return ERR_FILE;
     }
     ui_size = strlen(s_buff);
-    ui_res  = fwrite (s_buff , sizeof (char), ui_size, f_file);
+    ui_res  = fwrite (s_buff, sizeof (char), ui_size, f_file);
     fclose (f_file);
 
     if (ui_res != ui_size) {

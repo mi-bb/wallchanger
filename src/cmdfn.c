@@ -25,6 +25,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <err.h>
+#include <sysexits.h>
 #include "cmdline.h"
 #include "cmdfn.h"
 /*----------------------------------------------------------------------------*/
@@ -35,23 +36,20 @@ void
 cmdfn_parse (int    argc,
              char **argv,
              int   *i_opt,
-             char **s_cfgpath __attribute__ ((unused)))
+             char **s_cfgpath)
 {
     struct gengetopt_args_info args_info;
     *i_opt = 0;
 
     if (cmdline_parser (argc, argv, &args_info) != 0)
-        exit(EXIT_FAILURE);
+        exit (EX_USAGE);
 
     if (args_info.start_given && args_info.stop_given)
-        errx (EXIT_FAILURE,
-              "Start and stop options can't be mixed together");
+        errx (EX_USAGE, "Start and stop options can't be mixed together");
     if (args_info.start_given && args_info.restart_given)
-        errx (EXIT_FAILURE,
-              "Start and restart options can't be mixed together");
+        errx (EX_USAGE, "Start and restart options can't be mixed together");
     if (args_info.stop_given && args_info.restart_given)
-        errx (EXIT_FAILURE,
-              "Stop and restart options can't be mixed together");
+        errx (EX_USAGE, "Stop and restart options can't be mixed together");
 
     if (args_info.start_given) {
         *i_opt |= CMD_OPT_START;

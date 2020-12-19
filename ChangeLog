@@ -13,6 +13,22 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+2020-12-19  Michal Babik  <michal.babik@pm.me>
+
+	* chkwch.c (check_time_align_val): Moved some stuff from wcngdmn.c,
+	  added ui_ch_int, ui_cnt to parameters list.
+	  (check_config_file, chk_setts_ch_wall): Changed error exit codes.
+	* cmdfn.c (cmdfn_parse): Removed unused attribute from s_cfgpath
+	  parameter. Changed some error exit codes.
+	* dmfn.c (dmfn_print_status_exit): Added exit.
+	* dmfn.h (dmfn_print_status_exit): Added noreturn attribute.
+	* errs.c, errs.h (err_ex_code): New function for getting exit error
+	  code based on program error code.
+	* rwdt.c (read_file_data): Added zeroing errno.
+	* wcngdmn.c (main): Removed ui_atime_val and some other not needed
+	  now parts of code. Added checking for sleep value to prevent
+	  from double wallpaper change on full hour when using time align.
+
 2020-12-15  Michal Babik  <michal.babik@pm.me>
 
 	* procfn.c (read_proc_file_data): Changed reading type from

@@ -36,7 +36,7 @@ wchangerd_SOURCES=wcngdmn.c\
                   cmdfn.c cmdfn.h\
                   cmdline.c cmdline.h\
                   wmsfn.c wmsfn.h\
-                  errs.h\
+                  errs.c errs.h\
                   defs.h
 
 wchangercfg_SOURCES=wchanger.c\

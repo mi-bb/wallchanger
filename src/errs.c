@@ -21,7 +21,9 @@
  *
  * @author Michal Babik <michal.babik@pm.me>
  */
+#include <sysexits.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include "errs.h"
 /*----------------------------------------------------------------------------*/
 /**
@@ -73,8 +75,47 @@ err_get_message (const int i_err)
         default:
            break;
     }
-
     return s_res;
+}
+/*----------------------------------------------------------------------------*/
+int
+err_ex_code (const int i_err)
+{
+    int i_res = EX_OK;
+
+    switch (i_err) {
+
+        case ERR_OK:
+            i_res = EX_OK;
+            break;
+        case ERR_FILE:
+            i_res = EX_NOINPUT;
+            break;
+        case ERR_FILE_RW:
+            i_res = EX_IOERR;
+            break;
+        case ERR_FILE_CR:
+            i_res = EX_CANTCREAT;
+            break;
+        case ERR_FILE_RM:
+            i_res = EX_IOERR;
+            break;
+        case ERR_FILE_EX:
+            i_res = EX_NOINPUT;
+            break;
+        case ERR_ALLOC:
+            i_res = EXIT_FAILURE;
+            break;
+        case ERR_TYPE:
+            i_res = EXIT_FAILURE;
+            break;
+        case ERR_CFG_NOF:
+            i_res = EX_UNAVAILABLE;
+            break;
+        default:
+           break;
+    }
+    return i_res;
 }
 /*----------------------------------------------------------------------------*/
 

@@ -46,11 +46,11 @@ int dmfn_check_presence (void);
 void dmfn_check_exit (void);
 /*----------------------------------------------------------------------------*/
 /**
- * @brief  Print status of wchangerd daemon.
+ * @brief  Print status of wchangerd daemon and exit.
  *
  * @return none
  */
-void dmfn_print_status (void);
+void dmfn_print_status_exit (void) __attribute__ ((noreturn));
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Start wchangerd process

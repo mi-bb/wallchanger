@@ -24,6 +24,7 @@
 #include <stdlib.h>
 #include <err.h>
 #include <stdint.h>
+#include <sysexits.h>
 #include <X11/Xlib.h>
 #include <time.h>
 #include "cfgfile.h"
@@ -53,11 +54,14 @@ print_now (void)
  * @brief  Count time to align intervals to next full hour.
  */
 uint32_t
-check_time_align_val (void)
+check_time_align_val (const uint32_t  ui_ch_int,
+                      uint32_t       *ui_cnt)
 {
-    time_t     t_now;   /* Time for present */
-    time_t     t_later; /* Time for next full hour */
-    struct tm *tm_now;  /* Struct for change */
+    time_t     t_now;            /* Time for present */
+    time_t     t_later;          /* Time for next full hour */
+    struct tm *tm_now;           /* Struct for change */
+    uint32_t   ui_difftime  = 0; /* Difference between now and next hour */
+    uint32_t   ui_atime_val = 0; /* Time align value */
 
     time (&t_now);
     tm_now = localtime (&t_now);
@@ -70,8 +74,21 @@ check_time_align_val (void)
 #ifdef DEBUG
     printf ("%s\n", asctime (tm_now));
 #endif
-    t_later = mktime (tm_now);
-    return (uint32_t) difftime (t_later, t_now);
+    t_later      = mktime (tm_now);
+    ui_difftime  = (uint32_t) difftime (t_later, t_now);
+    *ui_cnt      = ui_difftime / ui_ch_int;
+    ui_atime_val = ui_difftime - (*ui_cnt * ui_ch_int);
+#ifdef DEBUG
+    printf ("difft %d\n", ui_difftime);
+    printf ("atime %d\n", ui_atime_val);
+    printf ("cnt   %d\n", *ui_cnt);
+#endif
+    /* If interval is longer than hour set counter to intmax so
+     * it should not get to zero and not count align time */
+    if (ui_ch_int > 3600)
+        *ui_cnt = UINT32_MAX;
+
+    return ui_atime_val;
 }
 /*----------------------------------------------------------------------------*/
 /**
@@ -117,8 +134,9 @@ check_display_exit (void)
 void
 check_config_file (char **s_file)
 {
-    if (cfgfile_config_file_stuff (s_file, 0) != ERR_OK)
-        err (EXIT_FAILURE, "Problem with config file");
+    int i_err = 0;
+    if ((i_err = cfgfile_config_file_stuff (s_file, 0)) != ERR_OK)
+        err (err_ex_code (i_err), "Problem with config file");
 }
 /*----------------------------------------------------------------------------*/
 /**
@@ -157,9 +175,9 @@ free_and_exit (char       *s_cfg_file,
  *         changes wallpaper, returns change interval.
  */
 uint32_t
-check_settings_change_wallpaper (char     *s_cfg_file,
-                                 RandMem  *rm_rand,
-                                 int      *i_algntime)
+chk_setts_ch_wall (char     *s_cfg_file,
+                   RandMem  *rm_rand,
+                   int      *i_algntime)
 {
     static uint32_t  ui_len   = 0;    /* Wallpaper list length */
     int              i_err    = 0;    /* Error output */
@@ -177,11 +195,12 @@ check_settings_change_wallpaper (char     *s_cfg_file,
         st_wm = wms_get_wm_info (&i_err);
 
     if (i_err != ERR_OK) {
-        free_and_exit (s_cfg_file, rm_rand, st_c, st_wm, EXIT_FAILURE, NULL);
+        free_and_exit (s_cfg_file, rm_rand, st_c, st_wm,
+                       err_ex_code (i_err), NULL);
     }
     if (st_c == NULL) {
         free_and_exit (s_cfg_file, rm_rand, st_c, st_wm,
-                       EXIT_FAILURE, "Empty config file");
+                       EX_DATAERR, "Empty config file");
     }
     /* Check settings, set default values if some are missing */
     setts_check_defaults (st_c);
@@ -191,7 +210,7 @@ check_settings_change_wallpaper (char     *s_cfg_file,
             settings_find (st_c, get_setting_name (SETT_WALL_ARRAY)));
     if (ui_nlen == 0) {
         free_and_exit (s_cfg_file, rm_rand, st_c, st_wm,
-                       EXIT_FAILURE, "Empty wallpaper list");
+                       EX_DATAERR, "Empty wallpaper list");
     }
     /* Get wallpaper set command depending on used window manager */
     s_cmd = wms_get_wallpaper_command (s_cfg_file, st_c, st_wm, &i_err);
@@ -215,9 +234,9 @@ check_settings_change_wallpaper (char     *s_cfg_file,
     }
     if (ui_len == ui_nlen) {
         /* Wallpaper list length did not changed, change wallpaper */
-        if (wpset_change (st_c, rm_rand, s_cfg_file) != ERR_OK) {
+        if ((i_err = wpset_change (st_c, rm_rand, s_cfg_file)) != ERR_OK) {
             free_and_exit (s_cfg_file, rm_rand, st_c, st_wm,
-                           EXIT_FAILURE, NULL);
+                           err_ex_code (i_err), NULL);
         }
     }
     else {
@@ -226,16 +245,17 @@ check_settings_change_wallpaper (char     *s_cfg_file,
 
         if (ui_len == 0) {
             /* Program startup, previous wallpaper count was 0 */
-            if (wpset_startup_set (st_c, rm_rand, s_cfg_file) != ERR_OK) {
+            i_err = wpset_startup_set (st_c, rm_rand, s_cfg_file);
+            if (i_err != ERR_OK) {
                 free_and_exit (s_cfg_file, rm_rand, st_c, st_wm,
-                               EXIT_FAILURE, NULL);
+                               err_ex_code (i_err), NULL);
             }
         }
         else {
             /* Change during progam work, previous wallpaper count was not 0 */
-            if (wpset_change (st_c, rm_rand, s_cfg_file) != ERR_OK) {
+            if ((i_err = wpset_change (st_c, rm_rand, s_cfg_file)) != ERR_OK) {
                 free_and_exit (s_cfg_file, rm_rand, st_c, st_wm,
-                               EXIT_FAILURE, NULL);
+                               err_ex_code (i_err), NULL);
             }
         }
         ui_len = ui_nlen;

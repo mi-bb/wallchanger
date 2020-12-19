@@ -47,4 +47,12 @@ enum e_error_values {
  */
 const char * err_get_message (const int i_err) __attribute__ ((const));
 /*----------------------------------------------------------------------------*/
+/**
+ * @brief  Get exit error codes for program errors.
+ *
+ * @param[in]  i_err   Error number
+ * @return     Integer with exit error code
+ */
+int          err_ex_code     (const int i_err) __attribute__ ((const));
+/*----------------------------------------------------------------------------*/
 #endif

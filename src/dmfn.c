@@ -27,6 +27,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <sys/stat.h>
+#include <sysexits.h>
 #include "procfn.h"
 #include "dmfn.h"
 /*----------------------------------------------------------------------------*/
@@ -88,15 +89,17 @@ dmfn_check_exit (void)
  * @brief  Print status of wchangerd daemon.
  */
 void
-dmfn_print_status (void)
+dmfn_print_status_exit (void)
 {
     int i_cnt = 0;
 
     if ((i_cnt = dmfn_check_presence ()) > 0) {
         puts ("wchangerd is running");
+        exit (EXIT_SUCCESS);
     }
     else {
         puts ("wchangerd is stopped");
+        exit (EX_UNAVAILABLE);
     }
 }
 /*----------------------------------------------------------------------------*/
