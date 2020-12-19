@@ -111,7 +111,6 @@ download_progress_window (GtkWindow *gw_parent,
     GtkWidget  *gw_box_main;     /* Box for window widgets */
     GtkWidget  *gw_stop_button;  /* Stop downloading button */
     SearchItem *si_item;         /* For images from list */
-    GList      *gl_item  = NULL; /* Pointer to list */
     GList      *gl_res   = NULL; /* Result list with downloaded files */
     const char *s_format = "<span style=\"italic\">%s</span>";
     char       *s_markup = NULL; /* For label's markup */
@@ -133,7 +132,6 @@ download_progress_window (GtkWindow *gw_parent,
 
     /* Setting progress step and making a pointer to list */
     f_step  = (float) 1.0 / (float) g_list_length (gl_item_list);
-    gl_item = gl_item_list;
 
     /* Creating progress window with widgets */
     gw_window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
@@ -173,12 +171,12 @@ download_progress_window (GtkWindow *gw_parent,
     gtk_widget_show_all (gw_window);
 
     /* Processing list of wallpapers to download */
-    while (gl_item != NULL) {
+    while (gl_item_list != NULL) {
         if (i_stop == 1)
             break;
 
         f_frac  += f_step;
-        si_item  = gl_item->data;
+        si_item  = gl_item_list->data;
 
         ui_nlen = (size_t) g_utf8_strlen (si_item->s_file_name, -1);
 
@@ -214,7 +212,7 @@ download_progress_window (GtkWindow *gw_parent,
             gtk_main_iteration ();
 
         gl_res  = g_list_prepend (gl_res, s_fn);
-        gl_item = gl_item->next;
+        gl_item_list = gl_item_list->next;
     }
     free (s_wpdir);
     gtk_progress_bar_set_fraction (GTK_PROGRESS_BAR (gw_progress), 1.0);

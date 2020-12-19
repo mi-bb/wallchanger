@@ -215,14 +215,11 @@ js_settings_add_to_json_obj (const Setting *st_settings,
                              json_object   *j_obj)
 {
     json_object *j_val;   /* Json object made from Setting */
-    const Setting     *st_main; /* List of main settings in st_list */
 
-    st_main = st_settings;
-
-    while (st_main != NULL) {
-        j_val = js_setting_to_json_obj (st_main);
-        json_object_object_add (j_obj, setting_get_name (st_main), j_val);
-        st_main = st_main->next;
+    while (st_settings != NULL) {
+        j_val = js_setting_to_json_obj (st_settings);
+        json_object_object_add (j_obj, setting_get_name (st_settings), j_val);
+        st_settings = st_settings->next;
     }
 }
 /*----------------------------------------------------------------------------*/

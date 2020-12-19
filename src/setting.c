@@ -501,7 +501,8 @@ setting_set_child (Setting *st_parent,
     }
 }
 /*----------------------------------------------------------------------------*/
-Setting * setting_get_child  (const Setting *st_setting)
+Setting *
+setting_get_child (const Setting *st_setting)
 {
     if (setting_get_type (st_setting) == SET_VAL_SETTING ||
         setting_get_type (st_setting) == SET_VAL_ARRAY) {
@@ -520,7 +521,7 @@ setting_add_child (Setting *st_parent,
 {
     Setting *st_temp = NULL;
 
-    if (st_child == NULL)
+    if (st_parent == NULL || st_child == NULL)
         return;
 
     if (setting_get_type (st_parent) == SET_VAL_SETTING ||
@@ -539,7 +540,7 @@ setting_add_child (Setting *st_parent,
 Setting *
 setting_get_top_parent (Setting *st_setting)
 {
-    Setting *st_top = NULL;
+    Setting *st_top = NULL; /* Top setting to return */
 
     if (st_setting == NULL)
         return NULL;
@@ -560,8 +561,8 @@ Setting *
 settings_find (Setting    *st_settings,
                const char *s_name)
 {
-    Setting       *st_item = NULL;
-    uint_fast32_t  ui_hash = 0;
+    Setting       *st_item = NULL; /* Setting item to return */
+    uint_fast32_t  ui_hash = 0;    /* Hash of name to compare */
 
     if (st_settings == NULL)
         return NULL;
@@ -587,14 +588,11 @@ settings_find (Setting    *st_settings,
 size_t
 settings_count (const Setting *st_settings)
 {
-    const Setting *st_item = NULL;
-    size_t         ui_cnt  = 0;
+    size_t ui_cnt = 0; /* Settings count to return */
 
-    st_item = st_settings;
-
-    while (st_item != NULL) {
+    while (st_settings != NULL) {
         ++ui_cnt;
-        st_item = st_item->next;
+        st_settings = st_settings->next;
     }
     return ui_cnt;
 }
@@ -607,8 +605,8 @@ Setting *
 setting_get_at_pos (Setting      *st_settings,
                     const size_t  pos)
 {
-    Setting *st_item = NULL;
-    size_t   ui_cnt  = 0;
+    Setting *st_item = NULL; /* Setting item to return */
+    size_t   ui_cnt  = 0;    /* Number of setting in iteration */
 
     st_item = st_settings;
 

@@ -95,10 +95,10 @@ void         imageinfo_free           (ImageInfo        *ii_info);
 /**
  * @brief  Get image info of files in list and store it in ImageInfo list.
  *
- * @param[in]  gsl_files1  File list to process
+ * @param[in]  gsl_files  File list to process
  * @return     List of ImageInfo items
  */
-GSList     * file_paths_to_imageinfo  (const GSList     *gsl_files1);
+GSList     * file_paths_to_imageinfo  (const GSList     *gsl_files);
 /*----------------------------------------------------------------------------*/
 /**
  * @fn  void imageinfo_set_file_path (ImageInfo *ii_info, const char *s_name)

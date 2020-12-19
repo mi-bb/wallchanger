@@ -96,19 +96,14 @@ main (int    argc,
     }
     while (1) {
         ui_sleep = ui_ch_int;
-        /* Time align enabled */
-        if (i_atime_opt) {
-            /* If counter is 0 count align sleep time and
-             * number of standard interval sleeps before getting
-             * to full hour */
-            if (ui_cnt > 0) {
-                --ui_cnt;
-            }
-            else {
-                ui_sleep = check_time_align_val (ui_ch_int, &ui_cnt);
-            }
+        /* Time align enabled
+         * If counter is 0 count align sleep time and
+         * number of standard interval sleeps before getting
+         * to full hour */
+        if (i_atime_opt && ui_cnt-- == 0) {
+            ui_sleep = check_time_align_val (ui_ch_int, &ui_cnt);
         }
-        if (ui_sleep != 0) {
+        if (ui_sleep) {
             sleep (ui_sleep);
             ui_ch_int_n = chk_setts_ch_wall (s_cfgfile, rm_rand, &i_atime_opt);
         }

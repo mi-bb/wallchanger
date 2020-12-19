@@ -245,18 +245,15 @@ preview_combo (const GSList *gsl_iinfo)
     GtkListStore    *list_store;    /* ListStore for wallpaper data */
     ImageInfo       *ii_info;       /* ImageInfo for gsl_iinfo data */
     GtkTreeIter      iter;          /* TreeIter */
-    const GSList    *gl_ii = NULL;  /* List pointer copy */
     int              i_cnt = 0;     /* For wallpaper counting */
     char s_prev [PREV_LEN * 4 + 4]; /* Buffer for file name length checking */
 
     list_store = gtk_list_store_new (PREV_COLUMN_COUNT,
                                      G_TYPE_STRING,
                                      G_TYPE_STRING);
-    gl_ii = gsl_iinfo;
+    while (gsl_iinfo != NULL && i_cnt++ < 10) {
 
-    while (gl_ii != NULL && i_cnt++ < 10) {
-
-        ii_info = (ImageInfo *) gl_ii->data;
+        ii_info = (ImageInfo *) gsl_iinfo->data;
         /* Check file name length and shrink to PREV_LEN if it is longer
          * so ComboBox will not be so wide with longer names */
         if (g_utf8_strlen (ii_info->s_file_name, -1) > PREV_LEN) {
@@ -271,7 +268,7 @@ preview_combo (const GSList *gsl_iinfo)
                                 PREV_NAME_SHOW, s_prev,
                                 PREV_NAME_FULL, ii_info->s_file_path,
                                 -1);
-        gl_ii = gl_ii->next;
+        gsl_iinfo = gsl_iinfo->next;
     }
     gw_combo = gtk_combo_box_new_with_model (GTK_TREE_MODEL (list_store));
 

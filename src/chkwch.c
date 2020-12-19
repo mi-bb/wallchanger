@@ -262,6 +262,7 @@ chk_setts_ch_wall (char     *s_cfg_file,
     }
     settings_free_all (st_wm);
     settings_free_all (st_c);
+
     return ui_inter * 60;
 }
 /*----------------------------------------------------------------------------*/

@@ -125,14 +125,11 @@ imageinfo_free (ImageInfo *ii_info)
  * @brief  Get image info of files in list and store it in ImageInfo list.
  */
 GSList *
-file_paths_to_imageinfo (const GSList *gsl_files1)
+file_paths_to_imageinfo (const GSList *gsl_files)
 {
     GSList       *gsl_iinfo = NULL; /* Result ImageInfo list */
-    const GSList *gsl_files = NULL; /* Pointer to file list */
     char         *s_fn      = NULL; /* File path */
     ImageInfo    *ii_info;          /* ImageInfo to add to list */
-
-    gsl_files = gsl_files1;
 
     while (gsl_files != NULL) {
 
@@ -145,7 +142,6 @@ file_paths_to_imageinfo (const GSList *gsl_files1)
 
                 gsl_iinfo = g_slist_append (gsl_iinfo, ii_info);
         }
-
         gsl_files = gsl_files->next;
     }
     return gsl_iinfo;

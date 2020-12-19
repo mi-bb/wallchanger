@@ -112,22 +112,19 @@ void
 treeview_add_items_glist (GtkWidget   *gw_tview,
                           const GList *gl_files)
 {
-    const GList *gl_fl   = NULL; /* Temp ItemInfo list */
-    const char  *s_fn    = NULL; /* Strng for file path */
-    ImageInfo   *ii_info;        /* Image information */
+    const char *s_fn    = NULL; /* Strng for file path */
+    ImageInfo  *ii_info;        /* Image information */
 
-    gl_fl = gl_files;
+    while (gl_files != NULL) {
 
-    while (gl_fl != NULL) {
-
-        s_fn = (const char *) gl_fl->data;
+        s_fn = (const char *) gl_files->data;
 
         if ((ii_info = imageinfo_new_from_file (s_fn)) != NULL) {
 
             treeview_add_item (gw_tview, ii_info);
             imageinfo_free (ii_info);
         }
-        gl_fl = gl_fl->next;
+        gl_files = gl_files->next;
     }
 }
 /*----------------------------------------------------------------------------*/
@@ -138,21 +135,18 @@ void
 treeview_add_items_gslist (GtkWidget    *gw_tview,
                            const GSList *gl_files)
 {
-    const GSList *gl_fl   = NULL; /* Temp ItemInfo list */
-    const char   *s_fn    = NULL; /* Strng for file path */
-    ImageInfo    *ii_info;        /* Image information */
+    const char *s_fn    = NULL; /* Strng for file path */
+    ImageInfo  *ii_info;        /* Image information */
 
-    gl_fl = gl_files;
+    while (gl_files != NULL) {
 
-    while (gl_fl != NULL) {
-
-        s_fn = (const char *) gl_fl->data;
+        s_fn = (const char *) gl_files->data;
 
         if ((ii_info = imageinfo_new_from_file (s_fn)) != NULL) {
             treeview_add_item (gw_tview, ii_info);
             imageinfo_free (ii_info);
         }
-        gl_fl = gl_fl->next;
+        gl_files = gl_files->next;
     }
 }
 /*----------------------------------------------------------------------------*/
@@ -163,20 +157,17 @@ void
 treeview_add_items_setting (GtkWidget     *gw_tview,
                             const Setting *st_wallpapers)
 {
-    const Setting    *st_item;         /* For setting iteration */
     const char *s_fn     = NULL; /* File name to process */
     ImageInfo  *ii_info;         /* ImageInfo wallpaper info */
 
-    st_item = st_wallpapers;
-
-    while (st_item != NULL) {
-        if ((s_fn = setting_get_string (st_item)) != NULL) {
+    while (st_wallpapers != NULL) {
+        if ((s_fn = setting_get_string (st_wallpapers)) != NULL) {
             if ((ii_info = imageinfo_new_from_file (s_fn)) != NULL) {
                 treeview_add_item (gw_tview, ii_info);
                 imageinfo_free (ii_info);
             }
         }
-        st_item = st_item->next;
+        st_wallpapers = st_wallpapers->next;
     }
 }
 /*----------------------------------------------------------------------------*/

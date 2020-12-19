@@ -974,7 +974,7 @@ create_image_button (const char   *s_label,
  * @brief  Create side buttons widget.
  */
 static GtkWidget *
-create_buttons_widget (DialogData  *dd_data)
+create_buttons_widget (DialogData *dd_data)
 {
     GtkWidget *gw_widget;
     GtkWidget *gw_button;
@@ -1292,7 +1292,6 @@ create_daemon_widget (DialogData *dd_data)
     return gw_widget;
 }
 /*----------------------------------------------------------------------------*/
-
 /**
  * @brief  Application activate signal.
  */
