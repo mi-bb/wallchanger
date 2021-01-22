@@ -1,6 +1,6 @@
 /**
  * @file  wcngdmn.c
- * @copyright Copyright (C) 2019-2020 Michał Bąbik
+ * @copyright Copyright (C) 2019-2021 Michał Bąbik
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,9 +19,9 @@
  *
  * Automatic wallpaper changer
  *
- * @date December 19, 2020
+ * @date January 22, 2021
  *
- * @version 1.6.15
+ * @version 1.6.16
  *
  * @author Michal Babik <michal.babik@pm.me>
  */

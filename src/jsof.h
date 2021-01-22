@@ -1,6 +1,6 @@
 /**
  * @file  jsof.h
- * @copyright Copyright (C) 2019-2020 Michał Bąbik
+ * @copyright Copyright (C) 2019-2021 Michał Bąbik
  *
  * This file is part of Wall Changer.
  *
@@ -31,6 +31,7 @@
 #else
 #include <json.h>
 #endif
+/*----------------------------------------------------------------------------*/
 /**
  * @brief  Open and check file with json data.
  *
@@ -43,7 +44,6 @@
  * @param[out] i_err        Pointer to integer for error output
  * @return     Json file with data, or empty when json file was not valid.
  */
-/*----------------------------------------------------------------------------*/
 json_object * js_open_file (const char    *s_file_name,
                             uint_fast32_t *ui_hash,
                             int           *i_err);

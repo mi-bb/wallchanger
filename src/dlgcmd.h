@@ -1,6 +1,6 @@
 /**
  * @file  dlgcmd.h
- * @copyright Copyright (C) 2019-2020 Michał Bąbik
+ * @copyright Copyright (C) 2019-2021 Michał Bąbik
  *
  * This file is part of Wall Changer.
  *
@@ -40,6 +40,5 @@ char *   cmddialog_run            (GtkWindow    *gw_parent,
                                    const char   *s_current_cmd,
                                    const GSList *gsl_iinfo);
 /*----------------------------------------------------------------------------*/
-
 #endif
 

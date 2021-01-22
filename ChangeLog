@@ -1,4 +1,4 @@
-Copyright (C) 2019-2020 Michał Bąbik
+Copyright (C) 2019-2021 Michał Bąbik
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -12,6 +12,21 @@ GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
+2021-01-22  Michal Babik  <michal.babik@pm.me>
+
+	* dlgcmd.c: gw_cmd_widgets enum for command dialog widget array.
+	  (preview_combo): Removed use of gl_ii variable.
+	  (event_get_saved_button_clicked, event_get_default_button_clicked,
+	  event_save_command_button_clicked, event_test_button_clicked,
+	  cmddialog_run): Changed to use array enum values to get widget.
+	* iminfo.c (file_paths_to_imageinfo): Removed use of gsl_files variable.
+	* jsfun.c (js_settings_add_to_json_obj): Removed use of st_main variable.
+	* treev.c (treeview_add_items_glist): Removed use of gl_fl variable.
+	  (treeview_add_items_gslist): Removed use of gl_fl variable.
+	  (treeview_add_items_setting): Removed use of st_item variable.
+	* wcngdmn.c (main): Simplified if statement in while loop.
+	* webwidget.c (download_progress_window): Removed use of gl_item variable.
 
 2020-12-19  Michal Babik  <michal.babik@pm.me>
 

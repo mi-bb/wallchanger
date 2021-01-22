@@ -1,6 +1,6 @@
 /**
  * @file  proclist.h
- * @copyright Copyright (C) 2020 Michał Bąbik
+ * @copyright Copyright (C) 2020-2021 Michał Bąbik
  *
  * This file is part of Wall Changer.
  *

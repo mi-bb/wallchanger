@@ -1,6 +1,6 @@
 /**
  * @file  dlgs.c
- * @copyright Copyright (C) 2019-2020 Michał Bąbik
+ * @copyright Copyright (C) 2019-2021 Michał Bąbik
  *
  * This file is part of Wall Changer.
  *
@@ -231,7 +231,7 @@ about_app_dialog (GtkWindow *gw_parent)
     gtk_about_dialog_set_version (GTK_ABOUT_DIALOG (gw_dialog), APP_VER);
 
     gtk_about_dialog_set_copyright (GTK_ABOUT_DIALOG (gw_dialog), 
-            "Copyright (C) 2019-2020 Michal Babik");
+            "Copyright (C) 2019-2021 Michal Babik");
 
     gtk_about_dialog_set_comments (GTK_ABOUT_DIALOG (gw_dialog), APP_DSC);
 

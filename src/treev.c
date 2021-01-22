@@ -1,6 +1,6 @@
 /**
  * @file  treev.c
- * @copyright Copyright (C) 2019-2020 Michał Bąbik
+ * @copyright Copyright (C) 2019-2021 Michał Bąbik
  *
  * This file is part of Wall Changer.
  *
@@ -31,7 +31,7 @@
 enum e_tree_view_columns {
     COL_FILE_PATH,     /**< Full file name with path */
     COL_FILE_NAME,     /**< Only file name */
-    COL_FILE_DIR,     /**< Only file path */
+    COL_FILE_DIR,      /**< Only file path */
     COL_WIDTH_HEIGHT,  /**< String with width x height */
     COL_WIDTH,         /**< Image width */
     COL_HEIGHT,        /**< Image height */

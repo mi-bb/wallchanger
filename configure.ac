@@ -1,6 +1,6 @@
 #                                               -*- Autoconf -*-
 # Process this file with autoconf to produce a configure script.
-# Copyright (C) 2019-2020 Michał Bąbik
+# Copyright (C) 2019-2021 Michał Bąbik
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -16,12 +16,11 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 AC_PREREQ([2.69])
-AC_INIT([wallchanger], [1.6.15], [michal.babik@pm.me], [wallchanger],\
+AC_INIT([wallchanger], [1.6.16], [michal.babik@pm.me], [wallchanger],\
         [https://www.nongnu.org/wallchanger/])
 AM_INIT_AUTOMAKE
 AC_CONFIG_SRCDIR([src/setting.c])
 AC_CONFIG_HEADERS([config.h])
-AC_GNU_SOURCE
 
 # Checks for programs.
 AC_PROG_CC

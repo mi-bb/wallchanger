@@ -1,6 +1,6 @@
 /**
  * @file  imgs.h
- * @copyright Copyright (C) 2019-2020 Michał Bąbik
+ * @copyright Copyright (C) 2019-2021 Michał Bąbik
  *
  * This file is part of Wall Changer.
  *
@@ -18,15 +18,13 @@
  * along with Wall Changer.  If not, see <https://www.gnu.org/licenses/>.
  *
  * @brief  Application icons
- * 
+ *
  * @author Michal Babik <michal.babik@pm.me>
  */
 #ifndef IMGS_H
 #define IMGS_H
 #include <gdk-pixbuf/gdk-pixbuf.h>
 #include "../config.h"
-
-
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  enum for icons and images
