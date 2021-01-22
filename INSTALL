@@ -17,12 +17,16 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 Basic Installation
 -------------------
 
-The most simple way to install this application is to unpack archive,
-go to sources directory and type:
+You must have autotools installed for autogen.sh script to add
+configure and make scripts.
+Otherwise this scripts are included in standard program package.
 
-    ./configure
-    make
-    make install
+Commands to configure, build and install program:
+
+     ./autogen.sh
+     ./configure
+     make
+     make install
 
 Although I suggest to configure and compile with more detailed options
 described below.
