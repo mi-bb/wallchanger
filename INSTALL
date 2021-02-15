@@ -63,6 +63,6 @@ Executing:
 
     ./configure --help
 
-will print detailed description of available initial values for 
+will print detailed description of available initial values for
 configuration parameters.
 

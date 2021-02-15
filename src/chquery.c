@@ -305,10 +305,10 @@ cachequery_new (const char *s_service_name,
                 const char *s_search_opts,
                 const int   i_page)
 {
-    CacheQuery *cq_query = NULL;
-    struct tm  *tm_time;
-    time_t      t_time;
-    char        s_date[64];
+    CacheQuery *cq_query = NULL; /* CacheQuery to return */
+    struct tm  *tm_time;         /* For current date string */
+    time_t      t_time;          /* For current date string */
+    char        s_date[64];      /* Current date string */
 
     if ((cq_query = malloc (sizeof (CacheQuery))) == NULL)
         err (EXIT_FAILURE, NULL);
@@ -343,8 +343,8 @@ void
 cachequery_append_item (CacheQuery *cq_query,
                         SearchItem *si_item)
 {
-    SearchItem **si_tmp = NULL;
-    size_t       ui_alc = 0;
+    SearchItem **si_tmp = NULL; /* Temp pointer for malloc / realloc */
+    size_t       ui_alc = 0;    /* New alloc size */
 
     ui_alc = (size_t) (cq_query->i_sicnt + 1) * sizeof (SearchItem*);
 
@@ -457,7 +457,7 @@ cachequery_save (CacheQuery *cq_query)
     int            i_err   = ERR_OK;  /* For error output */
     char           s_page[10];        /* Page number as string */
 
-    sprintf (s_page,     "%d", cq_query->i_page);
+    sprintf (s_page, "%d", cq_query->i_page);
 
     if ((j_obj = js_open_file (cq_query->s_file, &ui_hash, &i_err)) == NULL)
         return i_err;
@@ -526,27 +526,32 @@ cachequery_delete_older_than (const char *s_service_name,
     int           i_err   = ERR_OK; /* For error output */
     uint_fast32_t ui_hash = 0;      /* Json file content hash */
 
+    /* Get current date */
     t_time  = time (NULL);
     gd_date = g_date_new ();
 
     g_date_set_time_t (gd_date, t_time);
 
+    /* Create service config file name */
     s_file = cfgfile_get_query_path ();
     str_append (&s_file, "/");
     str_append (&s_file, s_service_name);
     str_append (&s_file, ".json");
-
+    /* Open service json config file */
     if ((j_obj = js_open_file (s_file, &ui_hash, &i_err)) == NULL) {
         free (s_file);
         return i_err;
     }
+    /* Alloc pointers for strings with dates */
     s_dates = malloc ((size_t) i_days * sizeof (char*));
-
+    /* Store dates substracting one day from a stored one */
     for (i = 0; i < i_days; ++i) {
         g_date_strftime (s_date_n, 64, "%Y%m%d", gd_date);
         s_dates[i] = strdup (s_date_n);
         g_date_subtract_days (gd_date, 1);
     }
+    /* Iterate json config file for given service, compare keys with
+     * dates from list and delete key if date in config is not on list */
     json_object_object_foreach (j_obj, key, val1) {
         i_ndel = 0;
         for (i = 0; i < i_days; ++i)
@@ -555,7 +560,7 @@ cachequery_delete_older_than (const char *s_service_name,
             json_object_object_del (j_obj, key);
     }
     s_jbuff = json_object_to_json_string (j_obj);
-
+    /* Compare hashes and save data if something changed */
     if (hash (s_jbuff) != ui_hash) {
         i_err = save_file_data (s_file, s_jbuff);
     }

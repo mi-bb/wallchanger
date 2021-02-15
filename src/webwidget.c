@@ -421,11 +421,12 @@ event_search_pressed (WebWidget *ww_widget)
 {
     const char *s_query = gtk_entry_get_text (GTK_ENTRY (ww_widget->gw_entry));
 
-    if (!check_unicode (s_query, "Search query is not a valid unicode text"))
+    if (!check_unicode_warn (s_query,
+                             "Search query is not a valid unicode text"))
         return;
-    else if (str_is_empty_msg (s_query, "Empty search query"))
+    else if (str_is_empty_warn (s_query, "Empty search query"))
         return;
-    else if (!str_is_alnum_or_space (
+    else if (!str_is_alnum_or_space_warn (
                 s_query, "Sorry, only alphanumerich characters allowed"))
         return;
 

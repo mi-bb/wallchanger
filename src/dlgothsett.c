@@ -103,15 +103,13 @@ refresh_preview (GtkWidget **gw_array)
 static void
 event_delete_query_data (GtkWidget **gw_array)
 {
-    char       *s_size = NULL;
-    const char *s_path = NULL;
-    goffset     i_size = 0;
+    char       *s_size = NULL; /* String with size of dir after delete */
+    const char *s_path = NULL; /* Directory path */
 
     s_path = gtk_label_get_text (
             GTK_LABEL (gw_array[GW_SETT_QUERY_PATH_LABEL]));
     dirlist_delete_dir_content (s_path);
-    i_size = dirlist_get_dir_size (s_path);
-    s_size = g_format_size ((guint64) i_size);
+    s_size = g_format_size ((guint64) dirlist_get_dir_size (s_path));
     gtk_label_set_text (GTK_LABEL (gw_array[GW_SETT_QUERY_SIZE_LABEL]), s_size);
     free (s_size);
 }
@@ -125,15 +123,13 @@ event_delete_query_data (GtkWidget **gw_array)
 static void
 event_delete_thumb_data (GtkWidget **gw_array)
 {
-    char       *s_size = NULL;
-    const char *s_path = NULL;
-    goffset     i_size = 0;
+    char       *s_size = NULL; /* String with size of dir after delete */
+    const char *s_path = NULL; /* Directory path */
 
     s_path = gtk_label_get_text (
             GTK_LABEL (gw_array[GW_SETT_THUMB_PATH_LABEL]));
     dirlist_delete_dir_content (s_path);
-    i_size = dirlist_get_dir_size (s_path);
-    s_size = g_format_size ((guint64) i_size);
+    s_size = g_format_size ((guint64) dirlist_get_dir_size (s_path));
     gtk_label_set_text (GTK_LABEL (gw_array[GW_SETT_THUMB_SIZE_LABEL]), s_size);
     free (s_size);
 }
@@ -147,8 +143,8 @@ event_delete_thumb_data (GtkWidget **gw_array)
 static void
 event_delete_wallpapers (GtkWidget **gw_array)
 {
-    char       *s_size = NULL;
-    const char *s_path = NULL;
+    char       *s_size = NULL; /* String with size of dir after delete */
+    const char *s_path = NULL; /* Directory path */
 
     if (message_dialog_question (NULL, "Do you really want to delete all "
                 "downloaded wallpapers ?")) {
@@ -172,8 +168,8 @@ event_delete_wallpapers (GtkWidget **gw_array)
 static void
 event_delete_config_files (GtkWidget **gw_array)
 {
-    char       *s_size = NULL;
-    const char *s_path = NULL;
+    char       *s_size = NULL; /* String with size of dir after delete */
+    const char *s_path = NULL; /* Directory path */
 
     if (message_dialog_question (NULL, "Do you really want to delete all "
                 "applicatoin configuration files ?\nThis will result in the"

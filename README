@@ -60,7 +60,7 @@ If compilation ends without problems, 2 executable files will be created:
 wchangerd works in background and changes wallpaper in specified time intervals.
 
 wchangercfg is a configuration window to set wallpaper change time intervals,
-images on wallpaper list, the way wallpapers change, etc. 
+images on wallpaper list, the way wallpapers change, etc.
 
 working with the wchangerd daemon:
 
@@ -83,7 +83,7 @@ without changing settings.
 
 Afer changing settings using wchangercfg, wchangerd daemon will load them before
 next wallpaper change. If you want to load settings before that time, you need
-to restart wchangerd daemon using wchangerd --restart command. 
+to restart wchangerd daemon using wchangerd --restart command.
 
 Default places for configuration file:
 (application will look for it in order like on the list below)

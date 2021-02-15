@@ -297,7 +297,7 @@ pexels_search (WebWidget      *ww_widget,
     char       *s_query  = NULL; /* For search query */
     int         i_err    = 0;    /* Error output */
 
-    if (str_is_empty_msg (ns_data->s_str[0], "Pexels API key is not set"))
+    if (str_is_empty_warn (ns_data->s_str[0], "Pexels API key is not set"))
         return;
 
     s_query = str_replace_in (ww_widget->s_query, " ", "+");

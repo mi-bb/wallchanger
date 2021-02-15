@@ -37,11 +37,6 @@
  * @param[out] ii_info  Pointer to ImageInfo object
  * @return     none
  */
-static void imageinfo_init (ImageInfo *ii_info);
-/*----------------------------------------------------------------------------*/
-/**
- * @brief  Init ImageInfo data.
- */
 static void
 imageinfo_init (ImageInfo *ii_info)
 {

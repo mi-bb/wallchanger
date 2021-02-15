@@ -182,15 +182,15 @@ ww_update_api_key_data (const char *s_cfg_file,
                         NStrings   *ns_key_data,
                         const int   i_site)
 {
-    Setting  *st_setts;
-    NStrings *ns_key_names;
-    int       i_res = ERR_OK;
+    Setting  *st_setts;       /* Setting list for key data */
+    NStrings *ns_key_names;   /* Key names for i_site site */
+    int       i_res = ERR_OK; /* Error output */
 
+    /* Get api key names for a given wallpaper site */
     ns_key_names = ww_get_api_key_names (i_site);
-
+    /* Create Setting list with key name and key value */
     st_setts = setting_new_string (ns_key_names->s_str[0],
                                    ns_key_data->s_str[0]);
-
 #ifdef HAVE_FLICKCURL
     if (i_site == WEB_WIDGET_FLICKR) {
         st_setts = settings_append (st_setts,
@@ -201,9 +201,10 @@ ww_update_api_key_data (const char *s_cfg_file,
             setting_new_string (ns_key_names->s_str[3], ns_key_data->s_str[3]));
     }
 #endif
+    /* Update config file with new data */
     i_res = setts_check_update_file (s_cfg_file, st_setts);
-    settings_free_all (st_setts);
 
+    settings_free_all (st_setts);
     nstrings_free (ns_key_names);
 
     return i_res;
@@ -214,8 +215,8 @@ ww_update_api_key_data (const char *s_cfg_file,
  *         if it is.
  */
 int
-str_is_empty_msg (const char *s_str,
-                  const char *s_msg)
+str_is_empty_warn (const char *s_str,
+                   const char *s_msg)
 {
     if (str_is_empty (s_str)) {
         if (s_msg != NULL)
@@ -230,8 +231,8 @@ str_is_empty_msg (const char *s_str,
  *         and show message s_msg if it is not.
  */
 int
-str_is_alnum_or_space (const char *s_str,
-                       const char *s_msg)
+str_is_alnum_or_space_warn (const char *s_str,
+                            const char *s_msg)
 {
     gunichar u_c; /* Uni char to examine */
 
@@ -252,8 +253,8 @@ str_is_alnum_or_space (const char *s_str,
  *         and show message s_msg if it is not.
  */
 int
-check_unicode (const char *s_str,
-               const char *s_msg)
+check_unicode_warn (const char *s_str,
+                    const char *s_msg)
 {
     if (!g_utf8_validate (s_str, -1, NULL)) {
         if (s_msg != NULL)
@@ -291,9 +292,9 @@ char *
 combo_get_active_str (GtkWidget *gw_combo,
                       const int  i_col)
 {
-    GtkTreeModel *model;
-    GtkTreeIter   iter;
-    char *s_ret = NULL;
+    GtkTreeModel *model; /* TreeModel */
+    GtkTreeIter   iter;  /* TreeIter */
+    char *s_ret = NULL;  /* Return string */
 
     if (gtk_combo_box_get_active_iter (GTK_COMBO_BOX (gw_combo), &iter)) {
 
@@ -349,9 +350,9 @@ add_searchitem_to_img_view (GtkWidget        *gw_iconview,
                             const char       *s_service_name,
                             const int         i_thumb_quality)
 {
-    GtkListStore *list_store;
+    GtkListStore *list_store;      /* ListStore */
     GdkPixbuf    *gp_pbuf  = NULL; /* Pixbuf with thumbnail */
-    GtkTreeIter   iter;
+    GtkTreeIter   iter;            /* TreeIter */
 
     list_store = GTK_LIST_STORE (gtk_icon_view_get_model (
                 GTK_ICON_VIEW (gw_iconview)));
@@ -433,9 +434,9 @@ check_for_cached_query (WebWidget  *ww_widget,
 char *
 search_opts_to_str (const Setting *st_setts)
 {
-    char          *s_res   = NULL;
-    const Setting *st_item = NULL;
-    char           s_buff[32];
+    char          *s_res   = NULL; /* String to return */
+    const Setting *st_item = NULL; /* For settings iteration */
+    char           s_buff[32];     /* Text buffer */
 
     s_res   = strdup ("");
     st_item = st_setts;

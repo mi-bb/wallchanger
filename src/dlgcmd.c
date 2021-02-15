@@ -142,9 +142,7 @@ static void
 textview_set_text (GtkWidget  *gw_tview,
                    const char *s_txt)
 {
-    GtkTextBuffer *buffer;
-
-    buffer = gtk_text_view_get_buffer (GTK_TEXT_VIEW (gw_tview));
+    GtkTextBuffer *buffer = gtk_text_view_get_buffer (GTK_TEXT_VIEW (gw_tview));
     gtk_text_buffer_set_text (buffer, s_txt, -1);
 }
 /*----------------------------------------------------------------------------*/
@@ -157,10 +155,10 @@ textview_set_text (GtkWidget  *gw_tview,
 static char *
 textview_get_text (GtkWidget *gw_tview)
 {
-    char          *s_txt = NULL;
-    GtkTextBuffer *buffer;
-    GtkTextIter    it_start;
-    GtkTextIter    it_end;
+    char          *s_txt = NULL; /* String to return */
+    GtkTextBuffer *buffer;       /* TextBuffer */
+    GtkTextIter    it_start;     /* Start of text */
+    GtkTextIter    it_end;       /* End of text */
 
     buffer = gtk_text_view_get_buffer (GTK_TEXT_VIEW (gw_tview));
     gtk_text_buffer_get_start_iter (buffer, &it_start);
@@ -306,9 +304,9 @@ preview_combo (const GSList *gsl_iinfo)
 static void
 event_get_saved_button_clicked (GtkWidget **gw_array)
 {
-    GtkTreeModel *model;
-    GtkTreeIter   iter;
-    char         *s_cmd     = NULL; /* Wallpaper set command */
+    GtkTreeModel *model;        /* TreeModel */
+    GtkTreeIter   iter;         /* TreeIter */
+    char         *s_cmd = NULL; /* Wallpaper set command */
 
     if (gtk_combo_box_get_active_iter (
                 GTK_COMBO_BOX (gw_array[GW_CMD_WM_COMBO]), &iter)) {
@@ -336,13 +334,13 @@ event_get_saved_button_clicked (GtkWidget **gw_array)
 static void
 event_get_default_button_clicked (GtkWidget **gw_array)
 {
-    GtkTreeModel *model;
-    GtkTreeIter   iter;
+    GtkTreeModel *model;              /* TreeModel */
+    GtkTreeIter   iter;               /* TreeIter */
     char         *s_name      = NULL; /* Window manager name */
     char         *s_cmd       = NULL; /* Wallpaper set command */
     Setting      *st_settings = NULL; /* For window manager setting list */
     Setting      *st_item     = NULL; /* For checking wm name and command */
-    int i_err = 0;
+    int           i_err       = 0;    /* Error output */
 
     if (gtk_combo_box_get_active_iter (
                 GTK_COMBO_BOX (gw_array[GW_CMD_WM_COMBO]), &iter)) {
@@ -387,8 +385,8 @@ event_get_default_button_clicked (GtkWidget **gw_array)
 static void
 event_save_command_button_clicked (GtkWidget **gw_array)
 {
-    GtkTreeModel *model;
-    GtkTreeIter   iter;
+    GtkTreeModel *model;            /* TreeModel */
+    GtkTreeIter   iter;             /* TreeIter */
     char         *s_name    = NULL; /* Window manager name */
     char         *s_command = NULL; /* String for wallpaper command */
     int           i_err     = 0;    /* Error output */
@@ -455,25 +453,21 @@ event_test_button_clicked (GtkWidget **gw_array)
 static GtkWidget *
 create_command_textview (void)
 {
-    GtkWidget *gw_tview; /* TextView to return */
-
-    gw_tview = gtk_text_view_new ();
+    GtkWidget   *gw_widget = gtk_text_view_new ();
+    GtkTextView *gtv_view  = GTK_TEXT_VIEW (gw_widget);
 
     /* Settings for command treeview */
-    gtk_text_view_set_wrap_mode (GTK_TEXT_VIEW (gw_tview), GTK_WRAP_WORD);
-    gtk_text_view_set_editable (GTK_TEXT_VIEW (gw_tview), TRUE);
-    gtk_text_view_set_cursor_visible (GTK_TEXT_VIEW (gw_tview), TRUE);
-    gtk_text_view_set_accepts_tab (GTK_TEXT_VIEW (gw_tview), FALSE);
-    gtk_text_view_set_monospace (GTK_TEXT_VIEW (gw_tview), TRUE);
-    gtk_text_view_set_border_window_size (GTK_TEXT_VIEW (gw_tview),
-                                          GTK_TEXT_WINDOW_LEFT, 8);
-    gtk_text_view_set_border_window_size (GTK_TEXT_VIEW (gw_tview),
-                                          GTK_TEXT_WINDOW_RIGHT, 8);
-    gtk_text_view_set_border_window_size (GTK_TEXT_VIEW (gw_tview),
-                                          GTK_TEXT_WINDOW_TOP, 8);
-    gtk_text_view_set_border_window_size (GTK_TEXT_VIEW (gw_tview),
-                                          GTK_TEXT_WINDOW_BOTTOM, 8);
-    return gw_tview;
+    gtk_text_view_set_wrap_mode      (gtv_view, GTK_WRAP_WORD);
+    gtk_text_view_set_editable       (gtv_view, TRUE);
+    gtk_text_view_set_cursor_visible (gtv_view, TRUE);
+    gtk_text_view_set_accepts_tab    (gtv_view, FALSE);
+    gtk_text_view_set_monospace      (gtv_view, TRUE);
+    gtk_text_view_set_border_window_size (gtv_view, GTK_TEXT_WINDOW_LEFT,   8);
+    gtk_text_view_set_border_window_size (gtv_view, GTK_TEXT_WINDOW_RIGHT,  8);
+    gtk_text_view_set_border_window_size (gtv_view, GTK_TEXT_WINDOW_TOP,    8);
+    gtk_text_view_set_border_window_size (gtv_view, GTK_TEXT_WINDOW_BOTTOM, 8);
+
+    return gw_widget;
 }
 /*----------------------------------------------------------------------------*/
 /**

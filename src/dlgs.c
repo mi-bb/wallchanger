@@ -186,8 +186,8 @@ add_images_folder_dialog (GtkWindow *gw_parent)
 GSList *
 add_images_dialog (GtkWindow *gw_parent)
 {
-    GtkFileFilter *gff_filter;
-    GtkWidget     *gw_dialog;
+    GtkFileFilter *gff_filter;       /* File filter */
+    GtkWidget     *gw_dialog;        /* File dialog */
     GSList        *gsl_files = NULL; /* Result file list */
 
     gw_dialog = gtk_file_chooser_dialog_new ("Select Files",
@@ -218,7 +218,7 @@ add_images_dialog (GtkWindow *gw_parent)
 void
 about_app_dialog (GtkWindow *gw_parent)
 {
-    GtkWidget *gw_dialog;
+    GtkWidget  *gw_dialog;
     const char *s_authors[] = {"Michal Babik <michal.babik@protonmail.com> "
                                "https://init6.pomorze.pl", NULL};
     const char *s_art[]     = {

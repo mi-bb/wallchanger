@@ -272,7 +272,6 @@ urldata_search_pixbay (const char *s_query,
 
     if (curl) {
         sprintf (s_page,     "%d", i_page);
-        //sprintf (s_per_page, "%d", i_per_page);
         s_url = str_comb ("https://pixabay.com/api/?key=", s_api_key);
         str_append (&s_url, "&q=");
         str_append (&s_url, s_query);

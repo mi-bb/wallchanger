@@ -117,7 +117,7 @@ int          ww_update_api_key_data (const char *s_cfg_file,
  * @param[in]  s_msg  Message to show
  * @return     1 if string is empty, 0 if it is not.
  */
-int    str_is_empty_msg           (const char *s_str,
+int    str_is_empty_warn          (const char *s_str,
                                    const char *s_msg);
 /*----------------------------------------------------------------------------*/
 /**
@@ -129,7 +129,7 @@ int    str_is_empty_msg           (const char *s_str,
  * @return     1 if string is made of alphanumeric chars and spaces,
  *             0 if it is not.
  */
-int    str_is_alnum_or_space      (const char *s_str,
+int    str_is_alnum_or_space_warn (const char *s_str,
                                    const char *s_msg);
 /*----------------------------------------------------------------------------*/
 /**
@@ -140,7 +140,7 @@ int    str_is_alnum_or_space      (const char *s_str,
  * @param[in]  s_msg  Message to show
  * @return     1 if string is made of unicode chars, 0 if it is not.
  */
-int    check_unicode              (const char *s_str,
+int    check_unicode_warn         (const char *s_str,
                                    const char *s_msg);
 /*----------------------------------------------------------------------------*/
 /**

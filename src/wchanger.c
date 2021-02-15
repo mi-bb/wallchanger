@@ -638,13 +638,13 @@ event_add_img_web_pressed (const DialogData *dd_data)
 static void
 event_set_wallpaper_pressed (const DialogData *dd_data)
 {
-    GtkTreeSelection *gts_sele;
-    GtkTreeModel     *gtm_model;
-    GtkTreeIter       gti_iter;
-    ImageInfo        *ii_info;
-    GList            *gl_list   = NULL;
-    const char       *s_cmd     = NULL;
-    int               i_err     = 0;
+    GtkTreeSelection *gts_sele;         /* TreeSelection */
+    GtkTreeModel     *gtm_model;        /* TreeModel */
+    GtkTreeIter       gti_iter;         /* TreeIter */
+    ImageInfo        *ii_info;          /* Wallpaper image info */
+    GList            *gl_list   = NULL; /* List of selected wallpapers */
+    const char       *s_cmd     = NULL; /* Wallpaper set command */
+    int               i_err     = 0;    /* Error output */
 
     gtm_model = gtk_tree_view_get_model (GTK_TREE_VIEW (dd_data->gw_view));
     gts_sele  = gtk_tree_view_get_selection (GTK_TREE_VIEW (dd_data->gw_view));
@@ -696,9 +696,9 @@ event_img_list_activated (GtkTreeView       *tree_view,
                           GtkTreeViewColumn *column __attribute__ ((unused)),
                           GtkWidget         *gw_img_prev)
 {
-    GtkTreeModel *gtm_model;
-    ImageInfo    *ii_info;
-    GtkTreeIter   gti_iter;
+    GtkTreeModel *gtm_model; /* TreeModel */
+    GtkTreeIter   gti_iter;  /* TreeIter */
+    ImageInfo    *ii_info;   /* Wallpaper image info */
 
     gtm_model = gtk_tree_view_get_model (tree_view);
 
@@ -976,8 +976,8 @@ create_image_button (const char   *s_label,
 static GtkWidget *
 create_buttons_widget (DialogData *dd_data)
 {
-    GtkWidget *gw_widget;
-    GtkWidget *gw_button;
+    GtkWidget *gw_widget; /* Widget to return */
+    GtkWidget *gw_button; /* For buttons */
 
     gw_widget = gtk_box_new (GTK_ORIENTATION_VERTICAL, 4);
 
@@ -1250,9 +1250,9 @@ create_settings_widget (DialogData *dd_data)
 static GtkWidget *
 create_daemon_widget (DialogData *dd_data)
 {
-    GtkWidget *gw_button;
-    GtkWidget *gw_widget;
-    GtkWidget *gw_label;
+    GtkWidget *gw_widget; /* Widget to return */
+    GtkWidget *gw_button; /* For buttons */
+    GtkWidget *gw_label;  /* Daemon label */
 
     /* Grid to pack widgets */
     gw_widget = gtk_grid_new ();
