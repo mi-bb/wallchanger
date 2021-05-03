@@ -27,12 +27,14 @@
 #include "setting.h"
 #include "setts.h"
 #include "cfgfile.h"
+#include "strfun.h"
 #include "dlgothsett.h"
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Enum for config dialog widgets.
  */
-enum e_sett_dial_widgets {
+enum
+e_sett_dial_widgets {
     GW_SETT_IMG_O,            /**< Thumbnail preview */
     GW_SETT_IMG_P,            /**< Thumbnail JPG preview */
     GW_SETT_JPG_SPIN,         /**< Spinbutton for jpg quality */
@@ -187,6 +189,20 @@ event_delete_config_files (GtkWidget **gw_array)
     }
 }
 /*----------------------------------------------------------------------------*/
+/**
+ * @brief  Open directory stored in given label
+ *
+ * @param[in] gl_label  Label with directory path
+ * @return        none
+ */
+static void
+event_open_dir_from_label (GtkLabel *gl_label)
+{
+    char *s_cmd = str_comb ("xdg-open ", gtk_label_get_text (gl_label));
+    system(s_cmd);
+    free (s_cmd);
+}
+/*----------------------------------------------------------------------------*/
 
 /**
  * @brief  Dialog with other settings.
@@ -201,6 +217,10 @@ other_settings_dialog (GtkWindow  *gw_parent,
     GtkWidget *gw_content_box;      /* Dialog's box */
     GtkWidget *gw_hbox;             /* box */
     GtkWidget *gw_grid;             /* grid */
+    GtkWidget *gw_thumb_opn_btn;    /* Thumbnails open button */
+    GtkWidget *gw_query_opn_btn;    /* Query open button */
+    GtkWidget *gw_conf_opn_btn;     /* Config open button */
+    GtkWidget *gw_wall_opn_btn;     /* Wallpapers open button */
     GtkWidget *gw_thumb_clr_btn;    /* Thumbnails clear button */
     GtkWidget *gw_query_clr_btn;    /* Query clear button */
     GtkWidget *gw_conf_clr_btn;     /* Config delete button */
@@ -266,10 +286,22 @@ other_settings_dialog (GtkWindow  *gw_parent,
     gw_array[GW_SETT_CONF_SIZE_LABEL]  = gtk_label_new (s_conf_size);
     gw_array[GW_SETT_WALL_PATH_LABEL]  = gtk_label_new (s_wall_path);
     gw_array[GW_SETT_WALL_SIZE_LABEL]  = gtk_label_new (s_wall_size);
+    gw_thumb_opn_btn = gtk_button_new_with_label ("Open");
+    gw_query_opn_btn = gtk_button_new_with_label ("Open");
+    gw_conf_opn_btn  = gtk_button_new_with_label ("Open");
+    gw_wall_opn_btn  = gtk_button_new_with_label ("Open");
     gw_thumb_clr_btn = gtk_button_new_with_label ("Clear");
     gw_query_clr_btn = gtk_button_new_with_label ("Clear");
     gw_conf_clr_btn  = gtk_button_new_with_label ("Delete");
     gw_wall_clr_btn  = gtk_button_new_with_label ("Delete");
+    gtk_widget_set_tooltip_text (gw_thumb_opn_btn,
+                                 "Open thumbnail cache directory");
+    gtk_widget_set_tooltip_text (gw_query_opn_btn,
+                                 "Open query info cache directory");
+    gtk_widget_set_tooltip_text (gw_conf_opn_btn,
+                                 "Open configuration files directory");
+    gtk_widget_set_tooltip_text (gw_wall_opn_btn,
+                                 "Open downloaded wallpapers directory");
     gtk_widget_set_tooltip_text (gw_thumb_clr_btn, "Clear thumbnail cache");
     gtk_widget_set_tooltip_text (gw_query_clr_btn, "Clear query info cache");
     gtk_widget_set_tooltip_text (gw_conf_clr_btn, "Delete configuration files");
@@ -283,6 +315,23 @@ other_settings_dialog (GtkWindow  *gw_parent,
     free (s_conf_size);
     free (s_wall_path);
     free (s_wall_size);
+
+    g_signal_connect_swapped (gw_thumb_opn_btn, "clicked",
+                              G_CALLBACK (event_open_dir_from_label),
+                                  GTK_LABEL (
+                                      gw_array[GW_SETT_THUMB_PATH_LABEL]));
+    g_signal_connect_swapped (gw_query_opn_btn, "clicked",
+                              G_CALLBACK (event_open_dir_from_label),
+                                  GTK_LABEL (
+                                      gw_array[GW_SETT_QUERY_PATH_LABEL]));
+    g_signal_connect_swapped (gw_conf_opn_btn, "clicked",
+                              G_CALLBACK (event_open_dir_from_label),
+                                  GTK_LABEL (
+                                      gw_array[GW_SETT_CONF_PATH_LABEL]));
+    g_signal_connect_swapped (gw_wall_opn_btn, "clicked",
+                              G_CALLBACK (event_open_dir_from_label),
+                                  GTK_LABEL (
+                                      gw_array[GW_SETT_WALL_PATH_LABEL]));
 
     g_signal_connect_swapped (gw_thumb_clr_btn, "clicked",
                               G_CALLBACK (event_delete_thumb_data),
@@ -366,8 +415,11 @@ other_settings_dialog (GtkWindow  *gw_parent,
                      gw_array[GW_SETT_QUERY_SIZE_LABEL],
                      2,2,1,1);
     gtk_grid_attach (GTK_GRID (gw_grid),
-                     gw_query_clr_btn,
+                     gw_query_opn_btn,
                      3,2,1,1);
+    gtk_grid_attach (GTK_GRID (gw_grid),
+                     gw_query_clr_btn,
+                     4,2,1,1);
     /* Thumbnail cache */
     gtk_grid_attach (GTK_GRID (gw_grid),
                      gtk_label_new ("Thumbnails:"),
@@ -379,8 +431,11 @@ other_settings_dialog (GtkWindow  *gw_parent,
                      gw_array[GW_SETT_THUMB_SIZE_LABEL],
                      2,3,1,1);
     gtk_grid_attach (GTK_GRID (gw_grid),
-                     gw_thumb_clr_btn,
+                     gw_thumb_opn_btn,
                      3,3,1,1);
+    gtk_grid_attach (GTK_GRID (gw_grid),
+                     gw_thumb_clr_btn,
+                     4,3,1,1);
     /* Wallpapers */
     gtk_grid_attach (GTK_GRID (gw_grid),
                      gtk_separator_new (GTK_ORIENTATION_HORIZONTAL),
@@ -396,8 +451,11 @@ other_settings_dialog (GtkWindow  *gw_parent,
                      gw_array[GW_SETT_WALL_SIZE_LABEL],
                      2,5,1,1);
     gtk_grid_attach (GTK_GRID (gw_grid),
-                     gw_wall_clr_btn,
+                     gw_wall_opn_btn,
                      3,5,1,1);
+    gtk_grid_attach (GTK_GRID (gw_grid),
+                     gw_wall_clr_btn,
+                     4,5,1,1);
     /* Config */
     gtk_grid_attach (GTK_GRID (gw_grid),
                      gtk_label_new ("Config files:"),
@@ -409,8 +467,11 @@ other_settings_dialog (GtkWindow  *gw_parent,
                      gw_array[GW_SETT_CONF_SIZE_LABEL],
                      2,6,1,1);
     gtk_grid_attach (GTK_GRID (gw_grid),
-                     gw_conf_clr_btn,
+                     gw_conf_opn_btn,
                      3,6,1,1);
+    gtk_grid_attach (GTK_GRID (gw_grid),
+                     gw_conf_clr_btn,
+                     4,6,1,1);
 
     gtk_box_pack_start (GTK_BOX (gw_content_box),
                         gw_grid,
