@@ -369,7 +369,7 @@ other_settings_dialog (GtkWindow  *gw_parent,
             gw_image_o = gtk_image_new_from_pixbuf (gp_pbuf);
             gw_image_p = gtk_image_new_from_pixbuf (gp_pbuf);
             g_object_unref (gp_pbuf);
-    
+
             gw_grid = gtk_grid_new ();
             gtk_grid_set_row_spacing    (GTK_GRID (gw_grid), 8);
             gtk_grid_set_column_spacing (GTK_GRID (gw_grid), 8);

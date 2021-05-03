@@ -19,9 +19,9 @@
  *
  * Automatic wallpaper changer
  *
- * @date January 22, 2021
+ * @date May 3, 2021
  *
- * @version 1.6.16
+ * @version 1.6.17
  *
  * @author Michal Babik <michal.babik@pm.me>
  */
