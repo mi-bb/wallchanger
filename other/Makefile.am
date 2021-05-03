@@ -25,3 +25,6 @@ dist_pixmap_DATA=wchangercfg.png
 appdatadir=$(datadir)/wchanger
 dist_appdata_DATA=wchangerd.autostart wms.json
 
+uninstall-hook:
+	rmdir $(datadir)/wchanger
+
