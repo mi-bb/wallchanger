@@ -18,6 +18,8 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 	* dlgothsett.c (event_open_dir_from_label): New function for opening
 	  directory from given label.
 	  (other_settings_dialog): Added open path buttons.
+	* other/Makefile.am: Added uninstall hook for removing app share
+	  directory during uninstall.
 
 2021-01-22  Michal Babik  <michal.babik@pm.me>
 

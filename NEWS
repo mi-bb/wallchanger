@@ -17,6 +17,8 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 v1.6.17                                                     2020-05-03
 
     * Added buttons to open directories in the other settings dialog.
+    * Added deletion of a no longer needed empty shared data directory
+      during the uninstallation of the app.
 
 ----------------------------------------------------------------------
 v1.6.16                                                     2020-01-22
