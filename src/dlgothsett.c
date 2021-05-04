@@ -198,8 +198,10 @@ event_delete_config_files (GtkWidget **gw_array)
 static void
 event_open_dir_from_label (GtkLabel *gl_label)
 {
+    int i_res __attribute__ ((unused)) = 0; /* Result of system command for
+                                               compiler complain */
     char *s_cmd = str_comb ("xdg-open ", gtk_label_get_text (gl_label));
-    system(s_cmd);
+    i_res = system(s_cmd);
     free (s_cmd);
 }
 /*----------------------------------------------------------------------------*/
