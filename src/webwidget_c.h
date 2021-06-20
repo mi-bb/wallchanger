@@ -27,6 +27,7 @@
 #include <gtk/gtk.h>
 #include "../config.h"
 #include "webwidget_s.h"
+//#include "webservcs.h"
 #include "nstrings.h"
 #include "setting.h"
 #include "searchitem.h"
@@ -35,14 +36,14 @@
  * @brief  Numbers of image search services.
  */
 enum e_wall_sites {
-    WEB_WIDGET_PEXELS,    /**< Pexels */
-    WEB_WIDGET_PIXBAY,    /**< Pixbay */
-    WEB_WIDGET_WALLHAVEN, /**< Wallhaven */
-    WEB_WIDGET_WALLABYSS, /**< Wallpaper Abyss */
+    WEB_SERV_PEXELS,    /**< Pexels */
+    WEB_SERV_PIXBAY,    /**< Pixbay */
+    WEB_SERV_WALLHAVEN, /**< Wallhaven */
+    WEB_SERV_WALLABYSS, /**< Wallpaper Abyss */
 #ifdef HAVE_FLICKCURL
-    WEB_WIDGET_FLICKR,    /**< Flickr */
+    WEB_SERV_FLICKR,    /**< Flickr */
 #endif
-    WEB_WIDGET_CNT        /**< Services count */
+    WEB_SERV_CNT        /**< Services count */
 };
 /*----------------------------------------------------------------------------*/
 /**

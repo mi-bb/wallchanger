@@ -39,16 +39,16 @@ const char *
 ww_name (const int i_site)
 {
     switch (i_site) {
-        case WEB_WIDGET_PEXELS:
+        case WEB_SERV_PEXELS:
             return "Pexels";
-        case WEB_WIDGET_PIXBAY:
+        case WEB_SERV_PIXBAY:
             return "Pixbay";
-        case WEB_WIDGET_WALLHAVEN:
+        case WEB_SERV_WALLHAVEN:
             return "Wallhaven";
-        case WEB_WIDGET_WALLABYSS:
+        case WEB_SERV_WALLABYSS:
             return "WallpaperAbyss";
 #ifdef HAVE_FLICKCURL
-        case WEB_WIDGET_FLICKR:
+        case WEB_SERV_FLICKR:
             return "Flickr";
 #endif
         default:
@@ -64,16 +64,16 @@ const char *
 ww_opts (const int i_site)
 {
     switch (i_site) {
-        case WEB_WIDGET_PEXELS:
+        case WEB_SERV_PEXELS:
             return "Pexels_opts";
-        case WEB_WIDGET_PIXBAY:
+        case WEB_SERV_PIXBAY:
             return "Pixbay_opts";
-        case WEB_WIDGET_WALLHAVEN:
+        case WEB_SERV_WALLHAVEN:
             return "Wallhaven_opts";
-        case WEB_WIDGET_WALLABYSS:
+        case WEB_SERV_WALLABYSS:
             return "WallpaperAbyss_opts";
 #ifdef HAVE_FLICKCURL
-        case WEB_WIDGET_FLICKR:
+        case WEB_SERV_FLICKR:
             return "Flickr_opts";
 #endif
         default:
@@ -89,16 +89,16 @@ int
 ww_logo_id (const int i_site)
 {
     switch (i_site) {
-        case WEB_WIDGET_PEXELS:
+        case WEB_SERV_PEXELS:
             return W_LOGO_PEXELS;
-        case WEB_WIDGET_PIXBAY:
+        case WEB_SERV_PIXBAY:
             return W_LOGO_PIXBAY;
-        case WEB_WIDGET_WALLHAVEN:
+        case WEB_SERV_WALLHAVEN:
             return W_LOGO_WALLHAVEN;
-        case WEB_WIDGET_WALLABYSS:
+        case WEB_SERV_WALLABYSS:
             return W_LOGO_WALLABYSS;
 #ifdef HAVE_FLICKCURL
-        case WEB_WIDGET_FLICKR:
+        case WEB_SERV_FLICKR:
             return W_LOGO_FLICKR;
 #endif
         default:
@@ -121,20 +121,20 @@ ww_get_api_key_names (const int i_site)
     ns_data = nstrings_new (4, NS_VAL_EMPTY);
 
     switch (i_site) {
-        case WEB_WIDGET_PEXELS:
+        case WEB_SERV_PEXELS:
             str_append (&ns_data->s_str[0], "Pexels api");
             break;
-        case WEB_WIDGET_PIXBAY:
+        case WEB_SERV_PIXBAY:
             str_append (&ns_data->s_str[0], "Pixbay api");
             break;
-        case WEB_WIDGET_WALLHAVEN:
+        case WEB_SERV_WALLHAVEN:
             str_append (&ns_data->s_str[0], "Wallhaven api");
             break;
-        case WEB_WIDGET_WALLABYSS:
+        case WEB_SERV_WALLABYSS:
             str_append (&ns_data->s_str[0], "Wallpaper Abyss api");
             break;
 #ifdef HAVE_FLICKCURL
-        case WEB_WIDGET_FLICKR:
+        case WEB_SERV_FLICKR:
             str_append (&ns_data->s_str[0], "Flickr client key");
             str_append (&ns_data->s_str[1], "Flickr client secret");
             str_append (&ns_data->s_str[2], "Flickr access token");
@@ -192,7 +192,7 @@ ww_update_api_key_data (const char *s_cfg_file,
     st_setts = setting_new_string (ns_key_names->s_str[0],
                                    ns_key_data->s_str[0]);
 #ifdef HAVE_FLICKCURL
-    if (i_site == WEB_WIDGET_FLICKR) {
+    if (i_site == WEB_SERV_FLICKR) {
         st_setts = settings_append (st_setts,
             setting_new_string (ns_key_names->s_str[1], ns_key_data->s_str[1]));
         st_setts = settings_append (st_setts,

@@ -97,6 +97,7 @@ urldata_get_data (const char *s_url)
     UrlData  *ud_data = NULL;
     CURL     *curl;
     CURLcode  res;
+    char      errbuf[CURL_ERROR_SIZE];
 
     ud_data = urldata_new ();
     curl_global_init (CURL_GLOBAL_ALL);
@@ -106,21 +107,17 @@ urldata_get_data (const char *s_url)
         curl_easy_setopt (curl, CURLOPT_URL, s_url);
         curl_easy_setopt (curl, CURLOPT_WRITEDATA, (void *) ud_data);
         curl_easy_setopt (curl, CURLOPT_WRITEFUNCTION, url_write);
+        curl_easy_setopt (curl, CURLOPT_ERRORBUFFER, errbuf);
+        errbuf[0] = '\0';
 #ifdef DEBUG
-        curl_easy_setopt(curl, CURLOPT_VERBOSE, 1L);
+        curl_easy_setopt (curl, CURLOPT_VERBOSE, 1L);
 #endif
- 
         res = curl_easy_perform (curl);
  
         if (res != CURLE_OK) {
-            ud_data->errbuf = malloc (CURL_ERROR_SIZE * sizeof (char));
-            if (ud_data->errbuf == NULL)
-                err (EXIT_FAILURE, NULL);
-
-            snprintf (ud_data->errbuf, CURL_ERROR_SIZE, "%s",
-                      curl_easy_strerror (res));
-            fprintf(stderr, "curl failed: %s\n",
-                    ud_data->errbuf);
+            ud_data->errbuf = strdup (strlen (errbuf) ?
+                                      errbuf : curl_easy_strerror (res));
+            warnx ("libcurl: (%d) %s", res, ud_data->errbuf);
         }
         curl_easy_cleanup (curl);
     }
@@ -149,41 +146,40 @@ urldata_get_to_file (const char *s_url,
     CURL     *curl;
     FILE     *f_file;
     CURLcode  res;
+    char      errbuf[CURL_ERROR_SIZE];
 
     if (access (s_fn, F_OK) == 0) {
         return;
     }
  
     curl_global_init (CURL_GLOBAL_ALL);
-    curl= curl_easy_init ();
+    curl = curl_easy_init ();
 
-    curl_easy_setopt (curl, CURLOPT_URL, s_url);
- 
-    curl_easy_setopt(curl, CURLOPT_FAILONERROR, 1L);
+    if (curl) {
+        curl_easy_setopt (curl, CURLOPT_URL, s_url);
+        curl_easy_setopt (curl, CURLOPT_FAILONERROR, 1L);
 #ifdef DEBUG
-    curl_easy_setopt(curl, CURLOPT_VERBOSE, 1L);
+        curl_easy_setopt (curl, CURLOPT_VERBOSE, 1L);
 #endif
- 
-    curl_easy_setopt (curl, CURLOPT_WRITEFUNCTION, write_data);
- 
-    f_file = fopen (s_fn, "wb");
-    if (f_file) {
-        curl_easy_setopt (curl, CURLOPT_WRITEDATA, f_file);
-        res = curl_easy_perform (curl);
-        fclose (f_file);
-
-        if (res != CURLE_OK) {
-            *s_err = malloc (CURL_ERROR_SIZE * sizeof (char));
-            if (*s_err == NULL)
-                err (EXIT_FAILURE, NULL);
-
-            snprintf (*s_err, CURL_ERROR_SIZE, "%s",
-                      curl_easy_strerror (res));
-            fprintf (stderr, "curl failed: %s\n", curl_easy_strerror (res));
-            unlink (s_fn);
+        curl_easy_setopt (curl, CURLOPT_WRITEFUNCTION, write_data);
+        curl_easy_setopt (curl, CURLOPT_ERRORBUFFER, errbuf);
+        errbuf[0] = '\0';
+     
+        f_file = fopen (s_fn, "wb");
+        if (f_file) {
+            curl_easy_setopt (curl, CURLOPT_WRITEDATA, f_file);
+            res = curl_easy_perform (curl);
+            fclose (f_file);
+    
+            if (res != CURLE_OK) {
+                *s_err = strdup (strlen (errbuf) ?
+                                 errbuf : curl_easy_strerror (res));
+                warnx ("libcurl: (%d) %s", res, *s_err);
+                unlink (s_fn);
+            }
         }
+        curl_easy_cleanup (curl);
     }
-    curl_easy_cleanup (curl);
     curl_global_cleanup ();
 }
 /*----------------------------------------------------------------------------*/
@@ -202,6 +198,7 @@ urldata_search_pexels (const char *s_query,
     char      s_page[64];
     CURL     *curl;
     CURLcode  res;
+    char      errbuf[CURL_ERROR_SIZE];
     struct curl_slist *list = NULL;
 
     ud_data = urldata_new ();
@@ -214,31 +211,26 @@ urldata_search_pexels (const char *s_query,
         s_url = str_comb ("https://api.pexels.com/v1/search?query=", s_query);
         str_append (&s_url, "&page=");
         str_append (&s_url, s_page);
-        if (s_search_opts != NULL && s_search_opts[0] != '\0')
-            str_append (&s_url, s_search_opts);
-        else 
-            str_append (&s_url, "&per_page=12");
-
+        str_append (&s_url, str_is_empty (s_search_opts) ?
+                            "&per_page=12" :
+                            s_search_opts);
         list = curl_slist_append (list, s_api);
 
         curl_easy_setopt (curl, CURLOPT_URL, s_url);
         curl_easy_setopt (curl, CURLOPT_HTTPHEADER, list);
         curl_easy_setopt (curl, CURLOPT_WRITEDATA, (void *) ud_data);
         curl_easy_setopt (curl, CURLOPT_WRITEFUNCTION, url_write);
+        curl_easy_setopt (curl, CURLOPT_ERRORBUFFER, errbuf);
+        errbuf[0] = '\0';
 #ifdef DEBUG
-        curl_easy_setopt(curl, CURLOPT_VERBOSE, 1L);
+        curl_easy_setopt (curl, CURLOPT_VERBOSE, 1L);
 #endif
- 
         res = curl_easy_perform (curl);
  
         if (res != CURLE_OK) {
-            ud_data->errbuf = malloc (CURL_ERROR_SIZE * sizeof (char));
-            if (ud_data->errbuf == NULL)
-                err (EXIT_FAILURE, NULL);
-
-            snprintf (ud_data->errbuf, CURL_ERROR_SIZE, "%s",
-                      curl_easy_strerror (res));
-            fprintf(stderr, "curl failed: %s\n", ud_data->errbuf);
+            ud_data->errbuf = strdup (strlen (errbuf) ?
+                              errbuf : curl_easy_strerror (res));
+            warnx ("libcurl: (%d) %s", res, ud_data->errbuf);
         }
         curl_slist_free_all (list);
  
@@ -262,9 +254,9 @@ urldata_search_pixbay (const char *s_query,
     UrlData  *ud_data = NULL;
     char     *s_url   = NULL;
     char      s_page[64];
-    //char      s_per_page[64];
     CURL     *curl;
     CURLcode  res;
+    char      errbuf[CURL_ERROR_SIZE];
 
     ud_data = urldata_new ();
     curl_global_init (CURL_GLOBAL_ALL);
@@ -278,27 +270,23 @@ urldata_search_pixbay (const char *s_query,
         str_append (&s_url, "&page=");
         str_append (&s_url, s_page);
         str_append (&s_url, "&image_type=photo");
-        if (s_search_opts != NULL && s_search_opts[0] != '\0')
-            str_append (&s_url, s_search_opts);
-        else
-            str_append (&s_url, "&per_page=12");
+        str_append (&s_url, str_is_empty (s_search_opts) ?
+                            "&per_page=12" : s_search_opts);
 
         curl_easy_setopt (curl, CURLOPT_URL, s_url);
         curl_easy_setopt (curl, CURLOPT_WRITEDATA, (void *) ud_data);
         curl_easy_setopt (curl, CURLOPT_WRITEFUNCTION, url_write);
+        curl_easy_setopt (curl, CURLOPT_ERRORBUFFER, errbuf);
+        errbuf[0] = '\0';
 #ifdef DEBUG
-        curl_easy_setopt(curl, CURLOPT_VERBOSE, 1L);
+        curl_easy_setopt (curl, CURLOPT_VERBOSE, 1L);
 #endif
         res = curl_easy_perform (curl);
  
         if (res != CURLE_OK) {
-            ud_data->errbuf = malloc (CURL_ERROR_SIZE * sizeof (char));
-            if (ud_data->errbuf == NULL)
-                err (EXIT_FAILURE, NULL);
-
-            snprintf (ud_data->errbuf, CURL_ERROR_SIZE, "%s",
-                      curl_easy_strerror (res));
-            fprintf(stderr, "curl failed: %s\n", ud_data->errbuf);
+            ud_data->errbuf = strdup (strlen (errbuf) ?
+                              errbuf : curl_easy_strerror (res));
+            warnx ("libcurl: (%d) %s", res, ud_data->errbuf);
         }
  
         curl_easy_cleanup (curl);
@@ -322,7 +310,7 @@ urldata_search_wallhaven (const char *s_query,
     char      s_page[64];
     CURL     *curl;
     CURLcode  res;
-    struct curl_slist *list = NULL;
+    char      errbuf[CURL_ERROR_SIZE];
 
     ud_data = urldata_new ();
     curl_global_init (CURL_GLOBAL_ALL);
@@ -335,30 +323,25 @@ urldata_search_wallhaven (const char *s_query,
         str_append (&s_url, s_query);
         str_append (&s_url, "&page=");
         str_append (&s_url, s_page);
-        if (s_search_opts != NULL && s_search_opts[0] != '\0')
-            str_append (&s_url, s_search_opts);
-        else
-            str_append (&s_url, "&sorting=relevance");
+        str_append (&s_url, str_is_empty (s_search_opts) ?
+                            "&sorting=relevance" : s_search_opts);
 
         curl_easy_setopt (curl, CURLOPT_URL, s_url);
         curl_easy_setopt (curl, CURLOPT_WRITEDATA, (void *) ud_data);
         curl_easy_setopt (curl, CURLOPT_WRITEFUNCTION, url_write);
+        curl_easy_setopt (curl, CURLOPT_ERRORBUFFER, errbuf);
+        errbuf[0] = '\0';
 #ifdef DEBUG
-        curl_easy_setopt(curl, CURLOPT_VERBOSE, 1L);
+        curl_easy_setopt (curl, CURLOPT_VERBOSE, 1L);
 #endif
  
         res = curl_easy_perform (curl);
  
         if (res != CURLE_OK) {
-            ud_data->errbuf = malloc (CURL_ERROR_SIZE * sizeof (char));
-            if (ud_data->errbuf == NULL)
-                err (EXIT_FAILURE, NULL);
-
-            snprintf (ud_data->errbuf, CURL_ERROR_SIZE, "%s",
-                      curl_easy_strerror (res));
-            fprintf(stderr, "curl failed: %s\n", ud_data->errbuf);
+            ud_data->errbuf = strdup (strlen (errbuf) ?
+                              errbuf : curl_easy_strerror (res));
+            warnx ("libcurl: (%d) %s", res, ud_data->errbuf);
         }
-        curl_slist_free_all (list);
  
         curl_easy_cleanup (curl);
     }
@@ -381,7 +364,7 @@ urldata_search_wallabyss (const char *s_query,
     char      s_page[64];
     CURL     *curl;
     CURLcode  res;
-    struct curl_slist *list = NULL;
+    char      errbuf[CURL_ERROR_SIZE];
 
     ud_data = urldata_new ();
     curl_global_init (CURL_GLOBAL_ALL);
@@ -394,29 +377,24 @@ urldata_search_wallabyss (const char *s_query,
         str_append (&s_url, s_query);
         str_append (&s_url, "&info_level=2&page=");
         str_append (&s_url, s_page);
-        if (s_search_opts != NULL && s_search_opts[0] != '\0')
+        if (!str_is_empty (s_search_opts))
             str_append (&s_url, s_search_opts);
 
         curl_easy_setopt (curl, CURLOPT_URL, s_url);
         curl_easy_setopt (curl, CURLOPT_WRITEDATA, (void *) ud_data);
         curl_easy_setopt (curl, CURLOPT_WRITEFUNCTION, url_write);
+        curl_easy_setopt (curl, CURLOPT_ERRORBUFFER, errbuf);
+        errbuf[0] = '\0';
 #ifdef DEBUG
-        curl_easy_setopt(curl, CURLOPT_VERBOSE, 1L);
+        curl_easy_setopt (curl, CURLOPT_VERBOSE, 1L);
 #endif
- 
         res = curl_easy_perform (curl);
  
         if (res != CURLE_OK) {
-            ud_data->errbuf = malloc (CURL_ERROR_SIZE * sizeof (char));
-            if (ud_data->errbuf == NULL)
-                err (EXIT_FAILURE, NULL);
-
-            snprintf (ud_data->errbuf, CURL_ERROR_SIZE, "%s",
-                      curl_easy_strerror (res));
-            fprintf(stderr, "curl failed: %s\n", ud_data->errbuf);
+            ud_data->errbuf = strdup (strlen (errbuf) ?
+                              errbuf : curl_easy_strerror (res));
+            warnx ("libcurl: (%d) %s", res, ud_data->errbuf);
         }
-        curl_slist_free_all (list);
- 
         curl_easy_cleanup (curl);
     }
     curl_global_cleanup ();

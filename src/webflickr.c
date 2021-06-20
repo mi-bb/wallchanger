@@ -271,7 +271,7 @@ flickrphoto_to_searchitem (flickcurl_photo *fp_photo)
     s_name = str_is_empty (s_title) ? strdup (fp_photo->id) : strdup (s_title);
     remove_non_alpha_space (s_name);
 
-    searchitem_set_service_name (si_item, ww_name (WEB_WIDGET_FLICKR));
+    searchitem_set_service_name (si_item, ww_name (WEB_SERV_FLICKR));
     searchitem_set_display_name (si_item, s_name);
     searchitem_set_display_markup (si_item, s_name);
     free (s_name);
@@ -376,7 +376,7 @@ flickr_search (WebWidget      *ww_widget,
                     GTK_ICON_VIEW (ww_widget->gw_img_view))));
 
     if (photos_list != NULL) {
-        cq_query = cachequery_new (ww_name (WEB_WIDGET_FLICKR),
+        cq_query = cachequery_new (ww_name (WEB_SERV_FLICKR),
                                    ww_widget->s_query,
                                    ww_widget->s_search_opts,
                                    ww_widget->i_page);
@@ -389,7 +389,7 @@ flickr_search (WebWidget      *ww_widget,
             add_searchitem_to_img_view (ww_widget->gw_img_view,
                                         si_item,
                                         ww_widget->s_wallp_dir,
-                                        ww_name (WEB_WIDGET_FLICKR),
+                                        ww_name (WEB_SERV_FLICKR),
                                         ww_widget->i_thumb_quality);
             cachequery_append_item (cq_query, si_item);
         }

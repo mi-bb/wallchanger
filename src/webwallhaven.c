@@ -116,7 +116,7 @@ wallhaven_process_item_set_names (SearchItem *si_item)
     /* Create file name, add image extension to base name */
     s_ext = strrchr (si_item->s_image_url, '.');
     if (s_ext != NULL) {
-        s_file_name = str_comb (ww_name (WEB_WIDGET_WALLHAVEN), "_");
+        s_file_name = str_comb (ww_name (WEB_SERV_WALLHAVEN), "_");
         str_append (&s_file_name, si_item->s_id);
         str_append (&s_file_name, s_ext);
     }
@@ -147,7 +147,7 @@ wallhaven_json_obj_to_searchitem (json_object *j_obj)
 
     SearchItem *si_item = searchitem_new ();
 
-    searchitem_set_service_name (si_item, ww_name (WEB_WIDGET_WALLHAVEN));
+    searchitem_set_service_name (si_item, ww_name (WEB_SERV_WALLHAVEN));
 
     if (json_object_object_get_ex (j_obj, "id", &j_val) &&
         json_object_get_type (j_val) == json_type_string) {
@@ -265,7 +265,7 @@ wallhaven_json_to_webwidget (const char *s_buff,
                     add_searchitem_to_img_view (ww_widget->gw_img_view,
                                                 si_item,
                                                 ww_widget->s_wallp_dir,
-                                                ww_name (WEB_WIDGET_WALLHAVEN),
+                                                ww_name (WEB_SERV_WALLHAVEN),
                                                 ww_widget->i_thumb_quality);
                     cachequery_append_item (cq_query, si_item);
                 }
@@ -300,7 +300,7 @@ wallhaven_search (WebWidget      *ww_widget,
         message_dialog_error (NULL, ud_data->errbuf);
     }
     else if (urldata_full (ud_data)) {
-        cq_query = cachequery_new (ww_name (WEB_WIDGET_WALLHAVEN),
+        cq_query = cachequery_new (ww_name (WEB_SERV_WALLHAVEN),
                                    ww_widget->s_query,
                                    ww_widget->s_search_opts,
                                    ww_widget->i_page);
@@ -402,7 +402,7 @@ set_search_opts (GtkWidget **gw_array,
     int i = 0;
 
     st_set = setting_get_child (settings_find (st_setts,
-                                               ww_opts (WEB_WIDGET_WALLHAVEN)));
+                                               ww_opts (WEB_SERV_WALLHAVEN)));
 
     if (st_set == NULL) {
         return;
@@ -774,7 +774,7 @@ wallhaven_search_opts_dialog (WebWidget *ww_widget)
     i_res = gtk_dialog_run (GTK_DIALOG (gw_dialog));
 
     if (i_res == GTK_RESPONSE_ACCEPT) {
-        st_settings = setting_new_setting (ww_opts (WEB_WIDGET_WALLHAVEN));
+        st_settings = setting_new_setting (ww_opts (WEB_SERV_WALLHAVEN));
 
         setting_add_child (st_settings, get_search_opts (gw_array));
 #ifdef DEBUG

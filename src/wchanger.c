@@ -926,7 +926,8 @@ create_title_widget (void)
     GtkWidget  *gw_widget; /* Widget to return */
     const char *s_str    = APP_NAME " - Program settings";
     const char *s_format = "<span size=\"20000\" weight=\"bold\" "
-                           "foreground=\"#0099e6\" style=\"italic\">%s</span>";
+                           "style=\"italic\">%s</span>";
+                           //"foreground=\"#0099e6\" style=\"italic\">%s</span>";
     char       *s_markup = NULL;
     GtkWidget  *gw_label = gtk_label_new (NULL);
 

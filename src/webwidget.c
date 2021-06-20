@@ -386,20 +386,20 @@ search_web (WebWidget *ww_widget)
     combo_get_active_strings (ww_widget->gw_combo, ns_data);
 
     switch (ww_widget->i_active_service) {
-        case WEB_WIDGET_PEXELS:
+        case WEB_SERV_PEXELS:
             pexels_search (ww_widget, ns_data);
             break;
-        case WEB_WIDGET_PIXBAY:
+        case WEB_SERV_PIXBAY:
             pixbay_search (ww_widget, ns_data);
             break;
-        case WEB_WIDGET_WALLHAVEN:
+        case WEB_SERV_WALLHAVEN:
             wallhaven_search (ww_widget, ns_data);
             break;
-        case WEB_WIDGET_WALLABYSS:
+        case WEB_SERV_WALLABYSS:
             wallpaperabyss_search (ww_widget, ns_data);
             break;
 #ifdef HAVE_FLICKCURL
-        case WEB_WIDGET_FLICKR:
+        case WEB_SERV_FLICKR:
             flickr_search (ww_widget, ns_data);
             break;
 #endif
@@ -453,20 +453,20 @@ event_search_opts_pressed (WebWidget *ww_widget)
     i_id = ww_widget->i_active_service;
 
     switch (i_id) {
-        case WEB_WIDGET_PEXELS:
+        case WEB_SERV_PEXELS:
             s_search_opts = pexels_search_opts_dialog (ww_widget);
             break;
-        case WEB_WIDGET_PIXBAY:
+        case WEB_SERV_PIXBAY:
             s_search_opts = pixbay_search_opts_dialog (ww_widget);
             break;
-        case WEB_WIDGET_WALLHAVEN:
+        case WEB_SERV_WALLHAVEN:
             s_search_opts = wallhaven_search_opts_dialog (ww_widget);
             break;
-        case WEB_WIDGET_WALLABYSS:
+        case WEB_SERV_WALLABYSS:
             s_search_opts = wallpaperabyss_search_opts_dialog (ww_widget);
             break;
 #ifdef HAVE_FLICKCURL
-        case WEB_WIDGET_FLICKR:
+        case WEB_SERV_FLICKR:
             /* flickr_search_opts_dialog (ww_widget); */
             break;
 #endif
@@ -559,20 +559,20 @@ event_settings_pressed (WebWidget *ww_widget)
     combo_get_active_strings (ww_widget->gw_combo, ns_data);
 
     switch (i_id) {
-        case WEB_WIDGET_PEXELS:
+        case WEB_SERV_PEXELS:
             i_res = pexels_settings_dialog (ns_data);
             break;
-        case WEB_WIDGET_PIXBAY:
+        case WEB_SERV_PIXBAY:
             i_res = pixbay_settings_dialog (ns_data);
             break;
-        case WEB_WIDGET_WALLHAVEN:
+        case WEB_SERV_WALLHAVEN:
             i_res = wallhaven_settings_dialog (ns_data);
             break;
-        case WEB_WIDGET_WALLABYSS:
+        case WEB_SERV_WALLABYSS:
             i_res = wallpaperabyss_settings_dialog (ns_data);
             break;
 #ifdef HAVE_FLICKCURL
-        case WEB_WIDGET_FLICKR:
+        case WEB_SERV_FLICKR:
             i_res = flickr_settings_dialog (ns_data);
             break;
 #endif
@@ -784,7 +784,7 @@ webwidget_combobox_create (Setting *st_settings)
                                      G_TYPE_STRING,
                                      GDK_TYPE_PIXBUF);
 
-    for (i = 0; i < WEB_WIDGET_CNT; ++i) {
+    for (i = 0; i < WEB_SERV_CNT; ++i) {
         gp_logo = get_image (ww_logo_id (i));
         ns_data = ww_get_api_key_data (st_settings, i);
         gtk_list_store_append (list_store, &iter);
@@ -1086,12 +1086,12 @@ webwidget_create (Setting    *st_settings,
 
     webwidget_init (ww_widget);
 
-    cachequery_delete_older_than (ww_name (WEB_WIDGET_PEXELS),    1);
-    cachequery_delete_older_than (ww_name (WEB_WIDGET_PIXBAY),    1);
-    cachequery_delete_older_than (ww_name (WEB_WIDGET_WALLHAVEN), 1);
-    cachequery_delete_older_than (ww_name (WEB_WIDGET_WALLABYSS), 1);
+    cachequery_delete_older_than (ww_name (WEB_SERV_PEXELS),    1);
+    cachequery_delete_older_than (ww_name (WEB_SERV_PIXBAY),    1);
+    cachequery_delete_older_than (ww_name (WEB_SERV_WALLHAVEN), 1);
+    cachequery_delete_older_than (ww_name (WEB_SERV_WALLABYSS), 1);
 #ifdef HAVE_FLICKCURL
-    cachequery_delete_older_than (ww_name (WEB_WIDGET_FLICKR),    1);
+    cachequery_delete_older_than (ww_name (WEB_SERV_FLICKR),    1);
 #endif
 
     if ((st_sett = settings_find (st_settings,
@@ -1198,7 +1198,7 @@ webwidget_create (Setting    *st_settings,
     ww_widget->gw_selected_combo = gw_selected_combo;
     ww_widget->gw_selected_box   = gw_add_sltd_box;
     ww_widget->gw_count_label    = gw_count_label;
-    ww_widget->i_active_service  = WEB_WIDGET_PEXELS;
+    ww_widget->i_active_service  = WEB_SERV_PEXELS;
     ww_widget->s_search_opts     = strdup ("");
 
     refresh_service_opts (ww_widget);
