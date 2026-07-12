@@ -21,7 +21,7 @@
  *
  * @date May 3, 2021
  *
- * @version 1.6.17
+ * @version 1.6.18
  *
  * @author Michal Babik <michal.babik@pm.me>
  */
