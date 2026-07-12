@@ -1,0 +1,22 @@
+# Autotools build artifacts
+Makefile
+Makefile.in
+aclocal.m4
+autom4te.cache/
+compile
+config.guess
+config.h
+config.h.in
+config.log
+config.status
+config.sub
+configure
+depcomp
+install-sh
+missing
+stamp-h1
+other/Makefile
+other/Makefile.in
+src/.deps/
+src/Makefile
+src/Makefile.in
