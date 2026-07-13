@@ -1,6 +1,6 @@
 /**
  * @file  fdfn.h
- * @copyright Copyright (C) 2019-2021 Michał Bąbik
+ * @copyright Copyright (C) 2019-2026 Michał Bąbik
  *
  * This file is part of Wall Changer.
  *
