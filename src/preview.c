@@ -229,10 +229,18 @@ get_screen_size (int *i_scr_w,
                  int *i_scr_h)
 {
     GdkRectangle workarea = {0};
+    GdkDisplay  *gd_disp  = gdk_display_get_default ();
+    GdkMonitor  *gm_mon   = gdk_display_get_primary_monitor (gd_disp);
 
-    gdk_monitor_get_workarea (
-        gdk_display_get_primary_monitor (gdk_display_get_default ()),
-        &workarea);
+    /* Some window managers (notably under Wayland/XWayland) don't flag
+     * any monitor as "primary" - fall back to the first available one. */
+    if (gm_mon == NULL) {
+        gm_mon = gdk_display_get_monitor (gd_disp, 0);
+    }
+
+    if (gm_mon != NULL) {
+        gdk_monitor_get_workarea (gm_mon, &workarea);
+    }
 
     *i_scr_w = workarea.width;
     *i_scr_h = workarea.height;
