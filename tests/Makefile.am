@@ -13,5 +13,15 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-SUBDIRS = src other tests
+if HAVE_CHECK
 
+check_PROGRAMS = test_setting
+TESTS = $(check_PROGRAMS)
+
+test_setting_SOURCES = test_setting.c\
+                       $(top_srcdir)/src/setting.c $(top_srcdir)/src/setting.h\
+                       $(top_srcdir)/src/hashfun.c $(top_srcdir)/src/hashfun.h
+test_setting_CPPFLAGS = -I$(top_srcdir)/src $(CHECK_CFLAGS)
+test_setting_LDADD = $(CHECK_LIBS)
+
+endif

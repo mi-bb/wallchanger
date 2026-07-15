@@ -460,29 +460,24 @@ settings_append_or_replace (Setting *st_list,
  * @brief  Find setting in list and replace.
  */
 Setting *
-settings_find_replace (Setting   *st_list,
-                       Setting   *st_setting,
-                       const int  i_multi)
+settings_find_replace (Setting *st_list,
+                       Setting *st_setting)
 {
     Setting *st_ret  = NULL;
     Setting *st_item = NULL;
-    Setting *st_next = NULL;
-    int      i_cnt   = 0;
 
     if (st_setting == NULL)
-        return 0;
+        return NULL;
 
     st_ret  = st_list;
     st_item = st_list;
 
     while (st_item != NULL) {
-        st_next = st_item->next;
         if (setting_get_hash (st_item) == setting_get_hash (st_setting)) {
             st_ret = setting_replace (st_item, st_setting);
-            ++i_cnt;
-            if (!i_multi) break;
+            break;
         }
-        st_item = st_next;
+        st_item = st_item->next;
     }
     return st_ret;
 }

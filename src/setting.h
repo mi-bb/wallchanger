@@ -404,20 +404,17 @@ Setting * setting_replace        (Setting       *st_old,
 /**
  * @brief  Find setting in list and replace.
  *
- * Function is looking in Setting list st_list for settings with name like
+ * Function is looking in Setting list st_list for a setting with name like
  * name of st_setting Setting. After finding such setting it will be replaced
- * with st_seting. If i_multi is set to 0, fuction stops after first replace,
- * if i_multi is set to 1, funciton replaces all found settings. Function
- * returns beginning of Setting list.
+ * with st_setting and the function stops (only the first match is
+ * replaced). Function returns beginning of Setting list.
  *
  * @param[in,out] st_list     List of Setting items
  * @param[in,out] st_setting  Destination Setting
- * @param[in]     i_multi     Multiple replaces value
  * @return        Beginning of Setting list
  */
 Setting * settings_find_replace  (Setting       *st_list,
-                                  Setting       *st_setting,
-                                  const int      i_multi);
+                                  Setting       *st_setting);
 /*----------------------------------------------------------------------------*/
 /**
  * @fn  void setting_add_child (Setting *st_parent,

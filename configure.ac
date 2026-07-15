@@ -18,7 +18,7 @@
 AC_PREREQ([2.69])
 AC_INIT([wallchanger], [1.6.18], [michal.babik@pm.me], [wallchanger],\
         [https://www.nongnu.org/wallchanger/])
-AM_INIT_AUTOMAKE
+AM_INIT_AUTOMAKE([subdir-objects])
 AC_CONFIG_SRCDIR([src/setting.c])
 AC_CONFIG_HEADERS([config.h])
 
@@ -44,6 +44,11 @@ if test -n "$FLICKCURL_LIBS"; then
                       [AC_MSG_WARN("libxml not present")])
 fi
 AM_CONDITIONAL(LIBXML, test -n "$LIBXML_LIBS")
+# Check for Check unit testing framework (optional, used by tests/).
+PKG_CHECK_MODULES([CHECK], [check >= 0.15.0], [have_check=yes],
+                  [have_check=no
+                   AC_MSG_WARN("check not present, unit tests will be skipped")])
+AM_CONDITIONAL(HAVE_CHECK, test "x$have_check" = "xyes")
 # Check for bash completion and set its directory.
 PKG_CHECK_VAR(bashcompdir, [bash-completion], [completionsdir], ,
   bashcompdir="${sysconfdir}/bash_completion.d")
@@ -73,6 +78,6 @@ AC_FUNC_REALLOC
 AC_FUNC_MKTIME
 AC_CHECK_FUNCS([memset mkdir strchr strdup strndup strrchr strstr])
 
-AC_CONFIG_FILES([Makefile src/Makefile other/Makefile])
+AC_CONFIG_FILES([Makefile src/Makefile other/Makefile tests/Makefile])
 AC_OUTPUT
 

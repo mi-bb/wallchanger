@@ -20,3 +20,11 @@ other/Makefile.in
 src/.deps/
 src/Makefile
 src/Makefile.in
+tests/.deps/
+tests/Makefile
+tests/Makefile.in
+tests/test_setting
+tests/test-suite.log
+tests/*.trs
+tests/*.o
+tests/*.log
