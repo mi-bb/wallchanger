@@ -1501,7 +1501,7 @@ main (int    argc,
 
     dd_data = dialogdata_new ();
     app = gtk_application_new ("org.nongnu.WallChanger",
-                               G_APPLICATION_FLAGS_NONE);
+                               G_APPLICATION_DEFAULT_FLAGS);
     g_application_add_main_option (G_APPLICATION (app),
                                    "config",
                                    0,

@@ -22,6 +22,8 @@ src/.deps/
 src/Makefile
 src/Makefile.in
 src/*.o
+src/wchangercfg
+src/wchangerd
 tests/.deps/
 tests/Makefile
 tests/Makefile.in
