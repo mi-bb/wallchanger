@@ -11,6 +11,7 @@ config.log
 config.status
 config.sub
 configure
+configure~
 depcomp
 install-sh
 missing
@@ -20,6 +21,7 @@ other/Makefile.in
 src/.deps/
 src/Makefile
 src/Makefile.in
+src/*.o
 tests/.deps/
 tests/Makefile
 tests/Makefile.in
