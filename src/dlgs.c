@@ -55,7 +55,7 @@ add_images_from_web_dilaog (GtkWindow  *gw_parent,
 
     /* Get settings for dialog dimensions and info for webwidget */
     st_setts = setts_read (s_cfg_file, &i_err);
-    setts_check_defaults (st_setts);
+    st_setts = setts_check_defaults (st_setts);
     /* Get dialog width */
     st_st = settings_find (st_setts, get_setting_name (SETT_WEB_DLG_WIDTH));
     if (st_st != NULL) {

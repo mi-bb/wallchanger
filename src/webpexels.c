@@ -56,12 +56,16 @@ pexels_extract_base_name (const char *s_url)
 
     s_dup  = strdup (s_url);
     s_repl = strrchr (s_dup, '/');
-    if (s_repl == NULL)
+    if (s_repl == NULL) {
+        free (s_dup);
         return NULL;
+    }
     *s_repl = '\0';
     s_repl = strrchr (s_dup, '/');
-    if (s_repl == NULL)
+    if (s_repl == NULL) {
+        free (s_dup);
         return NULL;
+    }
     s_res = strdup (s_repl+1);
     free (s_dup);
 

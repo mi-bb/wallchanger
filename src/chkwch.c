@@ -203,7 +203,7 @@ chk_setts_ch_wall (char     *s_cfg_file,
                        EX_DATAERR, "Empty config file");
     }
     /* Check settings, set default values if some are missing */
-    setts_check_defaults (st_c);
+    st_c = setts_check_defaults (st_c);
 
     /* Get number of wallpapers in list */
     ui_nlen = (uint32_t) setting_count_children (

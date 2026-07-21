@@ -143,11 +143,13 @@ setts_read (const char *s_cfg_file,
  * @brief  Check for a Setting with name as in sd_data presence and insert
  *         new one with data as in sd_data.
  *
- * @param[in,out] st_settings  List of Setting items
- * @param[in]     sd_data      Data with setting info to examine
- * @return        none
+ * @param[in] st_settings  List of Setting items
+ * @param[in] sd_data      Data with setting info to examine
+ * @return    List of Setting items, with new one appended if it was
+ *            missing. Must be used, as it may differ from st_settings
+ *            if the list was empty.
  */
-static void
+static Setting *
 setts_check_setting (Setting           *st_settings,
                      const SettingData *sd_data)
 {
@@ -196,12 +198,14 @@ setts_check_setting (Setting           *st_settings,
         printf (" OK\n");
 #endif
     }
+
+    return st_settings;
 }
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Check Setting list values and set default ones if needed.
  */
-void
+Setting *
 setts_check_defaults (Setting *st_settings)
 {
     SettingData *sd_data;
@@ -223,8 +227,10 @@ setts_check_defaults (Setting *st_settings)
     };
 
     for (sd_data = sdd; sd_data->setting_id != -1; ++sd_data) {
-        setts_check_setting (st_settings, sd_data);
+        st_settings = setts_check_setting (st_settings, sd_data);
     }
+
+    return st_settings;
 }
 /*----------------------------------------------------------------------------*/
 /**

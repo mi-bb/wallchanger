@@ -250,7 +250,7 @@ other_settings_dialog (GtkWindow  *gw_parent,
 
     /* Get settings for dialog dimensions and info for webwidget */
     st_sett = setts_read (s_cfg_file, &i_err);
-    setts_check_defaults (st_sett);
+    st_sett = setts_check_defaults (st_sett);
 
     if ((st_st = settings_find (
                     st_sett, get_setting_name (SETT_THUMB_QUALITY))) != NULL) {

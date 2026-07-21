@@ -1431,7 +1431,7 @@ activate (GtkApplication *app,
         g_application_quit (G_APPLICATION (app));
         return;
     }
-    setts_check_defaults (st_settings);
+    st_settings = setts_check_defaults (st_settings);
 
     widgets_set_settings (dd_data, st_settings, st_wm, &i_err);
 

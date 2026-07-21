@@ -57,10 +57,12 @@ const char * get_setting_name     (const int   i_val) __attribute__ ((const));
 /**
  * @brief  Check Setting list values and set default ones if needed.
  *
- * @param[in,out] st_settings  List of Setting items
- * @return        none
+ * @param[in] st_settings  List of Setting items
+ * @return    List of Setting items, with defaults appended for any that
+ *            were missing. Must be used, as it may differ from
+ *            st_settings if the list was empty (e.g. NULL).
  */
-void         setts_check_defaults (Setting    *st_settings);
+Setting *    setts_check_defaults (Setting    *st_settings);
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Read program settings from a given config file.
