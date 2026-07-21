@@ -21,6 +21,11 @@ v1.6.18                                                     2026-07-13
     * Fixed a compiler warning for an unchecked system() call result
       in the other settings dialog.
     * Minor code cleanup in the web wallpaper search widgets.
+    * Fixed default settings being silently lost (and leaked) when
+      checked against an empty settings list, e.g. on first run with
+      no config file yet.
+    * Fixed a memory leak in the Pexels/Pixabay image URL base name
+      extraction helper.
 
 ----------------------------------------------------------------------
 v1.6.17                                                     2020-05-03
