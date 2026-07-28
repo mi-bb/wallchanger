@@ -20,6 +20,7 @@
    "Gnome":{
       "Proc":[
          "gnome-session-b",
+         "gnome-session-s",
          "gnome-session-binary"
       ],
       "Command":"gsettings set org.gnome.desktop.background picture-uri \"file:\/\/[F]\""
