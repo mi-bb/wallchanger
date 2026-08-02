@@ -69,3 +69,28 @@ Executing:
 will print detailed description of available initial values for
 configuration parameters.
 
+
+Building with CMake
+--------------------
+
+As an alternative to the Autotools flow above, the program can be built
+with CMake (>= 3.13). Both build systems can coexist in the same source
+tree; use an out-of-source build directory (e.g. ./build) so CMake does
+not clobber the Autotools-generated files.
+
+Commands to configure, build and install program:
+
+    cmake -S . -B build
+    cmake --build build
+    sudo cmake --install build
+
+The build type defaults to RelWithDebInfo. To pick a different one, or
+to set a custom install prefix:
+
+    cmake -S . -B build -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/usr
+
+Unit tests (equivalent to "make check" with Autotools) are built
+automatically when the 'check' library is found, and can be run with:
+
+    ctest --test-dir build
+
