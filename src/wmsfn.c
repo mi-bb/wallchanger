@@ -29,7 +29,6 @@
 #include "cfgfile.h"
 #include "setts.h"
 #include "strfun.h"
-#include "fdfn.h"
 #include "defs.h"
 #include "errs.h"
 #include "wmsfn.h"
@@ -317,7 +316,7 @@ wms_get_wallpaper_command (const char *s_cfg_file,
 #endif
         return strdup (DEFAULT_BG_CMD);
     }
-    else if (s_lu_wm == NULL || s_cu_wm == NULL || 
+    else if (s_lu_wm == NULL || s_cu_wm == NULL ||
         strcmp (s_cu_wm, s_lu_wm) != 0) {
 #ifdef DEBUG
         puts ("  Current wm differs last used");
@@ -392,4 +391,3 @@ wms_check_for_new_wms (void)
     return i_err;
 }
 /*----------------------------------------------------------------------------*/
-
