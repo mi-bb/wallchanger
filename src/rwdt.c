@@ -44,22 +44,22 @@ read_file_data (const char    *s_fname,
                 int           *i_err,
                 uint_fast32_t  *i_hash)
 {
-    char   *s_buff = NULL; /* Result data from file */
+    char   *s_buff = nullptr; /* Result data from file */
     FILE   *f_file;        /* Data file */
     long    l_size = 0;    /* File size */
     size_t  ui_res = 0;    /* Read data count */
 
-    if (i_hash != NULL)
+    if (i_hash != nullptr)
         *i_hash = 0;
 
     errno = 0;
 
     f_file = fopen (s_fname, "rb");
     /* Error opening file */
-    if (f_file == NULL) {
+    if (f_file == nullptr) {
         *i_err = errno == ENOENT ? ERR_FILE_EX : ERR_FILE;
         warn ("%s", s_fname);
-        return NULL;
+        return nullptr;
     }
     /* get file size */
     fseek (f_file , 0 , SEEK_END);
@@ -70,14 +70,14 @@ read_file_data (const char    *s_fname,
     if (l_size == 0) {
         *i_err = ERR_OK;
         fclose (f_file);
-        return NULL;
+        return nullptr;
     }
     /* Function failure */
     if (l_size < 0) {
         *i_err = ERR_FILE_RW;
         warn ("%s", s_fname);
         fclose (f_file);
-        return NULL;
+        return nullptr;
     }
     cres ((void**) &s_buff, (size_t) l_size + 1, sizeof (char));
     s_buff[0] = '\0';
@@ -92,7 +92,7 @@ read_file_data (const char    *s_fname,
     fclose (f_file);
 
     *i_err = ERR_OK;
-    if (i_hash != NULL)
+    if (i_hash != nullptr)
         *i_hash = hash (s_buff);
 
     return s_buff;
@@ -111,7 +111,7 @@ save_file_data (const char *s_fname,
 
     f_file = fopen (s_fname, "wb");
 
-    if (f_file == NULL) {
+    if (f_file == nullptr) {
         warn ("%s", s_fname);
         return ERR_FILE;
     }

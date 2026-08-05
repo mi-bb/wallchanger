@@ -171,7 +171,7 @@ file_check_permissions_create (const char *s_file)
         /* try to create it */
         f_file = fopen (s_file, "a+");
 
-        if (f_file == NULL) {
+        if (f_file == nullptr) {
             /* warn ("%s", s_file); */
             return ERR_FILE_CR;
         }
@@ -190,11 +190,11 @@ file_check_permissions_create (const char *s_file)
 static char *
 dir_get_home (void)
 {
-    char *s_dir = NULL;
+    char *s_dir = nullptr;
     /* Getting user's HOME path */
     s_dir = getenv ("HOME");
 
-    if (s_dir == NULL || s_dir[0] == '\0') {
+    if (s_dir == nullptr || s_dir[0] == '\0') {
         s_dir = getpwuid (getuid ())->pw_dir;
     }
     return strdup (s_dir);
@@ -206,11 +206,11 @@ dir_get_home (void)
 char *
 dir_get_home_config (void)
 {
-    char *s_dir = NULL;
+    char *s_dir = nullptr;
     /* Getting user's config path */
     s_dir = getenv ("XDG_CONFIG_HOME");
 
-    if (s_dir == NULL || s_dir[0] == '\0') {
+    if (s_dir == nullptr || s_dir[0] == '\0') {
         s_dir = dir_get_home ();
         str_append (&s_dir, "/.config");
         return s_dir;
@@ -224,11 +224,11 @@ dir_get_home_config (void)
 char *
 dir_get_temp (void)
 {
-    char *s_dir = NULL;
+    char *s_dir = nullptr;
     /* Getting temp path */
     s_dir = getenv ("TMPDIR");
 
-    return (s_dir == NULL || s_dir[0] == '\0') ?
+    return (s_dir == nullptr || s_dir[0] == '\0') ?
         strdup ("/tmp") :
         strdup (s_dir);
 }
@@ -239,11 +239,11 @@ dir_get_temp (void)
 char *
 dir_get_cache (void)
 {
-    char *s_dir = NULL;
+    char *s_dir = nullptr;
     /* Getting cache path */
     s_dir = getenv ("XDG_CACHE_HOME");
 
-    if (s_dir == NULL || s_dir[0] == '\0') {
+    if (s_dir == nullptr || s_dir[0] == '\0') {
         s_dir = dir_get_home ();
         str_append (&s_dir, "/.cache");
         return s_dir;
@@ -257,11 +257,11 @@ dir_get_cache (void)
 char *
 dir_get_home_data (void)
 {
-    char *s_dir = NULL;
+    char *s_dir = nullptr;
     /* Getting home data path */
     s_dir = getenv ("XDG_DATA_HOME");
 
-    if (s_dir == NULL || s_dir[0] == '\0') {
+    if (s_dir == nullptr || s_dir[0] == '\0') {
         s_dir = dir_get_home ();
         str_append (&s_dir, "/.local/share");
         return s_dir;
@@ -275,11 +275,11 @@ dir_get_home_data (void)
 char *
 dir_get_data (void)
 {
-    char *s_dir = NULL;
+    char *s_dir = nullptr;
     /* Getting system DATA path */
     s_dir = getenv ("XDG_DATA_DIRS");
 
-    return (s_dir == NULL || s_dir[0] == '\0') ?
+    return (s_dir == nullptr || s_dir[0] == '\0') ?
         strdup ("/usr/local/share:/usr/share") :
         strdup (s_dir);
 }
@@ -290,7 +290,7 @@ dir_get_data (void)
 char *
 dir_get_autostart (void)
 {
-    char *s_dir = NULL;
+    char *s_dir = nullptr;
 
     s_dir = dir_get_home_config ();
     str_append (&s_dir, "/autostart");
@@ -301,10 +301,10 @@ dir_get_autostart (void)
 int
 dir_create_with_subdirs (const char *s_dn)
 {
-    char  *s_new  = NULL; /* New string with dirs */
-    char  *s_sls  = NULL; /* / position */
-    char  *s_dup  = NULL; /* Duplicate of s_fn */
-    char  *s_tmp  = NULL; /* Pointer to duplicate of s_fn */
+    char  *s_new  = nullptr; /* New string with dirs */
+    char  *s_sls  = nullptr; /* / position */
+    char  *s_dup  = nullptr; /* Duplicate of s_fn */
+    char  *s_tmp  = nullptr; /* Pointer to duplicate of s_fn */
     int    i_err  = 0;    /* Error output */
     size_t ui_len = 0;    /* Name length */
 
@@ -316,7 +316,7 @@ dir_create_with_subdirs (const char *s_dn)
         ++s_tmp;
 
     /* Find every / in path string */
-    while ((s_sls = strchr (s_tmp, '/')) != NULL) {
+    while ((s_sls = strchr (s_tmp, '/')) != nullptr) {
         /* Replace found / with null */
         *s_sls = '\0';
         str_append (&s_new, "/");
@@ -348,10 +348,10 @@ dir_create_with_subdirs (const char *s_dn)
 int
 file_create_with_subdirs (const char *s_fn)
 {
-    char  *s_new  = NULL; /* New string with dirs */
-    char  *s_sls  = NULL; /* / position */
-    char  *s_dup  = NULL; /* Duplicate of s_fn */
-    char  *s_tmp  = NULL; /* Pointer to duplicate of s_fn */
+    char  *s_new  = nullptr; /* New string with dirs */
+    char  *s_sls  = nullptr; /* / position */
+    char  *s_dup  = nullptr; /* Duplicate of s_fn */
+    char  *s_tmp  = nullptr; /* Pointer to duplicate of s_fn */
     int    i_err  = 0;    /* Error output */
     size_t ui_len = 0;    /* Name length */
 
@@ -363,7 +363,7 @@ file_create_with_subdirs (const char *s_fn)
         ++s_tmp;
 
     /* Find every / in path string */
-    while ((s_sls = strchr (s_tmp, '/')) != NULL) {
+    while ((s_sls = strchr (s_tmp, '/')) != nullptr) {
         /* Replace found / with null */
         *s_sls = '\0';
         str_append (&s_new, "/");

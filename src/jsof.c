@@ -40,25 +40,25 @@ js_open_file (const char    *s_file_name,
               int           *i_err)
 {
     json_object   *j_obj;          /* Json object made from file data */
-    char          *s_buff  = NULL; /* File data buffer */
+    char          *s_buff  = nullptr; /* File data buffer */
     enum json_tokener_error j_err; /* Json error output */
 
     *i_err = ERR_OK;
-    if (ui_hash != NULL)
+    if (ui_hash != nullptr)
         *ui_hash = 0;
 
-    s_buff = read_file_data (s_file_name, i_err, NULL);
+    s_buff = read_file_data (s_file_name, i_err, nullptr);
 
     if (*i_err != ERR_OK && *i_err != ERR_FILE_EX) {
         free (s_buff);
-        return NULL;
+        return nullptr;
     }
-    if (s_buff == NULL || s_buff[0] == '\0') {
+    if (s_buff == nullptr || s_buff[0] == '\0') {
         j_obj = json_object_new_object ();
     }
     else {
         j_obj = json_tokener_parse_verbose (s_buff, &j_err);
-        if (j_obj == NULL ||
+        if (j_obj == nullptr ||
             json_object_get_type (j_obj) != json_type_object ||
             j_err != json_tokener_success) {
 #ifdef DEBUG
@@ -66,12 +66,12 @@ js_open_file (const char    *s_file_name,
             printf ("Json type:  %d\n", json_object_get_type (j_obj));
             printf ("Error, wrong json file\n");
 #endif
-            if (j_obj != NULL)
+            if (j_obj != nullptr)
                 json_object_put (j_obj);
             j_obj = json_object_new_object ();
         }
     }
-    if (ui_hash != NULL)
+    if (ui_hash != nullptr)
         *ui_hash = hash (json_object_to_json_string (j_obj));
 
     free (s_buff);

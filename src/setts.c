@@ -68,7 +68,7 @@ SettingData {
 const char *
 get_setting_name (const int i_val)
 {
-    const char *s_res = NULL;
+    const char *s_res = nullptr;
 
     switch (i_val) {
         case SETT_BG_CMD:
@@ -153,12 +153,12 @@ static Setting *
 setts_check_setting (Setting           *st_settings,
                      const SettingData *sd_data)
 {
-    const char *s_name = NULL;
+    const char *s_name = nullptr;
     Setting    *st_sett;
 
     s_name = get_setting_name (sd_data->setting_id);
 
-    if ((st_sett = settings_find (st_settings, s_name)) == NULL) {
+    if ((st_sett = settings_find (st_settings, s_name)) == nullptr) {
 #ifdef DEBUG
         printf ("%s", s_name);
         printf (" not present, setting default ");
@@ -277,7 +277,7 @@ setts_update_window_size (const char *s_cfg_file,
                           const int   i_w,
                           const int   i_h)
 {
-    Setting  *st_settings = NULL;
+    Setting  *st_settings = nullptr;
     int       i_res = ERR_OK;
 
     st_settings = settings_append (st_settings,
@@ -300,7 +300,7 @@ setts_update_web_dlg_size (const char *s_cfg_file,
                            const int   i_w,
                            const int   i_h)
 {
-    Setting  *st_settings = NULL;
+    Setting  *st_settings = nullptr;
     int       i_res = ERR_OK;
 
     st_settings = settings_append (st_settings,

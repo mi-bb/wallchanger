@@ -50,21 +50,21 @@
 static char *
 pexels_extract_base_name (const char *s_url)
 {
-    char *s_res  = NULL; /* Result string */
-    char *s_repl = NULL; /* For replacing text */
-    char *s_dup  = NULL; /* Url duplicate */
+    char *s_res  = nullptr; /* Result string */
+    char *s_repl = nullptr; /* For replacing text */
+    char *s_dup  = nullptr; /* Url duplicate */
 
     s_dup  = strdup (s_url);
     s_repl = strrchr (s_dup, '/');
-    if (s_repl == NULL) {
+    if (s_repl == nullptr) {
         free (s_dup);
-        return NULL;
+        return nullptr;
     }
     *s_repl = '\0';
     s_repl = strrchr (s_dup, '/');
-    if (s_repl == NULL) {
+    if (s_repl == nullptr) {
         free (s_dup);
-        return NULL;
+        return nullptr;
     }
     s_res = strdup (s_repl+1);
     free (s_dup);
@@ -81,8 +81,8 @@ pexels_extract_base_name (const char *s_url)
 static char *
 pexels_create_display_name (const char *s_bname)
 {
-    char  *s_res  = NULL; /* Result string */
-    char  *s_repl = NULL; /* For replacing text */
+    char  *s_res  = nullptr; /* Result string */
+    char  *s_repl = nullptr; /* For replacing text */
 
     if (str_is_empty (s_bname))
         return strdup ("");
@@ -108,15 +108,15 @@ pexels_create_display_name (const char *s_bname)
 static void
 pexels_process_item_set_names (SearchItem *si_item)
 {
-    char *s_base_name = NULL; /* Base name for processing */
-    char *s_file_name = NULL; /* Name for file to save */
-    char *s_disp_name = NULL; /* Name to display on list */
-    char *s_ext       = NULL; /* Pointer to extension */
+    char *s_base_name = nullptr; /* Base name for processing */
+    char *s_file_name = nullptr; /* Name for file to save */
+    char *s_disp_name = nullptr; /* Name to display on list */
+    char *s_ext       = nullptr; /* Pointer to extension */
     const char *s_format = "%s\n<span font_size=\"small\">[%dx%d]</span>";
 
-    if (si_item->s_page_url == NULL)
+    if (si_item->s_page_url == nullptr)
         return;
-    else if (si_item->s_image_url == NULL)
+    else if (si_item->s_image_url == nullptr)
         return;
 
     /* Base name made of picture url */
@@ -124,7 +124,7 @@ pexels_process_item_set_names (SearchItem *si_item)
 
     /* Create file name, add image extension to base name */
     s_ext = strrchr (si_item->s_image_url, '.');
-    if (s_ext != NULL) {
+    if (s_ext != nullptr) {
         s_file_name = str_comb (s_base_name, s_ext);
     }
     /* Display name to show on image list */
@@ -243,12 +243,12 @@ pexels_json_to_webwidget (const char *s_buff,
     json_object *j_val;            /* Some value */
     json_object *j_arr;            /* For array data */
     enum json_tokener_error j_err; /* Json error output */
-    SearchItem *si_item = NULL;    /* For image info */
+    SearchItem *si_item = nullptr;    /* For image info */
     size_t      i       = 0;       /* i */
     size_t      ui_cnt  = 0;       /* Elements in array */
 
     j_obj = json_tokener_parse_verbose (s_buff, &j_err);
-    if (j_obj == NULL ||
+    if (j_obj == nullptr ||
         json_object_get_type (j_obj) != json_type_object ||
         j_err != json_tokener_success) {
 #ifdef DEBUG
@@ -256,7 +256,7 @@ pexels_json_to_webwidget (const char *s_buff,
         printf ("Json type:  %d\n", json_object_get_type (j_obj));
         printf ("Error converting json to stlist, wrong json file\n");
 #endif
-        if (j_obj != NULL)
+        if (j_obj != nullptr)
             json_object_put (j_obj);
     }
     else {
@@ -274,7 +274,7 @@ pexels_json_to_webwidget (const char *s_buff,
             ui_cnt = json_object_array_length (j_arr);
 
             for (i = 0; i < ui_cnt; ++i) {
-                if ((j_val = json_object_array_get_idx (j_arr, i)) != NULL) {
+                if ((j_val = json_object_array_get_idx (j_arr, i)) != nullptr) {
                     si_item = pexels_json_obj_to_searchitem (j_val);
                     add_searchitem_to_img_view (ww_widget->gw_img_view,
                                                 si_item,
@@ -296,9 +296,9 @@ void
 pexels_search (WebWidget      *ww_widget,
                const NStrings *ns_data)
 {
-    UrlData    *ud_data  = NULL; /* For search results */
-    CacheQuery *cq_query = NULL; /* For cache saving */
-    char       *s_query  = NULL; /* For search query */
+    UrlData    *ud_data  = nullptr; /* For search results */
+    CacheQuery *cq_query = nullptr; /* For cache saving */
+    char       *s_query  = nullptr; /* For search query */
     int         i_err    = 0;    /* Error output */
 
     if (str_is_empty_warn (ns_data->s_str[0], "Pexels API key is not set"))
@@ -310,8 +310,8 @@ pexels_search (WebWidget      *ww_widget,
                                      ww_widget->s_search_opts,
                                      ns_data->s_str[0],
                                      ww_widget->i_page);
-    if (ud_data->errbuf != NULL) {
-        message_dialog_error (NULL, ud_data->errbuf);
+    if (ud_data->errbuf != nullptr) {
+        message_dialog_error (nullptr, ud_data->errbuf);
     }
     else if (urldata_full (ud_data)) {
         cq_query = cachequery_new (ww_name (WEB_SERV_PEXELS),
@@ -328,7 +328,7 @@ pexels_search (WebWidget      *ww_widget,
         i_err = cachequery_save (cq_query);
 
         if (i_err != ERR_OK) {
-            message_dialog_error (NULL, err_get_message (i_err));
+            message_dialog_error (nullptr, err_get_message (i_err));
         }
         cachequery_free (cq_query);
     }
@@ -350,13 +350,13 @@ pexels_settings_dialog (NStrings *ns_data)
     GtkDialogFlags flags = GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT;
 
     gw_dialog = gtk_dialog_new_with_buttons ("Pexels configuration",
-                                             NULL,
+                                             nullptr,
                                              flags,
                                              "_OK",
                                              GTK_RESPONSE_ACCEPT,
                                              "_Cancel",
                                              GTK_RESPONSE_REJECT,
-                                             NULL);
+                                             nullptr);
 
     gw_content_box = gtk_dialog_get_content_area (GTK_DIALOG (gw_dialog));
     gtk_container_set_border_width (GTK_CONTAINER (gw_content_box), 8);
@@ -409,18 +409,18 @@ static void
 set_search_opts (GtkWidget *gw_per_page,
                  Setting   *st_setts)
 {
-    Setting *st_set  = NULL;
-    Setting *st_item = NULL;
+    Setting *st_set  = nullptr;
+    Setting *st_item = nullptr;
 
     st_set = setting_get_child (settings_find (st_setts,
                                                ww_opts (WEB_SERV_PEXELS)));
-    if (st_set == NULL) {
+    if (st_set == nullptr) {
         return;
     }
 #ifdef DEBUG
     settings_print (st_set);
 #endif
-    if ((st_item = settings_find (st_set, "per_page")) != NULL) {
+    if ((st_item = settings_find (st_set, "per_page")) != nullptr) {
         gtk_spin_button_set_value (GTK_SPIN_BUTTON (gw_per_page),
                                    (double) setting_get_int (st_item));
 #ifdef DEBUG
@@ -438,7 +438,7 @@ set_search_opts (GtkWidget *gw_per_page,
 static Setting *
 get_search_opts (GtkWidget *gw_per_page)
 {
-    Setting    *st_sett = NULL;
+    Setting    *st_sett = nullptr;
     int         i_val   = 0;
 
     i_val = gtk_spin_button_get_value_as_int (GTK_SPIN_BUTTON (gw_per_page));
@@ -458,8 +458,8 @@ pexels_search_opts_dialog (WebWidget *ww_widget)
     GtkWidget     *gw_dialog;          /* Pexels settings dialog */
     GtkWidget     *gw_content_box;     /* Dialog's box */
     GtkWidget     *gw_hbox;            /* Horizontal box for widgets */
-    Setting       *st_settings = NULL; /* Settings */
-    char          *s_res       = NULL; /* Result string */
+    Setting       *st_settings = nullptr; /* Settings */
+    char          *s_res       = nullptr; /* Result string */
     int            i_err       = 0;    /* Error output */
     int            i_res       = 0;    /* Dialog result */
 
@@ -468,13 +468,13 @@ pexels_search_opts_dialog (WebWidget *ww_widget)
     ga_adjust1 = gtk_adjustment_new (12.0, 1.0, 80.0, 1.0, 2.0, 0.0);
 
     gw_dialog = gtk_dialog_new_with_buttons ("Pexels search options",
-                                             NULL,
+                                             nullptr,
                                              flags,
                                              "_OK",
                                              GTK_RESPONSE_ACCEPT,
                                              "_Cancel",
                                              GTK_RESPONSE_REJECT,
-                                             NULL);
+                                             nullptr);
 
     gw_content_box = gtk_dialog_get_content_area (GTK_DIALOG (gw_dialog));
     gtk_container_set_border_width (GTK_CONTAINER (gw_content_box), 8);
@@ -511,7 +511,7 @@ pexels_search_opts_dialog (WebWidget *ww_widget)
         settings_free_all (st_settings);
     }
     else {
-        s_res = NULL;
+        s_res = nullptr;
     }
     gtk_widget_destroy (gw_dialog);
 

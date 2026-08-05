@@ -40,10 +40,10 @@
 static void
 imageinfo_init (ImageInfo *ii_info)
 {
-    ii_info->s_file_path    = NULL;
-    ii_info->s_file_name    = NULL;
-    ii_info->s_file_dir     = NULL;
-    ii_info->s_width_height = NULL;
+    ii_info->s_file_path    = nullptr;
+    ii_info->s_file_name    = nullptr;
+    ii_info->s_file_dir     = nullptr;
+    ii_info->s_width_height = nullptr;
     ii_info->i_height       = 0;
     ii_info->i_width        = 0;
 }
@@ -56,8 +56,8 @@ imageinfo_new (void)
 {
     ImageInfo *ii_res;
 
-    if ((ii_res = malloc (sizeof (ImageInfo))) == NULL)
-        err (EXIT_FAILURE, NULL);
+    if ((ii_res = malloc (sizeof (ImageInfo))) == nullptr)
+        err (EXIT_FAILURE, nullptr);
 
     imageinfo_init (ii_res);
 
@@ -70,16 +70,16 @@ imageinfo_new (void)
 ImageInfo *
 imageinfo_new_from_file (const char *s_fname)
 {
-    ImageInfo  *ii_info = NULL; /* Result ImageInfo */
-    char       *s_path  = NULL; /* String for file path */
-    const char *s_p     = NULL; /* Pointer to right position of / */
+    ImageInfo  *ii_info = nullptr; /* Result ImageInfo */
+    char       *s_path  = nullptr; /* String for file path */
+    const char *s_p     = nullptr; /* Pointer to right position of / */
     int         i_w     = 0;    /* Image width */
     int         i_h     = 0;    /* Image height */
 
     ii_info = imageinfo_new ();
     imageinfo_set_file_path (ii_info, s_fname);
 
-    if ((s_p = strrchr (s_fname, '/')) == NULL) {
+    if ((s_p = strrchr (s_fname, '/')) == nullptr) {
         imageinfo_set_file_name (ii_info, s_fname);
         imageinfo_set_file_dir (ii_info, "");
     }
@@ -122,13 +122,13 @@ imageinfo_free (ImageInfo *ii_info)
 GSList *
 file_paths_to_imageinfo (const GSList *gsl_files)
 {
-    GSList       *gsl_iinfo = NULL; /* Result ImageInfo list */
-    char         *s_fn      = NULL; /* File path */
+    GSList       *gsl_iinfo = nullptr; /* Result ImageInfo list */
+    char         *s_fn      = nullptr; /* File path */
     ImageInfo    *ii_info;          /* ImageInfo to add to list */
 
-    while (gsl_files != NULL) {
+    while (gsl_files != nullptr) {
 
-        if ((s_fn = (char *) gsl_files->data) != NULL) {
+        if ((s_fn = (char *) gsl_files->data) != nullptr) {
 
             ii_info = imageinfo_new_from_file (s_fn);
 
@@ -149,7 +149,7 @@ void
 imageinfo_set_file_path (ImageInfo  *ii_info, 
                          const char *s_name)
 {
-    if (ii_info->s_file_path != NULL)
+    if (ii_info->s_file_path != nullptr)
         free (ii_info->s_file_path);
 
     ii_info->s_file_path = strdup (s_name);
@@ -162,7 +162,7 @@ void
 imageinfo_set_file_name (ImageInfo  *ii_info, 
                          const char *s_name)
 {
-    if (ii_info->s_file_name != NULL)
+    if (ii_info->s_file_name != nullptr)
         free (ii_info->s_file_name);
 
     ii_info->s_file_name = strdup (s_name);
@@ -175,7 +175,7 @@ void
 imageinfo_set_file_dir (ImageInfo  *ii_info, 
                         const char *s_name)
 {
-    if (ii_info->s_file_dir != NULL)
+    if (ii_info->s_file_dir != nullptr)
         free (ii_info->s_file_dir);
 
     ii_info->s_file_dir = strdup (s_name);

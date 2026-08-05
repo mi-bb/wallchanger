@@ -76,12 +76,12 @@ static void
 wallpaper_set_file (const char *s_cmd,
                     const char *s_wall)
 {
-    char *s_cmdn = NULL;              /* Wallpaper set command */
+    char *s_cmdn = nullptr;              /* Wallpaper set command */
     [[maybe_unused]] int i_res = 0;   /* Result of system command */
 
     s_cmdn = str_set_up_wallpaper_command (s_cmd, s_wall, "[F]");
 
-    if (s_cmdn == NULL)
+    if (s_cmdn == nullptr)
         return;
 
     #ifdef DEBUG
@@ -100,25 +100,25 @@ static const char *
 wallpaper_set_random (Setting *st_settings,
                       RandMem *rm_rand)
 {
-    const char *s_file   = NULL; /* Wallpaper file name */
-    Setting    *st_walls = NULL; /* Setting with wallpaper */
-    Setting    *st_sett  = NULL; /* For concrete setting */
+    const char *s_file   = nullptr; /* Wallpaper file name */
+    Setting    *st_walls = nullptr; /* Setting with wallpaper */
+    Setting    *st_sett  = nullptr; /* For concrete setting */
     size_t      ui_pos   = 0;    /* Random wallpaper position */
 
     /* Get wallaper list setting */
     st_walls = settings_find (st_settings, get_setting_name (SETT_WALL_ARRAY));
     /* Exit function if there is no wallpapers in an array */
-    if ((st_walls = setting_get_child (st_walls)) == NULL)
-        return NULL;
+    if ((st_walls = setting_get_child (st_walls)) == nullptr)
+        return nullptr;
 
     /* Get random number */
     ui_pos = randomm_get_number (rm_rand);
 
     /* Get the file name at the random position */
-    if ((st_sett = setting_get_at_pos (st_walls, ui_pos)) != NULL)
+    if ((st_sett = setting_get_at_pos (st_walls, ui_pos)) != nullptr)
         s_file = setting_get_string (st_sett);
 
-    if (s_file != NULL) {
+    if (s_file != nullptr) {
         /* Save wallpaper as last used in settings */
         st_sett = setting_new_string (get_setting_name (SETT_LAST_USED_STR),
                                       s_file);
@@ -126,7 +126,7 @@ wallpaper_set_random (Setting *st_settings,
         st_settings = settings_append_or_replace (st_settings, st_sett);
         /* Set wallpaper */
         st_sett = settings_find (st_settings, get_setting_name (SETT_BG_CMD));
-        if (st_sett != NULL) {
+        if (st_sett != nullptr) {
             wallpaper_set_file (setting_get_string (st_sett), s_file);
         }
     }
@@ -139,26 +139,26 @@ wallpaper_set_random (Setting *st_settings,
 static const char *
 wallpaper_set_next_in_list (Setting *st_settings)
 {
-    Setting       *st_walls = NULL; /* Setting with wallpaper */
-    Setting       *st_sett  = NULL; /* For setting operations */
-    Setting       *st_item  = NULL; /* For iteration */
-    const char    *s_file   = NULL; /* File path */
+    Setting       *st_walls = nullptr; /* Setting with wallpaper */
+    Setting       *st_sett  = nullptr; /* For setting operations */
+    Setting       *st_item  = nullptr; /* For iteration */
+    const char    *s_file   = nullptr; /* File path */
     uint_fast32_t  ui_hash  = 0;    /* Last used wall name hash */
 
     /* Get wallaper list setting */
     st_walls = settings_find (st_settings, get_setting_name (SETT_WALL_ARRAY));
     /* Exit function if there is no wallpapers in an array */
-    if ((st_walls = setting_get_child (st_walls)) == NULL)
-        return NULL;
+    if ((st_walls = setting_get_child (st_walls)) == nullptr)
+        return nullptr;
     /* Get last used wallpaper setting and file path */
     st_sett = settings_find (st_settings, get_setting_name (SETT_LAST_USED_STR));
-    if (st_sett != NULL) {
+    if (st_sett != nullptr) {
         ui_hash = hash (setting_get_string (st_sett));
     }
     st_sett = st_walls;
     /* Find file in wallpapers array */
     st_item = st_walls;
-    while (st_item != NULL) {
+    while (st_item != nullptr) {
         /*if (strcmp (setting_get_string (st_item), s_file) == 0) {*/
         if (hash (setting_get_string (st_item)) == ui_hash) {
             st_sett = st_item;
@@ -167,7 +167,7 @@ wallpaper_set_next_in_list (Setting *st_settings)
         st_item = st_item->next;
     }
     /* Get next wallpaper or first if list ended */
-    s_file = st_sett->next != NULL ? setting_get_string (st_sett->next) :
+    s_file = st_sett->next != nullptr ? setting_get_string (st_sett->next) :
                                      setting_get_string (st_walls);
     /* Save wallpaper as last used in settings */
     st_sett = setting_new_string (get_setting_name (SETT_LAST_USED_STR),
@@ -175,7 +175,7 @@ wallpaper_set_next_in_list (Setting *st_settings)
     st_settings = settings_append_or_replace (st_settings, st_sett);
     /* Set wallpaper */
     st_sett = settings_find (st_settings, get_setting_name (SETT_BG_CMD));
-    if (st_sett != NULL) {
+    if (st_sett != nullptr) {
         wallpaper_set_file (setting_get_string (st_sett), s_file);
     }
     return s_file;
@@ -189,16 +189,16 @@ wpset_change (Setting    *st_settings,
               RandMem    *rm_rand,
               const char *s_cfg_file)
 {
-    Setting    *st_sett = NULL; /* For setting with random opt */
-    const char *s_lu    = NULL; /* For file name of last used wallpaper */
+    Setting    *st_sett = nullptr; /* For setting with random opt */
+    const char *s_lu    = nullptr; /* For file name of last used wallpaper */
 
     st_sett = settings_find (st_settings, get_setting_name (SETT_RANDOM_OPT));
 
-    s_lu = (st_sett != NULL && setting_get_int (st_sett)) ?
+    s_lu = (st_sett != nullptr && setting_get_int (st_sett)) ?
            wallpaper_set_random (st_settings, rm_rand) : 
            wallpaper_set_next_in_list (st_settings);
 
-    return s_lu != NULL ? setts_update_last_used (s_cfg_file, s_lu) : ERR_OK;
+    return s_lu != nullptr ? setts_update_last_used (s_cfg_file, s_lu) : ERR_OK;
 }
 /*----------------------------------------------------------------------------*/
 /**
@@ -209,15 +209,15 @@ wpset_startup_set (Setting    *st_settings,
                    RandMem    *rm_rand,
                    const char *s_cfg_file)
 {
-    Setting *st_opt = NULL; /* For setting with last used option */
-    Setting *st_st  = NULL; /* For setting with last used wallpaper name */
-    Setting *st_cmd = NULL; /* For wallpaper set command */
+    Setting *st_opt = nullptr; /* For setting with last used option */
+    Setting *st_st  = nullptr; /* For setting with last used wallpaper name */
+    Setting *st_cmd = nullptr; /* For wallpaper set command */
 
     st_opt = settings_find (st_settings, get_setting_name (SETT_LAST_USED_OPT));
     st_st  = settings_find (st_settings, get_setting_name (SETT_LAST_USED_STR));
     st_cmd = settings_find (st_settings, get_setting_name (SETT_BG_CMD));
 
-    if (st_opt != NULL && st_st != NULL && st_cmd != NULL &&
+    if (st_opt != nullptr && st_st != nullptr && st_cmd != nullptr &&
         setting_get_int (st_opt)) {
     
         wallpaper_set_file (setting_get_string (st_cmd),

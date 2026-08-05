@@ -44,10 +44,10 @@ dmfn_daemonize (void)
     if (i_res > 0)
         exit (EXIT_SUCCESS);
     else if (i_res < 0)
-        err (EXIT_FAILURE, NULL);
+        err (EXIT_FAILURE, nullptr);
 
     if (setsid () < 0)
-        err (EXIT_FAILURE, NULL);
+        err (EXIT_FAILURE, nullptr);
 
     signal (SIGCHLD, SIG_IGN);
     signal (SIGHUP, SIG_IGN);
@@ -56,7 +56,7 @@ dmfn_daemonize (void)
     if (i_res > 0)
         exit (EXIT_SUCCESS);
     else if (i_res < 0)
-        err (EXIT_FAILURE, NULL);
+        err (EXIT_FAILURE, nullptr);
 
     umask (0);
     i_res = chdir ("/");

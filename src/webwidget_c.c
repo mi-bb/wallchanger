@@ -54,7 +54,7 @@ ww_name (const int i_site)
         default:
             break;
     }
-    return NULL;
+    return nullptr;
 }
 /*----------------------------------------------------------------------------*/
 /**
@@ -79,7 +79,7 @@ ww_opts (const int i_site)
         default:
             break;
     }
-    return NULL;
+    return nullptr;
 }
 /*----------------------------------------------------------------------------*/
 /**
@@ -116,7 +116,7 @@ ww_logo_id (const int i_site)
 static NStrings *
 ww_get_api_key_names (const int i_site)
 {
-    NStrings *ns_data = NULL;
+    NStrings *ns_data = nullptr;
 
     ns_data = nstrings_new (4, NS_VAL_EMPTY);
 
@@ -154,10 +154,10 @@ NStrings *
 ww_get_api_key_data (Setting  *st_settings,
                      const int i_site)
 {
-    NStrings   *ns_key_names = NULL;  /* API key names in settings */
-    NStrings   *ns_data      = NULL;  /* Data to rerutn */
-    Setting    *st_sett      = NULL;  /* For individual setting */
-    const char *s_api        = NULL;  /* For API key */
+    NStrings   *ns_key_names = nullptr;  /* API key names in settings */
+    NStrings   *ns_data      = nullptr;  /* Data to rerutn */
+    Setting    *st_sett      = nullptr;  /* For individual setting */
+    const char *s_api        = nullptr;  /* For API key */
 
     ns_key_names = ww_get_api_key_names (i_site);
     ns_data      = nstrings_new (4, NS_VAL_EMPTY);
@@ -165,7 +165,7 @@ ww_get_api_key_data (Setting  *st_settings,
     for (int i = 0; i < 4; ++i) {
         if (ns_key_names->s_str[i][0] != '\0') {
             st_sett = settings_find (st_settings, ns_key_names->s_str[i]);
-            s_api   = st_sett == NULL ? "" : setting_get_string (st_sett);
+            s_api   = st_sett == nullptr ? "" : setting_get_string (st_sett);
             str_append (&ns_data->s_str[i], s_api);
         }
     }
@@ -219,8 +219,8 @@ str_is_empty_warn (const char *s_str,
                    const char *s_msg)
 {
     if (str_is_empty (s_str)) {
-        if (s_msg != NULL)
-            message_dialog_warning (NULL, s_msg);
+        if (s_msg != nullptr)
+            message_dialog_warning (nullptr, s_msg);
         return 1;
     }
     return 0;
@@ -239,11 +239,11 @@ str_is_alnum_or_space_warn (const char *s_str,
     while (*s_str != '\0') {
         u_c = g_utf8_get_char (s_str);
         if (!g_unichar_isalnum (u_c) && !g_unichar_isspace (u_c)) {
-            if (s_msg != NULL)
-                message_dialog_warning (NULL, s_msg);
+            if (s_msg != nullptr)
+                message_dialog_warning (nullptr, s_msg);
             return 0;
         }
-        s_str = g_utf8_find_next_char (s_str, NULL);
+        s_str = g_utf8_find_next_char (s_str, nullptr);
     }
     return 1;
 }
@@ -256,9 +256,9 @@ int
 check_unicode_warn (const char *s_str,
                     const char *s_msg)
 {
-    if (!g_utf8_validate (s_str, -1, NULL)) {
-        if (s_msg != NULL)
-            message_dialog_warning (NULL, s_msg);
+    if (!g_utf8_validate (s_str, -1, nullptr)) {
+        if (s_msg != nullptr)
+            message_dialog_warning (nullptr, s_msg);
         return 0;
     }
     return 1;
@@ -276,11 +276,11 @@ remove_non_alpha_space (char *s_str)
     while (*s_str != '\0') {
         u_c = g_utf8_get_char (s_str);
         if (!g_unichar_isalnum (u_c) && !g_unichar_isspace (u_c)) {
-            s_next = g_utf8_find_next_char (s_str, NULL);
+            s_next = g_utf8_find_next_char (s_str, nullptr);
             memmove (s_str, s_next, strlen (s_next) + 1);
         }
         else {
-            s_str = g_utf8_find_next_char (s_str, NULL);
+            s_str = g_utf8_find_next_char (s_str, nullptr);
         }
     }
 }
@@ -294,7 +294,7 @@ combo_get_active_str (GtkWidget *gw_combo,
 {
     GtkTreeModel *model; /* TreeModel */
     GtkTreeIter   iter;  /* TreeIter */
-    char *s_ret = NULL;  /* Return string */
+    char *s_ret = nullptr;  /* Return string */
 
     if (gtk_combo_box_get_active_iter (GTK_COMBO_BOX (gw_combo), &iter)) {
 
@@ -318,8 +318,8 @@ wallpaper_check_mark (const char *s_wallp_dir,
                       const char *s_file_name,
                       GdkPixbuf  *gp_pbuf)
 {
-    GdkPixbuf *gp_check = NULL; /* Pixbuf for check image */
-    char      *s_wlfn   = NULL; /* Wallpaper file path */
+    GdkPixbuf *gp_check = nullptr; /* Pixbuf for check image */
+    char      *s_wlfn   = nullptr; /* Wallpaper file path */
 
     s_wlfn = str_comb (s_wallp_dir, "/");
     str_append (&s_wlfn, s_file_name);
@@ -351,13 +351,13 @@ add_searchitem_to_img_view (GtkWidget        *gw_iconview,
                             const int         i_thumb_quality)
 {
     GtkListStore *list_store;      /* ListStore */
-    GdkPixbuf    *gp_pbuf  = NULL; /* Pixbuf with thumbnail */
+    GdkPixbuf    *gp_pbuf  = nullptr; /* Pixbuf with thumbnail */
     GtkTreeIter   iter;            /* TreeIter */
 
     list_store = GTK_LIST_STORE (gtk_icon_view_get_model (
                 GTK_ICON_VIEW (gw_iconview)));
 
-    if (si_item->s_thumb_url == NULL)
+    if (si_item->s_thumb_url == nullptr)
         return;
 
     gp_pbuf = thumbnail_get (s_service_name,
@@ -365,7 +365,7 @@ add_searchitem_to_img_view (GtkWidget        *gw_iconview,
                              i_thumb_quality,
                              si_item->s_thumb_url);
 
-    if (gp_pbuf != NULL) {
+    if (gp_pbuf != nullptr) {
 
         wallpaper_check_mark (s_wallp_dir, si_item->s_file_name, gp_pbuf);
 
@@ -397,7 +397,7 @@ int
 check_for_cached_query (WebWidget  *ww_widget,
                         const char *s_service_name)
 {
-    CacheQuery *cq_query_chk = NULL; /* For checking cache availability */
+    CacheQuery *cq_query_chk = nullptr; /* For checking cache availability */
     int         i_err        = 0;    /* Error output */
     int         i            = 0;    /* i */
 
@@ -407,9 +407,9 @@ check_for_cached_query (WebWidget  *ww_widget,
                                            ww_widget->i_page,
                                            &i_err);
     if (i_err != ERR_OK) {
-        message_dialog_error (NULL, err_get_message (i_err));
+        message_dialog_error (nullptr, err_get_message (i_err));
     }
-    if (cq_query_chk != NULL) {
+    if (cq_query_chk != nullptr) {
         gtk_list_store_clear (GTK_LIST_STORE (gtk_icon_view_get_model (
                         GTK_ICON_VIEW (ww_widget->gw_img_view))));
 
@@ -434,14 +434,14 @@ check_for_cached_query (WebWidget  *ww_widget,
 char *
 search_opts_to_str (const Setting *st_setts)
 {
-    char          *s_res   = NULL; /* String to return */
-    const Setting *st_item = NULL; /* For settings iteration */
+    char          *s_res   = nullptr; /* String to return */
+    const Setting *st_item = nullptr; /* For settings iteration */
     char           s_buff[32];     /* Text buffer */
 
     s_res   = strdup ("");
     st_item = st_setts;
 
-    while (st_item != NULL) {
+    while (st_item != nullptr) {
         str_append (&s_res, "&");
         str_append (&s_res, setting_get_name (st_item));
         str_append (&s_res, "=");

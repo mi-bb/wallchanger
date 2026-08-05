@@ -32,7 +32,7 @@
 const char *
 err_get_message (const int i_err)
 {
-    const char *s_res = NULL;
+    const char *s_res = nullptr;
 
     switch (i_err) {
 

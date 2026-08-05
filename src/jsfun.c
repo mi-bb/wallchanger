@@ -85,7 +85,7 @@ js_json_obj_to_setting (json_object *val,
                         const char  *s_name)
 {
     json_object *j_idx;         /* Json object read from Json array */
-    Setting     *st_set = NULL; /* Setting item to return */
+    Setting     *st_set = nullptr; /* Setting item to return */
     size_t       ui_cnt = 0;    /* Length of Json array */
     size_t            i = 0;    /* i */
 
@@ -119,9 +119,9 @@ js_json_obj_to_setting (json_object *val,
             st_set = setting_new_array (s_name);
             ui_cnt = json_object_array_length (val);
             for (i = 0; i < ui_cnt; ++i) {
-                if ((j_idx = json_object_array_get_idx (val, i)) != NULL) {
+                if ((j_idx = json_object_array_get_idx (val, i)) != nullptr) {
                     setting_add_child (st_set, 
-                                       js_json_obj_to_setting (j_idx, NULL));
+                                       js_json_obj_to_setting (j_idx, nullptr));
                 }
             }
             break;
@@ -148,7 +148,7 @@ js_settings_array_to_json (const Setting *st_setting)
 
     st_item = setting_get_child (st_setting);
 
-    while (st_item != NULL) {
+    while (st_item != nullptr) {
 
         j_obj = js_setting_to_json_obj (st_item);
 
@@ -204,7 +204,7 @@ js_setting_to_json_obj (const Setting *st_sett)
         default:
             break;
     }
-    return NULL;
+    return nullptr;
 }
 /*----------------------------------------------------------------------------*/
 /**
@@ -216,7 +216,7 @@ js_settings_add_to_json_obj (const Setting *st_settings,
 {
     json_object *j_val;   /* Json object made from Setting */
 
-    while (st_settings != NULL) {
+    while (st_settings != nullptr) {
         j_val = js_setting_to_json_obj (st_settings);
         json_object_object_add (j_obj, setting_get_name (st_settings), j_val);
         st_settings = st_settings->next;
@@ -230,13 +230,13 @@ Setting *
 js_settings_read (const char *s_fname,
                   int        *i_err)
 {
-    Setting     *st_settings = NULL; /* Settings to return */
+    Setting     *st_settings = nullptr; /* Settings to return */
     json_object *j_obj;              /* Json object made from file data */
 
     *i_err = ERR_OK;
-    j_obj  = js_open_file (s_fname, NULL, i_err);
+    j_obj  = js_open_file (s_fname, nullptr, i_err);
 
-    if (*i_err == ERR_OK && j_obj != NULL) {
+    if (*i_err == ERR_OK && j_obj != nullptr) {
         json_object_object_foreach (j_obj, key, val) {
             st_settings = settings_append (st_settings,
                         js_json_obj_to_setting (val, key));
@@ -247,7 +247,7 @@ js_settings_read (const char *s_fname,
         printf ("-> Settings read end\n");
 #endif
     }
-    if (j_obj != NULL)
+    if (j_obj != nullptr)
         json_object_put (j_obj);
 
     return st_settings;
@@ -263,14 +263,14 @@ js_settings_check_for_update (const Setting *st_settings,
                               int           *i_err)
 {
     json_object   *j_obj;             /* Json object made from file data */
-    const char    *s_jbuff    = NULL; /* Json object as string */
-    char          *s_res_buff = NULL; /* Result data buffer */
+    const char    *s_jbuff    = nullptr; /* Json object as string */
+    char          *s_res_buff = nullptr; /* Result data buffer */
     uint_fast32_t  ui_hash    = 0;    /* Data read hash */
 
     *i_err = ERR_OK;
 
-    if ((j_obj = js_open_file (s_fname, &ui_hash, i_err)) == NULL)
-        return NULL;
+    if ((j_obj = js_open_file (s_fname, &ui_hash, i_err)) == nullptr)
+        return nullptr;
 
     js_settings_add_to_json_obj (st_settings, j_obj);
 
@@ -278,7 +278,7 @@ js_settings_check_for_update (const Setting *st_settings,
 
     /* Compare saved file buffer hash and new one,
      * if they are different update output buffer */
-    s_res_buff = (hash (s_jbuff) != ui_hash) ? strdup (s_jbuff) : NULL;
+    s_res_buff = (hash (s_jbuff) != ui_hash) ? strdup (s_jbuff) : nullptr;
 
     json_object_put (j_obj);
 
@@ -304,11 +304,11 @@ js_settings_check_update_file (const Setting *st_settings,
                                const char    *s_fname)
 {
     int   i_err  = ERR_OK; /* Possible error to return */
-    char *s_buff = NULL;   /* Result of update check, if it is not null there
+    char *s_buff = nullptr;   /* Result of update check, if it is not null there
                               is a change in configuration and returned buffer
                               is the new data to save */
     s_buff = js_settings_check_for_update (st_settings, s_fname, &i_err);
-    if (s_buff != NULL) {
+    if (s_buff != nullptr) {
         i_err = js_settings_update_file (s_buff, s_fname);
         free (s_buff);
     }

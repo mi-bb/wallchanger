@@ -82,7 +82,7 @@ END_TEST
 /*----------------------------------------------------------------------------*/
 START_TEST (test_new_string_null_value)
 {
-    Setting *st = setting_new_string ("mystr", NULL);
+    Setting *st = setting_new_string ("mystr", nullptr);
 
     ck_assert_str_eq (setting_get_string (st), "");
 
@@ -123,22 +123,22 @@ END_TEST
 /*----------------------------------------------------------------------------*/
 START_TEST (test_null_safety)
 {
-    ck_assert_int_eq (setting_get_type (NULL), SET_VAL_NULL);
-    ck_assert_ptr_null (setting_get_name (NULL));
-    ck_assert_uint_eq (setting_get_hash (NULL), 0);
-    ck_assert_ptr_null (setting_get_parent (NULL));
-    ck_assert_ptr_null (setting_get_child (NULL));
-    ck_assert_ptr_null (setting_next (NULL));
-    ck_assert_ptr_null (setting_prev (NULL));
-    ck_assert_int_eq (setting_get_int (NULL), 0);
-    ck_assert_ptr_null (setting_get_string (NULL));
-    ck_assert_ptr_null (settings_find (NULL, "x"));
-    ck_assert_uint_eq (settings_count (NULL), 0);
-    ck_assert_ptr_null (setting_remove (NULL));
+    ck_assert_int_eq (setting_get_type (nullptr), SET_VAL_NULL);
+    ck_assert_ptr_null (setting_get_name (nullptr));
+    ck_assert_uint_eq (setting_get_hash (nullptr), 0);
+    ck_assert_ptr_null (setting_get_parent (nullptr));
+    ck_assert_ptr_null (setting_get_child (nullptr));
+    ck_assert_ptr_null (setting_next (nullptr));
+    ck_assert_ptr_null (setting_prev (nullptr));
+    ck_assert_int_eq (setting_get_int (nullptr), 0);
+    ck_assert_ptr_null (setting_get_string (nullptr));
+    ck_assert_ptr_null (settings_find (nullptr, "x"));
+    ck_assert_uint_eq (settings_count (nullptr), 0);
+    ck_assert_ptr_null (setting_remove (nullptr));
 
     /* Must not crash. */
-    setting_free (NULL);
-    settings_free_all (NULL);
+    setting_free (nullptr);
+    settings_free_all (nullptr);
 }
 END_TEST
 /*----------------------------------------------------------------------------*/
@@ -171,7 +171,7 @@ START_TEST (test_set_string_null_value)
 {
     Setting *st = setting_new_string ("s", "abc");
 
-    setting_set_string (st, NULL);
+    setting_set_string (st, nullptr);
     ck_assert_str_eq (setting_get_string (st), "");
 
     setting_free (st);

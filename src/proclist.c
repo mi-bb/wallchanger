@@ -35,7 +35,7 @@ static void
 proclist_init (ProcList *pl_list)
 {
     pl_list->cnt = 0;
-    pl_list->pi_list = NULL;
+    pl_list->pi_list = nullptr;
 }
 /*----------------------------------------------------------------------------*/
 /**
@@ -57,10 +57,10 @@ proclist_free (ProcList *pl_list)
 ProcList *
 proclist_new (void)
 {
-    ProcList *pl_new = NULL;
+    ProcList *pl_new = nullptr;
 
-    if ((pl_new = malloc (sizeof (ProcList))) == NULL)
-        err (EXIT_FAILURE, NULL);
+    if ((pl_new = malloc (sizeof (ProcList))) == nullptr)
+        err (EXIT_FAILURE, nullptr);
 
     proclist_init (pl_new);
 
@@ -74,20 +74,20 @@ void
 proclist_insert (ProcList *pl_list,
                  ProcItem *pi_item)
 {
-    ProcItem **pi_temp = NULL;
+    ProcItem **pi_temp = nullptr;
 
-    if (pl_list->pi_list == NULL) {
+    if (pl_list->pi_list == nullptr) {
         pl_list->pi_list = malloc ((pl_list->cnt + 1) * sizeof (ProcItem*));
-        if (pl_list->pi_list == NULL) {
-            err (EXIT_FAILURE, NULL);
+        if (pl_list->pi_list == nullptr) {
+            err (EXIT_FAILURE, nullptr);
         }
     }
     else {
         pi_temp = realloc (pl_list->pi_list,
                            (pl_list->cnt + 1) * sizeof (ProcItem*));
-        if (pi_temp == NULL) {
+        if (pi_temp == nullptr) {
             proclist_free (pl_list);
-            err (EXIT_FAILURE, NULL);
+            err (EXIT_FAILURE, nullptr);
         }
         pl_list->pi_list = pi_temp;
     }

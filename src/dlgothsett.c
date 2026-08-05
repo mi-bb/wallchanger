@@ -58,15 +58,15 @@ e_sett_dial_widgets {
 static void
 refresh_preview (GtkWidget **gw_array)
 {
-    GdkPixbuf *gp_src    = NULL; /* Original pixbuf */
-    GdkPixbuf *gp_jpg    = NULL; /* JPG pixbuf */
-    char      *s_buffer  = NULL; /* Data buffer */
+    GdkPixbuf *gp_src    = nullptr; /* Original pixbuf */
+    GdkPixbuf *gp_jpg    = nullptr; /* JPG pixbuf */
+    char      *s_buffer  = nullptr; /* Data buffer */
     gsize      ui_bfsize = 0;    /* Size of data buffer */
     int        i_val     = 0;    /* JPG quality value */
     char       s_qual[8];        /* JPG quality value as a string */
     GInputStream *stream;        /* Stream for passing data to pixbuf */
 
-    if (gw_array[GW_SETT_IMG_O] == NULL)
+    if (gw_array[GW_SETT_IMG_O] == nullptr)
         return;
 
     i_val = gtk_spin_button_get_value_as_int (
@@ -74,19 +74,19 @@ refresh_preview (GtkWidget **gw_array)
 
     gp_src = gtk_image_get_pixbuf (GTK_IMAGE (gw_array[GW_SETT_IMG_O]));
 
-    if (gp_src != NULL) {
+    if (gp_src != nullptr) {
         sprintf (s_qual, "%d", i_val);
         if (gdk_pixbuf_save_to_buffer (gp_src, &s_buffer, &ui_bfsize,
-                                       "jpeg", NULL,
-                                       "quality", s_qual, NULL)) {
+                                       "jpeg", nullptr,
+                                       "quality", s_qual, nullptr)) {
             stream = g_memory_input_stream_new ();
             g_memory_input_stream_add_data (G_MEMORY_INPUT_STREAM (stream),
-                                            s_buffer, (gssize) ui_bfsize, NULL);
-            gp_jpg = gdk_pixbuf_new_from_stream (stream, NULL, NULL);
+                                            s_buffer, (gssize) ui_bfsize, nullptr);
+            gp_jpg = gdk_pixbuf_new_from_stream (stream, nullptr, nullptr);
             free (s_buffer);
-            g_input_stream_close (stream, NULL, NULL);
+            g_input_stream_close (stream, nullptr, nullptr);
             g_object_unref (stream);
-            if (gp_jpg != NULL) {
+            if (gp_jpg != nullptr) {
                 gtk_image_clear (GTK_IMAGE (gw_array[GW_SETT_IMG_P]));
                 gtk_image_set_from_pixbuf (GTK_IMAGE (gw_array[GW_SETT_IMG_P]),
                                            gp_jpg);
@@ -105,8 +105,8 @@ refresh_preview (GtkWidget **gw_array)
 static void
 event_delete_query_data (GtkWidget **gw_array)
 {
-    char       *s_size = NULL; /* String with size of dir after delete */
-    const char *s_path = NULL; /* Directory path */
+    char       *s_size = nullptr; /* String with size of dir after delete */
+    const char *s_path = nullptr; /* Directory path */
 
     s_path = gtk_label_get_text (
             GTK_LABEL (gw_array[GW_SETT_QUERY_PATH_LABEL]));
@@ -125,8 +125,8 @@ event_delete_query_data (GtkWidget **gw_array)
 static void
 event_delete_thumb_data (GtkWidget **gw_array)
 {
-    char       *s_size = NULL; /* String with size of dir after delete */
-    const char *s_path = NULL; /* Directory path */
+    char       *s_size = nullptr; /* String with size of dir after delete */
+    const char *s_path = nullptr; /* Directory path */
 
     s_path = gtk_label_get_text (
             GTK_LABEL (gw_array[GW_SETT_THUMB_PATH_LABEL]));
@@ -145,10 +145,10 @@ event_delete_thumb_data (GtkWidget **gw_array)
 static void
 event_delete_wallpapers (GtkWidget **gw_array)
 {
-    char       *s_size = NULL; /* String with size of dir after delete */
-    const char *s_path = NULL; /* Directory path */
+    char       *s_size = nullptr; /* String with size of dir after delete */
+    const char *s_path = nullptr; /* Directory path */
 
-    if (message_dialog_question (NULL, "Do you really want to delete all "
+    if (message_dialog_question (nullptr, "Do you really want to delete all "
                 "downloaded wallpapers ?")) {
 
         s_path = gtk_label_get_text (
@@ -170,10 +170,10 @@ event_delete_wallpapers (GtkWidget **gw_array)
 static void
 event_delete_config_files (GtkWidget **gw_array)
 {
-    char       *s_size = NULL; /* String with size of dir after delete */
-    const char *s_path = NULL; /* Directory path */
+    char       *s_size = nullptr; /* String with size of dir after delete */
+    const char *s_path = nullptr; /* Directory path */
 
-    if (message_dialog_question (NULL, "Do you really want to delete all "
+    if (message_dialog_question (nullptr, "Do you really want to delete all "
                 "applicatoin configuration files ?\nThis will result in the"
                 "termination of the application.")) {
 
@@ -228,20 +228,20 @@ other_settings_dialog (GtkWindow  *gw_parent,
     GtkWidget *gw_conf_clr_btn;     /* Config delete button */
     GtkWidget *gw_wall_clr_btn;     /* Wallpapers delete button */
     GtkWidget *gw_jpg_spin;         /* Spinbuton for jpg quality */
-    GtkWidget *gw_image_o   = NULL; /* Original thumb image */
-    GtkWidget *gw_image_p   = NULL; /* JPG thumb image */
-    GdkPixbuf *gp_pbuf      = NULL; /* Pixbuf */
-    GError    *g_error      = NULL; /* For error output */
-    Setting   *st_sett      = NULL; /* For setting */
-    Setting   *st_st        = NULL; /* For particular setting */
-    char      *s_thumb_path = NULL; /* Thumbnails directory */
-    char      *s_thumb_size = NULL; /* Size of thumbnails dir */
-    char      *s_query_path = NULL; /* Query info directory */
-    char      *s_query_size = NULL; /* Size of query dir; */
-    char      *s_conf_path  = NULL; /* Config directory */
-    char      *s_conf_size  = NULL; /* Size of config dir */
-    char      *s_wall_path  = NULL; /* Wallpapers directory */
-    char      *s_wall_size  = NULL; /* Size of wallpapers dir */
+    GtkWidget *gw_image_o   = nullptr; /* Original thumb image */
+    GtkWidget *gw_image_p   = nullptr; /* JPG thumb image */
+    GdkPixbuf *gp_pbuf      = nullptr; /* Pixbuf */
+    GError    *g_error      = nullptr; /* For error output */
+    Setting   *st_sett      = nullptr; /* For setting */
+    Setting   *st_st        = nullptr; /* For particular setting */
+    char      *s_thumb_path = nullptr; /* Thumbnails directory */
+    char      *s_thumb_size = nullptr; /* Size of thumbnails dir */
+    char      *s_query_path = nullptr; /* Query info directory */
+    char      *s_query_size = nullptr; /* Size of query dir; */
+    char      *s_conf_path  = nullptr; /* Config directory */
+    char      *s_conf_size  = nullptr; /* Size of config dir */
+    char      *s_wall_path  = nullptr; /* Wallpapers directory */
+    char      *s_wall_size  = nullptr; /* Size of wallpapers dir */
     int        i_err        = 0;    /* Error output */
     int        i_jpg_qual   = 96;   /* JPG quality val */
     GtkAdjustment *ga_adjust;       /* Adjustment for jpg quality */
@@ -253,7 +253,7 @@ other_settings_dialog (GtkWindow  *gw_parent,
     st_sett = setts_check_defaults (st_sett);
 
     if ((st_st = settings_find (
-                    st_sett, get_setting_name (SETT_THUMB_QUALITY))) != NULL) {
+                    st_sett, get_setting_name (SETT_THUMB_QUALITY))) != nullptr) {
         i_jpg_qual = (int) setting_get_int (st_st);
     }
     settings_free_all (st_sett);
@@ -267,7 +267,7 @@ other_settings_dialog (GtkWindow  *gw_parent,
                                       GTK_RESPONSE_ACCEPT,
                                       "_Cancel",
                                       GTK_RESPONSE_REJECT,
-                                      NULL);
+                                      nullptr);
 
     gw_content_box = gtk_dialog_get_content_area (GTK_DIALOG (gw_dialog));
     gtk_container_set_border_width (GTK_CONTAINER (gw_content_box), 8);
@@ -364,10 +364,10 @@ other_settings_dialog (GtkWindow  *gw_parent,
                         gw_hbox,
                         FALSE, FALSE, 4);
 
-    if (s_fn != NULL) {
+    if (s_fn != nullptr) {
         gp_pbuf = gdk_pixbuf_new_from_file_at_size (s_fn, 250, 250, &g_error);
         g_clear_error (&g_error);
-        if (gp_pbuf != NULL) {
+        if (gp_pbuf != nullptr) {
             gw_image_o = gtk_image_new_from_pixbuf (gp_pbuf);
             gw_image_p = gtk_image_new_from_pixbuf (gp_pbuf);
             g_object_unref (gp_pbuf);

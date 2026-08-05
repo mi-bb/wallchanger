@@ -79,8 +79,8 @@ static
 void clear_args (struct gengetopt_args_info *args_info)
 {
   FIX_UNUSED (args_info);
-  args_info->config_arg = NULL;
-  args_info->config_orig = NULL;
+  args_info->config_arg = nullptr;
+  args_info->config_orig = nullptr;
   
 }
 
@@ -477,14 +477,14 @@ cmdline_parser_internal (
       int option_index = 0;
 
       static struct option long_options[] = {
-        { "help",	0, NULL, 'h' },
-        { "version",	0, NULL, 'V' },
-        { "start",	0, NULL, 0 },
-        { "stop",	0, NULL, 0 },
-        { "restart",	0, NULL, 0 },
-        { "status",	0, NULL, 0 },
-        { "once",	0, NULL, 0 },
-        { "config",	1, NULL, 0 },
+        { "help",	0, nullptr, 'h' },
+        { "version",	0, nullptr, 'V' },
+        { "start",	0, nullptr, 0 },
+        { "stop",	0, nullptr, 0 },
+        { "restart",	0, nullptr, 0 },
+        { "status",	0, nullptr, 0 },
+        { "once",	0, nullptr, 0 },
+        { "config",	1, nullptr, 0 },
         { 0,  0, 0, 0 }
       };
 

@@ -2512,19 +2512,19 @@ pbuf_from_data_scaled (const unsigned char *s_data,
                        gssize               i_size,
                        int                  i_dim)
 {
-    GdkPixbuf    *g_pbuf = NULL; /* Return pixbuf */
+    GdkPixbuf    *g_pbuf = nullptr; /* Return pixbuf */
     GInputStream *stream;        /* Stream for passing data to pixbuf */
 
     stream = g_memory_input_stream_new ();
     g_memory_input_stream_add_data (G_MEMORY_INPUT_STREAM (stream),
-                                    s_data, i_size, NULL);
+                                    s_data, i_size, nullptr);
     g_pbuf = gdk_pixbuf_new_from_stream_at_scale (stream,
                                                   i_dim,
                                                   -1,
                                                   TRUE,
-                                                  NULL,
-                                                  NULL);
-    g_input_stream_close (stream, NULL, NULL);
+                                                  nullptr,
+                                                  nullptr);
+    g_input_stream_close (stream, nullptr, nullptr);
     g_object_unref (stream);
 
     return g_pbuf;
@@ -2541,14 +2541,14 @@ static GdkPixbuf *
 pbuf_from_data (const unsigned char *s_data,
                 gssize               i_size)
 {
-    GdkPixbuf    *g_pbuf = NULL; /* Return pixbuf */
+    GdkPixbuf    *g_pbuf = nullptr; /* Return pixbuf */
     GInputStream *stream;        /* Stream for passing data to pixbuf */
 
     stream = g_memory_input_stream_new ();
     g_memory_input_stream_add_data (G_MEMORY_INPUT_STREAM (stream),
-                                    s_data, i_size, NULL);
-    g_pbuf = gdk_pixbuf_new_from_stream (stream, NULL, NULL);
-    g_input_stream_close (stream, NULL, NULL);
+                                    s_data, i_size, nullptr);
+    g_pbuf = gdk_pixbuf_new_from_stream (stream, nullptr, nullptr);
+    g_input_stream_close (stream, nullptr, nullptr);
     g_object_unref (stream);
 
     return g_pbuf;
@@ -2560,7 +2560,7 @@ pbuf_from_data (const unsigned char *s_data,
 GdkPixbuf *
 get_image (const IconImg i_img)
 {
-    GdkPixbuf *gp_pbuf = NULL; /* Return pixbuf */
+    GdkPixbuf *gp_pbuf = nullptr; /* Return pixbuf */
 
     switch (i_img) {
 

@@ -111,12 +111,12 @@ download_progress_window (GtkWindow *gw_parent,
     GtkWidget  *gw_box_main;     /* Box for window widgets */
     GtkWidget  *gw_stop_button;  /* Stop downloading button */
     SearchItem *si_item;         /* For images from list */
-    GList      *gl_res   = NULL; /* Result list with downloaded files */
+    GList      *gl_res   = nullptr; /* Result list with downloaded files */
     const char *s_format = "<span style=\"italic\">%s</span>";
-    char       *s_markup = NULL; /* For label's markup */
-    char       *s_wpdir  = NULL; /* Path to wallpaper directory */
-    char       *s_fn     = NULL; /* File path for wallpaper save */
-    char       *s_err    = NULL; /* Error output */
+    char       *s_markup = nullptr; /* For label's markup */
+    char       *s_wpdir  = nullptr; /* Path to wallpaper directory */
+    char       *s_fn     = nullptr; /* File path for wallpaper save */
+    char       *s_err    = nullptr; /* Error output */
     float       f_step   = 0;    /* Progress bar step */
     float       f_frac   = 0;    /* Fraction for progress bar to set */
     int         i_stop   = 0;    /* To set when stop button is pressed */
@@ -148,7 +148,7 @@ download_progress_window (GtkWindow *gw_parent,
 
     gw_progress = gtk_progress_bar_new ();
     gtk_progress_bar_set_show_text (GTK_PROGRESS_BAR (gw_progress), TRUE);
-    gtk_progress_bar_set_text (GTK_PROGRESS_BAR (gw_progress), NULL);
+    gtk_progress_bar_set_text (GTK_PROGRESS_BAR (gw_progress), nullptr);
     gtk_progress_bar_set_fraction (GTK_PROGRESS_BAR (gw_progress), 0);
 
     gw_box_main = gtk_box_new (GTK_ORIENTATION_VERTICAL, 4);
@@ -171,7 +171,7 @@ download_progress_window (GtkWindow *gw_parent,
     gtk_widget_show_all (gw_window);
 
     /* Processing list of wallpapers to download */
-    while (gl_item_list != NULL) {
+    while (gl_item_list != nullptr) {
         if (i_stop == 1)
             break;
 
@@ -200,8 +200,8 @@ download_progress_window (GtkWindow *gw_parent,
         printf ("downloading:%s\nto:%s\n", si_item->s_image_url, s_fn);
 #endif
         urldata_get_to_file (si_item->s_image_url, s_fn, &s_err);
-        if (s_err != NULL) {
-            message_dialog_error (NULL, s_err);
+        if (s_err != nullptr) {
+            message_dialog_error (nullptr, s_err);
             free (s_err);
             free (s_fn);
             break;
@@ -286,7 +286,7 @@ static void
 update_labels (WebWidget *ww_widget)
 {
     const char *s_format_count = "Found %d images";
-    char       *s_markup       = NULL;
+    char       *s_markup       = nullptr;
     char        s_entry[128];
 
     s_markup = g_markup_printf_escaped (s_format_count,
@@ -309,7 +309,7 @@ static int
 sel_combo_check_exist (GtkTreeModel *gtm_model,
                        const char   *s_id)
 {
-    char       *s_read_id = NULL;
+    char       *s_read_id = nullptr;
     gboolean    b_res     = FALSE;
     GtkTreeIter gti_iter;
 
@@ -339,9 +339,9 @@ sel_combo_check_exist (GtkTreeModel *gtm_model,
 static GList *
 sel_combo_get_list (GtkWidget *gw_selected_combo)
 {
-    GList        *gl_res    = NULL;
-    SearchItem   *si_item   = NULL;
-    GtkTreeModel *gtm_model = NULL;
+    GList        *gl_res    = nullptr;
+    SearchItem   *si_item   = nullptr;
+    GtkTreeModel *gtm_model = nullptr;
     gboolean      b_res     = FALSE;
     GtkTreeIter   gti_iter;
 
@@ -372,7 +372,7 @@ sel_combo_get_list (GtkWidget *gw_selected_combo)
 static void
 search_web (WebWidget *ww_widget)
 {
-    NStrings *ns_data = NULL; /* For 4 strings for API key data */
+    NStrings *ns_data = nullptr; /* For 4 strings for API key data */
 
     /* Check if there is a cached info about this search query */
     if (check_for_cached_query (ww_widget,
@@ -430,7 +430,7 @@ event_search_pressed (WebWidget *ww_widget)
                 s_query, "Sorry, only alphanumerich characters allowed"))
         return;
 
-    if (ww_widget->s_query != NULL)
+    if (ww_widget->s_query != nullptr)
         free (ww_widget->s_query);
 
     ww_widget->s_query = strdup (s_query);
@@ -447,7 +447,7 @@ event_search_pressed (WebWidget *ww_widget)
 static void
 event_search_opts_pressed (WebWidget *ww_widget)
 {
-    char *s_search_opts = NULL; /* Search options string */
+    char *s_search_opts = nullptr; /* Search options string */
     int   i_id          = 0;    /* Service id */
 
     i_id = ww_widget->i_active_service;
@@ -473,7 +473,7 @@ event_search_opts_pressed (WebWidget *ww_widget)
         default:
             break;
     }
-    if (s_search_opts != NULL &&
+    if (s_search_opts != nullptr &&
         strcmp (s_search_opts, ww_widget->s_search_opts) != 0) {
 
         free (ww_widget->s_search_opts);
@@ -494,7 +494,7 @@ event_search_opts_pressed (WebWidget *ww_widget)
 static void
 event_next_pressed (WebWidget *ww_widget)
 {
-    if (ww_widget->s_query != NULL && ww_widget->i_page < INT_MAX) {
+    if (ww_widget->s_query != nullptr && ww_widget->i_page < INT_MAX) {
         ++ww_widget->i_page;
         search_web (ww_widget);
     }
@@ -509,7 +509,7 @@ event_next_pressed (WebWidget *ww_widget)
 static void
 event_prev_pressed (WebWidget *ww_widget)
 {
-    if (ww_widget->s_query != NULL && ww_widget->i_page > 1) {
+    if (ww_widget->s_query != nullptr && ww_widget->i_page > 1) {
         --ww_widget->i_page;
         search_web (ww_widget);
     }
@@ -526,12 +526,12 @@ static void
 event_nav_entry_act (GtkWidget *gw_entry,
                      WebWidget *ww_widget)
 {
-    const char    *s_val = NULL; /* String from entry */
+    const char    *s_val = nullptr; /* String from entry */
     long long int  i_val = 0;    /* Int value of entry string */
 
-    if (ww_widget->s_query != NULL) {
+    if (ww_widget->s_query != nullptr) {
         s_val = gtk_entry_get_text (GTK_ENTRY (gw_entry));
-        i_val = strtoll (s_val, NULL, 10);
+        i_val = strtoll (s_val, nullptr, 10);
         if      (i_val < 1)       i_val = 1;
         else if (i_val > INT_MAX) i_val = INT_MAX;
         ww_widget->i_page = (int) i_val;
@@ -548,7 +548,7 @@ event_nav_entry_act (GtkWidget *gw_entry,
 static void
 event_settings_pressed (WebWidget *ww_widget)
 {
-    NStrings *ns_data = NULL;   /* Four strings for API key data */
+    NStrings *ns_data = nullptr;   /* Four strings for API key data */
     int       i_err   = ERR_OK; /* Error output */
     int       i_id    = 0;      /* Service id */
     int       i_res   = 0;      /* Dialog result */
@@ -586,7 +586,7 @@ event_settings_pressed (WebWidget *ww_widget)
         combo_set_active_strings (ww_widget->gw_combo, ns_data);
     }
     if (i_err != ERR_OK) {
-        message_dialog_error (NULL, err_get_message (i_err));
+        message_dialog_error (nullptr, err_get_message (i_err));
     }
     nstrings_free (ns_data);
 }
@@ -608,12 +608,12 @@ event_add_selected_pressed (WebWidget *ww_widget)
     GtkTreeIter   gti_iter;           /* TreeIter */
     GtkTreeIter   gti_iters;          /* TreeIter */
     GtkTreePath  *gtp_path;           /* TreePath */
-    GList        *gl_selected = NULL; /* List of selected items */
-    GList        *gl_item     = NULL; /* List item for iteration */
-    char         *s_disp_name = NULL; /* Image display name */
-    char         *s_file_name = NULL; /* Image file name */
-    char         *s_image_url = NULL; /* Image url */
-    char         *s_id        = NULL; /* Image id */
+    GList        *gl_selected = nullptr; /* List of selected items */
+    GList        *gl_item     = nullptr; /* List item for iteration */
+    char         *s_disp_name = nullptr; /* Image display name */
+    char         *s_file_name = nullptr; /* Image file name */
+    char         *s_image_url = nullptr; /* Image url */
+    char         *s_id        = nullptr; /* Image id */
     int           i_w         = 0;    /* Thumbnail width */
     int           i_h         = 0;    /* Thumbnail height */
     float         f_w         = 0;    /* Smaller thumbnail width */
@@ -634,7 +634,7 @@ event_add_selected_pressed (WebWidget *ww_widget)
 
     gl_item = gl_selected;
 
-    while (gl_item != NULL) {
+    while (gl_item != nullptr) {
 
         gtp_path = gl_item->data;
 
@@ -716,8 +716,8 @@ event_add_selected_pressed (WebWidget *ww_widget)
 static void
 refresh_service_opts (WebWidget *ww_widget)
 {
-    Setting *st_settings = NULL;
-    Setting *st_item     = NULL;
+    Setting *st_settings = nullptr;
+    Setting *st_item     = nullptr;
     int      i_err       = 0;
 
     st_settings = setts_read (ww_widget->s_cfg_file, &i_err);
@@ -725,7 +725,7 @@ refresh_service_opts (WebWidget *ww_widget)
             settings_find (st_settings, ww_opts (ww_widget->i_active_service)));
 
     free (ww_widget->s_search_opts);
-    ww_widget->s_search_opts = st_item == NULL ? strdup ("") :
+    ww_widget->s_search_opts = st_item == nullptr ? strdup ("") :
                                search_opts_to_str (st_item);
     settings_free_all (st_settings);
 #ifdef DEBUG
@@ -770,8 +770,8 @@ webwidget_combobox_create (Setting *st_settings)
     GtkCellRenderer *cell;           /* CellRenderer */
     GtkListStore    *list_store;     /* ListStore for combobox data */
     GtkTreeIter      iter;           /* TreeIter */
-    GdkPixbuf       *gp_logo = NULL; /* Service logo */
-    NStrings        *ns_data = NULL; /* For API keys */
+    GdkPixbuf       *gp_logo = nullptr; /* Service logo */
+    NStrings        *ns_data = nullptr; /* For API keys */
     int              i       = 0;    /* i */
 
     /* Liststore for service data */
@@ -874,12 +874,12 @@ event_imgview_activated (GtkIconView *iconview,
                          WebWidget   *ww_widget)
 {
     GtkTreeModel *gtm_model;
-    GdkPixbuf    *gp_logo        = NULL;
-    char         *s_disp_name    = NULL;
-    char         *s_file_name    = NULL;
-    char         *s_image_url    = NULL;
-    char         *s_page_url     = NULL;
-    char         *s_image_author = NULL;
+    GdkPixbuf    *gp_logo        = nullptr;
+    char         *s_disp_name    = nullptr;
+    char         *s_file_name    = nullptr;
+    char         *s_image_url    = nullptr;
+    char         *s_page_url     = nullptr;
+    char         *s_image_author = nullptr;
     int           i_w            = 0;
     int           i_h            = 0;
     GtkTreeIter   gti_iter;
@@ -899,9 +899,9 @@ event_imgview_activated (GtkIconView *iconview,
                             WEB_COL_IMAGE_URL, &s_image_url,
                             -1);
         gtk_label_set_text (GTK_LABEL (ww_widget->gw_ii_author_label),
-                            s_image_author != NULL ? s_image_author : "");
+                            s_image_author != nullptr ? s_image_author : "");
         gtk_link_button_set_uri (GTK_LINK_BUTTON (ww_widget->gw_ii_page_link),
-                                 s_page_url != NULL ? s_page_url : "");
+                                 s_page_url != nullptr ? s_page_url : "");
         if (i_w && i_h) {
             sprintf (s_dim, "[%dx%d]", i_w, i_h);
         }
@@ -911,7 +911,7 @@ event_imgview_activated (GtkIconView *iconview,
 
         gp_logo = get_image (ww_logo_id (ww_widget->i_active_service));
 
-        if (gp_logo != NULL) {
+        if (gp_logo != nullptr) {
             gtk_image_set_from_pixbuf (GTK_IMAGE (ww_widget->gw_ii_simage),
                                        gp_logo);
         }
@@ -981,8 +981,8 @@ webwidget_imageinfo_create (WebWidget *ww_widget)
     GtkWidget *gw_grid;
 
     gw_service_image = gtk_image_new ();
-    gw_author_label  = gtk_label_new (NULL);
-    gw_dim_label     = gtk_label_new (NULL);
+    gw_author_label  = gtk_label_new (nullptr);
+    gw_dim_label     = gtk_label_new (nullptr);
     gw_image_link    = gtk_link_button_new ("Image page");
     gw_grid          = gtk_grid_new ();
 
@@ -1044,10 +1044,10 @@ webwidget_free (WebWidget *ww_widget)
 static void
 webwidget_init (WebWidget *ww_widget)
 {
-    ww_widget->s_query          = NULL;
-    ww_widget->s_search_opts    = NULL;
-    ww_widget->s_cfg_file       = NULL;
-    ww_widget->s_wallp_dir      = NULL;
+    ww_widget->s_query          = nullptr;
+    ww_widget->s_search_opts    = nullptr;
+    ww_widget->s_cfg_file       = nullptr;
+    ww_widget->s_wallp_dir      = nullptr;
     ww_widget->i_page           = 0;
     ww_widget->i_found_cnt      = 0;
     ww_widget->i_active_service = 0;
@@ -1078,11 +1078,11 @@ webwidget_create (Setting    *st_settings,
     GtkWidget *gw_add_sltd_button;
     GtkWidget *gw_selected_combo;
     GtkWidget *gw_img;
-    GdkPixbuf *gp_pbuf = NULL;
-    Setting   *st_sett = NULL;
+    GdkPixbuf *gp_pbuf = nullptr;
+    Setting   *st_sett = nullptr;
 
-    if ((ww_widget = malloc (sizeof (WebWidget))) == NULL)
-        err (EXIT_FAILURE, NULL);
+    if ((ww_widget = malloc (sizeof (WebWidget))) == nullptr)
+        err (EXIT_FAILURE, nullptr);
 
     webwidget_init (ww_widget);
 
@@ -1095,7 +1095,7 @@ webwidget_create (Setting    *st_settings,
 #endif
 
     if ((st_sett = settings_find (st_settings,
-                   get_setting_name (SETT_THUMB_QUALITY))) != NULL) {
+                   get_setting_name (SETT_THUMB_QUALITY))) != nullptr) {
         ww_widget->i_thumb_quality = (int) setting_get_int (st_sett);
     }
     ww_widget->s_cfg_file   = strdup (s_cfg_file);
@@ -1213,8 +1213,8 @@ GList *
 save_selected_wallpapers (GtkWidget *gw_dialog,
                           WebWidget *ww_widget)
 {
-    GList *gl_items = NULL; /* List of images selected to download */
-    GList *gl_res   = NULL; /* Result list od downloaded wallpapers */
+    GList *gl_items = nullptr; /* List of images selected to download */
+    GList *gl_res   = nullptr; /* Result list od downloaded wallpapers */
 
     gl_items = sel_combo_get_list (ww_widget->gw_selected_combo);
     gl_res   = download_progress_window (GTK_WINDOW (gw_dialog), gl_items);

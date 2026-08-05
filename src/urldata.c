@@ -35,16 +35,16 @@
 UrlData *
 urldata_new (void)
 {
-    UrlData *ud_data = NULL;
+    UrlData *ud_data = nullptr;
 
-    if ((ud_data = malloc (sizeof (UrlData))) == NULL)
-        err (EXIT_FAILURE, NULL);
+    if ((ud_data = malloc (sizeof (UrlData))) == nullptr)
+        err (EXIT_FAILURE, nullptr);
 
     ud_data->size = 0;
-    ud_data->errbuf = NULL;
+    ud_data->errbuf = nullptr;
 
-    if ((ud_data->buffer = malloc (sizeof (char))) == NULL)
-        err (EXIT_FAILURE, NULL);
+    if ((ud_data->buffer = malloc (sizeof (char))) == nullptr)
+        err (EXIT_FAILURE, nullptr);
 
     ud_data->buffer[0] = '\0';
 
@@ -57,7 +57,7 @@ urldata_new (void)
 void
 urldata_free (UrlData *ud_data)
 {
-    if (ud_data == NULL)
+    if (ud_data == nullptr)
         return;
 
     free (ud_data->buffer);
@@ -71,14 +71,14 @@ url_write (void   *data,
            size_t  nmemb,
            void   *userp)
 {
-    UrlData *u_data  = NULL;
-    char    *s_buff  = NULL;
+    UrlData *u_data  = nullptr;
+    char    *s_buff  = nullptr;
     size_t   ui_size = 0;
  
     ui_size = size * nmemb;
     u_data  = (UrlData *) userp;
-    if ((s_buff = realloc (u_data->buffer, u_data->size + ui_size + 1)) == NULL)
-        err (EXIT_FAILURE, NULL);
+    if ((s_buff = realloc (u_data->buffer, u_data->size + ui_size + 1)) == nullptr)
+        err (EXIT_FAILURE, nullptr);
  
     u_data->buffer = s_buff;
     memcpy (& (u_data->buffer[u_data->size]), data, ui_size);
@@ -94,7 +94,7 @@ url_write (void   *data,
 UrlData *
 urldata_get_data (const char *s_url)
 {
-    UrlData  *ud_data = NULL;
+    UrlData  *ud_data = nullptr;
     CURL     *curl;
     CURLcode  res;
     char      errbuf[CURL_ERROR_SIZE];
@@ -192,14 +192,14 @@ urldata_search_pexels (const char *s_query,
                        const char *s_api_key,
                        const int   i_page)
 {
-    UrlData  *ud_data = NULL;
-    char     *s_api   = NULL;
-    char     *s_url   = NULL;
+    UrlData  *ud_data = nullptr;
+    char     *s_api   = nullptr;
+    char     *s_url   = nullptr;
     char      s_page[64];
     CURL     *curl;
     CURLcode  res;
     char      errbuf[CURL_ERROR_SIZE];
-    struct curl_slist *list = NULL;
+    struct curl_slist *list = nullptr;
 
     ud_data = urldata_new ();
     curl_global_init (CURL_GLOBAL_ALL);
@@ -251,8 +251,8 @@ urldata_search_pixbay (const char *s_query,
                        const char *s_api_key,
                        const int   i_page)
 {
-    UrlData  *ud_data = NULL;
-    char     *s_url   = NULL;
+    UrlData  *ud_data = nullptr;
+    char     *s_url   = nullptr;
     char      s_page[64];
     CURL     *curl;
     CURLcode  res;
@@ -305,8 +305,8 @@ urldata_search_wallhaven (const char *s_query,
                           const char *s_api_key,
                           const int   i_page)
 {
-    UrlData  *ud_data = NULL;
-    char     *s_url   = NULL;
+    UrlData  *ud_data = nullptr;
+    char     *s_url   = nullptr;
     char      s_page[64];
     CURL     *curl;
     CURLcode  res;
@@ -359,8 +359,8 @@ urldata_search_wallabyss (const char *s_query,
                           const char *s_api_key,
                           const int   i_page)
 {
-    UrlData  *ud_data = NULL;
-    char     *s_url   = NULL;
+    UrlData  *ud_data = nullptr;
+    char     *s_url   = nullptr;
     char      s_page[64];
     CURL     *curl;
     CURLcode  res;

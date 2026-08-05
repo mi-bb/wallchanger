@@ -45,16 +45,16 @@
 static void
 searchitem_init (SearchItem *si_item)
 {
-    si_item->s_id             = NULL;
-    si_item->s_author_name    = NULL;
-    si_item->s_author_url     = NULL;
-    si_item->s_file_name      = NULL;
-    si_item->s_display_name   = NULL;
-    si_item->s_display_markup = NULL;
-    si_item->s_page_url       = NULL;
-    si_item->s_image_url      = NULL;
-    si_item->s_thumb_url      = NULL;
-    si_item->s_service_name   = NULL;
+    si_item->s_id             = nullptr;
+    si_item->s_author_name    = nullptr;
+    si_item->s_author_url     = nullptr;
+    si_item->s_file_name      = nullptr;
+    si_item->s_display_name   = nullptr;
+    si_item->s_display_markup = nullptr;
+    si_item->s_page_url       = nullptr;
+    si_item->s_image_url      = nullptr;
+    si_item->s_thumb_url      = nullptr;
+    si_item->s_service_name   = nullptr;
     si_item->i_width          = 0;
     si_item->i_height         = 0;
 }
@@ -84,10 +84,10 @@ searchitem_free (SearchItem *si_item)
 SearchItem *
 searchitem_new (void)
 {
-    SearchItem *si_item = NULL;
+    SearchItem *si_item = nullptr;
 
-    if ((si_item = malloc (sizeof (SearchItem))) == NULL)
-        err (EXIT_FAILURE, NULL);
+    if ((si_item = malloc (sizeof (SearchItem))) == nullptr)
+        err (EXIT_FAILURE, nullptr);
 
     searchitem_init (si_item);
 
@@ -104,7 +104,7 @@ searchitem_set_id_uint (SearchItem    *si_item,
     char s_tmp[32];
 
     sprintf (s_tmp, "%" PRIu64, val);
-    if (si_item->s_id != NULL)
+    if (si_item->s_id != nullptr)
         free (si_item->s_id);
     si_item->s_id = strdup (s_tmp);
 }
@@ -116,7 +116,7 @@ void
 searchitem_set_id_string (SearchItem *si_item,
                           const char *s_val)
 {
-    if (si_item->s_id != NULL)
+    if (si_item->s_id != nullptr)
         free (si_item->s_id);
     si_item->s_id = strdup (s_val);
 }
@@ -128,7 +128,7 @@ void
 searchitem_set_author_name (SearchItem *si_item,
                             const char *s_val)
 {
-    if (si_item->s_author_name != NULL)
+    if (si_item->s_author_name != nullptr)
         free (si_item->s_author_name);
     si_item->s_author_name = strdup (s_val);
 }
@@ -140,7 +140,7 @@ void
 searchitem_set_author_url (SearchItem *si_item,
                            const char *s_val)
 {
-    if (si_item->s_author_url != NULL)
+    if (si_item->s_author_url != nullptr)
         free (si_item->s_author_url);
     si_item->s_author_url = strdup (s_val);
 }
@@ -152,7 +152,7 @@ void
 searchitem_set_file_name (SearchItem *si_item,
                           const char *s_val)
 {
-    if (si_item->s_file_name != NULL)
+    if (si_item->s_file_name != nullptr)
         free (si_item->s_file_name);
     si_item->s_file_name = strdup (s_val);
 }
@@ -164,7 +164,7 @@ void
 searchitem_set_display_name (SearchItem *si_item,
                              const char *s_val)
 {
-    if (si_item->s_display_name != NULL)
+    if (si_item->s_display_name != nullptr)
         free (si_item->s_display_name);
     si_item->s_display_name = strdup (s_val);
 }
@@ -176,7 +176,7 @@ void
 searchitem_set_display_markup (SearchItem *si_item,
                                const char *s_val)
 {
-    if (si_item->s_display_markup != NULL)
+    if (si_item->s_display_markup != nullptr)
         free (si_item->s_display_markup);
     si_item->s_display_markup = strdup (s_val);
 }
@@ -188,7 +188,7 @@ void
 searchitem_set_page_url (SearchItem *si_item,
                          const char *s_val)
 {
-    if (si_item->s_page_url != NULL)
+    if (si_item->s_page_url != nullptr)
         free (si_item->s_page_url);
     si_item->s_page_url = strdup (s_val);
 }
@@ -200,7 +200,7 @@ void
 searchitem_set_image_url (SearchItem *si_item,
                           const char *s_val)
 {
-    if (si_item->s_image_url != NULL)
+    if (si_item->s_image_url != nullptr)
         free (si_item->s_image_url);
     si_item->s_image_url = strdup (s_val);
 }
@@ -212,7 +212,7 @@ void
 searchitem_set_thumb_url (SearchItem *si_item,
                           const char *s_val)
 {
-    if (si_item->s_thumb_url != NULL)
+    if (si_item->s_thumb_url != nullptr)
         free (si_item->s_thumb_url);
     si_item->s_thumb_url = strdup (s_val);
 }
@@ -224,7 +224,7 @@ void
 searchitem_set_service_name (SearchItem *si_item,
                              const char *s_val)
 {
-    if (si_item->s_service_name != NULL)
+    if (si_item->s_service_name != nullptr)
         free (si_item->s_service_name);
     si_item->s_service_name = strdup (s_val);
 }

@@ -42,13 +42,13 @@ static GdkPixbuf *
 pixbuf_from_data (const unsigned char *s_data,
                   const gssize         i_size)
 {
-    GdkPixbuf    *g_pbuf = NULL; /* Return pixbuf */
+    GdkPixbuf    *g_pbuf = nullptr; /* Return pixbuf */
     GInputStream *stream;        /* Stream for passing data to pixbuf */
 
     stream = g_memory_input_stream_new ();
     g_memory_input_stream_add_data (G_MEMORY_INPUT_STREAM (stream),
-                                    s_data, i_size, NULL);
-    g_pbuf = gdk_pixbuf_new_from_stream (stream, NULL, NULL);
+                                    s_data, i_size, nullptr);
+    g_pbuf = gdk_pixbuf_new_from_stream (stream, nullptr, nullptr);
     g_object_unref (stream);
 
     return g_pbuf;
@@ -63,16 +63,16 @@ pixbuf_from_data (const unsigned char *s_data,
 static GdkPixbuf *
 pixbuf_from_url (const char *s_url)
 {
-    GdkPixbuf *g_pbuf  = NULL; /* Pixbuf to return */
-    UrlData   *ud_data = NULL; /* Urldata for getting image data */
-    char      *s_txt   = NULL; /* For error text */
+    GdkPixbuf *g_pbuf  = nullptr; /* Pixbuf to return */
+    UrlData   *ud_data = nullptr; /* Urldata for getting image data */
+    char      *s_txt   = nullptr; /* For error text */
 
     ud_data = urldata_get_data (s_url);
 
-    if (ud_data->errbuf != NULL) {
+    if (ud_data->errbuf != nullptr) {
         s_txt = str_comb ("Getting image error:\n",
                           ud_data->errbuf);
-        message_dialog_error (NULL, s_txt);
+        message_dialog_error (nullptr, s_txt);
         free (s_txt);
     }
     else if (urldata_full (ud_data)) {
@@ -93,10 +93,10 @@ thumbnail_get (const char *s_service_name,
                const int   i_jpgq,
                const char *s_thumb_url)
 {
-    GdkPixbuf *gp_pbuf      = NULL;
-    GError    *g_error      = NULL; /* For error output */
-    char      *s_prefix     = NULL;
-    char      *s_thumb_file = NULL;
+    GdkPixbuf *gp_pbuf      = nullptr;
+    GError    *g_error      = nullptr; /* For error output */
+    char      *s_prefix     = nullptr;
+    char      *s_thumb_file = nullptr;
     char       s_jpgq[16];
 
     sprintf (s_jpgq, "%d", i_jpgq);
@@ -117,12 +117,12 @@ thumbnail_get (const char *s_service_name,
 
     gp_pbuf = gdk_pixbuf_new_from_file (s_thumb_file, &g_error);
 
-    if (gp_pbuf == NULL) {
+    if (gp_pbuf == nullptr) {
         gp_pbuf = pixbuf_from_url (s_thumb_url);
-        if (gp_pbuf != NULL) {
-            g_error = NULL;
+        if (gp_pbuf != nullptr) {
+            g_error = nullptr;
             gdk_pixbuf_save (gp_pbuf, s_thumb_file, "jpeg", &g_error,
-                             "quality", s_jpgq, NULL);
+                             "quality", s_jpgq, nullptr);
         }
     }
     free (s_thumb_file);

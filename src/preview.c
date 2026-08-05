@@ -78,10 +78,10 @@ static GdkPixbuf * make_image_preview    (const char         *s_fname);
 static GdkPixbuf *
 make_prev_screen_pbuf (GdkRectangle *gr_rect)
 {
-    GdkPixbuf *gp_bg    = NULL; /* Result preview image (screen + wall) */
-    GdkPixbuf *gp_scr_1 = NULL; /* Preview (monitor) part 1 (top) image*/
-    GdkPixbuf *gp_scr_2 = NULL; /* Preview (monitor) part 1 (top) image*/
-    GdkPixbuf *gp_scr_3 = NULL; /* Preview (monitor) part 1 (top) image*/
+    GdkPixbuf *gp_bg    = nullptr; /* Result preview image (screen + wall) */
+    GdkPixbuf *gp_scr_1 = nullptr; /* Preview (monitor) part 1 (top) image*/
+    GdkPixbuf *gp_scr_2 = nullptr; /* Preview (monitor) part 1 (top) image*/
+    GdkPixbuf *gp_scr_3 = nullptr; /* Preview (monitor) part 1 (top) image*/
     int i_screen_w = 0;   /* Screen width */
     int i_screen_h = 0;   /* Screen height */
     int i_pr_scr_w = 138; /* Preview width (inside screen) */
@@ -201,16 +201,16 @@ paint_pbuf_on_pbuf (GdkPixbuf          *gp_dest,
 static GdkPixbuf *
 make_image_preview (const char *s_fname)
 {
-    GdkPixbuf   *gp_prev_screen = NULL; /* Preview image (screen) */
-    GdkPixbuf   *gp_prev        = NULL; /* Wallpaper preview image */
+    GdkPixbuf   *gp_prev_screen = nullptr; /* Preview image (screen) */
+    GdkPixbuf   *gp_prev        = nullptr; /* Wallpaper preview image */
     GdkRectangle gr_area        = {0};  /* Wallpaper preview area */
 
     /* Create the monitor preview pixbuf */
     gp_prev_screen = make_prev_screen_pbuf (&gr_area);
 
-    if (s_fname != NULL) {
+    if (s_fname != nullptr) {
         /* Load wallpaper image to pixbuf */
-        gp_prev = gdk_pixbuf_new_from_file (s_fname, NULL);
+        gp_prev = gdk_pixbuf_new_from_file (s_fname, nullptr);
 
         /* Paint wallpaper preview on the background (monitor) pixbuf */
         paint_pbuf_on_pbuf (gp_prev_screen,
@@ -234,11 +234,11 @@ get_screen_size (int *i_scr_w,
 
     /* Some window managers (notably under Wayland/XWayland) don't flag
      * any monitor as "primary" - fall back to the first available one. */
-    if (gm_mon == NULL) {
+    if (gm_mon == nullptr) {
         gm_mon = gdk_display_get_monitor (gd_disp, 0);
     }
 
-    if (gm_mon != NULL) {
+    if (gm_mon != nullptr) {
         gdk_monitor_get_workarea (gm_mon, &workarea);
     }
 
@@ -256,7 +256,7 @@ preview_from_file (GtkWidget  *gw_img_prev,
     /* Create peview pixbuf (monitor + wallpaper inside) */
     GdkPixbuf *gp_prev = make_image_preview (s_file);
 
-    if (gp_prev != NULL) {
+    if (gp_prev != nullptr) {
         gtk_image_clear (GTK_IMAGE (gw_img_prev));
         /* Set new pixbuf to the image */
         gtk_image_set_from_pixbuf (GTK_IMAGE (gw_img_prev), gp_prev);
@@ -278,8 +278,8 @@ create_preview_label (void)
     char       s_markup[50];     /* Buffer for snprintf */
 
     gw_label_box = gtk_box_new (GTK_ORIENTATION_VERTICAL, 1);
-    gw_label_1   = gtk_label_new (NULL);
-    gw_label_2   = gtk_label_new (NULL);
+    gw_label_1   = gtk_label_new (nullptr);
+    gw_label_2   = gtk_label_new (nullptr);
 
     gtk_label_set_xalign (GTK_LABEL (gw_label_1), 0.5);
     gtk_label_set_xalign (GTK_LABEL (gw_label_2), 0.5);

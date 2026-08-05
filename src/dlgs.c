@@ -44,9 +44,9 @@ add_images_from_web_dilaog (GtkWindow  *gw_parent,
     GtkWidget *gw_hbox;         /* box */
     GtkWidget *gw_scrlw;        /* Scrolled window for icon view */
     WebWidget *ww_widget;       /* WebWidget with widgets and data*/
-    GList     *gl_res   = NULL; /* Result list with wallpapers */
-    Setting   *st_setts = NULL; /* For settings */
-    Setting   *st_st    = NULL; /* For particular setting */
+    GList     *gl_res   = nullptr; /* Result list with wallpapers */
+    Setting   *st_setts = nullptr; /* For settings */
+    Setting   *st_st    = nullptr; /* For particular setting */
     int        i_err    = 0;    /* Error output */
     int        i_w      = 0;    /* Dialog width */
     int        i_h      = 0;    /* Dialog height */
@@ -58,12 +58,12 @@ add_images_from_web_dilaog (GtkWindow  *gw_parent,
     st_setts = setts_check_defaults (st_setts);
     /* Get dialog width */
     st_st = settings_find (st_setts, get_setting_name (SETT_WEB_DLG_WIDTH));
-    if (st_st != NULL) {
+    if (st_st != nullptr) {
         i_w = (int) setting_get_int (st_st);
     }
     /* Get dialog height */
     st_st = settings_find (st_setts, get_setting_name (SETT_WEB_DLG_HEIGHT));
-    if (st_st != NULL) {
+    if (st_st != nullptr) {
         i_h = (int) setting_get_int (st_st);
     }
     /* Web widget */
@@ -80,7 +80,7 @@ add_images_from_web_dilaog (GtkWindow  *gw_parent,
                                       GTK_RESPONSE_ACCEPT,
                                       "_Cancel",
                                       GTK_RESPONSE_REJECT,
-                                      NULL);
+                                      nullptr);
     gtk_window_set_default_size (GTK_WINDOW (gw_dialog), i_w, i_h);
 
     gw_content_box = gtk_dialog_get_content_area (GTK_DIALOG (gw_dialog));
@@ -161,7 +161,7 @@ char *
 add_images_folder_dialog (GtkWindow *gw_parent)
 {
     GtkWidget *gw_dialog;    /* Directory choose dialog */
-    char      *s_dir = NULL; /* Selected folder name */
+    char      *s_dir = nullptr; /* Selected folder name */
 
     gw_dialog = gtk_file_chooser_dialog_new (
             "Select Folder",
@@ -171,7 +171,7 @@ add_images_folder_dialog (GtkWindow *gw_parent)
             GTK_RESPONSE_CANCEL,
             "_Open",
             GTK_RESPONSE_ACCEPT,
-            NULL);
+            nullptr);
 
     if (gtk_dialog_run (GTK_DIALOG (gw_dialog)) == GTK_RESPONSE_ACCEPT) {
         s_dir = gtk_file_chooser_get_filename (GTK_FILE_CHOOSER (gw_dialog));
@@ -188,7 +188,7 @@ add_images_dialog (GtkWindow *gw_parent)
 {
     GtkFileFilter *gff_filter;       /* File filter */
     GtkWidget     *gw_dialog;        /* File dialog */
-    GSList        *gsl_files = NULL; /* Result file list */
+    GSList        *gsl_files = nullptr; /* Result file list */
 
     gw_dialog = gtk_file_chooser_dialog_new ("Select Files",
                                              gw_parent,
@@ -197,7 +197,7 @@ add_images_dialog (GtkWindow *gw_parent)
                                              GTK_RESPONSE_CANCEL,
                                              "_Open",
                                              GTK_RESPONSE_ACCEPT,
-                                             NULL);
+                                             nullptr);
     gff_filter = gtk_file_filter_new ();
     gtk_file_filter_set_name (gff_filter, "Image files");
     gtk_file_filter_add_pixbuf_formats (gff_filter);
@@ -220,10 +220,10 @@ about_app_dialog (GtkWindow *gw_parent)
 {
     GtkWidget  *gw_dialog;
     const char *s_authors[] = {"Michal Babik <michal.babik@protonmail.com> "
-                               "https://init6.pomorze.pl", NULL};
+                               "https://init6.pomorze.pl", nullptr};
     const char *s_art[]     = {
         "https://fr.wikisource.org/wiki/Le_Tour_de_la_France_par_deux_enfants",
-        NULL};
+        nullptr};
 
     gw_dialog = gtk_about_dialog_new ();
     gtk_window_set_transient_for (GTK_WINDOW (gw_dialog), gw_parent);

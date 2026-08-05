@@ -50,18 +50,18 @@ dialogdata_free (DialogData *dd_data)
 static void
 dialogdata_init (DialogData *dd_data)
 {
-    dd_data->gw_window      = NULL;
-    dd_data->gw_view        = NULL;
-    dd_data->gw_random      = NULL;
-    dd_data->gw_lastused    = NULL;
-    dd_data->gw_timealign   = NULL;
-    dd_data->gw_command     = NULL;
-    dd_data->gw_interval    = NULL;
-    dd_data->gw_inter_combo = NULL;
-    dd_data->gw_dm_label    = NULL;
-    dd_data->gw_statusbar   = NULL;
-    dd_data->gw_imgprev     = NULL;
-    dd_data->s_cfg_file     = NULL;
+    dd_data->gw_window      = nullptr;
+    dd_data->gw_view        = nullptr;
+    dd_data->gw_random      = nullptr;
+    dd_data->gw_lastused    = nullptr;
+    dd_data->gw_timealign   = nullptr;
+    dd_data->gw_command     = nullptr;
+    dd_data->gw_interval    = nullptr;
+    dd_data->gw_inter_combo = nullptr;
+    dd_data->gw_dm_label    = nullptr;
+    dd_data->gw_statusbar   = nullptr;
+    dd_data->gw_imgprev     = nullptr;
+    dd_data->s_cfg_file     = nullptr;
 }
 /*----------------------------------------------------------------------------*/
 /**
@@ -70,10 +70,10 @@ dialogdata_init (DialogData *dd_data)
 DialogData *
 dialogdata_new (void)
 {
-    DialogData *dd_data = NULL;   /* DialogData item to return */
+    DialogData *dd_data = nullptr;   /* DialogData item to return */
 
-    if ((dd_data = malloc (sizeof (DialogData))) == NULL)
-        err (EXIT_FAILURE, NULL);
+    if ((dd_data = malloc (sizeof (DialogData))) == nullptr)
+        err (EXIT_FAILURE, nullptr);
 
     dialogdata_init (dd_data);
 
@@ -99,15 +99,15 @@ dialogdata_do_config_file_stuff (DialogData *dd_data)
 char *
 dialogdata_get_status_config_info (const DialogData *dd_data)
 {
-    char   *s_ret   = NULL; /* Result string */
+    char   *s_ret   = nullptr; /* Result string */
     size_t  ui_plen = 0;    /* Prefix text length */
     size_t  ui_clen = 0;    /* Config file name length */
 
     ui_plen = strlen (STATUS_CONFIG);
     ui_clen = strlen (dd_data->s_cfg_file);
 
-    if ((s_ret = malloc ((ui_plen + ui_clen + 1) * sizeof (char))) == NULL)
-        err (EXIT_FAILURE, NULL);
+    if ((s_ret = malloc ((ui_plen + ui_clen + 1) * sizeof (char))) == nullptr)
+        err (EXIT_FAILURE, nullptr);
 
     memcpy (s_ret, STATUS_CONFIG, ui_plen);
     memcpy (s_ret + ui_plen, dd_data->s_cfg_file, ui_clen);

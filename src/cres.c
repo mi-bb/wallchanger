@@ -33,29 +33,29 @@ cres (void        **v_ptr,
       const size_t  ul_num,
       const size_t  ul_size)
 {
-    void *s_tmp = NULL; /* Temp pointer for realloc */
+    void *s_tmp = nullptr; /* Temp pointer for realloc */
 
     if (ul_size == 0 || ul_num == 0) {
-        if (*v_ptr != NULL) {
+        if (*v_ptr != nullptr) {
             free (*v_ptr);
-            *v_ptr = NULL;
+            *v_ptr = nullptr;
         }
         return;
     }
     else {
-        if (*v_ptr == NULL) {
+        if (*v_ptr == nullptr) {
             *v_ptr = malloc (ul_num * ul_size);
 
-            if (*v_ptr == NULL) {
-                err (EXIT_FAILURE, NULL);
+            if (*v_ptr == nullptr) {
+                err (EXIT_FAILURE, nullptr);
             }
         }
         else {
             s_tmp = realloc (*v_ptr, ul_num * ul_size);
 
-            if (s_tmp == NULL) {
+            if (s_tmp == nullptr) {
                 free (*v_ptr);
-                err (EXIT_FAILURE, NULL);
+                err (EXIT_FAILURE, nullptr);
             }
             else {
                 *v_ptr = s_tmp;

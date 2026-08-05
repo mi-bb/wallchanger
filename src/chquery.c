@@ -286,11 +286,11 @@ cachequery_free (CacheQuery *cq_query)
 static void
 cachequery_init (CacheQuery *cq_query)
 {
-    cq_query->si_items      = NULL;
-    cq_query->s_file        = NULL;
-    cq_query->s_date        = NULL;
-    cq_query->s_query       = NULL;
-    cq_query->s_search_opts = NULL;
+    cq_query->si_items      = nullptr;
+    cq_query->s_file        = nullptr;
+    cq_query->s_date        = nullptr;
+    cq_query->s_query       = nullptr;
+    cq_query->s_search_opts = nullptr;
     cq_query->i_page        = 0;
     cq_query->i_found_cnt   = 0;
     cq_query->i_sicnt       = 0;
@@ -305,17 +305,17 @@ cachequery_new (const char *s_service_name,
                 const char *s_search_opts,
                 const int   i_page)
 {
-    CacheQuery *cq_query = NULL; /* CacheQuery to return */
+    CacheQuery *cq_query = nullptr; /* CacheQuery to return */
     struct tm  *tm_time;         /* For current date string */
     time_t      t_time;          /* For current date string */
     char        s_date[64];      /* Current date string */
 
-    if ((cq_query = malloc (sizeof (CacheQuery))) == NULL)
-        err (EXIT_FAILURE, NULL);
+    if ((cq_query = malloc (sizeof (CacheQuery))) == nullptr)
+        err (EXIT_FAILURE, nullptr);
 
     cachequery_init (cq_query);
 
-    t_time  = time (NULL);
+    t_time  = time (nullptr);
     tm_time = localtime (&t_time);
 
     strftime (s_date, 64, "%Y%m%d", tm_time);
@@ -343,7 +343,7 @@ void
 cachequery_append_item (CacheQuery *cq_query,
                         SearchItem *si_item)
 {
-    SearchItem **si_tmp = NULL; /* Temp pointer for malloc / realloc */
+    SearchItem **si_tmp = nullptr; /* Temp pointer for malloc / realloc */
     size_t       ui_alc = 0;    /* New alloc size */
 
     ui_alc = (size_t) (cq_query->i_sicnt + 1) * sizeof (SearchItem*);
@@ -352,8 +352,8 @@ cachequery_append_item (CacheQuery *cq_query,
              malloc (ui_alc) :
              realloc (cq_query->si_items, ui_alc);
 
-    if (si_tmp == NULL)
-        err (EXIT_FAILURE, NULL);
+    if (si_tmp == nullptr)
+        err (EXIT_FAILURE, nullptr);
 
     cq_query->si_items = si_tmp;
     cq_query->si_items[cq_query->i_sicnt] = si_item;
@@ -377,8 +377,8 @@ cachequery_check_query (const char *s_service_name,
     json_object *j_fnd_cnt;        /* For number of found images */
     json_object *j_items;          /* Array with image info data */
     json_object *j_val;            /* For array tith image info values */
-    CacheQuery  *cq_query = NULL;  /* Cached query data to return */
-    SearchItem  *si_item  = NULL;  /* For image info data */
+    CacheQuery  *cq_query = nullptr;  /* Cached query data to return */
+    SearchItem  *si_item  = nullptr;  /* For image info data */
     size_t       ui_cnt   = 0;     /* Number of elements in array */
     size_t       i        = 0;     /* i */
     int          i_goon   = 1;     /* Go on */
@@ -388,9 +388,9 @@ cachequery_check_query (const char *s_service_name,
     cq_query = cachequery_new (s_service_name, s_query, s_search_opts, i_page);
     sprintf (s_page, "%d", cq_query->i_page);
 
-    if ((j_obj = js_open_file (cq_query->s_file, NULL, i_err)) == NULL) {
+    if ((j_obj = js_open_file (cq_query->s_file, nullptr, i_err)) == nullptr) {
         cachequery_free (cq_query);
-        return NULL;
+        return nullptr;
     }
 
     if (i_goon) {
@@ -423,7 +423,7 @@ cachequery_check_query (const char *s_service_name,
 
             for (i = 0; i < ui_cnt; ++i) {
                 j_val = json_object_array_get_idx (j_items, i);
-                if (j_val != NULL) {
+                if (j_val != nullptr) {
                     si_item = chquery_json_to_searchitem (j_val);
                     cachequery_append_item (cq_query, si_item);
                 }
@@ -434,7 +434,7 @@ cachequery_check_query (const char *s_service_name,
     json_object_put (j_obj);
     if (!i_goon) {
         cachequery_free (cq_query);
-        cq_query = NULL;
+        cq_query = nullptr;
     }
     *i_err = ERR_OK;
     return cq_query;
@@ -452,14 +452,14 @@ cachequery_save (CacheQuery *cq_query)
     json_object   *j_per_page;        /* For per page */
     json_object   *j_val;             /* For getting values */
     json_object   *j_arr;             /* For array with items */
-    const char    *s_jbuff = NULL;    /* Json object as string */
+    const char    *s_jbuff = nullptr;    /* Json object as string */
     uint_fast32_t  ui_hash = 0;       /* Json data file hash */
     int            i_err   = ERR_OK;  /* For error output */
     char           s_page[10];        /* Page number as string */
 
     sprintf (s_page, "%d", cq_query->i_page);
 
-    if ((j_obj = js_open_file (cq_query->s_file, &ui_hash, &i_err)) == NULL)
+    if ((j_obj = js_open_file (cq_query->s_file, &ui_hash, &i_err)) == nullptr)
         return i_err;
 
     if (json_object_object_get_ex (j_obj, cq_query->s_date, &j_val) &&
@@ -518,16 +518,16 @@ cachequery_delete_older_than (const char *s_service_name,
     GDate        *gd_date;          /* GDate for date count */
     time_t        t_time;           /* time_t for date count */
     char          s_date_n[64];     /* Temp date string */
-    char        **s_dates = NULL;   /* List of dates not to delete */
-    char         *s_file  = NULL;   /* Name of file with query info */
-    const char   *s_jbuff = NULL;   /* Json file content buffer */
+    char        **s_dates = nullptr;   /* List of dates not to delete */
+    char         *s_file  = nullptr;   /* Name of file with query info */
+    const char   *s_jbuff = nullptr;   /* Json file content buffer */
     int           i       = 0;      /* i */
     int           i_ndel  = 0;      /* Item not to delete */
     int           i_err   = ERR_OK; /* For error output */
     uint_fast32_t ui_hash = 0;      /* Json file content hash */
 
     /* Get current date */
-    t_time  = time (NULL);
+    t_time  = time (nullptr);
     gd_date = g_date_new ();
 
     g_date_set_time_t (gd_date, t_time);
@@ -538,7 +538,7 @@ cachequery_delete_older_than (const char *s_service_name,
     str_append (&s_file, s_service_name);
     str_append (&s_file, ".json");
     /* Open service json config file */
-    if ((j_obj = js_open_file (s_file, &ui_hash, &i_err)) == NULL) {
+    if ((j_obj = js_open_file (s_file, &ui_hash, &i_err)) == nullptr) {
         free (s_file);
         return i_err;
     }

@@ -89,14 +89,14 @@ randomm_init (RandMem *rm_mem)
 {
     struct tm t_t0 = {0};
     double d_diff  = 0;
-    rm_mem->randm  = NULL;
+    rm_mem->randm  = nullptr;
     rm_mem->cnt    = 0;
     rm_mem->allocn = 0;
     rm_mem->range  = 0;
     t_t0.tm_year   = 100;
     t_t0.tm_mday   = 1;
 
-    d_diff = difftime (time (NULL), mktime (&t_t0));
+    d_diff = difftime (time (nullptr), mktime (&t_t0));
 
     srand ((unsigned int) d_diff);
 }
@@ -126,14 +126,14 @@ randomm_set_range (RandMem *rm_mem,
 
     rm_mem->range = ui_rng;
 
-    if (rm_mem->randm == NULL) {
+    if (rm_mem->randm == nullptr) {
         rm_mem->randm = malloc (rm_mem->allocn * sizeof (*rm_mem->randm));
     }
     else {
         rm_mem->randm = realloc (rm_mem->randm,
                                  rm_mem->allocn * sizeof (*rm_mem->randm));
     }
-    if (rm_mem->randm == NULL)
+    if (rm_mem->randm == nullptr)
         exit (EXIT_FAILURE);
 
     randomm_reset (rm_mem);
@@ -147,7 +147,7 @@ randomm_new (void)
 {
     RandMem *rm_mem;
 
-    if ((rm_mem = malloc (sizeof (RandMem))) == NULL)
+    if ((rm_mem = malloc (sizeof (RandMem))) == nullptr)
         exit (EXIT_FAILURE);
 
     randomm_init (rm_mem);

@@ -125,13 +125,13 @@ Setting {
  */
 /*----------------------------------------------------------------------------*/
 static inline SetValType    setting_get_type (const Setting *st_setting) {
-    return st_setting != NULL ? st_setting->v_type : SET_VAL_NULL;
+    return st_setting != nullptr ? st_setting->v_type : SET_VAL_NULL;
 }
 static inline const char  * setting_get_name (const Setting *st_setting) {
-    return st_setting != NULL ? st_setting->s_name : NULL;
+    return st_setting != nullptr ? st_setting->s_name : nullptr;
 }
 static inline uint_fast32_t setting_get_hash (const Setting *st_setting) {
-    return st_setting != NULL ? st_setting->hash : 0;
+    return st_setting != nullptr ? st_setting->hash : 0;
 }
 /*----------------------------------------------------------------------------*/
 /**
@@ -151,7 +151,7 @@ static inline uint_fast32_t setting_get_hash (const Setting *st_setting) {
  */
 /*----------------------------------------------------------------------------*/
 static inline Setting * setting_get_parent (const Setting *st_setting) {
-    return st_setting != NULL ? st_setting->parent : NULL;
+    return st_setting != nullptr ? st_setting->parent : nullptr;
 }
 
 Setting * setting_get_child  (const Setting *st_setting);
@@ -173,10 +173,10 @@ Setting * setting_get_child  (const Setting *st_setting);
  */
 /*----------------------------------------------------------------------------*/
 static inline Setting * setting_next (const Setting *st_setting) {
-    return st_setting != NULL ? st_setting->next : NULL;
+    return st_setting != nullptr ? st_setting->next : nullptr;
 }
 static inline Setting * setting_prev (const Setting *st_setting) {
-    return st_setting != NULL ? st_setting->prev : NULL;
+    return st_setting != nullptr ? st_setting->prev : nullptr;
 }
 /*----------------------------------------------------------------------------*/
 /**
@@ -244,7 +244,7 @@ static inline double       setting_get_double (const Setting *st_set) {
 }
 static inline const char * setting_get_string (const Setting *st_set) {
     return setting_get_type (st_set) == SET_VAL_STRING ? 
-        (const char *) st_set->data.s_val : NULL;
+        (const char *) st_set->data.s_val : nullptr;
 }
 /*----------------------------------------------------------------------------*/
 /**

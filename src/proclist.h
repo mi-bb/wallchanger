@@ -94,7 +94,7 @@ void             proclist_insert   (ProcList       *pl_list,
 /*----------------------------------------------------------------------------*/
 static inline const ProcItem * proclist_get_item (const ProcList *pl_list,
                                                   uint_fast32_t   pos) {
-    return pos < pl_list->cnt ? (const ProcItem *) pl_list->pi_list[pos] : NULL;
+    return pos < pl_list->cnt ? (const ProcItem *) pl_list->pi_list[pos] : nullptr;
 }
 static inline uint_fast32_t    proclist_get_cnt  (const ProcList *pl_list) {
     return pl_list->cnt;

@@ -36,8 +36,8 @@
 static void
 procitem_init (ProcItem *pi_item)
 {
-    pi_item->s_pid  = NULL;
-    pi_item->s_name = NULL;
+    pi_item->s_pid  = nullptr;
+    pi_item->s_name = nullptr;
 }
 /*----------------------------------------------------------------------------*/
 /**
@@ -89,10 +89,10 @@ procitem_free (ProcItem *pi_item)
 ProcItem *
 procitem_new (void)
 {
-    ProcItem *pi_new = NULL;
+    ProcItem *pi_new = nullptr;
 
-    if ((pi_new = malloc (sizeof (ProcItem))) == NULL)
-        err (EXIT_FAILURE, NULL);
+    if ((pi_new = malloc (sizeof (ProcItem))) == nullptr)
+        err (EXIT_FAILURE, nullptr);
 
     procitem_init (pi_new);
 

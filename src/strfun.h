@@ -127,7 +127,7 @@ void newline_to_space (char *s_str);
  * @return    1 if string is empty, 0 if not
  */
 static inline int str_is_empty (const char *s_str) {
-    return (s_str == NULL || s_str[0] == '\0');
+    return (s_str == nullptr || s_str[0] == '\0');
 }
 /*----------------------------------------------------------------------------*/
 #endif

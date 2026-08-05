@@ -32,18 +32,18 @@ NStrings *
 nstrings_new (const size_t ui_cnt,
               const int    i_type)
 {
-    NStrings *ns_data = NULL;
+    NStrings *ns_data = nullptr;
     size_t          i = 0;
 
-    if ((ns_data = malloc (sizeof (NStrings))) == NULL)
-        err (EXIT_FAILURE, NULL);
+    if ((ns_data = malloc (sizeof (NStrings))) == nullptr)
+        err (EXIT_FAILURE, nullptr);
 
-    if ((ns_data->s_str = malloc ((ui_cnt + 1) * sizeof (char*))) == NULL)
-        err (EXIT_FAILURE, NULL);
+    if ((ns_data->s_str = malloc ((ui_cnt + 1) * sizeof (char*))) == nullptr)
+        err (EXIT_FAILURE, nullptr);
 
     if (i_type == NS_VAL_NULL) {
         for (i = 0; i < ui_cnt; ++i) {
-            ns_data->s_str[i] = NULL;
+            ns_data->s_str[i] = nullptr;
         }
     }
     else {
@@ -53,7 +53,7 @@ nstrings_new (const size_t ui_cnt,
         }
     }
     ns_data->ui_cnt = ui_cnt;
-    ns_data->s_str[ui_cnt] = NULL;
+    ns_data->s_str[ui_cnt] = nullptr;
 
     return ns_data;
 }
