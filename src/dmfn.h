@@ -50,7 +50,7 @@ void dmfn_check_exit (void);
  *
  * @return none
  */
-void dmfn_print_status_exit (void) __attribute__ ((noreturn));
+[[noreturn]] void dmfn_print_status_exit (void);
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Start wchangerd process

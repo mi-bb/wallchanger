@@ -73,7 +73,7 @@ event_flickr_auth_link_generate (GtkWidget **gw_array)
     const char *s_req_sec = NULL; /* Request token secret */
     char       *s_uri     = NULL; /* Authorization url */
     flickcurl  *fc;
-    int rc __attribute__ ((unused)) = 0 ;
+    [[maybe_unused]] int rc = 0;
 
     s_cli_key = gtk_entry_get_text (GTK_ENTRY (gw_array[FLA_CLI_KEY]));
     s_cli_sec = gtk_entry_get_text (GTK_ENTRY (gw_array[FLA_CLI_SEC]));
@@ -124,7 +124,7 @@ event_flickr_access_keys_generate (GtkWidget **gw_array)
     const char *s_ath_sec  = NULL; /* Access token secret */
     const char *s_verifier = NULL; /* Verify code */
     flickcurl  *fc;
-    int rc __attribute__ ((unused)) = 0 ;
+    [[maybe_unused]] int rc = 0;
 
     s_cli_key  = gtk_entry_get_text (GTK_ENTRY (gw_array[FLA_CLI_KEY]));
     s_cli_sec  = gtk_entry_get_text (GTK_ENTRY (gw_array[FLA_CLI_SEC]));
@@ -237,7 +237,7 @@ flickr_create_file_name (const char *s_disp_name,
  * @brief  Error handler for Flickr.
  */
 static void
-my_message_handler(void *user_data __attribute__ ((unused)),
+my_message_handler([[maybe_unused]] void *user_data,
                    const char *message)
 {
     warnx ("Flicr error : %s\n", message);

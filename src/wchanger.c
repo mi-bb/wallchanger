@@ -693,7 +693,7 @@ event_save_settings_pressed (const DialogData *dd_data)
 static void
 event_img_list_activated (GtkTreeView       *tree_view,
                           GtkTreePath       *path,
-                          GtkTreeViewColumn *column __attribute__ ((unused)),
+                          [[maybe_unused]] GtkTreeViewColumn *column,
                           GtkWidget         *gw_img_prev)
 {
     GtkTreeModel *gtm_model; /* TreeModel */
@@ -715,7 +715,7 @@ event_img_list_activated (GtkTreeView       *tree_view,
  * @brief  React to key pressed in TreeView.
  */
 static gboolean
-event_treeview_key_press (GtkWidget        *widget __attribute__ ((unused)),
+event_treeview_key_press ([[maybe_unused]] GtkWidget *widget,
                           GdkEventKey      *event,
                           const DialogData *dd_data)
 {
@@ -805,7 +805,7 @@ event_command_button_pressed (const DialogData *dd_data)
  */
 static void
 event_autostart_toggled (GtkToggleButton *togglebutton,
-                         gpointer         user_data __attribute__ ((unused)))
+                         [[maybe_unused]] gpointer user_data)
 {
     gtk_toggle_button_get_active (togglebutton) ?
         cfgfile_autostart_create () :
@@ -817,7 +817,7 @@ event_autostart_toggled (GtkToggleButton *togglebutton,
  */
 static gboolean
 event_on_delete (GtkWidget        *window,
-                 GdkEvent         *event __attribute__ ((unused)),
+                 [[maybe_unused]] GdkEvent *event,
                  const DialogData *dd_data)
 {
     GtkWidget *dialog;        /* Question dialog */
@@ -1460,7 +1460,7 @@ activate (GtkApplication *app,
  * @brief  Application shutdown signal.
  */
 static void
-shutdown (GtkApplication *application __attribute__ ((unused)),
+shutdown ([[maybe_unused]] GtkApplication *application,
           DialogData     *dd_data)
 {
     dialogdata_free (dd_data);
@@ -1470,7 +1470,7 @@ shutdown (GtkApplication *application __attribute__ ((unused)),
  * @brief  Handling command line options.
  */
 static gint
-local_options (GApplication *application __attribute__ ((unused)),
+local_options ([[maybe_unused]] GApplication *application,
                GVariantDict *options,
                DialogData   *dd_data)
 {

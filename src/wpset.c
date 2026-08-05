@@ -76,8 +76,8 @@ static void
 wallpaper_set_file (const char *s_cmd,
                     const char *s_wall)
 {
-    char *s_cmdn = NULL;                      /* Wallpaper set command */
-    int   i_res __attribute__ ((unused)) = 0; /* Result of system command */
+    char *s_cmdn = NULL;              /* Wallpaper set command */
+    [[maybe_unused]] int i_res = 0;   /* Result of system command */
 
     s_cmdn = str_set_up_wallpaper_command (s_cmd, s_wall, "[F]");
 

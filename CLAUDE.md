@@ -25,7 +25,7 @@ make install
 Recommended configure invocation for daily development builds:
 
 ```sh
-./configure CC="gcc" CFLAGS="-march=native -O2 -pipe -std=gnu17" --prefix=/usr
+./configure CC="gcc" CFLAGS="-march=native -O2 -pipe -std=gnu23" --prefix=/usr
 ```
 
 Build artifacts (`Makefile`, `configure`, `config.h`, `autom4te.cache/`, etc.) are generated and gitignored — do not hand-edit them; edit `configure.ac` / `Makefile.am` instead and rerun `autogen.sh`.

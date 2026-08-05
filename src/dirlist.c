@@ -68,7 +68,7 @@ static const char *
 get_file_ext (const char *s_fn)
 {
     const char *s_ext = NULL; /* Pointer to extension in string */
-    char       *s_p   = NULL; /* Pointer to first right . */
+    const char *s_p   = NULL; /* Pointer to first right . */
 
     if (s_fn == NULL)
         return NULL;

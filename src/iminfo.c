@@ -70,11 +70,11 @@ imageinfo_new (void)
 ImageInfo *
 imageinfo_new_from_file (const char *s_fname)
 {
-    ImageInfo *ii_info = NULL; /* Result ImageInfo */
-    char      *s_path  = NULL; /* String for file path */
-    char      *s_p     = NULL; /* Pointer to right position of / */
-    int        i_w     = 0;    /* Image width */
-    int        i_h     = 0;    /* Image height */
+    ImageInfo  *ii_info = NULL; /* Result ImageInfo */
+    char       *s_path  = NULL; /* String for file path */
+    const char *s_p     = NULL; /* Pointer to right position of / */
+    int         i_w     = 0;    /* Image width */
+    int         i_h     = 0;    /* Image height */
 
     ii_info = imageinfo_new ();
     imageinfo_set_file_path (ii_info, s_fname);

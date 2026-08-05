@@ -31,16 +31,17 @@
  * @def   PROC_LINUX_CMDLINE
  * @brief Read from cmdline file instead from comm
  *
- * @def   PROC_OPT_NONE
+ * @var   PROC_OPT_NONE
  * @brief No special options for finding processes
  *
- * @def   PROC_OPT_CHK_FIRST
+ * @var   PROC_OPT_CHK_FIRST
  * @brief Stops searching for process when first one is found
  */
+/* Used in #if, must stay a macro. */
 #define PROC_LINUX_CMDLINE 0
 
-#define PROC_OPT_NONE           0x00
-#define PROC_OPT_CHK_FIRST      0x01
+constexpr int PROC_OPT_NONE      = 0x00;
+constexpr int PROC_OPT_CHK_FIRST = 0x01;
 /*----------------------------------------------------------------------------*/
 /**
  * @fn  ProcList * process_get_opt (uid_t       uid_id,

@@ -109,7 +109,7 @@ dmfn_print_status_exit (void)
 void
 dmfn_start (void)
 {
-    int i_res __attribute__ ((unused)) = 0; /* Result of system command */
+    [[maybe_unused]] int i_res = 0; /* Result of system command */
     i_res = system ("wchangerd --start &");
 }
 /*----------------------------------------------------------------------------*/

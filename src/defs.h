@@ -52,68 +52,68 @@
  * @def   DEFAULT_BG_CMD
  * @brief Default command to set wallpapers
  *
- * @def   DEFAULT_INTERVAL_VAL
+ * @var   DEFAULT_INTERVAL_VAL
  * @brief Default wallpaper change interval
  *
- * @def   DEFAULT_LAST_USED_OPT
+ * @var   DEFAULT_LAST_USED_OPT
  * @brief Default setting for setting last used wallpaper on start
  *
- * @def   DEFAULT_RANDOM_OPT
+ * @var   DEFAULT_RANDOM_OPT
  * @brief Default setting for random wallpaper change
  *
- * @def   DEFAULT_TIME_ALIGN_OPT
+ * @var   DEFAULT_TIME_ALIGN_OPT
  * @brief Default setting for time align
  *
  * @def   DEFAULT_LAST_USED_WM
  * @brief Default setting for last used window manager
  *
- * @def   DEFAULT_THUMB_QUALITY
+ * @var   DEFAULT_THUMB_QUALITY
  * @brief Default thumbnail jpg quality
  */
 /*----------------------------------------------------------------------------*/
-#define DEFAULT_BG_CMD        "feh --bg-fill \"[F]\""
-#define DEFAULT_INTERVAL_VAL   30
-#define DEFAULT_LAST_USED_OPT  0
-#define DEFAULT_RANDOM_OPT     0
-#define DEFAULT_TIME_ALIGN_OPT 0
-#define DEFAULT_LAST_USED_WM   "Unknown"
-#define DEFAULT_THUMB_QUALITY  96
+#define DEFAULT_BG_CMD               "feh --bg-fill \"[F]\""
+constexpr int DEFAULT_INTERVAL_VAL   = 30;
+constexpr int DEFAULT_LAST_USED_OPT  = 0;
+constexpr int DEFAULT_RANDOM_OPT     = 0;
+constexpr int DEFAULT_TIME_ALIGN_OPT = 0;
+#define DEFAULT_LAST_USED_WM         "Unknown"
+constexpr int DEFAULT_THUMB_QUALITY  = 96;
 /*----------------------------------------------------------------------------*/
 /**
- * @def   IMGS_ON_PAGE
+ * @var   IMGS_ON_PAGE
  * @brief Number of images to show on one page
  *
- * @def   SEL_TH_WIDTH
+ * @var   SEL_TH_WIDTH
  * @brief Thumbnail width size for selected images combo list
  *
- * @def   SEL_TH_HEIGHT
+ * @var   SEL_TH_HEIGHT
  * @brief Thumbnail height size for selected images combo list
  */
 /*----------------------------------------------------------------------------*/
-#define IMGS_ON_PAGE  12
+constexpr int    IMGS_ON_PAGE  = 12;
 
-#define SEL_TH_WIDTH  50.0
-#define SEL_TH_HEIGHT 50.0
+constexpr double SEL_TH_WIDTH  = 50.0;
+constexpr double SEL_TH_HEIGHT = 50.0;
 /*----------------------------------------------------------------------------*/
 /**
- * @def   DEFAULT_WIN_WIDTH
+ * @var   DEFAULT_WIN_WIDTH
  * @brief Default settings dialog window width
  *
- * @def   DEFAULT_WIN_HEIGHT
+ * @var   DEFAULT_WIN_HEIGHT
  * @brief Default settings dialog window height
  *
- * @def   DEFAULT_WEB_DLG_WIDTH
+ * @var   DEFAULT_WEB_DLG_WIDTH
  * @brief Default wallpaper web search dialog width
  *
- * @def   DEFAULT_WEB_DLG_HEIGHT
+ * @var   DEFAULT_WEB_DLG_HEIGHT
  * @brief Default wallpaper web search dialog height
  */
 /*----------------------------------------------------------------------------*/
-#define DEFAULT_WIN_WIDTH      1024
-#define DEFAULT_WIN_HEIGHT     768
+constexpr int DEFAULT_WIN_WIDTH      = 1024;
+constexpr int DEFAULT_WIN_HEIGHT     = 768;
 
-#define DEFAULT_WEB_DLG_WIDTH  1200
-#define DEFAULT_WEB_DLG_HEIGHT 800
+constexpr int DEFAULT_WEB_DLG_WIDTH  = 1200;
+constexpr int DEFAULT_WEB_DLG_HEIGHT = 800;
 /*----------------------------------------------------------------------------*/
 /**
  * @def   PTH_SEP

@@ -25,34 +25,34 @@
 #define CMDFN_H
 /*----------------------------------------------------------------------------*/
 /**
- * @def   CMD_OPT_NONE
+ * @var   CMD_OPT_NONE
  * @brief No option set
  *
- * @def   CMD_OPT_START
+ * @var   CMD_OPT_START
  * @brief Start option given
  *
- * @def   CMD_OPT_STOP
+ * @var   CMD_OPT_STOP
  * @brief Stop option given
  *
- * @def   CMD_OPT_RESTART
+ * @var   CMD_OPT_RESTART
  * @brief Restart option given
  *
- * @def   CMD_OPT_STATUS
+ * @var   CMD_OPT_STATUS
  * @brief Status option given
  *
- * @def   CMD_OPT_CONFIG
+ * @var   CMD_OPT_CONFIG
  * @brief Config path given
  *
- * @def   CMD_OPT_ONCE
+ * @var   CMD_OPT_ONCE
  * @brief Run once and exit option given
  */
-#define CMD_OPT_NONE    0x00
-#define CMD_OPT_START   0x01
-#define CMD_OPT_STOP    0x02
-#define CMD_OPT_RESTART 0x04
-#define CMD_OPT_STATUS  0x08
-#define CMD_OPT_CONFIG  0x10
-#define CMD_OPT_ONCE    0x20
+constexpr int CMD_OPT_NONE    = 0x00;
+constexpr int CMD_OPT_START   = 0x01;
+constexpr int CMD_OPT_STOP    = 0x02;
+constexpr int CMD_OPT_RESTART = 0x04;
+constexpr int CMD_OPT_STATUS  = 0x08;
+constexpr int CMD_OPT_CONFIG  = 0x10;
+constexpr int CMD_OPT_ONCE    = 0x20;
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Parse command line options, set i_opt and s_cfgpath.
