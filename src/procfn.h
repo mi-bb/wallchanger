@@ -232,14 +232,14 @@ void       process_kill_except_current (const char *s_name);
  * @param[in] i_exc_pid  Exclude process pid
  * @return    Number of killed processes.
  *
- * @fn  void process_kill_all (const char *s_name)
+ * @fn  int process_kill_all (const char *s_name)
  *
  * @brief  Kill all current user processes with name given in s_name string.
  *
  * @param[in] s_name  Name of process to kill
  * @return    Number of killed processes.
  *
- * @fn  void process_kill_all_except_current (const char *s_name)
+ * @fn  int process_kill_all_except_current (const char *s_name)
  *
  * @brief  Kills all processes like process_kill without killing current
  *         process.

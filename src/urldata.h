@@ -129,7 +129,7 @@ UrlData * urldata_search_wallhaven (const char *s_query,
  *
  * @param[in] s_query        Search query
  * @param[in] s_search_opts  Search options
- * @param[in] s_api_key      Wallhaven API key
+ * @param[in] s_api_key      Wallpaper Abyss API key
  * @param[in] i_page         Results page number
  * @return    UrlData item with downloaded data or error info
  */

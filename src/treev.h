@@ -72,14 +72,12 @@
  * @param[in] gw_tview   TreeView from which data should be taken
  * @return    List with  ImageInfo data of TreeView's TreeModel items
  *
- * @fn void treeview_get_setting_data (GtkWidget     *gw_tview,
-                                       const Setting *st_wallpapers)
-
+ * @fn  Setting * treeview_get_setting_data (GtkWidget *gw_tview)
+ *
  * @brief  Get data out of TreeView to Setting list.
  *
- * @param[in]  gw_tview       TreeView with wallpapers
- * @param[out] st_wallpapers  List to insert Setting items with file paths
- * @return     none
+ * @param[in] gw_tview  TreeView with wallpapers
+ * @return    New Setting list with file paths of items in TreeView
  */
 /*----------------------------------------------------------------------------*/
 void        treeview_add_items_glist     (GtkWidget      *gw_tview,

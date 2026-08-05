@@ -80,8 +80,9 @@ Setting * wms_get_wm_info            (int        *i_err);
  *
  * @param[in]  st_wmsl  List of Setting items
  *
- * return     Setting item with info about window manager.
- *            After use it should be freed using free.
+ * @return     Setting item with info about window manager, pointing into
+ *             st_wmsl. It must not be freed separately - it stays owned by
+ *             st_wmsl.
  */
 const Setting * wms_get_current_wm   (const Setting *st_wmsl);
 /*----------------------------------------------------------------------------*/

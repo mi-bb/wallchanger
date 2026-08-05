@@ -86,12 +86,12 @@ Setting *    setts_read           (const char *s_cfg_file,
  * @return    Status of data update
  *
  * @fn  int setts_update_last_used_wm (const char *s_cfg_file,
- *                                     const int   i_last_used_wm)
+ *                                     const char *s_last_used_wm)
  *
- * @brief  Update last used window manager value in config file. 
+ * @brief  Update last used window manager value in config file.
  *
  * @param[in] s_cfg_file      Config file path
- * @param[in] i_last_used_wm  Last used window manager
+ * @param[in] s_last_used_wm  Last used window manager name
  * @return    Status of data update
  *
  * @fn  int setts_update_window_size (const char *s_cfg_file,
