@@ -1,0 +1,529 @@
+# Changelog
+
+Copyright (C) 2019-2026 Michał Bąbik
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program. If not, see <https://www.gnu.org/licenses/>.
+
+## 2021-05-04 — Michal Babik <michal.babik@pm.me>
+
+- `dlgothsett.c` (`event_open_dir_from_label`): Added i_res result value for system command for compiler to not complain.
+
+## 2021-05-03 — Michal Babik <michal.babik@pm.me>
+
+- `dlgothsett.c` (`event_open_dir_from_label`): New function for opening directory from given label. (`other_settings_dialog`): Added open path buttons.
+- `other/Makefile.am`: Added uninstall hook for removing app share directory during uninstall.
+
+## 2021-01-22 — Michal Babik <michal.babik@pm.me>
+
+- `dlgcmd.c`: gw_cmd_widgets enum for command dialog widget array. (`preview_combo`): Removed use of gl_ii variable. (`event_get_saved_button_clicked`, `event_get_default_button_clicked`, `event_save_command_button_clicked`, `event_test_button_clicked`, `cmddialog_run`): Changed to use array enum values to get widget.
+- `iminfo.c` (`file_paths_to_imageinfo`): Removed use of gsl_files variable.
+- `jsfun.c` (`js_settings_add_to_json_obj`): Removed use of st_main variable.
+- `treev.c` (`treeview_add_items_glist`): Removed use of gl_fl variable. (`treeview_add_items_gslist`): Removed use of gl_fl variable. (`treeview_add_items_setting`): Removed use of st_item variable.
+- `wcngdmn.c` (`main`): Simplified if statement in while loop.
+- `webwidget.c` (`download_progress_window`): Removed use of gl_item variable.
+
+## 2020-12-19 — Michal Babik <michal.babik@pm.me>
+
+- `chkwch.c` (`check_time_align_val`): Moved some stuff from `wcngdmn.c`, added ui_ch_int, ui_cnt to parameters list. (`check_config_file`, `chk_setts_ch_wall`): Changed error exit codes.
+- `cmdfn.c` (`cmdfn_parse`): Removed unused attribute from s_cfgpath parameter. Changed some error exit codes.
+- `dmfn.c` (`dmfn_print_status_exit`): Added exit.
+- `dmfn.h` (`dmfn_print_status_exit`): Added noreturn attribute.
+- `errs.c`, `errs.h` (`err_ex_code`): New function for getting exit error code based on program error code.
+- `rwdt.c` (`read_file_data`): Added zeroing errno.
+- `wcngdmn.c` (`main`): Removed ui_atime_val and some other not needed now parts of code. Added checking for sleep value to prevent from double wallpaper change on full hour when using time align.
+
+## 2020-12-15 — Michal Babik <michal.babik@pm.me>
+
+- `procfn.c` (`read_proc_file_data`): Changed reading type from reading until eof to reading just bunch of data. Once a while it could not read eof in a proc comm file and got stuck in an infinite loop.
+
+## 2020-12-07 — Michal Babik <michal.babik@pm.me>
+
+- `cfgfile.c` (`cfgfile_find_config_file`): Config file list moved to function, removed list parameter. (`cfgfile_config_file_stuff`): Function simplified.
+- `dlgcmd.c`, `dlgcmd.h`: Functions to set wallpaper change command moved here from `dlgs.c`, `dlgs.h`.
+- `dlgothsett.c`, `dlgothsett.h`: Other settings dialog and functions moved here from `dlgs.c`, `dlgs.h`.
+- `imgs.c`: Updated setting icon.
+- `wchanger.c` (`event_interval_changed`): Changed interval combo decsription setting.
+- `webabyss.c`, `webabyss.h` (`wallpaperabyss_search`, `wallpaperabyss_settings_dialog`): FourStrings parameter changed to NStrings.
+- `webflickr.c`, `webflickr.h` (`flickr_search`, `flickr_settings_dialog`): FourStrings parameter changed to NStrings.
+- `webpexels.c`, `webpexels.h` (`pexels_search`, `pexels_settings_dialog`): FourStrings parameter changed to NStrings.
+- `webpixbay.c`, `webpixbay.h` (`pixbay_search`, `pixbay_settings_dialog`): FourStrings parameter changed to NStrings.
+- `webwallhaven.c`, `webwallhaven.h` (`wallhaven_search`, `wallhaven_settings_dialog`): FourStrings parameter changed to NStrings.
+- `webwidget.c` (`combo_get_active_strings`, `combo_set_active_strings`): FourStrings parameter changed to NStrings. (`search_web`, `event_settings_pressed`, `webwidget_combobox_create`): FourStrings changed to NStrings.
+- `webwidget_c.c` (`ww_get_api_key_names`, `ww_get_api_key_data`): Return type changed from FourStrings to NStrings. (`ww_update_api_key_data`): FourStrings parameter changed to NStrings.
+- `wmsfn.c` (`wms_get_wallpaper_command`): Function simplified.
+
+## 2020-11-14 — Michal Babik <michal.babik@pm.me>
+
+- `nstrings.c`, `nstrings.h`: Created based on previous fourstrings. Files with functions to create n strings item. Changed calls in files that used fourstrings.
+
+## 2020-11-13 — Michal Babik <michal.babik@pm.me>
+
+- `webflickr.c` (`flickr_search`): Fixed searching, changed adding of SearchItem to CacheQuery item.
+- webwidget (`search_web`): Corrected showing page number when getting data from cache.
+- `setting.c`, `setting.h`: Removed setting_copy. Added SET_VAL_NULL to SetValType. (`setting_get_type`, `setting_get_name`, `setting_get_hash`, `setting_get_parent`, `setting_next`, `setting_prev`): Changed to handle null setting. (`setting_remove`, `setting_replace`, `settings_find_replace`, `settings_prepend`, `settings_append`, `settings_append_or_replace`): Functions return begining of setting list.
+- `treev.c` (`create_tview`): Set dynamic search column to file name.
+- Other code updates I forgot to mention.
+
+## 2020-11-08 — Michal Babik <michal.babik@pm.me>
+
+- `dirlist.c` `dirlist.h` (`dirlist_get_directory_size`): renamed to dirlist_get_dir_size. (`dirlist_delete_directory_content`): renamed to dirlist_delete_dir_content.
+- `imgs.c`, `imgs.h`: Added Wallpaper Abyss logo.
+- `rwdt.c`, `rwdt.h` (`read_file_data`): Changed type of i_hash to uint_fast32_t.
+- `setts.c`, `setts.h`: Added Wallpaper Abyss API saving and getting.
+- `urldata.c`, `urldata.h` (`urldata_search_wallabyss`): New function for searching on Wallpaer Abyss.
+- `wcngdmn.c` (`main`): Added ui_sleep for storing sleep value.
+- `webabyss.c`, `webabyss.h`: New files used for searching wallpapers on Wallpaper Abyss site.
+- `webwidget.c`, `webwidget_c.c`: Added support for Wallpaper Abyss.
+
+## 2020-10-26 — Michal Babik <michal.babik@pm.me>
+
+- `chquery.c` (`cachequery_check_query`, `cachequery_save`): Change in checking for and saving query. Velue per page is a container obj not a value.
+- `imgs.c`, `imgs.h`: Added wallhaven logo.
+- `searchitem.c`, `searchitem.h`: Removed integer id value, id is stored and used only as a string.
+- `setts.c`, `setts.h` (get_setting_name, setts_check_defaults, setts_update_wallhaven_api, ): Added wallhaven settings saving and checking.
+- `urldata.c`, `urldata.h` (`urldata_search_wallhaven`): Function to search for images on wallhaven.
+- `webwallhaven.c`, `webwallhaven.h`: New files with functions to search for images on the wallhaven site.
+- `webwidget.c` (`sel_combo_check_exist`): Changed to compare id strings instead of integers. (`search_web`, `event_settings_pressed`, `webwidget_combobox_create`, `webwidget_selected_combobox_create`, `event_imgview_activated`, `webwidget_imgview_create`, `webwidget_create`): Added wallhaven support. (`event_add_selected_pressed`): Changed so it uses id string instead of integer.
+- `webwidget_c.c` (`add_searchitem_to_img_view`): Changed to use id string not an integer.
+
+## 2020-10-25 — Michal Babik <michal.babik@pm.me>
+
+- `jsfun.c` (`js_settings_read`, `js_settings_check_for_update`): Changed to get info by js_open_file.
+- `jsof.c`, `jsof.h`: New files with json file open functions.
+- `rwdt.c`, `rwdt.h` (`read_file_data_hash`): Function removed, getting hash moved to read_file_data function.
+- `webflickr.c` (`flickr_search`): Added checking for query info in cached data and saving query info in cache.
+- `webpexels.c` (`pexels_json_to_webwidget`): Added adding SearchInfo items to list.
+- `webpexels.c` (`pexels_search`): Added checking for query info in cached data and saving query info in cache.
+- `webpixbay.c` (`pixbay_json_to_webwidget`): Added adding SearchInfo items to list.
+- `webpixbay.c` (`pixbay_search`): Added checking for query info in cached data and saving query info in cache.
+- `webwidget_c.c`, `webwidget_c.h`: Renamed from `webwidget_common.c` `webwidget_common.h`
+
+## 2020-10-23 — Michal Babik <michal.babik@pm.me>
+
+- `cfgfile.c`, `cfgfile.h` (`cfgfile_get_query_path`): New function for getting cached query directory.
+- `chquery.c`, `chquery.h`: New files with structure and functions for checking and saving information about cached search query.
+- `searchitem.c`, `searchitem.h` (`searchitem_set_author_url`): Setter for image author string.
+- `webflickr.c` (`flickr_search`): Modified for checking and saving cached query info.
+- `webpexels.c` (`pexels_search`, `pexels_json_to_webwidget`): Modified for checking and saving cached query info.
+- `webpixbay.c` (`pixbay_search`, `pixbay_json_to_webwidget`): Modified for checking and saving cached query info.
+- `webwidget_common.c`, `webwidget_common.h` (`check_for_cached_query`): Functionf for checking cached query existence.
+
+## 2020-10-22 — Michal Babik <michal.babik@pm.me>
+
+- wcngdmn (`main`): When using time align added setting of wait time to change interval when it was 0.
+
+## 2020-10-18 — Michal Babik <michal.babik@pm.me>
+
+- `cfgfile.c`, `cfgfile.h` (`cfgfile_get_app_thumbnails_path`): New function to get application thumbnails directory. (`cfgfile_get_image_info_path`): New function for getting image info directory.
+- `defs.h`: Changed path defines, changed functions which call them.
+- `fdfn.c`, `fdfn.h` (`dir_get_autostart`): Function to get user's autostart path.
+- `randomm.c`, `randomm.h`: Updated random functions.
+- `searchitem.c`, `searchitem.h`: Added s_service_name string to store image service name. (`searchitem_set_service_name`): Setter for service name.
+- `webflickr.c` (`flickr_create_file_name`): Changed file saving, added image id to file name.
+- `webwidget_common.c`, `webwidget_common.h` (`add_searchitem_to_img_view`): Added checking if selected background was downloaded and is in application wallpapers directory.
+- `webwidget_s.h`: Added s_wallp_dir to WebWidget structure for storing wallpaper directory path.
+
+## 2020-10-14 — Michal Babik <michal.babik@pm.me>
+
+- `imgs.c`: Some images changed to svg, some compacted.
+
+## 2020-10-13 — Michal Babik <michal.babik@pm.me>
+
+- `cfgfile.c`, `cfgfile.h` (`cfgfile_get_app_cache_path`): New function for getting application cache directory.
+- `imgs.c`, `imgs.h`: Added service images.
+- `searchitem.c`, `searchitem.h`: Added s_id, s_author_name, s_author_url to SearchItem structure with setters.
+- `setts.c`, `setts.h`: Added Pixbay search config values setting.
+- `strfun.h` (`str_is_empty`): New function to check if string is empty.
+- `urldata.c`, `urldata.h` (`urldata_search_pixbay`): New function for searching in Pixbay.
+- `webflickr.c`: Some code updates.
+- `webpexels.c`: Some code updates.
+- `webwidget.c` (`search_web`, `event_settings_pressed`, `webwidget_combobox_create`): Added handling of Pixbay search. (`event_search_pressed`): Added checking string for unicode and alphanumeric chars. (`event_imgview_activated`): Function added for setting image info widgets. (`webwidget_imageinfo_create`): New function, creates image info widgets.
+- `webwidget_s.h`: Added widgets for image info gw_ii_widget, gw_ii_simage, gw_ii_author_label, gw_ii_page_link, gw_ii_dim_label
+
+## 2020-10-08 — Michal Babik <michal.babik@pm.me>
+
+- `fourstrings.c`, `fourstrings.h`: New files with four strings structure.
+- `webflickr.c`, `webflickr.h`: New files with Flickr search functions and widgets.
+- `webpexels.c`, `webpexels.h`: Pexels search stuff moved here.
+- `webwidget_common.c`, `webwidget_common.h`: New files with functions, enums used for web search.
+- `webwidget_s.h`: Webwidget structure.
+
+## 2020-10-02 — Michal Babik <michal.babik@pm.me>
+
+- `cmdline.c`, `cmdline.h`: Uploaded correct version, somehow older version got here, there was wrong version showing in daemon.
+
+## 2020-09-29 — Michal Babik <michal.babik@pm.me>
+
+- `webwidget.c` (`combo_set_active_str`): Corrected bad setting api key.
+
+## 2020-09-27 — Michal Babik <michal.babik@pm.me>
+
+- `cfgfile.c`: New define of app wallpaper path PATH_WALLPAPERS. (`cfgfile_get_app_wallpaper_path`): Function for getting app wallpaper
+- `defs.h`: DEFAULT_WEB_DLG_WIDTH, DEFAULT_WEB_DLG_HEIGHT default value for wallpaper search dialog dimensions.
+- `dirlist.c` (`get_directory_filtered_content_glist`): Changed adding items to list from append to prepend-reverse.
+- `dlgs.c` (`add_images_from_web_dilaog`): Dialog for getting wallpapers from web. (`about_app_dialog`): Added parent dialog setting.
+- `dlgsmsg.c`, `dlgsmsg.h`: Message dialog moved here from `dlgs.c`, `dlgs.h`
+- `fsfn.c`, `fdfn.h` (`dir_get_temp`): New function for getting temp dir. (`dir_get_cache`): Function for getting user's cache dir. (`dir_get_home_data`): Function for getting user's home data dir. (`dir_create_with_subdirs`): Function for creating dir with subdirectories.
+- `imgs.c`, `imgs.h`: Added icon for web page image search.
+- `randomm.c`, `randomm.h` (`randomm_new_with_range`): New function for creating new randmem item with given range.
+- `searchitem.c`, `searchitem.h`: New file with SearchItem structiure and functions for storing wallpaper web search results.
+- `setts.c`, `setts.h` (`get_setting_name`, `setts_check_defaults`, `setts_update_pexels_api`, `setts_update_web_dlg_size`): Added handling of web search dialog dimensions and Pexels API key.
+- `treev.c` (`create_tview`): Added column with image location.
+- `urldata.c`, `urldata.h`: New file with structure and functions for handling data download using curl.
+- `wchanger.c` (`event_add_img_web_pressed`): Running web wallpaper search dialog. (`create_buttons_widget`): Added button for web wallpaper search, changed about app dialog call.
+- `webwidget.c`, `webwidget.h`: New file with structure and functions for wallpaper web search.
+
+## 2020-08-26 — Michal Babik <michal.babik@pm.me>
+
+- `chkwch.c` (`check_settings_change_wallpaper`): Removed call to randomm_init as it is not deede now, changed range type in randomm_set_range to size_t.
+- `randomm.c`, `randomm.h`: Changed RandMem structure, array of integers for storing randomed numbers changed to pointer, it is now dynamically changed when setting new range. (`randomm_check_number`, `randomm_set_number`, `randomm_init`, `randomm_get_number`): Functions adapted to use new RandMem structure. (`randomm_reset`): New function for reseting memory of randomed numbers. (`randomm_clear`): Function removed. (`randomm_set_range`): Changed, it allocates integers for storing randomed numbers, sets number of alloced integers and range. (`randomm_free`): Added freeing of random numbers data.
+- `wpset.c` (`wallpaper_set_random`): Changed i_pos to ui_pos, type to size_t.
+
+## 2020-08-07 — Michal Babik <michal.babik@pm.me>
+
+- `cfgfile.c` (`cfgfile_find_app_data_path`): New function for looking for application directory in system data directories. (`cfgfile_config_file_stuff`): Removed .config from paths, .config is added by dir_get_home_config, dir_get_home changed to dir_get_home_config. (`cfgfile_get_autostart_file_path`): Renamed to cfgfile_get_autostart_home_path. (`cfgfile_get_wm_info_file_path`): Renamed to cfgfile_get_wm_info_home_path. (`cfgfile_get_wm_info_data_path`): New function which returns path to window manager info file in system data directory. (`cfgfile_autostart_exists`): New function that checks for user's wchangerd autostart file existence. (`cfgfile_autostart_create`): New function which copies autostart file for wchangerd from wchanger system data dir to user's autostart dir. (`cfgfile_autostart_remove`): New function, removes wchangerd autostart file from user's autostart dir.
+- `deffiles.c`, `deffiles.h`: Files removed from project.
+- `dlgs.c` (`event_get_default_button_clicked`): Changed loading default data, now it is loaded from file in system data dir instead of program resource. (`event_save_command_button_clicked`): Setting command data in wm combobox if updating was successful. (`cmddialog_run`): Removed checking for new wms, it is done on config dialog startup instead, changed to loading data only.
+- `fdfn.c` (`dir_get_data`): New function for getting system data dirs. (`dir_get_home_config`): New function for getting user's config dir. (`dir_get_home`): Changed to static as it is not being used outside anymore. (`dir_check_permissions`): Removed static and added in .h file.
+- `jsfun.c` (`js_settings_check_for_update`): Function does not return null if checked file does not exist.
+- `rwdt.c` (`read_file_data`): Added setting error value to ERR_FILE_EX if file to read doesn't exist.
+- `setting.h` (`settings_equal_names`): New function for checking names of 2 settings if they are equal.
+- `setts.c` (`setts_string_to_settings`): Removed, not needed anymore.
+- `strfun.c` (`str_comb`, `str_append`): Minor updates, changed to copy null sign from source strings instead of setting them after to 0;
+- `wchanger.c` (`create_settings_widget`): Changed call of deffiles_autostart_exists to cfgfile_autostart_exists. (`activate`): Changed checking for wm info files from deffiles_wm_check_create to wms_check_for_new_wms. Now it checks presence of new wm info in users config file with config file in wchanger wm info file in system data dir, instead of data in program resource.
+- `wmsfn.c` (`wms_update_wm_config`): cfgfile_get_wm_info_file_path changed to cfgfile_get_wm_info_home_path. (`wms_get_wm_info`): Renamed to wms_get_wm_info_home, cfgfile_get_wm_info_file_path changed to cfgfile_get_wm_info_home_path. (`wms_get_wm_info_data`): New function for getting wm info data from default info file in wchanger system data dir. (`wms_get_wm_info`): Function gets info from user's wm info file, if it fails, function gets data from default data file in wchanger system data dir. (`wms_update_wm_command`): cfgfile_get_wm_info_file_path changed to cfgfile_get_wm_info_home_path. (`wms_check_for_new_wms`): Chaned to check for new wm info with file in wchanger system data dir instead of program resource.
+
+## 2020-07-14 — Michal Babik <michal.babik@pm.me>
+
+- `dialogdata.c`, `dialogdata.h` (`dialogdata_get_cfg_file`): Changed to static inline.
+- `procfn.c`, `procfn.h` (`process_get`): Changed to static inline. (`process_exists`, `process_exists_b`, `process_count`, `process_count_except_current`, `process_kill`, `process_kill_except_current`, `process_kill_all_opt`, `process_kill_all`, `process_kill_all_except_current`): Code simplified, some variable cedlarations storing values from function calls replaced with direct function calls.
+- `procitem.c`, `procitem.h` (`procitem_get_pid`, `procitem_get_name`, `procitem_copy`): Changed to static inline.
+- `proclist.c`, `proclist.h` (`proclist_get_item`, `proclist_get_cnt`): Changed to static inline.
+- `randomm.c`, `randomm.h` (`increment_cnt`): Function removed. (`randomm_set_range`, `randomm_reset_cnt`): Changed to static inline.
+- `setting.c`, `setting.h` (`setting_get_int`, `setting_get_uint`, `setting_get_double`, `setting_get_string`): Changed to static inline.
+- `wpset.c` (`wpset_change`): Some code compacted.
+
+## 2020-07-09 — Michal Babik <michal.babik@pm.me>
+
+- `fdfn.c` (`file_create_with_subdirs`): Added 2 missing frees on wrong permissions error.
+- `setting.c`, `setting.h` (`setting_get_child`): Added checking for setting type to return child only on setting and array type.
+- `wmsfn.c` (`wms_update_wm_command`): Added missing path free on error.
+- Some cosmetic code updates.
+
+## 2020-07-02 — Michal Babik <michal.babik@pm.me>
+
+- `setting.c`, `setting.h`: Changed some ugly macros to funcitons. (`setting_remove`): New function to remove setting.
+- `deffiles.c`: Added dwm to wm list.
+- `dlgs.c` (`cmddialog_run`): Added checking for new wm's in app default info.
+- `jsfun.c` (`js_settings_add_to_json_obj`): Changed processing of setting list, settings should be passed as list not a parent.
+- `wchanger.c` (`event_on_delete`, `event_save_settings_pressed`): changed passing settings from parent to list for setts_check_update_file, setts_check_update.
+- `wmsfn.c` (`wms_update_wm_config`): New function to update wm config file. (`wms_check_for_new_wms`): New function to compare saved wm info with app default and update saved info if needed.
+
+## 2020-06-22 — Michal Babik <michal.babik@pm.me>
+
+- `astart.c`, `astart.h`: Files removed. Content moved to `deffiles.c`, `deffiles.h`
+- `deffiles.c`, `deffiles.h`: New files with templates for autostart and window manager info files.
+
+## 2020-06-17 — Michal Babik <michal.babik@pm.me>
+
+- `cmdfn.c`, `cmdfn.h`: Added processing --once option.
+- `cmdline.c`, `cmdline.h`: Added --once option.
+- `setting.c`, `setting.h`: Setting item changed to a sort of linked list type. Some functions changed to macros. Changed old SettList related functions in other files to use Setting type.
+- `settlist.c`, `settlist.h`: Removed. Not needed now, settings are based only on Settin type.
+- `wallsett.c`, `wallsett.h`: Removed. Changed functions in other files to use Setting instead of WallSett.
+
+## 2020-06-02 — Michal Babik <michal.babik@pm.me>
+
+- `cmddialog.c`, `cmddialog.h`: Moved to `dlgs.c`, `dlgs.h`, `wmsfn.c`, `wmsfn.h`
+- `randomm.c`, `randomm.h` (`randomm_new`): Function to create new RandMem item. (`randomm_free`): Function to free RandMem item data.
+- `wcngdmn.c` (`main`): rm_rand changed to be a dynamic variable. Updated time aligning part.
+- `dlgs.c`, `wmsfn.c`: Added functions to get default wallpaper set command for Xfce.
+
+## 2020-05-28 — Michal Babik <michal.babik@pm.me>
+
+- `chkwch.c`, `chkwch.h` (`check_time_align_val`): New function to check and return difference between now and next full hour. (`check_settings_change_wallpaper`): Added ui_algntime parameter for setting time align option. Function changed to return interval in seconds instead of minutes.
+- Added time align option to files with settings operations.
+
+## 2020-05-24 — Michal Babik <michal.babik@pm.me>
+
+- `astart.c`, `astart.h`: New files with functions to create/delete wchangerd daemon entry in user's autostart directory.
+- `chkwch.c` (`check_config_file`): Changed exit to err to show config file error.
+- `cmddialog.c` (`textview_set_text`, `textview_get_text`): Functions for setting and getting text from textview. (`event_combo_changed`): Changed to put text to textview instead of entry. (`event_test_button_clicked`): Changed to get command from textview. (`event_get_default_button_clicked`): New function for get default button click. (`cmddialog_run`): Changed command entry to textview. Added parameter s_current_cmd for passing command string from main window. (`newline_to_space`): New fuction for changing new line character to space in a given string.
+- `dirlist.c`, `dirlist.h`: New files for directory listing related functions.
+- `errs.h`: Added ERR_FILE_RM in error enum for error when file can't be removed.
+- `errs.c` (`err_get_message`): Added string for ERR_OK, ERR_FILE_RM, ERR_CFG_NOF.
+- `fdfn.c`, `fdfn.h`: File / diectory operations like file_check_permissions, file_create_with_subdirs, dir_get_home moved here.
+- `treev.c` (`treeview_find_select_item`): Changed selecting to scroll and select desired item.
+- `wchanger.c` (`event_autostart_toggled`): New function to create or delete wchangerd daemon entry in user's autostart directory when check button is checked or unchecked. (`create_settings_widget`): Added autostart check button placing. Changed widgets layout.
+
+## 2020-05-18 — Michal Babik <michal.babik@pm.me>
+
+- `strfun.c` (`str_append`): Some code cleaning.
+
+## 2020-05-11 — Michal Babik <michal.babik@pm.me>
+
+- `chkwch.c` (`check_display`): Check for display moved to this function. (`check_display_exit`): New function, calls check_display and exits app if display is not present.
+- `dmfn.c`, `dmfn.h` (`dmfn_kill`): Changed function to return number of processes to which the kill signal was sent.
+- `jsfun.c` (`js_json_obj_to_setting`): Attribute nonnull removed fron s_name, now null value can be set as setting name. Removed creating name with number for wallpaper items in settings.
+- `setting.c` (`setting_create_default`): Removed nonnull attribute for s_name. (`setting_assign_to_array`): Changed function style. (`setting_copy2`): Copying name if it is not null. (`setting_create_default`): Setting name if s_name is not null, and setting 0 value hash if passed s_name is null. (`setting_compare`): New function for more precise settings compare.
+- `setting.h` (`setting_assign_to_array`, `setting_new_*`): Removed nonnull attribute from s_name parameter as it can be null now.
+- `settlist.c` (`stlist_get_setting_pos`): Added setting hash as 0 if null s_name passed. (`stlist_get_setting_with_name`, `stlist_get_settings_in_array_name_p`): Removed checking for empty string. When s_name is empty or null ui_array_id is set to 0. (`stlist_remove_setting`): Added more precise compare of setting to delete when it's id is 0.
+- `wchanger.c` (`get_wallpaper_list`): Removed creating names with numbers for walpaper setting items, it is not needed now.
+- `wcngdmn.c` (`main`): When restarting changed sleeping when stopped only if some processes were found and kill signals were sent. Calling check_display changed to check_display_exit.
+- `treev.c` (`treeview_add_items_glist`, `treeview_add_items_gslist`): Some cosmetic updates.
+
+## 2020-05-06 — Michal Babik <michal.babik@pm.me>
+
+- `wcngdmn.c` (`main`): Added 500 msec sleep after killing process when restarting daemon, so it will have some time to exit.
+- `chkwch.c`, `chkwch.h` (`sleep500`): New function, calls nanosleep for 500 ms sleep.
+
+## 2020-05-05 — Michal Babik <michal.babik@pm.me>
+
+- `cmddialog.c`: Added some window managers to array. Added " to file name in wallpaper set command.
+- `strfun.c` (`str_set_up_wallpaper_command`): Added " to file name in wallpaper set command.
+
+## 2020-05-03 — Michal Babik <michal.babik@pm.me>
+
+- `cmddialog.c`, `cmddialog.h`: New files with dialog and functions for selecting and detection of wallpaper set command.
+- `procfn.c`, `procfn.h` (`process_exists_b`): New function for checking process presence but returning 0 or 1 instead of ProcItem item.
+- `setts.c` (`settlist_check_defaults`): Changed wallpaper command when no setting found to blank instead of default cmd. Actual check is made in `wchanger.c`.
+- `wchanger.c` (`widgets_set_settings`): Changed wallpaper set command setting. If it doesn't exist, program tries to detect window manager and checks if program has a command for this wm. (`event_treeview_key_press`): New function to check treeview key press, if it is a Del key items from list are being deleted. (`event_command_button_pressed`): Evet for select wallpaper command button pressed. (`create_settings_widget`): Added button for command select, relocated settings widgets. (`activate`): Connected key press event to treeview.
+- `wpset.c`, `wpset.h` (`wallpaper_test_set`): New function for testing wallpaper set command.
+- All files: Some minor code updates.
+
+## 2020-04-28 — Michal Babik <michal.babik@pm.me>
+
+- `cfgfile.c` (`cfgfile_config_file_stuff`): Changed config file operations.
+- `defs.h`: New define STATUS_CONFIG with string prefix for statusbar config info.
+- `dialogdata.h`: New pointer to statusbar widget (gw_statusbar) in DialogData structure.
+- `dialogdata.c` (`dialogdata_init`): Nulling gw_statusbar pointer. (`dialogdata_get_status_config_info`): New function that returns string for statusbar information about config file in use.
+- `rwdt.c` (`read_file_data_hash`): Some code ceaning.
+- `strfun.c` (`str_set_up_wallpaper_command`): Code changed a little, used str_append and str_comb. (`str_append`): Changed strcat to memcpy.
+- `wchanger.c` (`statusbar_push_config_info`): New function for setting statusbar info about config file. (`event_start_daemon_pressed`, `event_stop_daemon_pressed`): Added DialogData item to function parameters for running daemon_monitor before timer. (`activate`): Added statusbar creation and placement.
+
+## 2020-04-17 — Michal Babik <michal.babik@pm.me>
+
+- `cfgfile.c` (`cfgfile_config_file_stuff`): New function for checking config file path. (`create_file_with_subdirs`): New function for creating file with subdirs. (`cfgfile_get_home_dir`): New function for getting user home path. (`cfgfile_get_config_path_exit`, `cfgfile_get_config_path`): Functions removed.
+- `chkwch.c` (`check_config_file`): Checking config path for daemon.
+- `cmdfn.c`, `cmdfn.h`: Command line parsing operations moved here.
+- `dialogdata.c` (`dialogdata_do_config_file_stuff`): Checking config path for cfg window.
+- `dmfn.c`, `dmfn.h`: Functions to work with daemon moved here.
+- `strfun.c` (`str_comb`, `str_append`): New functions to combine and append strings.
+- `wchanger.c` (`local_options`): New function for handling command line options. (`main`): Command line options set.
+- other/wchangercfg: New script for bash completion.
+- `other/wchangercfg.desktop`: Config dialog dektop entry.
+- `other/wchangercfg.png`: App icon.
+
+## 2020-04-12 — Michal Babik <michal.babik@pm.me>
+
+- bash_comp/wchangerd: New script for bash completion.
+- `chkwch.c` (`check_settings_change_wallpaper`): Added RandMem as a function parameter.
+- `wallset.c` (`wallset_new`): Added RandMem as a function parameter. Assigning RandMem pointer to WallSett item. (`wallset_init`): RandMem clearing removed, changed to nulling pointer. (`walldet_free`): Nulling RandMem pointer.
+- `wallset.h`: RandMem in WallSet struct changed from a variable to pointer.
+- `wcngdmn.c` (`main`): Added RandMem variable for random number generation.
+
+## 2020-04-11 — Michal Babik <michal.babik@pm.me>
+
+- `chkwch.c` (`check_daemon_presence`): Function for checks if wchangerd is running. (`check_daemon_exit`): New function to count number of running wchangerd processes and exit if there is more than one. (`check_daemon_kill`): Function kills wchangerd process.
+- `cmdline.c`, `cmdline.h`: New files with functions for command line operations.
+- `procfn.c`, `procfn.h`, `procitem.c`, `procitem.h`, `proclist.c` `proclist.h`: New files with functions for getting active process information.
+- `wcngdmn.c` (`main`): Added checking if wchangerd is already running with check_daemon_exit function. Added command line options operations, starting, stopping, restarting wchangerd daemon.
+- `wchanger.c` (`event_start_daemon_pressed`, `event_stop_daemon_pressed`): New functions for starting and stopping wchangerd daemon. (`daemon_monitor`): New function for monitoring the presence of wchangerd process. (`create_daemon_widget`): Creating widget for monitoring wchangerd process.
+- Some changes in error and warning messages, changed to use warnx, errx functions.
+
+## 2020-03-25 — Michal Babik <michal.babik@pm.me>
+
+- `chkwch.c` (`check_display`): Changed display check to reading out X11 lib.
+
+## 2020-03-06 — Michal Babik <michal.babik@pm.me>
+
+- `chkwch.c`, `chkwch.h`: New file with functions for background working wchangerd. File contains functions to load settings, change wallpaper and check for display presence.
+- `jsfun.c` (`js_json_string_to_stlist`, `js_settings_check_for_update`): Changed json parse function to json_tokener_parse_verbose from json_tokener_parse for mode detailed error output, added more conditions to evaluate json object type.
+- `wcngdmn.c` (`main`): Changed as functions to check settings and set wallpaper are moved to other file.
+- `wallsett.h`: Config file string s_cfgfile in WallSett structure changed to pointer from array.
+- `wallsett.c` (`wallset_new`): New function to create new WallSett item. (`wallset_free`): Added freeing WallSett item and nulling config path. (`wallset_set_cfgfile`): Changed to only set a cfg path, changed return type from int to void. (`wallset_get_cfgfile`): Skipped const char in return as it is now a const char by default. (`wallset_init`): Removed memset as config file string is not stored now in array.
+- `dialogdata.h`: Config file path s_cfg_file in DialogData structore changed from array to pointer.
+- `dialogdata.c` (`dialogdata_free`): Added freeing config path data. (`dialogdata_new`): Changed setting config path to dynamic allocate string.
+- `defs.h`: Removed CFG_PTH_LEN as it is no longer needed.
+- `cfgfile.c` (`cfgfile_get_config_path`): Renamed from check_config_path_file. (`set_config_file_path`): Removed, not needed now. (`cfgfile_get_config_path_exit`): New function, returns config file path or exits if error occurred.
+
+## 2020-02-20 — Michal Babik <michal.babik@pm.me>
+
+- `dlgs.c` (`about_app_dialog`): Updated link to my page.
+
+## 2020-02-19 — Michal Babik <michal.babik@pm.me>
+
+- `treev.c`: Removed uneeded printf.
+- Some comments updated.
+
+## 2020-02-14 — Michal Babik <michal.babik@pm.me>
+
+- `defs.h`: Added CFG_PTH_LEN with size of config path array.
+- `dialogdata.c` (`dialogdata_new`): Setting config file moved to this function from dialogdata_init.
+- `iminfo.c` (`imageinfo_sort`, `imageinfo_remove_duplicates`, `compare_imageitems`): Functions removed.
+- `strfun.c` (`str_set_up_wallpaper_command`): Corrected wallpaper command when it is set with file sign [F].
+- `wcngdmn.c` (`main`): Changed some calls to WallSett object.
+
+## 2020-02-06 — Michal Babik <michal.babik@pm.me>
+
+- `cres.c` (`create_resize`): Function renamed to cres. (`cres`): Changed from calloc to malloc for better performance.
+- `dlgs.c` (`about_app_dialog`): Changed function argument, now it takes unused pointer to connect directly to event.
+- `dialogdata.c`, `dialogdata.h`: New files with DialogData structrure and functions, moved from `wchanger.c`
+- `fdops.c` (`glist_filter_by_extensions_list`): Function removed. (`get_directory_filtered_content_glist`): New function renamed from get_directory_content_glist, with added extensions filtering.
+- `imgs.h`: Added W_IMG_COUNT to IconImg enum.
+- `imgs.c`: Removed sort icon.
+- `iminfo.c` (`imageinfo_new`): calloc changed to malloc. (`imageinfo_set_wxh`): Small improvements.
+- `jsfun.c` (`js_settings_check_for_update`, `js_json_string_to_stlist`): Added check for wrong json file.
+- `rwdt.c` (`read_file_data`): Acting on error in file size read.
+- `treev.c` (`treeview_sort_compare_fun`, `treeview_replace_data`, `treeview_sort_list`): Functions removed. (`create_tview`): Changed to enable sorting on title click.
+- `wchanger.c` (event_rem_from_list_pressed, event_move_up_pressed, event_move_down_pressed event_sort_list_pressed, event_rem_dupl_pressed): Functions removed, signals connected to it's functions directly. (`event_set_wallpaper_pressed`, `event_save_settings_pressed`, `event_on_delete`, `activate`): Changed access to config file path. (`create_buttons_widget`): Changed some calls to signal connect functions to swapped and linked straight to it's destinations. (`create_image_button`): Added condition to not add image to button. (`create_buttons_widget`): Removed sort button. (`event_about_app_pressed`): Function removed. (`main`): DialogData item is created dynamically.
+- all_files: Some type changes, added some attributes.
+
+## 2020-01-15 — Michal Babik <michal.babik@pm.me>
+
+- `fdops.c` (`glist_filter_by_extensions_list`): Corrected removing file name from list.
+- `fdops.c` (`get_pbuf_exts_to_ghash`): Updated format list declaration.
+
+## 2020-01-14 — Michal Babik <michal.babik@pm.me>
+
+- `fdops.c` (`get_dir_content_filter_images`): New function to read directory data and filter out non images (it runs two functions that were used separately before).
+- `preview.c` (`create_preview_label`): New function to create labels with screen resolution info.
+- `wchanger.c` (`activate`): Added inserting screen description labels. (`event_add_img_dir_pressed`): Reading directory content with one function, not two like it was before.
+- `wpset.c` (`wallpaper_set_file`, `wallpaper_set_random`, `wallpaper_set_next_in_list`): Removed unneeded returns. (`wallpaper_set_file`): Added system value reading for compiler not to complain. (`wallpaper_startup_set`): Removed some unneeded code.
+
+## 2020-01-11 — Michal Babik <michal.babik@pm.me>
+
+- `wcngdmn.c` (`main`): Added checking for Display.
+
+## 2020-01-07 — Michal Babik <michal.babik@pm.me>
+
+- `iminfo.c` (`imageinfo_set_wxh`): Changed sprintf to snprintf.
+
+## 2020-01-06 — Michal Babik <michal.babik@pm.me>
+
+- `strfun.c` (`str_set_up_wallpaper_command`): Change in string copy when no file alias specified.
+- `wchanger.c`: Removed unneeded shutdown signal
+
+## 2020-01-03 — Michal Babik <michal.babik@pm.me>
+
+- `cres.c` (`create_resise`): Changed return value to void.
+- `fdops.c` (`get_pbuf_exts_to_ghash`): Changed str_dup to strdup.
+- `iminfo.c` (`imageinfo_new`): Function exits instead of returning null on alloc error. (`imageinfo_new_from_file`, `imageinfo_set_full_name`, `imageinfo_set_file_name`, `imageinfo_set_file_path`): Changed str_dup to strdup.
+- `jsfun.c` (`js_settings_check_for_update`): Changed str_dup to strdup.
+- `setting.c`: Removed setting_hashfun function. (`setting_assign_to_array`): Changed function call from setting_hashfun to hash. (`setting_copy`, `setting_create_default`): Function exits instead of returning null on alloc error. (`setting_new_int`, `setting_new_uint`, `setting_new_int64`, `setting_new_uint64`, `setting_new_int32`, `setting_new_uint32`, `setting_new_int16`, `setting_new_uint16`, `setting_new_int8`, `setting_new_uint8`, `setting_new_double`, `setting_new_string`, `setting_new_array`): Removed null return.
+- `settlist.c` (`stlist_insert_setting`, `stlist_remove_setting_at_pos`, `stlist_remove_setting`, `stlist_remove_setting_with_name`): Changed return value to void.
+- `strfun.c` (`str_dup`, `str_ndup`): Functions removed from project. (`str_name_with_number`): Function exits instead of returning null on alloc error.
+- `treev.c` (`liststore_add_item`): Function renamed to treeview_add_item. (`liststore_add_items_glist`): Function renamed to treeview_add_items_glist. (`liststore_add_items_gslist`): Function renamed to treeview_add_items_gslist. (`liststore_add_items_settlist`): Function renamed to treeview_add_items_settlist.
+- `wchanger.c` (`set_wallpaper_list`): Changed function call from liststore_add_items_settlist to treeview_add_items_settlist. (`event_add_img_pressed`): Changed function call from liststore_add_items_gslist to treeview_add_items_gslist. (`event_add_img_dir_pressed`): Changed function call from liststore_add_items_glist to treeview_add_items_glist.
+- misc_files: Added attributes that may improve performance a little bit.
+
+## 2019-12-22 — Michal Babik <michal.babik@pm.me>
+
+- `flist.c`, `flist.h`: File removed from project.
+- `hashfun.c`: Hash function moved to this file.
+- `defs.h`: New file with program defines.
+- `fdops.c`: New file with file and directory load operations.
+- `errs.c`: New file with function to generate error messages.
+- `rwdt.c`: New file, renamed from `miscfun.c`.
+- `cfgfile.c`: New file with functions to get config file path (moved from `miscfun.c`). (`set_config_file_path`): New function to write program settings file path to array of chars.
+- `setting.c` (`setting_remove_from_array`): Function renamed to setting_reset_array.
+- `setting.h`: Added to errors enum SET_ER_WRONG for wrong input data.
+- `settlist.c` (`stlist_free_p`): New function to free list of pointers. (`stlist_get_setting_with_id_pos`): New function to return position of setting with specific id. (`stlist_get_setting_pos`): Changed equivalent code to stlist_get_setting_with_id_pos function. (`stlist_get_setting_val_str_pos`): New function for getting position of setting with particulat string value. (`stlist_get_settings_owned_by_p`): New function to return list of pointers to settings owned by setting with specific id. (`stlist_get_settings_in_array_name_p`): New function to return list of pointers to settings in array with given name. (`stlist_get_settings_in_array_obj_p`): New function to return list of pointers to settings in array. (`stlist_get_settings_main_p`): New function to return list of pointers to top level settings. (`stlist_remove_setting_at_pos`, `stlist_remove_setting`, `stlist_remove_setting_with_name`): New function to remove settings from list.
+- `setts.c` (`settlist_check_defaults`): New function to check default setting values.
+- `wpset.c` (`wallpaper_set_file`, `wallpaper_set_random`, `wallpaper_set_next_in_list`): Changed function return value type from int to void. (`wallpaper_set_random`, `wallpaper_set_next_in_list`): Operating on SettList instead of FList. (`wallpaper_set_next_in_list`): Merged some code in function.
+- `wallsett.h`: In WallSett structure wallpapet list from FList to SettList and s_cfgfile from dynamic char string to fixed table.
+- `wallsett.c` (`wallset_init`): Removed flist_init and changed set config file path from check_config_path_file to set_config_file_path. (`wallset_free`): Removed flist_free added stlist_free_p. (`wallset_set_last_used_fn`, `wallset_set_command`): Function stores pointer to string instead of string.
+- `wchanger.c`: Structure DialogData s_cfg_file changed from dynamic string to fixed table string. (`widgets_set_settings`): Changed stlist_get_settings_in_array_name to stlist_get_settings_in_array_name_p and stlist_free to stlist_free_p (`event_add_img_dir_pressed`): flist_free changed to flist_clear (`activate`): Changed config file path set to set fixed char table instead of previous dynamic char string. (`activate`, `event_on_delete`, `event_save_settings_pressed`, `event_set_wallpaper_pressed`): Changed displaying error message dialog, it shows more concrete error message. (`shutdown`): Removed freeing config file path string. (`get_default_bg_cmd`): Function removed.
+- `wcngdmn.c`: Removed FList dependency. Wallpaper changing works directly on SettList instead of creating FList and working on it. Settings are loaded dynamically at every wallpaper change and freed after change.
+
+## 2019-12-09 — Michal Babik <michal.babik@pm.me>
+
+- `strfun.c`, `strfun.h`: New file with functions to duplicate string.
+- `miscfun.c`, `miscfun.h`: Removed str_dup and str_ndup function. Renamed some values for better readability.
+- `settlist.c`, `settlist.h`: Renamed some values for better readability.
+- `jsfun.c`: Renamed some values for better readability.
+- `setting.c` (`setting_set_string`, `setting_set_name`, `setting_copy2`): strdup function call changed to str_dup.
+- `dlgs.c` (`about_app_dialog`): Changed app website url.
+
+## 2019-12-07 — Michal Babik <michal.babik@pm.me>
+
+- `jsfun.c` (`js_json_array_to_stlist`): Removed const from json_object parameter for compatibility with json-c functions.
+- wchangercfg: renamed from wchanger-cfg.
+
+## 2019-12-02 — Michal Babik <michal.babik@pm.me>
+
+- `dlgs.c` (`about_app_dialog`): added s_ver argument to pass string with application version.
+- `wallsett.h`, `wallsett.c`: Removed i_lastused from WallSett structure and functions to set, get and work with this value.
+- Added some cont qualifiers in functions.
+
+## 2019-11-27 — Michal Babik <michal.babik@pm.me>
+
+- `dlgs.c`, `dlgs.h` (`about_app_dialog`): New function with info dialog.
+- `wchanger.c`: Updates to show application info dialog.
+- `wpset.c`: Renamed from `wallset.c`.
+- `wpset.h`: Renamed from `wallset.h`.
+- `wallsett.c`: Renamed from `settstr.c`.
+- `wallsett.h`: Renamed from `settstr.h`.
+
+## 2019-11-25 — Michal Babik <michal.babik@pm.me>
+
+- `settlist.c`: New file with functions to manage settings.
+- `settlist.h`: New file with functions to manage settings.
+- `setting.c`: New file with functions to manage settings.
+- `setting.h`: New file with functions to manage settings.
+- `preview.c`: Wallpaper preview related functions moved here.
+- `preview.h`: Wallpaper preview related functions moved here.
+- `setts.c` (`get_setting_name`): New function that returns setting name based on enum int value. (`settings_update_last_used`): Changed updating of last used wallpaper setting. (`settings_update_window_size`): Changed updating of window size setting. (`settings_check_update`): New function to check if settings are an update. (`settings_update_file`): New function for updating settings file. (`settings_check_update_file`): New function to check if settings are an update and update if they are.
+- `jsfun.c` (`js_json_array_to_stlist`): Function converts SettList to json array. (`js_stlist_array_to_json`): Converts SettList to json array. (`js_json_object_to_setting`): Converts json object to Setting. (`js_setting_to_json_object`): Converts Setting to json object. (`js_json_string_to_settlist`): Coverts string with json data to SettList list of Setting objects. (`js_settlist_append_to_json_object`): Converts SettList to json objects and adds it to json object. (`js_settings_check_update`): New function to check if settings are an update. (`js_settings_update_file`): New function for updating settings file. (`js_settings_check_update_file`): New function to check if settings are an update and update if they are.
+
+## 2019-11-19 — Michal Babik <michal.babik@pm.me>
+
+- `wchanger.c` (`create_settings_widget`): added hints to settings widgets.
+
+## 2019-11-16 — Michal Babik <michal.babik@pm.me>
+
+- `wchanger.c`: Functions to handle removing duplicates from list.
+- `treev.c` (`treeview_remove_duplicates`): New function to remove duplicates in treeview.
+- New functions for saving width and height of configuration window
+- `dlgs.c` (`message_dialog_error`): Corrected string passing.
+
+## 2019-11-14 — Michal Babik <michal.babik@pm.me>
+
+- `wchanger.c` (`get_wallpaper_change_interval`): New function to get change interval based on spin value and combobox. (`set_wallpaper_change_interval`): New function to set change interval. (`create_settings_widget`): New combobox to set change interval minutes or hours. (`get_directory_content`): Function removed, changed to other one.
+- `iminfo.c` (`imageinfo_set_full_name`, `imageinfo_get_full_name`, `imageinfo_set_file_name`, `imageinfo_get_file_name`, `imageinfo_set_file_path`, `imageinfo_get_file_path`, `imageinfo_set_width`, `imageinfo_get_width`, `imageinfo_set_height`, `imageinfo_get_height`, `imageinfo_get_wxh`): New functions to set and get values in ImageInfo structure.
+- `miscfun.c` (`get_directory_content_append_to_flist`): Function to get directory content and add to FList.
+
+## 2019-11-14 — Michal Babik <michal.babik@pm.me>
+
+- `randomm.c`: New file with functions for random wallpaper select.
+- `randomm.h`: New file with Functions for random wallpaper select.
+
+## 2019-11-08 — Michal Babik <michal.babik@pm.me>
+
+- `jsfun.c` (`js_settings_to_json_buff`): Couple updates in putting data to json objects. (`js_settings_read`): Corrected freeing buffer.
+- `setts.c` (`settings_set_command`): Comparing strings changed.
+- `settstr.c` (`free_wall_sett`): Moved function to free WallSett here.
+
+## 2019-11-07 — Michal Babik <michal.babik@pm.me>
+
+- `wchanger.c`: Changed wallpaper preview.
+- `treev.c`: Moved treeview related functions.
+
+## 2019-11-04 — Michal Babik <michal.babik@pm.me>
+
+- `wchanger.c` (`create_preview`): corrected making "empty" preview.
+
+## 2019-11-03 — Michal Babik <michal.babik@pm.me>
+
+- First relase
