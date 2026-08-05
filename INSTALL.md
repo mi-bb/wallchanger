@@ -50,14 +50,14 @@ For a normal daily use of this program a good option should be:
 or more specific:
 
 ```
-./configure CC="gcc" CFLAGS="-march=native -O2 -pipe -std=gnu17" \
+./configure CC="gcc" CFLAGS="-march=native -O2 -pipe -std=gnu23" \
 --prefix=/usr
 ```
 
 with Clang:
 
 ```
-./configure CC="clang" CFLAGS="-march=native -O2 -pipe -std=gnu17" \
+./configure CC="clang" CFLAGS="-march=native -O2 -pipe -std=gnu23" \
 --prefix=/usr
 ```
 
@@ -69,7 +69,7 @@ information needed for gdb and enlarges the output file:
 - `-march=native` — enables all instruction subsets supported by the local machine
 - `-O2` — sets the code optimization to level 2
 - `-pipe` — use pipes rather than temporary files for communication between the various stages of compilation
-- `-std=gnu17` — sets the C standard to C17 with GNU extensions
+- `-std=gnu23` — sets the C standard to C23 with GNU extensions
 - `--prefix=/usr` — where the app should be installed
 
 Executing:
