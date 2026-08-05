@@ -18,7 +18,7 @@
 AC_PREREQ([2.69])
 AC_INIT([wallchanger], [1.6.18], [michal.babik@pm.me], [wallchanger],\
         [https://www.nongnu.org/wallchanger/])
-AM_INIT_AUTOMAKE([subdir-objects])
+AM_INIT_AUTOMAKE([subdir-objects foreign])
 AC_CONFIG_SRCDIR([src/setting.c])
 AC_CONFIG_HEADERS([config.h])
 
