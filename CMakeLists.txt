@@ -44,7 +44,6 @@ include(CTest)
 find_package(PkgConfig REQUIRED)
 
 # Checks for libraries (mirrors the PKG_CHECK_MODULES calls in configure.ac).
-pkg_check_modules(X11   REQUIRED IMPORTED_TARGET x11>=1.6.9)
 pkg_check_modules(GTK   REQUIRED IMPORTED_TARGET gtk+-3.0>=3.22.0)
 pkg_check_modules(JSONC REQUIRED IMPORTED_TARGET json-c>=0.12.1)
 pkg_check_modules(CURL  REQUIRED IMPORTED_TARGET libcurl>=7.68.0)

@@ -24,13 +24,11 @@ AC_CONFIG_HEADERS([config.h])
 
 # Checks for programs.
 AC_PROG_CC
-AC_PATH_XTRA
 
 # Check procstat for FreeBSD.
 AC_CHECK_LIB([procstat], [procstat_getprocs], [], [], [])
 
 # Checks for libraries.
-PKG_CHECK_MODULES([X11],  [x11 >= [1.6.9]])
 PKG_CHECK_MODULES([GTK],  [gtk+-3.0 >= [3.22.0]])
 PKG_CHECK_MODULES([JSON], [json-c >= [0.12.1]])
 PKG_CHECK_MODULES([CURL], [libcurl >= [7.68.0]])

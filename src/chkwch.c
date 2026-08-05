@@ -25,7 +25,6 @@
 #include <err.h>
 #include <stdint.h>
 #include <sysexits.h>
-#include <X11/Xlib.h>
 #include <time.h>
 #include "cfgfile.h"
 #include "wpset.h"
@@ -92,19 +91,19 @@ check_time_align_val (const uint32_t  ui_ch_int,
 }
 /*----------------------------------------------------------------------------*/
 /**
- * @brief  Check if display is present, exit if it is not.
+ * @brief  Check if a graphical session is present.
  *
- * @return none
+ * Checks the WAYLAND_DISPLAY and DISPLAY environment variables, so it works
+ * both under Wayland (without needing XWayland) and under X11, without
+ * linking against either display library.
+ *
+ * @return 1 if a graphical session is present, 0 if not.
  */
 static int
 check_display (void)
 {
-    Display *display;
-
-    if ((display = XOpenDisplay (NULL)) == NULL)
-        return 0;
-    XCloseDisplay(display);
-    return 1;
+    return (getenv ("WAYLAND_DISPLAY") != NULL ||
+            getenv ("DISPLAY")         != NULL);
 }
 /*----------------------------------------------------------------------------*/
 /**

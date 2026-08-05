@@ -30,6 +30,8 @@ Recommended configure invocation for daily development builds:
 
 Build artifacts (`Makefile`, `configure`, `config.h`, `autom4te.cache/`, etc.) are generated and gitignored — do not hand-edit them; edit `configure.ac` / `Makefile.am` instead and rerun `autogen.sh`.
 
+CMake (>= 3.13) is also supported as an alternative to Autotools (`CMakeLists.txt` / `src/CMakeLists.txt` / `tests/CMakeLists.txt`, documented in `INSTALL`); keep both build definitions in sync when adding sources or dependencies.
+
 ### Tests
 
 `tests/` has a `check`-based unit test suite (`tests/test_setting.c`, exercising `setting.c` + `hashfun.c`). It only builds if the `check` library (>= 0.15.0) is found by `configure` (`HAVE_CHECK` conditional in `configure.ac`/`tests/Makefile.am`); otherwise it's silently skipped. Run it with:
@@ -42,7 +44,7 @@ New test binaries go in `tests/Makefile.am` under the `if HAVE_CHECK` block, fol
 
 ### Required dependencies (checked in `configure.ac`)
 
-- GTK+ 3 (>= 3.22.0), X11 (>= 1.6.9), json-c (>= 0.12.1), libcurl (>= 7.68.0)
+- GTK+ 3 (>= 3.22.0), json-c (>= 0.12.1), libcurl (>= 7.68.0)
 - Optional: flickcurl (>= 1.24) for Flickr search — enables `HAVE_FLICKCURL` and, if present, libxml2 (>= 2.9.4) for `HAVE_LIBXML`. Both are conditionally compiled in (`AM_CONDITIONAL(FLICKCURL...)` / `AM_CONDITIONAL(LIBXML...)` in `configure.ac`, `if FLICKCURL` / `if LIBXML` blocks in `src/Makefile.am`).
 - Optional: `check` (>= 0.15.0) to build/run the unit tests above.
 

@@ -84,7 +84,7 @@ set(WCHANGERCFG_SOURCES
     defs.h)
 
 add_executable(wchangerd ${WCHANGERD_SOURCES})
-target_link_libraries(wchangerd PRIVATE PkgConfig::JSONC PkgConfig::X11)
+target_link_libraries(wchangerd PRIVATE PkgConfig::JSONC)
 if(HAVE_LIBPROCSTAT AND PROCSTAT_LIBRARY)
     target_link_libraries(wchangerd PRIVATE ${PROCSTAT_LIBRARY})
 endif()

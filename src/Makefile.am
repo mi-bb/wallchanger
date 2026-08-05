@@ -96,6 +96,6 @@ wchangercfg_LDADD += $(LIBXML_LIBS)
 endif
 endif
 
-wchangerd_CFLAGS = $(JSON_CFLAGS) $(X11_CFLAGS)
-wchangerd_LDADD = $(JSON_LIBS) $(X11_LIBS)
+wchangerd_CFLAGS = $(JSON_CFLAGS)
+wchangerd_LDADD = $(JSON_LIBS)
 

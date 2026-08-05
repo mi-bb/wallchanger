@@ -26,6 +26,11 @@ v1.6.18                                                     2026-07-13
       no config file yet.
     * Fixed a memory leak in the Pexels/Pixabay image URL base name
       extraction helper.
+    * Dropped the libX11 build dependency. wchangerd now checks the
+      WAYLAND_DISPLAY/DISPLAY environment variables to detect a
+      graphical session instead of opening an X11 connection, so it
+      no longer refuses to start under Wayland-only sessions without
+      XWayland.
 
 ----------------------------------------------------------------------
 v1.6.17                                                     2020-05-03
