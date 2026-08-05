@@ -40,7 +40,7 @@ Program works on GNU/Linux, FreeBSD.
 
 ## Installation and running
 
-For installation instructions see the [INSTALL](INSTALL) file.
+For installation instructions see the [INSTALL.md](INSTALL.md) file.
 
 If compilation ends without problems, 2 executable files will be created:
 

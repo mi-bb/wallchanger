@@ -30,7 +30,7 @@ Recommended configure invocation for daily development builds:
 
 Build artifacts (`Makefile`, `configure`, `config.h`, `autom4te.cache/`, etc.) are generated and gitignored — do not hand-edit them; edit `configure.ac` / `Makefile.am` instead and rerun `autogen.sh`.
 
-CMake (>= 3.13) is also supported as an alternative to Autotools (`CMakeLists.txt` / `src/CMakeLists.txt` / `tests/CMakeLists.txt`, documented in `INSTALL`); keep both build definitions in sync when adding sources or dependencies.
+CMake (>= 3.13) is also supported as an alternative to Autotools (`CMakeLists.txt` / `src/CMakeLists.txt` / `tests/CMakeLists.txt`, documented in `INSTALL.md`); keep both build definitions in sync when adding sources or dependencies.
 
 ### Tests
 
