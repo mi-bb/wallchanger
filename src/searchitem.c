@@ -122,7 +122,7 @@ searchitem_set_id_string (SearchItem *si_item,
 }
 /*----------------------------------------------------------------------------*/
 /**
- * @brief  Set SearchItem's file name.
+ * @brief  Set SearchItem's author name.
  */
 void
 searchitem_set_author_name (SearchItem *si_item,

@@ -63,7 +63,7 @@ char * cfgfile_get_wm_info_home_file_path   (void);
 /**
  * @brief  Get application config path
  *
- * @return String with wallpaper save path.
+ * @return String with application config directory path.
  *         After use it should be freed using free.
  */
 char * cfgfile_get_app_config_path  (void);

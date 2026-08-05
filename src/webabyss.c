@@ -98,7 +98,7 @@ wallpaperabyss_process_item_set_names (SearchItem *si_item)
 }
 /*----------------------------------------------------------------------------*/
 /**
- * @brief  Convert Pixbay json image info to SearchItem item.
+ * @brief  Convert Wallpaper Abyss json image info to SearchItem item.
  *
  * @param[in] j_obj  Json object to convert
  * @return    SearchItem item

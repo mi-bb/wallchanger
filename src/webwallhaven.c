@@ -134,7 +134,7 @@ wallhaven_process_item_set_names (SearchItem *si_item)
 }
 /*----------------------------------------------------------------------------*/
 /**
- * @brief  Convert Pixbay json image info to SearchItem item.
+ * @brief  Convert Wallhaven json image info to SearchItem item.
  *
  * @param[in] j_obj  Json object to convert
  * @return    SearchItem item
@@ -207,7 +207,7 @@ wallhaven_json_obj_to_searchitem (json_object *j_obj)
 }
 /*----------------------------------------------------------------------------*/
 /**
- * @brief  Analyze Pixbay json search response and add results to image list.
+ * @brief  Analyze Wallhaven json search response and add results to image list.
  *
  * @param[in]  s_buff     String with json data
  * @param[out] ww_widget  Webwidget to set data

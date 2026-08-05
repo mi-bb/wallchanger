@@ -112,7 +112,7 @@ static const char *s_orientation[] = {"all", "horizontal", "vertical", NULL};
  *            free.
  */
 static char *
-pexels_extract_base_name (const char *s_url)
+pixbay_extract_base_name (const char *s_url)
 {
     char *s_res  = NULL; /* Result string */
     char *s_repl = NULL; /* For replacing text */
@@ -143,7 +143,7 @@ pexels_extract_base_name (const char *s_url)
  * @return    New string with name. After use it should be freed using free.
  */
 static char *
-pexels_create_display_name (const char *s_bname)
+pixbay_create_display_name (const char *s_bname)
 {
     char  *s_res  = NULL; /* Result string */
     char  *s_repl = NULL; /* For replacing text */
@@ -170,7 +170,7 @@ pexels_create_display_name (const char *s_bname)
  * @return        none
  */
 static void
-pexels_process_item_set_names (SearchItem *si_item)
+pixbay_process_item_set_names (SearchItem *si_item)
 {
     char *s_base_name = NULL; /* Base name for processing */
     char *s_file_name = NULL; /* Name for file to save */
@@ -184,7 +184,7 @@ pexels_process_item_set_names (SearchItem *si_item)
         return;
 
     /* Base name made of picture url */
-    s_base_name = pexels_extract_base_name (si_item->s_page_url);
+    s_base_name = pixbay_extract_base_name (si_item->s_page_url);
 
     /* Create file name, add image extension to base name */
     s_ext = strrchr (si_item->s_image_url, '.');
@@ -192,7 +192,7 @@ pexels_process_item_set_names (SearchItem *si_item)
         s_file_name = str_comb (s_base_name, s_ext);
     }
     /* Display name to show on image list */
-    s_disp_name = pexels_create_display_name (s_base_name);
+    s_disp_name = pixbay_create_display_name (s_base_name);
 
     /* Save names in SearchItem */
     searchitem_set_file_name      (si_item, s_file_name);
@@ -286,7 +286,7 @@ pixbay_json_obj_to_searchitem (json_object *j_obj)
         printf ("thumb url : %s\n", json_object_get_string (j_val));
 #endif
     }
-    pexels_process_item_set_names (si_item);
+    pixbay_process_item_set_names (si_item);
 
     return si_item;
 }
