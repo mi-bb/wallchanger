@@ -42,3 +42,7 @@ cmake_install.cmake
 compile_commands.json
 Testing/
 # CMake also (re)generates config.h in-source, same as Autotools (see above).
+
+.cache/
+.vscode/
+.dirstamp
