@@ -195,7 +195,7 @@ process_get_opt (uid_t       uid_id,
     ui_plen = strlen (s_path);
     ui_flen = strlen (s_file);
 
-    dr = opendir (s_path); 
+    dr = opendir (s_path);
     if (dr == nullptr) {
         /* warn ("%s", s_path); */
         return pl_list;
@@ -412,7 +412,7 @@ process_kill_opt (uid_t       uid_id,
     pi_item = process_exists_opt (uid_id, s_name, i_opt, i_exc_pid);
     if (pi_item != nullptr) {
         #ifdef DEBUG
-        printf ("kill %s %s\n", 
+        printf ("kill %s %s\n",
                 procitem_get_name (pi_item),
                 procitem_get_pid (pi_item));
         #endif
@@ -461,7 +461,7 @@ process_kill_all_opt (uid_t       uid_id,
     for (i = 0; i < i_cnt; ++i) {
         pi_pid = atoi (procitem_get_pid (proclist_get_item (pl_list, i)));
         #ifdef DEBUG
-        printf ("killing %s %s\n", 
+        printf ("killing %s %s\n",
                 procitem_get_name (proclist_get_item (pl_list, i)),
                 procitem_get_pid (proclist_get_item (pl_list, i)));
         #endif
@@ -491,4 +491,3 @@ process_kill_all_except_current (const char *s_name)
     return process_kill_all_opt (getuid (), s_name, PROC_OPT_NONE, getpid ());
 }
 /*----------------------------------------------------------------------------*/
-
