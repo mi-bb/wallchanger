@@ -25,6 +25,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - Modernized the code for C23: replaced GNU `__attribute__((unused))`/`__attribute__((noreturn))` with the standard `[[maybe_unused]]`/`[[noreturn]]` attributes where available, converted numeric `#define` constants to typed `constexpr` values, and replaced `NULL` with `nullptr` throughout the codebase.
 - `randomm.c` no longer uses the process-global `rand()`/`srand()` generator; each `RandMem` now carries its own xorshift32 state, seeded from the current time, the object's address, and a per-process counter, so separate `RandMem` instances (and any other code in the process calling `rand()`/`srand()`) can no longer interfere with one another.
 - Merged `INSTALL.md` into `README.md`; installation instructions now live under the "Installation and running" section instead of a separate file.
+- Bumped the project version to 1.6.19 in `configure.ac` and `CMakeLists.txt`.
 
 ### Fixed
 
