@@ -43,6 +43,12 @@
  *
  * @var   RandMem::allocn
  * @brief Number of alloced integers
+ *
+ * @var   RandMem::seed
+ * @brief This object's own xorshift32 generator state, seeded once in
+ *        randomm_new()/randomm_new_with_range(). Kept per-object (instead
+ *        of relying on libc's process-global rand()/srand()) so that
+ *        separate RandMem instances never interfere with one another.
  */
 typedef struct
 RandMem {
@@ -50,6 +56,7 @@ RandMem {
     size_t    cnt;
     size_t    range;
     size_t    allocn;
+    uint32_t  seed;
 } RandMem;
 /*----------------------------------------------------------------------------*/
 /**
@@ -110,4 +117,3 @@ void      randomm_set_range      (RandMem *rm_mem,
 size_t    randomm_get_number     (RandMem *rm_mem);
 /*----------------------------------------------------------------------------*/
 #endif
-
