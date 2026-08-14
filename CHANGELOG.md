@@ -23,10 +23,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 - Switched the C standard from C17 to C23 (`gnu23`) in both the Autotools and CMake build definitions.
 - Modernized the code for C23: replaced GNU `__attribute__((unused))`/`__attribute__((noreturn))` with the standard `[[maybe_unused]]`/`[[noreturn]]` attributes where available, converted numeric `#define` constants to typed `constexpr` values, and replaced `NULL` with `nullptr` throughout the codebase.
+- `randomm.c` no longer uses the process-global `rand()`/`srand()` generator; each `RandMem` now carries its own xorshift32 state, seeded from the current time, the object's address, and a per-process counter, so separate `RandMem` instances (and any other code in the process calling `rand()`/`srand()`) can no longer interfere with one another.
 
 ### Fixed
 
 - Fixed a latent const-correctness bug in the file extension and file path helpers (`get_file_ext`, `imageinfo_new_from_file`) that only surfaced as a warning under C23, where glibc's type-generic `strrchr()` returns a `const char *` for a `const char *` argument.
+- Fixed a signed left-shift (`1 << i_pos`) in the random-number bitmask helpers in `randomm.c` that was undefined behavior once the shift reached bit 31; the shifted literal is now unsigned (`1u << i_pos`).
 
 ## [1.6.18] - 2026-07-13
 
