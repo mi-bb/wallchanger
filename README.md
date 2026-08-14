@@ -20,6 +20,9 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 - [About](#about)
 - [Requirements](#requirements)
 - [Installation and running](#installation-and-running)
+  - [Basic Installation](#basic-installation)
+  - [Compilers and Options](#compilers-and-options)
+  - [Building with CMake](#building-with-cmake)
 - [Contact and help](#contact-and-help)
 
 ## About
@@ -40,7 +43,94 @@ Program works on GNU/Linux, FreeBSD.
 
 ## Installation and running
 
-For installation instructions see the [INSTALL.md](INSTALL.md) file.
+### Basic Installation
+
+You must have autotools installed for the `autogen.sh` script to generate
+the `configure` and `make` scripts. Otherwise these scripts are included
+in the standard program package.
+
+Commands to configure, build and install the program:
+
+```
+./autogen.sh
+./configure
+make
+make install
+```
+
+It's suggested to configure and compile with the more detailed options
+described below.
+
+### Compilers and Options
+
+For a normal daily use of this program a good option should be:
+
+```
+./configure CFLAGS="-march=native -O2 -pipe" --prefix=/usr
+```
+
+or more specific:
+
+```
+./configure CC="gcc" CFLAGS="-march=native -O2 -pipe -std=gnu23" \
+--prefix=/usr
+```
+
+with Clang:
+
+```
+./configure CC="clang" CFLAGS="-march=native -O2 -pipe -std=gnu23" \
+--prefix=/usr
+```
+
+This disables the standard `-g` option, which produces debugging
+information needed for gdb and enlarges the output file:
+
+- `CC="gcc"` — sets the C compiler to GCC
+- `CC="clang"` — sets the C compiler to Clang
+- `-march=native` — enables all instruction subsets supported by the local machine
+- `-O2` — sets the code optimization to level 2
+- `-pipe` — use pipes rather than temporary files for communication between the various stages of compilation
+- `-std=gnu23` — sets the C standard to C23 with GNU extensions
+- `--prefix=/usr` — where the app should be installed
+
+Executing:
+
+```
+./configure --help
+```
+
+will print a detailed description of available initial values for
+configuration parameters.
+
+### Building with CMake
+
+As an alternative to the Autotools flow above, the program can be built
+with CMake (>= 3.13). Both build systems can coexist in the same source
+tree; use an out-of-source build directory (e.g. `./build`) so CMake does
+not clobber the Autotools-generated files.
+
+Commands to configure, build and install the program:
+
+```
+cmake -S . -B build
+cmake --build build
+sudo cmake --install build
+```
+
+The build type defaults to `RelWithDebInfo`. To pick a different one, or
+to set a custom install prefix:
+
+```
+cmake -S . -B build -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/usr
+```
+
+Unit tests (equivalent to `make check` with Autotools) are built
+automatically when the `check` library is found, and can be run with:
+
+```
+ctest --test-dir build
+```
 
 If compilation ends without problems, 2 executable files will be created:
 
