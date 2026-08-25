@@ -43,9 +43,9 @@ Program works on GNU/Linux, FreeBSD.
 
 ### Screenshots
 
-<img src="other/wallchanger.png" alt="Screenshot 1" style="width: 517;">
+<img src="other/wallchanger.png" alt="Screenshot 1" style="width: 517px;">
 
-<img src="other/wallchanger_web.jpg" alt="Screenshot 2" style="width: 517;">
+<img src="other/wallchanger_web.jpg" alt="Screenshot 2" style="width: 517px;">
 
 ## Requirements
 
