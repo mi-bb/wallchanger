@@ -33,6 +33,14 @@ wallpaper change time interval.
 
 Program works on GNU/Linux, FreeBSD.
 
+### Supported wallpaper search pages:
+
+ - Pexels
+ - Pixbay
+ - wallhaven.cc
+ - Wallpaper Abyss
+ - Flickr
+
 ## Requirements
 
 - GNU/Linux, FreeBSD
