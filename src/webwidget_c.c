@@ -41,8 +41,8 @@ ww_name (const int i_site)
     switch (i_site) {
         case WEB_SERV_PEXELS:
             return "Pexels";
-        case WEB_SERV_PIXBAY:
-            return "Pixbay";
+        case WEB_SERV_PIXABAY:
+            return "Pixabay";
         case WEB_SERV_WALLHAVEN:
             return "Wallhaven";
         case WEB_SERV_WALLABYSS:
@@ -66,8 +66,8 @@ ww_opts (const int i_site)
     switch (i_site) {
         case WEB_SERV_PEXELS:
             return "Pexels_opts";
-        case WEB_SERV_PIXBAY:
-            return "Pixbay_opts";
+        case WEB_SERV_PIXABAY:
+            return "Pixabay_opts";
         case WEB_SERV_WALLHAVEN:
             return "Wallhaven_opts";
         case WEB_SERV_WALLABYSS:
@@ -91,8 +91,8 @@ ww_logo_id (const int i_site)
     switch (i_site) {
         case WEB_SERV_PEXELS:
             return W_LOGO_PEXELS;
-        case WEB_SERV_PIXBAY:
-            return W_LOGO_PIXBAY;
+        case WEB_SERV_PIXABAY:
+            return W_LOGO_PIXABAY;
         case WEB_SERV_WALLHAVEN:
             return W_LOGO_WALLHAVEN;
         case WEB_SERV_WALLABYSS:
@@ -124,8 +124,8 @@ ww_get_api_key_names (const int i_site)
         case WEB_SERV_PEXELS:
             str_append (&ns_data->s_str[0], "Pexels api");
             break;
-        case WEB_SERV_PIXBAY:
-            str_append (&ns_data->s_str[0], "Pixbay api");
+        case WEB_SERV_PIXABAY:
+            str_append (&ns_data->s_str[0], "Pixabay api");
             break;
         case WEB_SERV_WALLHAVEN:
             str_append (&ns_data->s_str[0], "Wallhaven api");

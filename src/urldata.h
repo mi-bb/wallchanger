@@ -97,18 +97,18 @@ UrlData * urldata_search_pexels (const char *s_query,
                                  const int   i_page);
 /*----------------------------------------------------------------------------*/
 /**
- * @brief  Search Pixbay for images.
+ * @brief  Search Pixabay for images.
  *
  * @param[in] s_query        Search query
  * @param[in] s_search_opts  Search options
- * @param[in] s_api_key      Pixbay API key
+ * @param[in] s_api_key      Pixabay API key
  * @param[in] i_page         Results page number
  * @return    UrlData item with downloaded data or error info
  */
-UrlData * urldata_search_pixbay (const char *s_query,
-                                 const char *s_search_opts,
-                                 const char *s_api_key,
-                                 const int   i_page);
+UrlData * urldata_search_pixabay (const char *s_query,
+                                  const char *s_search_opts,
+                                  const char *s_api_key,
+                                  const int   i_page);
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Search Wallhaven for images.

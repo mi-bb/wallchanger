@@ -37,7 +37,7 @@
 #include "nstrings.h"
 #include "webwidget_c.h"
 #include "webpexels.h"
-#include "webpixbay.h"
+#include "webpixabay.h"
 #include "webwallhaven.h"
 #include "webabyss.h"
 #include "webflickr.h"
@@ -389,8 +389,8 @@ search_web (WebWidget *ww_widget)
         case WEB_SERV_PEXELS:
             pexels_search (ww_widget, ns_data);
             break;
-        case WEB_SERV_PIXBAY:
-            pixbay_search (ww_widget, ns_data);
+        case WEB_SERV_PIXABAY:
+            pixabay_search (ww_widget, ns_data);
             break;
         case WEB_SERV_WALLHAVEN:
             wallhaven_search (ww_widget, ns_data);
@@ -456,8 +456,8 @@ event_search_opts_pressed (WebWidget *ww_widget)
         case WEB_SERV_PEXELS:
             s_search_opts = pexels_search_opts_dialog (ww_widget);
             break;
-        case WEB_SERV_PIXBAY:
-            s_search_opts = pixbay_search_opts_dialog (ww_widget);
+        case WEB_SERV_PIXABAY:
+            s_search_opts = pixabay_search_opts_dialog (ww_widget);
             break;
         case WEB_SERV_WALLHAVEN:
             s_search_opts = wallhaven_search_opts_dialog (ww_widget);
@@ -562,8 +562,8 @@ event_settings_pressed (WebWidget *ww_widget)
         case WEB_SERV_PEXELS:
             i_res = pexels_settings_dialog (ns_data);
             break;
-        case WEB_SERV_PIXBAY:
-            i_res = pixbay_settings_dialog (ns_data);
+        case WEB_SERV_PIXABAY:
+            i_res = pixabay_settings_dialog (ns_data);
             break;
         case WEB_SERV_WALLHAVEN:
             i_res = wallhaven_settings_dialog (ns_data);
@@ -1087,7 +1087,7 @@ webwidget_create (Setting    *st_settings,
     webwidget_init (ww_widget);
 
     cachequery_delete_older_than (ww_name (WEB_SERV_PEXELS),    1);
-    cachequery_delete_older_than (ww_name (WEB_SERV_PIXBAY),    1);
+    cachequery_delete_older_than (ww_name (WEB_SERV_PIXABAY),   1);
     cachequery_delete_older_than (ww_name (WEB_SERV_WALLHAVEN), 1);
     cachequery_delete_older_than (ww_name (WEB_SERV_WALLABYSS), 1);
 #ifdef HAVE_FLICKCURL

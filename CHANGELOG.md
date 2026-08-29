@@ -115,7 +115,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ### Added
 
-- Added search options for Pexels, Pixbay, Wallhaven.cc
+- Added search options for Pexels, Pixabay, Wallhaven.cc
 
 ### Changed
 
@@ -163,7 +163,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ### Added
 
-- Added Pixbay to wallpaper search.
+- Added Pixabay to wallpaper search.
 - Added thumbnail caching.
 
 ### Changed

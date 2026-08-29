@@ -1,5 +1,5 @@
 /**
- * @file  webpixbay.c
+ * @file  webpixabay.c
  * @copyright Copyright (C) 2019-2026 Michał Bąbik
  *
  * This file is part of Wall Changer.
@@ -17,7 +17,7 @@
  * You should have received a copy of the GNU General Public License
  * along with Wall Changer.  If not, see <https://www.gnu.org/licenses/>.
  *
- * @brief  Settings for searching the Pixbay website.
+ * @brief  Settings for searching the Pixabay website.
  *
  * @author Michal Babik <michal.babik@protonmail.com>
  */
@@ -37,7 +37,7 @@
 #include "strfun.h"
 #include "setting.h"
 #include "setts.h"
-#include "webpixbay.h"
+#include "webpixabay.h"
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Enum with available search options.
@@ -112,7 +112,7 @@ static const char *s_orientation[] = {"all", "horizontal", "vertical", nullptr};
  *            free.
  */
 static char *
-pixbay_extract_base_name (const char *s_url)
+pixabay_extract_base_name (const char *s_url)
 {
     char *s_res  = nullptr; /* Result string */
     char *s_repl = nullptr; /* For replacing text */
@@ -143,7 +143,7 @@ pixbay_extract_base_name (const char *s_url)
  * @return    New string with name. After use it should be freed using free.
  */
 static char *
-pixbay_create_display_name (const char *s_bname)
+pixabay_create_display_name (const char *s_bname)
 {
     char  *s_res  = nullptr; /* Result string */
     char  *s_repl = nullptr; /* For replacing text */
@@ -170,7 +170,7 @@ pixbay_create_display_name (const char *s_bname)
  * @return        none
  */
 static void
-pixbay_process_item_set_names (SearchItem *si_item)
+pixabay_process_item_set_names (SearchItem *si_item)
 {
     char *s_base_name = nullptr; /* Base name for processing */
     char *s_file_name = nullptr; /* Name for file to save */
@@ -184,7 +184,7 @@ pixbay_process_item_set_names (SearchItem *si_item)
         return;
 
     /* Base name made of picture url */
-    s_base_name = pixbay_extract_base_name (si_item->s_page_url);
+    s_base_name = pixabay_extract_base_name (si_item->s_page_url);
 
     /* Create file name, add image extension to base name */
     s_ext = strrchr (si_item->s_image_url, '.');
@@ -192,7 +192,7 @@ pixbay_process_item_set_names (SearchItem *si_item)
         s_file_name = str_comb (s_base_name, s_ext);
     }
     /* Display name to show on image list */
-    s_disp_name = pixbay_create_display_name (s_base_name);
+    s_disp_name = pixabay_create_display_name (s_base_name);
 
     /* Save names in SearchItem */
     searchitem_set_file_name      (si_item, s_file_name);
@@ -207,19 +207,19 @@ pixbay_process_item_set_names (SearchItem *si_item)
 }
 /*----------------------------------------------------------------------------*/
 /**
- * @brief  Convert Pixbay json image info to SearchItem item.
+ * @brief  Convert Pixabay json image info to SearchItem item.
  *
  * @param[in] j_obj  Json object to convert
  * @return    SearchItem item
  */
 static SearchItem *
-pixbay_json_obj_to_searchitem (json_object *j_obj)
+pixabay_json_obj_to_searchitem (json_object *j_obj)
 {
     json_object *j_val;
 
     SearchItem *si_item = searchitem_new ();
 
-    searchitem_set_service_name (si_item, ww_name (WEB_SERV_PIXBAY));
+    searchitem_set_service_name (si_item, ww_name (WEB_SERV_PIXABAY));
 
     if (json_object_object_get_ex (j_obj, "id", &j_val) &&
         json_object_get_type (j_val) == json_type_int) {
@@ -286,13 +286,13 @@ pixbay_json_obj_to_searchitem (json_object *j_obj)
         printf ("thumb url : %s\n", json_object_get_string (j_val));
 #endif
     }
-    pixbay_process_item_set_names (si_item);
+    pixabay_process_item_set_names (si_item);
 
     return si_item;
 }
 /*----------------------------------------------------------------------------*/
 /**
- * @brief  Analyze Pixbay json search response and add results to image list.
+ * @brief  Analyze Pixabay json search response and add results to image list.
  *
  * @param[in]  s_buff     String with json data
  * @param[out] ww_widget  Webwidget to set data
@@ -300,9 +300,9 @@ pixbay_json_obj_to_searchitem (json_object *j_obj)
  * @return     none
  */
 static void
-pixbay_json_to_webwidget (const char  *s_buff,
-                          WebWidget   *ww_widget,
-                          CacheQuery  *cq_query)
+pixabay_json_to_webwidget (const char  *s_buff,
+                           WebWidget   *ww_widget,
+                           CacheQuery  *cq_query)
 {
     json_object *j_obj;            /* Json with search data */
     json_object *j_val;            /* Some value */
@@ -340,11 +340,11 @@ pixbay_json_to_webwidget (const char  *s_buff,
 
             for (i = 0; i < ui_cnt; ++i) {
                 if ((j_val = json_object_array_get_idx (j_arr, i)) != nullptr) {
-                    si_item = pixbay_json_obj_to_searchitem (j_val);
+                    si_item = pixabay_json_obj_to_searchitem (j_val);
                     add_searchitem_to_img_view (ww_widget->gw_img_view,
                                                 si_item,
                                                 ww_widget->s_wallp_dir,
-                                                ww_name (WEB_SERV_PIXBAY),
+                                                ww_name (WEB_SERV_PIXABAY),
                                                 ww_widget->i_thumb_quality);
                     cachequery_append_item (cq_query, si_item);
                 }
@@ -358,15 +358,15 @@ pixbay_json_to_webwidget (const char  *s_buff,
  * @brief  Search in Pexels database.
  */
 void
-pixbay_search (WebWidget      *ww_widget,
-               const NStrings *ns_data)
+pixabay_search (WebWidget      *ww_widget,
+                const NStrings *ns_data)
 {
     UrlData    *ud_data      = nullptr; /* For search results */
     CacheQuery *cq_query     = nullptr; /* For cache saving */
     char       *s_query      = nullptr; /* For search query */
     int         i_err        = 0;    /* Error output */
 
-    if (str_is_empty_warn (ns_data->s_str[0], "Pixbay API key is not set"))
+    if (str_is_empty_warn (ns_data->s_str[0], "Pixabay API key is not set"))
         return;
 
     s_query = str_replace_in (ww_widget->s_query, " ", "+");
@@ -376,15 +376,15 @@ pixbay_search (WebWidget      *ww_widget,
     printf ("search opts : %s\n", ww_widget->s_search_opts);
 #endif
 
-    ud_data = urldata_search_pixbay (s_query,
-                                     ww_widget->s_search_opts,
-                                     ns_data->s_str[0],
-                                     ww_widget->i_page);
+    ud_data = urldata_search_pixabay (s_query,
+                                      ww_widget->s_search_opts,
+                                      ns_data->s_str[0],
+                                      ww_widget->i_page);
     if (ud_data->errbuf != nullptr) {
         message_dialog_error (nullptr, ud_data->errbuf);
     }
     else if (urldata_full (ud_data)) {
-        cq_query = cachequery_new (ww_name (WEB_SERV_PIXBAY),
+        cq_query = cachequery_new (ww_name (WEB_SERV_PIXABAY),
                                    ww_widget->s_query,
                                    ww_widget->s_search_opts,
                                    ww_widget->i_page);
@@ -392,8 +392,8 @@ pixbay_search (WebWidget      *ww_widget,
         gtk_list_store_clear (GTK_LIST_STORE (gtk_icon_view_get_model (
                         GTK_ICON_VIEW (ww_widget->gw_img_view))));
 
-        pixbay_json_to_webwidget (ud_data->buffer, ww_widget,
-                                  cq_query);
+        pixabay_json_to_webwidget (ud_data->buffer, ww_widget,
+                                   cq_query);
         cq_query->i_found_cnt = ww_widget->i_found_cnt;
 
         i_err = cachequery_save (cq_query);
@@ -408,19 +408,19 @@ pixbay_search (WebWidget      *ww_widget,
 }
 /*----------------------------------------------------------------------------*/
 /**
- * @brief  Dialog with Pixbay service settings.
+ * @brief  Dialog with Pixabay service settings.
  */
 int
-pixbay_settings_dialog (NStrings *ns_data)
+pixabay_settings_dialog (NStrings *ns_data)
 {
-    GtkWidget *gw_dialog;      /* Pixbay settings dialog */
+    GtkWidget *gw_dialog;      /* Pixabay settings dialog */
     GtkWidget *gw_content_box; /* Dialog's box */
     GtkWidget *gw_api_entry;   /* Entry for API key */
     int        i_res = 0;      /* Dialog result */
 
     GtkDialogFlags flags = GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT;
 
-    gw_dialog = gtk_dialog_new_with_buttons ("Pixbay configuration",
+    gw_dialog = gtk_dialog_new_with_buttons ("Pixabay configuration",
                                              nullptr,
                                              flags,
                                              "_OK",
@@ -438,7 +438,7 @@ pixbay_settings_dialog (NStrings *ns_data)
 
     /* Packing dialog widgets */
     gtk_box_pack_start (GTK_BOX (gw_content_box),
-                        gtk_label_new ("Pixbay API key:"),
+                        gtk_label_new ("Pixabay API key:"),
                         FALSE, FALSE, 4);
     gtk_box_pack_start (GTK_BOX (gw_content_box),
                         gw_api_entry,
@@ -448,7 +448,7 @@ pixbay_settings_dialog (NStrings *ns_data)
                         FALSE, FALSE, 4);
     gtk_box_pack_start (GTK_BOX (gw_content_box),
                         gtk_label_new (
-    "To get your API key, you need to be registered on the Pixbay website and "
+    "To get your API key, you need to be registered on the Pixabay website and "
     " paste API key from: "),
                         FALSE, FALSE, 4);
     gtk_box_pack_start (GTK_BOX (gw_content_box),
@@ -490,7 +490,7 @@ set_search_opts (GtkWidget **gw_array,
     Setting *st_item = nullptr;
 
     st_set = setting_get_child (settings_find (st_setts,
-                                               ww_opts (WEB_SERV_PIXBAY)));
+                                               ww_opts (WEB_SERV_PIXABAY)));
 
     if (st_set == nullptr) {
         return;
@@ -650,13 +650,13 @@ event_combo_changed (GtkWidget **gw_array)
  * @brief  Options for image search dialog.
  */
 char *
-pixbay_search_opts_dialog (WebWidget *ww_widget)
+pixabay_search_opts_dialog (WebWidget *ww_widget)
 {
     GtkAdjustment *ga_adjust1;         /* Adjustment for max w spinbutton */
     GtkAdjustment *ga_adjust2;         /* Adjustment for max h spinbutton */
     GtkAdjustment *ga_adjust3;         /* Adjustment for per page spinbutton */
     GtkWidget     *gw_array[GW_CNT];   /* Array with widgets */
-    GtkWidget     *gw_dialog;          /* Pixbay settings dialog */
+    GtkWidget     *gw_dialog;          /* Pixabay settings dialog */
     GtkWidget     *gw_content_box;     /* Dialog's box */
     GtkWidget     *gw_box;             /* Box for widgets */
     GtkWidget     *gw_hbox;            /* Horizontal box for widgets */
@@ -672,7 +672,7 @@ pixbay_search_opts_dialog (WebWidget *ww_widget)
     ga_adjust2 = gtk_adjustment_new (0.0, 0.0, 10000.0, 1.0, 100.0, 0.0);
     ga_adjust3 = gtk_adjustment_new (12.0, 3.0, 200.0, 1.0, 2.0, 0.0);
 
-    gw_dialog = gtk_dialog_new_with_buttons ("Pixbay search options",
+    gw_dialog = gtk_dialog_new_with_buttons ("Pixabay search options",
                                              nullptr,
                                              flags,
                                              "_OK",
@@ -865,7 +865,7 @@ pixbay_search_opts_dialog (WebWidget *ww_widget)
     i_res = gtk_dialog_run (GTK_DIALOG (gw_dialog));
 
     if (i_res == GTK_RESPONSE_ACCEPT) {
-        st_settings = setting_new_setting (ww_opts (WEB_SERV_PIXBAY));
+        st_settings = setting_new_setting (ww_opts (WEB_SERV_PIXABAY));
 
         setting_add_child (st_settings, get_search_opts (gw_array));
 #ifdef DEBUG

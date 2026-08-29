@@ -1888,10 +1888,10 @@ static const unsigned char logo_pexels[] = {
     0x00,0x00,0x00,0x49,0x45,0x4E,0x44,0xAE,0x42,0x60,0x82
 };
 /**
- * @var    logo_pixbay_svg
- * @brief  Pixbay logo
+ * @var    logo_pixabay_svg
+ * @brief  Pixabay logo
  */
-static const char *logo_pixbay_svg = 
+static const char *logo_pixabay_svg = 
 "<svg width=\"640\" height=\"123.87\" version=\"1.1\" viewBox=\"0 0 640 123.87"
 "\" xmlns=\"http://www.w3.org/2000/svg\"><g transform=\"translate(-156.16 -367."
 "21)\" fill=\"#333\"><path d=\"m679.67 407.38c-3.4778-2.461-6.0048-4.9559-6.004"
@@ -2669,10 +2669,10 @@ get_image (const IconImg i_img)
             gp_pbuf = pbuf_from_data (logo_pexels, logo_pexels_size);
             break;
 
-        case W_LOGO_PIXBAY:
+        case W_LOGO_PIXABAY:
             gp_pbuf = pbuf_from_data_scaled (
-                    (const unsigned char*) logo_pixbay_svg,
-                    (gssize) strlen (logo_pixbay_svg),
+                    (const unsigned char*) logo_pixabay_svg,
+                    (gssize) strlen (logo_pixabay_svg),
                     100);
             break;
         case W_LOGO_WALLHAVEN:

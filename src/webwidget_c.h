@@ -37,7 +37,7 @@
  */
 enum e_wall_sites {
     WEB_SERV_PEXELS,    /**< Pexels */
-    WEB_SERV_PIXBAY,    /**< Pixbay */
+    WEB_SERV_PIXABAY,   /**< Pixabay */
     WEB_SERV_WALLHAVEN, /**< Wallhaven */
     WEB_SERV_WALLABYSS, /**< Wallpaper Abyss */
 #ifdef HAVE_FLICKCURL
