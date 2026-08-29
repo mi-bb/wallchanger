@@ -36,9 +36,8 @@
  * @brief  Numbers of image search services.
  */
 enum e_wall_sites {
-    WEB_SERV_PEXELS,    /**< Pexels */
-    WEB_SERV_PIXABAY,   /**< Pixabay */
     WEB_SERV_WALLHAVEN, /**< Wallhaven */
+    WEB_SERV_PIXABAY,   /**< Pixabay */
     WEB_SERV_WALLABYSS, /**< Wallpaper Abyss */
 #ifdef HAVE_FLICKCURL
     WEB_SERV_FLICKR,    /**< Flickr */
@@ -199,4 +198,3 @@ int    check_for_cached_query     (WebWidget        *ww_widget,
 char * search_opts_to_str         (const Setting    *st_setts);
 /*----------------------------------------------------------------------------*/
 #endif
-

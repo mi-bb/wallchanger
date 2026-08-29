@@ -39,8 +39,6 @@ const char *
 ww_name (const int i_site)
 {
     switch (i_site) {
-        case WEB_SERV_PEXELS:
-            return "Pexels";
         case WEB_SERV_PIXABAY:
             return "Pixabay";
         case WEB_SERV_WALLHAVEN:
@@ -64,8 +62,6 @@ const char *
 ww_opts (const int i_site)
 {
     switch (i_site) {
-        case WEB_SERV_PEXELS:
-            return "Pexels_opts";
         case WEB_SERV_PIXABAY:
             return "Pixabay_opts";
         case WEB_SERV_WALLHAVEN:
@@ -89,8 +85,6 @@ int
 ww_logo_id (const int i_site)
 {
     switch (i_site) {
-        case WEB_SERV_PEXELS:
-            return W_LOGO_PEXELS;
         case WEB_SERV_PIXABAY:
             return W_LOGO_PIXABAY;
         case WEB_SERV_WALLHAVEN:
@@ -121,9 +115,6 @@ ww_get_api_key_names (const int i_site)
     ns_data = nstrings_new (4, NS_VAL_EMPTY);
 
     switch (i_site) {
-        case WEB_SERV_PEXELS:
-            str_append (&ns_data->s_str[0], "Pexels api");
-            break;
         case WEB_SERV_PIXABAY:
             str_append (&ns_data->s_str[0], "Pixabay api");
             break;
@@ -457,4 +448,3 @@ search_opts_to_str (const Setting *st_setts)
     return s_res;
 }
 /*----------------------------------------------------------------------------*/
-

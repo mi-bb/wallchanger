@@ -355,7 +355,7 @@ pixabay_json_to_webwidget (const char  *s_buff,
 }
 /*----------------------------------------------------------------------------*/
 /**
- * @brief  Search in Pexels database.
+ * @brief  Search in Pixabay database.
  */
 void
 pixabay_search (WebWidget      *ww_widget,

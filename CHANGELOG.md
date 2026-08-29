@@ -32,6 +32,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - Fixed a latent const-correctness bug in the file extension and file path helpers (`get_file_ext`, `imageinfo_new_from_file`) that only surfaced as a warning under C23, where glibc's type-generic `strrchr()` returns a `const char *` for a `const char *` argument.
 - Fixed a signed left-shift (`1 << i_pos`) in the random-number bitmask helpers in `randomm.c` that was undefined behavior once the shift reached bit 31; the shifted literal is now unsigned (`1u << i_pos`).
 
+### Removed
+
+- Removed the Pexels wallpaper search provider (`webpexels.c/.h`), including its `urldata_search_pexels()` helper and embedded logo image.
+
 ## [1.6.18] - 2026-07-13
 
 ### Changed
