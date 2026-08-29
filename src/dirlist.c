@@ -31,7 +31,7 @@
 /**
  * @fn  static const char * get_file_ext (const char *s_fn)
  *
- * @brief  Get file extenstion.
+ * @brief  Get file extension.
  *
  * @param[in]  s_fn String with file path
  * @return     Pointer to file extension
@@ -62,7 +62,7 @@ static GList      * get_directory_filtered_content_glist (const char *s_dir,
                     __attribute__ ((nonnull (1)));
 /*----------------------------------------------------------------------------*/
 /**
- * @brief  Get file extenstion.
+ * @brief  Get file extension.
  */
 static const char *
 get_file_ext (const char *s_fn)
@@ -93,7 +93,7 @@ get_pbuf_exts_to_ghash (void)
 
     GHashTable *gh_res = g_hash_table_new_full (g_str_hash, g_str_equal,
                                                 g_free, nullptr);
-    /* Get information aboout image formats supported by GdkPixbuf */
+    /* Get information about image formats supported by GdkPixbuf */
     gsl_formats1 = gdk_pixbuf_get_formats ();
     gsl_formats  = gsl_formats1;
 

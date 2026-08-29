@@ -81,7 +81,7 @@
  * @brief  Find and remove (replace with null char) new line character 0A.
  *
  * @param[in,out] s_str  Input string
- * @retrn         none
+ * @return         none
  */
 /*----------------------------------------------------------------------------*/
 static char * read_proc_file_data   (const char *s_fname,

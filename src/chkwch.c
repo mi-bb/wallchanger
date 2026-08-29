@@ -226,7 +226,7 @@ chk_setts_ch_wall (char     *s_cfg_file,
     if (st_st != nullptr) {
         *i_algntime = (int) setting_get_int (st_st);
     }
-    /* Get wallpaper change inerval value */
+    /* Get wallpaper change interval value */
     st_st = settings_find (st_c, get_setting_name (SETT_INTERVAL_VAL));
     if (st_st != nullptr) {
         ui_inter = (uint32_t) setting_get_int (st_st);
@@ -251,7 +251,7 @@ chk_setts_ch_wall (char     *s_cfg_file,
             }
         }
         else {
-            /* Change during progam work, previous wallpaper count was not 0 */
+            /* Change during program work, previous wallpaper count was not 0 */
             if ((i_err = wpset_change (st_c, rm_rand, s_cfg_file)) != ERR_OK) {
                 free_and_exit (s_cfg_file, rm_rand, st_c, st_wm,
                                err_ex_code (i_err), nullptr);

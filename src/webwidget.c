@@ -46,10 +46,10 @@
 /*----------------------------------------------------------------------------*/
 /**
  * @def   NAME_LEN
- * @brief Lenght of name in download progress window.
+ * @brief Length of name in download progress window.
  *
  * @def   SEL_NAME_LEN
- * @brief Lenght of name in selected images combobox.
+ * @brief Length of name in selected images combobox.
  */
 #define NAME_LEN     40
 #define SEL_NAME_LEN 60
@@ -708,7 +708,7 @@ event_add_selected_pressed (WebWidget *ww_widget)
 }
 /*----------------------------------------------------------------------------*/
 /**
- * @brief  Refresh string with search options for active seach service.
+ * @brief  Refresh string with search options for active search service.
  *
  * @param[in,out] ww_widget  WebWidget item
  * @return        none

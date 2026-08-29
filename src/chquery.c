@@ -544,7 +544,7 @@ cachequery_delete_older_than (const char *s_service_name,
     }
     /* Alloc pointers for strings with dates */
     s_dates = malloc ((size_t) i_days * sizeof (char*));
-    /* Store dates substracting one day from a stored one */
+    /* Store dates subtracting one day from a stored one */
     for (i = 0; i < i_days; ++i) {
         g_date_strftime (s_date_n, 64, "%Y%m%d", gd_date);
         s_dates[i] = strdup (s_date_n);

@@ -79,7 +79,7 @@ char * cfgfile_get_app_wallpapers_path  (void);
 /**
  * @brief  Get app cache directory.
  *
- * @return String with appication cache directory.
+ * @return String with application cache directory.
  *         After use it should be freed using free.
  */
 char * cfgfile_get_app_cache_path      (void);

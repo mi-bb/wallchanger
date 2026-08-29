@@ -62,8 +62,8 @@
  * @brief  Get data from GtkTreeModel to ImageInfo object.
  *
  * @param[in] gtm_model  GtkTreeModel with data to get
- * @param[in] gti_iter   GtkTreeIter with row adress
- * @return    ImageInfo item with readed data
+ * @param[in] gti_iter   GtkTreeIter with row address
+ * @return    ImageInfo item with read data
  *
  * @fn  GSList *treeview_get_data (GtkWidget *gw_tview)
  *

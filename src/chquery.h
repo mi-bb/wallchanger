@@ -106,7 +106,7 @@ void         cachequery_append_item       (CacheQuery *cq_query,
  * @param[in]  s_query         Search query
  * @param[in]  s_search_opts   Search options
  * @param[in]  i_page          Page number
- * @param[out] i_err           Errot output
+ * @param[out] i_err           Error output
  * @return     CacheQuery item with search results or null if there is no cached
  *             data, it should be freed using cachequery_free
  */

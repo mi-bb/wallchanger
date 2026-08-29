@@ -31,7 +31,7 @@
 /**
  * @struct ProcList
  *
- * @brief  List with process information strored in ProcItem items.
+ * @brief  List with process information stored in ProcItem items.
  *
  * @var   ProcList::cnt
  * @brief ProcItem items count

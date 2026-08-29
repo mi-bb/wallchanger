@@ -71,7 +71,7 @@ void      urldata_free          (UrlData    *ud_data);
 UrlData * urldata_get_data      (const char *s_url);
 /*----------------------------------------------------------------------------*/
 /**
- * @brief  Donwload data from url to file.
+ * @brief  Download data from url to file.
  *
  * @param[in]  s_url  Url to download data
  * @param[in]  s_fn   File where data should be saved

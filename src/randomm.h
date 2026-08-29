@@ -36,7 +36,7 @@
  * @brief Integers to store information which number was randomed
  *
  * @var   RandMem::cnt
- * @brief Number of random number generated in a serie
+ * @brief Number of random numbers generated in a series
  *
  * @var   RandMem::range
  * @brief Max random number that will be generated

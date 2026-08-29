@@ -46,7 +46,7 @@ void      wms_free_xfce_display_list (char      **s_list);
  *
  * @param[in] s_disp  String with display for command
  * @return    New string with wallpaper set command. After use it should be
- *            freeed using free.
+ *            freed using free.
  */
 char    * wms_get_xfce_command       (const char *s_disp);
 /*----------------------------------------------------------------------------*/

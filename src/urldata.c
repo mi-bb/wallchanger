@@ -136,7 +136,7 @@ write_data (void   *ptr,
 }
 /*----------------------------------------------------------------------------*/
 /**
- * @brief  Donwload data from url to file.
+ * @brief  Download data from url to file.
  */
 void
 urldata_get_to_file (const char *s_url,
