@@ -356,7 +356,7 @@ event_get_default_button_clicked (GtkWidget **gw_array)
                 GTK_COMBO_BOX (gw_array[GW_CMD_WM_COMBO]));
         gtk_tree_model_get (model, &iter, WM_COLUMN_NAME, &s_name, -1);
 
-        /* If wm is Xfce select diaplay for command */
+        /* If wm is Xfce select display for command */
         if (strcmp (s_name, "Xfce") == 0) {
             s_cmd = xfce_dialog_run (GTK_WINDOW (gw_array[GW_CMD_DIALOG]));
         }
@@ -495,7 +495,7 @@ xfce_dialog_run (GtkWindow *gw_parent)
     GtkDialogFlags flags = GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT;
 
     gw_dialog = gtk_dialog_new_with_buttons (
-                                      "Xfce wallpaper set command configuraion",
+                                      "Xfce wallpaper set command configuration",
                                       gw_parent,
                                       flags,
                                       "_OK",
@@ -586,7 +586,7 @@ cmddialog_run (GtkWindow    *gw_parent,
         return nullptr;
     }
     gw_dialog = gtk_dialog_new_with_buttons (
-                                      "Wallpaper set command configuraion",
+                                      "Wallpaper set command configuration",
                                       gw_parent,
                                       flags,
                                       "_OK",
@@ -678,7 +678,7 @@ cmddialog_run (GtkWindow    *gw_parent,
                         gtk_separator_new (GTK_ORIENTATION_HORIZONTAL),
                         FALSE, FALSE, 4);
 
-    /* Wallpaper set command label, treeview, save command buttton */
+    /* Wallpaper set command label, treeview, save command button */
     gtk_box_pack_start (GTK_BOX (gw_content_box),
                         gtk_label_new ("Wallpaper set command:"),
                         FALSE, FALSE, 4);

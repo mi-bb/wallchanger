@@ -419,7 +419,7 @@ static void
 set_wallpaper_ch_interval (const DialogData *dd_data,
                            const uint32_t    i_val)
 {
-    uint32_t ui_tmp = i_val; /* Temp inteval value */
+    uint32_t ui_tmp = i_val; /* Temp interval value */
 
     /* Check if minutes value can be displayed as hours */
     if ((ui_tmp / 60 >= 1) && (ui_tmp % 60 == 0)) {
@@ -1308,7 +1308,7 @@ activate (GtkApplication *app,
     GtkWidget  *gw_img_prev;        /* Wallpaper preview widget */
     GtkWidget  *gw_box_prev;        /* Widget for wallpaper preview */
     GtkWidget  *gw_box_list_btns;   /* Widget for list, buttons, preview */
-    GtkWidget  *gw_settings_widget; /* Setings for wallpaper changing */
+    GtkWidget  *gw_settings_widget; /* Settings for wallpaper changing */
     GtkWidget  *gw_box_main;        /* Main box to pack everything */
     GtkWidget  *gw_statusbar;       /* Bottom status bar */
     Setting    *st_settings;        /* Program settings */
@@ -1443,9 +1443,9 @@ activate (GtkApplication *app,
         g_application_quit (G_APPLICATION (app));
         return;
     }
-    /* Set info about wchangerd deamon presence */
+    /* Set info about wchangerd daemon presence */
     daemon_monitor (dd_data);
-    /* Add gtk thread for checking wchangerd deaemon process presence */
+    /* Add gtk thread for checking wchangerd daemon process presence */
     gdk_threads_add_timeout_full (G_PRIORITY_LOW,
                                   3000,
                                   daemon_monitor,

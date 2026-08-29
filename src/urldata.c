@@ -136,7 +136,7 @@ write_data (void   *ptr,
 }
 /*----------------------------------------------------------------------------*/
 /**
- * @brief  Donwload data from url to file.
+ * @brief  Download data from url to file.
  */
 void
 urldata_get_to_file (const char *s_url,
@@ -184,72 +184,13 @@ urldata_get_to_file (const char *s_url,
 }
 /*----------------------------------------------------------------------------*/
 /**
- * @brief  Search Pexels for images.
+ * @brief  Search Pixabay for images.
  */
 UrlData *
-urldata_search_pexels (const char *s_query,
-                       const char *s_search_opts,
-                       const char *s_api_key,
-                       const int   i_page)
-{
-    UrlData  *ud_data = nullptr;
-    char     *s_api   = nullptr;
-    char     *s_url   = nullptr;
-    char      s_page[64];
-    CURL     *curl;
-    CURLcode  res;
-    char      errbuf[CURL_ERROR_SIZE];
-    struct curl_slist *list = nullptr;
-
-    ud_data = urldata_new ();
-    curl_global_init (CURL_GLOBAL_ALL);
-    curl = curl_easy_init ();
-
-    if (curl) {
-        sprintf (s_page, "%d", i_page);
-        s_api = str_comb ("Authorization: ", s_api_key);
-        s_url = str_comb ("https://api.pexels.com/v1/search?query=", s_query);
-        str_append (&s_url, "&page=");
-        str_append (&s_url, s_page);
-        str_append (&s_url, str_is_empty (s_search_opts) ?
-                            "&per_page=12" :
-                            s_search_opts);
-        list = curl_slist_append (list, s_api);
-
-        curl_easy_setopt (curl, CURLOPT_URL, s_url);
-        curl_easy_setopt (curl, CURLOPT_HTTPHEADER, list);
-        curl_easy_setopt (curl, CURLOPT_WRITEDATA, (void *) ud_data);
-        curl_easy_setopt (curl, CURLOPT_WRITEFUNCTION, url_write);
-        curl_easy_setopt (curl, CURLOPT_ERRORBUFFER, errbuf);
-        errbuf[0] = '\0';
-#ifdef DEBUG
-        curl_easy_setopt (curl, CURLOPT_VERBOSE, 1L);
-#endif
-        res = curl_easy_perform (curl);
- 
-        if (res != CURLE_OK) {
-            ud_data->errbuf = strdup (strlen (errbuf) ?
-                              errbuf : curl_easy_strerror (res));
-            warnx ("libcurl: (%d) %s", res, ud_data->errbuf);
-        }
-        curl_slist_free_all (list);
- 
-        curl_easy_cleanup (curl);
-        free (s_api);
-    }
-    curl_global_cleanup ();
-
-    return ud_data;
-}
-/*----------------------------------------------------------------------------*/
-/**
- * @brief  Search Pixbay for images.
- */
-UrlData *
-urldata_search_pixbay (const char *s_query,
-                       const char *s_search_opts,
-                       const char *s_api_key,
-                       const int   i_page)
+urldata_search_pixabay (const char *s_query,
+                        const char *s_search_opts,
+                        const char *s_api_key,
+                        const int   i_page)
 {
     UrlData  *ud_data = nullptr;
     char     *s_url   = nullptr;

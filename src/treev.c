@@ -49,7 +49,7 @@ enum e_tree_view_columns {
  * by gti_iter GtkTreeIter.
  *
  * @param[out] gls_list GtkListStore to set data
- * @param[in]  gti_iter GtkTreeIter row adress
+ * @param[in]  gti_iter GtkTreeIter row address
  * @param[in]  ii_info  Data in ImageInfo object
  * @return     none
  *
@@ -112,7 +112,7 @@ void
 treeview_add_items_glist (GtkWidget   *gw_tview,
                           const GList *gl_files)
 {
-    const char *s_fn    = nullptr; /* Strng for file path */
+    const char *s_fn    = nullptr; /* String for file path */
     ImageInfo  *ii_info = nullptr; /* Image information */
 
     while (gl_files != nullptr) {
@@ -135,7 +135,7 @@ void
 treeview_add_items_gslist (GtkWidget    *gw_tview,
                            const GSList *gl_files)
 {
-    const char *s_fn    = nullptr; /* Strng for file path */
+    const char *s_fn    = nullptr; /* String for file path */
     ImageInfo  *ii_info = nullptr; /* Image information */
 
     while (gl_files != nullptr) {

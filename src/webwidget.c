@@ -36,8 +36,7 @@
 #include "imgs.h"
 #include "nstrings.h"
 #include "webwidget_c.h"
-#include "webpexels.h"
-#include "webpixbay.h"
+#include "webpixabay.h"
 #include "webwallhaven.h"
 #include "webabyss.h"
 #include "webflickr.h"
@@ -46,10 +45,10 @@
 /*----------------------------------------------------------------------------*/
 /**
  * @def   NAME_LEN
- * @brief Lenght of name in download progress window.
+ * @brief Length of name in download progress window.
  *
  * @def   SEL_NAME_LEN
- * @brief Lenght of name in selected images combobox.
+ * @brief Length of name in selected images combobox.
  */
 #define NAME_LEN     40
 #define SEL_NAME_LEN 60
@@ -386,11 +385,8 @@ search_web (WebWidget *ww_widget)
     combo_get_active_strings (ww_widget->gw_combo, ns_data);
 
     switch (ww_widget->i_active_service) {
-        case WEB_SERV_PEXELS:
-            pexels_search (ww_widget, ns_data);
-            break;
-        case WEB_SERV_PIXBAY:
-            pixbay_search (ww_widget, ns_data);
+        case WEB_SERV_PIXABAY:
+            pixabay_search (ww_widget, ns_data);
             break;
         case WEB_SERV_WALLHAVEN:
             wallhaven_search (ww_widget, ns_data);
@@ -453,11 +449,8 @@ event_search_opts_pressed (WebWidget *ww_widget)
     i_id = ww_widget->i_active_service;
 
     switch (i_id) {
-        case WEB_SERV_PEXELS:
-            s_search_opts = pexels_search_opts_dialog (ww_widget);
-            break;
-        case WEB_SERV_PIXBAY:
-            s_search_opts = pixbay_search_opts_dialog (ww_widget);
+        case WEB_SERV_PIXABAY:
+            s_search_opts = pixabay_search_opts_dialog (ww_widget);
             break;
         case WEB_SERV_WALLHAVEN:
             s_search_opts = wallhaven_search_opts_dialog (ww_widget);
@@ -559,11 +552,8 @@ event_settings_pressed (WebWidget *ww_widget)
     combo_get_active_strings (ww_widget->gw_combo, ns_data);
 
     switch (i_id) {
-        case WEB_SERV_PEXELS:
-            i_res = pexels_settings_dialog (ns_data);
-            break;
-        case WEB_SERV_PIXBAY:
-            i_res = pixbay_settings_dialog (ns_data);
+        case WEB_SERV_PIXABAY:
+            i_res = pixabay_settings_dialog (ns_data);
             break;
         case WEB_SERV_WALLHAVEN:
             i_res = wallhaven_settings_dialog (ns_data);
@@ -648,9 +638,9 @@ event_add_selected_pressed (WebWidget *ww_widget)
                                 WEB_COL_WIDTH,     &i_w,
                                 WEB_COL_HEIGHT,    &i_h,
                                 WEB_COL_ID,        &s_id,
-                                WEB_COL_DISP_NAME, &s_disp_name, 
-                                WEB_COL_FILE_NAME, &s_file_name, 
-                                WEB_COL_IMAGE_URL, &s_image_url, 
+                                WEB_COL_DISP_NAME, &s_disp_name,
+                                WEB_COL_FILE_NAME, &s_file_name,
+                                WEB_COL_IMAGE_URL, &s_image_url,
                                 -1);
 
             if (sel_combo_check_exist (gtm_combo_model, s_id) == 0) {
@@ -708,7 +698,7 @@ event_add_selected_pressed (WebWidget *ww_widget)
 }
 /*----------------------------------------------------------------------------*/
 /**
- * @brief  Refresh string with search options for active seach service.
+ * @brief  Refresh string with search options for active search service.
  *
  * @param[in,out] ww_widget  WebWidget item
  * @return        none
@@ -1086,8 +1076,7 @@ webwidget_create (Setting    *st_settings,
 
     webwidget_init (ww_widget);
 
-    cachequery_delete_older_than (ww_name (WEB_SERV_PEXELS),    1);
-    cachequery_delete_older_than (ww_name (WEB_SERV_PIXBAY),    1);
+    cachequery_delete_older_than (ww_name (WEB_SERV_PIXABAY),   1);
     cachequery_delete_older_than (ww_name (WEB_SERV_WALLHAVEN), 1);
     cachequery_delete_older_than (ww_name (WEB_SERV_WALLABYSS), 1);
 #ifdef HAVE_FLICKCURL
@@ -1198,7 +1187,7 @@ webwidget_create (Setting    *st_settings,
     ww_widget->gw_selected_combo = gw_selected_combo;
     ww_widget->gw_selected_box   = gw_add_sltd_box;
     ww_widget->gw_count_label    = gw_count_label;
-    ww_widget->i_active_service  = WEB_SERV_PEXELS;
+    ww_widget->i_active_service  = WEB_SERV_WALLHAVEN;
     ww_widget->s_search_opts     = strdup ("");
 
     refresh_service_opts (ww_widget);
@@ -1223,4 +1212,3 @@ save_selected_wallpapers (GtkWidget *gw_dialog,
     return gl_res;
 }
 /*----------------------------------------------------------------------------*/
-

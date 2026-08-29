@@ -45,7 +45,7 @@
  *
  * @param[in] val     Json object to convert
  * @param[in] s_name  Name of Setting item
- * @retrn     New setting item
+ * @return     New setting item
  */
 static Setting * js_json_obj_to_setting (json_object *val,
                                          const char  *s_name);

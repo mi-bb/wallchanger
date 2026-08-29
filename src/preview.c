@@ -55,7 +55,7 @@
  *
  * @brief  Create pixbuf preview of image from path.
  *
- * Function creates GdkPixbuf with preview image (monitor) and a scalled
+ * Function creates GdkPixbuf with preview image (monitor) and a scaled
  * wallpaper in it. If passed s_fname is null, wallpaper will not be
  * painted inside preview image.
  *
@@ -271,7 +271,7 @@ GtkWidget *
 create_preview_label (void)
 {
     GtkWidget *gw_label_box;     /* Box with peview labels to return */
-    GtkWidget *gw_label_1;       /* Desctiption label 1 */
+    GtkWidget *gw_label_1;       /* Description label 1 */
     GtkWidget *gw_label_2;       /* Description label 2 */
     int        i_w          = 0; /* Screen width */
     int        i_h          = 0; /* screen height */

@@ -21,8 +21,8 @@
  *
  * Structure and functions I made to manage settings in applications.
  * This file contains a Setting structure and functions to manage it.
- * It is a sigle setting object that can contain one value of selected type.
- * Value can be a 64, 32, 16, 8 bit signed or usigned integer, a double
+ * It is a single setting object that can contain one value of selected type.
+ * Value can be a 64, 32, 16, 8 bit signed or unsigned integer, a double
  * value or a string.
  * Setting object may be also set as an array type. Array type do not hold any
  * value in it. It can be a parent to other settings assigned to it.
@@ -387,7 +387,7 @@ size_t    settings_count         (const Setting *st_settings);
  * @brief  Remove Setting from list.
  *
  * @param[in] st_setting  Setting to remove
- * @return    Pointer to begining of list
+ * @return    Pointer to beginning of list
  */
 Setting * setting_remove         (Setting *st_setting);
 /*----------------------------------------------------------------------------*/

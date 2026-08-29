@@ -35,7 +35,6 @@ The program works on GNU/Linux and FreeBSD.
 
 ### Supported wallpaper search pages:
 
- - Pexels
  - Pixabay
  - wallhaven.cc
  - Wallpaper Abyss

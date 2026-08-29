@@ -55,7 +55,7 @@ main (int    argc,
     int       i_opt        = 0;    /* Command line options */
     int       i_atime_opt  = 0;    /* Time align option */
     char     *s_cfgfile    = nullptr; /* Config file path */
-    RandMem  *rm_rand      = nullptr; /* Ramdom memory */
+    RandMem  *rm_rand      = nullptr; /* Random memory */
 
     /* Parse command line options */
     cmdfn_parse (argc, argv, &i_opt, &s_cfgfile);

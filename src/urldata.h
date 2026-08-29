@@ -71,7 +71,7 @@ void      urldata_free          (UrlData    *ud_data);
 UrlData * urldata_get_data      (const char *s_url);
 /*----------------------------------------------------------------------------*/
 /**
- * @brief  Donwload data from url to file.
+ * @brief  Download data from url to file.
  *
  * @param[in]  s_url  Url to download data
  * @param[in]  s_fn   File where data should be saved
@@ -83,32 +83,18 @@ void      urldata_get_to_file   (const char *s_url,
                                  char      **s_err);
 /*----------------------------------------------------------------------------*/
 /**
- * @brief  Search Pexels for images.
+ * @brief  Search Pixabay for images.
  *
  * @param[in] s_query        Search query
  * @param[in] s_search_opts  Search options
- * @param[in] s_api_key      Pexels API key
+ * @param[in] s_api_key      Pixabay API key
  * @param[in] i_page         Results page number
  * @return    UrlData item with downloaded data or error info
  */
-UrlData * urldata_search_pexels (const char *s_query,
-                                 const char *s_search_opts,
-                                 const char *s_api_key,
-                                 const int   i_page);
-/*----------------------------------------------------------------------------*/
-/**
- * @brief  Search Pixbay for images.
- *
- * @param[in] s_query        Search query
- * @param[in] s_search_opts  Search options
- * @param[in] s_api_key      Pixbay API key
- * @param[in] i_page         Results page number
- * @return    UrlData item with downloaded data or error info
- */
-UrlData * urldata_search_pixbay (const char *s_query,
-                                 const char *s_search_opts,
-                                 const char *s_api_key,
-                                 const int   i_page);
+UrlData * urldata_search_pixabay (const char *s_query,
+                                  const char *s_search_opts,
+                                  const char *s_api_key,
+                                  const int   i_page);
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Search Wallhaven for images.

@@ -438,7 +438,7 @@ wallpaperabyss_search_opts_dialog (WebWidget *ww_widget)
     GtkAdjustment *ga_adjust1;         /* Adjustment for width spinbutton */
     GtkAdjustment *ga_adjust2;         /* Adjustment for height spinbutton */
     GtkWidget     *gw_array[GW_CNT];   /* Array with widgets */
-    GtkWidget     *gw_dialog;          /* Pixbay settings dialog */
+    GtkWidget     *gw_dialog;          /* Pixabay settings dialog */
     GtkWidget     *gw_content_box;     /* Dialog's box */
     GtkWidget     *gw_box;             /* Box for widgets */
     GtkWidget     *gw_hbox;            /* Horizontal box for widgets */

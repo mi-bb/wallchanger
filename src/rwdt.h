@@ -44,7 +44,7 @@
  *
  * @param[in]  s_fname File name
  * @param[in]  s_buff  Buffer with data
- * @return     Writting status
+ * @return     Writing status
  */
 /*----------------------------------------------------------------------------*/
 char * read_file_data      (const char    *s_fname,
