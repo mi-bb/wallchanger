@@ -21,7 +21,7 @@
 cmake_minimum_required(VERSION 3.13)
 
 project(wallchanger
-    VERSION 1.6.19
+    VERSION 1.6.20
     DESCRIPTION "Wall Changer is an automatic wallpaper changer."
     HOMEPAGE_URL "https://www.nongnu.org/wallchanger/"
     LANGUAGES C)
