@@ -19,7 +19,7 @@
  *
  * @brief  Settings for searching the Pexels website.
  *
- * @author Michal Babik <michal.babik@pm.me>
+ * @author Michal Babik <michal.babik@protonmail.com>
  */
 #ifndef WEBPEXELS_H
 #define WEBPEXELS_H

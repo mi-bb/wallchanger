@@ -19,7 +19,7 @@
  *
  * @brief  Common functions for webwidgets.
  *
- * @author Michal Babik <michal.babik@pm.me>
+ * @author Michal Babik <michal.babik@protonmail.com>
  */
 #ifndef WEBWIDGET_C_H
 #define WEBWIDGET_C_H

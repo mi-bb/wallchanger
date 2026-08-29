@@ -19,7 +19,7 @@
  *
  * @brief  Application defines
  *
- * @author Michał Bąbik <michal.babik@pm.me>
+ * @author Michał Bąbik <michal.babik@protonmail.com>
  */
 #ifndef DEFS_H
 #define DEFS_H

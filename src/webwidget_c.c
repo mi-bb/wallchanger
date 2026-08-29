@@ -19,7 +19,7 @@
  *
  * @brief  Common functions for webwidgets.
  *
- * @author Michal Babik <michal.babik@pm.me>
+ * @author Michal Babik <michal.babik@protonmail.com>
  */
 #include "dlgsmsg.h"
 #include "thumbs.h"

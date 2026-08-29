@@ -19,7 +19,7 @@
  *
  * @brief  Error info
  *
- * @author Michal Babik <michal.babik@pm.me>
+ * @author Michal Babik <michal.babik@protonmail.com>
  */
 #ifndef ERRS_H
 #define ERRS_H

@@ -19,7 +19,7 @@
  *
  * @brief  Configuration file examine and set
  *
- * @author Michal Babik <michal.babik@pm.me>
+ * @author Michal Babik <michal.babik@protonmail.com>
  */
 #ifndef CFGFILE_H
 #define CFGFILE_H

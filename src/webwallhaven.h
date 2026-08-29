@@ -19,7 +19,7 @@
  *
  * @brief  Settings for searching the Wallhaven website.
  *
- * @author Michal Babik <michal.babik@pm.me>
+ * @author Michal Babik <michal.babik@protonmail.com>
  */
 #ifndef WEBWALLHAVEN_H
 #define WEBWALLHAVEN_H

@@ -19,7 +19,7 @@
  *
  * @brief  Daemon related functions
  *
- * @author Michal Babik <michal.babik@pm.me>
+ * @author Michal Babik <michal.babik@protonmail.com>
  */
 #ifndef DMFN_H
 #define DMFN_H

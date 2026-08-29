@@ -27,16 +27,16 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 ## About
 
-Wall Changer is an automatic wallpaper changer. User can select images
-that will be used as wallpapers, select command to set wallpaper,
-wallpaper change time interval.
+Wall Changer is an automatic wallpaper changer. The user can select
+images to use as wallpapers, the command used to set the wallpaper, and
+the wallpaper change interval.
 
-Program works on GNU/Linux, FreeBSD.
+The program works on GNU/Linux and FreeBSD.
 
 ### Supported wallpaper search pages:
 
  - Pexels
- - Pixbay
+ - Pixabay
  - wallhaven.cc
  - Wallpaper Abyss
  - Flickr
@@ -146,18 +146,18 @@ automatically when the `check` library is found, and can be run with:
 ctest --test-dir build
 ```
 
-If compilation ends without problems, 2 executable files will be created:
+If compilation ends without problems, two executable files will be created:
 
 ```
 wchangerd
 wchangercfg
 ```
 
-`wchangerd` works in background and changes wallpaper in specified time
-intervals.
+`wchangerd` works in the background and changes wallpaper at specified
+time intervals.
 
-`wchangercfg` is a configuration window to set wallpaper change time
-intervals, images on wallpaper list, the way wallpapers change, etc.
+`wchangercfg` is a configuration window to set the wallpaper change
+interval, the list of wallpaper images, the way wallpapers change, etc.
 
 Working with the `wchangerd` daemon:
 
@@ -168,17 +168,17 @@ wchangerd --restart    Restarts the wchangerd daemon
 
 wchangerd --once       Change wallpaper once and exit
 
-wchangerd --config     Loads configuration from given file
+wchangerd --config     Loads configuration from a given file
 ```
 
 The wallpaper change command is selected based on the currently used
-window manager. Application has default wallpaper change commands for
-several window managers. Default commands can be changed through
-`wchangercfg`, using the Select button. It opens a wallpaper command set
-dialog with a list of window managers and commands. After checking and
-setting commands, especially for Xfce, which has an unusual wallpaper set
-command, you can use this app with different window managers without
-changing settings.
+window manager. The application has default wallpaper change commands
+for several window managers. Default commands can be changed through
+`wchangercfg`, using the Select button. It opens a dialog for setting
+the wallpaper command, with a list of window managers and commands.
+After checking and setting commands, especially for Xfce, which has an
+unusual wallpaper-set command, you can use this app with different
+window managers without changing settings.
 
 After changing settings using `wchangercfg`, the `wchangerd` daemon will
 load them before the next wallpaper change. If you want to load settings
@@ -204,4 +204,4 @@ wchangercfg --config [FILENAME]
 ## Contact and help
 
 In case of problems with the program, please contact me:
-michal.babik@pm.me
+michal.babik@protonmail.com

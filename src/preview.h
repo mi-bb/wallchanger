@@ -19,7 +19,7 @@
  *
  * @brief  Wallpaper preview
  *
- * @author Michal Babik <michal.babik@pm.me>
+ * @author Michal Babik <michal.babik@protonmail.com>
  */
 #ifndef PREVIEW_H
 #define PREVIEW_H

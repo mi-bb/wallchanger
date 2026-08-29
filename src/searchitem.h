@@ -19,7 +19,7 @@
  *
  * @brief  Web search result
  *
- * @author Michal Babik <michal.babik@pm.me>
+ * @author Michal Babik <michal.babik@protonmail.com>
  */
 #ifndef SEARCHITEM_H
 #define SEARCHITEM_H

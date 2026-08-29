@@ -19,7 +19,7 @@
  *
  * @brief  Settings for searching the Wallpaper Abyss website.
  *
- * @author Michal Babik <michal.babik@pm.me>
+ * @author Michal Babik <michal.babik@protonmail.com>
  */
 #include <ctype.h>
 #include <err.h>

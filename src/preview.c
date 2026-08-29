@@ -19,7 +19,7 @@
  *
  * @brief  Wallpaper preview
  *
- * @author Michal Babik <michal.babik@pm.me>
+ * @author Michal Babik <michal.babik@protonmail.com>
  */
 #include <gdk/gdk.h>
 #include "imgs.h"

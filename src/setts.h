@@ -19,7 +19,7 @@
  *
  * @brief  Settings manage functions
  *
- * @author Michal Babik <michal.babik@pm.me>
+ * @author Michal Babik <michal.babik@protonmail.com>
  */
 #ifndef SETTS_H
 #define SETTS_H

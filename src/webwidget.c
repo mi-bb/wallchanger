@@ -19,7 +19,7 @@
  *
  * @brief  Web widget
  *
- * @author Michal Babik <michal.babik@pm.me>
+ * @author Michal Babik <michal.babik@protonmail.com>
  */
 #include <err.h>
 #include <ctype.h>

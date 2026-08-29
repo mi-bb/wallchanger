@@ -19,7 +19,7 @@
  *
  * @brief  Read / write data functions
  *
- * @author Michal Babik <michal.babik@pm.me>
+ * @author Michal Babik <michal.babik@protonmail.com>
  */
 #ifndef RWDT_H
 #define RWDT_H

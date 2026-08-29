@@ -19,7 +19,7 @@
  *
  * @brief  Setting structure and functions
  *
- * @author Michal Babik <michal.babik@pm.me>
+ * @author Michal Babik <michal.babik@protonmail.com>
  */
 #ifdef DEBUG
 #include <stdio.h>

@@ -19,7 +19,7 @@
  *
  * @brief  Application dialogs
  *
- * @author Michal Babik <michal.babik@pm.me>
+ * @author Michal Babik <michal.babik@protonmail.com>
  */
 #ifndef DLGS_H
 #define DLGS_H

@@ -19,7 +19,7 @@
  *
  * @brief  Wallpaper set command dialog
  *
- * @author Michal Babik <michal.babik@pm.me>
+ * @author Michal Babik <michal.babik@protonmail.com>
  */
 #include "errs.h"
 #include "wpset.h"

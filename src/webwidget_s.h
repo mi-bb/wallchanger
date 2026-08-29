@@ -19,7 +19,7 @@
  *
  * @brief  Web widget structure.
  *
- * @author Michal Babik <michal.babik@pm.me>
+ * @author Michal Babik <michal.babik@protonmail.com>
  */
 #ifndef WEBWIDGET_S_H
 #define WEBWIDGET_S_H

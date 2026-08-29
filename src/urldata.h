@@ -19,7 +19,7 @@
  *
  * @brief  Functions for receiving data from url
  *
- * @author Michal Babik <michal.babik@pm.me>
+ * @author Michal Babik <michal.babik@protonmail.com>
  */
 #ifndef URLDATA_H
 #define URLDATA_H
