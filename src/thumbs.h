@@ -19,7 +19,7 @@
  *
  * @brief  Thumbnail getting
  *
- * @author Michal Babik <michal.babik@pm.me>
+ * @author Michal Babik <michal.babik@protonmail.com>
  */
 #ifndef THUMBS_H
 #define THUMBS_H

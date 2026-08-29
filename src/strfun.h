@@ -19,7 +19,7 @@
  *
  * @brief  String operations 
  *
- * @author Michal Babik <michal.babik@pm.me>
+ * @author Michal Babik <michal.babik@protonmail.com>
  */
 #ifndef STRFUN_H
 #define STRFUN_H

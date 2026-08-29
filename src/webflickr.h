@@ -19,7 +19,7 @@
  *
  * @brief  Settings for searching the Flickr website.
  *
- * @author Michal Babik <michal.babik@pm.me>
+ * @author Michal Babik <michal.babik@protonmail.com>
  */
 #ifndef WEBFLICKR_H
 #define WEBFLICKR_H

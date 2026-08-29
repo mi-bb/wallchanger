@@ -26,7 +26,7 @@ project(wallchanger
     HOMEPAGE_URL "https://www.nongnu.org/wallchanger/"
     LANGUAGES C)
 
-set(PACKAGE_BUGREPORT "michal.babik@pm.me")
+set(PACKAGE_BUGREPORT "michal.babik@protonmail.com")
 
 set(CMAKE_C_STANDARD 23)
 set(CMAKE_C_EXTENSIONS ON)

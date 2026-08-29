@@ -19,7 +19,7 @@
  *
  * @brief  Search query cache
  *
- * @author Michal Babik <michal.babik@pm.me>
+ * @author Michal Babik <michal.babik@protonmail.com>
  */
 #include <stdio.h>
 #include "../config.h"

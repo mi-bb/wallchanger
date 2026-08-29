@@ -19,7 +19,7 @@
  *
  * @brief  Function to create / resize dynamic array
  *
- * @author Michal Babik <michal.babik@pm.me>
+ * @author Michal Babik <michal.babik@protonmail.com>
  */
 #ifndef CRES_H
 #define CRES_H

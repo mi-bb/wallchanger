@@ -19,7 +19,7 @@
  *
  * @brief  ProcItem structure and functions.
  *
- * @author Michal Babik <michal.babik@pm.me>
+ * @author Michal Babik <michal.babik@protonmail.com>
  */
 #ifndef PROCITEM_H
 #define PROCITEM_H

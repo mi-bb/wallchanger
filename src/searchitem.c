@@ -19,7 +19,7 @@
  *
  * @brief  Web search result
  *
- * @author Michal Babik <michal.babik@pm.me>
+ * @author Michal Babik <michal.babik@protonmail.com>
  */
 #include <stdlib.h>
 #include <string.h>

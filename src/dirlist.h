@@ -19,7 +19,7 @@
  *
  * @brief  Getting directory content functions
  *
- * @author Michal Babik <michal.babik@pm.me>
+ * @author Michal Babik <michal.babik@protonmail.com>
  */
 #ifndef DIRLIST_H
 #define DIRLIST_H

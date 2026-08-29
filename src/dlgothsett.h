@@ -19,7 +19,7 @@
  *
  * @brief  Other settings dialog
  *
- * @author Michal Babik <michal.babik@pm.me>
+ * @author Michal Babik <michal.babik@protonmail.com>
  */
 #ifndef DLGOTHSETT_H
 #define DLGOTHSETT_H

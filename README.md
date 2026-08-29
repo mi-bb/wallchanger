@@ -204,4 +204,4 @@ wchangercfg --config [FILENAME]
 ## Contact and help
 
 In case of problems with the program, please contact me:
-michal.babik@pm.me
+michal.babik@protonmail.com

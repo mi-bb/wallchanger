@@ -19,7 +19,7 @@
  *
  * @brief  File / directory operations
  *
- * @author Michal Babik <michal.babik@pm.me>
+ * @author Michal Babik <michal.babik@protonmail.com>
  */
 #ifndef FDFN_H
 #define FDFN_H

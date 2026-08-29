@@ -21,7 +21,7 @@
  *
  * Functions to get and store application settings in JSON database.
  *
- * @author Michal Babik <michal.babik@pm.me>
+ * @author Michal Babik <michal.babik@protonmail.com>
  */
 #ifndef JSOF_H
 #define JSOF_H

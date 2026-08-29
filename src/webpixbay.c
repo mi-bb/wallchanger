@@ -19,7 +19,7 @@
  *
  * @brief  Settings for searching the Pixbay website.
  *
- * @author Michal Babik <michal.babik@pm.me>
+ * @author Michal Babik <michal.babik@protonmail.com>
  */
 #include <ctype.h>
 #include <inttypes.h>

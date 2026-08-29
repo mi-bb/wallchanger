@@ -19,7 +19,7 @@
  *
  * @brief  Functions for getting process info.
  *
- * @author Michal Babik <michal.babik@pm.me>
+ * @author Michal Babik <michal.babik@protonmail.com>
  */
 #include <stdio.h>
 #include <stdlib.h>

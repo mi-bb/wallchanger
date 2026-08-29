@@ -27,7 +27,7 @@
  * Setting object may be also set as an array type. Array type do not hold any
  * value in it. It can be a parent to other settings assigned to it.
  *
- * @author Michal Babik <michal.babik@pm.me>
+ * @author Michal Babik <michal.babik@protonmail.com>
  */
 #ifndef SETTING_H
 #define SETTING_H

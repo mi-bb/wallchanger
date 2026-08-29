@@ -19,7 +19,7 @@
  *
  * @brief  Wallpaper set command functions.
  *
- * @author Michal Babik <michal.babik@pm.me>
+ * @author Michal Babik <michal.babik@protonmail.com>
  */
 #include <err.h>
 #include <stdio.h>

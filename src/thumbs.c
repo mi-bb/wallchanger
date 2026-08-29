@@ -19,7 +19,7 @@
  *
  * @brief  Thumbnail getting
  *
- * @author Michal Babik <michal.babik@pm.me>
+ * @author Michal Babik <michal.babik@protonmail.com>
  */
 #include <stdio.h>
 #include <ctype.h>
