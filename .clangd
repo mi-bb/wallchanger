@@ -1,0 +1,9 @@
+# clangd configuration.
+#
+# The sources are C23 (nullptr, constexpr, bool, [[maybe_unused]]). When the
+# compiler already defaults to that standard - GCC 15 and newer do - neither
+# CMake nor configure has to pass -std=, so compile_commands.json carries no
+# standard flag and clangd falls back to its own default (gnu17), reporting
+# every C23 construct as an error. Pin the standard here instead.
+CompileFlags:
+  Add: [-std=gnu23]

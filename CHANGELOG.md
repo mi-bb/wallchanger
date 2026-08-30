@@ -17,6 +17,24 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [Unreleased]
+
+### Changed
+
+- Modernized the Autotools build: `AC_PREREQ` raised to 2.71, helper scripts moved out of the project root into `build-aux/` (`AC_CONFIG_AUX_DIR`), local macros collected in `m4/` (`AC_CONFIG_MACRO_DIRS`), silent rules enabled by default, and `AC_USE_SYSTEM_EXTENSIONS` added so `strndup()` stays visible under a strict standard.
+- Removed the Autoconf checks whose results nothing consults — `AC_C_INLINE`, all eleven `AC_TYPE_*`, `AC_FUNC_FORK`/`MALLOC`/`REALLOC`/`MKTIME`, the `AC_CHECK_FUNCS` list, and the unused `AC_CHECK_HEADERS` entries. `cmake/config.h.in` was trimmed to match.
+- Raised the CMake minimum from 3.13 to 3.21, which is the first version that knows the `c_std_23` compile feature the targets ask for; the standard is now requested per target with `target_compile_features()` instead of the global `CMAKE_C_STANDARD`.
+- Added `CMakePresets.json` with `default`, `release` and `debug` presets, and enabled `CMAKE_EXPORT_COMPILE_COMMANDS`.
+- The C standard no longer has to be passed by hand in `CFLAGS`: `configure` probes for the option that enables C23 (`-std=gnu23`, `-std=c23`, `-std=gnu2x`, `-std=c2x`) and fails with an explanatory message when the compiler supports none of them.
+- Gave the enums a fixed underlying type (`enum … : int`, a C23 feature) in `errs.h`, `setting.h`, `nstrings.h`, `setts.h`, `imgs.h` and `webwidget_c.h`, converted the last numeric `#define` constants in `dlgcmd.c`, `procfn.c` and `webwidget.c` to `constexpr`, gave `cfgfile_autostart_exists()` and `process_exists_b()` a `bool` return type, and marked the allocating constructors and pure query helpers `[[nodiscard]]`.
+
+### Fixed
+
+- Out-of-source builds work again in both build systems. `src/*.c` included `config.h` as `"../config.h"`, which the preprocessor always resolves into the *source* tree, so a VPATH Autotools build read a stale or missing header; the include is now plain `"config.h"` with the build directory on the include path. As a result CMake no longer has to write `config.h` back into the checkout.
+- `configure` no longer links `-lprocstat` into both binaries on any system that happens to have it. The check is now guarded on FreeBSD, where `src/procfn.c` actually uses it, and the result is passed through `PROCSTAT_LIBS` instead of the global `LIBS`.
+- `make distcheck` passes again: the `uninstall-hook` in `other/Makefile.am` ignored `DESTDIR`, so a staged uninstall tried to `rmdir` the real `$(datadir)/wchanger` and failed the run.
+- Added a `.clangd` config pinning `-std=gnu23`. On compilers that already default to C23 neither build system emits a `-std=` flag, so `compile_commands.json` carried none and clangd flagged every `nullptr`, `constexpr` and `bool` in the tree as an error.
+
 ## [1.6.19] - 2026-08-29
 
 ### Changed

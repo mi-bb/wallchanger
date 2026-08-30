@@ -39,7 +39,7 @@
  * @brief  Setting types 
  */
 typedef enum
-SetValType {
+SetValType : int {
     SET_VAL_INT,     /**< Integer (64 bit) */
     SET_VAL_UINT,    /**< Unsigned integer (64 bit) */
     SET_VAL_DOUBLE,  /**< double */
@@ -299,24 +299,30 @@ void         setting_set_string (Setting       *st_set,
  * @return     New Setting object
  */
 /*----------------------------------------------------------------------------*/
+[[nodiscard]]
 Setting * setting_new_setting (const char     *s_name)
           __attribute__ ((returns_nonnull));
 
+[[nodiscard]]
 Setting * setting_new_array   (const char     *s_name)
           __attribute__ ((returns_nonnull));
 
+[[nodiscard]]
 Setting * setting_new_int     (const char     *s_name,
                                const int64_t   val)
           __attribute__ ((returns_nonnull));
 
+[[nodiscard]]
 Setting * setting_new_uint    (const char     *s_name,
                                const uint64_t  val)
           __attribute__ ((returns_nonnull));
 
+[[nodiscard]]
 Setting * setting_new_double  (const char     *s_name,
                                const double    val)
           __attribute__ ((returns_nonnull));
 
+[[nodiscard]]
 Setting * setting_new_string  (const char     *s_name,
                                const char     *val)
           __attribute__ ((returns_nonnull));

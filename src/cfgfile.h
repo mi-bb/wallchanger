@@ -121,9 +121,9 @@ char * cfgfile_get_wm_info_data_file_path   (int *i_err);
  * @brief  Check if wchangerd daemon desktop file exists in user's autostart
  *         directory.
  *
- * @return 1 if file exists, 0 if not or there was some problem with it.
+ * @return true if file exists, false if not or there was some problem with it.
  */
-int    cfgfile_autostart_exists        (void);
+bool   cfgfile_autostart_exists        (void);
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Creates wchangerd desktop file in user's autostart directory.

@@ -23,7 +23,7 @@
  */
 #include <ctype.h>
 #include <inttypes.h>
-#include "../config.h"
+#include "config.h"
 #ifdef HAVE_JSON_C_JSON_H
 #include <json-c/json.h>
 #else

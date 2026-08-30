@@ -25,12 +25,16 @@ make install
 Recommended configure invocation for daily development builds:
 
 ```sh
-./configure CC="gcc" CFLAGS="-march=native -O2 -pipe -std=gnu23" --prefix=/usr
+./configure CC="gcc" CFLAGS="-march=native -O2 -pipe" --prefix=/usr
 ```
 
-Build artifacts (`Makefile`, `configure`, `config.h`, `autom4te.cache/`, etc.) are generated and gitignored — do not hand-edit them; edit `configure.ac` / `Makefile.am` instead and rerun `autogen.sh`.
+Do not pass `-std=` by hand. The sources are C23 (`nullptr`, `constexpr`, `bool`, `[[maybe_unused]]`, enums with a fixed underlying type); `WC_PROG_CC_C23` in `m4/wc_prog_cc_c23.m4` probes for the option that enables it and appends it to `CC`, erroring out if the compiler cannot provide C23. Requires Autoconf >= 2.71 / Automake >= 1.16.
 
-CMake (>= 3.13) is also supported as an alternative to Autotools (`CMakeLists.txt` / `src/CMakeLists.txt` / `tests/CMakeLists.txt`, documented in `README.md`); keep both build definitions in sync when adding sources or dependencies.
+Both build systems build out-of-source; sources include `config.h` unqualified and get the build directory on the include path (`AM_CPPFLAGS` in `src/Makefile.am`, `target_include_directories` in `src/CMakeLists.txt`). Nothing is generated into the checkout by the CMake build.
+
+Generated build artifacts (`Makefile`, `configure`, `config.h`, `autom4te.cache/`, `build-aux/`, and everything in `m4/` except `wc_prog_cc_c23.m4`) are gitignored — do not hand-edit them; edit `configure.ac` / `Makefile.am` instead and rerun `autogen.sh`.
+
+CMake (>= 3.21, the first version with the `c_std_23` compile feature) is also supported as an alternative to Autotools (`CMakeLists.txt` / `src/CMakeLists.txt` / `tests/CMakeLists.txt` / `CMakePresets.json`, documented in `README.md`); keep both build definitions in sync when adding sources or dependencies. `cmake --preset default` is the quickest way in. Before releasing a build-system change, check it with `make distcheck`, which exercises the tarball, a VPATH build, `make check` and a staged install/uninstall in one go.
 
 ### Tests
 

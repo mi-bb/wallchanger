@@ -16,7 +16,11 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 PDIR=`dirname "$0"`
-cd ${PDIR}
+cd "${PDIR}" || exit 1
+
+# autoreconf fails if the macro directory named by AC_CONFIG_MACRO_DIRS is
+# missing, and drops its helper scripts into AC_CONFIG_AUX_DIR.
+mkdir -p m4 build-aux
 
 autoreconf --install --symlink --verbose
 

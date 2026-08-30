@@ -23,7 +23,7 @@
  */
 #ifndef DEFS_H
 #define DEFS_H
-#include "../config.h"
+#include "config.h"
 /*----------------------------------------------------------------------------*/
 /**
  * @def   APP_NAME

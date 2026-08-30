@@ -49,10 +49,15 @@ The program works on GNU/Linux and FreeBSD.
 ## Requirements
 
 - GNU/Linux, FreeBSD
-- GCC / Clang
+- A C23-capable compiler: GCC (>= 13) or Clang (>= 16)
 - GTK+ 3 (>= 3.22)
 - json-c (>= 0.12.1)
 - libcurl (>= 7.68.0)
+
+To build from a git checkout (not needed for a release tarball), either:
+
+- Autoconf (>= 2.71) and Automake (>= 1.16), or
+- CMake (>= 3.21)
 
 ## Installation and running
 
@@ -74,6 +79,16 @@ make install
 It's suggested to configure and compile with the more detailed options
 described below.
 
+The build can also be run outside the source directory, which keeps the
+checkout free of generated files:
+
+```
+./autogen.sh
+mkdir build && cd build
+../configure
+make
+```
+
 ### Compilers and Options
 
 For a normal daily use of this program a good option should be:
@@ -85,15 +100,13 @@ For a normal daily use of this program a good option should be:
 or more specific:
 
 ```
-./configure CC="gcc" CFLAGS="-march=native -O2 -pipe -std=gnu23" \
---prefix=/usr
+./configure CC="gcc" CFLAGS="-march=native -O2 -pipe" --prefix=/usr
 ```
 
 with Clang:
 
 ```
-./configure CC="clang" CFLAGS="-march=native -O2 -pipe -std=gnu23" \
---prefix=/usr
+./configure CC="clang" CFLAGS="-march=native -O2 -pipe" --prefix=/usr
 ```
 
 This disables the standard `-g` option, which produces debugging
@@ -104,8 +117,12 @@ information needed for gdb and enlarges the output file:
 - `-march=native` — enables all instruction subsets supported by the local machine
 - `-O2` — sets the code optimization to level 2
 - `-pipe` — use pipes rather than temporary files for communication between the various stages of compilation
-- `-std=gnu23` — sets the C standard to C23 with GNU extensions
 - `--prefix=/usr` — where the app should be installed
+
+The C standard no longer has to be given by hand. The sources are C23, and
+`configure` finds the option that enables it (`-std=gnu23` on compilers that
+do not already default to C23) and stops with an explanatory message if the
+compiler cannot provide C23 at all.
 
 Executing:
 
@@ -119,11 +136,23 @@ configuration parameters.
 ### Building with CMake
 
 As an alternative to the Autotools flow above, the program can be built
-with CMake (>= 3.13). Both build systems can coexist in the same source
-tree; use an out-of-source build directory (e.g. `./build`) so CMake does
-not clobber the Autotools-generated files.
+with CMake (>= 3.21). Both build systems can coexist in the same source
+tree; the CMake build is always out-of-source and writes nothing into the
+checkout.
 
-Commands to configure, build and install the program:
+The quickest way is the bundled presets:
+
+```
+cmake --preset default
+cmake --build --preset default
+sudo cmake --install build
+```
+
+`default` builds `RelWithDebInfo` in `./build`; `release` builds optimized
+with the prefix set to `/usr`; `debug` builds unoptimized with `-Wall
+-Wextra`. Run `cmake --list-presets` to see them.
+
+Without presets, the equivalent commands are:
 
 ```
 cmake -S . -B build

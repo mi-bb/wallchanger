@@ -3,19 +3,20 @@
 /Makefile.in
 /aclocal.m4
 /autom4te.cache/
-/compile
-/config.guess
+/build-aux/
 /config.h
 /config.h.in
+/config.h.in~
 /config.log
 /config.status
-/config.sub
 /configure
 /configure~
-/depcomp
-/install-sh
-/missing
 /stamp-h1
+
+# m4/ holds this project's own macros; autoreconf --install drops copies of
+# the pkg-config and gettext macros here too - keep only what we maintain.
+/m4/*
+!/m4/wc_prog_cc_c23.m4
 other/Makefile
 other/Makefile.in
 src/.deps/
@@ -41,7 +42,6 @@ CTestTestfile.cmake
 cmake_install.cmake
 compile_commands.json
 Testing/
-# CMake also (re)generates config.h in-source, same as Autotools (see above).
 
 .cache/
 .vscode/

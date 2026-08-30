@@ -18,7 +18,9 @@
 # an out-of-source CMake build (e.g. in ./build) to avoid clobbering
 # Autotools-generated files.
 
-cmake_minimum_required(VERSION 3.13)
+# 3.21 is the real floor: it is the first release that knows the c_std_23
+# compile feature the two targets require.
+cmake_minimum_required(VERSION 3.21)
 
 project(wallchanger
     VERSION 1.6.20
@@ -28,9 +30,13 @@ project(wallchanger
 
 set(PACKAGE_BUGREPORT "michal.babik@protonmail.com")
 
-set(CMAKE_C_STANDARD 23)
+# The sources use C23 with GNU extensions (the Autotools build asks the
+# compiler for -std=gnu23); the standard itself is requested per target with
+# target_compile_features(... c_std_23), which fails the configure step with a
+# clear message on a compiler that cannot provide it.
 set(CMAKE_C_EXTENSIONS ON)
-set(CMAKE_C_STANDARD_REQUIRED ON)
+
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 if(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
     set(CMAKE_BUILD_TYPE RelWithDebInfo CACHE STRING "Build type" FORCE)
@@ -38,8 +44,6 @@ endif()
 
 include(GNUInstallDirs)
 include(CheckIncludeFile)
-include(CheckSymbolExists)
-include(CheckLibraryExists)
 include(CTest)
 
 find_package(PkgConfig REQUIRED)
@@ -77,26 +81,14 @@ if(NOT BASHCOMPDIR)
     set(BASHCOMPDIR "${CMAKE_INSTALL_FULL_SYSCONFDIR}/bash_completion.d")
 endif()
 
-# FreeBSD procstat support, used by src/procfn.c.
-check_library_exists(procstat procstat_getprocs "" HAVE_LIBPROCSTAT)
-if(HAVE_LIBPROCSTAT)
-    find_library(PROCSTAT_LIBRARY procstat)
+# FreeBSD procstat support; only src/procfn.c uses it, and only there.
+set(PROCSTAT_LIBRARY "")
+if(CMAKE_SYSTEM_NAME STREQUAL "FreeBSD")
+    find_library(PROCSTAT_LIBRARY procstat REQUIRED)
 endif()
 
-# Checks for header files.
-check_include_file(inttypes.h  HAVE_INTTYPES_H)
-check_include_file(stddef.h    HAVE_STDDEF_H)
-check_include_file(stdint.h    HAVE_STDINT_H)
-check_include_file(stdio.h     HAVE_STDIO_H)
-check_include_file(stdlib.h    HAVE_STDLIB_H)
-check_include_file(string.h    HAVE_STRING_H)
-check_include_file(strings.h   HAVE_STRINGS_H)
-check_include_file(unistd.h    HAVE_UNISTD_H)
-check_include_file(sys/param.h HAVE_SYS_PARAM_H)
-check_include_file(sys/stat.h  HAVE_SYS_STAT_H)
-check_include_file(sys/time.h  HAVE_SYS_TIME_H)
-check_include_file(sys/types.h HAVE_SYS_TYPES_H)
-
+# Checks for header files. Only the results src/ actually consults are
+# probed (mirrors the AC_CHECK_HEADERS list in configure.ac).
 set(CMAKE_REQUIRED_INCLUDES ${JSONC_INCLUDE_DIRS})
 check_include_file(json-c/json.h HAVE_JSON_C_JSON_H)
 unset(CMAKE_REQUIRED_INCLUDES)
@@ -105,33 +97,11 @@ set(CMAKE_REQUIRED_INCLUDES ${CURL_INCLUDE_DIRS})
 check_include_file(curl/curl.h HAVE_CURL_CURL_H)
 unset(CMAKE_REQUIRED_INCLUDES)
 
-# Checks for library functions.
-check_symbol_exists(fork    unistd.h HAVE_FORK)
-check_symbol_exists(alarm   unistd.h HAVE_ALARM)
-check_symbol_exists(memset  string.h HAVE_MEMSET)
-check_symbol_exists(mkdir   sys/stat.h HAVE_MKDIR)
-check_symbol_exists(strchr  string.h HAVE_STRCHR)
-check_symbol_exists(strdup  string.h HAVE_STRDUP)
-check_symbol_exists(strndup string.h HAVE_STRNDUP)
-check_symbol_exists(strrchr string.h HAVE_STRRCHR)
-check_symbol_exists(strstr  string.h HAVE_STRSTR)
-if(HAVE_FORK)
-    set(HAVE_WORKING_FORK 1)
-endif()
-set(HAVE_MALLOC 1)
-set(HAVE_REALLOC 1)
-
-# src/*.c include config.h as "../config.h" (a plain, unconditional quoted
-# include, not gated on HAVE_CONFIG_H), which the compiler resolves relative
-# to each source file's own directory in src/ — i.e. always against the top
-# of the source tree, regardless of where the build directory is. Generate
-# it there, exactly where Autotools puts it; config.h is already gitignored.
-configure_file(${CMAKE_SOURCE_DIR}/cmake/config.h.in
-               ${CMAKE_SOURCE_DIR}/config.h @ONLY)
-
-# Automake always adds this to DEFS once AC_CONFIG_HEADERS is in play;
-# src/cmdline.c/.h (gengetopt output) guards its config.h include on it.
-add_compile_definitions(HAVE_CONFIG_H)
+# config.h goes to the top of the build tree, exactly where Autotools puts
+# it; the targets get that directory on their include path so the sources'
+# `#include "config.h"` resolves there and the source tree stays clean.
+configure_file(${PROJECT_SOURCE_DIR}/cmake/config.h.in
+               ${PROJECT_BINARY_DIR}/config.h @ONLY)
 
 add_subdirectory(src)
 add_subdirectory(other)

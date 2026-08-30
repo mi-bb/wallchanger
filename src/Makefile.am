@@ -13,6 +13,10 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+# config.h is generated into the top of the *build* tree, so it has to be on
+# the include path for `#include "config.h"` to resolve in a VPATH build.
+AM_CPPFLAGS = -I$(top_builddir) -I$(srcdir)
+
 bin_PROGRAMS=wchangerd wchangercfg
 
 wchangerd_SOURCES=wcngdmn.c\
@@ -84,7 +88,7 @@ wchangercfg_SOURCES=wchanger.c\
 
 wchangercfg_CFLAGS = $(GTK_CFLAGS) $(JSON_CFLAGS) $(CURL_CFLAGS) \
 					 -DG_DISABLE_DEPRECATED
-wchangercfg_LDADD = $(GTK_LIBS) $(JSON_LIBS) $(CURL_LIBS)
+wchangercfg_LDADD = $(GTK_LIBS) $(JSON_LIBS) $(CURL_LIBS) $(PROCSTAT_LIBS)
 
 if FLICKCURL
 wchangercfg_CFLAGS += $(FLICKCURL_CFLAGS)
@@ -96,5 +100,5 @@ endif
 endif
 
 wchangerd_CFLAGS = $(JSON_CFLAGS)
-wchangerd_LDADD = $(JSON_LIBS)
+wchangerd_LDADD = $(JSON_LIBS) $(PROCSTAT_LIBS)
 

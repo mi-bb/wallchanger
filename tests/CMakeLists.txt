@@ -18,9 +18,11 @@
 
 add_executable(test_setting
     test_setting.c
-    ${CMAKE_SOURCE_DIR}/src/setting.c ${CMAKE_SOURCE_DIR}/src/setting.h
-    ${CMAKE_SOURCE_DIR}/src/hashfun.c ${CMAKE_SOURCE_DIR}/src/hashfun.h)
-target_include_directories(test_setting PRIVATE ${CMAKE_SOURCE_DIR}/src)
+    ${PROJECT_SOURCE_DIR}/src/setting.c ${PROJECT_SOURCE_DIR}/src/setting.h
+    ${PROJECT_SOURCE_DIR}/src/hashfun.c ${PROJECT_SOURCE_DIR}/src/hashfun.h)
+target_compile_features(test_setting PRIVATE c_std_23)
+target_include_directories(test_setting
+    PRIVATE ${PROJECT_BINARY_DIR} ${PROJECT_SOURCE_DIR}/src)
 target_link_libraries(test_setting PRIVATE PkgConfig::CHECK)
 
 add_test(NAME test_setting COMMAND test_setting)

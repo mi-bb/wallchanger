@@ -21,7 +21,7 @@
  *
  * @author Michal Babik <michal.babik@protonmail.com>
  */
-#include "../config.h"
+#include "config.h"
 
 #ifdef HAVE_FLICKCURL
 #include <gtk/gtk.h>

@@ -24,7 +24,7 @@
 #ifndef WEBFLICKR_H
 #define WEBFLICKR_H
 
-#include "../config.h"
+#include "config.h"
 
 #ifdef HAVE_FLICKCURL
 

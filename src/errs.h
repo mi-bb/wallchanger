@@ -27,7 +27,7 @@
 /**
  * @brief  My error values.
  */
-enum e_error_values {
+enum e_error_values : int {
     ERR_OK = 0,  /**< OK */
     ERR_FILE,    /**< File error (cannot access / bad permissions) */
     ERR_FILE_RW, /**< File read / write error */
@@ -39,12 +39,21 @@ enum e_error_values {
     ERR_CFG_NOF  /**< No config file found */
 };
 /*----------------------------------------------------------------------------*/
+/* The GNU __attribute__ spellings used here and in fdfn.h, hashfun.h,
+ * jsfun.h, dirlist.h, dlgsmsg.h and procitem.h are kept on purpose: C23's
+ * nearest equivalents are not usable yet. [[unsequenced]] has to follow the
+ * parameter list on GCC, and Clang does not know it at all (it is dropped
+ * with -Wunknown-attributes), so it would silently lose the optimization on
+ * one of the two supported compilers. [[nodiscard]], which both compilers
+ * implement, is used in the standard form where it applies. */
+/*----------------------------------------------------------------------------*/
 /**
  * @brief  Function returns string with error message.
  *
  * @param[in]  i_err   Error number
  * @return     String with message
  */
+[[nodiscard]]
 const char * err_get_message (const int i_err) __attribute__ ((const));
 /*----------------------------------------------------------------------------*/
 /**
@@ -53,6 +62,7 @@ const char * err_get_message (const int i_err) __attribute__ ((const));
  * @param[in]  i_err   Error number
  * @return     Integer with exit error code
  */
+[[nodiscard]]
 int          err_ex_code     (const int i_err) __attribute__ ((const));
 /*----------------------------------------------------------------------------*/
 #endif

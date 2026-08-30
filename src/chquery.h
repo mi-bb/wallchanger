@@ -76,6 +76,7 @@ CacheQuery {
  * @param[in] i_page          Page number
  * @return    New CacheQuery item, it should be freed using cachequery_free
  */
+[[nodiscard]]
 CacheQuery * cachequery_new               (const char *s_service_name,
                                            const char *s_query,
                                            const char *s_search_opts,
@@ -110,6 +111,7 @@ void         cachequery_append_item       (CacheQuery *cq_query,
  * @return     CacheQuery item with search results or null if there is no cached
  *             data, it should be freed using cachequery_free
  */
+[[nodiscard]]
 CacheQuery * cachequery_check_query       (const char *s_service_name,
                                            const char *s_query,
                                            const char *s_search_opts,

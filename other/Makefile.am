@@ -25,6 +25,10 @@ dist_pixmap_DATA=wchangercfg.png
 appdatadir=$(datadir)/wchanger
 dist_appdata_DATA=wchangerd.autostart wms.json
 
+# The directory is only removed when it is left empty, and the rmdir has to
+# honour DESTDIR (a staged uninstall, as done by `make distcheck`, never
+# touches the real prefix). Failure is not an error: the directory may hold
+# files from another package, or be gone already.
 uninstall-hook:
-	rmdir $(datadir)/wchanger
+	-rmdir "$(DESTDIR)$(datadir)/wchanger"
 

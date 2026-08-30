@@ -83,17 +83,29 @@ set(WCHANGERCFG_SOURCES
     defs.h)
 
 add_executable(wchangerd ${WCHANGERD_SOURCES})
+target_compile_features(wchangerd PRIVATE c_std_23)
 target_link_libraries(wchangerd PRIVATE PkgConfig::JSONC)
-if(HAVE_LIBPROCSTAT AND PROCSTAT_LIBRARY)
-    target_link_libraries(wchangerd PRIVATE ${PROCSTAT_LIBRARY})
-endif()
 
 add_executable(wchangercfg ${WCHANGERCFG_SOURCES})
+target_compile_features(wchangercfg PRIVATE c_std_23)
 target_compile_definitions(wchangercfg PRIVATE G_DISABLE_DEPRECATED)
 target_link_libraries(wchangercfg PRIVATE PkgConfig::GTK PkgConfig::JSONC PkgConfig::CURL)
-if(HAVE_LIBPROCSTAT AND PROCSTAT_LIBRARY)
-    target_link_libraries(wchangercfg PRIVATE ${PROCSTAT_LIBRARY})
-endif()
+
+foreach(target IN ITEMS wchangerd wchangercfg)
+    # ${PROJECT_BINARY_DIR} holds the generated config.h.
+    target_include_directories(${target}
+        PRIVATE ${PROJECT_BINARY_DIR} ${CMAKE_CURRENT_SOURCE_DIR})
+    # HAVE_CONFIG_H: Automake always adds this to DEFS once AC_CONFIG_HEADERS
+    # is in play; src/cmdline.c/.h (gengetopt output) guards its config.h
+    # include on it.
+    # _GNU_SOURCE: the Autotools build gets it from AC_USE_SYSTEM_EXTENSIONS,
+    # and src/iminfo.c needs it for strndup(). Defining it on the command line
+    # rather than in config.h also makes it immune to include ordering.
+    target_compile_definitions(${target} PRIVATE HAVE_CONFIG_H _GNU_SOURCE)
+    if(PROCSTAT_LIBRARY)
+        target_link_libraries(${target} PRIVATE ${PROCSTAT_LIBRARY})
+    endif()
+endforeach()
 if(FLICKCURL_FOUND)
     target_link_libraries(wchangercfg PRIVATE PkgConfig::FLICKCURL)
     if(LIBXML_FOUND)

@@ -44,14 +44,14 @@
 #include "webwidget.h"
 /*----------------------------------------------------------------------------*/
 /**
- * @def   NAME_LEN
+ * @var   NAME_LEN
  * @brief Length of name in download progress window.
  *
- * @def   SEL_NAME_LEN
+ * @var   SEL_NAME_LEN
  * @brief Length of name in selected images combobox.
  */
-#define NAME_LEN     40
-#define SEL_NAME_LEN 60
+constexpr int NAME_LEN     = 40;
+constexpr int SEL_NAME_LEN = 60;
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Services combobox columns

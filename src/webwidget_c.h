@@ -25,7 +25,7 @@
 #define WEBWIDGET_C_H
 
 #include <gtk/gtk.h>
-#include "../config.h"
+#include "config.h"
 #include "webwidget_s.h"
 //#include "webservcs.h"
 #include "nstrings.h"
@@ -35,7 +35,7 @@
 /**
  * @brief  Numbers of image search services.
  */
-enum e_wall_sites {
+enum e_wall_sites : int {
     WEB_SERV_WALLHAVEN, /**< Wallhaven */
     WEB_SERV_PIXABAY,   /**< Pixabay */
     WEB_SERV_WALLABYSS, /**< Wallpaper Abyss */
@@ -48,7 +48,7 @@ enum e_wall_sites {
 /**
  * @brief  Image list columns
  */
-enum e_img_list_columns {
+enum e_img_list_columns : int {
     WEB_COL_PIXBUF,    /**< Thumbnail pixbuf */
     WEB_COL_WIDTH,     /**< Image width */
     WEB_COL_HEIGHT,    /**< Image height */
