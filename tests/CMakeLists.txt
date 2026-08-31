@@ -13,14 +13,15 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
-# Only added by the top-level CMakeLists.txt when 'check' was found
-# (mirrors the HAVE_CHECK Automake conditional).
+# Only added by the top-level CMakeLists.txt when 'check' was found.
 
 add_executable(test_setting
     test_setting.c
-    ${CMAKE_SOURCE_DIR}/src/setting.c ${CMAKE_SOURCE_DIR}/src/setting.h
-    ${CMAKE_SOURCE_DIR}/src/hashfun.c ${CMAKE_SOURCE_DIR}/src/hashfun.h)
-target_include_directories(test_setting PRIVATE ${CMAKE_SOURCE_DIR}/src)
+    ${PROJECT_SOURCE_DIR}/src/setting.c ${PROJECT_SOURCE_DIR}/src/setting.h
+    ${PROJECT_SOURCE_DIR}/src/hashfun.c ${PROJECT_SOURCE_DIR}/src/hashfun.h)
+target_compile_options(test_setting PRIVATE ${WC_C23_FLAG})
+target_include_directories(test_setting
+    PRIVATE ${PROJECT_BINARY_DIR} ${PROJECT_SOURCE_DIR}/src)
 target_link_libraries(test_setting PRIVATE PkgConfig::CHECK)
 
 add_test(NAME test_setting COMMAND test_setting)

@@ -113,12 +113,13 @@ ProcList * process_get        (const char *s_name)
  * @param[in] s_name  Name of process or null to get any process
  * @return    ProcItem with found process info
  *
- * @fn  int process_exists_b (const char *s_name)
+ * @fn  bool process_exists_b (const char *s_name)
  *
- * @brief  Checks for process existence, returns 1 or 0 depending on process.
+ * @brief  Checks for process existence, returns true or false depending on
+ *         process.
  *
  * @param[in] s_name  Name of process or null to get any process
- * @return    1 if process exists or 0 if not.
+ * @return    true if process exists or false if not.
  */
 /*----------------------------------------------------------------------------*/
 ProcItem * process_exists_opt (uid_t       uid_id,
@@ -128,7 +129,7 @@ ProcItem * process_exists_opt (uid_t       uid_id,
 
 ProcItem * process_exists     (const char *s_name);
 
-int        process_exists_b   (const char *s_name);
+bool       process_exists_b   (const char *s_name);
 /*----------------------------------------------------------------------------*/
 /**
  * @fn  int process_count_opt (uid_t       uid_id,

@@ -84,16 +84,29 @@ set(WCHANGERCFG_SOURCES
 
 add_executable(wchangerd ${WCHANGERD_SOURCES})
 target_link_libraries(wchangerd PRIVATE PkgConfig::JSONC)
-if(HAVE_LIBPROCSTAT AND PROCSTAT_LIBRARY)
-    target_link_libraries(wchangerd PRIVATE ${PROCSTAT_LIBRARY})
-endif()
 
 add_executable(wchangercfg ${WCHANGERCFG_SOURCES})
 target_compile_definitions(wchangercfg PRIVATE G_DISABLE_DEPRECATED)
 target_link_libraries(wchangercfg PRIVATE PkgConfig::GTK PkgConfig::JSONC PkgConfig::CURL)
-if(HAVE_LIBPROCSTAT AND PROCSTAT_LIBRARY)
-    target_link_libraries(wchangercfg PRIVATE ${PROCSTAT_LIBRARY})
-endif()
+
+foreach(target IN ITEMS wchangerd wchangercfg)
+    # The C23 dialect option probed by the top-level CMakeLists.txt. Passed
+    # explicitly so it reaches compile_commands.json even on a compiler that
+    # already defaults to C23; see the comment on the probe.
+    target_compile_options(${target} PRIVATE ${WC_C23_FLAG})
+    # ${PROJECT_BINARY_DIR} holds the generated config.h.
+    target_include_directories(${target}
+        PRIVATE ${PROJECT_BINARY_DIR} ${CMAKE_CURRENT_SOURCE_DIR})
+    # HAVE_CONFIG_H: src/cmdline.c/.h (gengetopt output) guards its
+    # config.h include on it.
+    # _GNU_SOURCE: src/iminfo.c needs it for strndup(). Defining it on the
+    # command line rather than in config.h also makes it immune to include
+    # ordering.
+    target_compile_definitions(${target} PRIVATE HAVE_CONFIG_H _GNU_SOURCE)
+    if(PROCSTAT_LIBRARY)
+        target_link_libraries(${target} PRIVATE ${PROCSTAT_LIBRARY})
+    endif()
+endforeach()
 if(FLICKCURL_FOUND)
     target_link_libraries(wchangercfg PRIVATE PkgConfig::FLICKCURL)
     if(LIBXML_FOUND)

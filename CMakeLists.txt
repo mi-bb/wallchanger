@@ -13,24 +13,72 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
-# CMake build description, provided as an alternative to the Autotools
-# flow (autogen.sh/configure/make). Both build systems can coexist; run
-# an out-of-source CMake build (e.g. in ./build) to avoid clobbering
-# Autotools-generated files.
+# CMake build description. Builds are out-of-source only
+# (cmake --preset default configures and builds in ./build).
 
-cmake_minimum_required(VERSION 3.13)
+# 3.21 is the real floor: it is the version CMakePresets.json's "version": 3
+# requires, and the first release that knows the c_std_23 compile feature.
+cmake_minimum_required(VERSION 3.21)
+
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 project(wallchanger
-    VERSION 1.6.19
+    VERSION 1.7.0
     DESCRIPTION "Wall Changer is an automatic wallpaper changer."
     HOMEPAGE_URL "https://www.nongnu.org/wallchanger/"
     LANGUAGES C)
 
 set(PACKAGE_BUGREPORT "michal.babik@protonmail.com")
 
-set(CMAKE_C_STANDARD 23)
-set(CMAKE_C_EXTENSIONS ON)
-set(CMAKE_C_STANDARD_REQUIRED ON)
+# The sources use C23 with GNU extensions.  The standard is passed explicitly
+# rather than through target_compile_features(... c_std_23), because that only
+# emits a -std= flag when the compiler's own default is *older* than C23: on a
+# compiler that already defaults to it (GCC >= 15) the compile line carries no
+# standard at all, and every libclang-based tool reading compile_commands.json
+# - clangd, clang-tidy, include-what-you-use - falls back to gnu17 and reports
+# each nullptr/constexpr/bool in the tree as an error.  Passing it always also
+# keeps the build reproducible across compilers with different defaults, and
+# pins the modern spelling (CMake's own feature table still asks GCC for
+# -std=gnu2x).
+#
+# The GNU dialects are tried first because src/iminfo.c calls strndup(),
+# which a strict -std=c23 hides.  The probe doubles as the capability
+# check the compile feature used to provide.
+include(CheckCSourceCompiles)
+
+set(WC_C23_TEST_SOURCE [=[
+/* C23: nullptr constant, standard attributes, constexpr, enum with a
+   fixed underlying type - all used by src/.  */
+constexpr int wc_answer = 42;
+enum wc_enum : int { WC_ENUM_VALUE = 1 };
+[[maybe_unused]] static int wc_unused (void *p) { return p == nullptr; }
+int main (void)
+{
+    static_assert (wc_answer == 42, "constexpr");
+    return WC_ENUM_VALUE - 1;
+}
+]=])
+
+set(WC_C23_FLAG "WC_C23_FLAG-NOTFOUND")
+foreach(wc_flag IN ITEMS -std=gnu23 -std=c23 -std=gnu2x -std=c2x)
+    string(MAKE_C_IDENTIFIER "WC_HAVE_C23${wc_flag}" wc_result_var)
+    set(CMAKE_REQUIRED_FLAGS "${wc_flag}")
+    check_c_source_compiles("${WC_C23_TEST_SOURCE}" ${wc_result_var})
+    unset(CMAKE_REQUIRED_FLAGS)
+    if(${wc_result_var})
+        set(WC_C23_FLAG "${wc_flag}")
+        break()
+    endif()
+endforeach()
+
+if(NOT WC_C23_FLAG)
+    message(FATAL_ERROR
+        "${CMAKE_C_COMPILER} does not support C23.\n"
+        "Wall Changer requires a C23-capable compiler (GCC >= 13 or "
+        "Clang >= 16).\n"
+        "Set the compiler with -DCMAKE_C_COMPILER=gcc-13 or similar.")
+endif()
+message(STATUS "C23 option: ${WC_C23_FLAG}")
 
 if(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
     set(CMAKE_BUILD_TYPE RelWithDebInfo CACHE STRING "Build type" FORCE)
@@ -38,13 +86,11 @@ endif()
 
 include(GNUInstallDirs)
 include(CheckIncludeFile)
-include(CheckSymbolExists)
-include(CheckLibraryExists)
 include(CTest)
 
 find_package(PkgConfig REQUIRED)
 
-# Checks for libraries (mirrors the PKG_CHECK_MODULES calls in configure.ac).
+# Checks for libraries.
 pkg_check_modules(GTK   REQUIRED IMPORTED_TARGET gtk+-3.0>=3.22.0)
 pkg_check_modules(JSONC REQUIRED IMPORTED_TARGET json-c>=0.12.1)
 pkg_check_modules(CURL  REQUIRED IMPORTED_TARGET libcurl>=7.68.0)
@@ -77,26 +123,14 @@ if(NOT BASHCOMPDIR)
     set(BASHCOMPDIR "${CMAKE_INSTALL_FULL_SYSCONFDIR}/bash_completion.d")
 endif()
 
-# FreeBSD procstat support, used by src/procfn.c.
-check_library_exists(procstat procstat_getprocs "" HAVE_LIBPROCSTAT)
-if(HAVE_LIBPROCSTAT)
-    find_library(PROCSTAT_LIBRARY procstat)
+# FreeBSD procstat support; only src/procfn.c uses it, and only there.
+set(PROCSTAT_LIBRARY "")
+if(CMAKE_SYSTEM_NAME STREQUAL "FreeBSD")
+    find_library(PROCSTAT_LIBRARY procstat REQUIRED)
 endif()
 
-# Checks for header files.
-check_include_file(inttypes.h  HAVE_INTTYPES_H)
-check_include_file(stddef.h    HAVE_STDDEF_H)
-check_include_file(stdint.h    HAVE_STDINT_H)
-check_include_file(stdio.h     HAVE_STDIO_H)
-check_include_file(stdlib.h    HAVE_STDLIB_H)
-check_include_file(string.h    HAVE_STRING_H)
-check_include_file(strings.h   HAVE_STRINGS_H)
-check_include_file(unistd.h    HAVE_UNISTD_H)
-check_include_file(sys/param.h HAVE_SYS_PARAM_H)
-check_include_file(sys/stat.h  HAVE_SYS_STAT_H)
-check_include_file(sys/time.h  HAVE_SYS_TIME_H)
-check_include_file(sys/types.h HAVE_SYS_TYPES_H)
-
+# Checks for header files. Only the results src/ actually consults are
+# probed.
 set(CMAKE_REQUIRED_INCLUDES ${JSONC_INCLUDE_DIRS})
 check_include_file(json-c/json.h HAVE_JSON_C_JSON_H)
 unset(CMAKE_REQUIRED_INCLUDES)
@@ -105,33 +139,11 @@ set(CMAKE_REQUIRED_INCLUDES ${CURL_INCLUDE_DIRS})
 check_include_file(curl/curl.h HAVE_CURL_CURL_H)
 unset(CMAKE_REQUIRED_INCLUDES)
 
-# Checks for library functions.
-check_symbol_exists(fork    unistd.h HAVE_FORK)
-check_symbol_exists(alarm   unistd.h HAVE_ALARM)
-check_symbol_exists(memset  string.h HAVE_MEMSET)
-check_symbol_exists(mkdir   sys/stat.h HAVE_MKDIR)
-check_symbol_exists(strchr  string.h HAVE_STRCHR)
-check_symbol_exists(strdup  string.h HAVE_STRDUP)
-check_symbol_exists(strndup string.h HAVE_STRNDUP)
-check_symbol_exists(strrchr string.h HAVE_STRRCHR)
-check_symbol_exists(strstr  string.h HAVE_STRSTR)
-if(HAVE_FORK)
-    set(HAVE_WORKING_FORK 1)
-endif()
-set(HAVE_MALLOC 1)
-set(HAVE_REALLOC 1)
-
-# src/*.c include config.h as "../config.h" (a plain, unconditional quoted
-# include, not gated on HAVE_CONFIG_H), which the compiler resolves relative
-# to each source file's own directory in src/ — i.e. always against the top
-# of the source tree, regardless of where the build directory is. Generate
-# it there, exactly where Autotools puts it; config.h is already gitignored.
-configure_file(${CMAKE_SOURCE_DIR}/cmake/config.h.in
-               ${CMAKE_SOURCE_DIR}/config.h @ONLY)
-
-# Automake always adds this to DEFS once AC_CONFIG_HEADERS is in play;
-# src/cmdline.c/.h (gengetopt output) guards its config.h include on it.
-add_compile_definitions(HAVE_CONFIG_H)
+# config.h goes to the top of the build tree; the targets get that
+# directory on their include path so the sources' `#include "config.h"`
+# resolves there and the source tree stays clean.
+configure_file(${PROJECT_SOURCE_DIR}/cmake/config.h.in
+               ${PROJECT_BINARY_DIR}/config.h @ONLY)
 
 add_subdirectory(src)
 add_subdirectory(other)
@@ -139,3 +151,32 @@ add_subdirectory(other)
 if(BUILD_TESTING AND CHECK_FOUND)
     add_subdirectory(tests)
 endif()
+
+# `cmake --build build --target uninstall` undoes `cmake --install`: it
+# removes every path recorded in install_manifest.txt and then drops the
+# now-empty data directory.
+if(NOT TARGET uninstall)
+    configure_file(${PROJECT_SOURCE_DIR}/cmake/cmake_uninstall.cmake.in
+                   ${PROJECT_BINARY_DIR}/cmake_uninstall.cmake IMMEDIATE @ONLY)
+    add_custom_target(uninstall
+        COMMAND ${CMAKE_COMMAND} -P ${PROJECT_BINARY_DIR}/cmake_uninstall.cmake)
+endif()
+
+# Source package for releases. Run
+#   cpack --config build/CPackSourceConfig.cmake
+# to produce wallchanger-<version>.tar.gz / .zip from the source tree.
+set(CPACK_SOURCE_PACKAGE_FILE_NAME ${PROJECT_NAME}-${PROJECT_VERSION})
+set(CPACK_SOURCE_GENERATOR "TGZ;ZIP")
+set(CPACK_PACKAGE_DIRECTORY ${CMAKE_BINARY_DIR})
+set(CPACK_SOURCE_IGNORE_FILES
+    "^${CMAKE_BINARY_DIR}/"
+    "/\\.git/"
+    "\\.gitignore$"
+    "/build/"
+    "/_CPack_Packages/"
+    "/\\.cache/"
+    "/\\.vscode/"
+    "/AGENTS\\.md$"
+    "/CLAUDE\\.md$"
+    "compile_commands\\.json$")
+include(CPack)

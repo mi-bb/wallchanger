@@ -17,6 +17,29 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [Unreleased]
+
+### Changed
+
+- Modernized the Autotools build: `AC_PREREQ` raised to 2.71, helper scripts moved out of the project root into `build-aux/` (`AC_CONFIG_AUX_DIR`), local macros collected in `m4/` (`AC_CONFIG_MACRO_DIRS`), silent rules enabled by default, and `AC_USE_SYSTEM_EXTENSIONS` added so `strndup()` stays visible under a strict standard.
+- Removed the Autoconf checks whose results nothing consults — `AC_C_INLINE`, all eleven `AC_TYPE_*`, `AC_FUNC_FORK`/`MALLOC`/`REALLOC`/`MKTIME`, the `AC_CHECK_FUNCS` list, and the unused `AC_CHECK_HEADERS` entries. `cmake/config.h.in` was trimmed to match.
+- Raised the CMake minimum from 3.13 to 3.21, which is the first version that knows the `c_std_23` compile feature the targets ask for; the standard is now requested per target with `target_compile_features()` instead of the global `CMAKE_C_STANDARD`.
+- Added `CMakePresets.json` with `default`, `release` and `debug` presets, and enabled `CMAKE_EXPORT_COMPILE_COMMANDS`.
+- The C standard no longer has to be passed by hand in `CFLAGS`: `configure` probes for the option that enables C23 (`-std=gnu23`, `-std=c23`, `-std=gnu2x`, `-std=c2x`) and fails with an explanatory message when the compiler supports none of them.
+- Gave the enums a fixed underlying type (`enum … : int`, a C23 feature) in `errs.h`, `setting.h`, `nstrings.h`, `setts.h`, `imgs.h` and `webwidget_c.h`, converted the last numeric `#define` constants in `dlgcmd.c`, `procfn.c` and `webwidget.c` to `constexpr`, gave `cfgfile_autostart_exists()` and `process_exists_b()` a `bool` return type, and marked the allocating constructors and pure query helpers `[[nodiscard]]`.
+- Bumped the project version to 1.7.0 in `CMakeLists.txt`.
+
+### Removed
+
+- Removed the Autotools build system (`configure.ac`, `autogen.sh`, all `Makefile.am` files and `m4/wc_prog_cc_c23.m4`); CMake (>= 3.21) is now the only build system. Release tarballs are produced with `cpack --config build/CPackSourceConfig.cmake`, and `cmake --build build --target uninstall` replaces `make uninstall` (it also removes the now-empty data directory, matching the old `uninstall-hook`). Build instructions in `README.md` were updated accordingly.
+
+### Fixed
+
+- Out-of-source builds work again in both build systems. `src/*.c` included `config.h` as `"../config.h"`, which the preprocessor always resolves into the *source* tree, so a VPATH Autotools build read a stale or missing header; the include is now plain `"config.h"` with the build directory on the include path. As a result CMake no longer has to write `config.h` back into the checkout.
+- `configure` no longer links `-lprocstat` into both binaries on any system that happens to have it. The check is now guarded on FreeBSD, where `src/procfn.c` actually uses it, and the result is passed through `PROCSTAT_LIBS` instead of the global `LIBS`.
+- `make distcheck` passes again: the `uninstall-hook` in `other/Makefile.am` ignored `DESTDIR`, so a staged uninstall tried to `rmdir` the real `$(datadir)/wchanger` and failed the run.
+- Both build systems now pass the C23 dialect option explicitly on every compile line instead of relying on the compiler's default, so `compile_commands.json` always records the standard. On a compiler that already defaults to C23 (GCC >= 15) neither build emitted a `-std=` flag, and every libclang-based tool reading the compile database — clangd, clang-tidy, include-what-you-use — fell back to `gnu17` and reported each `nullptr`, `constexpr` and `bool` in the tree as an error. `WC_PROG_CC_C23` now prefers an explicit option over the empty one, and the CMake build probes for the same option and applies it with `target_compile_options()` rather than leaving it to `target_compile_features(... c_std_23)`, which only emits a flag when the compiler default is older than C23 (and spells it `-std=gnu2x`). The `.clangd` pin added alongside it is kept as a fallback for files outside the compile database.
+
 ## [1.6.19] - 2026-08-29
 
 ### Changed

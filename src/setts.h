@@ -24,13 +24,13 @@
 #ifndef SETTS_H
 #define SETTS_H
 
-#include "../config.h"
+#include "config.h"
 #include "setting.h"
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Settings enum values
  */
-enum e_setting_values {
+enum e_setting_values : int {
     SETT_BG_CMD = 0,     /**< Wallpaper set command */
     SETT_LAST_USED_OPT,  /**< Select last used on start */
     SETT_LAST_USED_STR,  /**< Last used wallpaper path */

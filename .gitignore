@@ -1,38 +1,3 @@
-# Autotools build artifacts
-/Makefile
-/Makefile.in
-/aclocal.m4
-/autom4te.cache/
-/compile
-/config.guess
-/config.h
-/config.h.in
-/config.log
-/config.status
-/config.sub
-/configure
-/configure~
-/depcomp
-/install-sh
-/missing
-/stamp-h1
-other/Makefile
-other/Makefile.in
-src/.deps/
-src/Makefile
-src/Makefile.in
-src/*.o
-src/wchangercfg
-src/wchangerd
-tests/.deps/
-tests/Makefile
-tests/Makefile.in
-tests/test_setting
-tests/test-suite.log
-tests/*.trs
-tests/*.o
-tests/*.log
-
 # CMake build artifacts (out-of-source builds only, e.g. cmake -B build)
 build/
 CMakeCache.txt
@@ -41,8 +6,6 @@ CTestTestfile.cmake
 cmake_install.cmake
 compile_commands.json
 Testing/
-# CMake also (re)generates config.h in-source, same as Autotools (see above).
 
 .cache/
 .vscode/
-.dirstamp

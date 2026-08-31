@@ -28,7 +28,7 @@
 /**
  * Type of strings to create.
  */
-enum e_nstring_type {
+enum e_nstring_type : int {
     NS_VAL_NULL,  /**< Create null strings */
     NS_VAL_EMPTY  /**< Create empty string */
 };
@@ -57,6 +57,7 @@ NStrings {
  * @param[in] i_type  Type of strings
  * @return  New NStrings item.
  */
+[[nodiscard]]
 NStrings * nstrings_new  (const size_t ui_cnt,
                           const int    i_type);
 /*----------------------------------------------------------------------------*/

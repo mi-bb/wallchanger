@@ -44,10 +44,10 @@
 /*----------------------------------------------------------------------------*/
 #if defined(__linux__)
 /**
- * @def   BUFF_SIZE
+ * @var   BUFF_SIZE
  * @brief File read buffer size
  */
-#define BUFF_SIZE 512
+constexpr int BUFF_SIZE = 512;
 /*----------------------------------------------------------------------------*/
 /**
  * @fn  static char * read_proc_file_data (const char *s_fname,
@@ -343,20 +343,21 @@ process_exists (const char *s_name)
 }
 /*----------------------------------------------------------------------------*/
 /**
- * @brief  Checks for process existence, returns 1 or 0 depending on process.
+ * @brief  Checks for process existence, returns true or false depending on
+ *         process.
  */
-int
+bool
 process_exists_b (const char *s_name)
 {
-    int       i_res   = 0;
+    bool      b_res = false;
     ProcItem *pi_item;
 
     pi_item = process_exists_opt (getuid (), s_name, PROC_OPT_NONE, 0);
     if (pi_item != nullptr) {
         procitem_free (pi_item);
-        i_res = 1;
+        b_res = true;
     }
-    return i_res;
+    return b_res;
 }
 /*----------------------------------------------------------------------------*/
 /**

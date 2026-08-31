@@ -1,0 +1,63 @@
+# Copyright (C) 2019-2026 Michał Bąbik
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+# Uninstall script: `cmake --build <build-dir> --target uninstall` runs it.
+# Removes every path recorded in install_manifest.txt, then drops the data
+# directory if it is now empty.
+
+if(NOT EXISTS "@CMAKE_CURRENT_BINARY_DIR@/install_manifest.txt")
+    message(FATAL_ERROR
+        "Cannot find install_manifest.txt in @CMAKE_CURRENT_BINARY_DIR@")
+endif()
+
+file(READ "@CMAKE_CURRENT_BINARY_DIR@/install_manifest.txt" wc_manifest)
+string(REGEX REPLACE "\n" ";" wc_manifest "${wc_manifest}")
+
+# install_manifest.txt records the final destination paths without the
+# DESTDIR prefix; a staged install (cmake --install with DESTDIR set) is
+# uninstalled from the staging root by re-adding the prefix.
+if(DEFINED ENV{DESTDIR})
+    set(wc_destdir "$ENV{DESTDIR}")
+else()
+    set(wc_destdir "")
+endif()
+
+foreach(wc_file ${wc_manifest})
+    set(wc_path "${wc_destdir}${wc_file}")
+    if(IS_SYMLINK "${wc_path}" OR EXISTS "${wc_path}")
+        file(REMOVE "${wc_path}")
+        message(STATUS "Removed: ${wc_path}")
+    else()
+        message(STATUS "File ${wc_file} does not exist.")
+    endif()
+endforeach()
+
+# Drop the share/wchanger data directory if it is now empty.  Its location
+# is derived from a manifest entry (wms.json), so it works for staged
+# installs too.
+foreach(wc_file ${wc_manifest})
+    if(wc_file MATCHES "/wchanger/wms\\.json$")
+        set(wc_datadir "${wc_destdir}${wc_file}")
+        get_filename_component(wc_datadir "${wc_datadir}" DIRECTORY)
+        if(IS_DIRECTORY "${wc_datadir}")
+            file(GLOB wc_residual "${wc_datadir}/*")
+            if(NOT wc_residual)
+                file(REMOVE_RECURSE "${wc_datadir}")
+                message(STATUS "Removed empty directory: ${wc_datadir}")
+            endif()
+        endif()
+        break()
+    endif()
+endforeach()

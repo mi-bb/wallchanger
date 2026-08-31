@@ -31,10 +31,10 @@
 #include "dlgcmd.h"
 /*----------------------------------------------------------------------------*/
 /**
- * @def   PREV_LEN
+ * @var   PREV_LEN
  * @brief Length of file name in preview combobox.
  */
-#define PREV_LEN 47
+constexpr int PREV_LEN = 47;
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Columns for combobox with window manager list.

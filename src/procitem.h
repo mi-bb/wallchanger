@@ -120,13 +120,16 @@ void                       procitem_set_name (ProcItem       *pi_item,
 /*----------------------------------------------------------------------------*/
 void         procitem_free          (ProcItem         *pi_item);
 
+[[nodiscard]]
 ProcItem   * procitem_new           (void)
              __attribute__ ((returns_nonnull));
 
+[[nodiscard]]
 ProcItem   * procitem_new_from_data (const char       *s_pid,
                                      const char       *s_name)
              __attribute__ ((returns_nonnull));
 
+[[nodiscard]]
 static inline ProcItem * procitem_copy (const ProcItem   *pi_item) {
     return procitem_new_from_data (pi_item->s_pid, pi_item->s_name);
 }

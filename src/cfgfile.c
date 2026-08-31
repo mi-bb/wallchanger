@@ -275,20 +275,20 @@ cfgfile_get_query_path (void)
  * @brief  Check if wchangerd daemon desktop file exists in user's autostart
  *         directory.
  */
-int
+bool
 cfgfile_autostart_exists (void)
 {
     char *s_path = nullptr; /* Autostart file path */
-    int  i_res   = 0;    /* File presence value to return */
+    bool  b_res  = false;   /* File presence value to return */
 
     s_path = cfgfile_get_autostart_home_file_path ();
 
     if (file_check_permissions (s_path) == ERR_OK) {
-        i_res = 1;
+        b_res = true;
     }
     free (s_path);
 
-    return i_res;
+    return b_res;
 }
 /*----------------------------------------------------------------------------*/
 /**
