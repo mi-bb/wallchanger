@@ -18,8 +18,8 @@
 # an out-of-source CMake build (e.g. in ./build) to avoid clobbering
 # Autotools-generated files.
 
-# 3.21 is the real floor: it is the first release that knows the c_std_23
-# compile feature the two targets require.
+# 3.21 is the real floor: it is the version CMakePresets.json's "version": 3
+# requires, and the first release that knows the c_std_23 compile feature.
 cmake_minimum_required(VERSION 3.21)
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
@@ -32,11 +32,56 @@ project(wallchanger
 
 set(PACKAGE_BUGREPORT "michal.babik@protonmail.com")
 
-# The sources use C23 with GNU extensions (the Autotools build asks the
-# compiler for -std=gnu23); the standard itself is requested per target with
-# target_compile_features(... c_std_23), which fails the configure step with a
-# clear message on a compiler that cannot provide it.
-set(CMAKE_C_EXTENSIONS ON)
+# The sources use C23 with GNU extensions.  The standard is passed explicitly
+# rather than through target_compile_features(... c_std_23), because that only
+# emits a -std= flag when the compiler's own default is *older* than C23: on a
+# compiler that already defaults to it (GCC >= 15) the compile line carries no
+# standard at all, and every libclang-based tool reading compile_commands.json
+# - clangd, clang-tidy, include-what-you-use - falls back to gnu17 and reports
+# each nullptr/constexpr/bool in the tree as an error.  Passing it always also
+# keeps the build reproducible across compilers with different defaults, and
+# pins the modern spelling (CMake's own feature table still asks GCC for
+# -std=gnu2x).
+#
+# The probe mirrors m4/wc_prog_cc_c23.m4: same dialect list, same test
+# program, and the GNU dialects first because src/iminfo.c calls strndup(),
+# which a strict -std=c23 hides.  It doubles as the capability check the
+# compile feature used to provide.
+include(CheckCSourceCompiles)
+
+set(WC_C23_TEST_SOURCE [=[
+/* C23: nullptr constant, standard attributes, constexpr, enum with a
+   fixed underlying type - all used by src/.  */
+constexpr int wc_answer = 42;
+enum wc_enum : int { WC_ENUM_VALUE = 1 };
+[[maybe_unused]] static int wc_unused (void *p) { return p == nullptr; }
+int main (void)
+{
+    static_assert (wc_answer == 42, "constexpr");
+    return WC_ENUM_VALUE - 1;
+}
+]=])
+
+set(WC_C23_FLAG "WC_C23_FLAG-NOTFOUND")
+foreach(wc_flag IN ITEMS -std=gnu23 -std=c23 -std=gnu2x -std=c2x)
+    string(MAKE_C_IDENTIFIER "WC_HAVE_C23${wc_flag}" wc_result_var)
+    set(CMAKE_REQUIRED_FLAGS "${wc_flag}")
+    check_c_source_compiles("${WC_C23_TEST_SOURCE}" ${wc_result_var})
+    unset(CMAKE_REQUIRED_FLAGS)
+    if(${wc_result_var})
+        set(WC_C23_FLAG "${wc_flag}")
+        break()
+    endif()
+endforeach()
+
+if(NOT WC_C23_FLAG)
+    message(FATAL_ERROR
+        "${CMAKE_C_COMPILER} does not support C23.\n"
+        "Wall Changer requires a C23-capable compiler (GCC >= 13 or "
+        "Clang >= 16).\n"
+        "Set the compiler with -DCMAKE_C_COMPILER=gcc-13 or similar.")
+endif()
+message(STATUS "C23 option: ${WC_C23_FLAG}")
 
 if(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
     set(CMAKE_BUILD_TYPE RelWithDebInfo CACHE STRING "Build type" FORCE)

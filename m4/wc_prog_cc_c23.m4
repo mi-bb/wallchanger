@@ -26,13 +26,22 @@
 # The GNU dialects are tried before the strict ones: the sources call
 # strndup(), and a strict -std=c23 hides it unless the right feature test
 # macro is defined (see AC_USE_SYSTEM_EXTENSIONS in configure.ac).
+#
+# An explicit option is preferred over the empty one even when the compiler
+# already defaults to C23 (GCC >= 15), so that the standard is visible on
+# every compile line.  Tools that read the compile database - clangd and the
+# rest of the libclang family, via `bear -- make` - default to gnu17 and
+# report each nullptr/constexpr/bool as an error when nothing on the command
+# line says otherwise.  It also keeps the build reproducible across compilers
+# whose defaults differ.  The empty option stays last, so a future compiler
+# that offers C23 under none of these names still builds.
 AC_DEFUN([WC_PROG_CC_C23],
 [AC_REQUIRE([AC_PROG_CC])dnl
 AC_CACHE_CHECK([for $CC option to enable C23 features],
                [wc_cv_prog_cc_c23],
 [wc_cv_prog_cc_c23=no
 wc_save_CC=$CC
-for wc_arg in '' -std=gnu23 -std=c23 -std=gnu2x -std=c2x
+for wc_arg in -std=gnu23 -std=c23 -std=gnu2x -std=c2x ''
 do
   CC="$wc_save_CC $wc_arg"
   AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[

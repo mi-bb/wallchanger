@@ -1,9 +1,15 @@
 # clangd configuration.
 #
-# The sources are C23 (nullptr, constexpr, bool, [[maybe_unused]]). When the
-# compiler already defaults to that standard - GCC 15 and newer do - neither
-# CMake nor configure has to pass -std=, so compile_commands.json carries no
-# standard flag and clangd falls back to its own default (gnu17), reporting
-# every C23 construct as an error. Pin the standard here instead.
+# Both build systems now pass the C23 dialect option explicitly (see the probe
+# in CMakeLists.txt and m4/wc_prog_cc_c23.m4), so compile_commands.json carries
+# -std=gnu23 on every entry and clangd needs nothing from this file for a file
+# that is in the compile database.
+#
+# The pin stays as a fallback for the cases that are not: a fresh clone that
+# has not been configured or built yet (no compile database at all), and a new
+# source file that the database does not know about. Without it clangd falls
+# back to its own default of gnu17 and reports every nullptr, constexpr and
+# bool in the tree as an error. Repeating a flag the compile command already
+# carries is harmless.
 CompileFlags:
   Add: [-std=gnu23]
