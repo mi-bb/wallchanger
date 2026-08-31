@@ -27,6 +27,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - Added `CMakePresets.json` with `default`, `release` and `debug` presets, and enabled `CMAKE_EXPORT_COMPILE_COMMANDS`.
 - The C standard no longer has to be passed by hand in `CFLAGS`: `configure` probes for the option that enables C23 (`-std=gnu23`, `-std=c23`, `-std=gnu2x`, `-std=c2x`) and fails with an explanatory message when the compiler supports none of them.
 - Gave the enums a fixed underlying type (`enum … : int`, a C23 feature) in `errs.h`, `setting.h`, `nstrings.h`, `setts.h`, `imgs.h` and `webwidget_c.h`, converted the last numeric `#define` constants in `dlgcmd.c`, `procfn.c` and `webwidget.c` to `constexpr`, gave `cfgfile_autostart_exists()` and `process_exists_b()` a `bool` return type, and marked the allocating constructors and pure query helpers `[[nodiscard]]`.
+- Bumped the project version to 1.7.0 in `CMakeLists.txt`.
+
+### Removed
+
+- Removed the Autotools build system (`configure.ac`, `autogen.sh`, all `Makefile.am` files and `m4/wc_prog_cc_c23.m4`); CMake (>= 3.21) is now the only build system. Release tarballs are produced with `cpack --config build/CPackSourceConfig.cmake`, and `cmake --build build --target uninstall` replaces `make uninstall` (it also removes the now-empty data directory, matching the old `uninstall-hook`). Build instructions in `README.md` were updated accordingly.
 
 ### Fixed
 

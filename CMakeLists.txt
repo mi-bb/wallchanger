@@ -13,10 +13,8 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
-# CMake build description, provided as an alternative to the Autotools
-# flow (autogen.sh/configure/make). Both build systems can coexist; run
-# an out-of-source CMake build (e.g. in ./build) to avoid clobbering
-# Autotools-generated files.
+# CMake build description. Builds are out-of-source only
+# (cmake --preset default configures and builds in ./build).
 
 # 3.21 is the real floor: it is the version CMakePresets.json's "version": 3
 # requires, and the first release that knows the c_std_23 compile feature.
@@ -25,7 +23,7 @@ cmake_minimum_required(VERSION 3.21)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 project(wallchanger
-    VERSION 1.6.20
+    VERSION 1.7.0
     DESCRIPTION "Wall Changer is an automatic wallpaper changer."
     HOMEPAGE_URL "https://www.nongnu.org/wallchanger/"
     LANGUAGES C)
@@ -43,10 +41,9 @@ set(PACKAGE_BUGREPORT "michal.babik@protonmail.com")
 # pins the modern spelling (CMake's own feature table still asks GCC for
 # -std=gnu2x).
 #
-# The probe mirrors m4/wc_prog_cc_c23.m4: same dialect list, same test
-# program, and the GNU dialects first because src/iminfo.c calls strndup(),
-# which a strict -std=c23 hides.  It doubles as the capability check the
-# compile feature used to provide.
+# The GNU dialects are tried first because src/iminfo.c calls strndup(),
+# which a strict -std=c23 hides.  The probe doubles as the capability
+# check the compile feature used to provide.
 include(CheckCSourceCompiles)
 
 set(WC_C23_TEST_SOURCE [=[
@@ -93,7 +90,7 @@ include(CTest)
 
 find_package(PkgConfig REQUIRED)
 
-# Checks for libraries (mirrors the PKG_CHECK_MODULES calls in configure.ac).
+# Checks for libraries.
 pkg_check_modules(GTK   REQUIRED IMPORTED_TARGET gtk+-3.0>=3.22.0)
 pkg_check_modules(JSONC REQUIRED IMPORTED_TARGET json-c>=0.12.1)
 pkg_check_modules(CURL  REQUIRED IMPORTED_TARGET libcurl>=7.68.0)
@@ -133,7 +130,7 @@ if(CMAKE_SYSTEM_NAME STREQUAL "FreeBSD")
 endif()
 
 # Checks for header files. Only the results src/ actually consults are
-# probed (mirrors the AC_CHECK_HEADERS list in configure.ac).
+# probed.
 set(CMAKE_REQUIRED_INCLUDES ${JSONC_INCLUDE_DIRS})
 check_include_file(json-c/json.h HAVE_JSON_C_JSON_H)
 unset(CMAKE_REQUIRED_INCLUDES)
@@ -142,9 +139,9 @@ set(CMAKE_REQUIRED_INCLUDES ${CURL_INCLUDE_DIRS})
 check_include_file(curl/curl.h HAVE_CURL_CURL_H)
 unset(CMAKE_REQUIRED_INCLUDES)
 
-# config.h goes to the top of the build tree, exactly where Autotools puts
-# it; the targets get that directory on their include path so the sources'
-# `#include "config.h"` resolves there and the source tree stays clean.
+# config.h goes to the top of the build tree; the targets get that
+# directory on their include path so the sources' `#include "config.h"`
+# resolves there and the source tree stays clean.
 configure_file(${PROJECT_SOURCE_DIR}/cmake/config.h.in
                ${PROJECT_BINARY_DIR}/config.h @ONLY)
 
@@ -154,3 +151,32 @@ add_subdirectory(other)
 if(BUILD_TESTING AND CHECK_FOUND)
     add_subdirectory(tests)
 endif()
+
+# `cmake --build build --target uninstall` undoes `cmake --install`: it
+# removes every path recorded in install_manifest.txt and then drops the
+# now-empty data directory.
+if(NOT TARGET uninstall)
+    configure_file(${PROJECT_SOURCE_DIR}/cmake/cmake_uninstall.cmake.in
+                   ${PROJECT_BINARY_DIR}/cmake_uninstall.cmake IMMEDIATE @ONLY)
+    add_custom_target(uninstall
+        COMMAND ${CMAKE_COMMAND} -P ${PROJECT_BINARY_DIR}/cmake_uninstall.cmake)
+endif()
+
+# Source package for releases. Run
+#   cpack --config build/CPackSourceConfig.cmake
+# to produce wallchanger-<version>.tar.gz / .zip from the source tree.
+set(CPACK_SOURCE_PACKAGE_FILE_NAME ${PROJECT_NAME}-${PROJECT_VERSION})
+set(CPACK_SOURCE_GENERATOR "TGZ;ZIP")
+set(CPACK_PACKAGE_DIRECTORY ${CMAKE_BINARY_DIR})
+set(CPACK_SOURCE_IGNORE_FILES
+    "^${CMAKE_BINARY_DIR}/"
+    "/\\.git/"
+    "\\.gitignore$"
+    "/build/"
+    "/_CPack_Packages/"
+    "/\\.cache/"
+    "/\\.vscode/"
+    "/AGENTS\\.md$"
+    "/CLAUDE\\.md$"
+    "compile_commands\\.json$")
+include(CPack)

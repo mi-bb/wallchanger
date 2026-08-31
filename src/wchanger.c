@@ -19,7 +19,7 @@
  *
  * Automatic wallpaper changer
  *
- * @version 1.6.20
+ * @version 1.7.0
  *
  * @author Michal Babik <michal.babik@protonmail.com>
  */

@@ -1,9 +1,9 @@
 # clangd configuration.
 #
-# Both build systems now pass the C23 dialect option explicitly (see the probe
-# in CMakeLists.txt and m4/wc_prog_cc_c23.m4), so compile_commands.json carries
-# -std=gnu23 on every entry and clangd needs nothing from this file for a file
-# that is in the compile database.
+# The build passes the C23 dialect option explicitly (see the probe in
+# CMakeLists.txt), so compile_commands.json carries -std=gnu23 on every
+# entry and clangd needs nothing from this file for a file that is in the
+# compile database.
 #
 # The pin stays as a fallback for the cases that are not: a fresh clone that
 # has not been configured or built yet (no compile database at all), and a new

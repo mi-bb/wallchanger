@@ -13,8 +13,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
-# Only added by the top-level CMakeLists.txt when 'check' was found
-# (mirrors the HAVE_CHECK Automake conditional).
+# Only added by the top-level CMakeLists.txt when 'check' was found.
 
 add_executable(test_setting
     test_setting.c

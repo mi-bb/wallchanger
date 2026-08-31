@@ -20,8 +20,6 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 - [About](#about)
 - [Requirements](#requirements)
 - [Installation and running](#installation-and-running)
-  - [Basic Installation](#basic-installation)
-  - [Compilers and Options](#compilers-and-options)
   - [Building with CMake](#building-with-cmake)
 - [Contact and help](#contact-and-help)
 
@@ -54,91 +52,14 @@ The program works on GNU/Linux and FreeBSD.
 - json-c (>= 0.12.1)
 - libcurl (>= 7.68.0)
 
-To build from a git checkout (not needed for a release tarball), either:
-
-- Autoconf (>= 2.71) and Automake (>= 1.16), or
-- CMake (>= 3.21)
+To build the program, CMake (>= 3.21) is required.
 
 ## Installation and running
 
-### Basic Installation
-
-You must have autotools installed for the `autogen.sh` script to generate
-the `configure` and `make` scripts. Otherwise these scripts are included
-in the standard program package.
-
-Commands to configure, build and install the program:
-
-```
-./autogen.sh
-./configure
-make
-make install
-```
-
-It's suggested to configure and compile with the more detailed options
-described below.
-
-The build can also be run outside the source directory, which keeps the
-checkout free of generated files:
-
-```
-./autogen.sh
-mkdir build && cd build
-../configure
-make
-```
-
-### Compilers and Options
-
-For a normal daily use of this program a good option should be:
-
-```
-./configure CFLAGS="-march=native -O2 -pipe" --prefix=/usr
-```
-
-or more specific:
-
-```
-./configure CC="gcc" CFLAGS="-march=native -O2 -pipe" --prefix=/usr
-```
-
-with Clang:
-
-```
-./configure CC="clang" CFLAGS="-march=native -O2 -pipe" --prefix=/usr
-```
-
-This disables the standard `-g` option, which produces debugging
-information needed for gdb and enlarges the output file:
-
-- `CC="gcc"` — sets the C compiler to GCC
-- `CC="clang"` — sets the C compiler to Clang
-- `-march=native` — enables all instruction subsets supported by the local machine
-- `-O2` — sets the code optimization to level 2
-- `-pipe` — use pipes rather than temporary files for communication between the various stages of compilation
-- `--prefix=/usr` — where the app should be installed
-
-The C standard no longer has to be given by hand. The sources are C23, and
-`configure` finds the option that enables it (`-std=gnu23` on compilers that
-do not already default to C23) and stops with an explanatory message if the
-compiler cannot provide C23 at all.
-
-Executing:
-
-```
-./configure --help
-```
-
-will print a detailed description of available initial values for
-configuration parameters.
-
 ### Building with CMake
 
-As an alternative to the Autotools flow above, the program can be built
-with CMake (>= 3.21). Both build systems can coexist in the same source
-tree; the CMake build is always out-of-source and writes nothing into the
-checkout.
+The program is built with CMake (>= 3.21). Builds are always out-of-source
+and write nothing into the checkout.
 
 The quickest way is the bundled presets:
 
@@ -167,11 +88,41 @@ to set a custom install prefix:
 cmake -S . -B build -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/usr
 ```
 
-Unit tests (equivalent to `make check` with Autotools) are built
-automatically when the `check` library is found, and can be run with:
+For a normal daily use of this program a good option should be:
+
+```
+cmake -S . -B build -DCMAKE_C_COMPILER=gcc \
+    -DCMAKE_C_FLAGS="-march=native -O2 -pipe" -DCMAKE_INSTALL_PREFIX=/usr
+```
+
+- `-DCMAKE_C_COMPILER=gcc` — sets the C compiler (`clang` for Clang)
+- `-march=native` — enables all instruction subsets supported by the local machine
+- `-O2` — sets the code optimization to level 2
+- `-pipe` — use pipes rather than temporary files for communication between the various stages of compilation
+- `-DCMAKE_INSTALL_PREFIX=/usr` — where the app should be installed
+
+The C standard does not have to be given by hand. The sources are C23, and
+the build finds the option that enables it (`-std=gnu23` on compilers that
+do not already default to C23) and stops with an explanatory message if the
+compiler cannot provide C23 at all.
+
+Unit tests are built automatically when the `check` library is found, and
+can be run with:
 
 ```
 ctest --test-dir build
+```
+
+To undo an install:
+
+```
+sudo cmake --build build --target uninstall
+```
+
+A source tarball for a release can be produced with:
+
+```
+cpack --config build/CPackSourceConfig.cmake
 ```
 
 If compilation ends without problems, two executable files will be created:
