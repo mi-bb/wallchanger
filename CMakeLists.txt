@@ -22,6 +22,8 @@
 # compile feature the two targets require.
 cmake_minimum_required(VERSION 3.21)
 
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+
 project(wallchanger
     VERSION 1.6.20
     DESCRIPTION "Wall Changer is an automatic wallpaper changer."
@@ -35,8 +37,6 @@ set(PACKAGE_BUGREPORT "michal.babik@protonmail.com")
 # target_compile_features(... c_std_23), which fails the configure step with a
 # clear message on a compiler that cannot provide it.
 set(CMAKE_C_EXTENSIONS ON)
-
-set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 if(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
     set(CMAKE_BUILD_TYPE RelWithDebInfo CACHE STRING "Build type" FORCE)
