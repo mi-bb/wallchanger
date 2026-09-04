@@ -1,19 +1,8 @@
 # Wall Changer
 
-Copyright (C) 2019-2026 Michał Bąbik
-
-This program is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with this program. If not, see <https://www.gnu.org/licenses/>.
+[![Release](https://img.shields.io/github/v/release/mi-bb/wallchanger?include_prereleases&style=)](https://github.com/mi-bb/wallchanger/releases/)
+![Licence](https://img.shields.io/github/license/mi-bb/wallchanger)
+![Last Commit](https://img.shields.io/github/last-commit/mi-bb/wallchanger)
 
 ## Contents
 
@@ -37,8 +26,6 @@ The program works on GNU/Linux and FreeBSD.
  - wallhaven.cc
  - Wallpaper Abyss
  - Flickr
-
-### Screenshots
 
 <img src="other/wallchanger.png" alt="Screenshot 1" style="width: 517px;">
 
@@ -180,7 +167,6 @@ wchangerd --config [FILENAME]
 wchangercfg --config [FILENAME]
 ```
 
-## Contact and help
+## License
 
-In case of problems with the program, please contact me:
-michal.babik@protonmail.com
+This project is licensed under the GPL-3.0 License — see [COPYING](COPYING) for details.
