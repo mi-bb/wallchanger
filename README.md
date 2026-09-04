@@ -10,7 +10,7 @@
 - [Requirements](#requirements)
 - [Installation and running](#installation-and-running)
   - [Building with CMake](#building-with-cmake)
-- [Contact and help](#contact-and-help)
+- [License](#license)
 
 ## About
 
