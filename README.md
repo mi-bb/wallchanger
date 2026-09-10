@@ -14,7 +14,7 @@
 
 ## About
 
-Wall Changer is an automatic wallpaper changer. The user can select
+[Wall Changer](https://www.nongnu.org/wallchanger/) is an automatic wallpaper changer. The user can select
 images to use as wallpapers, the command used to set the wallpaper, and
 the wallpaper change interval.
 
