@@ -1,8 +1,11 @@
 # Wall Changer
 
 [![Release](https://img.shields.io/github/v/release/mi-bb/wallchanger?include_prereleases&style=)](https://github.com/mi-bb/wallchanger/releases/)
-![Licence](https://img.shields.io/github/license/mi-bb/wallchanger)
+[![License: GPL v3](https://img.shields.io/badge/License-GPLv3-orange.svg)](https://www.gnu.org/licenses/gpl-3.0)
 ![Last Commit](https://img.shields.io/github/last-commit/mi-bb/wallchanger)
+[![Linux](https://img.shields.io/badge/Linux-FCC624?logo=linux&logoColor=black)](https://www.linux.org)
+[![FreeBSD](https://img.shields.io/badge/FreeBSD-AB2B28?logo=freebsd&logoColor=fff)](https://www.freebsd.org)
+[![GTK](https://img.shields.io/badge/GTK-73A0D0?logo=GTK&logoColor=fff)](https://www.gtk.org)
 
 ## Contents
 
