@@ -1,5 +1,5 @@
 /**
- * @file  jsfun.c
+ * @file  json_functions.c
  * @copyright Copyright (C) 2019-2026 Michał Bąbik
  *
  * This file is part of Wall Changer.
@@ -38,7 +38,7 @@
 #include "rwdt.h"
 #include "strfun.h"
 #include "hashfun.h"
-#include "jsfun.h"
+#include "json_functions.h"
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Convert json object to Setting item.

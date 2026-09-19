@@ -19,7 +19,7 @@ set(WCHANGERD_SOURCES
     wpset.c     wpset.h
     setts.c     setts.h
     jsof.c      jsof.h
-    jsfun.c     jsfun.h
+    json_functions.c     json_functions.h
     rwdt.c      rwdt.h
     randomm.c   randomm.h
     setting.c   setting.h
@@ -52,7 +52,7 @@ set(WCHANGERCFG_SOURCES
     wpset.c        wpset.h
     setts.c        setts.h
     jsof.c         jsof.h
-    jsfun.c        jsfun.h
+    json_functions.c        json_functions.h
     rwdt.c         rwdt.h
     icons.c         icons.h
     randomm.c      randomm.h

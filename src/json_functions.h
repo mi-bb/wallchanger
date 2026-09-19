@@ -1,5 +1,5 @@
 /**
- * @file  jsfun.h
+ * @file  json_functions.h
  * @copyright Copyright (C) 2019-2026 Michał Bąbik
  *
  * This file is part of Wall Changer.
@@ -23,8 +23,8 @@
  *
  * @author Michal Babik <michal.babik@protonmail.com>
  */
-#ifndef JSFUN_H
-#define JSFUN_H
+#ifndef JSON_FUNCTIONS_H
+#define JSON_FUNCTIONS_H
 
 #include "setting.h"
 /*----------------------------------------------------------------------------*/

@@ -75,7 +75,7 @@ TCase names are declared in `setting_suite()` at the bottom of `tests/test_setti
 ### Config/settings pipeline
 
 - `cfgfile.c/.h` — locates and validates the config file (search order above).
-- `jsof.c` / `jsfun.c` — JSON object read/write helpers built on json-c.
+- `jsof.c` / `json_functions.c` — JSON object read/write helpers built on json-c.
 - `setting.c/.h` — the in-memory `Setting` data model (linked list of key/value settings, with parent/child nesting and a name hash from `hashfun.c`) that both binaries read/write.
 - `setts.c/.h` — higher-level settings load/apply logic used by both the daemon loop and the GUI.
 

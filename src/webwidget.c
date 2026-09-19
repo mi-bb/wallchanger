@@ -24,7 +24,7 @@
 #include <err.h>
 #include <ctype.h>
 #include "urldata.h"
-#include "jsfun.h"
+#include "json_functions.h"
 #include "searchitem.h"
 #include "dlgsmsg.h"
 #include "strfun.h"

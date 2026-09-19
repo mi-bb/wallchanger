@@ -25,7 +25,7 @@
 
 #include <stdio.h>
 #include <string.h>
-#include "jsfun.h"
+#include "json_functions.h"
 #include "setting.h"
 #include "setts.h"
 #include "errors.h"

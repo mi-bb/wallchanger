@@ -72,7 +72,7 @@ proc_list_new (void)
  */
 void
 proc_list_insert (ProcList *pl_list,
-                 ProcItem *pi_item)
+                  ProcItem *pi_item)
 {
     ProcItem **pi_temp = nullptr;
 
