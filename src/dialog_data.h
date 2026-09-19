@@ -1,5 +1,5 @@
 /**
- * @file  dialogdata.h
+ * @file  dialog_data.h
  * @copyright Copyright (C) 2019-2026 Michał Bąbik
  *
  * This file is part of Wall Changer.
@@ -98,7 +98,7 @@ DialogData * dialogdata_new                    (void);
 void         dialogdata_do_config_file_stuff   (DialogData       *dd_data);
 /*----------------------------------------------------------------------------*/
 /**
- * @brief  Get config file path from DialogData.
+ * @brief  Get config file path from dialog_data.
  *
  * @param[in] dd_data  DialogData object
  * @return    String with config file path

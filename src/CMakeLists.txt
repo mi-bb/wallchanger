@@ -40,7 +40,7 @@ set(WCHANGERD_SOURCES
 
 set(WCHANGERCFG_SOURCES
     wchanger.c
-    dialogdata.c   dialogdata.h
+    dialog_data.c   dialog_data.h
     treev.c        treev.h
     dlgs.c         dlgs.h
     dlgcmd.c       dlgcmd.h

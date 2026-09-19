@@ -1,5 +1,5 @@
 /**
- * @file  dialogdata.c
+ * @file  dialog_data.c
  * @copyright Copyright (C) 2019-2026 Michał Bąbik
  *
  * This file is part of Wall Changer.
@@ -24,7 +24,7 @@
 #include <err.h>
 #include "errors.h"
 #include "cfgfile.h"
-#include "dialogdata.h"
+#include "dialog_data.h"
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  DialogData initialization.

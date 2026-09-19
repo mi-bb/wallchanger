@@ -26,7 +26,7 @@
 #include <stdio.h>
 #include <stdint.h>
 #include <gtk/gtk.h>
-#include "dialogdata.h"
+#include "dialog_data.h"
 #include "setts.h"
 #include "wpset.h"
 #include "icons.h"
