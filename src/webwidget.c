@@ -30,7 +30,7 @@
 #include "strfun.h"
 #include "setts.h"
 #include "errors.h"
-#include "cfgfile.h"
+#include "cfg_file.h"
 #include "fdfn.h"
 #include "defs.h"
 #include "icons.h"
@@ -127,7 +127,7 @@ download_progress_window (GtkWindow *gw_parent,
 
     /* Getting wallpaper save path and checking it's permissions, creating if
      * it doesn't exist */
-    s_wpdir = cfgfile_get_app_wallpapers_path ();
+    s_wpdir = cfg_file_get_app_wallpapers_path ();
 
     /* Setting progress step and making a pointer to list */
     f_step  = (float) 1.0 / (float) g_list_length (gl_item_list);
@@ -1088,7 +1088,7 @@ webwidget_create (Setting    *st_settings,
         ww_widget->i_thumb_quality = (int) setting_get_int (st_sett);
     }
     ww_widget->s_cfg_file   = strdup (s_cfg_file);
-    ww_widget->s_wallp_dir  = cfgfile_get_app_wallpapers_path ();
+    ww_widget->s_wallp_dir  = cfg_file_get_app_wallpapers_path ();
     ww_widget->gw_ii_widget = webwidget_image_info_create (ww_widget);
 
     gw_web_combo = webwidget_combobox_create (st_settings);

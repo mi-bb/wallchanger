@@ -26,7 +26,7 @@
 #include "daemon.h"
 #include "setting.h"
 #include "setts.h"
-#include "cfgfile.h"
+#include "cfg_file.h"
 #include "strfun.h"
 #include "dlgothsett.h"
 /*----------------------------------------------------------------------------*/
@@ -272,10 +272,10 @@ other_settings_dialog (GtkWindow  *gw_parent,
     gw_content_box = gtk_dialog_get_content_area (GTK_DIALOG (gw_dialog));
     gtk_container_set_border_width (GTK_CONTAINER (gw_content_box), 8);
 
-    s_thumb_path = cfgfile_get_app_thumbnails_path ();
-    s_query_path = cfgfile_get_query_path ();
-    s_conf_path  = cfgfile_get_app_config_path ();
-    s_wall_path  = cfgfile_get_app_wallpapers_path ();
+    s_thumb_path = cfg_file_get_app_thumbnails_path ();
+    s_query_path = cfg_file_get_query_path ();
+    s_conf_path  = cfg_file_get_app_config_path ();
+    s_wall_path  = cfg_file_get_app_wallpapers_path ();
     s_thumb_size = g_format_size ((guint64) dirlist_get_dir_size (s_thumb_path));
     s_query_size = g_format_size ((guint64) dirlist_get_dir_size (s_query_path));
     s_conf_size  = g_format_size ((guint64) dirlist_get_dir_size (s_conf_path));

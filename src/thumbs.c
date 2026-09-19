@@ -27,7 +27,7 @@
 #include "urldata.h"
 #include "strfun.h"
 #include "fdfn.h"
-#include "cfgfile.h"
+#include "cfg_file.h"
 #include "dlgsmsg.h"
 #include "thumbs.h"
 /*----------------------------------------------------------------------------*/
@@ -101,7 +101,7 @@ thumbnail_get (const char *s_service_name,
 
     sprintf (s_jpgq, "%d", i_jpgq);
 
-    s_thumb_file = cfgfile_get_app_thumbnails_path ();
+    s_thumb_file = cfg_file_get_app_thumbnails_path ();
     s_prefix     = strdup (s_service_name);
 
     dir_create_with_subdirs (s_thumb_file);

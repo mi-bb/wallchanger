@@ -40,7 +40,7 @@
 #include "preview.h"
 #include "strfun.h"
 #include "errors.h"
-#include "cfgfile.h"
+#include "cfg_file.h"
 #include "defs.h"
 #include "hashfun.h"
 #include "daemon.h"
@@ -366,16 +366,16 @@ static GtkWidget * create_daemon_widget        (DialogData        *dd_data);
  *         After use, it should be freed using free.
  */
 static char *
-cfgfile_check_create_dirs (void)
+cfg_file_check_create_dirs (void)
 {
     char *s_ret = nullptr;
     int   i_err = ERR_OK;
     int   i     = 0;
     char *s_dirs[3];
 
-    s_dirs[0] = cfgfile_get_query_path ();
-    s_dirs[1] = cfgfile_get_app_thumbnails_path ();
-    s_dirs[2] = cfgfile_get_app_wallpapers_path ();
+    s_dirs[0] = cfg_file_get_query_path ();
+    s_dirs[1] = cfg_file_get_app_thumbnails_path ();
+    s_dirs[2] = cfg_file_get_app_wallpapers_path ();
 
     for (i = 0; i < 3; ++i) {
         if ((i_err = dir_create_with_subdirs (s_dirs[i])) != ERR_OK) {
@@ -806,8 +806,8 @@ event_autostart_toggled (GtkToggleButton *togglebutton,
                          [[maybe_unused]] gpointer user_data)
 {
     gtk_toggle_button_get_active (togglebutton) ?
-        cfgfile_autostart_create () :
-        cfgfile_autostart_remove ();
+        cfg_file_autostart_create () :
+        cfg_file_autostart_remove ();
 }
 /*----------------------------------------------------------------------------*/
 /**
@@ -1182,7 +1182,7 @@ create_settings_widget (DialogData *dd_data)
     gtk_button_set_label (GTK_BUTTON (gw_autostart_button),
                           "Create autostart entry");
     gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (gw_autostart_button),
-                                  cfgfile_autostart_exists ());
+                                  cfg_file_autostart_exists ());
     g_signal_connect (gw_autostart_button, "toggled",
                       G_CALLBACK (event_autostart_toggled), nullptr);
 
@@ -1330,7 +1330,7 @@ activate (GtkApplication *app,
     dd_data->gw_window = GTK_WINDOW (gw_window);
 
     /* Create application directories */
-    if ((s_err = cfgfile_check_create_dirs ()) != nullptr) {
+    if ((s_err = cfg_file_check_create_dirs ()) != nullptr) {
         message_dialog_error (dd_data->gw_window, s_err);
         free (s_err);
         g_application_quit (G_APPLICATION (app));

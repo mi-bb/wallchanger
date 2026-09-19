@@ -23,7 +23,7 @@
  */
 #include <err.h>
 #include "errors.h"
-#include "cfgfile.h"
+#include "cfg_file.h"
 #include "dialog_data.h"
 /*----------------------------------------------------------------------------*/
 /**
@@ -87,7 +87,7 @@ dialog_data_new (void)
 void
 dialog_data_do_config_file_stuff (DialogData *dd_data)
 {
-    if (cfgfile_config_file_stuff (&dd_data->s_cfg_file, 1) != ERR_OK) {
+    if (cfg_file_config_file_stuff (&dd_data->s_cfg_file, 1) != ERR_OK) {
         dialog_data_free (dd_data);
         exit (EXIT_FAILURE);
     }

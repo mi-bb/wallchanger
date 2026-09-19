@@ -1,5 +1,5 @@
 /**
- * @file  cfgfile.h
+ * @file  cfg_file.h
  * @copyright Copyright (C) 2019-2026 Michał Bąbik
  *
  * This file is part of Wall Changer.
@@ -21,8 +21,8 @@
  *
  * @author Michal Babik <michal.babik@protonmail.com>
  */
-#ifndef CFGFILE_H
-#define CFGFILE_H
+#ifndef CFG_FILE_H
+#define CFG_FILE_H
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Checks config file existence, creates default if i_create is set.
@@ -41,8 +41,8 @@
  * @param[in,out] s_file   Config file path or null to use default
  * @param[in]     i_create Create config file if it doesn't exist
  */
-int    cfgfile_config_file_stuff       (char **s_file,
-                                        int    i_create);
+int    cfg_file_config_file_stuff       (char **s_file,
+                                         int    i_create);
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Get path for autostart desktop file for wchangerd daemon.
@@ -50,7 +50,7 @@ int    cfgfile_config_file_stuff       (char **s_file,
  * @return String with autostart file path.
  *         After use it should be freed using free.
  */
-char * cfgfile_get_autostart_home_file_path (void);
+char * cfg_file_get_autostart_home_file_path (void);
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Get path for user's config file with window manager info.
@@ -58,7 +58,7 @@ char * cfgfile_get_autostart_home_file_path (void);
  * @return String with window manager info file path.
  *         After use it should be freed using free.
  */
-char * cfgfile_get_wm_info_home_file_path   (void);
+char * cfg_file_get_wm_info_home_file_path   (void);
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Get application config path
@@ -66,7 +66,7 @@ char * cfgfile_get_wm_info_home_file_path   (void);
  * @return String with application config directory path.
  *         After use it should be freed using free.
  */
-char * cfgfile_get_app_config_path  (void);
+char * cfg_file_get_app_config_path  (void);
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Get directory path for downloaded wallpapers
@@ -74,7 +74,7 @@ char * cfgfile_get_app_config_path  (void);
  * @return String with wallpaper save path.
  *         After use it should be freed using free.
  */
-char * cfgfile_get_app_wallpapers_path  (void);
+char * cfg_file_get_app_wallpapers_path  (void);
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Get app cache directory.
@@ -82,7 +82,7 @@ char * cfgfile_get_app_wallpapers_path  (void);
  * @return String with application cache directory.
  *         After use it should be freed using free.
  */
-char * cfgfile_get_app_cache_path      (void);
+char * cfg_file_get_app_cache_path      (void);
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Get directory path for thumbanils
@@ -90,7 +90,7 @@ char * cfgfile_get_app_cache_path      (void);
  * @return String with thumbnails path.
  *         After use it should be freed using free.
  */
-char * cfgfile_get_app_thumbnails_path  (void);
+char * cfg_file_get_app_thumbnails_path  (void);
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Get directory with information about images.
@@ -98,7 +98,7 @@ char * cfgfile_get_app_thumbnails_path  (void);
  * @return String with image information directory.
  *         After use it should be freed using free.
  */
-char * cfgfile_get_image_info_path     (void);
+char * cfg_file_get_image_info_path     (void);
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Get directory with cached queries.
@@ -106,7 +106,7 @@ char * cfgfile_get_image_info_path     (void);
  * @return String with cached queries directory.
  *         After use it should be freed using free.
  */
-char * cfgfile_get_query_path (void);
+char * cfg_file_get_query_path (void);
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Get path for default config file with window manager info.
@@ -115,7 +115,7 @@ char * cfgfile_get_query_path (void);
  * @return     String with window manager info file path or null.
  *             After use it should be freed using free.
  */
-char * cfgfile_get_wm_info_data_file_path   (int *i_err);
+char * cfg_file_get_wm_info_data_file_path   (int *i_err);
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Check if wchangerd daemon desktop file exists in user's autostart
@@ -123,21 +123,21 @@ char * cfgfile_get_wm_info_data_file_path   (int *i_err);
  *
  * @return true if file exists, false if not or there was some problem with it.
  */
-bool   cfgfile_autostart_exists        (void);
+bool   cfg_file_autostart_exists        (void);
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Creates wchangerd desktop file in user's autostart directory.
  *
  * @return ERR_OK if created successfully, other error value if not.
  */
-int    cfgfile_autostart_create        (void);
+int    cfg_file_autostart_create        (void);
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Removes wchangerd desktop file from user's autostart directory.
  *
  * @return ERR_OK if removed successfully, ERR_FILE_RM if not.
  */
-int    cfgfile_autostart_remove        (void);
+int    cfg_file_autostart_remove        (void);
 /*----------------------------------------------------------------------------*/
 #endif
 

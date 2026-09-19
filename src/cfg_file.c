@@ -1,5 +1,5 @@
 /**
- * @file  cfgfile.c
+ * @file  cfg_file.c
  * @copyright Copyright (C) 2019-2026 Michał Bąbik
  *
  * This file is part of Wall Changer.
@@ -29,7 +29,7 @@
 #include "strfun.h"
 #include "fdfn.h"
 #include "rwdt.h"
-#include "cfgfile.h"
+#include "cfg_file.h"
 #include "defs.h"
 /*----------------------------------------------------------------------------*/
 /**
@@ -39,7 +39,7 @@
  *            after use it should be freed using free
  */
 static char *
-cfgfile_find_config_file (void)
+cfg_file_find_config_file (void)
 {
     const char **s_cc = nullptr;
     char *s_tmp  = nullptr; /* Temp string */
@@ -79,7 +79,7 @@ cfgfile_find_config_file (void)
  *         After use it should be freed using free.
  */
 static char *
-cfgfile_find_app_data_path (int *i_err)
+cfg_file_find_app_data_path (int *i_err)
 {
     char  *s_dir  = nullptr; /* App share path to return */
     char  *s_p    = nullptr; /* Pointer to separator */
@@ -115,13 +115,13 @@ cfgfile_find_app_data_path (int *i_err)
  * @brief  Checks config file existence, creates default if i_create is set.
  */
 int
-cfgfile_config_file_stuff (char **s_file,
-                           int    i_create)
+cfg_file_config_file_stuff (char **s_file,
+                            int    i_create)
 {
     int i_res = 0; /* Function result */
 
     if (*s_file == nullptr) {
-        *s_file = cfgfile_find_config_file ();
+        *s_file = cfg_file_find_config_file ();
     }
     i_res = file_check_permissions (*s_file);
 
@@ -145,7 +145,7 @@ cfgfile_config_file_stuff (char **s_file,
  * @brief  Get path for autostart desktop file for wchangerd daemon.
  */
 char *
-cfgfile_get_autostart_home_file_path (void)
+cfg_file_get_autostart_home_file_path (void)
 {
     char *s_path = nullptr; /* Config file path */
 
@@ -159,7 +159,7 @@ cfgfile_get_autostart_home_file_path (void)
  * @brief  Get path for user's config file with window manager info.
  */
 char *
-cfgfile_get_wm_info_home_file_path (void)
+cfg_file_get_wm_info_home_file_path (void)
 {
     char *s_path = nullptr; /* Config file path */
 
@@ -173,13 +173,13 @@ cfgfile_get_wm_info_home_file_path (void)
  * @brief  Get path for default config file with window manager info.
  */
 char *
-cfgfile_get_wm_info_data_file_path (int *i_err)
+cfg_file_get_wm_info_data_file_path (int *i_err)
 {
     char *s_path = nullptr; /* Config file path */
 
     *i_err = 0;
 
-    if ((s_path = cfgfile_find_app_data_path (i_err)) == nullptr)
+    if ((s_path = cfg_file_find_app_data_path (i_err)) == nullptr)
         return nullptr;
 
     str_append (&s_path, PTH_SEP PTH_WMINFO_FILE);
@@ -191,7 +191,7 @@ cfgfile_get_wm_info_data_file_path (int *i_err)
  * @brief  Get application config path
  */
 char *
-cfgfile_get_app_config_path (void)
+cfg_file_get_app_config_path (void)
 {
     char *s_path = nullptr; /* Result directory path */
 
@@ -205,7 +205,7 @@ cfgfile_get_app_config_path (void)
  * @brief  Get directory path for downloaded wallpapers
  */
 char *
-cfgfile_get_app_wallpapers_path (void)
+cfg_file_get_app_wallpapers_path (void)
 {
     char *s_path = nullptr; /* Result directory path */
 
@@ -219,7 +219,7 @@ cfgfile_get_app_wallpapers_path (void)
  * @brief  Get app cache directory.
  */
 char *
-cfgfile_get_app_cache_path (void)
+cfg_file_get_app_cache_path (void)
 {
     char *s_path = nullptr; /* Result directory path */
 
@@ -233,7 +233,7 @@ cfgfile_get_app_cache_path (void)
  * @brief  Get directory path for thumbanils
  */
 char *
-cfgfile_get_app_thumbnails_path (void)
+cfg_file_get_app_thumbnails_path (void)
 {
     char *s_path = nullptr; /* Result directory path */
 
@@ -247,7 +247,7 @@ cfgfile_get_app_thumbnails_path (void)
  * @brief  Get directory with information about images.
  */
 char *
-cfgfile_get_image_info_path (void)
+cfg_file_get_image_info_path (void)
 {
     char *s_path = nullptr; /* Result directory path */
 
@@ -261,7 +261,7 @@ cfgfile_get_image_info_path (void)
  * @brief  Get directory with cached queries.
  */
 char *
-cfgfile_get_query_path (void)
+cfg_file_get_query_path (void)
 {
     char *s_path = nullptr; /* Result directory path */
 
@@ -276,12 +276,12 @@ cfgfile_get_query_path (void)
  *         directory.
  */
 bool
-cfgfile_autostart_exists (void)
+cfg_file_autostart_exists (void)
 {
     char *s_path = nullptr; /* Autostart file path */
     bool  b_res  = false;   /* File presence value to return */
 
-    s_path = cfgfile_get_autostart_home_file_path ();
+    s_path = cfg_file_get_autostart_home_file_path ();
 
     if (file_check_permissions (s_path) == ERR_OK) {
         b_res = true;
@@ -295,17 +295,17 @@ cfgfile_autostart_exists (void)
  * @brief  Creates wchangerd desktop file in user's autostart directory.
  */
 int
-cfgfile_autostart_create (void)
+cfg_file_autostart_create (void)
 {
     int   i_err     = ERR_OK; /* Error value to return */
     char *s_path    = nullptr;   /* Autostart data file path */
     char *s_buff    = nullptr;   /* Buffer for file content */
     char *s_as_path = nullptr;   /* User's autostart path */
 
-    if ((s_path = cfgfile_find_app_data_path (&i_err)) == nullptr)
+    if ((s_path = cfg_file_find_app_data_path (&i_err)) == nullptr)
         return i_err;
 
-    s_as_path = cfgfile_get_autostart_home_file_path ();
+    s_as_path = cfg_file_get_autostart_home_file_path ();
 
     str_append (&s_path, PTH_SEP PTH_ASTART_FILE_S);
 
@@ -327,11 +327,11 @@ cfgfile_autostart_create (void)
  * @brief  Removes wchangerd desktop file from user's autostart directory.
  */
 int
-cfgfile_autostart_remove (void)
+cfg_file_autostart_remove (void)
 {
     char *s_path = nullptr; /* Autostart file path */
 
-    s_path = cfgfile_get_autostart_home_file_path ();
+    s_path = cfg_file_get_autostart_home_file_path ();
 
     if (remove (s_path) != 0) {
         warn ("%s", s_path);

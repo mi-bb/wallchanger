@@ -34,7 +34,7 @@
 #include "rwdt.h"
 #include "fdfn.h"
 #include "errors.h"
-#include "cfgfile.h"
+#include "cfg_file.h"
 #include "jsof.h"
 #include "hashfun.h"
 #include "chquery.h"
@@ -328,7 +328,7 @@ cachequery_new (const char *s_service_name,
     cq_query->s_query       = strdup (s_query);
     cq_query->s_search_opts = strdup (s_search_opts);
     cq_query->i_page        = i_page;
-    cq_query->s_file        = cfgfile_get_query_path ();
+    cq_query->s_file        = cfg_file_get_query_path ();
     str_append (&cq_query->s_file, "/");
     str_append (&cq_query->s_file, s_service_name);
     str_append (&cq_query->s_file, ".json");
@@ -533,7 +533,7 @@ cachequery_delete_older_than (const char *s_service_name,
     g_date_set_time_t (gd_date, t_time);
 
     /* Create service config file name */
-    s_file = cfgfile_get_query_path ();
+    s_file = cfg_file_get_query_path ();
     str_append (&s_file, "/");
     str_append (&s_file, s_service_name);
     str_append (&s_file, ".json");

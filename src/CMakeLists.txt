@@ -25,7 +25,7 @@ set(WCHANGERD_SOURCES
     setting.c   setting.h
     strfun.c    strfun.h
     fdfn.c      fdfn.h
-    cfgfile.c   cfgfile.h
+    cfg_file.c   cfg_file.h
     cres.c      cres.h
     hashfun.c   hashfun.h
     daemon.c      daemon.h
@@ -60,7 +60,7 @@ set(WCHANGERCFG_SOURCES
     preview.c      preview.h
     strfun.c       strfun.h
     fdfn.c         fdfn.h
-    cfgfile.c      cfgfile.h
+    cfg_file.c      cfg_file.h
     dirlist.c      dirlist.h
     cres.c         cres.h
     hashfun.c      hashfun.h

@@ -26,7 +26,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "procfn.h"
-#include "cfgfile.h"
+#include "cfg_file.h"
 #include "setts.h"
 #include "strfun.h"
 #include "defs.h"
@@ -45,7 +45,7 @@ wms_update_wm_config (const Setting *st_wms)
     char *s_path = nullptr;   /* Config file path */
     int   i_res  = ERR_OK; /* Error output */
 
-    s_path = cfgfile_get_wm_info_home_file_path ();
+    s_path = cfg_file_get_wm_info_home_file_path ();
     i_res  = setts_check_update_file (s_path, st_wms);
     free (s_path);
 
@@ -139,7 +139,7 @@ wms_get_wm_info_home (int *i_err)
 
     *i_err = 0;
 
-    s_path = cfgfile_get_wm_info_home_file_path ();
+    s_path = cfg_file_get_wm_info_home_file_path ();
     st_wms = setts_read (s_path, i_err);
 
     free (s_path);
@@ -158,7 +158,7 @@ wms_get_wm_info_data (int *i_err)
 
     *i_err = 0;
 
-    if ((s_path = cfgfile_get_wm_info_data_file_path (i_err)) != nullptr) {
+    if ((s_path = cfg_file_get_wm_info_data_file_path (i_err)) != nullptr) {
         st_wms = setts_read (s_path, i_err);
         free (s_path);
     }
@@ -254,7 +254,7 @@ wms_update_wm_command (const char *s_wm_name,
     int      i_err   = ERR_OK; /* Error output */
 
     /* Load settings from config file */
-    s_path = cfgfile_get_wm_info_home_file_path ();
+    s_path = cfg_file_get_wm_info_home_file_path ();
     st_wms = setts_read (s_path, &i_err);
     if (i_err != ERR_OK) {
         /* err (EXIT_FAILURE, NULL); */

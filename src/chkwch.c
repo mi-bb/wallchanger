@@ -26,7 +26,7 @@
 #include <stdint.h>
 #include <sysexits.h>
 #include <time.h>
-#include "cfgfile.h"
+#include "cfg_file.h"
 #include "wallpaper_set.h"
 #include "setts.h"
 #include "errors.h"
@@ -134,7 +134,7 @@ void
 check_config_file (char **s_file)
 {
     int i_err = 0;
-    if ((i_err = cfgfile_config_file_stuff (s_file, 0)) != ERR_OK)
+    if ((i_err = cfg_file_config_file_stuff (s_file, 0)) != ERR_OK)
         err (err_ex_code (i_err), "Problem with config file");
 }
 /*----------------------------------------------------------------------------*/

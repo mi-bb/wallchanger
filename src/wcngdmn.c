@@ -52,11 +52,11 @@ main (int    argc,
     uint32_t  ui_ch_int_n  = 0;    /* New change interval value */
     int       i_opt        = 0;    /* Command line options */
     int       i_atime_opt  = 0;    /* Time align option */
-    char     *s_cfgfile    = nullptr; /* Config file path */
+    char     *s_cfg_file    = nullptr; /* Config file path */
     RandMem  *rm_rand      = nullptr; /* Random memory */
 
     /* Parse command line options */
-    cmdfn_parse (argc, argv, &i_opt, &s_cfgfile);
+    cmdfn_parse (argc, argv, &i_opt, &s_cfg_file);
 
     /* Printing status */
     if (i_opt & CMD_OPT_STATUS) {
@@ -76,15 +76,15 @@ main (int    argc,
     /* Checking if display is available */
     check_display_exit ();
     /* Check config file correctness */
-    check_config_file (&s_cfgfile);
+    check_config_file (&s_cfg_file);
     /* Init random number structure */
     rm_rand = randomm_new ();
     /* Load settings and set wallpaper */
-    ui_ch_int = chk_setts_ch_wall (s_cfgfile, rm_rand, &i_atime_opt);
+    ui_ch_int = chk_setts_ch_wall (s_cfg_file, rm_rand, &i_atime_opt);
     /* Exiting after first wallpaper change, --once option */
     if (i_opt & CMD_OPT_ONCE) {
         randomm_free (rm_rand);
-        free (s_cfgfile);
+        free (s_cfg_file);
         exit (EXIT_SUCCESS);
     }
     /* Starting daemon */
@@ -103,7 +103,7 @@ main (int    argc,
         }
         if (ui_sleep) {
             sleep (ui_sleep);
-            ui_ch_int_n = chk_setts_ch_wall (s_cfgfile, rm_rand, &i_atime_opt);
+            ui_ch_int_n = chk_setts_ch_wall (s_cfg_file, rm_rand, &i_atime_opt);
         }
         if (ui_ch_int_n != ui_ch_int) {
             ui_ch_int = ui_ch_int_n;
@@ -111,7 +111,7 @@ main (int    argc,
         }
     }
     randomm_free (rm_rand);
-    free (s_cfgfile);
+    free (s_cfg_file);
     exit (EXIT_SUCCESS);
 }
 /*----------------------------------------------------------------------------*/
