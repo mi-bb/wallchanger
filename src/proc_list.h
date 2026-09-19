@@ -73,11 +73,11 @@ ProcList       * proc_list_new      (void);
  * @return     none
  */
 void             proc_list_insert   (ProcList       *pl_list,
-                                    ProcItem       *pi_item);
+                                     ProcItem       *pi_item);
 /*----------------------------------------------------------------------------*/
 /**
  * @fn  const ProcItem * proc_list_get_item (const ProcList *pl_list,
- *                                          uint_fast32_t   pos)
+ *                                           uint_fast32_t   pos)
  *
  * @brief  Get ProcItem from list.
  *
@@ -93,11 +93,11 @@ void             proc_list_insert   (ProcList       *pl_list,
  * @return    Number of items in the list
  */
 /*----------------------------------------------------------------------------*/
-static inline const ProcItem * proc_list_get_item (const ProcList *pl_list,
-                                                  uint_fast32_t   pos) {
+static inline const ProcItem * proc_list_get_item  (const ProcList *pl_list,
+                                                    uint_fast32_t   pos) {
     return pos < pl_list->cnt ? (const ProcItem *) pl_list->pi_list[pos] : nullptr;
 }
-static inline uint_fast32_t    proc_list_get_count  (const ProcList *pl_list) {
+static inline uint_fast32_t    proc_list_get_count (const ProcList *pl_list) {
     return pl_list->cnt;
 }
 /*----------------------------------------------------------------------------*/
