@@ -37,7 +37,7 @@
 #include "setts.h"
 #include "setting.h"
 #include "urldata.h"
-#include "webwidget_c.h"
+#include "webwidget_common.h"
 #include "webabyss.h"
 /*----------------------------------------------------------------------------*/
 /**

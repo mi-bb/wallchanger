@@ -74,12 +74,12 @@ set(WCHANGERCFG_SOURCES
     chquery.c      chquery.h
     thumbs.c       thumbs.h
     webwidget.c    webwidget.h
-    webwidget_c.c  webwidget_c.h
+    webwidget_common.c  webwidget_common.h
     webpixabay.c   webpixabay.h
     webflickr.c    webflickr.h
     webwallhaven.c webwallhaven.h
     webabyss.c     webabyss.h
-    webwidget_s.h
+    webwidget_struct.h
     defs.h)
 
 add_executable(wchangerd ${WCHANGERD_SOURCES})

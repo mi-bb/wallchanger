@@ -35,7 +35,7 @@
 #include "defs.h"
 #include "icons.h"
 #include "nstrings.h"
-#include "webwidget_c.h"
+#include "webwidget_common.h"
 #include "webpixabay.h"
 #include "webwallhaven.h"
 #include "webabyss.h"

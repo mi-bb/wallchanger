@@ -29,7 +29,7 @@
 #ifdef HAVE_FLICKCURL
 
 #include "nstrings.h"
-#include "webwidget_s.h"
+#include "webwidget_struct.h"
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Search in Flickr database.

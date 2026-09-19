@@ -1,5 +1,5 @@
 /**
- * @file  webwidget_c.c
+ * @file  webwidget_common.c
  * @copyright Copyright (C) 2019-2026 Michał Bąbik
  *
  * This file is part of Wall Changer.
@@ -30,7 +30,7 @@
 #include "chquery.h"
 #include "strfun.h"
 #include "setts.h"
-#include "webwidget_c.h"
+#include "webwidget_common.h"
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Get webwidget name.

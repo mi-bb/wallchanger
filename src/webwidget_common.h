@@ -1,5 +1,5 @@
 /**
- * @file  webwidget_c.h
+ * @file  webwidget_common.h
  * @copyright Copyright (C) 2019-2026 Michał Bąbik
  *
  * This file is part of Wall Changer.
@@ -21,12 +21,12 @@
  *
  * @author Michal Babik <michal.babik@protonmail.com>
  */
-#ifndef WEBWIDGET_C_H
-#define WEBWIDGET_C_H
+#ifndef WEBWIDGET_COMMON_H
+#define WEBWIDGET_COMMON_H
 
 #include <gtk/gtk.h>
 #include "config.h"
-#include "webwidget_s.h"
+#include "webwidget_struct.h"
 //#include "webservcs.h"
 #include "nstrings.h"
 #include "setting.h"

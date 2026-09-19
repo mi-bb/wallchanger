@@ -32,7 +32,7 @@
 #include "urldata.h"
 #include "errors.h"
 #include "chquery.h"
-#include "webwidget_c.h"
+#include "webwidget_common.h"
 #include "dlgsmsg.h"
 #include "strfun.h"
 #include "setting.h"

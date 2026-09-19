@@ -1,5 +1,5 @@
 /**
- * @file  webwidget_s.h
+ * @file  webwidget_struct.h
  * @copyright Copyright (C) 2019-2026 Michał Bąbik
  *
  * This file is part of Wall Changer.
@@ -21,8 +21,8 @@
  *
  * @author Michal Babik <michal.babik@protonmail.com>
  */
-#ifndef WEBWIDGET_S_H
-#define WEBWIDGET_S_H
+#ifndef WEBWIDGET_STRUCT_H
+#define WEBWIDGET_STRUCT_H
 
 #include <gtk/gtk.h>
 /*----------------------------------------------------------------------------*/

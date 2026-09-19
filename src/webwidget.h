@@ -26,7 +26,7 @@
 
 #include <gtk/gtk.h>
 #include "config.h"
-#include "webwidget_s.h"
+#include "webwidget_struct.h"
 #include "setting.h"
 /*----------------------------------------------------------------------------*/
 /**
