@@ -23,6 +23,12 @@ and this project adheres to
 
 ## [Unreleased]
 
+### Fixed
+
+- Corrected the "Web dilaog" typo in the web dialog width/height setting
+  names. Existing config files with the old setting keys will fall back to
+  the defaults for those two options.
+
 ## [1.7.0] - 2026-09-01
 
 ### Changed
