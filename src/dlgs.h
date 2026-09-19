@@ -27,7 +27,7 @@
 #include <gtk/gtk.h>
 /*----------------------------------------------------------------------------*/
 /**
- * @fn  GList  * add_images_from_web_dilaog (GtkWindow  *gw_parent,
+ * @fn  GList  * add_images_from_web_dialog (GtkWindow  *gw_parent,
  *                                           const char *s_cfg_file)
  *
  * @brief  Run dialog for getting wallpapers from web.
@@ -51,7 +51,7 @@
  * @return    List with images.
  */
 /*----------------------------------------------------------------------------*/
-GList  * add_images_from_web_dilaog (GtkWindow  *gw_parent,
+GList  * add_images_from_web_dialog (GtkWindow  *gw_parent,
                                      const char *s_cfg_file);
 
 char   * add_images_folder_dialog   (GtkWindow  *gw_parent);

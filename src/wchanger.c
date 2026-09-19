@@ -624,7 +624,7 @@ event_add_img_web_pressed (const DialogData *dd_data)
 {
     GList *gl_list = nullptr; /* List with wallpapers to add */
 
-    gl_list = add_images_from_web_dilaog (dd_data->gw_window,
+    gl_list = add_images_from_web_dialog (dd_data->gw_window,
                                           dd_data->s_cfg_file);
     treeview_add_items_glist (dd_data->gw_view, gl_list);
     g_list_free_full (gl_list, (GDestroyNotify) free);

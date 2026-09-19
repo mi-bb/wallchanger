@@ -35,7 +35,7 @@
  * @brief  Run dialog for getting wallpapers from web
  */
 GList *
-add_images_from_web_dilaog (GtkWindow  *gw_parent,
+add_images_from_web_dialog (GtkWindow  *gw_parent,
                             const char *s_cfg_file)
 {
     GtkWidget *gw_dialog;       /* Wallpaper from web dialog */
