@@ -1,5 +1,5 @@
 /**
- * @file  imgs.c
+ * @file  icons.c
  * @copyright Copyright (C) 2019-2026 Michał Bąbik
  *
  * This file is part of Wall Changer.
@@ -22,7 +22,7 @@
  * @author Michal Babik <michal.babik@protonmail.com>
  */
 #include <stdint.h>
-#include "imgs.h"
+#include "icons.h"
 /*----------------------------------------------------------------------------*/
 /**
  * @var    add_svg
@@ -2478,7 +2478,7 @@ pbuf_from_data (const unsigned char *s_data,
  * @brief  Get image from stored data.
  */
 GdkPixbuf *
-get_image (const IconImg i_img)
+get_icon (const IconImg i_img)
 {
     GdkPixbuf *gp_pbuf = nullptr; /* Return pixbuf */
 

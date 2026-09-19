@@ -29,7 +29,7 @@
 #include "dialogdata.h"
 #include "setts.h"
 #include "wpset.h"
-#include "imgs.h"
+#include "icons.h"
 #include "dlgs.h"
 #include "dlgsmsg.h"
 #include "dlgcmd.h"
@@ -961,7 +961,7 @@ create_image_button (const char   *s_label,
     if (!str_is_empty (s_hint))
         gtk_widget_set_tooltip_text (gw_btn, s_hint);
 
-    if (i_but < W_IMG_COUNT && (gd_pix = get_image (i_but)) != nullptr) {
+    if (i_but < W_IMG_COUNT && (gd_pix = get_icon (i_but)) != nullptr) {
         gw_img = gtk_image_new_from_pixbuf (gd_pix);
         gtk_button_set_image (GTK_BUTTON (gw_btn), gw_img);
         g_object_unref (gd_pix);
@@ -1337,7 +1337,7 @@ activate (GtkApplication *app,
         return;
     }
     /* Default widget icon */
-    if ((gd_pix = get_image (W_ICON_ABOUT)) != nullptr) {
+    if ((gd_pix = get_icon (W_ICON_ABOUT)) != nullptr) {
         gtk_window_set_default_icon (gd_pix);
         g_object_unref (gd_pix);
     }

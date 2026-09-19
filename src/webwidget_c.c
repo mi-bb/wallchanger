@@ -24,7 +24,7 @@
 #include "dlgsmsg.h"
 #include "thumbs.h"
 #include "urldata.h"
-#include "imgs.h"
+#include "icons.h"
 #include "fdfn.h"
 #include "errors.h"
 #include "chquery.h"
@@ -317,7 +317,7 @@ wallpaper_check_mark (const char *s_wallp_dir,
 
     if (file_check_permissions (s_wlfn) == ERR_OK) {
 
-        gp_check = get_image (W_IMG_CHECK);
+        gp_check = get_icon (W_IMG_CHECK);
         gdk_pixbuf_composite (gp_check, gp_pbuf,
                               0, 0,
                               gdk_pixbuf_get_width (gp_check),

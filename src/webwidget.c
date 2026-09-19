@@ -33,7 +33,7 @@
 #include "cfgfile.h"
 #include "fdfn.h"
 #include "defs.h"
-#include "imgs.h"
+#include "icons.h"
 #include "nstrings.h"
 #include "webwidget_c.h"
 #include "webpixabay.h"
@@ -775,7 +775,7 @@ webwidget_combobox_create (Setting *st_settings)
                                      GDK_TYPE_PIXBUF);
 
     for (i = 0; i < WEB_SERV_CNT; ++i) {
-        gp_logo = get_image (ww_logo_id (i));
+        gp_logo = get_icon (ww_logo_id (i));
         ns_data = ww_get_api_key_data (st_settings, i);
         gtk_list_store_append (list_store, &iter);
         gtk_list_store_set (list_store, &iter,
@@ -899,7 +899,7 @@ event_imgview_activated (GtkIconView *iconview,
 
         gtk_image_clear (GTK_IMAGE (ww_widget->gw_ii_simage));
 
-        gp_logo = get_image (ww_logo_id (ww_widget->i_active_service));
+        gp_logo = get_icon (ww_logo_id (ww_widget->i_active_service));
 
         if (gp_logo != nullptr) {
             gtk_image_set_from_pixbuf (GTK_IMAGE (ww_widget->gw_ii_simage),
@@ -1108,7 +1108,7 @@ webwidget_create (Setting    *st_settings,
     gw_search_opts_btn = gtk_button_new_with_label ("Search opts");
     gw_sett_button     = gtk_button_new ();
     gtk_widget_set_tooltip_text (gw_sett_button, "Service settings");
-    gp_pbuf = get_image (W_ICON_SETTING);
+    gp_pbuf = get_icon (W_ICON_SETTING);
     gw_img = gtk_image_new_from_pixbuf (gp_pbuf);
     gtk_button_set_image (GTK_BUTTON (gw_sett_button), gw_img);
     g_object_unref (gp_pbuf);

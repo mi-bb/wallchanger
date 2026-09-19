@@ -1,5 +1,5 @@
 /**
- * @file  imgs.h
+ * @file  icons.h
  * @copyright Copyright (C) 2019-2026 Michał Bąbik
  *
  * This file is part of Wall Changer.
@@ -21,8 +21,8 @@
  *
  * @author Michal Babik <michal.babik@protonmail.com>
  */
-#ifndef IMGS_H
-#define IMGS_H
+#ifndef ICONS_H
+#define ICONS_H
 #include <gdk-pixbuf/gdk-pixbuf.h>
 #include "config.h"
 /*----------------------------------------------------------------------------*/
@@ -59,11 +59,11 @@ typedef enum IconImg : int {
 } IconImg;
 /*----------------------------------------------------------------------------*/
 /**
- * @brief  Get image from stored data.
+ * @brief  Get icon from stored data.
  *
  * @param[in]  i_img  Image number
  * @return     Pixbuf with image
  */
-GdkPixbuf *get_image (const IconImg i_img);
+GdkPixbuf *get_icon (const IconImg i_img);
 /*----------------------------------------------------------------------------*/
 #endif

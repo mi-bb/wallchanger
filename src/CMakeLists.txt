@@ -54,7 +54,7 @@ set(WCHANGERCFG_SOURCES
     jsof.c         jsof.h
     jsfun.c        jsfun.h
     rwdt.c         rwdt.h
-    imgs.c         imgs.h
+    icons.c         icons.h
     randomm.c      randomm.h
     setting.c      setting.h
     preview.c      preview.h

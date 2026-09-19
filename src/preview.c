@@ -22,7 +22,7 @@
  * @author Michal Babik <michal.babik@protonmail.com>
  */
 #include <gdk/gdk.h>
-#include "imgs.h"
+#include "icons.h"
 #include "preview.h"
 /*----------------------------------------------------------------------------*/
 /**
@@ -103,9 +103,9 @@ make_prev_screen_pbuf (GdkRectangle *gr_rect)
     gr_rect->width = i_pr_scr_w;  /* Preview width (inside screen) */
     gr_rect->height = i_pr_scr_h; /* Preview height (inside screen) */
 
-    gp_scr_1 = get_image (W_IMG_SCREEN_1);  /* top screen image (152x7) */
-    gp_scr_2 = get_image (W_IMG_SCREEN_2);  /* middle screen image (152x1) */
-    gp_scr_3 = get_image (W_IMG_SCREEN_3);  /* bottom screen image (152x45) */
+    gp_scr_1 = get_icon (W_IMG_SCREEN_1);  /* top screen image (152x7) */
+    gp_scr_2 = get_icon (W_IMG_SCREEN_2);  /* middle screen image (152x1) */
+    gp_scr_3 = get_icon (W_IMG_SCREEN_3);  /* bottom screen image (152x45) */
 
     /* Get dimensions of monitor part images */
     i_img_w = gdk_pixbuf_get_width (gp_scr_1);
