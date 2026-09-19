@@ -112,11 +112,11 @@ get_setting_name (const int i_val)
             break;
 
         case SETT_WEB_DLG_WIDTH:
-            s_res = "Web dilaog width";
+            s_res = "Web dialog width";
             break;
 
         case SETT_WEB_DLG_HEIGHT:
-            s_res = "Web dilaog height";
+            s_res = "Web dialog height";
             break;
 
         case SETT_THUMB_QUALITY:
