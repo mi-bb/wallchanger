@@ -18,7 +18,7 @@ set(WCHANGERD_SOURCES
     chkwch.c    chkwch.h
     wallpaper_set.c     wallpaper_set.h
     setts.c     setts.h
-    jsof.c      jsof.h
+    json_file.c      json_file.h
     json_functions.c     json_functions.h
     rwdt.c      rwdt.h
     randomm.c   randomm.h
@@ -51,7 +51,7 @@ set(WCHANGERCFG_SOURCES
     image_info.c   image_info.h
     wallpaper_set.c        wallpaper_set.h
     setts.c        setts.h
-    jsof.c         jsof.h
+    json_file.c         json_file.h
     json_functions.c        json_functions.h
     rwdt.c         rwdt.h
     icons.c         icons.h

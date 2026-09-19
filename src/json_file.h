@@ -1,5 +1,5 @@
 /**
- * @file  jsof.h
+ * @file  json_file.h
  * @copyright Copyright (C) 2019-2026 Michał Bąbik
  *
  * This file is part of Wall Changer.
@@ -23,8 +23,8 @@
  *
  * @author Michal Babik <michal.babik@protonmail.com>
  */
-#ifndef JSOF_H
-#define JSOF_H
+#ifndef JSON_FILE_H
+#define JSON_FILE_H
 #include "config.h"
 #ifdef HAVE_JSON_C_JSON_H
 #include <json-c/json.h>
@@ -44,9 +44,9 @@
  * @param[out] i_err        Pointer to integer for error output
  * @return     Json file with data, or empty when json file was not valid.
  */
-json_object * js_open_file (const char    *s_file_name,
-                            uint_fast32_t *ui_hash,
-                            int           *i_err);
+json_object * json_open_file (const char    *s_file_name,
+                              uint_fast32_t *ui_hash,
+                              int           *i_err);
 /*----------------------------------------------------------------------------*/
 #endif
 

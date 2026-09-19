@@ -1,5 +1,5 @@
 /**
- * @file  jsof.c
+ * @file  json_file.c
  * @copyright Copyright (C) 2019-2026 Michał Bąbik
  *
  * This file is part of Wall Changer.
@@ -29,15 +29,15 @@
 #ifdef DEBUG
 #include <stdio.h>
 #endif
-#include "jsof.h"
+#include "json_file.h"
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Open and check file with json data.
  */
 json_object *
-js_open_file (const char    *s_file_name,
-              uint_fast32_t *ui_hash,
-              int           *i_err)
+json_open_file (const char    *s_file_name,
+                uint_fast32_t *ui_hash,
+                int           *i_err)
 {
     json_object   *j_obj;          /* Json object made from file data */
     char          *s_buff  = nullptr; /* File data buffer */

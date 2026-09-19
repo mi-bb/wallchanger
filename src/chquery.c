@@ -35,7 +35,7 @@
 #include "fdfn.h"
 #include "errors.h"
 #include "cfg_file.h"
-#include "jsof.h"
+#include "json_file.h"
 #include "hashfun.h"
 #include "chquery.h"
 /*----------------------------------------------------------------------------*/
@@ -388,7 +388,7 @@ cachequery_check_query (const char *s_service_name,
     cq_query = cachequery_new (s_service_name, s_query, s_search_opts, i_page);
     sprintf (s_page, "%d", cq_query->i_page);
 
-    if ((j_obj = js_open_file (cq_query->s_file, nullptr, i_err)) == nullptr) {
+    if ((j_obj = json_open_file (cq_query->s_file, nullptr, i_err)) == nullptr) {
         cachequery_free (cq_query);
         return nullptr;
     }
@@ -459,7 +459,7 @@ cachequery_save (CacheQuery *cq_query)
 
     sprintf (s_page, "%d", cq_query->i_page);
 
-    if ((j_obj = js_open_file (cq_query->s_file, &ui_hash, &i_err)) == nullptr)
+    if ((j_obj = json_open_file (cq_query->s_file, &ui_hash, &i_err)) == nullptr)
         return i_err;
 
     if (json_object_object_get_ex (j_obj, cq_query->s_date, &j_val) &&
@@ -538,7 +538,7 @@ cachequery_delete_older_than (const char *s_service_name,
     str_append (&s_file, s_service_name);
     str_append (&s_file, ".json");
     /* Open service json config file */
-    if ((j_obj = js_open_file (s_file, &ui_hash, &i_err)) == nullptr) {
+    if ((j_obj = json_open_file (s_file, &ui_hash, &i_err)) == nullptr) {
         free (s_file);
         return i_err;
     }

@@ -32,7 +32,7 @@
 #include <json.h>
 #endif
 
-#include "jsof.h"
+#include "json_file.h"
 #include "errors.h"
 #include "setting.h"
 #include "rwdt.h"
@@ -234,7 +234,7 @@ js_settings_read (const char *s_fname,
     json_object *j_obj;              /* Json object made from file data */
 
     *i_err = ERR_OK;
-    j_obj  = js_open_file (s_fname, nullptr, i_err);
+    j_obj  = json_open_file (s_fname, nullptr, i_err);
 
     if (*i_err == ERR_OK && j_obj != nullptr) {
         json_object_object_foreach (j_obj, key, val) {
@@ -269,7 +269,7 @@ js_settings_check_for_update (const Setting *st_settings,
 
     *i_err = ERR_OK;
 
-    if ((j_obj = js_open_file (s_fname, &ui_hash, i_err)) == nullptr)
+    if ((j_obj = json_open_file (s_fname, &ui_hash, i_err)) == nullptr)
         return nullptr;
 
     js_settings_add_to_json_obj (st_settings, j_obj);
