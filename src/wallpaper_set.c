@@ -185,9 +185,9 @@ wallpaper_set_next_in_list (Setting *st_settings)
  * @brief  Wallpaper change during program work.
  */
 int
-wpset_change (Setting    *st_settings,
-              RandMem    *rm_rand,
-              const char *s_cfg_file)
+wallpaper_set_change (Setting    *st_settings,
+                      RandMem    *rm_rand,
+                      const char *s_cfg_file)
 {
     Setting    *st_sett = nullptr; /* For setting with random opt */
     const char *s_lu    = nullptr; /* For file name of last used wallpaper */
@@ -205,9 +205,9 @@ wpset_change (Setting    *st_settings,
  * @brief  Setting wallpaper image at program startup.
  */
 int
-wpset_startup_set (Setting    *st_settings,
-                   RandMem    *rm_rand,
-                   const char *s_cfg_file)
+wallpaper_set_startup_set (Setting    *st_settings,
+                           RandMem    *rm_rand,
+                           const char *s_cfg_file)
 {
     Setting *st_opt = nullptr; /* For setting with last used option */
     Setting *st_st  = nullptr; /* For setting with last used wallpaper name */
@@ -224,7 +224,7 @@ wpset_startup_set (Setting    *st_settings,
                             setting_get_string (st_st));
         return ERR_OK;
     }
-    return wpset_change (st_settings, rm_rand, s_cfg_file);
+    return wallpaper_set_change (st_settings, rm_rand, s_cfg_file);
 }
 /*----------------------------------------------------------------------------*/
 /**

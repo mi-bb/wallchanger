@@ -233,7 +233,7 @@ chk_setts_ch_wall (char     *s_cfg_file,
     }
     if (ui_len == ui_nlen) {
         /* Wallpaper list length did not changed, change wallpaper */
-        if ((i_err = wpset_change (st_c, rm_rand, s_cfg_file)) != ERR_OK) {
+        if ((i_err = wallpaper_set_change (st_c, rm_rand, s_cfg_file)) != ERR_OK) {
             free_and_exit (s_cfg_file, rm_rand, st_c, st_wm,
                            err_ex_code (i_err), nullptr);
         }
@@ -244,7 +244,7 @@ chk_setts_ch_wall (char     *s_cfg_file,
 
         if (ui_len == 0) {
             /* Program startup, previous wallpaper count was 0 */
-            i_err = wpset_startup_set (st_c, rm_rand, s_cfg_file);
+            i_err = wallpaper_set_startup_set (st_c, rm_rand, s_cfg_file);
             if (i_err != ERR_OK) {
                 free_and_exit (s_cfg_file, rm_rand, st_c, st_wm,
                                err_ex_code (i_err), nullptr);
@@ -252,7 +252,7 @@ chk_setts_ch_wall (char     *s_cfg_file,
         }
         else {
             /* Change during program work, previous wallpaper count was not 0 */
-            if ((i_err = wpset_change (st_c, rm_rand, s_cfg_file)) != ERR_OK) {
+            if ((i_err = wallpaper_set_change (st_c, rm_rand, s_cfg_file)) != ERR_OK) {
                 free_and_exit (s_cfg_file, rm_rand, st_c, st_wm,
                                err_ex_code (i_err), nullptr);
             }

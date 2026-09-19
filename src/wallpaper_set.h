@@ -27,9 +27,9 @@
 #include "setting.h"
 /*----------------------------------------------------------------------------*/
 /**
- * @fn  int wpset_change (Setting    *st_settings,
- *                        RandMem    *rm_rand,
- *                        const char *s_cfg_file)
+ * @fn  int wallpaper_set_change (Setting    *st_settings,
+ *                                RandMem    *rm_rand,
+ *                                const char *s_cfg_file)
  *
  * @brief  Wallpaper change during program work.
  *
@@ -38,9 +38,9 @@
  * @param[in]     s_cfg_file   Config file path
  * @return        Wallpaper change status
  *
- * @fn  int wpset_startup_set (Setting    *st_settings,
- *                             RandMem    *rm_rand,
- *                             const char *s_cfg_file)
+ * @fn  int wallpaper_set_startup_set (Setting    *st_settings,
+ *                                     RandMem    *rm_rand,
+ *                                     const char *s_cfg_file)
  *
  * @brief  Setting wallpaper image at program startup.
  *
@@ -70,21 +70,21 @@
  * @return     Wallpaper set status
  */
 /*----------------------------------------------------------------------------*/
-int  wpset_change         (Setting    *st_settings,
-                           RandMem    *rm_rand,
-                           const char *s_cfg_file);
+int  wallpaper_set_change      (Setting    *st_settings,
+                                RandMem    *rm_rand,
+                                const char *s_cfg_file);
 
-int  wpset_startup_set    (Setting    *st_settings,
-                           RandMem    *rm_rand,
-                           const char *s_cfg_file);
+int  wallpaper_set_startup_set (Setting    *st_settings,
+                                RandMem    *rm_rand,
+                                const char *s_cfg_file);
 
-void wallpaper_test_set   (const char *s_cmd,
-                           const char *s_file);
+void wallpaper_test_set        (const char *s_cmd,
+                                const char *s_file);
 
-int  wallpaper_dialog_set (const char *s_cmd,
-                           const char *s_file,
-                           const char *s_cfg_file)
-                           __attribute__ ((nonnull (1, 2, 3)));
+int  wallpaper_dialog_set      (const char *s_cmd,
+                                const char *s_file,
+                                const char *s_cfg_file)
+                                __attribute__ ((nonnull (1, 2, 3)));
 /*----------------------------------------------------------------------------*/
 #endif
 
