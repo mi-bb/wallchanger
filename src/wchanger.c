@@ -570,7 +570,7 @@ statusbar_push_config_info (const DialogData *dd_data)
 {
     char *s_info = nullptr;
 
-    s_info = dialogdata_get_status_config_info (dd_data);
+    s_info = dialog_data_get_status_config_info (dd_data);
 
     gtk_statusbar_push (GTK_STATUSBAR (dd_data->gw_statusbar),
             gtk_statusbar_get_context_id (GTK_STATUSBAR (dd_data->gw_statusbar),
@@ -657,7 +657,7 @@ event_set_wallpaper_pressed (const DialogData *dd_data)
         s_cmd   = gtk_entry_get_text (GTK_ENTRY (dd_data->gw_command));
         i_err   = wallpaper_dialog_set (s_cmd,
                                         imageinfo_get_file_path (ii_info),
-                                        dialogdata_get_cfg_file (dd_data));
+                                        dialog_data_get_cfg_file (dd_data));
         if (i_err != ERR_OK) {
             message_dialog_error (dd_data->gw_window, err_get_message (i_err));
         }
@@ -676,7 +676,7 @@ event_save_settings_pressed (const DialogData *dd_data)
     int      i_err = 0;   /* Error value */
 
     st_settings = widgets_get_settings (dd_data);
-    i_err = setts_check_update_file (dialogdata_get_cfg_file (dd_data),
+    i_err = setts_check_update_file (dialog_data_get_cfg_file (dd_data),
                                      st_settings);
     settings_free_all (st_settings);
 
@@ -830,7 +830,7 @@ event_on_delete (GtkWidget        *window,
 
     st_settings = widgets_get_settings (dd_data);
 
-    s_buff  = setts_check_update (dialogdata_get_cfg_file (dd_data),
+    s_buff  = setts_check_update (dialog_data_get_cfg_file (dd_data),
                                   st_settings,
                                   &i_err);
     settings_free_all (st_settings);
@@ -850,7 +850,7 @@ event_on_delete (GtkWidget        *window,
         gtk_widget_destroy (dialog);
 
         if (i_res == GTK_RESPONSE_YES) {
-            i_err = setts_update_file (dialogdata_get_cfg_file (dd_data),
+            i_err = setts_update_file (dialog_data_get_cfg_file (dd_data),
                                        s_buff);
             if (i_err != ERR_OK) {
                 message_dialog_error (GTK_WINDOW (window),
@@ -859,7 +859,7 @@ event_on_delete (GtkWidget        *window,
         }
         free (s_buff);
     }
-    setts_update_window_size (dialogdata_get_cfg_file (dd_data), i_w, i_h);
+    setts_update_window_size (dialog_data_get_cfg_file (dd_data), i_w, i_h);
     return FALSE;
 }
 /*----------------------------------------------------------------------------*/
@@ -1316,7 +1316,7 @@ activate (GtkApplication *app,
     int         i_err      = 0;     /* For error output */
 
     /* Find config file and set config file name */
-    dialogdata_do_config_file_stuff (dd_data);
+    dialog_data_do_config_file_stuff (dd_data);
 
     /* Image preview widget */
     gw_img_prev = gtk_image_new ();
@@ -1415,7 +1415,7 @@ activate (GtkApplication *app,
     gtk_container_add (GTK_CONTAINER (gw_window), gw_box_main);
 
     /* Read program settings */
-    st_settings = setts_read (dialogdata_get_cfg_file (dd_data), &i_err);
+    st_settings = setts_read (dialog_data_get_cfg_file (dd_data), &i_err);
 
     /* Check window managers data config file for new wms and */
     /* get window manager data */
@@ -1461,7 +1461,7 @@ static void
 shutdown ([[maybe_unused]] GtkApplication *application,
           DialogData     *dd_data)
 {
-    dialogdata_free (dd_data);
+    dialog_data_free (dd_data);
 }
 /*----------------------------------------------------------------------------*/
 /**
@@ -1497,7 +1497,7 @@ main (int    argc,
     DialogData     *dd_data;
     int             status;
 
-    dd_data = dialogdata_new ();
+    dd_data = dialog_data_new ();
     app = gtk_application_new ("org.nongnu.WallChanger",
                                G_APPLICATION_DEFAULT_FLAGS);
     g_application_add_main_option (G_APPLICATION (app),

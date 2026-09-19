@@ -32,13 +32,13 @@
  * @param[out]  dd_data  DialogData item
  * @return      none
  */
-static void dialogdata_init (DialogData *dd_data);
+static void dialog_data_init (DialogData *dd_data);
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Free DialogData object.
  */
 void
-dialogdata_free (DialogData *dd_data)
+dialog_data_free (DialogData *dd_data)
 {
     free (dd_data->s_cfg_file);
     free (dd_data);
@@ -48,7 +48,7 @@ dialogdata_free (DialogData *dd_data)
  * @brief  DialogData initialization.
  */
 static void
-dialogdata_init (DialogData *dd_data)
+dialog_data_init (DialogData *dd_data)
 {
     dd_data->gw_window      = nullptr;
     dd_data->gw_view        = nullptr;
@@ -68,14 +68,14 @@ dialogdata_init (DialogData *dd_data)
  * @brief  Create new DialogData object.
  */
 DialogData *
-dialogdata_new (void)
+dialog_data_new (void)
 {
     DialogData *dd_data = nullptr;   /* DialogData item to return */
 
     if ((dd_data = malloc (sizeof (DialogData))) == nullptr)
         err (EXIT_FAILURE, nullptr);
 
-    dialogdata_init (dd_data);
+    dialog_data_init (dd_data);
 
     return dd_data;
 }
@@ -85,10 +85,10 @@ dialogdata_new (void)
  *         s_cfg_file from dd_data is not null, checks it. Exits on fail.
  */
 void
-dialogdata_do_config_file_stuff (DialogData *dd_data)
+dialog_data_do_config_file_stuff (DialogData *dd_data)
 {
     if (cfgfile_config_file_stuff (&dd_data->s_cfg_file, 1) != ERR_OK) {
-        dialogdata_free (dd_data);
+        dialog_data_free (dd_data);
         exit (EXIT_FAILURE);
     }
 }
@@ -97,7 +97,7 @@ dialogdata_do_config_file_stuff (DialogData *dd_data)
  * @brief  Get information about config file for status bar.
  */
 char *
-dialogdata_get_status_config_info (const DialogData *dd_data)
+dialog_data_get_status_config_info (const DialogData *dd_data)
 {
     char   *s_ret   = nullptr; /* Result string */
     size_t  ui_plen = 0;    /* Prefix text length */
