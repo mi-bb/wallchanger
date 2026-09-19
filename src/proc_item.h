@@ -1,5 +1,5 @@
 /**
- * @file  procitem.h
+ * @file  proc_item.h
  * @copyright Copyright (C) 2020-2026 Michał Bąbik
  *
  * This file is part of Wall Changer.
@@ -21,8 +21,8 @@
  *
  * @author Michal Babik <michal.babik@protonmail.com>
  */
-#ifndef PROCITEM_H
-#define PROCITEM_H
+#ifndef PROC_ITEM_H
+#define PROC_ITEM_H
 /*----------------------------------------------------------------------------*/
 /**
  * @struct ProcItem
@@ -42,15 +42,15 @@ ProcItem {
 } ProcItem;
 /*----------------------------------------------------------------------------*/
 /**
- * @fn  const char * procitem_get_pid (const ProcItem *pi_item)
+ * @fn  const char * proc_item_get_pid (const ProcItem *pi_item)
  *
  * @brief  Get PID string from ProcItem item.
  *
  * @param[in] pi_item  ProcItem with PID to get
  * @return    String with PID
  *
- * @fn void procitem_set_pid (ProcItem   *pi_item,
- *                            const char *s_pid)
+ * @fn void proc_item_set_pid (ProcItem   *pi_item,
+ *                             const char *s_pid)
  *
  * @brief  Set PID in ProcItem item.
  *
@@ -58,15 +58,15 @@ ProcItem {
  * @param[in]  s_pid    String with PID to set
  * @return     none
  *
- * @fn  const char * procitem_get_name (const ProcItem *pi_item)
+ * @fn  const char * proc_item_get_name (const ProcItem *pi_item)
  *
  * @brief  Get name string from ProcItem item.
  *
  * @param[in] pi_item  ProcItem with name to get
  * @return    String with name
  *
- * @fn  void procitem_set_name (ProcItem   *pi_item,
- *                              const char *s_name)
+ * @fn  void proc_item_set_name (ProcItem   *pi_item,
+ *                               const char *s_name)
  *
  * @brief  Set name in ProcItem item.
  *
@@ -75,63 +75,63 @@ ProcItem {
  * @return     none
  */
 /*----------------------------------------------------------------------------*/
-static inline const char * procitem_get_pid  (const ProcItem *pi_item) {
+static inline const char * proc_item_get_pid  (const ProcItem *pi_item) {
     return (const char *) pi_item->s_pid;
 }
-void                       procitem_set_pid  (ProcItem       *pi_item,
-                                              const char     *s_pid);
+void                       proc_item_set_pid  (ProcItem       *pi_item,
+                                               const char     *s_pid);
 
-static inline const char * procitem_get_name (const ProcItem *pi_item) {
+static inline const char * proc_item_get_name (const ProcItem *pi_item) {
     return (const char *) pi_item->s_name;
 }
-void                       procitem_set_name (ProcItem       *pi_item,
-                                              const char     *s_name);
+void                       proc_item_set_name (ProcItem       *pi_item,
+                                               const char     *s_name);
 /*----------------------------------------------------------------------------*/
 /**
- * @fn  void procitem_free (ProcItem *pi_item)
+ * @fn  void proc_item_free (ProcItem *pi_item)
  *
  * @brief  Free ProcItem item.
  *
  * @param[in] pi_item  ProcItem item to free
  * @return    none
  *
- * @fn  ProcItem * procitem_new (void)
+ * @fn  ProcItem * proc_item_new (void)
  *
  * @brief  Create new ProcItem item.
  *
- * @return New ProcIem item, it should be freed using procitem_free.
+ * @return New ProcIem item, it should be freed using proc_item_free.
  *
- * @fn  ProcItem * procitem_new_from_data (const char *s_pid,
- *                                        const char *s_name)
+ * @fn  ProcItem * proc_item_new_from_data (const char *s_pid,
+ *                                          const char *s_name)
  *
  * @brief  Create new ProcItem item from given pid and name string.
  *
  * @param[in] s_pid   String with PID
  * @param[in] s_name  String with name
- * @return    New ProcIem item, it should be freed using procitem_free.
+ * @return    New ProcIem item, it should be freed using proc_item_free.
  *
- * @fn  ProcItem * procitem_copy (const ProcItem *pi_item)
+ * @fn  ProcItem * proc_item_copy (const ProcItem *pi_item)
  *
  * @brief  Copy ProcItem item and return it.
  *
  * @param[in] pi_item  ProcItem item to copy
- * @return    New ProcIem item, it should be freed using procitem_free.
+ * @return    New ProcIem item, it should be freed using proc_item_free.
  */
 /*----------------------------------------------------------------------------*/
-void         procitem_free          (ProcItem         *pi_item);
+void         proc_item_free          (ProcItem         *pi_item);
 
 [[nodiscard]]
-ProcItem   * procitem_new           (void)
+ProcItem   * proc_item_new           (void)
              __attribute__ ((returns_nonnull));
 
 [[nodiscard]]
-ProcItem   * procitem_new_from_data (const char       *s_pid,
-                                     const char       *s_name)
+ProcItem   * proc_item_new_from_data (const char       *s_pid,
+                                      const char       *s_name)
              __attribute__ ((returns_nonnull));
 
 [[nodiscard]]
-static inline ProcItem * procitem_copy (const ProcItem   *pi_item) {
-    return procitem_new_from_data (pi_item->s_pid, pi_item->s_name);
+static inline ProcItem * proc_item_copy (const ProcItem   *pi_item) {
+    return proc_item_new_from_data (pi_item->s_pid, pi_item->s_name);
 }
 /*----------------------------------------------------------------------------*/
 #endif

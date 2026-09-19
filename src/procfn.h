@@ -97,7 +97,7 @@ ProcList * process_get        (const char *s_name)
  * Find and return first found process for user with uid_id user id, s_name
  * process name s_name, additional options passed in i_opt, i_exc_pid contains
  * process id not to include in searching.
- * Returned ProcItem should be later freed using procitem_free function.
+ * Returned ProcItem should be later freed using proc_item_free function.
  *
  * @param[in] uid_id     Process owner user id
  * @param[in] s_name     Name of process or null to get any process

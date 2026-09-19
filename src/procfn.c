@@ -227,11 +227,11 @@ process_get_opt (uid_t       uid_id,
                     #endif
                     if (s_name == nullptr) {
                         proc_list_insert (pl_list,
-                                procitem_new_from_data (de->d_name, s_data));
+                                proc_item_new_from_data (de->d_name, s_data));
                     }
                     else if (strcmp (s_data, s_name) == 0) {
                         proc_list_insert (pl_list,
-                                procitem_new_from_data (de->d_name, s_data));
+                                proc_item_new_from_data (de->d_name, s_data));
                         if (i_opt & PROC_OPT_CHK_FIRST) {
                             free (s_data);
                             free (s_fn);
@@ -285,10 +285,10 @@ process_get_opt (uid_t       uid_id,
         s_cmd = proc[i].ki_comm;
         snprintf (s_pidbuff, sizeof (s_pidbuff), "%d", proc[i].ki_pid);
         if (s_name == nullptr) {
-            proc_list_insert (pl_list, procitem_new_from_data (s_pidbuff, s_cmd));
+            proc_list_insert (pl_list, proc_item_new_from_data (s_pidbuff, s_cmd));
         }
         else if (strcmp (s_cmd, s_name) == 0) {
-            proc_list_insert (pl_list, procitem_new_from_data (s_pidbuff, s_cmd));
+            proc_list_insert (pl_list, proc_item_new_from_data (s_pidbuff, s_cmd));
             if (i_opt & PROC_OPT_CHK_FIRST) {
                 break;
             }
@@ -326,7 +326,7 @@ process_exists_opt (uid_t       uid_id,
                                          i_opt | PROC_OPT_CHK_FIRST,
                                          i_exc_pid);
     if (proc_list_get_count (pl_list) > 0) {
-        pi_item = procitem_copy (proc_list_get_item (pl_list, 0));
+        pi_item = proc_item_copy (proc_list_get_item (pl_list, 0));
     }
     proc_list_free (pl_list);
     return pi_item;
@@ -354,7 +354,7 @@ process_exists_b (const char *s_name)
 
     pi_item = process_exists_opt (getuid (), s_name, PROC_OPT_NONE, 0);
     if (pi_item != nullptr) {
-        procitem_free (pi_item);
+        proc_item_free (pi_item);
         b_res = true;
     }
     return b_res;
@@ -414,12 +414,12 @@ process_kill_opt (uid_t       uid_id,
     if (pi_item != nullptr) {
         #ifdef DEBUG
         printf ("kill %s %s\n",
-                procitem_get_name (pi_item),
-                procitem_get_pid (pi_item));
+                proc_item_get_name (pi_item),
+                proc_item_get_pid (pi_item));
         #endif
-        pi_pid = atoi (procitem_get_pid (pi_item));
+        pi_pid = atoi (proc_item_get_pid (pi_item));
         kill (pi_pid, SIGTERM);
-        procitem_free (pi_item);
+        proc_item_free (pi_item);
     }
 }
 /*----------------------------------------------------------------------------*/
@@ -460,11 +460,11 @@ process_kill_all_opt (uid_t       uid_id,
     i_cnt   = proc_list_get_count (pl_list);
 
     for (i = 0; i < i_cnt; ++i) {
-        pi_pid = atoi (procitem_get_pid (proc_list_get_item (pl_list, i)));
+        pi_pid = atoi (proc_item_get_pid (proc_list_get_item (pl_list, i)));
         #ifdef DEBUG
         printf ("killing %s %s\n",
-                procitem_get_name (proc_list_get_item (pl_list, i)),
-                procitem_get_pid (proc_list_get_item (pl_list, i)));
+                proc_item_get_name (proc_list_get_item (pl_list, i)),
+                proc_item_get_pid (proc_list_get_item (pl_list, i)));
         #endif
         kill (pi_pid, SIGTERM);
     }

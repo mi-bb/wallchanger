@@ -1,5 +1,5 @@
 /**
- * @file  procitem.c
+ * @file  proc_item.c
  * @copyright Copyright (C) 2020-2026 Michał Bąbik
  *
  * This file is part of Wall Changer.
@@ -25,7 +25,7 @@
 #include <string.h>
 #include <err.h>
 #include "cres.h"
-#include "procitem.h"
+#include "proc_item.h"
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Initialize ProcItem item.
@@ -34,7 +34,7 @@
  * @return     none
  */
 static void
-procitem_init (ProcItem *pi_item)
+proc_item_init (ProcItem *pi_item)
 {
     pi_item->s_pid  = nullptr;
     pi_item->s_name = nullptr;
@@ -44,8 +44,8 @@ procitem_init (ProcItem *pi_item)
  * @brief  Set PID in ProcItem item.
  */
 void
-procitem_set_pid (ProcItem   *pi_item,
-                  const char *s_pid)
+proc_item_set_pid (ProcItem   *pi_item,
+                   const char *s_pid)
 {
     size_t ui_len = 0;
 
@@ -60,8 +60,8 @@ procitem_set_pid (ProcItem   *pi_item,
  * @brief  Set name in ProcItem item.
  */
 void
-procitem_set_name (ProcItem   *pi_item,
-                   const char *s_name)
+proc_item_set_name (ProcItem   *pi_item,
+                    const char *s_name)
 {
     size_t ui_len = 0;
 
@@ -76,7 +76,7 @@ procitem_set_name (ProcItem   *pi_item,
  * @brief  Free ProcItem item.
  */
 void
-procitem_free (ProcItem *pi_item)
+proc_item_free (ProcItem *pi_item)
 {
     free (pi_item->s_pid);
     free (pi_item->s_name);
@@ -87,14 +87,14 @@ procitem_free (ProcItem *pi_item)
  * @brief  Create new ProcItem item.
  */
 ProcItem *
-procitem_new (void)
+proc_item_new (void)
 {
     ProcItem *pi_new = nullptr;
 
     if ((pi_new = malloc (sizeof (ProcItem))) == nullptr)
         err (EXIT_FAILURE, nullptr);
 
-    procitem_init (pi_new);
+    proc_item_init (pi_new);
 
     return pi_new;
 }
@@ -103,15 +103,15 @@ procitem_new (void)
  * @brief  Create new ProcItem item from given pid and name string.
  */
 ProcItem *
-procitem_new_from_data (const char *s_pid,
-                        const char *s_name)
+proc_item_new_from_data (const char *s_pid,
+                         const char *s_name)
 {
     ProcItem *pi_new;
 
-    pi_new = procitem_new ();
+    pi_new = proc_item_new ();
 
-    procitem_set_pid (pi_new, s_pid);
-    procitem_set_name (pi_new, s_name);
+    proc_item_set_pid (pi_new, s_pid);
+    proc_item_set_name (pi_new, s_name);
 
     return pi_new;
 }

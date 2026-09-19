@@ -40,7 +40,7 @@ enum e_error_values : int {
 };
 /*----------------------------------------------------------------------------*/
 /* The GNU __attribute__ spellings used here and in fdfn.h, hashfun.h,
- * jsfun.h, dirlist.h, dlgsmsg.h and procitem.h are kept on purpose: C23's
+ * jsfun.h, dirlist.h, dlgsmsg.h and proc_item.h are kept on purpose: C23's
  * nearest equivalents are not usable yet. [[unsequenced]] has to follow the
  * parameter list on GCC, and Clang does not know it at all (it is dropped
  * with -Wunknown-attributes), so it would silently lose the optimization on

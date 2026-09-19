@@ -45,7 +45,7 @@ void
 proc_list_free (ProcList *pl_list)
 {
     while (pl_list->cnt--) {
-        procitem_free (pl_list->pi_list[pl_list->cnt]);
+        proc_item_free (pl_list->pi_list[pl_list->cnt]);
     }
     free (pl_list->pi_list);
     free (pl_list);

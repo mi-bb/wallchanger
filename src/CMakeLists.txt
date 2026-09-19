@@ -30,7 +30,7 @@ set(WCHANGERD_SOURCES
     hashfun.c   hashfun.h
     daemon.c      daemon.h
     procfn.c    procfn.h
-    procitem.c  procitem.h
+    proc_item.c  proc_item.h
     proc_list.c  proc_list.h
     cmdfn.c     cmdfn.h
     cmdline.c   cmdline.h
@@ -66,7 +66,7 @@ set(WCHANGERCFG_SOURCES
     hashfun.c      hashfun.h
     daemon.c         daemon.h
     procfn.c       procfn.h
-    procitem.c     procitem.h
+    proc_item.c     proc_item.h
     proc_list.c     proc_list.h
     wmsfn.c        wmsfn.h
     errors.c         errors.h
