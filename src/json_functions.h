@@ -39,13 +39,13 @@
  * @return     List of settings
  */
 /*----------------------------------------------------------------------------*/
-Setting * js_settings_read (const char *s_fname,
-                            int        *i_err)
+Setting * json_settings_read (const char *s_fname,
+                              int        *i_err)
                             __attribute__ ((nonnull (1)));
 /*----------------------------------------------------------------------------*/
 /**
- * @fn  char * js_settings_check_for_update  (const Setting *st_settings,
- *                                            const char    *s_fname,
+ * @fn  char * json_settings_check_for_update  (const Setting *st_settings,
+   *                                            const char    *s_fname,
  *                                            int           *i_err)
  *
  * @brief  Check if settings in list are an update to settings stored in
@@ -63,7 +63,7 @@ Setting * js_settings_read (const char *s_fname,
  * @param[out] i_err       Error output
  * @return     String with updated settings or null if there is no update.
  *
- * @fn  int js_settings_update_file (const char *s_buff, const char *s_fname)
+ * @fn  int json_settings_update_file (const char *s_buff, const char *s_fname)
  *
  * @brief  Update file with new data.
  *
@@ -71,13 +71,13 @@ Setting * js_settings_read (const char *s_fname,
  * @param[in]  s_fname  File name to save data
  * @return     Saving file status, ERR_OK or error code
  *
- * @fn  int js_settings_check_update_file (Setting    *st_settings,
- *                                         const char *s_fname)
+ * @fn  int json_settings_check_update_file (Setting    *st_settings,
+   *                                         const char *s_fname)
  *
  * @brief  Check if settings are an update to saved ones and update file with
  *         new data if they are.
  *
- * Function runs js_settings_check_for_update and js_settings_update_file
+ * Function runs json_settings_check_for_update and json_settings_update_file
  * if settings are an update.
  *
  * @param[in]  st_settings  List of Setting items
@@ -85,17 +85,17 @@ Setting * js_settings_read (const char *s_fname,
  * @return     Saving file status, ERR_OK or error code
  */
 /*----------------------------------------------------------------------------*/
-char * js_settings_check_for_update  (const Setting *st_settings,
-                                      const char    *s_fname,
+char * json_settings_check_for_update  (const Setting *st_settings,
+                                        const char    *s_fname,
                                       int           *i_err)
                                       __attribute__ ((nonnull (2)));
 
-int    js_settings_update_file       (const char    *s_buff,
-                                      const char    *s_fname)
+int    json_settings_update_file       (const char    *s_buff,
+                                        const char    *s_fname)
                                       __attribute__ ((nonnull (1, 2)));
 
-int    js_settings_check_update_file (const Setting *st_settings,
-                                      const char    *s_fname)
+int    json_settings_check_update_file (const Setting *st_settings,
+                                        const char    *s_fname)
                                       __attribute__ ((nonnull (2)));
 /*----------------------------------------------------------------------------*/
 #endif

@@ -136,7 +136,7 @@ Setting *
 setts_read (const char *s_cfg_file,
             int        *i_err)
 {
-    return js_settings_read (s_cfg_file, i_err);
+    return json_settings_read (s_cfg_file, i_err);
 }
 /*----------------------------------------------------------------------------*/
 /**
@@ -246,7 +246,7 @@ setts_update_last_used (const char *s_cfg_file,
     st_settings = setting_new_string (get_setting_name (SETT_LAST_USED_STR),
                                       s_last_used);
 
-    i_res = js_settings_check_update_file (st_settings, s_cfg_file);
+    i_res = json_settings_check_update_file (st_settings, s_cfg_file);
     settings_free_all (st_settings);
     return i_res;
 }
@@ -264,7 +264,7 @@ setts_update_last_used_wm (const char *s_cfg_file,
     st_settings = setting_new_string (get_setting_name (SETT_LAST_USED_WM),
                                       s_last_used_wm);
 
-    i_res = js_settings_check_update_file (st_settings, s_cfg_file);
+    i_res = json_settings_check_update_file (st_settings, s_cfg_file);
     settings_free_all (st_settings);
     return i_res;
 }
@@ -287,7 +287,7 @@ setts_update_window_size (const char *s_cfg_file,
                      setting_new_int (get_setting_name (SETT_WIN_HEIGHT),
                                       (int64_t) i_h));
 
-    i_res = js_settings_check_update_file (st_settings, s_cfg_file);
+    i_res = json_settings_check_update_file (st_settings, s_cfg_file);
     settings_free_all (st_settings);
     return i_res;
 }
@@ -310,7 +310,7 @@ setts_update_web_dlg_size (const char *s_cfg_file,
                      setting_new_int (get_setting_name (SETT_WEB_DLG_HEIGHT),
                                       (int64_t) i_h));
 
-    i_res = js_settings_check_update_file (st_settings, s_cfg_file);
+    i_res = json_settings_check_update_file (st_settings, s_cfg_file);
     settings_free_all (st_settings);
     return i_res;
 }
@@ -328,7 +328,7 @@ setts_update_thumb_quality (const char *s_cfg_file,
     st_settings = setting_new_int (get_setting_name (SETT_THUMB_QUALITY),
                                    i_jpgq);
 
-    i_res = js_settings_check_update_file (st_settings, s_cfg_file);
+    i_res = json_settings_check_update_file (st_settings, s_cfg_file);
     settings_free_all (st_settings);
     return i_res;
 }
@@ -342,7 +342,7 @@ setts_check_update (const char    *s_cfg_file,
                     const Setting *st_settings,
                     int           *i_err)
 {
-    return js_settings_check_for_update (st_settings, s_cfg_file, i_err);
+    return json_settings_check_for_update (st_settings, s_cfg_file, i_err);
 }
 /*----------------------------------------------------------------------------*/
 /**
@@ -352,7 +352,7 @@ int
 setts_update_file (const char *s_cfg_file,
                    const char *s_buff)
 {
-    return js_settings_update_file (s_buff, s_cfg_file);
+    return json_settings_update_file (s_buff, s_cfg_file);
 }
 /*----------------------------------------------------------------------------*/
 /**
@@ -363,6 +363,6 @@ int
 setts_check_update_file (const char    *s_cfg_file,
                          const Setting *st_settings)
 {
-    return js_settings_check_update_file (st_settings, s_cfg_file);
+    return json_settings_check_update_file (st_settings, s_cfg_file);
 }
 /*----------------------------------------------------------------------------*/
