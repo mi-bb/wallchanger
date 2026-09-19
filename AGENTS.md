@@ -81,7 +81,7 @@ TCase names are declared in `setting_suite()` at the bottom of `tests/test_setti
 
 `wchangerd` reloads settings from disk on every wallpaper-change cycle (see `chk_setts_ch_wall` in `wcngdmn.c`), so config changes made via `wchangercfg` take effect on the daemon's next interval without a restart — except the interval/time-align state itself, which is why `wchangerd --restart` is recommended after changing those.
 
-### Daemon lifecycle (`wcngdmn.c`, `dmfn.c/.h`, `procfn.c/.h`, `proclist.c/.h`, `procitem.c/.h`)
+### Daemon lifecycle (`wcngdmn.c`, `daemon.c/.h`, `procfn.c/.h`, `proclist.c/.h`, `procitem.c/.h`)
 
 `wcngdmn.c` is the `wchangerd` entry point: parses CLI args (`cmdfn.c/.h`, `cmdline.c/.h`), checks for/kills an already-running daemon via process-list scanning (`procfn.c` — includes a FreeBSD `procstat` path guarded by the FreeBSD-only `find_library(PROCSTAT_LIBRARY)` check in the root `CMakeLists.txt`), daemonizes (`dmfn_daemonize`), then loops: sleep for the configured interval (optionally time-aligned to the hour, see `check_time_align_val`), reload settings, change wallpaper.
 

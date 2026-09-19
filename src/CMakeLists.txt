@@ -28,7 +28,7 @@ set(WCHANGERD_SOURCES
     cfgfile.c   cfgfile.h
     cres.c      cres.h
     hashfun.c   hashfun.h
-    dmfn.c      dmfn.h
+    daemon.c      daemon.h
     procfn.c    procfn.h
     procitem.c  procitem.h
     proclist.c  proclist.h
@@ -64,7 +64,7 @@ set(WCHANGERCFG_SOURCES
     dirlist.c      dirlist.h
     cres.c         cres.h
     hashfun.c      hashfun.h
-    dmfn.c         dmfn.h
+    daemon.c         daemon.h
     procfn.c       procfn.h
     procitem.c     procitem.h
     proclist.c     proclist.h

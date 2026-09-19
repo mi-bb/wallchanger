@@ -1,5 +1,5 @@
 /**
- * @file  dmfn.h
+ * @file  daemon.h
  * @copyright Copyright (C) 2019-2026 Michał Bąbik
  *
  * This file is part of Wall Changer.
@@ -21,8 +21,8 @@
  *
  * @author Michal Babik <michal.babik@protonmail.com>
  */
-#ifndef DMFN_H
-#define DMFN_H
+#ifndef DAEMON_H
+#define DAEMON_H
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Daemonize current process.

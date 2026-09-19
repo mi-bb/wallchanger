@@ -43,7 +43,7 @@
 #include "cfgfile.h"
 #include "defs.h"
 #include "hashfun.h"
-#include "dmfn.h"
+#include "daemon.h"
 #include "wmsfn.h"
 /*----------------------------------------------------------------------------*/
 /**

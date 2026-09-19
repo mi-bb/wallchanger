@@ -29,7 +29,7 @@
 #include <stdio.h>
 #include <err.h>
 #include "cmdfn.h"
-#include "dmfn.h"
+#include "daemon.h"
 #include "chkwch.h"
 #include "randomm.h"
 /*----------------------------------------------------------------------------*/

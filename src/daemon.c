@@ -1,5 +1,5 @@
 /**
- * @file  dmfn.c
+ * @file  daemon.c
  * @copyright Copyright (C) 2019-2026 Michał Bąbik
  *
  * This file is part of Wall Changer.
@@ -29,7 +29,7 @@
 #include <sys/stat.h>
 #include <sysexits.h>
 #include "procfn.h"
-#include "dmfn.h"
+#include "daemon.h"
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Daemonize current process.

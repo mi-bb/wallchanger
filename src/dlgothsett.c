@@ -23,7 +23,7 @@
  */
 #include "dlgsmsg.h"
 #include "dirlist.h"
-#include "dmfn.h"
+#include "daemon.h"
 #include "setting.h"
 #include "setts.h"
 #include "cfgfile.h"
