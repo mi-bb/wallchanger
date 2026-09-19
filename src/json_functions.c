@@ -260,7 +260,7 @@ json_settings_read (const char *s_fname,
 char *
 json_settings_check_for_update (const Setting *st_settings,
                                 const char    *s_fname,
-                              int           *i_err)
+                                int           *i_err)
 {
     json_object   *j_obj;             /* Json object made from file data */
     const char    *s_jbuff    = nullptr; /* Json object as string */

@@ -41,7 +41,7 @@
 /*----------------------------------------------------------------------------*/
 Setting * json_settings_read (const char *s_fname,
                               int        *i_err)
-                            __attribute__ ((nonnull (1)));
+                              __attribute__ ((nonnull (1)));
 /*----------------------------------------------------------------------------*/
 /**
  * @fn  char * json_settings_check_for_update  (const Setting *st_settings,
@@ -87,16 +87,16 @@ Setting * json_settings_read (const char *s_fname,
 /*----------------------------------------------------------------------------*/
 char * json_settings_check_for_update  (const Setting *st_settings,
                                         const char    *s_fname,
-                                      int           *i_err)
-                                      __attribute__ ((nonnull (2)));
+                                        int           *i_err)
+                                        __attribute__ ((nonnull (2)));
 
 int    json_settings_update_file       (const char    *s_buff,
                                         const char    *s_fname)
-                                      __attribute__ ((nonnull (1, 2)));
+                                        __attribute__ ((nonnull (1, 2)));
 
 int    json_settings_check_update_file (const Setting *st_settings,
                                         const char    *s_fname)
-                                      __attribute__ ((nonnull (2)));
+                                        __attribute__ ((nonnull (2)));
 /*----------------------------------------------------------------------------*/
 #endif
 
