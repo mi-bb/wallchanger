@@ -88,7 +88,7 @@
  * @return    New json_object with search data.
  */
 static json_object *
-chquery_searchitem_to_json (const SearchItem *si_item)
+chquery_search_item_to_json (const SearchItem *si_item)
 {
     json_object *j_res;  /* Result Json obj/array to return */
     json_object *j_val;  /* Json value to add to result */
@@ -165,75 +165,75 @@ chquery_searchitem_to_json (const SearchItem *si_item)
  * @return    New SearchItem with search data.
  */
 static SearchItem *
-chquery_json_to_searchitem (json_object *j_obj)
+chquery_json_to_search_item (json_object *j_obj)
 {
     SearchItem  *si_item; /* Item to return */
     json_object *j_val;   /* Reading/checking val */
 
-    si_item = searchitem_new ();
+    si_item = search_item_new ();
 
     if (json_object_object_get_ex (j_obj, JS_ID, &j_val) &&
         json_object_get_type (j_val) == json_type_string) {
 
-        searchitem_set_id_string (si_item, json_object_get_string (j_val));
+        search_item_set_id_string (si_item, json_object_get_string (j_val));
     }
     if (json_object_object_get_ex (j_obj, JS_AUTH_NAME, &j_val) &&
         json_object_get_type (j_val) == json_type_string) {
 
-        searchitem_set_author_name (si_item, json_object_get_string (j_val));
+        search_item_set_author_name (si_item, json_object_get_string (j_val));
     }
     if (json_object_object_get_ex (j_obj, JS_AUTH_URL, &j_val) &&
         json_object_get_type (j_val) == json_type_string) {
 
-        searchitem_set_author_url (si_item, json_object_get_string (j_val));
+        search_item_set_author_url (si_item, json_object_get_string (j_val));
     }
     if (json_object_object_get_ex (j_obj, JS_FILE_NAME, &j_val) &&
         json_object_get_type (j_val) == json_type_string) {
 
-        searchitem_set_file_name (si_item, json_object_get_string (j_val));
+        search_item_set_file_name (si_item, json_object_get_string (j_val));
     }
     if (json_object_object_get_ex (j_obj, JS_DISP_NAME, &j_val) &&
         json_object_get_type (j_val) == json_type_string) {
 
-        searchitem_set_display_name (si_item, json_object_get_string (j_val));
+        search_item_set_display_name (si_item, json_object_get_string (j_val));
     }
     if (json_object_object_get_ex (j_obj, JS_DISP_MKUP, &j_val) &&
         json_object_get_type (j_val) == json_type_string) {
 
-        searchitem_set_display_markup (si_item, json_object_get_string (j_val));
+        search_item_set_display_markup (si_item, json_object_get_string (j_val));
     }
     if (json_object_object_get_ex (j_obj, JS_PAGE_URL, &j_val) &&
         json_object_get_type (j_val) == json_type_string) {
 
-        searchitem_set_page_url (si_item, json_object_get_string (j_val));
+        search_item_set_page_url (si_item, json_object_get_string (j_val));
     }
     if (json_object_object_get_ex (j_obj, JS_IMAGE_URL, &j_val) &&
         json_object_get_type (j_val) == json_type_string) {
 
-        searchitem_set_image_url (si_item, json_object_get_string (j_val));
+        search_item_set_image_url (si_item, json_object_get_string (j_val));
     }
     if (json_object_object_get_ex (j_obj, JS_THUMB_URL, &j_val) &&
         json_object_get_type (j_val) == json_type_string) {
 
-        searchitem_set_thumb_url (si_item, json_object_get_string (j_val));
+        search_item_set_thumb_url (si_item, json_object_get_string (j_val));
     }
     if (json_object_object_get_ex (j_obj, JS_SERV_NAME, &j_val) &&
         json_object_get_type (j_val) == json_type_string) {
 
-        searchitem_set_service_name (si_item, json_object_get_string (j_val));
+        search_item_set_service_name (si_item, json_object_get_string (j_val));
     }
     if (json_object_object_get_ex (j_obj, JS_WIDTH, &j_val) &&
         json_object_get_type (j_val) == json_type_int) {
 
-        searchitem_set_width (si_item, json_object_get_int (j_val));
+        search_item_set_width (si_item, json_object_get_int (j_val));
     }
     if (json_object_object_get_ex (j_obj, JS_HEIGHT, &j_val) &&
         json_object_get_type (j_val) == json_type_int) {
 
-        searchitem_set_height (si_item, json_object_get_int (j_val));
+        search_item_set_height (si_item, json_object_get_int (j_val));
     }
 #ifdef DEBUG
-    searchitem_print (si_item);
+    search_item_print (si_item);
 #endif
     return si_item;
 }
@@ -245,7 +245,7 @@ chquery_json_to_searchitem (json_object *j_obj)
  * @return    New json_object with converted data
  */
 static json_object *
-cachequery_searchitems_to_json_array (const CacheQuery *cq_query)
+cachequery_search_items_to_json_array (const CacheQuery *cq_query)
 {
     json_object *j_arr;
     json_object *j_val;
@@ -254,7 +254,7 @@ cachequery_searchitems_to_json_array (const CacheQuery *cq_query)
     j_arr = json_object_new_array ();
 
     for (i = 0; i < cq_query->i_sicnt; ++i) {
-        j_val = chquery_searchitem_to_json (cq_query->si_items[i]);
+        j_val = chquery_search_item_to_json (cq_query->si_items[i]);
         json_object_array_add (j_arr, j_val);
     }
     return j_arr;
@@ -267,7 +267,7 @@ void
 cachequery_free (CacheQuery *cq_query)
 {
     for (int i = 0; i < cq_query->i_sicnt; ++i) {
-        searchitem_free (cq_query->si_items[i]);
+        search_item_free (cq_query->si_items[i]);
     }
     free (cq_query->si_items);
     free (cq_query->s_file);
@@ -424,7 +424,7 @@ cachequery_check_query (const char *s_service_name,
             for (i = 0; i < ui_cnt; ++i) {
                 j_val = json_object_array_get_idx (j_items, i);
                 if (j_val != nullptr) {
-                    si_item = chquery_json_to_searchitem (j_val);
+                    si_item = chquery_json_to_search_item (j_val);
                     cachequery_append_item (cq_query, si_item);
                 }
             }
@@ -494,7 +494,7 @@ cachequery_save (CacheQuery *cq_query)
     j_val = json_object_new_int (cq_query->i_found_cnt);
     json_object_object_add (j_per_page, JS_FOUND_CNT, j_val);
 
-    j_arr = cachequery_searchitems_to_json_array (cq_query);
+    j_arr = cachequery_search_items_to_json_array (cq_query);
     json_object_object_add (j_per_page, s_page, j_arr);
     s_jbuff = json_object_to_json_string (j_obj);
 

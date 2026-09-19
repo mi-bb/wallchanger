@@ -195,9 +195,9 @@ pixabay_process_item_set_names (SearchItem *si_item)
     s_disp_name = pixabay_create_display_name (s_base_name);
 
     /* Save names in SearchItem */
-    searchitem_set_file_name      (si_item, s_file_name);
-    searchitem_set_display_name   (si_item, s_disp_name);
-    /* searchitem_set_display_markup (si_item, s_disp_name); */
+    search_item_set_file_name      (si_item, s_file_name);
+    search_item_set_display_name   (si_item, s_disp_name);
+    /* search_item_set_display_markup (si_item, s_disp_name); */
     si_item->s_display_markup = g_markup_printf_escaped (
             s_format, s_disp_name, si_item->i_width, si_item->i_height);
 
@@ -213,19 +213,19 @@ pixabay_process_item_set_names (SearchItem *si_item)
  * @return    SearchItem item
  */
 static SearchItem *
-pixabay_json_obj_to_searchitem (json_object *j_obj)
+pixabay_json_obj_to_search_item (json_object *j_obj)
 {
     json_object *j_val;
 
-    SearchItem *si_item = searchitem_new ();
+    SearchItem *si_item = search_item_new ();
 
-    searchitem_set_service_name (si_item, ww_name (WEB_SERV_PIXABAY));
+    search_item_set_service_name (si_item, ww_name (WEB_SERV_PIXABAY));
 
     if (json_object_object_get_ex (j_obj, "id", &j_val) &&
         json_object_get_type (j_val) == json_type_int) {
 
-        searchitem_set_id_uint (si_item,
-                                (uint64_t) json_object_get_int64 (j_val));
+        search_item_set_id_uint (si_item,
+                                 (uint64_t) json_object_get_int64 (j_val));
 #ifdef DEBUG
         printf ("photo id : %s\n", si_item->s_id);
 #endif
@@ -233,7 +233,7 @@ pixabay_json_obj_to_searchitem (json_object *j_obj)
     if (json_object_object_get_ex (j_obj, "imageWidth", &j_val) &&
         json_object_get_type (j_val) == json_type_int) {
 
-        searchitem_set_width (si_item, json_object_get_int (j_val));
+        search_item_set_width (si_item, json_object_get_int (j_val));
 #ifdef DEBUG
         printf ("width : %d\n", json_object_get_int (j_val));
 #endif
@@ -241,7 +241,7 @@ pixabay_json_obj_to_searchitem (json_object *j_obj)
     if (json_object_object_get_ex (j_obj, "imageHeight", &j_val) &&
         json_object_get_type (j_val) == json_type_int) {
 
-        searchitem_set_height (si_item, json_object_get_int (j_val));
+        search_item_set_height (si_item, json_object_get_int (j_val));
 #ifdef DEBUG
         printf ("height : %d\n", json_object_get_int (j_val));
 #endif
@@ -249,7 +249,7 @@ pixabay_json_obj_to_searchitem (json_object *j_obj)
     if (json_object_object_get_ex (j_obj, "user", &j_val) &&
         json_object_get_type (j_val) == json_type_string) {
 
-        searchitem_set_author_name (si_item, json_object_get_string (j_val));
+        search_item_set_author_name (si_item, json_object_get_string (j_val));
 #ifdef DEBUG
         printf ("author : %s\n", json_object_get_string (j_val));
 #endif
@@ -257,7 +257,7 @@ pixabay_json_obj_to_searchitem (json_object *j_obj)
     if (json_object_object_get_ex (j_obj, "pageURL", &j_val) &&
         json_object_get_type (j_val) == json_type_string) {
 
-        searchitem_set_page_url (si_item, json_object_get_string (j_val));
+        search_item_set_page_url (si_item, json_object_get_string (j_val));
 #ifdef DEBUG
         printf ("url : %s\n", json_object_get_string (j_val));
 #endif
@@ -265,7 +265,7 @@ pixabay_json_obj_to_searchitem (json_object *j_obj)
     if (json_object_object_get_ex (j_obj, "imageURL", &j_val) &&
         json_object_get_type (j_val) == json_type_string) {
 
-        searchitem_set_image_url (si_item, json_object_get_string (j_val));
+        search_item_set_image_url (si_item, json_object_get_string (j_val));
 #ifdef DEBUG
         printf ("image url : %s\n", json_object_get_string (j_val));
 #endif
@@ -273,7 +273,7 @@ pixabay_json_obj_to_searchitem (json_object *j_obj)
     else if (json_object_object_get_ex (j_obj, "largeImageURL", &j_val) &&
         json_object_get_type (j_val) == json_type_string) {
 
-        searchitem_set_image_url (si_item, json_object_get_string (j_val));
+        search_item_set_image_url (si_item, json_object_get_string (j_val));
 #ifdef DEBUG
         printf ("image url : %s\n", json_object_get_string (j_val));
 #endif
@@ -281,7 +281,7 @@ pixabay_json_obj_to_searchitem (json_object *j_obj)
     if (json_object_object_get_ex (j_obj, "previewURL", &j_val) &&
         json_object_get_type (j_val) == json_type_string) {
 
-        searchitem_set_thumb_url (si_item, json_object_get_string (j_val));
+        search_item_set_thumb_url (si_item, json_object_get_string (j_val));
 #ifdef DEBUG
         printf ("thumb url : %s\n", json_object_get_string (j_val));
 #endif
@@ -340,12 +340,12 @@ pixabay_json_to_webwidget (const char  *s_buff,
 
             for (i = 0; i < ui_cnt; ++i) {
                 if ((j_val = json_object_array_get_idx (j_arr, i)) != nullptr) {
-                    si_item = pixabay_json_obj_to_searchitem (j_val);
-                    add_searchitem_to_img_view (ww_widget->gw_img_view,
-                                                si_item,
-                                                ww_widget->s_wallp_dir,
-                                                ww_name (WEB_SERV_PIXABAY),
-                                                ww_widget->i_thumb_quality);
+                    si_item = pixabay_json_obj_to_search_item (j_val);
+                    add_search_item_to_img_view (ww_widget->gw_img_view,
+                                                 si_item,
+                                                 ww_widget->s_wallp_dir,
+                                                 ww_name (WEB_SERV_PIXABAY),
+                                                 ww_widget->i_thumb_quality);
                     cachequery_append_item (cq_query, si_item);
                 }
             }

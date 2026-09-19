@@ -32,7 +32,7 @@
 #include "errors.h"
 #include "dlgsmsg.h"
 #include "chquery.h"
-#include "searchitem.h"
+#include "search_item.h"
 #include "webwidget_c.h"
 #include "webflickr.h"
 /*----------------------------------------------------------------------------*/
@@ -250,33 +250,33 @@ my_message_handler([[maybe_unused]] void *user_data,
  * @return    SearchItem item
  */
 static SearchItem *
-flickrphoto_to_searchitem (flickcurl_photo *fp_photo)
+flickrphoto_to_search_item (flickcurl_photo *fp_photo)
 {
     SearchItem *si_item = nullptr;
     char       *s_name  = nullptr;
     const char *s_title = nullptr;
 
-    si_item = searchitem_new ();
+    si_item = search_item_new ();
     s_title = fp_photo->fields[PHOTO_FIELD_title].string;
 
     if (fp_photo->fields[PHOTO_FIELD_owner_realname].string != nullptr) {
-        searchitem_set_author_name (
+        search_item_set_author_name (
                 si_item, fp_photo->fields[PHOTO_FIELD_owner_realname].string);
     }
     else if (fp_photo->fields[PHOTO_FIELD_owner_username].string != nullptr) {
-        searchitem_set_author_name (
+        search_item_set_author_name (
                 si_item, fp_photo->fields[PHOTO_FIELD_owner_username].string);
     }
 
     s_name = str_is_empty (s_title) ? strdup (fp_photo->id) : strdup (s_title);
     remove_non_alpha_space (s_name);
 
-    searchitem_set_service_name (si_item, ww_name (WEB_SERV_FLICKR));
-    searchitem_set_display_name (si_item, s_name);
-    searchitem_set_display_markup (si_item, s_name);
+    search_item_set_service_name (si_item, ww_name (WEB_SERV_FLICKR));
+    search_item_set_display_name (si_item, s_name);
+    search_item_set_display_markup (si_item, s_name);
     free (s_name);
 
-    searchitem_set_id_string (si_item, fp_photo->id);
+    search_item_set_id_string (si_item, fp_photo->id);
 
     si_item->s_thumb_url = flickcurl_photo_as_source_uri (fp_photo, 'm');
     si_item->s_page_url  = flickcurl_photo_as_page_uri (fp_photo);
@@ -385,12 +385,12 @@ flickr_search (WebWidget      *ww_widget,
         cq_query->i_found_cnt  = ww_widget->i_found_cnt;
 
         for(i = 0; i < photos_list->photos_count; ++i) {
-            si_item = flickrphoto_to_searchitem (photos_list->photos[i]);
-            add_searchitem_to_img_view (ww_widget->gw_img_view,
-                                        si_item,
-                                        ww_widget->s_wallp_dir,
-                                        ww_name (WEB_SERV_FLICKR),
-                                        ww_widget->i_thumb_quality);
+            si_item = flickrphoto_to_search_item (photos_list->photos[i]);
+            add_search_item_to_img_view (ww_widget->gw_img_view,
+                                         si_item,
+                                         ww_widget->s_wallp_dir,
+                                         ww_name (WEB_SERV_FLICKR),
+                                         ww_widget->i_thumb_quality);
             cachequery_append_item (cq_query, si_item);
         }
         i_err = cachequery_save (cq_query);

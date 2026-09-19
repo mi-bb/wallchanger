@@ -1,5 +1,5 @@
 /**
- * @file  searchitem.h
+ * @file  search_item.h
  * @copyright Copyright (C) 2019-2026 Michał Bąbik
  *
  * This file is part of Wall Changer.
@@ -21,8 +21,8 @@
  *
  * @author Michal Babik <michal.babik@protonmail.com>
  */
-#ifndef SEARCHITEM_H
-#define SEARCHITEM_H
+#ifndef SEARCH_ITEM_H
+#define SEARCH_ITEM_H
 
 //#include <stdint.h>
 #include <inttypes.h>
@@ -94,7 +94,7 @@ SearchItem;
  *
  * @return New SearchItem item
  */
-SearchItem * searchitem_new                (void);
+SearchItem * search_item_new                (void);
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Free SearchItem item.
@@ -102,7 +102,7 @@ SearchItem * searchitem_new                (void);
  * @param[out] si_item  SearchItem item to free
  * @return     none
  */
-void         searchitem_free               (SearchItem *si_item);
+void         search_item_free               (SearchItem *si_item);
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Set SearchItem's photo id string and int value based on int value.
@@ -111,8 +111,8 @@ void         searchitem_free               (SearchItem *si_item);
  * @param[in]  val      Image id to set
  * @return     none
  */
-void         searchitem_set_id_uint        (SearchItem    *si_item,
-                                            const uint64_t val);
+void         search_item_set_id_uint        (SearchItem    *si_item,
+                                             const uint64_t val);
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Set SearchItem's photo id string and int value based on string value.
@@ -121,8 +121,8 @@ void         searchitem_set_id_uint        (SearchItem    *si_item,
  * @param[in]  s_val    Image id to set
  * @return     none
  */
-void         searchitem_set_id_string      (SearchItem   *si_item,
-                                            const char   *s_val);
+void         search_item_set_id_string      (SearchItem   *si_item,
+                                             const char   *s_val);
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Set SearchItem's photo author name.
@@ -131,8 +131,8 @@ void         searchitem_set_id_string      (SearchItem   *si_item,
  * @param[in]  s_val    Author name string to set
  * @return     none
  */
-void         searchitem_set_author_name    (SearchItem *si_item,
-                                            const char *s_val);
+void         search_item_set_author_name    (SearchItem *si_item,
+                                             const char *s_val);
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Set SearchItem's photo author url.
@@ -141,8 +141,8 @@ void         searchitem_set_author_name    (SearchItem *si_item,
  * @param[in]  s_val    Author url string to set
  * @return     none
  */
-void         searchitem_set_author_url     (SearchItem *si_item,
-                                            const char *s_val);
+void         search_item_set_author_url     (SearchItem *si_item,
+                                             const char *s_val);
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Set SearchItem's file name.
@@ -151,8 +151,8 @@ void         searchitem_set_author_url     (SearchItem *si_item,
  * @param[in]  s_val    File name string to set
  * @return     none
  */
-void         searchitem_set_file_name      (SearchItem *si_item,
-                                            const char *s_val);
+void         search_item_set_file_name      (SearchItem *si_item,
+                                             const char *s_val);
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Set SearchItem's display name.
@@ -161,8 +161,8 @@ void         searchitem_set_file_name      (SearchItem *si_item,
  * @param[in]  s_val    Display name string to set
  * @return     none
  */
-void         searchitem_set_display_name   (SearchItem *si_item,
-                                            const char *s_val);
+void         search_item_set_display_name   (SearchItem *si_item,
+                                             const char *s_val);
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Set SearchItem's markup.
@@ -171,8 +171,8 @@ void         searchitem_set_display_name   (SearchItem *si_item,
  * @param[in]  s_val    Markup string to set
  * @return     none
  */
-void         searchitem_set_display_markup (SearchItem *si_item,
-                                            const char *s_val);
+void         search_item_set_display_markup (SearchItem *si_item,
+                                             const char *s_val);
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Set SearchItem's page url.
@@ -181,8 +181,8 @@ void         searchitem_set_display_markup (SearchItem *si_item,
  * @param[in]  s_val    Page url string to set
  * @return     none
  */
-void         searchitem_set_page_url       (SearchItem *si_item,
-                                            const char *s_val);
+void         search_item_set_page_url       (SearchItem *si_item,
+                                             const char *s_val);
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Set SearchItem's image url.
@@ -191,8 +191,8 @@ void         searchitem_set_page_url       (SearchItem *si_item,
  * @param[in]  s_val    Image url string to set
  * @return     none
  */
-void         searchitem_set_image_url      (SearchItem *si_item,
-                                            const char *s_val);
+void         search_item_set_image_url      (SearchItem *si_item,
+                                             const char *s_val);
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Set SearchItem's thumb url.
@@ -201,8 +201,8 @@ void         searchitem_set_image_url      (SearchItem *si_item,
  * @param[in]  s_val    Thumb url string to set
  * @return     none
  */
-void         searchitem_set_thumb_url      (SearchItem *si_item,
-                                            const char *s_val);
+void         search_item_set_thumb_url      (SearchItem *si_item,
+                                             const char *s_val);
 
 /*----------------------------------------------------------------------------*/
 /**
@@ -212,8 +212,8 @@ void         searchitem_set_thumb_url      (SearchItem *si_item,
  * @param[in]  s_val    Service name string to set
  * @return     none
  */
-void         searchitem_set_service_name   (SearchItem *si_item,
-                                            const char *s_val);
+void         search_item_set_service_name   (SearchItem *si_item,
+                                             const char *s_val);
 
 /*----------------------------------------------------------------------------*/
 /**
@@ -223,8 +223,8 @@ void         searchitem_set_service_name   (SearchItem *si_item,
  * @param[in]  val      Width integer value to set
  * @return     none
  */
-static inline void searchitem_set_width (SearchItem *si_item,
-                                         const int   val) {
+static inline void search_item_set_width (SearchItem *si_item,
+                                          const int   val) {
     si_item->i_width = val;
 }
 /*----------------------------------------------------------------------------*/
@@ -235,13 +235,13 @@ static inline void searchitem_set_width (SearchItem *si_item,
  * @param[in]  val      Height integer value to set
  * @return     none
  */
-static inline void searchitem_set_height (SearchItem *si_item,
-                                          const int   val) {
+static inline void search_item_set_height (SearchItem *si_item,
+                                           const int   val) {
     si_item->i_height = val;
 }
 /*----------------------------------------------------------------------------*/
 #ifdef DEBUG
-void searchitem_print (SearchItem *si_item);
+void search_item_print (SearchItem *si_item);
 #endif
 /*----------------------------------------------------------------------------*/
 #endif

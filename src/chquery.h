@@ -24,7 +24,7 @@
 #ifndef CHQUERY_H
 #define CHQUERY_H
 #include <gtk/gtk.h>
-#include "searchitem.h"
+#include "search_item.h"
 /*----------------------------------------------------------------------------*/
 /**
  * @struct CacheQuery

@@ -30,7 +30,7 @@
 //#include "webservcs.h"
 #include "nstrings.h"
 #include "setting.h"
-#include "searchitem.h"
+#include "search_item.h"
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Numbers of image search services.
@@ -171,11 +171,11 @@ char * combo_get_active_str       (GtkWidget  *gw_combo,
  * @param[in]  i_thumb_quality   Thumbnail jpg quality
  * @return     none
  */
-void   add_searchitem_to_img_view (GtkWidget        *gw_iconview,
-                                   const SearchItem *si_item,
-                                   const char       *s_wallp_dir,
-                                   const char       *s_service_name,
-                                   const int         i_thumb_quality);
+void   add_search_item_to_img_view (GtkWidget        *gw_iconview,
+                                    const SearchItem *si_item,
+                                    const char       *s_wallp_dir,
+                                    const char       *s_service_name,
+                                    const int         i_thumb_quality);
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Check for search query cached info, get info and add items if info

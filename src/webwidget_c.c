@@ -335,11 +335,11 @@ wallpaper_check_mark (const char *s_wallp_dir,
  * @brief  Add image based on si_item data to icon view.
  */
 void
-add_searchitem_to_img_view (GtkWidget        *gw_iconview,
-                            const SearchItem *si_item,
-                            const char       *s_wallp_dir,
-                            const char       *s_service_name,
-                            const int         i_thumb_quality)
+add_search_item_to_img_view (GtkWidget        *gw_iconview,
+                             const SearchItem *si_item,
+                             const char       *s_wallp_dir,
+                             const char       *s_service_name,
+                             const int         i_thumb_quality)
 {
     GtkListStore *list_store;      /* ListStore */
     GdkPixbuf    *gp_pbuf  = nullptr; /* Pixbuf with thumbnail */
@@ -407,11 +407,11 @@ check_for_cached_query (WebWidget  *ww_widget,
         ww_widget->i_found_cnt = cq_query_chk->i_found_cnt;
 
         for (i = 0; i < cq_query_chk->i_sicnt; ++i) {
-            add_searchitem_to_img_view (ww_widget->gw_img_view,
-                                        cq_query_chk->si_items[i],
-                                        ww_widget->s_wallp_dir,
-                                        s_service_name,
-                                        ww_widget->i_thumb_quality);
+            add_search_item_to_img_view (ww_widget->gw_img_view,
+                                         cq_query_chk->si_items[i],
+                                         ww_widget->s_wallp_dir,
+                                         s_service_name,
+                                         ww_widget->i_thumb_quality);
         }
         cachequery_free (cq_query_chk);
         return 1;

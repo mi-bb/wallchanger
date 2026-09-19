@@ -1,5 +1,5 @@
 /**
- * @file  searchitem.c
+ * @file  search_item.c
  * @copyright Copyright (C) 2019-2026 Michał Bąbik
  *
  * This file is part of Wall Changer.
@@ -34,7 +34,7 @@
 #endif
 
 #include "urldata.h"
-#include "searchitem.h"
+#include "search_item.h"
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Init SearchItem item.
@@ -43,7 +43,7 @@
  * @return     none
  */
 static void
-searchitem_init (SearchItem *si_item)
+search_item_init (SearchItem *si_item)
 {
     si_item->s_id             = nullptr;
     si_item->s_author_name    = nullptr;
@@ -63,7 +63,7 @@ searchitem_init (SearchItem *si_item)
  * @brief  Free SearchItem item.
  */
 void
-searchitem_free (SearchItem *si_item)
+search_item_free (SearchItem *si_item)
 {
     free (si_item->s_id);
     free (si_item->s_author_name);
@@ -82,14 +82,14 @@ searchitem_free (SearchItem *si_item)
  * @brief  Create new SearchItem item.
  */
 SearchItem *
-searchitem_new (void)
+search_item_new (void)
 {
     SearchItem *si_item = nullptr;
 
     if ((si_item = malloc (sizeof (SearchItem))) == nullptr)
         err (EXIT_FAILURE, nullptr);
 
-    searchitem_init (si_item);
+    search_item_init (si_item);
 
     return si_item;
 }
@@ -98,8 +98,8 @@ searchitem_new (void)
  * @brief  Set SearchItem's photo id string and int value based on int value.
  */
 void
-searchitem_set_id_uint (SearchItem    *si_item,
-                        const uint64_t val)
+search_item_set_id_uint (SearchItem    *si_item,
+                         const uint64_t val)
 {
     char s_tmp[32];
 
@@ -113,8 +113,8 @@ searchitem_set_id_uint (SearchItem    *si_item,
  * @brief  Set SearchItem's photo id string and int value based on string value.
  */
 void
-searchitem_set_id_string (SearchItem *si_item,
-                          const char *s_val)
+search_item_set_id_string (SearchItem *si_item,
+                           const char *s_val)
 {
     if (si_item->s_id != nullptr)
         free (si_item->s_id);
@@ -125,8 +125,8 @@ searchitem_set_id_string (SearchItem *si_item,
  * @brief  Set SearchItem's author name.
  */
 void
-searchitem_set_author_name (SearchItem *si_item,
-                            const char *s_val)
+search_item_set_author_name (SearchItem *si_item,
+                             const char *s_val)
 {
     if (si_item->s_author_name != nullptr)
         free (si_item->s_author_name);
@@ -137,8 +137,8 @@ searchitem_set_author_name (SearchItem *si_item,
  * @brief  Set SearchItem's photo author url.
  */
 void
-searchitem_set_author_url (SearchItem *si_item,
-                           const char *s_val)
+search_item_set_author_url (SearchItem *si_item,
+                            const char *s_val)
 {
     if (si_item->s_author_url != nullptr)
         free (si_item->s_author_url);
@@ -149,8 +149,8 @@ searchitem_set_author_url (SearchItem *si_item,
  * @brief  Set SearchItem's file name.
  */
 void
-searchitem_set_file_name (SearchItem *si_item,
-                          const char *s_val)
+search_item_set_file_name (SearchItem *si_item,
+                           const char *s_val)
 {
     if (si_item->s_file_name != nullptr)
         free (si_item->s_file_name);
@@ -161,8 +161,8 @@ searchitem_set_file_name (SearchItem *si_item,
  * @brief  Set SearchItem's display name.
  */
 void
-searchitem_set_display_name (SearchItem *si_item,
-                             const char *s_val)
+search_item_set_display_name (SearchItem *si_item,
+                              const char *s_val)
 {
     if (si_item->s_display_name != nullptr)
         free (si_item->s_display_name);
@@ -173,8 +173,8 @@ searchitem_set_display_name (SearchItem *si_item,
  * @brief  Set SearchItem's markup.
  */
 void
-searchitem_set_display_markup (SearchItem *si_item,
-                               const char *s_val)
+search_item_set_display_markup (SearchItem *si_item,
+                                const char *s_val)
 {
     if (si_item->s_display_markup != nullptr)
         free (si_item->s_display_markup);
@@ -185,8 +185,8 @@ searchitem_set_display_markup (SearchItem *si_item,
  * @brief  Set SearchItem's page url.
  */
 void
-searchitem_set_page_url (SearchItem *si_item,
-                         const char *s_val)
+search_item_set_page_url (SearchItem *si_item,
+                          const char *s_val)
 {
     if (si_item->s_page_url != nullptr)
         free (si_item->s_page_url);
@@ -197,8 +197,8 @@ searchitem_set_page_url (SearchItem *si_item,
  * @brief  Set SearchItem's image url.
  */
 void
-searchitem_set_image_url (SearchItem *si_item,
-                          const char *s_val)
+search_item_set_image_url (SearchItem *si_item,
+                           const char *s_val)
 {
     if (si_item->s_image_url != nullptr)
         free (si_item->s_image_url);
@@ -209,8 +209,8 @@ searchitem_set_image_url (SearchItem *si_item,
  * @brief  Set SearchItem's thumb url.
  */
 void
-searchitem_set_thumb_url (SearchItem *si_item,
-                          const char *s_val)
+search_item_set_thumb_url (SearchItem *si_item,
+                           const char *s_val)
 {
     if (si_item->s_thumb_url != nullptr)
         free (si_item->s_thumb_url);
@@ -221,8 +221,8 @@ searchitem_set_thumb_url (SearchItem *si_item,
  * @brief  Set SearchItem's service name.
  */
 void
-searchitem_set_service_name (SearchItem *si_item,
-                             const char *s_val)
+search_item_set_service_name (SearchItem *si_item,
+                              const char *s_val)
 {
     if (si_item->s_service_name != nullptr)
         free (si_item->s_service_name);
@@ -231,7 +231,7 @@ searchitem_set_service_name (SearchItem *si_item,
 /*----------------------------------------------------------------------------*/
 #ifdef DEBUG
 void
-searchitem_print (SearchItem *si_item)
+search_item_print (SearchItem *si_item)
 {
     printf ("id          : %s\n", si_item->s_id);
     printf ("author name : %s\n", si_item->s_author_name);

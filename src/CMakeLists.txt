@@ -46,7 +46,7 @@ set(WCHANGERCFG_SOURCES
     dlgcmd.c       dlgcmd.h
     dlgothsett.c   dlgothsett.h
     dlgsmsg.c      dlgsmsg.h
-    searchitem.c   searchitem.h
+    search_item.c   search_item.h
     urldata.c      urldata.h
     image_info.c   image_info.h
     wallpaper_set.c        wallpaper_set.h

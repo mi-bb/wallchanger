@@ -25,7 +25,7 @@
 #include <ctype.h>
 #include "urldata.h"
 #include "json_functions.h"
-#include "searchitem.h"
+#include "search_item.h"
 #include "dlgsmsg.h"
 #include "strfun.h"
 #include "setts.h"
@@ -351,7 +351,7 @@ sel_combo_get_list (GtkWidget *gw_selected_combo)
 
     while (b_res) {
 
-        si_item = searchitem_new ();
+        si_item = search_item_new ();
         gtk_tree_model_get (gtm_model,             &gti_iter,
                             WW_SELCOMBO_FILE_NAME, &si_item->s_file_name,
                             WW_SELCOMBO_IMAGE_URL, &si_item->s_image_url,
@@ -1207,7 +1207,7 @@ save_selected_wallpapers (GtkWidget *gw_dialog,
 
     gl_items = sel_combo_get_list (ww_widget->gw_selected_combo);
     gl_res   = download_progress_window (GTK_WINDOW (gw_dialog), gl_items);
-    g_list_free_full (gl_items, (GDestroyNotify) searchitem_free);
+    g_list_free_full (gl_items, (GDestroyNotify) search_item_free);
 
     return gl_res;
 }
