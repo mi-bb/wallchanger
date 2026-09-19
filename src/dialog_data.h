@@ -21,8 +21,8 @@
  *
  * @author Michal Babik <michal.babik@protonmail.com>
  */
-#ifndef DIALOGDATA_H
-#define DIALOGDATA_H
+#ifndef DIALOG_DATA_H
+#define DIALOG_DATA_H
 
 #include <gtk/gtk.h>
 #include "defs.h"
