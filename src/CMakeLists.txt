@@ -48,7 +48,7 @@ set(WCHANGERCFG_SOURCES
     dlgsmsg.c      dlgsmsg.h
     searchitem.c   searchitem.h
     urldata.c      urldata.h
-    iminfo.c       iminfo.h
+    image_info.c   image_info.h
     wpset.c        wpset.h
     setts.c        setts.h
     jsof.c         jsof.h
@@ -99,7 +99,7 @@ foreach(target IN ITEMS wchangerd wchangercfg)
         PRIVATE ${PROJECT_BINARY_DIR} ${CMAKE_CURRENT_SOURCE_DIR})
     # HAVE_CONFIG_H: src/cmdline.c/.h (gengetopt output) guards its
     # config.h include on it.
-    # _GNU_SOURCE: src/iminfo.c needs it for strndup(). Defining it on the
+    # _GNU_SOURCE: src/image_info.c needs it for strndup(). Defining it on the
     # command line rather than in config.h also makes it immune to include
     # ordering.
     target_compile_definitions(${target} PRIVATE HAVE_CONFIG_H _GNU_SOURCE)

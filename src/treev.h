@@ -25,7 +25,7 @@
 #define TREEV_H
 
 #include <gtk/gtk.h>
-#include "iminfo.h"
+#include "image_info.h"
 #include "setting.h"
 /*----------------------------------------------------------------------------*/
 /**

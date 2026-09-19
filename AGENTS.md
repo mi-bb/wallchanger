@@ -31,7 +31,7 @@ Presets: `default` = RelWithDebInfo in `./build`; `release` = optimized with the
 
 Two constraints that are easy to break:
 
-- `_GNU_SOURCE` — `src/iminfo.c` calls `strndup()`, which a strict C23 mode hides. It is defined via `target_compile_definitions(… _GNU_SOURCE)` in `src/CMakeLists.txt` rather than in `config.h`, so include ordering cannot break it.
+- `_GNU_SOURCE` — `src/image_info.c` calls `strndup()`, which a strict C23 mode hides. It is defined via `target_compile_definitions(… _GNU_SOURCE)` in `src/CMakeLists.txt` rather than in `config.h`, so include ordering cannot break it.
 - `-lprocstat` is FreeBSD-only and is found into `PROCSTAT_LIBRARY` in the root `CMakeLists.txt`, linked only into the two executables rather than globally, so it does not get linked into targets that do not need it.
 
 ### C23 dialect flag

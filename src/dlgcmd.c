@@ -23,7 +23,7 @@
  */
 #include "errs.h"
 #include "wpset.h"
-#include "iminfo.h"
+#include "image_info.h"
 #include "dlgsmsg.h"
 #include "strfun.h"
 #include "wmsfn.h"

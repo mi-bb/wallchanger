@@ -1,5 +1,5 @@
 /**
- * @file  iminfo.c
+ * @file  image_info.c
  * @copyright Copyright (C) 2019-2026 Michał Bąbik
  *
  * This file is part of Wall Changer.
@@ -26,7 +26,7 @@
 #include <string.h>
 #include <gdk-pixbuf/gdk-pixbuf.h>
 #include "cres.h"
-#include "iminfo.h"
+#include "image_info.h"
 #include "strfun.h"
 /*----------------------------------------------------------------------------*/
 /**

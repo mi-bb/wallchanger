@@ -1,5 +1,5 @@
 /**
- * @file  iminfo.h
+ * @file  image_info.h
  * @copyright Copyright (C) 2019-2026 Michał Bąbik
  *
  * This file is part of Wall Changer.
@@ -24,8 +24,8 @@
  *
  * @author Michal Babik <michal.babik@protonmail.com>
  */
-#ifndef IMINFO_H
-#define IMINFO_H
+#ifndef IMAGE_INFO_H
+#define IMAGE_INFO_H
 
 #include <glib.h>
 /*----------------------------------------------------------------------------*/
