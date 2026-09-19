@@ -1,5 +1,5 @@
 /**
- * @file  wpset.c
+ * @file  wallpaper_set.c
  * @copyright Copyright (C) 2019-2026 Michał Bąbik
  *
  * This file is part of Wall Changer.
@@ -31,7 +31,7 @@
 #include "setting.h"
 #include "errors.h"
 #include "hashfun.h"
-#include "wpset.h"
+#include "wallpaper_set.h"
 /*----------------------------------------------------------------------------*/
 /**
  * @fn  static void wallpaper_set_file (const char *s_cmd,

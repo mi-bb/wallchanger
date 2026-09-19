@@ -22,7 +22,7 @@
  * @author Michal Babik <michal.babik@protonmail.com>
  */
 #include "errors.h"
-#include "wpset.h"
+#include "wallpaper_set.h"
 #include "image_info.h"
 #include "dlgsmsg.h"
 #include "strfun.h"

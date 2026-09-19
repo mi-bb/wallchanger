@@ -28,7 +28,7 @@
 #include <gtk/gtk.h>
 #include "dialog_data.h"
 #include "setts.h"
-#include "wpset.h"
+#include "wallpaper_set.h"
 #include "icons.h"
 #include "dlgs.h"
 #include "dlgsmsg.h"

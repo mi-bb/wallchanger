@@ -27,7 +27,7 @@
 #include <sysexits.h>
 #include <time.h>
 #include "cfgfile.h"
-#include "wpset.h"
+#include "wallpaper_set.h"
 #include "setts.h"
 #include "errors.h"
 #include "wmsfn.h"

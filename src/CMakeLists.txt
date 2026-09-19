@@ -16,7 +16,7 @@
 set(WCHANGERD_SOURCES
     wcngdmn.c
     chkwch.c    chkwch.h
-    wpset.c     wpset.h
+    wallpaper_set.c     wallpaper_set.h
     setts.c     setts.h
     jsof.c      jsof.h
     json_functions.c     json_functions.h
@@ -49,7 +49,7 @@ set(WCHANGERCFG_SOURCES
     searchitem.c   searchitem.h
     urldata.c      urldata.h
     image_info.c   image_info.h
-    wpset.c        wpset.h
+    wallpaper_set.c        wallpaper_set.h
     setts.c        setts.h
     jsof.c         jsof.h
     json_functions.c        json_functions.h
