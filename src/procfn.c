@@ -190,7 +190,7 @@ process_get_opt (uid_t       uid_id,
     char       *s_data  = nullptr;       /* Buffer for cmdline content */
     struct dirent *de;                /* Dirent struct */
 
-    pl_list = proclist_new ();
+    pl_list = proc_list_new ();
 
     ui_plen = strlen (s_path);
     ui_flen = strlen (s_file);
@@ -226,11 +226,11 @@ process_get_opt (uid_t       uid_id,
                     string_remove_newline (s_data);
                     #endif
                     if (s_name == nullptr) {
-                        proclist_insert (pl_list,
+                        proc_list_insert (pl_list,
                                 procitem_new_from_data (de->d_name, s_data));
                     }
                     else if (strcmp (s_data, s_name) == 0) {
-                        proclist_insert (pl_list,
+                        proc_list_insert (pl_list,
                                 procitem_new_from_data (de->d_name, s_data));
                         if (i_opt & PROC_OPT_CHK_FIRST) {
                             free (s_data);
@@ -268,7 +268,7 @@ process_get_opt (uid_t       uid_id,
     struct procstat   *procstat;        /* procstat structure */
     char               s_pidbuff [20];  /* Buffer for process pid string */
 
-    pl_list  = proclist_new ();
+    pl_list  = proc_list_new ();
     procstat = procstat_open_sysctl ();
     if (procstat == nullptr) {
         errx (EXIT_FAILURE, "error while procstat_open()");
@@ -285,10 +285,10 @@ process_get_opt (uid_t       uid_id,
         s_cmd = proc[i].ki_comm;
         snprintf (s_pidbuff, sizeof (s_pidbuff), "%d", proc[i].ki_pid);
         if (s_name == nullptr) {
-            proclist_insert (pl_list, procitem_new_from_data (s_pidbuff, s_cmd));
+            proc_list_insert (pl_list, procitem_new_from_data (s_pidbuff, s_cmd));
         }
         else if (strcmp (s_cmd, s_name) == 0) {
-            proclist_insert (pl_list, procitem_new_from_data (s_pidbuff, s_cmd));
+            proc_list_insert (pl_list, procitem_new_from_data (s_pidbuff, s_cmd));
             if (i_opt & PROC_OPT_CHK_FIRST) {
                 break;
             }
@@ -325,10 +325,10 @@ process_exists_opt (uid_t       uid_id,
                                          s_name,
                                          i_opt | PROC_OPT_CHK_FIRST,
                                          i_exc_pid);
-    if (proclist_get_cnt (pl_list) > 0) {
-        pi_item = procitem_copy (proclist_get_item (pl_list, 0));
+    if (proc_list_get_count (pl_list) > 0) {
+        pi_item = procitem_copy (proc_list_get_item (pl_list, 0));
     }
-    proclist_free (pl_list);
+    proc_list_free (pl_list);
     return pi_item;
 }
 /*----------------------------------------------------------------------------*/
@@ -373,8 +373,8 @@ process_count_opt (uid_t       uid_id,
     int       i_res = 0;
 
     pl_list = process_get_opt (uid_id, s_name, i_opt, i_exc_pid);
-    i_res = (int) proclist_get_cnt (pl_list);
-    proclist_free (pl_list);
+    i_res = (int) proc_list_get_count (pl_list);
+    proc_list_free (pl_list);
 
     return i_res;
 }
@@ -457,18 +457,18 @@ process_kill_all_opt (uid_t       uid_id,
     pid_t          pi_pid = 0;
 
     pl_list = process_get_opt (uid_id, s_name, i_opt, i_exc_pid);
-    i_cnt   = proclist_get_cnt (pl_list);
+    i_cnt   = proc_list_get_count (pl_list);
 
     for (i = 0; i < i_cnt; ++i) {
-        pi_pid = atoi (procitem_get_pid (proclist_get_item (pl_list, i)));
+        pi_pid = atoi (procitem_get_pid (proc_list_get_item (pl_list, i)));
         #ifdef DEBUG
         printf ("killing %s %s\n",
-                procitem_get_name (proclist_get_item (pl_list, i)),
-                procitem_get_pid (proclist_get_item (pl_list, i)));
+                procitem_get_name (proc_list_get_item (pl_list, i)),
+                procitem_get_pid (proc_list_get_item (pl_list, i)));
         #endif
         kill (pi_pid, SIGTERM);
     }
-    proclist_free (pl_list);
+    proc_list_free (pl_list);
 
     return (int) i_cnt;
 }

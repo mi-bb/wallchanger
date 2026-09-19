@@ -42,7 +42,7 @@ proclist_init (ProcList *pl_list)
  * @brief  Free ProcList list.
  */
 void
-proclist_free (ProcList *pl_list)
+proc_list_free (ProcList *pl_list)
 {
     while (pl_list->cnt--) {
         procitem_free (pl_list->pi_list[pl_list->cnt]);
@@ -55,7 +55,7 @@ proclist_free (ProcList *pl_list)
  * @brief  Create new ProcList list.
  */
 ProcList *
-proclist_new (void)
+proc_list_new (void)
 {
     ProcList *pl_new = nullptr;
 
@@ -71,7 +71,7 @@ proclist_new (void)
  * @brief  Insert ProcItem to proc_list.
  */
 void
-proclist_insert (ProcList *pl_list,
+proc_list_insert (ProcList *pl_list,
                  ProcItem *pi_item)
 {
     ProcItem **pi_temp = nullptr;
@@ -86,7 +86,7 @@ proclist_insert (ProcList *pl_list,
         pi_temp = realloc (pl_list->pi_list,
                            (pl_list->cnt + 1) * sizeof (ProcItem*));
         if (pi_temp == nullptr) {
-            proclist_free (pl_list);
+            proc_list_free (pl_list);
             err (EXIT_FAILURE, nullptr);
         }
         pl_list->pi_list = pi_temp;

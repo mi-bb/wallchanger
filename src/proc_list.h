@@ -46,24 +46,24 @@ ProcList {
 } ProcList;
 /*----------------------------------------------------------------------------*/
 /**
- * @fn  void proclist_free (ProcList *pl_list)
+ * @fn  void proc_list_free (ProcList *pl_list)
  *
  * @brief  Free ProcList list.
  *
  * @param[in] pl_list  ProcList list to free
  * @return    none
  *
- * @fn  ProcList * proclist_new (void)
+ * @fn  ProcList * proc_list_new (void)
  *
  * @brief  Create new ProcList list.
  *
- * @return New ProcList list, it should be freed using proclist_free.
+ * @return New ProcList list, it should be freed using proc_list_free.
  */
 /*----------------------------------------------------------------------------*/
-void             proclist_free     (ProcList       *pl_list);
+void             proc_list_free     (ProcList       *pl_list);
 
 [[nodiscard]]
-ProcList       * proclist_new      (void);
+ProcList       * proc_list_new      (void);
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Insert ProcItem to proc_list.
@@ -72,11 +72,11 @@ ProcList       * proclist_new      (void);
  * @param[in]  pi_item  ProcItem to insert
  * @return     none
  */
-void             proclist_insert   (ProcList       *pl_list,
+void             proc_list_insert   (ProcList       *pl_list,
                                     ProcItem       *pi_item);
 /*----------------------------------------------------------------------------*/
 /**
- * @fn  const ProcItem * proclist_get_item (const ProcList *pl_list,
+ * @fn  const ProcItem * proc_list_get_item (const ProcList *pl_list,
  *                                          uint_fast32_t   pos)
  *
  * @brief  Get ProcItem from list.
@@ -85,7 +85,7 @@ void             proclist_insert   (ProcList       *pl_list,
  * @param[in] pos      Position of ProcItem item to get 
  * @return    Pointer to ProcItem item, it should not be freed
  *
- * @fn  uint_fast32_t proclist_get_cnt (const ProcList *pl_list)
+ * @fn  uint_fast32_t proc_list_get_count (const ProcList *pl_list)
  *
  * @brief  Get number of items in proc_list.
  *
@@ -93,11 +93,11 @@ void             proclist_insert   (ProcList       *pl_list,
  * @return    Number of items in the list
  */
 /*----------------------------------------------------------------------------*/
-static inline const ProcItem * proclist_get_item (const ProcList *pl_list,
+static inline const ProcItem * proc_list_get_item (const ProcList *pl_list,
                                                   uint_fast32_t   pos) {
     return pos < pl_list->cnt ? (const ProcItem *) pl_list->pi_list[pos] : nullptr;
 }
-static inline uint_fast32_t    proclist_get_cnt  (const ProcList *pl_list) {
+static inline uint_fast32_t    proc_list_get_count  (const ProcList *pl_list) {
     return pl_list->cnt;
 }
 /*----------------------------------------------------------------------------*/

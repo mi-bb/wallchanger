@@ -59,7 +59,7 @@ constexpr int PROC_OPT_CHK_FIRST = 0x01;
  * Found process pids and names are stored in ProcItem items in ProcList list.
  * i_exc_pid contains process pid number to not include in list.
  * List with processes is returned, it should be freed later with
- * proclist_free function.
+ * proc_list_free function.
  *
  * @param[in] uid_id     Process owner user id
  * @param[in] s_name     Name of process or null to get all processes
