@@ -1,5 +1,5 @@
 /**
- * @file  proclist.c
+ * @file  proc_list.c
  * @copyright Copyright (C) 2020-2026 Michał Bąbik
  *
  * This file is part of Wall Changer.
@@ -23,7 +23,7 @@
  */
 #include <stdlib.h>
 #include <err.h>
-#include "proclist.h"
+#include "proc_list.h"
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Initialize ProcList item.
@@ -68,7 +68,7 @@ proclist_new (void)
 }
 /*----------------------------------------------------------------------------*/
 /**
- * @brief  Insert ProcItem to ProcList.
+ * @brief  Insert ProcItem to proc_list.
  */
 void
 proclist_insert (ProcList *pl_list,

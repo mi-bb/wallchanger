@@ -25,7 +25,7 @@
 #define PROCFN_H
 
 #include <sys/types.h>
-#include "proclist.h"
+#include "proc_list.h"
 /*----------------------------------------------------------------------------*/
 /**
  * @def   PROC_LINUX_CMDLINE

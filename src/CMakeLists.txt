@@ -31,7 +31,7 @@ set(WCHANGERD_SOURCES
     daemon.c      daemon.h
     procfn.c    procfn.h
     procitem.c  procitem.h
-    proclist.c  proclist.h
+    proc_list.c  proc_list.h
     cmdfn.c     cmdfn.h
     cmdline.c   cmdline.h
     wmsfn.c     wmsfn.h
@@ -67,7 +67,7 @@ set(WCHANGERCFG_SOURCES
     daemon.c         daemon.h
     procfn.c       procfn.h
     procitem.c     procitem.h
-    proclist.c     proclist.h
+    proc_list.c     proc_list.h
     wmsfn.c        wmsfn.h
     errors.c         errors.h
     nstrings.c     nstrings.h

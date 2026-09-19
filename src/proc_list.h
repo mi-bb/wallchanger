@@ -1,5 +1,5 @@
 /**
- * @file  proclist.h
+ * @file  proc_list.h
  * @copyright Copyright (C) 2020-2026 Michał Bąbik
  *
  * This file is part of Wall Changer.
@@ -21,8 +21,8 @@
  *
  * @author Michal Babik <michal.babik@protonmail.com>
  */
-#ifndef PROCLIST_H
-#define PROCLIST_H
+#ifndef PROC_LIST_H
+#define PROC_LIST_H
 
 #include <stdint.h>
 #include <stddef.h>
@@ -66,7 +66,7 @@ void             proclist_free     (ProcList       *pl_list);
 ProcList       * proclist_new      (void);
 /*----------------------------------------------------------------------------*/
 /**
- * @brief  Insert ProcItem to ProcList.
+ * @brief  Insert ProcItem to proc_list.
  *
  * @param[out] pl_list  ProcList list 
  * @param[in]  pi_item  ProcItem to insert
@@ -87,7 +87,7 @@ void             proclist_insert   (ProcList       *pl_list,
  *
  * @fn  uint_fast32_t proclist_get_cnt (const ProcList *pl_list)
  *
- * @brief  Get number of items in ProcList.
+ * @brief  Get number of items in proc_list.
  *
  * @param[in] pl_list  ProcList list 
  * @return    Number of items in the list
