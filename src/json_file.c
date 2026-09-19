@@ -35,29 +35,29 @@
  * @brief  Open and check file with json data.
  */
 json_object *
-json_open_file (const char    *s_file_name,
-                uint_fast32_t *ui_hash,
-                int           *i_err)
+json_open_file (const char    *file_name,
+                uint_fast32_t *json_hash,
+                int           *err)
 {
     json_object   *j_obj;          /* Json object made from file data */
-    char          *s_buff  = nullptr; /* File data buffer */
+    char          *buff  = nullptr; /* File data buffer */
     enum json_tokener_error j_err; /* Json error output */
 
-    *i_err = ERR_OK;
-    if (ui_hash != nullptr)
-        *ui_hash = 0;
+    *err = ERR_OK;
+    if (json_hash != nullptr)
+        *json_hash = 0;
 
-    s_buff = read_file_data (s_file_name, i_err, nullptr);
+    buff = read_file_data (file_name, err, nullptr);
 
-    if (*i_err != ERR_OK && *i_err != ERR_FILE_EX) {
-        free (s_buff);
+    if (*err != ERR_OK && *err != ERR_FILE_EX) {
+        free (buff);
         return nullptr;
     }
-    if (s_buff == nullptr || s_buff[0] == '\0') {
+    if (buff == nullptr || buff[0] == '\0') {
         j_obj = json_object_new_object ();
     }
     else {
-        j_obj = json_tokener_parse_verbose (s_buff, &j_err);
+        j_obj = json_tokener_parse_verbose (buff, &j_err);
         if (j_obj == nullptr ||
             json_object_get_type (j_obj) != json_type_object ||
             j_err != json_tokener_success) {
@@ -71,10 +71,10 @@ json_open_file (const char    *s_file_name,
             j_obj = json_object_new_object ();
         }
     }
-    if (ui_hash != nullptr)
-        *ui_hash = hash (json_object_to_json_string (j_obj));
+    if (json_hash != nullptr)
+        *json_hash = hash (json_object_to_json_string (j_obj));
 
-    free (s_buff);
+    free (buff);
     return j_obj;
 }
 /*----------------------------------------------------------------------------*/

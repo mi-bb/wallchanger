@@ -41,8 +41,8 @@ enum e_setting_values : int {
     SETT_INTERVAL_VAL,   /**< Wallpaper change interval */
     SETT_TIME_ALIGN_OPT, /**< Time align */
     SETT_WALL_ARRAY,     /**< Array with wallpapers */
-    SETT_WEB_DLG_WIDTH,  /**< Web dilaog width */
-    SETT_WEB_DLG_HEIGHT, /**< Web dilaog height */
+    SETT_WEB_DLG_WIDTH,  /**< Web dialog width */
+    SETT_WEB_DLG_HEIGHT, /**< Web dialog height */
     SETT_THUMB_QUALITY,  /**< Thumbnail jpg quality */
 };
 /*----------------------------------------------------------------------------*/

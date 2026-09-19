@@ -35,18 +35,18 @@
 /**
  * @brief  Open and check file with json data.
  *
- * Opens json file, checks if it is a valid json file. If ui_hash pointer is
- * not null, file content hash is counted and set in ui_hash.
- * Function returns null on data read error. Sets error code in i_err.
+ * Opens json file, checks if it is a valid json file. If json_hash pointer is
+ * not null, file content hash is counted and set in hash.
+ * Function returns null on data read error. Sets error code in err.
  *
- * @param[in]  s_file_name  Config file name
- * @param[out] ui_hash      Pointer to integer for hash, it can be null.
- * @param[out] i_err        Pointer to integer for error output
+ * @param[in]  file_name  Config file name
+ * @param[out] json_hash  Pointer to integer for hash, it can be null.
+ * @param[out] err        Pointer to integer for error output
  * @return     Json file with data, or empty when json file was not valid.
  */
-json_object * json_open_file (const char    *s_file_name,
-                              uint_fast32_t *ui_hash,
-                              int           *i_err);
+json_object * json_open_file (const char    *file_name,
+                              uint_fast32_t *json_hash,
+                              int           *err);
 /*----------------------------------------------------------------------------*/
 #endif
 
