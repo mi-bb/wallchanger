@@ -869,7 +869,7 @@ event_on_delete (GtkWidget        *window,
 static void
 event_start_daemon_pressed (DialogData *dd_data)
 {
-    dmfn_start ();
+    daemon_start ();
     daemon_monitor (dd_data);
 }
 /*----------------------------------------------------------------------------*/
@@ -879,7 +879,7 @@ event_start_daemon_pressed (DialogData *dd_data)
 static void
 event_stop_daemon_pressed (DialogData *dd_data)
 {
-    dmfn_kill ();
+    daemon_kill ();
     daemon_monitor (dd_data);
 }
 /*----------------------------------------------------------------------------*/
@@ -902,7 +902,7 @@ daemon_monitor (gpointer data)
 {
     DialogData *dd_data = (DialogData *) data;
 
-    if (dmfn_check_presence ()) {
+    if (daemon_check_presence ()) {
         gtk_label_set_markup (GTK_LABEL (dd_data->gw_dm_label), 
                 "<span weight=\"bold\" foreground=\"#009900\" "
                 "style=\"italic\">running</span>");

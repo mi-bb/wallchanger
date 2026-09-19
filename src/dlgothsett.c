@@ -184,7 +184,7 @@ event_delete_config_files (GtkWidget **gw_array)
         gtk_label_set_text (GTK_LABEL (gw_array[GW_SETT_CONF_SIZE_LABEL]),
                             s_size);
         free (s_size);
-        dmfn_kill ();
+        daemon_kill ();
         exit (EXIT_SUCCESS);
     }
 }

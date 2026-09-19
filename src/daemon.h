@@ -29,41 +29,41 @@
  *
  * @return none
  */
-void dmfn_daemonize (void);
+void daemon_daemonize (void);
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Check if wchangerd runs in background.
  *
  * @return 1 if it is running 0 if not.
  */
-int dmfn_check_presence (void);
+int daemon_check_presence (void);
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Check if wchangerd runs in background exit if it is.
  *
  * @return none
  */
-void dmfn_check_exit (void);
+void daemon_check_exit (void);
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Print status of wchangerd daemon and exit.
  *
  * @return none
  */
-[[noreturn]] void dmfn_print_status_exit (void);
+[[noreturn]] void daemon_print_status_exit (void);
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Start wchangerd process
  *
  * @return none
  */
-void dmfn_start (void);
+void daemon_start (void);
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Kill wchangerd process
  *
  * @return Non 0 if daemon was killed, 0 if not found
  */
-int dmfn_kill (void);
+int daemon_kill (void);
 /*----------------------------------------------------------------------------*/
 #endif

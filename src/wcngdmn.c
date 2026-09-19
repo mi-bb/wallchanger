@@ -60,19 +60,19 @@ main (int    argc,
 
     /* Printing status */
     if (i_opt & CMD_OPT_STATUS) {
-        dmfn_print_status_exit ();
+        daemon_print_status_exit ();
     }
     /* Stopping daemon */
     if (i_opt & CMD_OPT_STOP) {
-        dmfn_kill ();
+        daemon_kill ();
         exit (EXIT_SUCCESS);
     }
     /* Restarting daemon - stopping existing one */
-    if (i_opt & CMD_OPT_RESTART && dmfn_kill ()) {
+    if (i_opt & CMD_OPT_RESTART && daemon_kill ()) {
         sleep500 ();
     }
     /* Check wchangerd process presence, exit if it is running */
-    dmfn_check_exit ();
+    daemon_check_exit ();
     /* Checking if display is available */
     check_display_exit ();
     /* Check config file correctness */
@@ -90,7 +90,7 @@ main (int    argc,
     /* Starting daemon */
     if ((i_opt & CMD_OPT_START) || (i_opt & CMD_OPT_RESTART)) {
         puts ("Starting wchangerd daemon");
-        dmfn_daemonize ();
+        daemon_daemonize ();
     }
     while (1) {
         ui_sleep = ui_ch_int;

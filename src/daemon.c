@@ -35,7 +35,7 @@
  * @brief  Daemonize current process.
  */
 void
-dmfn_daemonize (void)
+daemon_daemonize (void)
 {
     int  i_res = 0;
     long i     = 0;
@@ -69,7 +69,7 @@ dmfn_daemonize (void)
  * @brief  Check if wchangerd runs in background.
  */
 int
-dmfn_check_presence (void)
+daemon_check_presence (void)
 {
     return process_count_except_current ("wchangerd");
 }
@@ -78,9 +78,9 @@ dmfn_check_presence (void)
  * @brief  Check if wchangerd runs in background exit if it is.
  */
 void
-dmfn_check_exit (void)
+daemon_check_exit (void)
 {
-    if (dmfn_check_presence () > 0) {
+    if (daemon_check_presence () > 0) {
         errx (EXIT_FAILURE, "wchangerd is already running !" );
     }
 }
@@ -89,11 +89,11 @@ dmfn_check_exit (void)
  * @brief  Print status of wchangerd daemon.
  */
 void
-dmfn_print_status_exit (void)
+daemon_print_status_exit (void)
 {
     int i_cnt = 0;
 
-    if ((i_cnt = dmfn_check_presence ()) > 0) {
+    if ((i_cnt = daemon_check_presence ()) > 0) {
         puts ("wchangerd is running");
         exit (EXIT_SUCCESS);
     }
@@ -107,7 +107,7 @@ dmfn_print_status_exit (void)
  * @brief  Start wchangerd process
  */
 void
-dmfn_start (void)
+daemon_start (void)
 {
     [[maybe_unused]] int i_res = 0; /* Result of system command */
     i_res = system ("wchangerd --start &");
@@ -117,7 +117,7 @@ dmfn_start (void)
  * @brief  Kill wchangerd process
  */
 int
-dmfn_kill (void)
+daemon_kill (void)
 {
     int i_cnt = 0;
 
