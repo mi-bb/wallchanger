@@ -71,7 +71,7 @@ set(WCHANGERCFG_SOURCES
     wmsfn.c        wmsfn.h
     errors.c         errors.h
     nstrings.c     nstrings.h
-    chquery.c      chquery.h
+    cache_query.c      cache_query.h
     thumbs.c       thumbs.h
     webwidget.c    webwidget.h
     webwidget_common.c  webwidget_common.h

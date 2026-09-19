@@ -31,7 +31,7 @@
 #include "strfun.h"
 #include "errors.h"
 #include "dlgsmsg.h"
-#include "chquery.h"
+#include "cache_query.h"
 #include "search_item.h"
 #include "webwidget_common.h"
 #include "webflickr.h"
@@ -376,10 +376,10 @@ flickr_search (WebWidget      *ww_widget,
                     GTK_ICON_VIEW (ww_widget->gw_img_view))));
 
     if (photos_list != nullptr) {
-        cq_query = cachequery_new (ww_name (WEB_SERV_FLICKR),
-                                   ww_widget->s_query,
-                                   ww_widget->s_search_opts,
-                                   ww_widget->i_page);
+        cq_query = cache_query_new (ww_name (WEB_SERV_FLICKR),
+                                    ww_widget->s_query,
+                                    ww_widget->s_search_opts,
+                                    ww_widget->i_page);
 
         ww_widget->i_found_cnt = photos_list->total_count;
         cq_query->i_found_cnt  = ww_widget->i_found_cnt;
@@ -391,15 +391,15 @@ flickr_search (WebWidget      *ww_widget,
                                          ww_widget->s_wallp_dir,
                                          ww_name (WEB_SERV_FLICKR),
                                          ww_widget->i_thumb_quality);
-            cachequery_append_item (cq_query, si_item);
+            cache_query_append_item (cq_query, si_item);
         }
-        i_err = cachequery_save (cq_query);
+        i_err = cache_query_save (cq_query);
 
         if (i_err != ERR_OK) {
             message_dialog_error (nullptr, err_get_message (i_err));
         }
         flickcurl_free_photos_list (photos_list);
-        cachequery_free (cq_query);
+        cache_query_free (cq_query);
     }
     free (s_tags);
     flickcurl_free (fc);

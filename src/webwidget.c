@@ -40,7 +40,7 @@
 #include "webwallhaven.h"
 #include "webabyss.h"
 #include "webflickr.h"
-#include "chquery.h"
+#include "cache_query.h"
 #include "webwidget.h"
 /*----------------------------------------------------------------------------*/
 /**
@@ -1076,11 +1076,11 @@ webwidget_create (Setting    *st_settings,
 
     webwidget_init (ww_widget);
 
-    cachequery_delete_older_than (ww_name (WEB_SERV_PIXABAY),   1);
-    cachequery_delete_older_than (ww_name (WEB_SERV_WALLHAVEN), 1);
-    cachequery_delete_older_than (ww_name (WEB_SERV_WALLABYSS), 1);
+    cache_query_delete_older_than (ww_name (WEB_SERV_PIXABAY),   1);
+    cache_query_delete_older_than (ww_name (WEB_SERV_WALLHAVEN), 1);
+    cache_query_delete_older_than (ww_name (WEB_SERV_WALLABYSS), 1);
 #ifdef HAVE_FLICKCURL
-    cachequery_delete_older_than (ww_name (WEB_SERV_FLICKR),    1);
+    cache_query_delete_older_than (ww_name (WEB_SERV_FLICKR),    1);
 #endif
 
     if ((st_sett = settings_find (st_settings,

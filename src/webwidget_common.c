@@ -27,7 +27,7 @@
 #include "icons.h"
 #include "fdfn.h"
 #include "errors.h"
-#include "chquery.h"
+#include "cache_query.h"
 #include "strfun.h"
 #include "setts.h"
 #include "webwidget_common.h"
@@ -392,11 +392,11 @@ check_for_cached_query (WebWidget  *ww_widget,
     int         i_err        = 0;    /* Error output */
     int         i            = 0;    /* i */
 
-    cq_query_chk = cachequery_check_query (s_service_name,
-                                           ww_widget->s_query,
-                                           ww_widget->s_search_opts,
-                                           ww_widget->i_page,
-                                           &i_err);
+    cq_query_chk = cache_query_check_query (s_service_name,
+                                            ww_widget->s_query,
+                                            ww_widget->s_search_opts,
+                                            ww_widget->i_page,
+                                            &i_err);
     if (i_err != ERR_OK) {
         message_dialog_error (nullptr, err_get_message (i_err));
     }
@@ -413,7 +413,7 @@ check_for_cached_query (WebWidget  *ww_widget,
                                          s_service_name,
                                          ww_widget->i_thumb_quality);
         }
-        cachequery_free (cq_query_chk);
+        cache_query_free (cq_query_chk);
         return 1;
     }
     return 0;

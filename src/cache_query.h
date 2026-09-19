@@ -1,5 +1,5 @@
 /**
- * @file  chquery.h
+ * @file  cache_query.h
  * @copyright Copyright (C) 2019-2026 Michał Bąbik
  *
  * This file is part of Wall Changer.
@@ -21,8 +21,8 @@
  *
  * @author Michal Babik <michal.babik@protonmail.com>
  */
-#ifndef CHQUERY_H
-#define CHQUERY_H
+#ifndef CACHE_QUERY_H
+#define CACHE_QUERY_H
 #include <gtk/gtk.h>
 #include "search_item.h"
 /*----------------------------------------------------------------------------*/
@@ -74,13 +74,13 @@ CacheQuery {
  * @param[in] s_query         Search query
  * @param[in] s_search_opts   Search options
  * @param[in] i_page          Page number
- * @return    New CacheQuery item, it should be freed using cachequery_free
+ * @return    New CacheQuery item, it should be freed using cache_query_free
  */
 [[nodiscard]]
-CacheQuery * cachequery_new               (const char *s_service_name,
-                                           const char *s_query,
-                                           const char *s_search_opts,
-                                           const int   i_page);
+CacheQuery * cache_query_new               (const char *s_service_name,
+                                            const char *s_query,
+                                            const char *s_search_opts,
+                                            const int   i_page);
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Free CacheQuery item.
@@ -88,7 +88,7 @@ CacheQuery * cachequery_new               (const char *s_service_name,
  * @param[out] cq_query  Item to free data
  * @return     none
  */
-void         cachequery_free              (CacheQuery *cq_query);
+void         cache_query_free              (CacheQuery *cq_query);
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Append SearchItem item to list.
@@ -97,8 +97,8 @@ void         cachequery_free              (CacheQuery *cq_query);
  * @param[in]  si_item   SearchItem item to add
  * @return     none
  */
-void         cachequery_append_item       (CacheQuery *cq_query,
-                                           SearchItem *si_item);
+void         cache_query_append_item       (CacheQuery *cq_query,
+                                            SearchItem *si_item);
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Check if there is a cached data for query.
@@ -109,14 +109,14 @@ void         cachequery_append_item       (CacheQuery *cq_query,
  * @param[in]  i_page          Page number
  * @param[out] i_err           Error output
  * @return     CacheQuery item with search results or null if there is no cached
- *             data, it should be freed using cachequery_free
+ *             data, it should be freed using cache_query_free
  */
 [[nodiscard]]
-CacheQuery * cachequery_check_query       (const char *s_service_name,
-                                           const char *s_query,
-                                           const char *s_search_opts,
-                                           const int   i_page,
-                                           int        *i_err);
+CacheQuery * cache_query_check_query       (const char *s_service_name,
+                                            const char *s_query,
+                                            const char *s_search_opts,
+                                            const int   i_page,
+                                            int        *i_err);
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Save cached search data to a service cache file.
@@ -124,7 +124,7 @@ CacheQuery * cachequery_check_query       (const char *s_service_name,
  * @param[in] cq_query  CacheQuery item
  * @return    Process status
  */
-int          cachequery_save              (CacheQuery *cq_query);
+int          cache_query_save              (CacheQuery *cq_query);
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Check cache query file for entries older that i_days and delete
@@ -134,8 +134,8 @@ int          cachequery_save              (CacheQuery *cq_query);
  * @param[in]  i_days          Entries older that this value will be removed
  * @return     Process status
  */
-int          cachequery_delete_older_than (const char *s_service_name,
-                                           const int   i_days);
+int          cache_query_delete_older_than (const char *s_service_name,
+                                            const int   i_days);
 /*----------------------------------------------------------------------------*/
 #endif
 

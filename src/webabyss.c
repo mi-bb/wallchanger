@@ -30,7 +30,7 @@
 #include <json.h>
 #endif
 #include "strfun.h"
-#include "chquery.h"
+#include "cache_query.h"
 #include "dlgsmsg.h"
 #include "errors.h"
 #include "search_item.h"
@@ -242,7 +242,7 @@ wallpaperabyss_json_to_webwidget (const char *s_buff,
                                                  ww_widget->s_wallp_dir,
                                                  ww_name (WEB_SERV_WALLABYSS),
                                                  ww_widget->i_thumb_quality);
-                    cachequery_append_item (cq_query, si_item);
+                    cache_query_append_item (cq_query, si_item);
                 }
             }
         }
@@ -276,10 +276,10 @@ wallpaperabyss_search (WebWidget      *ww_widget,
         message_dialog_error (nullptr, ud_data->errbuf);
     }
     else if (urldata_full (ud_data)) {
-        cq_query = cachequery_new (ww_name (WEB_SERV_WALLABYSS),
-                                   ww_widget->s_query,
-                                   ww_widget->s_search_opts,
-                                   ww_widget->i_page);
+        cq_query = cache_query_new (ww_name (WEB_SERV_WALLABYSS),
+                                    ww_widget->s_query,
+                                    ww_widget->s_search_opts,
+                                    ww_widget->i_page);
 
         gtk_list_store_clear (GTK_LIST_STORE (gtk_icon_view_get_model (
                     GTK_ICON_VIEW (ww_widget->gw_img_view))));
@@ -287,12 +287,12 @@ wallpaperabyss_search (WebWidget      *ww_widget,
         wallpaperabyss_json_to_webwidget (ud_data->buffer, ww_widget, cq_query);
         cq_query->i_found_cnt = ww_widget->i_found_cnt;
 
-        i_err = cachequery_save (cq_query);
+        i_err = cache_query_save (cq_query);
 
         if (i_err != ERR_OK) {
             message_dialog_error (nullptr, err_get_message (i_err));
         }
-        cachequery_free (cq_query);
+        cache_query_free (cq_query);
     }
     urldata_free (ud_data);
     free (s_query);

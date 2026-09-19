@@ -1,5 +1,5 @@
 /**
- * @file  chquery.c
+ * @file  cache_query.c
  * @copyright Copyright (C) 2019-2026 Michał Bąbik
  *
  * This file is part of Wall Changer.
@@ -37,7 +37,7 @@
 #include "cfg_file.h"
 #include "json_file.h"
 #include "hashfun.h"
-#include "chquery.h"
+#include "cache_query.h"
 /*----------------------------------------------------------------------------*/
 /**
  * @def   JS_FOUND_CNT
@@ -88,7 +88,7 @@
  * @return    New json_object with search data.
  */
 static json_object *
-chquery_search_item_to_json (const SearchItem *si_item)
+cache_query_search_item_to_json (const SearchItem *si_item)
 {
     json_object *j_res;  /* Result Json obj/array to return */
     json_object *j_val;  /* Json value to add to result */
@@ -165,7 +165,7 @@ chquery_search_item_to_json (const SearchItem *si_item)
  * @return    New SearchItem with search data.
  */
 static SearchItem *
-chquery_json_to_search_item (json_object *j_obj)
+cache_query_json_to_search_item (json_object *j_obj)
 {
     SearchItem  *si_item; /* Item to return */
     json_object *j_val;   /* Reading/checking val */
@@ -245,7 +245,7 @@ chquery_json_to_search_item (json_object *j_obj)
  * @return    New json_object with converted data
  */
 static json_object *
-cachequery_search_items_to_json_array (const CacheQuery *cq_query)
+cache_query_search_items_to_json_array (const CacheQuery *cq_query)
 {
     json_object *j_arr;
     json_object *j_val;
@@ -254,7 +254,7 @@ cachequery_search_items_to_json_array (const CacheQuery *cq_query)
     j_arr = json_object_new_array ();
 
     for (i = 0; i < cq_query->i_sicnt; ++i) {
-        j_val = chquery_search_item_to_json (cq_query->si_items[i]);
+        j_val = cache_query_search_item_to_json (cq_query->si_items[i]);
         json_object_array_add (j_arr, j_val);
     }
     return j_arr;
@@ -264,7 +264,7 @@ cachequery_search_items_to_json_array (const CacheQuery *cq_query)
  * @brief  Free CacheQuery item.
  */
 void
-cachequery_free (CacheQuery *cq_query)
+cache_query_free (CacheQuery *cq_query)
 {
     for (int i = 0; i < cq_query->i_sicnt; ++i) {
         search_item_free (cq_query->si_items[i]);
@@ -284,7 +284,7 @@ cachequery_free (CacheQuery *cq_query)
  * @return     none
  */
 static void
-cachequery_init (CacheQuery *cq_query)
+cache_query_init (CacheQuery *cq_query)
 {
     cq_query->si_items      = nullptr;
     cq_query->s_file        = nullptr;
@@ -300,10 +300,10 @@ cachequery_init (CacheQuery *cq_query)
  * @brief  Create new CacheQuery item.
  */
 CacheQuery *
-cachequery_new (const char *s_service_name,
-                const char *s_query,
-                const char *s_search_opts,
-                const int   i_page)
+cache_query_new (const char *s_service_name,
+                 const char *s_query,
+                 const char *s_search_opts,
+                 const int   i_page)
 {
     CacheQuery *cq_query = nullptr; /* CacheQuery to return */
     struct tm  *tm_time;         /* For current date string */
@@ -313,7 +313,7 @@ cachequery_new (const char *s_service_name,
     if ((cq_query = malloc (sizeof (CacheQuery))) == nullptr)
         err (EXIT_FAILURE, nullptr);
 
-    cachequery_init (cq_query);
+    cache_query_init (cq_query);
 
     t_time  = time (nullptr);
     tm_time = localtime (&t_time);
@@ -340,8 +340,8 @@ cachequery_new (const char *s_service_name,
  * @brief  Append SearchItem item to list.
  */
 void
-cachequery_append_item (CacheQuery *cq_query,
-                        SearchItem *si_item)
+cache_query_append_item (CacheQuery *cq_query,
+                         SearchItem *si_item)
 {
     SearchItem **si_tmp = nullptr; /* Temp pointer for malloc / realloc */
     size_t       ui_alc = 0;    /* New alloc size */
@@ -364,11 +364,11 @@ cachequery_append_item (CacheQuery *cq_query,
  * @brief  Check if there is a cached data for query.
  */
 CacheQuery *
-cachequery_check_query (const char *s_service_name,
-                        const char *s_query,
-                        const char *s_search_opts,
-                        const int   i_page,
-                        int        *i_err)
+cache_query_check_query (const char *s_service_name,
+                         const char *s_query,
+                         const char *s_search_opts,
+                         const int   i_page,
+                         int        *i_err)
 {
     json_object *j_obj;            /* Json object made from file data */
     json_object *j_date;           /* Date of search */
@@ -385,11 +385,11 @@ cachequery_check_query (const char *s_service_name,
     char s_page[10];               /* String with page number */
 
     *i_err   = ERR_OK;
-    cq_query = cachequery_new (s_service_name, s_query, s_search_opts, i_page);
+    cq_query = cache_query_new (s_service_name, s_query, s_search_opts, i_page);
     sprintf (s_page, "%d", cq_query->i_page);
 
     if ((j_obj = json_open_file (cq_query->s_file, nullptr, i_err)) == nullptr) {
-        cachequery_free (cq_query);
+        cache_query_free (cq_query);
         return nullptr;
     }
 
@@ -424,8 +424,8 @@ cachequery_check_query (const char *s_service_name,
             for (i = 0; i < ui_cnt; ++i) {
                 j_val = json_object_array_get_idx (j_items, i);
                 if (j_val != nullptr) {
-                    si_item = chquery_json_to_search_item (j_val);
-                    cachequery_append_item (cq_query, si_item);
+                    si_item = cache_query_json_to_search_item (j_val);
+                    cache_query_append_item (cq_query, si_item);
                 }
             }
             i_goon = 1;
@@ -433,7 +433,7 @@ cachequery_check_query (const char *s_service_name,
     }
     json_object_put (j_obj);
     if (!i_goon) {
-        cachequery_free (cq_query);
+        cache_query_free (cq_query);
         cq_query = nullptr;
     }
     *i_err = ERR_OK;
@@ -444,7 +444,7 @@ cachequery_check_query (const char *s_service_name,
  * @brief  Save cached search data to a service cache file.
  */
 int
-cachequery_save (CacheQuery *cq_query)
+cache_query_save (CacheQuery *cq_query)
 {
     json_object   *j_obj;             /* Json object made from file data */
     json_object   *j_date;            /* For query date */
@@ -494,7 +494,7 @@ cachequery_save (CacheQuery *cq_query)
     j_val = json_object_new_int (cq_query->i_found_cnt);
     json_object_object_add (j_per_page, JS_FOUND_CNT, j_val);
 
-    j_arr = cachequery_search_items_to_json_array (cq_query);
+    j_arr = cache_query_search_items_to_json_array (cq_query);
     json_object_object_add (j_per_page, s_page, j_arr);
     s_jbuff = json_object_to_json_string (j_obj);
 
@@ -511,8 +511,8 @@ cachequery_save (CacheQuery *cq_query)
  *         them.
  */
 int
-cachequery_delete_older_than (const char *s_service_name,
-                              const int   i_days)
+cache_query_delete_older_than (const char *s_service_name,
+                               const int   i_days)
 {
     json_object  *j_obj;            /* Json item with query info */
     GDate        *gd_date;          /* GDate for date count */
