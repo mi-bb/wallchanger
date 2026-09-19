@@ -30,7 +30,7 @@
 #include "strfun.h"
 /*----------------------------------------------------------------------------*/
 /**
- * @fn  static void imageinfo_init (ImageInfo *ii_info)
+ * @fn  static void image_info_init (ImageInfo *ii_info)
  *
  * @brief  Init ImageInfo data.
  *
@@ -38,7 +38,7 @@
  * @return     none
  */
 static void
-imageinfo_init (ImageInfo *ii_info)
+image_info_init (ImageInfo *ii_info)
 {
     ii_info->s_file_path    = nullptr;
     ii_info->s_file_name    = nullptr;
@@ -52,14 +52,14 @@ imageinfo_init (ImageInfo *ii_info)
  * @brief  Create new empty ImageInfo object.
  */
 ImageInfo *
-imageinfo_new (void)
+image_info_new (void)
 {
     ImageInfo *ii_res;
 
     if ((ii_res = malloc (sizeof (ImageInfo))) == nullptr)
         err (EXIT_FAILURE, nullptr);
 
-    imageinfo_init (ii_res);
+    image_info_init (ii_res);
 
     return ii_res;
 }
@@ -68,7 +68,7 @@ imageinfo_new (void)
  * @brief  Create new ImageInfo object with data gathered from file s_fname
  */
 ImageInfo *
-imageinfo_new_from_file (const char *s_fname)
+image_info_new_from_file (const char *s_fname)
 {
     ImageInfo  *ii_info = nullptr; /* Result ImageInfo */
     char       *s_path  = nullptr; /* String for file path */
@@ -76,18 +76,18 @@ imageinfo_new_from_file (const char *s_fname)
     int         i_w     = 0;    /* Image width */
     int         i_h     = 0;    /* Image height */
 
-    ii_info = imageinfo_new ();
-    imageinfo_set_file_path (ii_info, s_fname);
+    ii_info = image_info_new ();
+    image_info_set_file_path (ii_info, s_fname);
 
     if ((s_p = strrchr (s_fname, '/')) == nullptr) {
-        imageinfo_set_file_name (ii_info, s_fname);
-        imageinfo_set_file_dir (ii_info, "");
+        image_info_set_file_name (ii_info, s_fname);
+        image_info_set_file_dir (ii_info, "");
     }
     else {
         ++s_p;
-        imageinfo_set_file_name (ii_info, s_p);
+        image_info_set_file_name (ii_info, s_p);
         s_path = strndup (s_fname, (size_t) (s_p - s_fname));
-        imageinfo_set_file_dir (ii_info, s_path);
+        image_info_set_file_dir (ii_info, s_path);
         free (s_path);
     }
 
@@ -95,10 +95,10 @@ imageinfo_new_from_file (const char *s_fname)
                               &i_w,
                               &i_h);
 
-    imageinfo_set_width (ii_info, i_w);
-    imageinfo_set_height (ii_info, i_h);
+    image_info_set_width (ii_info, i_w);
+    image_info_set_height (ii_info, i_h);
 
-    imageinfo_set_wxh (ii_info, i_w, i_h);
+    image_info_set_wxh (ii_info, i_w, i_h);
 
     return ii_info;
 }
@@ -107,7 +107,7 @@ imageinfo_new_from_file (const char *s_fname)
  * @brief  Free ImageInfo data.
  */
 void
-imageinfo_free (ImageInfo *ii_info)
+image_info_free (ImageInfo *ii_info)
 {
     g_free (ii_info->s_file_path);
     g_free (ii_info->s_file_name);
@@ -120,7 +120,7 @@ imageinfo_free (ImageInfo *ii_info)
  * @brief  Get image info of files in list and store it in ImageInfo list.
  */
 GSList *
-file_paths_to_imageinfo (const GSList *gsl_files)
+file_paths_to_image_info (const GSList *gsl_files)
 {
     GSList       *gsl_iinfo = nullptr; /* Result ImageInfo list */
     char         *s_fn      = nullptr; /* File path */
@@ -130,10 +130,10 @@ file_paths_to_imageinfo (const GSList *gsl_files)
 
         if ((s_fn = (char *) gsl_files->data) != nullptr) {
 
-            ii_info = imageinfo_new_from_file (s_fn);
+            ii_info = image_info_new_from_file (s_fn);
 
-            if (imageinfo_get_height (ii_info) > 0 &&
-                imageinfo_get_width (ii_info) > 0)
+            if (image_info_get_height (ii_info) > 0 &&
+                image_info_get_width (ii_info) > 0)
 
                 gsl_iinfo = g_slist_append (gsl_iinfo, ii_info);
         }
@@ -146,8 +146,8 @@ file_paths_to_imageinfo (const GSList *gsl_files)
  * @brief  Set the full file name string (dir + file name)
  */
 void
-imageinfo_set_file_path (ImageInfo  *ii_info, 
-                         const char *s_name)
+image_info_set_file_path (ImageInfo  *ii_info, 
+                          const char *s_name)
 {
     if (ii_info->s_file_path != nullptr)
         free (ii_info->s_file_path);
@@ -159,8 +159,8 @@ imageinfo_set_file_path (ImageInfo  *ii_info,
  * @brief  Set the file name string
  */
 void
-imageinfo_set_file_name (ImageInfo  *ii_info, 
-                         const char *s_name)
+image_info_set_file_name (ImageInfo  *ii_info, 
+                          const char *s_name)
 {
     if (ii_info->s_file_name != nullptr)
         free (ii_info->s_file_name);
@@ -172,8 +172,8 @@ imageinfo_set_file_name (ImageInfo  *ii_info,
  * @brief  Set the file dir string
  */
 void
-imageinfo_set_file_dir (ImageInfo  *ii_info, 
-                        const char *s_name)
+image_info_set_file_dir (ImageInfo  *ii_info, 
+                         const char *s_name)
 {
     if (ii_info->s_file_dir != nullptr)
         free (ii_info->s_file_dir);
@@ -185,9 +185,9 @@ imageinfo_set_file_dir (ImageInfo  *ii_info,
  * @brief  Get string with image dimensions (width x height)
  */
 void
-imageinfo_set_wxh (ImageInfo *ii_info,
-                   const int  i_w,
-                   const int  i_h)
+image_info_set_wxh (ImageInfo *ii_info,
+                    const int  i_w,
+                    const int  i_h)
 {
     char s_tmp [41]; /* Temp string, I think it is long enough */
     int  n = 0;      /* Length of string with dimensions */

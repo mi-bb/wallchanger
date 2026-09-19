@@ -961,7 +961,7 @@ webwidget_imgview_create (void)
  * @return  Result widget
  */
 static GtkWidget *
-webwidget_imageinfo_create (WebWidget *ww_widget)
+webwidget_image_info_create (WebWidget *ww_widget)
 {
     GtkWidget *gw_widget;
     GtkWidget *gw_service_image;
@@ -1089,7 +1089,7 @@ webwidget_create (Setting    *st_settings,
     }
     ww_widget->s_cfg_file   = strdup (s_cfg_file);
     ww_widget->s_wallp_dir  = cfgfile_get_app_wallpapers_path ();
-    ww_widget->gw_ii_widget = webwidget_imageinfo_create (ww_widget);
+    ww_widget->gw_ii_widget = webwidget_image_info_create (ww_widget);
 
     gw_web_combo = webwidget_combobox_create (st_settings);
     gw_img_view  = webwidget_imgview_create ();

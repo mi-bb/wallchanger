@@ -656,12 +656,12 @@ event_set_wallpaper_pressed (const DialogData *dd_data)
         ii_info = treemodel_get_data (gtm_model, gti_iter);
         s_cmd   = gtk_entry_get_text (GTK_ENTRY (dd_data->gw_command));
         i_err   = wallpaper_dialog_set (s_cmd,
-                                        imageinfo_get_file_path (ii_info),
+                                        image_info_get_file_path (ii_info),
                                         dialog_data_get_cfg_file (dd_data));
         if (i_err != ERR_OK) {
             message_dialog_error (dd_data->gw_window, err_get_message (i_err));
         }
-        imageinfo_free (ii_info);
+        image_info_free (ii_info);
     }
     g_list_free_full (gl_list, (GDestroyNotify) gtk_tree_path_free);
 }
@@ -704,8 +704,8 @@ event_img_list_activated (GtkTreeView       *tree_view,
 
         ii_info = treemodel_get_data (gtm_model, gti_iter);
 
-        preview_from_file (gw_img_prev, imageinfo_get_file_path (ii_info));
-        imageinfo_free (ii_info);
+        preview_from_file (gw_img_prev, image_info_get_file_path (ii_info));
+        image_info_free (ii_info);
     }
 }
 /*----------------------------------------------------------------------------*/
@@ -795,7 +795,7 @@ event_command_button_pressed (const DialogData *dd_data)
         gtk_entry_set_text (GTK_ENTRY (dd_data->gw_command), s_command);
         free (s_command);
     }
-    g_slist_free_full (gsl_files, (GDestroyNotify) imageinfo_free);
+    g_slist_free_full (gsl_files, (GDestroyNotify) image_info_free);
 }
 /*----------------------------------------------------------------------------*/
 /**
