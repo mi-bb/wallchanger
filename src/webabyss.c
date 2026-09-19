@@ -32,7 +32,7 @@
 #include "strfun.h"
 #include "chquery.h"
 #include "dlgsmsg.h"
-#include "errs.h"
+#include "errors.h"
 #include "searchitem.h"
 #include "setts.h"
 #include "setting.h"

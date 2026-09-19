@@ -29,7 +29,7 @@
 #include "dlgsmsg.h"
 #include "strfun.h"
 #include "setts.h"
-#include "errs.h"
+#include "errors.h"
 #include "cfgfile.h"
 #include "fdfn.h"
 #include "defs.h"

@@ -25,7 +25,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
-#include "errs.h"
+#include "errors.h"
 #include "strfun.h"
 #include "fdfn.h"
 #include "rwdt.h"

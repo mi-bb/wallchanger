@@ -29,7 +29,7 @@
 #include <err.h>
 
 #include "strfun.h"
-#include "errs.h"
+#include "errors.h"
 #include "dlgsmsg.h"
 #include "chquery.h"
 #include "searchitem.h"

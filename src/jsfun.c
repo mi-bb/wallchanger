@@ -33,7 +33,7 @@
 #endif
 
 #include "jsof.h"
-#include "errs.h"
+#include "errors.h"
 #include "setting.h"
 #include "rwdt.h"
 #include "strfun.h"

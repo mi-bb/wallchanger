@@ -29,7 +29,7 @@
 #include "cfgfile.h"
 #include "wpset.h"
 #include "setts.h"
-#include "errs.h"
+#include "errors.h"
 #include "wmsfn.h"
 #include "chkwch.h"
 #ifdef DEBUG

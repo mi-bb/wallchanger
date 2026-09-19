@@ -28,7 +28,7 @@
 #include "jsfun.h"
 #include "setting.h"
 #include "setts.h"
-#include "errs.h"
+#include "errors.h"
 #include "defs.h"
 /*----------------------------------------------------------------------------*/
 /**

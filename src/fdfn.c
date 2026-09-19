@@ -29,7 +29,7 @@
 #include <pwd.h>
 #include <err.h>
 #include <string.h>
-#include "errs.h"
+#include "errors.h"
 #include "strfun.h"
 #include "fdfn.h"
 /*----------------------------------------------------------------------------*/

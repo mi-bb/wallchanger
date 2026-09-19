@@ -30,7 +30,7 @@
 #include <json.h>
 #endif
 #include "urldata.h"
-#include "errs.h"
+#include "errors.h"
 #include "chquery.h"
 #include "webwidget_c.h"
 #include "dlgsmsg.h"

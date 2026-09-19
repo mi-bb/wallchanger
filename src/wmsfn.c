@@ -30,7 +30,7 @@
 #include "setts.h"
 #include "strfun.h"
 #include "defs.h"
-#include "errs.h"
+#include "errors.h"
 #include "wmsfn.h"
 /*----------------------------------------------------------------------------*/
 /**

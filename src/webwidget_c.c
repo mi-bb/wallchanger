@@ -26,7 +26,7 @@
 #include "urldata.h"
 #include "imgs.h"
 #include "fdfn.h"
-#include "errs.h"
+#include "errors.h"
 #include "chquery.h"
 #include "strfun.h"
 #include "setts.h"

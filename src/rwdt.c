@@ -31,7 +31,7 @@
 #include <sys/types.h>
 #include <pwd.h>
 #include <errno.h>
-#include "errs.h"
+#include "errors.h"
 #include "cres.h"
 #include "hashfun.h"
 #include "rwdt.h"

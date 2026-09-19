@@ -21,7 +21,7 @@
  *
  * @author Michal Babik <michal.babik@protonmail.com>
  */
-#include "errs.h"
+#include "errors.h"
 #include "wpset.h"
 #include "image_info.h"
 #include "dlgsmsg.h"

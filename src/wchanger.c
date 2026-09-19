@@ -39,7 +39,7 @@
 #include "fdfn.h"
 #include "preview.h"
 #include "strfun.h"
-#include "errs.h"
+#include "errors.h"
 #include "cfgfile.h"
 #include "defs.h"
 #include "hashfun.h"

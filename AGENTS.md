@@ -103,7 +103,7 @@ Each provider (`webflickr`, `webpixabay`, `webwallhaven`, `webabyss`) implements
 
 ### Shared low-level utilities
 
-`strfun.c`, `nstrings.c`, `hashfun.c`, `randomm.c`, `rwdt.c` (read/write data/time), `fdfn.c` (file/dir helpers), `dirlist.c`, `errs.c` (error reporting) — generic helpers used throughout both binaries.
+`strfun.c`, `nstrings.c`, `hashfun.c`, `randomm.c`, `rwdt.c` (read/write data/time), `fdfn.c` (file/dir helpers), `dirlist.c`, `errors.c` (error reporting) — generic helpers used throughout both binaries.
 
 ### Installed data (`other/`)
 

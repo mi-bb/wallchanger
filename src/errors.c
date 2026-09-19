@@ -1,5 +1,5 @@
 /**
- * @file  errs.c
+ * @file  errors.c
  * @copyright Copyright (C) 2019-2026 Michał Bąbik
  *
  * This file is part of Wall Changer.
@@ -24,7 +24,7 @@
 #include <sysexits.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include "errs.h"
+#include "errors.h"
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Function returns string with error message.

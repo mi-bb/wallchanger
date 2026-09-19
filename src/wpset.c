@@ -29,7 +29,7 @@
 #include "randomm.h"
 #include "strfun.h"
 #include "setting.h"
-#include "errs.h"
+#include "errors.h"
 #include "hashfun.h"
 #include "wpset.h"
 /*----------------------------------------------------------------------------*/

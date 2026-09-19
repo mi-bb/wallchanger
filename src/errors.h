@@ -1,5 +1,5 @@
 /**
- * @file  errs.h
+ * @file  errors.h
  * @copyright Copyright (C) 2019-2026 Michał Bąbik
  *
  * This file is part of Wall Changer.
@@ -21,8 +21,8 @@
  *
  * @author Michal Babik <michal.babik@protonmail.com>
  */
-#ifndef ERRS_H
-#define ERRS_H
+#ifndef ERRORS_H
+#define ERRORS_H
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  My error values.

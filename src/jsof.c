@@ -25,7 +25,7 @@
  */
 #include "hashfun.h"
 #include "rwdt.h"
-#include "errs.h"
+#include "errors.h"
 #ifdef DEBUG
 #include <stdio.h>
 #endif

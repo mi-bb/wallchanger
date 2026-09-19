@@ -24,7 +24,7 @@
 #include <inttypes.h>
 #include <err.h>
 #include "hashfun.h"
-#include "errs.h"
+#include "errors.h"
 #include "setts.h"
 #include "defs.h"
 #include "dlgsmsg.h"

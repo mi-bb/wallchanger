@@ -33,7 +33,7 @@
 #include "strfun.h"
 #include "rwdt.h"
 #include "fdfn.h"
-#include "errs.h"
+#include "errors.h"
 #include "cfgfile.h"
 #include "jsof.h"
 #include "hashfun.h"

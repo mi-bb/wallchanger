@@ -35,7 +35,7 @@ set(WCHANGERD_SOURCES
     cmdfn.c     cmdfn.h
     cmdline.c   cmdline.h
     wmsfn.c     wmsfn.h
-    errs.c      errs.h
+    errors.c      errors.h
     defs.h)
 
 set(WCHANGERCFG_SOURCES
@@ -69,7 +69,7 @@ set(WCHANGERCFG_SOURCES
     procitem.c     procitem.h
     proclist.c     proclist.h
     wmsfn.c        wmsfn.h
-    errs.c         errs.h
+    errors.c         errors.h
     nstrings.c     nstrings.h
     chquery.c      chquery.h
     thumbs.c       thumbs.h
