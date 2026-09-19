@@ -532,3 +532,8 @@ and this project adheres to
 ## [1.0] - 2019-11-03
 
 - Initial release.
+
+[unreleased]: https://github.com/mi-bb/wallchanger/compare/v1.7.0...HEAD
+[1.7.0]: https://github.com/mi-bb/wallchanger/compare/v1.6.19...v1.7.0
+[1.6.19]: https://github.com/mi-bb/wallchanger/compare/v1.6.18...v1.6.19
+[1.6.18]: https://github.com/mi-bb/wallchanger/releases/tag/v1.6.18
