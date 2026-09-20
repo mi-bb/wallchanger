@@ -34,20 +34,20 @@
 /**
  * @brief  Create pixbuf from raw data.
  *
- * @param[in] s_data  Buffer with image data
- * @param[in] i_size  Buffer size
+ * @param[in] data  Buffer with image data
+ * @param[in] size  Buffer size
  * @return    Pixbuf with image
  */
 static GdkPixbuf *
-pixbuf_from_data (const unsigned char *s_data,
-                  const gssize         i_size)
+pixbuf_from_data (const unsigned char *data,
+                  const gssize         size)
 {
     GdkPixbuf    *g_pbuf = nullptr; /* Return pixbuf */
     GInputStream *stream;        /* Stream for passing data to pixbuf */
 
     stream = g_memory_input_stream_new ();
     g_memory_input_stream_add_data (G_MEMORY_INPUT_STREAM (stream),
-                                    s_data, i_size, nullptr);
+                                    data, size, nullptr);
     g_pbuf = gdk_pixbuf_new_from_stream (stream, nullptr, nullptr);
     g_object_unref (stream);
 
@@ -57,17 +57,17 @@ pixbuf_from_data (const unsigned char *s_data,
 /**
  * @brief  Create pixbuf from raw data
  *
- * @param[in] s_url  Url where should be image for pixbuf
+ * @param[in] url  Url where should be image for pixbuf
  * @return    Pixbuf with image
  */
 static GdkPixbuf *
-pixbuf_from_url (const char *s_url)
+pixbuf_from_url (const char *url)
 {
     GdkPixbuf *g_pbuf  = nullptr; /* Pixbuf to return */
     UrlData   *ud_data = nullptr; /* Urldata for getting image data */
     char      *s_txt   = nullptr; /* For error text */
 
-    ud_data = urldata_get_data (s_url);
+    ud_data = urldata_get_data (url);
 
     if (ud_data->errbuf != nullptr) {
         s_txt = str_comb ("Getting image error:\n",
@@ -88,10 +88,10 @@ pixbuf_from_url (const char *s_url)
  * @brief  Get thumbnail image from cached data or from web.
  */
 GdkPixbuf *
-thumbnail_get (const char *s_service_name,
-               const char *s_id,
-               const int   i_jpgq,
-               const char *s_thumb_url)
+thumbnail_get (const char *service_name,
+               const char *image_id,
+               const int   jpg_quality,
+               const char *thumbnail_url)
 {
     GdkPixbuf *gp_pbuf      = nullptr;
     GError    *g_error      = nullptr; /* For error output */
@@ -99,10 +99,10 @@ thumbnail_get (const char *s_service_name,
     char      *s_thumb_file = nullptr;
     char       s_jpgq[16];
 
-    sprintf (s_jpgq, "%d", i_jpgq);
+    sprintf (s_jpgq, "%d", jpg_quality);
 
     s_thumb_file = cfg_file_get_app_thumbnails_path ();
-    s_prefix     = strdup (s_service_name);
+    s_prefix     = strdup (service_name);
 
     dir_create_with_subdirs (s_thumb_file);
     if (isupper (s_prefix[0]))
@@ -111,14 +111,14 @@ thumbnail_get (const char *s_service_name,
     str_append (&s_thumb_file, "/");
     str_append (&s_thumb_file, s_prefix);
     str_append (&s_thumb_file, "_");
-    str_append (&s_thumb_file, s_id);
+    str_append (&s_thumb_file, image_id);
     str_append (&s_thumb_file, ".jpg");
     free (s_prefix);
 
     gp_pbuf = gdk_pixbuf_new_from_file (s_thumb_file, &g_error);
 
     if (gp_pbuf == nullptr) {
-        gp_pbuf = pixbuf_from_url (s_thumb_url);
+        gp_pbuf = pixbuf_from_url (thumbnail_url);
         if (gp_pbuf != nullptr) {
             g_error = nullptr;
             gdk_pixbuf_save (gp_pbuf, s_thumb_file, "jpeg", &g_error,
