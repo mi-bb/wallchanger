@@ -44,7 +44,7 @@ set(WCHANGERCFG_SOURCES
     treev.c        treev.h
     image_dialogs.c         image_dialogs.h
     dlgcmd.c       dlgcmd.h
-    dlgothsett.c   dlgothsett.h
+    other_settings_dialog.c   other_settings_dialog.h
     dialogs_other.c   dialogs_other.h
     message_dialogs.c      message_dialogs.h
     search_item.c   search_item.h

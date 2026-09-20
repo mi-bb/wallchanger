@@ -1,5 +1,5 @@
 /**
- * @file  dlgothsett.h
+ * @file  other_settings_dialog.h
  * @copyright Copyright (C) 2019-2026 Michał Bąbik
  *
  * This file is part of Wall Changer.
@@ -21,8 +21,8 @@
  *
  * @author Michal Babik <michal.babik@protonmail.com>
  */
-#ifndef DLGOTHSETT_H
-#define DLGOTHSETT_H
+#ifndef OTHER_SETTINGS_DIALOG_H
+#define OTHER_SETTINGS_DIALOG_H
 
 #include <gtk/gtk.h>
 /*----------------------------------------------------------------------------*/
@@ -34,9 +34,9 @@
  * @param[in] s_fn       Path to sample wallpaper file
  * @return    none
  */
-void     other_settings_dialog    (GtkWindow  *gw_parent,
-                                   const char *s_cfg_file,
-                                   const char *s_fn);
+void other_settings_dialog (GtkWindow  *gw_parent,
+                            const char *s_cfg_file,
+                            const char *s_fn);
 /*----------------------------------------------------------------------------*/
 #endif
 

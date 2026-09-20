@@ -1,5 +1,5 @@
 /**
- * @file  dlgothsett.c
+ * @file  other_settings_dialog.c
  * @copyright Copyright (C) 2019-2026 Michał Bąbik
  *
  * This file is part of Wall Changer.
@@ -28,7 +28,7 @@
 #include "setts.h"
 #include "cfg_file.h"
 #include "string_functions.h"
-#include "dlgothsett.h"
+#include "other_settings_dialog.h"
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Enum for config dialog widgets.

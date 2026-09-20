@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
- * @brief Wallpaper change dialog
+ * @brief Wallpaper change config window
  *
  * Automatic wallpaper changer
  *
@@ -33,7 +33,7 @@
 #include "dialogs_other.h"
 #include "message_dialogs.h"
 #include "dlgcmd.h"
-#include "dlgothsett.h"
+#include "other_settings_dialog.h"
 #include "treev.h"
 #include "dir_content.h"
 #include "file_dir_functions.h"
