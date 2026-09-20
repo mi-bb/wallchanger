@@ -32,7 +32,7 @@
 #include <err.h>
 #include "string_functions.h"
 #include "file_io.h"
-#include "fdfn.h"
+#include "file_dir_functions.h"
 #include "errors.h"
 #include "cfg_file.h"
 #include "json_file.h"

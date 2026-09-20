@@ -1,5 +1,5 @@
 /**
- * @file  fdfn.h
+ * @file  file_dir_functions.h
  * @copyright Copyright (C) 2019-2026 Michał Bąbik
  *
  * This file is part of Wall Changer.
@@ -21,8 +21,8 @@
  *
  * @author Michal Babik <michal.babik@protonmail.com>
  */
-#ifndef FDFN_H
-#define FDFN_H
+#ifndef FILE_DIR_FUNCTIONS_H
+#define FILE_DIR_FUNCTIONS_H
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Check file permissions (read write), existence. 

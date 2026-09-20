@@ -25,7 +25,7 @@
 #include "thumbs.h"
 #include "urldata.h"
 #include "icons.h"
-#include "fdfn.h"
+#include "file_dir_functions.h"
 #include "errors.h"
 #include "cache_query.h"
 #include "string_functions.h"

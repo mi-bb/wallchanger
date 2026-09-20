@@ -36,7 +36,7 @@
 #include "dlgothsett.h"
 #include "treev.h"
 #include "dirlist.h"
-#include "fdfn.h"
+#include "file_dir_functions.h"
 #include "preview.h"
 #include "string_functions.h"
 #include "errors.h"

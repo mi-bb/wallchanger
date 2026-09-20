@@ -31,7 +31,7 @@
 #include "setts.h"
 #include "errors.h"
 #include "cfg_file.h"
-#include "fdfn.h"
+#include "file_dir_functions.h"
 #include "defs.h"
 #include "icons.h"
 #include "nstrings.h"

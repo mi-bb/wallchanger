@@ -27,7 +27,7 @@
 #include <stdio.h>
 #include "errors.h"
 #include "string_functions.h"
-#include "fdfn.h"
+#include "file_dir_functions.h"
 #include "file_io.h"
 #include "cfg_file.h"
 #include "defs.h"

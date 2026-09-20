@@ -26,7 +26,7 @@
 #include <err.h>
 #include "urldata.h"
 #include "string_functions.h"
-#include "fdfn.h"
+#include "file_dir_functions.h"
 #include "cfg_file.h"
 #include "dlgsmsg.h"
 #include "thumbs.h"

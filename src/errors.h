@@ -39,7 +39,7 @@ enum e_error_values : int {
     ERR_CFG_NOF  /**< No config file found */
 };
 /*----------------------------------------------------------------------------*/
-/* The GNU __attribute__ spellings used here and in fdfn.h, hash_djb2.h,
+/* The GNU __attribute__ spellings used here and in file_dir_functions.h, hash_djb2.h,
  * json_functions.h, dirlist.h, dlgsmsg.h and proc_item.h are kept on purpose: C23's
  * nearest equivalents are not usable yet. [[unsequenced]] has to follow the
  * parameter list on GCC, and Clang does not know it at all (it is dropped

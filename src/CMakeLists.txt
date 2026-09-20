@@ -24,7 +24,7 @@ set(WCHANGERD_SOURCES
     randomm.c   randomm.h
     setting.c   setting.h
     string_functions.c    string_functions.h
-    fdfn.c      fdfn.h
+    file_dir_functions.c      file_dir_functions.h
     cfg_file.c   cfg_file.h
     cres.c      cres.h
     hash_djb2.c   hash_djb2.h
@@ -59,7 +59,7 @@ set(WCHANGERCFG_SOURCES
     setting.c      setting.h
     preview.c      preview.h
     string_functions.c       string_functions.h
-    fdfn.c         fdfn.h
+    file_dir_functions.c         file_dir_functions.h
     cfg_file.c      cfg_file.h
     dirlist.c      dirlist.h
     cres.c         cres.h

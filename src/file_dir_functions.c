@@ -1,5 +1,5 @@
 /**
- * @file  fdfn.c
+ * @file  file_dir_functions.c
  * @copyright Copyright (C) 2019-2026 Michał Bąbik
  *
  * This file is part of Wall Changer.
@@ -31,7 +31,7 @@
 #include <string.h>
 #include "errors.h"
 #include "string_functions.h"
-#include "fdfn.h"
+#include "file_dir_functions.h"
 /*----------------------------------------------------------------------------*/
 /**
  * @fn  static int check_permissions (const char *s_name, const int i_mode)
