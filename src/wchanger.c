@@ -31,6 +31,7 @@
 #include "wallpaper_set.h"
 #include "icons.h"
 #include "dlgs.h"
+#include "dialogs_other.h"
 #include "message_dialogs.h"
 #include "dlgcmd.h"
 #include "dlgothsett.h"

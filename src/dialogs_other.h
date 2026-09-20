@@ -1,5 +1,5 @@
 /**
- * @file  dlgs.h
+ * @file  dialogs_other.h
  * @copyright Copyright (C) 2019-2026 Michał Bąbik
  *
  * This file is part of Wall Changer.
@@ -17,46 +17,23 @@
  * You should have received a copy of the GNU General Public License
  * along with Wall Changer.  If not, see <https://www.gnu.org/licenses/>.
  *
- * @brief  Application dialogs
+ * @brief  Other dialogs
  *
  * @author Michal Babik <michal.babik@protonmail.com>
  */
-#ifndef DLGS_H
-#define DLGS_H
+#ifndef DIALOGS_OTHER_H
+#define DIALOGS_OTHER_H
 
 #include <gtk/gtk.h>
 /*----------------------------------------------------------------------------*/
 /**
- * @fn  GList  * add_images_from_web_dialog (GtkWindow  *gw_parent,
- *                                           const char *s_cfg_file)
- *
- * @brief  Run dialog for getting wallpapers from web.
+ * @brief  Dialog with information about application.
  *
  * @param[in] gw_parent  Parent window
- * @param[in] s_cfg_file Path to config file
- * @return    List with images to add.
- *
- * @fn  char * add_images_folder_dialog (GtkWindow *gw_parent)
- *
- * @brief  Select folder dialog.
- *
- * @param[in] gw_parent  Dialog parent widget
- * @return    Folder path or NULL.
- *
- * @fn  GSList * add_images_dialog (GtkWindow *gw_parent)
- *
- * @brief  Select images dialog.
- *
- * @param[in] gw_parent  Dialog parent widget
- * @return    List with images.
+ * @return    none
  */
 /*----------------------------------------------------------------------------*/
-GList  * add_images_from_web_dialog (GtkWindow  *gw_parent,
-                                     const char *s_cfg_file);
-
-char   * add_images_folder_dialog   (GtkWindow  *gw_parent);
-
-GSList * add_images_dialog          (GtkWindow  *gw_parent);
+void     about_app_dialog           (GtkWindow  *gw_parent);
 /*----------------------------------------------------------------------------*/
 #endif
 
