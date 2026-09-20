@@ -34,7 +34,7 @@ set(WCHANGERD_SOURCES
     process/proc_list.c  process/proc_list.h
     cmd_functions.c     cmd_functions.h
     cmdline.c   cmdline.h
-    wmsfn.c     wmsfn.h
+    window_manager_info.c     window_manager_info.h
     errors.c      errors.h
     defs.h)
 
@@ -69,7 +69,7 @@ set(WCHANGERCFG_SOURCES
     process/process.c       process/process.h
     process/proc_item.c     process/proc_item.h
     process/proc_list.c     process/proc_list.h
-    wmsfn.c        wmsfn.h
+    window_manager_info.c        window_manager_info.h
     errors.c         errors.h
     nstrings.c     nstrings.h
     cache_query.c      cache_query.h

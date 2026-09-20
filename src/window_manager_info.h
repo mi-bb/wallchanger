@@ -1,5 +1,5 @@
 /**
- * @file  wmsfn.h
+ * @file  window_manager_info.h
  * @copyright Copyright (C) 2019-2026 Michał Bąbik
  *
  * This file is part of Wall Changer.
@@ -17,12 +17,12 @@
  * You should have received a copy of the GNU General Public License
  * along with Wall Changer.  If not, see <https://www.gnu.org/licenses/>.
  *
- * @brief  Wallpaper set command functions.
+ * @brief  Window manager info getting functions.
  *
  * @author Michal Babik <michal.babik@protonmail.com>
  */
-#ifndef WMSFN_H
-#define WMSFN_H
+#ifndef WINDOW_MANAGER_INFO_H
+#define WINDOW_MANAGER_INFO_H
 
 #include "setting.h"
 /*----------------------------------------------------------------------------*/

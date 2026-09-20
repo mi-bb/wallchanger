@@ -26,7 +26,7 @@
 #include "image_info.h"
 #include "message_dialogs.h"
 #include "string_functions.h"
-#include "wmsfn.h"
+#include "window_manager_info.h"
 #include "setting.h"
 #include "wallpaper_set_command_dialog.h"
 /*----------------------------------------------------------------------------*/

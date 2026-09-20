@@ -96,9 +96,9 @@ TCase names are declared in `setting_suite()` at the bottom of `tests/test_setti
 
 Central point where a wallpaper is actually applied: builds the configured shell command (with `[F]` substituted for the file path, e.g. default `feh --bg-fill "[F]"` from `DEFAULT_BG_CMD` in `defs.h`) and runs it. Called both from the daemon loop and from `wchangercfg` (startup preview / "test" button / on save).
 
-### Window-manager command presets (`wmsfn.c/.h`, `other/wms.json`)
+### Window-manager command presets (`window_manager_info.c/.h`, `other/wms.json`)
 
-`wms.json` ships a list of window managers and their default wallpaper-set commands (Xfce needs a non-standard one). `wchangercfg`'s "Select" dialog (`wallpaper_set_command_dialog.c/.h`) lets the user pick/override the detected WM's command; `wmsfn.c` handles matching the running WM to a preset.
+`wms.json` ships a list of window managers and their default wallpaper-set commands (Xfce needs a non-standard one). `wchangercfg`'s "Select" dialog (`wallpaper_set_command_dialog.c/.h`) lets the user pick/override the detected WM's command; `window_manager_info.c` handles matching the running WM to a preset.
 
 ### Online wallpaper search (`web*.c/.h`, `webwidget*.c/.h`)
 

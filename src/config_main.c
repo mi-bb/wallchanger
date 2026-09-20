@@ -43,7 +43,7 @@
 #include "cfg_file.h"
 #include "defs.h"
 #include "daemon.h"
-#include "wmsfn.h"
+#include "window_manager_info.h"
 /*----------------------------------------------------------------------------*/
 /**
  * @fn  static uint32_t get_wallpaper_ch_interval (const DialogData *dd_data)

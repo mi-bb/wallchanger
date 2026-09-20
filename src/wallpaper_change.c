@@ -30,7 +30,7 @@
 #include "wallpaper_set.h"
 #include "setts.h"
 #include "errors.h"
-#include "wmsfn.h"
+#include "window_manager_info.h"
 #include "wallpaper_change.h"
 #ifdef DEBUG
 #include <stdio.h>
