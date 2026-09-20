@@ -159,8 +159,8 @@ in order like on the list below):
 
 ```
 ~/.config/wchanger/config.json
-~/.config/config_main.json
-~/.config/wchanger/config_main.json
+~/.config/wchanger.json
+~/.config/wchanger/wchanger.json
 ```
 
 To use other than standard config path, use the `--config` option:

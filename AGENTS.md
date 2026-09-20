@@ -9,7 +9,7 @@ Wall Changer is an automatic wallpaper changer for GNU/Linux and FreeBSD, writte
 - `wchangerd` — background daemon that switches the wallpaper on a configured interval (`--start`, `--stop`, `--restart`, `--once`, `--config FILE`). Links only json-c — shared helpers must not pull in GTK or libcurl.
 - `wchangercfg` — GTK+3 configuration GUI (links GTK/json-c/libcurl) for managing the wallpaper list, change interval, per-window-manager wallpaper-set command, and online wallpaper search/download.
 
-Config is read from `~/.config/wchanger/config.json` (falling back to `~/.config/config_main.json` / `~/.config/wchanger/config_main.json`), or an explicit path via `--config`.
+Config is read from `~/.config/wchanger/config.json` (falling back to `~/.config/wchanger.json` / `~/.config/wchanger/wchanger.json`), or an explicit path via `--config`.
 
 ## Build
 
