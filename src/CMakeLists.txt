@@ -76,7 +76,7 @@ set(WCHANGERCFG_SOURCES
     thumbnail.c       thumbnail.h
     webwidget.c    webwidget.h
     webwidget_common.c  webwidget_common.h
-    webpixabay.c   webpixabay.h
+    web_pixabay.c   web_pixabay.h
     webflickr.c    webflickr.h
     webwallhaven.c webwallhaven.h
     webabyss.c     webabyss.h

@@ -1,5 +1,5 @@
 /**
- * @file  webpixabay.h
+ * @file  web_pixabay.h
  * @copyright Copyright (C) 2019-2026 Michał Bąbik
  *
  * This file is part of Wall Changer.
@@ -21,8 +21,8 @@
  *
  * @author Michal Babik <michal.babik@protonmail.com>
  */
-#ifndef WEBPIXABAY_H
-#define WEBPIXABAY_H
+#ifndef WEB_PIXABAY_H
+#define WEB_PIXABAY_H
 
 #include "nstrings.h"
 #include "webwidget_struct.h"

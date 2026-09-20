@@ -1,5 +1,5 @@
 /**
- * @file  webpixabay.c
+ * @file  web_pixabay.c
  * @copyright Copyright (C) 2019-2026 Michał Bąbik
  *
  * This file is part of Wall Changer.
@@ -37,7 +37,7 @@
 #include "string_functions.h"
 #include "setting.h"
 #include "setts.h"
-#include "webpixabay.h"
+#include "web_pixabay.h"
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Enum with available search options.

@@ -36,7 +36,7 @@
 #include "icons.h"
 #include "nstrings.h"
 #include "webwidget_common.h"
-#include "webpixabay.h"
+#include "web_pixabay.h"
 #include "webwallhaven.h"
 #include "webabyss.h"
 #include "webflickr.h"
