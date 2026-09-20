@@ -28,7 +28,7 @@
 #include <stdio.h>
 #include <sys/stat.h>
 #include <sysexits.h>
-#include "process.h"
+#include "process/process.h"
 #include "daemon.h"
 /*----------------------------------------------------------------------------*/
 /**

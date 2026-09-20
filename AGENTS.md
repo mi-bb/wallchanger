@@ -70,7 +70,14 @@ TCase names are declared in `setting_suite()` at the bottom of `tests/test_setti
 
 ### Two binaries sharing one `src/` tree
 
-`src/CMakeLists.txt` lists `WCHANGERD_SOURCES` and `WCHANGERCFG_SOURCES` separately, but both pull from the same pool of `.c`/`.h` files in `src/`. Core logic (settings, JSON I/O, wallpaper-set commands, process/daemon helpers, string/hash/random utilities) is shared; GTK dialog and web-search code (`dlgs*.c`, `treev.c`, `preview.c`, `web*.c`, `thumbnail.c`, `icons.c`) is exclusive to `wchangercfg`.
+`src/CMakeLists.txt` lists `WCHANGERD_SOURCES` and `WCHANGERCFG_SOURCES` separately, but both pull from the same pool of `.c`/`.h` files under `src/`. Core logic (settings, JSON I/O, wallpaper-set commands, process/daemon helpers, string/hash/random utilities) is shared; GTK dialog and web-search code (`dlgs*.c`, `treev.c`, `preview.c`, `web*.c`, `thumbnail.c`, `icons.c`) is exclusive to `wchangercfg`.
+
+`src/` is being reorganised from one flat directory into a subdirectory per subsystem — `src/process/` (process-list scanning) is the first; everything not yet grouped stays flat at the top of `src/`. The conventions for a subsystem directory:
+
+- No nested `CMakeLists.txt`. Every file is listed in `src/CMakeLists.txt` — in one or both source lists, as before — with its path relative to `src/` (`process/process.c   process/process.h`).
+- Only `src/` itself is on the include path (`target_include_directories`), and nothing else is added per directory. So a header is included from outside its subsystem with the prefix (`#include "process/process.h"`), from a sibling file in the same directory by plain name, and a subsystem file reaches a still-flat header by plain name too.
+- Doxygen `@file` tags stay bare basenames, matching the rest of the tree.
+- Group a subsystem only once it is self-contained enough that the move is a pure relocation: a handful of inbound includes to re-prefix and no outbound include that the `src/` search path does not already resolve.
 
 ### Config/settings pipeline
 
@@ -81,9 +88,9 @@ TCase names are declared in `setting_suite()` at the bottom of `tests/test_setti
 
 `wchangerd` reloads settings from disk on every wallpaper-change cycle (see `chk_setts_ch_wall` in `wcngdmn.c`), so config changes made via `wchangercfg` take effect on the daemon's next interval without a restart — except the interval/time-align state itself, which is why `wchangerd --restart` is recommended after changing those.
 
-### Daemon lifecycle (`wcngdmn.c`, `daemon.c/.h`, `process.c/.h`, `proc_list.c/.h`, `proc_item.c/.h`)
+### Daemon lifecycle (`wcngdmn.c`, `daemon.c/.h`, `process/process.c/.h`, `process/proc_list.c/.h`, `process/proc_item.c/.h`)
 
-`wcngdmn.c` is the `wchangerd` entry point: parses CLI args (`cmdfn.c/.h`, `cmdline.c/.h`), checks for/kills an already-running daemon via process-list scanning (`process.c` — includes a FreeBSD `procstat` path guarded by the FreeBSD-only `find_library(PROCSTAT_LIBRARY)` check in the root `CMakeLists.txt`), daemonizes (`dmfn_daemonize`), then loops: sleep for the configured interval (optionally time-aligned to the hour, see `check_time_align_val`), reload settings, change wallpaper.
+`wcngdmn.c` is the `wchangerd` entry point: parses CLI args (`cmdfn.c/.h`, `cmdline.c/.h`), checks for/kills an already-running daemon via process-list scanning (`process/process.c` — includes a FreeBSD `procstat` path guarded by the FreeBSD-only `find_library(PROCSTAT_LIBRARY)` check in the root `CMakeLists.txt`), daemonizes (`dmfn_daemonize`), then loops: sleep for the configured interval (optionally time-aligned to the hour, see `check_time_align_val`), reload settings, change wallpaper.
 
 ### Wallpaper setting (`wallpaper_set.c/.h`)
 
