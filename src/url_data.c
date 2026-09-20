@@ -1,5 +1,5 @@
 /**
- * @file  urldata.c
+ * @file  url_data.c
  * @copyright Copyright (C) 2019-2026 Michał Bąbik
  *
  * This file is part of Wall Changer.
@@ -27,7 +27,7 @@
 #include <unistd.h>
 #include <curl/curl.h>
 #include "string_functions.h"
-#include "urldata.h"
+#include "url_data.h"
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Create new UrlData item.

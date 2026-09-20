@@ -15,7 +15,7 @@
 
 set(WCHANGERD_SOURCES
     wcngdmn.c
-    chkwch.c    chkwch.h
+    wallpaper_change.c    wallpaper_change.h
     wallpaper_set.c     wallpaper_set.h
     setts.c     setts.h
     json_file.c      json_file.h
@@ -48,7 +48,7 @@ set(WCHANGERCFG_SOURCES
     dialogs_other.c   dialogs_other.h
     message_dialogs.c      message_dialogs.h
     search_item.c   search_item.h
-    urldata.c      urldata.h
+    url_data.c      url_data.h
     image_info.c   image_info.h
     wallpaper_set.c        wallpaper_set.h
     setts.c        setts.h

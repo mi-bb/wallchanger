@@ -1,5 +1,5 @@
 /**
- * @file  chkwch.h
+ * @file  wallpaper_change.h
  * @copyright Copyright (C) 2019-2026 Michał Bąbik
  *
  * This file is part of Wall Changer.
@@ -21,8 +21,8 @@
  *
  * @author Michal Babik <michal.babik@protonmail.com>
  */
-#ifndef CHKWCH_H
-#define CHKWCH_H
+#ifndef WALLPAPER_CHANGE_H
+#define WALLPAPER_CHANGE_H
 
 #include <stdint.h>
 #include "randomm.h"
@@ -41,13 +41,6 @@ void print_now (void);
  */
 uint32_t check_time_align_val (const uint32_t  ui_ch_int,
                                uint32_t       *ui_cnt);
-/*----------------------------------------------------------------------------*/
-/**
- * @brief  Sleep for 500 milliseconds.
- *
- * @return none
- */
-void sleep500 (void);
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Check if display is present, exit if it is not.

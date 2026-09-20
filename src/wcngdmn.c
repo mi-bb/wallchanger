@@ -30,7 +30,7 @@
 #include <err.h>
 #include "cmd_functions.h"
 #include "daemon.h"
-#include "chkwch.h"
+#include "wallpaper_change.h"
 #include "randomm.h"
 /*----------------------------------------------------------------------------*/
 /**

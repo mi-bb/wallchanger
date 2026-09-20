@@ -23,7 +23,7 @@
  */
 #include <err.h>
 #include <ctype.h>
-#include "urldata.h"
+#include "url_data.h"
 #include "json_functions.h"
 #include "search_item.h"
 #include "message_dialogs.h"

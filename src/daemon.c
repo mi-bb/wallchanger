@@ -21,6 +21,7 @@
  *
  * @author Michal Babik <michal.babik@protonmail.com>
  */
+#include <time.h>
 #include <unistd.h>
 #include <signal.h>
 #include <err.h>
@@ -130,6 +131,16 @@ daemon_kill (void)
         printf ("Could not find wchangerd\n");
     }
     return i_cnt;
+}
+/*----------------------------------------------------------------------------*/
+/**
+ * @brief  Sleep for 500 milliseconds.
+ */
+void sleep500 (void)
+{
+    struct timespec ts = {0, 500000000};
+
+    nanosleep(&ts, nullptr);
 }
 /*----------------------------------------------------------------------------*/
 

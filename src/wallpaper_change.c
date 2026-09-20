@@ -1,5 +1,5 @@
 /**
- * @file  chkwch.c
+ * @file  wallpaper_change.c
  * @copyright Copyright (C) 2019-2026 Michał Bąbik
  *
  * This file is part of Wall Changer.
@@ -31,7 +31,7 @@
 #include "setts.h"
 #include "errors.h"
 #include "wmsfn.h"
-#include "chkwch.h"
+#include "wallpaper_change.h"
 #ifdef DEBUG
 #include <stdio.h>
 #endif
@@ -104,16 +104,6 @@ check_display (void)
 {
     return (getenv ("WAYLAND_DISPLAY") != nullptr ||
             getenv ("DISPLAY")         != nullptr);
-}
-/*----------------------------------------------------------------------------*/
-/**
- * @brief  Sleep for 500 milliseconds.
- */
-void sleep500 (void)
-{
-    struct timespec ts = {0, 500000000};
-
-    nanosleep(&ts, nullptr);
 }
 /*----------------------------------------------------------------------------*/
 /**

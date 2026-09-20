@@ -1,5 +1,5 @@
 /**
- * @file  urldata.h
+ * @file  url_data.h
  * @copyright Copyright (C) 2019-2026 Michał Bąbik
  *
  * This file is part of Wall Changer.
@@ -21,8 +21,8 @@
  *
  * @author Michal Babik <michal.babik@protonmail.com>
  */
-#ifndef URLDATA_H
-#define URLDATA_H
+#ifndef URL_DATA_H
+#define URL_DATA_H
 
 #include <stddef.h>
 /*----------------------------------------------------------------------------*/

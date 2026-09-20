@@ -23,7 +23,7 @@
  */
 #include "message_dialogs.h"
 #include "thumbnail.h"
-#include "urldata.h"
+#include "url_data.h"
 #include "icons.h"
 #include "file_dir_functions.h"
 #include "errors.h"
