@@ -156,7 +156,7 @@ constexpr int DEFAULT_WEB_DLG_HEIGHT = 800;
 #define PTH_ASTART_FILE_D  "wchangerd.desktop"
 #define PTH_WMINFO_FILE    "wms.json"
 #define PTH_CONFIG_FILE    "config.json"
-#define PTH_OLDCFG_FILE    "wchanger.json"
+#define PTH_OLDCFG_FILE    "config_main.json"
 #define PTH_WALLP_DIR      "wallpapers"
 #define PTH_THUMB_DIR      "thumbnails"
 #define PTH_IINFO_DIR      "iinfo"

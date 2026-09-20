@@ -9,7 +9,7 @@ Wall Changer is an automatic wallpaper changer for GNU/Linux and FreeBSD, writte
 - `wchangerd` — background daemon that switches the wallpaper on a configured interval (`--start`, `--stop`, `--restart`, `--once`, `--config FILE`). Links only json-c — shared helpers must not pull in GTK or libcurl.
 - `wchangercfg` — GTK+3 configuration GUI (links GTK/json-c/libcurl) for managing the wallpaper list, change interval, per-window-manager wallpaper-set command, and online wallpaper search/download.
 
-Config is read from `~/.config/wchanger/config.json` (falling back to `~/.config/wchanger.json` / `~/.config/wchanger/wchanger.json`), or an explicit path via `--config`.
+Config is read from `~/.config/wchanger/config.json` (falling back to `~/.config/config_main.json` / `~/.config/wchanger/config_main.json`), or an explicit path via `--config`.
 
 ## Build
 
@@ -104,9 +104,9 @@ Central point where a wallpaper is actually applied: builds the configured shell
 
 Each provider (`webflickr`, `webpixabay`, `webwallhaven`, `webabyss`) implements the same pattern against a shared `WebWidget` GTK widget (`webwidget.c/.h`, `webwidget_common.c` for the client-side glue, `webwidget_struct.h` for the shared struct). All use libcurl for HTTP and json-c to parse API responses; `webflickr.c` additionally needs flickcurl/libxml2 and is compiled in only when those are detected. `cache_query.c/.h` and `url_data.c/.h` build the search queries/URLs; downloaded images are cached under `PTH_WALLP_DIR`, thumbnails under `PTH_THUMB_DIR`, and per-image metadata under `PTH_IINFO_DIR`/`PTH_QUERY_DIR` (see path defines in `defs.h`).
 
-### GUI structure (`wchanger.c`, `dialog_data.c/.h`, `dlgs*.c/.h`, `treev.c/.h`)
+### GUI structure (`config_main.c`, `dialog_data.c/.h`, `dlgs*.c/.h`, `treev.c/.h`)
 
-`wchanger.c` is the `wchangercfg` entry point and wires together the main settings window. `dialog_data.c/.h` (`DialogData`) bundles the window's widgets and current settings state, passed around to the get/set-from-widgets helper functions in each dialog source file. `treev.c/.h` manages the GtkTreeView showing the selected wallpaper list; `preview.c/.h` and `thumbnail.c/.h` handle image preview/thumbnail generation.
+`config_main.c` is the `wchangercfg` entry point and wires together the main settings window. `dialog_data.c/.h` (`DialogData`) bundles the window's widgets and current settings state, passed around to the get/set-from-widgets helper functions in each dialog source file. `treev.c/.h` manages the GtkTreeView showing the selected wallpaper list; `preview.c/.h` and `thumbnail.c/.h` handle image preview/thumbnail generation.
 
 ### Shared low-level utilities
 

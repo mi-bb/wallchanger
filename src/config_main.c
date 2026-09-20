@@ -1,5 +1,5 @@
 /**
- * @file  wchanger.c
+ * @file  config_main.c
  * @copyright Copyright (C) 2019-2026 Michał Bąbik
  *
  * This program is free software: you can redistribute it and/or modify
@@ -23,7 +23,6 @@
  *
  * @author Michal Babik <michal.babik@protonmail.com>
  */
-#include <stdio.h>
 #include <stdint.h>
 #include <gtk/gtk.h>
 #include "dialog_data.h"
@@ -43,7 +42,6 @@
 #include "errors.h"
 #include "cfg_file.h"
 #include "defs.h"
-#include "hash_djb2.h"
 #include "daemon.h"
 #include "wmsfn.h"
 /*----------------------------------------------------------------------------*/

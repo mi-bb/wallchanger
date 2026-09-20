@@ -39,7 +39,7 @@ set(WCHANGERD_SOURCES
     defs.h)
 
 set(WCHANGERCFG_SOURCES
-    wchanger.c
+    config_main.c
     dialog_data.c   dialog_data.h
     treev.c        treev.h
     image_dialogs.c         image_dialogs.h
