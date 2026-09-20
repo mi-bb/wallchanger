@@ -1,5 +1,5 @@
 /**
- * @file  dlgs.h
+ * @file  image_dialogs.h
  * @copyright Copyright (C) 2019-2026 Michał Bąbik
  *
  * This file is part of Wall Changer.
@@ -17,12 +17,12 @@
  * You should have received a copy of the GNU General Public License
  * along with Wall Changer.  If not, see <https://www.gnu.org/licenses/>.
  *
- * @brief  Application dialogs
+ * @brief  Image dialogs
  *
  * @author Michal Babik <michal.babik@protonmail.com>
  */
-#ifndef DLGS_H
-#define DLGS_H
+#ifndef IMAGE_DIALOGS_H
+#define IMAGE_DIALOGS_H
 
 #include <gtk/gtk.h>
 /*----------------------------------------------------------------------------*/

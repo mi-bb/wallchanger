@@ -42,7 +42,7 @@ set(WCHANGERCFG_SOURCES
     wchanger.c
     dialog_data.c   dialog_data.h
     treev.c        treev.h
-    dlgs.c         dlgs.h
+    image_dialogs.c         image_dialogs.h
     dlgcmd.c       dlgcmd.h
     dlgothsett.c   dlgothsett.h
     dialogs_other.c   dialogs_other.h

@@ -24,7 +24,7 @@
 #include <inttypes.h>
 #include <err.h>
 #include "defs.h"
-#include "dlgs.h"
+#include "image_dialogs.h"
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Dialog with information about application.

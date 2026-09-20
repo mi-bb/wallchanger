@@ -1,5 +1,5 @@
 /**
- * @file  dlgs.c
+ * @file  image_dialogs.c
  * @copyright Copyright (C) 2019-2026 Michał Bąbik
  *
  * This file is part of Wall Changer.
@@ -17,19 +17,15 @@
  * You should have received a copy of the GNU General Public License
  * along with Wall Changer.  If not, see <https://www.gnu.org/licenses/>.
  *
- * @brief  Application dialogs
+ * @brief  Image dialogs
  *
  * @author Michal Babik <michal.babik@protonmail.com>
  */
 #include <inttypes.h>
 #include <err.h>
-#include "hash_djb2.h"
-#include "errors.h"
 #include "setts.h"
-#include "defs.h"
-#include "message_dialogs.h"
 #include "webwidget.h"
-#include "dlgs.h"
+#include "image_dialogs.h"
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Run dialog for getting wallpapers from web
