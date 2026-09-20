@@ -86,11 +86,11 @@ TCase names are declared in `setting_suite()` at the bottom of `tests/test_setti
 - `setting.c/.h` — the in-memory `Setting` data model (linked list of key/value settings, with parent/child nesting and a name hash from `hash_djb2.c`) that both binaries read/write.
 - `setts.c/.h` — higher-level settings load/apply logic used by both the daemon loop and the GUI.
 
-`wchangerd` reloads settings from disk on every wallpaper-change cycle (see `chk_setts_ch_wall` in `wcngdmn.c`), so config changes made via `wchangercfg` take effect on the daemon's next interval without a restart — except the interval/time-align state itself, which is why `wchangerd --restart` is recommended after changing those.
+`wchangerd` reloads settings from disk on every wallpaper-change cycle (see `chk_setts_ch_wall` in `daemon_main.c`), so config changes made via `wchangercfg` take effect on the daemon's next interval without a restart — except the interval/time-align state itself, which is why `wchangerd --restart` is recommended after changing those.
 
-### Daemon lifecycle (`wcngdmn.c`, `daemon.c/.h`, `process/process.c/.h`, `process/proc_list.c/.h`, `process/proc_item.c/.h`)
+### Daemon lifecycle (`daemon_main.c`, `daemon.c/.h`, `process/process.c/.h`, `process/proc_list.c/.h`, `process/proc_item.c/.h`)
 
-`wcngdmn.c` is the `wchangerd` entry point: parses CLI args (`cmd_functions.c/.h`, `cmdline.c/.h`), checks for/kills an already-running daemon via process-list scanning (`process/process.c` — includes a FreeBSD `procstat` path guarded by the FreeBSD-only `find_library(PROCSTAT_LIBRARY)` check in the root `CMakeLists.txt`), daemonizes (`dmfn_daemonize`), then loops: sleep for the configured interval (optionally time-aligned to the hour, see `check_time_align_val`), reload settings, change wallpaper.
+`daemon_main.c` is the `wchangerd` entry point: parses CLI args (`cmd_functions.c/.h`, `cmdline.c/.h`), checks for/kills an already-running daemon via process-list scanning (`process/process.c` — includes a FreeBSD `procstat` path guarded by the FreeBSD-only `find_library(PROCSTAT_LIBRARY)` check in the root `CMakeLists.txt`), daemonizes (`dmfn_daemonize`), then loops: sleep for the configured interval (optionally time-aligned to the hour, see `check_time_align_val`), reload settings, change wallpaper.
 
 ### Wallpaper setting (`wallpaper_set.c/.h`)
 

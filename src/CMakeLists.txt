@@ -14,7 +14,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 set(WCHANGERD_SOURCES
-    wcngdmn.c
+    daemon_main.c
     wallpaper_change.c    wallpaper_change.h
     wallpaper_set.c     wallpaper_set.h
     setts.c     setts.h
