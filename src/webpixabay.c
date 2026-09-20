@@ -33,7 +33,7 @@
 #include "errors.h"
 #include "cache_query.h"
 #include "webwidget_common.h"
-#include "dlgsmsg.h"
+#include "message_dialogs.h"
 #include "string_functions.h"
 #include "setting.h"
 #include "setts.h"

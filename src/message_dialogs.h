@@ -1,5 +1,5 @@
 /**
- * @file  dlgsmsg.h
+ * @file  message_dialogs.h
  * @copyright Copyright (C) 2019-2026 Michał Bąbik
  *
  * This file is part of Wall Changer.
@@ -21,8 +21,8 @@
  *
  * @author Michal Babik <michal.babik@protonmail.com>
  */
-#ifndef DLGSMSG_H
-#define DLGSMSG_H
+#ifndef MESSAGE_DIALOGS_H
+#define MESSAGE_DIALOGS_H
 
 #include <gtk/gtk.h>
 /*----------------------------------------------------------------------------*/

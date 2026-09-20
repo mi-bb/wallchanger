@@ -21,7 +21,7 @@
  *
  * @author Michal Babik <michal.babik@protonmail.com>
  */
-#include "dlgsmsg.h"
+#include "message_dialogs.h"
 #include "dir_content.h"
 #include "daemon.h"
 #include "setting.h"

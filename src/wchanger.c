@@ -31,7 +31,7 @@
 #include "wallpaper_set.h"
 #include "icons.h"
 #include "dlgs.h"
-#include "dlgsmsg.h"
+#include "message_dialogs.h"
 #include "dlgcmd.h"
 #include "dlgothsett.h"
 #include "treev.h"

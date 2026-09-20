@@ -1,5 +1,5 @@
 /**
- * @file  dlgsmsg.c
+ * @file  message_dialogs.c
  * @copyright Copyright (C) 2019-2026 Michał Bąbik
  *
  * This file is part of Wall Changer.
@@ -21,7 +21,7 @@
  *
  * @author Michal Babik <michal.babik@protonmail.com>
  */
-#include "dlgsmsg.h"
+#include "message_dialogs.h"
 /*----------------------------------------------------------------------------*/
 /**
  *  @brief  Error message dialog.

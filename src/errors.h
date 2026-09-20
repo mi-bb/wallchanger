@@ -40,7 +40,7 @@ enum e_error_values : int {
 };
 /*----------------------------------------------------------------------------*/
 /* The GNU __attribute__ spellings used here and in file_dir_functions.h,
- * hash_djb2.h, json_functions.h, dir_content.h, dlgsmsg.h and proc_item.h are kept
+ * hash_djb2.h, json_functions.h, dir_content.h, message_dialogs.h and proc_item.h are kept
  * on purpose: C23's nearest equivalents are not usable yet. [[unsequenced]]
  * has to follow the parameter list on GCC, and Clang does not know it at all
  * (it is dropped with -Wunknown-attributes), so it would silently lose the

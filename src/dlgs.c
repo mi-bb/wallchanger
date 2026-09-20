@@ -27,7 +27,7 @@
 #include "errors.h"
 #include "setts.h"
 #include "defs.h"
-#include "dlgsmsg.h"
+#include "message_dialogs.h"
 #include "webwidget.h"
 #include "dlgs.h"
 /*----------------------------------------------------------------------------*/

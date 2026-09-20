@@ -45,7 +45,7 @@ set(WCHANGERCFG_SOURCES
     dlgs.c         dlgs.h
     dlgcmd.c       dlgcmd.h
     dlgothsett.c   dlgothsett.h
-    dlgsmsg.c      dlgsmsg.h
+    message_dialogs.c      message_dialogs.h
     search_item.c   search_item.h
     urldata.c      urldata.h
     image_info.c   image_info.h

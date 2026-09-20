@@ -26,7 +26,7 @@
 #include "urldata.h"
 #include "json_functions.h"
 #include "search_item.h"
-#include "dlgsmsg.h"
+#include "message_dialogs.h"
 #include "string_functions.h"
 #include "setts.h"
 #include "errors.h"

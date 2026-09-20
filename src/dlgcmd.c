@@ -24,7 +24,7 @@
 #include "errors.h"
 #include "wallpaper_set.h"
 #include "image_info.h"
-#include "dlgsmsg.h"
+#include "message_dialogs.h"
 #include "string_functions.h"
 #include "wmsfn.h"
 #include "setting.h"
