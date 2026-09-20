@@ -22,7 +22,7 @@
  * @author Michal Babik <michal.babik@protonmail.com>
  */
 #include "dlgsmsg.h"
-#include "dirlist.h"
+#include "dir_content.h"
 #include "daemon.h"
 #include "setting.h"
 #include "setts.h"
@@ -110,8 +110,8 @@ event_delete_query_data (GtkWidget **gw_array)
 
     s_path = gtk_label_get_text (
             GTK_LABEL (gw_array[GW_SETT_QUERY_PATH_LABEL]));
-    dirlist_delete_dir_content (s_path);
-    s_size = g_format_size ((guint64) dirlist_get_dir_size (s_path));
+    delete_dir_content (s_path);
+    s_size = g_format_size ((guint64) get_dir_size (s_path));
     gtk_label_set_text (GTK_LABEL (gw_array[GW_SETT_QUERY_SIZE_LABEL]), s_size);
     free (s_size);
 }
@@ -130,8 +130,8 @@ event_delete_thumb_data (GtkWidget **gw_array)
 
     s_path = gtk_label_get_text (
             GTK_LABEL (gw_array[GW_SETT_THUMB_PATH_LABEL]));
-    dirlist_delete_dir_content (s_path);
-    s_size = g_format_size ((guint64) dirlist_get_dir_size (s_path));
+    delete_dir_content (s_path);
+    s_size = g_format_size ((guint64) get_dir_size (s_path));
     gtk_label_set_text (GTK_LABEL (gw_array[GW_SETT_THUMB_SIZE_LABEL]), s_size);
     free (s_size);
 }
@@ -153,8 +153,8 @@ event_delete_wallpapers (GtkWidget **gw_array)
 
         s_path = gtk_label_get_text (
                 GTK_LABEL (gw_array[GW_SETT_WALL_PATH_LABEL]));
-        dirlist_delete_dir_content (s_path);
-        s_size = g_format_size ((guint64) dirlist_get_dir_size (s_path));
+        delete_dir_content (s_path);
+        s_size = g_format_size ((guint64) get_dir_size (s_path));
         gtk_label_set_text (GTK_LABEL (gw_array[GW_SETT_WALL_SIZE_LABEL]),
                             s_size);
         free (s_size);
@@ -179,8 +179,8 @@ event_delete_config_files (GtkWidget **gw_array)
 
         s_path = gtk_label_get_text (
                 GTK_LABEL (gw_array[GW_SETT_CONF_PATH_LABEL]));
-        dirlist_delete_dir_content (s_path);
-        s_size = g_format_size ((guint64) dirlist_get_dir_size (s_path));
+        delete_dir_content (s_path);
+        s_size = g_format_size ((guint64) get_dir_size (s_path));
         gtk_label_set_text (GTK_LABEL (gw_array[GW_SETT_CONF_SIZE_LABEL]),
                             s_size);
         free (s_size);
@@ -276,10 +276,10 @@ other_settings_dialog (GtkWindow  *gw_parent,
     s_query_path = cfg_file_get_query_path ();
     s_conf_path  = cfg_file_get_app_config_path ();
     s_wall_path  = cfg_file_get_app_wallpapers_path ();
-    s_thumb_size = g_format_size ((guint64) dirlist_get_dir_size (s_thumb_path));
-    s_query_size = g_format_size ((guint64) dirlist_get_dir_size (s_query_path));
-    s_conf_size  = g_format_size ((guint64) dirlist_get_dir_size (s_conf_path));
-    s_wall_size  = g_format_size ((guint64) dirlist_get_dir_size (s_wall_path));
+    s_thumb_size = g_format_size ((guint64) get_dir_size (s_thumb_path));
+    s_query_size = g_format_size ((guint64) get_dir_size (s_query_path));
+    s_conf_size  = g_format_size ((guint64) get_dir_size (s_conf_path));
+    s_wall_size  = g_format_size ((guint64) get_dir_size (s_wall_path));
     gw_array[GW_SETT_THUMB_PATH_LABEL] = gtk_label_new (s_thumb_path);
     gw_array[GW_SETT_THUMB_SIZE_LABEL] = gtk_label_new (s_thumb_size);
     gw_array[GW_SETT_QUERY_PATH_LABEL] = gtk_label_new (s_query_path);

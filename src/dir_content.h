@@ -1,5 +1,5 @@
 /**
- * @file  dirlist.h
+ * @file  dir_content.h
  * @copyright Copyright (C) 2019-2026 Michał Bąbik
  *
  * This file is part of Wall Changer.
@@ -21,8 +21,8 @@
  *
  * @author Michal Babik <michal.babik@protonmail.com>
  */
-#ifndef DIRLIST_H
-#define DIRLIST_H
+#ifndef DIR_CONTENT_H
+#define DIR_CONTENT_H
 
 #include <gmodule.h>
 /*----------------------------------------------------------------------------*/
@@ -38,11 +38,11 @@ GList * get_dir_content_filter_images   (const char *s_dir)
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Get size of all files in a directory.
- *
+ *s_res
  * @param[in]  s_path  Directory path to scan
  * @return     Size of files in folder
  */
-goffset dirlist_get_dir_size            (const char *s_path)
+goffset get_dir_size                    (const char *s_path)
                                          __attribute__ ((nonnull (1)));
 /*----------------------------------------------------------------------------*/
 /**
@@ -51,7 +51,7 @@ goffset dirlist_get_dir_size            (const char *s_path)
  * @param[in]  s_path  Directory path to scan
  * @return     none
  */
-void    dirlist_delete_dir_content      (const char *s_path);
+void    delete_dir_content              (const char *s_path);
 /*----------------------------------------------------------------------------*/
 #endif
 

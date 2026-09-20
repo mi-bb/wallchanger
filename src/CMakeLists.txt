@@ -61,7 +61,7 @@ set(WCHANGERCFG_SOURCES
     string_functions.c       string_functions.h
     file_dir_functions.c         file_dir_functions.h
     cfg_file.c      cfg_file.h
-    dirlist.c      dirlist.h
+    dir_content.c      dir_content.h
     cres.c         cres.h
     hash_djb2.c      hash_djb2.h
     daemon.c         daemon.h

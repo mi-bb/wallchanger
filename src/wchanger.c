@@ -35,7 +35,7 @@
 #include "dlgcmd.h"
 #include "dlgothsett.h"
 #include "treev.h"
-#include "dirlist.h"
+#include "dir_content.h"
 #include "file_dir_functions.h"
 #include "preview.h"
 #include "string_functions.h"

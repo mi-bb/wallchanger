@@ -1,5 +1,5 @@
 /**
- * @file  dirlist.c
+ * @file  dir_content.c
  * @copyright Copyright (C) 2019-2026 Michał Bąbik
  *
  * This file is part of Wall Changer.
@@ -26,7 +26,7 @@
 #include <stdio.h>
 #include <err.h>
 #include "string_functions.h"
-#include "dirlist.h"
+#include "dir_content.h"
 /*----------------------------------------------------------------------------*/
 /**
  * @fn  static const char * get_file_ext (const char *s_fn)
@@ -308,7 +308,7 @@ enumerate_folder_delete (GFile    *gf_dir,
  * @brief  Get size of all files in a directory.
  */
 goffset
-dirlist_get_dir_size (const char *s_path)
+get_dir_size (const char *s_path)
 {
     GFile   *g_path;
     goffset  i_size = 0;
@@ -326,7 +326,7 @@ dirlist_get_dir_size (const char *s_path)
  * @brief  Delete files in given directory.
  */
 void
-dirlist_delete_dir_content (const char *s_path)
+delete_dir_content (const char *s_path)
 {
     GFile   *g_path;
 
