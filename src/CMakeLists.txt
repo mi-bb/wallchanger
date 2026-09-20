@@ -72,7 +72,7 @@ set(WCHANGERCFG_SOURCES
     errors.c         errors.h
     nstrings.c     nstrings.h
     cache_query.c      cache_query.h
-    thumbs.c       thumbs.h
+    thumbnail.c       thumbnail.h
     webwidget.c    webwidget.h
     webwidget_common.c  webwidget_common.h
     webpixabay.c   webpixabay.h

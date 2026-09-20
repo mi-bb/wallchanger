@@ -1,5 +1,5 @@
 /**
- * @file  thumbs.h
+ * @file  thumbnail.h
  * @copyright Copyright (C) 2019-2026 Michał Bąbik
  *
  * This file is part of Wall Changer.
@@ -21,8 +21,8 @@
  *
  * @author Michal Babik <michal.babik@protonmail.com>
  */
-#ifndef THUMBS_H
-#define THUMBS_H
+#ifndef THUMBNAIL_H
+#define THUMBNAIL_H
 
 #include <gtk/gtk.h>
 /*----------------------------------------------------------------------------*/

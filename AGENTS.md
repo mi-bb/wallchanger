@@ -70,7 +70,7 @@ TCase names are declared in `setting_suite()` at the bottom of `tests/test_setti
 
 ### Two binaries sharing one `src/` tree
 
-`src/CMakeLists.txt` lists `WCHANGERD_SOURCES` and `WCHANGERCFG_SOURCES` separately, but both pull from the same pool of `.c`/`.h` files in `src/`. Core logic (settings, JSON I/O, wallpaper-set commands, process/daemon helpers, string/hash/random utilities) is shared; GTK dialog and web-search code (`dlgs*.c`, `treev.c`, `preview.c`, `web*.c`, `thumbs.c`, `icons.c`) is exclusive to `wchangercfg`.
+`src/CMakeLists.txt` lists `WCHANGERD_SOURCES` and `WCHANGERCFG_SOURCES` separately, but both pull from the same pool of `.c`/`.h` files in `src/`. Core logic (settings, JSON I/O, wallpaper-set commands, process/daemon helpers, string/hash/random utilities) is shared; GTK dialog and web-search code (`dlgs*.c`, `treev.c`, `preview.c`, `web*.c`, `thumbnail.c`, `icons.c`) is exclusive to `wchangercfg`.
 
 ### Config/settings pipeline
 
@@ -99,7 +99,7 @@ Each provider (`webflickr`, `webpixabay`, `webwallhaven`, `webabyss`) implements
 
 ### GUI structure (`wchanger.c`, `dialog_data.c/.h`, `dlgs*.c/.h`, `treev.c/.h`)
 
-`wchanger.c` is the `wchangercfg` entry point and wires together the main settings window. `dialog_data.c/.h` (`DialogData`) bundles the window's widgets and current settings state, passed around to the get/set-from-widgets helper functions in each dialog source file. `treev.c/.h` manages the GtkTreeView showing the selected wallpaper list; `preview.c/.h` and `thumbs.c/.h` handle image preview/thumbnail generation.
+`wchanger.c` is the `wchangercfg` entry point and wires together the main settings window. `dialog_data.c/.h` (`DialogData`) bundles the window's widgets and current settings state, passed around to the get/set-from-widgets helper functions in each dialog source file. `treev.c/.h` manages the GtkTreeView showing the selected wallpaper list; `preview.c/.h` and `thumbnail.c/.h` handle image preview/thumbnail generation.
 
 ### Shared low-level utilities
 

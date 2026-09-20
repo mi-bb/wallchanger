@@ -22,7 +22,7 @@
  * @author Michal Babik <michal.babik@protonmail.com>
  */
 #include "dlgsmsg.h"
-#include "thumbs.h"
+#include "thumbnail.h"
 #include "urldata.h"
 #include "icons.h"
 #include "file_dir_functions.h"

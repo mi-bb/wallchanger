@@ -1,5 +1,5 @@
 /**
- * @file  thumbs.c
+ * @file  thumbnail.c
  * @copyright Copyright (C) 2019-2026 Michał Bąbik
  *
  * This file is part of Wall Changer.
@@ -29,7 +29,7 @@
 #include "file_dir_functions.h"
 #include "cfg_file.h"
 #include "dlgsmsg.h"
-#include "thumbs.h"
+#include "thumbnail.h"
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Create pixbuf from raw data.
