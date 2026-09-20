@@ -1,5 +1,5 @@
 /**
- * @file  webflickr.h
+ * @file  web_flickr.h
  * @copyright Copyright (C) 2019-2026 Michał Bąbik
  *
  * This file is part of Wall Changer.
@@ -21,8 +21,8 @@
  *
  * @author Michal Babik <michal.babik@protonmail.com>
  */
-#ifndef WEBFLICKR_H
-#define WEBFLICKR_H
+#ifndef WEB_FLICKR_H
+#define WEB_FLICKR_H
 
 #include "config.h"
 

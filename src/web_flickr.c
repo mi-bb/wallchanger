@@ -1,5 +1,5 @@
 /**
- * @file  webflickr.c
+ * @file  web_flickr.c
  * @copyright Copyright (C) 2019-2026 Michał Bąbik
  *
  * This file is part of Wall Changer.
@@ -34,7 +34,7 @@
 #include "cache_query.h"
 #include "search_item.h"
 #include "webwidget_common.h"
-#include "webflickr.h"
+#include "web_flickr.h"
 /*----------------------------------------------------------------------------*/
 /**
  * @def   SERV_NAME

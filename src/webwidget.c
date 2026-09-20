@@ -39,7 +39,7 @@
 #include "web_pixabay.h"
 #include "webwallhaven.h"
 #include "web_abyss.h"
-#include "webflickr.h"
+#include "web_flickr.h"
 #include "cache_query.h"
 #include "webwidget.h"
 /*----------------------------------------------------------------------------*/
