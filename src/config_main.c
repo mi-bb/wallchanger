@@ -32,7 +32,7 @@
 #include "image_dialogs.h"
 #include "dialogs_other.h"
 #include "message_dialogs.h"
-#include "dlgcmd.h"
+#include "wallpaper_set_command_dialog.h"
 #include "other_settings_dialog.h"
 #include "treev.h"
 #include "dir_content.h"
@@ -787,7 +787,7 @@ event_command_button_pressed (const DialogData *dd_data)
     char   *s_command = nullptr; /* Command from dialog */
 
     gsl_files = treeview_get_data (dd_data->gw_view);
-    s_command = cmddialog_run (dd_data->gw_window,
+    s_command = wp_set_command_dialog_run (dd_data->gw_window,
             gtk_entry_get_text (GTK_ENTRY (dd_data->gw_command)), gsl_files);
 
     if (s_command != nullptr) {

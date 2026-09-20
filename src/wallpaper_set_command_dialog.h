@@ -1,5 +1,5 @@
 /**
- * @file  dlgcmd.h
+ * @file  wallpaper_set_command_dialog.h
  * @copyright Copyright (C) 2019-2026 Michał Bąbik
  *
  * This file is part of Wall Changer.
@@ -21,8 +21,8 @@
  *
  * @author Michal Babik <michal.babik@protonmail.com>
  */
-#ifndef DLGCMD_H
-#define DLGCMD_H
+#ifndef WALLPAPER_SET_COMMAND_DIALOG_H
+#define WALLPAPER_SET_COMMAND_DIALOG_H
 
 #include <gtk/gtk.h>
 /*----------------------------------------------------------------------------*/
@@ -36,9 +36,9 @@
  *            freed after use using free.
  */
 /*----------------------------------------------------------------------------*/
-char *   cmddialog_run            (GtkWindow    *gw_parent,
-                                   const char   *s_current_cmd,
-                                   const GSList *gsl_iinfo);
+char *   wp_set_command_dialog_run (GtkWindow    *gw_parent,
+                                    const char   *s_current_cmd,
+                                    const GSList *gsl_iinfo);
 /*----------------------------------------------------------------------------*/
 #endif
 

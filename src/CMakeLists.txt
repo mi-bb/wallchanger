@@ -43,7 +43,7 @@ set(WCHANGERCFG_SOURCES
     dialog_data.c   dialog_data.h
     treev.c        treev.h
     image_dialogs.c         image_dialogs.h
-    dlgcmd.c       dlgcmd.h
+    wallpaper_set_command_dialog.c       wallpaper_set_command_dialog.h
     other_settings_dialog.c   other_settings_dialog.h
     dialogs_other.c   dialogs_other.h
     message_dialogs.c      message_dialogs.h

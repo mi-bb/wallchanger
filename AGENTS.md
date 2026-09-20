@@ -98,7 +98,7 @@ Central point where a wallpaper is actually applied: builds the configured shell
 
 ### Window-manager command presets (`wmsfn.c/.h`, `other/wms.json`)
 
-`wms.json` ships a list of window managers and their default wallpaper-set commands (Xfce needs a non-standard one). `wchangercfg`'s "Select" dialog (`dlgcmd.c/.h`) lets the user pick/override the detected WM's command; `wmsfn.c` handles matching the running WM to a preset.
+`wms.json` ships a list of window managers and their default wallpaper-set commands (Xfce needs a non-standard one). `wchangercfg`'s "Select" dialog (`wallpaper_set_command_dialog.c/.h`) lets the user pick/override the detected WM's command; `wmsfn.c` handles matching the running WM to a preset.
 
 ### Online wallpaper search (`web*.c/.h`, `webwidget*.c/.h`)
 

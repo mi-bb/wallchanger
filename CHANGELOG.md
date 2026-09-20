@@ -38,7 +38,7 @@ and this project adheres to
 - Raised the CMake minimum from 3.13 to 3.21, which is the first version that knows the `c_std_23` compile feature the targets ask for; the standard is now requested per target with `target_compile_features()` instead of the global `CMAKE_C_STANDARD`.
 - Added `CMakePresets.json` with `default`, `release` and `debug` presets, and enabled `CMAKE_EXPORT_COMPILE_COMMANDS`.
 - The C standard no longer has to be passed by hand in `CFLAGS`: `configure` probes for the option that enables C23 (`-std=gnu23`, `-std=c23`, `-std=gnu2x`, `-std=c2x`) and fails with an explanatory message when the compiler supports none of them.
-- Gave the enums a fixed underlying type (`enum … : int`, a C23 feature) in `errors.h`, `setting.h`, `nstrings.h`, `setts.h`, `icons.h` and `webwidget_common.h`, converted the last numeric `#define` constants in `dlgcmd.c`, `process.c` and `webwidget.c` to `constexpr`, gave `cfgfile_autostart_exists()` and `process_exists_b()` a `bool` return type, and marked the allocating constructors and pure query helpers `[[nodiscard]]`.
+- Gave the enums a fixed underlying type (`enum … : int`, a C23 feature) in `errors.h`, `setting.h`, `nstrings.h`, `setts.h`, `icons.h` and `webwidget_common.h`, converted the last numeric `#define` constants in `wallpaper_set_command_dialog.c`, `process.c` and `webwidget.c` to `constexpr`, gave `cfgfile_autostart_exists()` and `process_exists_b()` a `bool` return type, and marked the allocating constructors and pure query helpers `[[nodiscard]]`.
 - Bumped the project version to 1.7.0 in `CMakeLists.txt`.
 
 ### Removed

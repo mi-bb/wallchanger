@@ -1,5 +1,5 @@
 /**
- * @file  dlgcmd.c
+ * @file  wallpaper_set_command_dialog.c
  * @copyright Copyright (C) 2019-2026 Michał Bąbik
  *
  * This file is part of Wall Changer.
@@ -28,7 +28,7 @@
 #include "string_functions.h"
 #include "wmsfn.h"
 #include "setting.h"
-#include "dlgcmd.h"
+#include "wallpaper_set_command_dialog.h"
 /*----------------------------------------------------------------------------*/
 /**
  * @var   PREV_LEN
@@ -553,9 +553,9 @@ xfce_dialog_run (GtkWindow *gw_parent)
  * @brief  Run wallpaper set command configuration dialog.
  */
 char *
-cmddialog_run (GtkWindow    *gw_parent,
-               const char   *s_current_cmd,
-               const GSList *gsl_iinfo)
+wp_set_command_dialog_run (GtkWindow    *gw_parent,
+                           const char   *s_current_cmd,
+                           const GSList *gsl_iinfo)
 {
     GtkWidget *gw_dialog;         /* Wallpaper set command dialog */
     GtkWidget *gw_content_box;    /* Dialog's box */
