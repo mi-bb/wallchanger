@@ -1,5 +1,5 @@
 /**
- * @file  webwallhaven.c
+ * @file  web_wallhaven.c
  * @copyright Copyright (C) 2019-2026 Michał Bąbik
  *
  * This file is part of Wall Changer.
@@ -38,7 +38,7 @@
 #include "setting.h"
 #include "url_data.h"
 #include "webwidget_common.h"
-#include "webwallhaven.h"
+#include "web_wallhaven.h"
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Enum with available search options.

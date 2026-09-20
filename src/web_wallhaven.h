@@ -1,5 +1,5 @@
 /**
- * @file  webwallhaven.h
+ * @file  web_wallhaven.h
  * @copyright Copyright (C) 2019-2026 Michał Bąbik
  *
  * This file is part of Wall Changer.
@@ -21,8 +21,8 @@
  *
  * @author Michal Babik <michal.babik@protonmail.com>
  */
-#ifndef WEBWALLHAVEN_H
-#define WEBWALLHAVEN_H
+#ifndef WEB_WALLHAVEN_H
+#define WEB_WALLHAVEN_H
 
 #include <gtk/gtk.h>
 #include "nstrings.h"

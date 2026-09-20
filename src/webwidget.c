@@ -37,7 +37,7 @@
 #include "nstrings.h"
 #include "webwidget_common.h"
 #include "web_pixabay.h"
-#include "webwallhaven.h"
+#include "web_wallhaven.h"
 #include "web_abyss.h"
 #include "web_flickr.h"
 #include "cache_query.h"
