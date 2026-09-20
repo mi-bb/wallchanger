@@ -23,7 +23,7 @@
  *
  * @author Michal Babik <michal.babik@protonmail.com>
  */
-#include "hashfun.h"
+#include "hash_djb2.h"
 #include "rwdt.h"
 #include "errors.h"
 #ifdef DEBUG

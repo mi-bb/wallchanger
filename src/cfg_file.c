@@ -26,7 +26,7 @@
 #include <string.h>
 #include <stdio.h>
 #include "errors.h"
-#include "strfun.h"
+#include "string_functions.h"
 #include "fdfn.h"
 #include "rwdt.h"
 #include "cfg_file.h"

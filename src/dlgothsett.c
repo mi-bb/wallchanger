@@ -27,7 +27,7 @@
 #include "setting.h"
 #include "setts.h"
 #include "cfg_file.h"
-#include "strfun.h"
+#include "string_functions.h"
 #include "dlgothsett.h"
 /*----------------------------------------------------------------------------*/
 /**

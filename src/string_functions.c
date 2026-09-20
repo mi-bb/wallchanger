@@ -1,5 +1,5 @@
 /**
- * @file  strfun.c
+ * @file  string_functions.c
  * @copyright Copyright (C) 2019-2026 Michał Bąbik
  *
  * This file is part of Wall Changer.
@@ -25,7 +25,7 @@
 #include <stdio.h>
 #include <string.h>
 #include "cres.h"
-#include "strfun.h"
+#include "string_functions.h"
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  String compare function for getting string position function.

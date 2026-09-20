@@ -25,7 +25,7 @@
 #include <string.h>
 #include <check.h>
 #include "setting.h"
-#include "hashfun.h"
+#include "hash_djb2.h"
 /*----------------------------------------------------------------------------*/
 /* Creation and type accessors                                                */
 /*----------------------------------------------------------------------------*/

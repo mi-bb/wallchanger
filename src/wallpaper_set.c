@@ -27,10 +27,10 @@
 #include <string.h>
 #include "setts.h"
 #include "randomm.h"
-#include "strfun.h"
+#include "string_functions.h"
 #include "setting.h"
 #include "errors.h"
-#include "hashfun.h"
+#include "hash_djb2.h"
 #include "wallpaper_set.h"
 /*----------------------------------------------------------------------------*/
 /**

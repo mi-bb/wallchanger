@@ -1,5 +1,5 @@
 /**
- * @file  hashfun.c
+ * @file  hash_djb2.h
  * @copyright Copyright (C) 2019-2026 Michał Bąbik
  *
  * This file is part of Wall Changer.
@@ -21,23 +21,22 @@
  *
  * @author Michal Babik <michal.babik@protonmail.com>
  */
-#include <stdlib.h>
-#include "hashfun.h"
+#ifndef HASH_DJB2_H
+#define HASH_DJB2_H
+
+#include <stdint.h>
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  djb2 hash function.
+ *
+ * This is Daniel J. Bernstein's "times 33" hash function posted by him many
+ * years ago on comp.lang.c.
+ *
+ * @param[in]  str  String to count hash
+ * @return     Hash value
  */
-uint_fast32_t
-hash (const char * __restrict str)
-{
-    uint_fast32_t hash = 5381;
-    int_fast32_t  c    = 0;
-
-    while ((c = *str++)) {
-
-        hash = ((hash << 5) + hash) + c;
-    }
-    return hash;
-}
+uint_fast32_t hash (const char * __restrict str)
+              __attribute__ ((pure, nonnull (1)));
 /*----------------------------------------------------------------------------*/
+#endif
 

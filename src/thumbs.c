@@ -25,7 +25,7 @@
 #include <ctype.h>
 #include <err.h>
 #include "urldata.h"
-#include "strfun.h"
+#include "string_functions.h"
 #include "fdfn.h"
 #include "cfg_file.h"
 #include "dlgsmsg.h"

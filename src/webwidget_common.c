@@ -28,7 +28,7 @@
 #include "fdfn.h"
 #include "errors.h"
 #include "cache_query.h"
-#include "strfun.h"
+#include "string_functions.h"
 #include "setts.h"
 #include "webwidget_common.h"
 /*----------------------------------------------------------------------------*/

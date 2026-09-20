@@ -27,7 +27,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include <err.h>
-#include "hashfun.h"
+#include "hash_djb2.h"
 #include "setting.h"
 /*----------------------------------------------------------------------------*/
 /**

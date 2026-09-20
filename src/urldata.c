@@ -26,7 +26,7 @@
 #include <err.h>
 #include <unistd.h>
 #include <curl/curl.h>
-#include "strfun.h"
+#include "string_functions.h"
 #include "urldata.h"
 /*----------------------------------------------------------------------------*/
 /**

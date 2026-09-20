@@ -27,7 +27,7 @@
 #include <gdk-pixbuf/gdk-pixbuf.h>
 #include "cres.h"
 #include "image_info.h"
-#include "strfun.h"
+#include "string_functions.h"
 /*----------------------------------------------------------------------------*/
 /**
  * @fn  static void image_info_init (ImageInfo *ii_info)

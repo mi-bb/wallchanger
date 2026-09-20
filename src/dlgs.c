@@ -23,7 +23,7 @@
  */
 #include <inttypes.h>
 #include <err.h>
-#include "hashfun.h"
+#include "hash_djb2.h"
 #include "errors.h"
 #include "setts.h"
 #include "defs.h"

@@ -1,5 +1,5 @@
 /**
- * @file  strfun.h
+ * @file  string_functions.h
  * @copyright Copyright (C) 2019-2026 Michał Bąbik
  *
  * This file is part of Wall Changer.
@@ -21,8 +21,8 @@
  *
  * @author Michal Babik <michal.babik@protonmail.com>
  */
-#ifndef STRFUN_H
-#define STRFUN_H
+#ifndef STRING_FUNCTIONS_H
+#define STRING_FUNCTIONS_H
 
 #include <stddef.h>
 /*----------------------------------------------------------------------------*/

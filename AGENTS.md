@@ -55,7 +55,7 @@ Keep it that way. On a compiler that already defaults to C23 (GCC >= 15) an impl
 
 ## Tests
 
-Single `check`-based binary exercising `setting.c` + `hashfun.c`: `build/tests/test_setting` (builds only when libcheck >= 0.15 is present, else silently skipped). Runs one suite/case via check's env vars:
+Single `check`-based binary exercising `setting.c` + `hash_djb2.c`: `build/tests/test_setting` (builds only when libcheck >= 0.15 is present, else silently skipped). Runs one suite/case via check's env vars:
 
 ```sh
 CK_RUN_SUITE="Setting" ./build/tests/test_setting
@@ -76,7 +76,7 @@ TCase names are declared in `setting_suite()` at the bottom of `tests/test_setti
 
 - `cfg_file.c/.h` — locates and validates the config file (search order above).
 - `json_file.c` / `json_functions.c` — JSON object read/write helpers built on json-c.
-- `setting.c/.h` — the in-memory `Setting` data model (linked list of key/value settings, with parent/child nesting and a name hash from `hashfun.c`) that both binaries read/write.
+- `setting.c/.h` — the in-memory `Setting` data model (linked list of key/value settings, with parent/child nesting and a name hash from `hash_djb2.c`) that both binaries read/write.
 - `setts.c/.h` — higher-level settings load/apply logic used by both the daemon loop and the GUI.
 
 `wchangerd` reloads settings from disk on every wallpaper-change cycle (see `chk_setts_ch_wall` in `wcngdmn.c`), so config changes made via `wchangercfg` take effect on the daemon's next interval without a restart — except the interval/time-align state itself, which is why `wchangerd --restart` is recommended after changing those.
@@ -103,7 +103,7 @@ Each provider (`webflickr`, `webpixabay`, `webwallhaven`, `webabyss`) implements
 
 ### Shared low-level utilities
 
-`strfun.c`, `nstrings.c`, `hashfun.c`, `randomm.c`, `rwdt.c` (read/write data/time), `fdfn.c` (file/dir helpers), `dirlist.c`, `errors.c` (error reporting) — generic helpers used throughout both binaries.
+`string_functions.c`, `nstrings.c`, `hash_djb2.c`, `randomm.c`, `rwdt.c` (read/write data/time), `fdfn.c` (file/dir helpers), `dirlist.c`, `errors.c` (error reporting) — generic helpers used throughout both binaries.
 
 ### Installed data (`other/`)
 

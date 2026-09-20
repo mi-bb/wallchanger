@@ -29,7 +29,7 @@
 #else
 #include <json.h>
 #endif
-#include "strfun.h"
+#include "string_functions.h"
 #include "cache_query.h"
 #include "dlgsmsg.h"
 #include "errors.h"

@@ -18,7 +18,7 @@
 add_executable(test_setting
     test_setting.c
     ${PROJECT_SOURCE_DIR}/src/setting.c ${PROJECT_SOURCE_DIR}/src/setting.h
-    ${PROJECT_SOURCE_DIR}/src/hashfun.c ${PROJECT_SOURCE_DIR}/src/hashfun.h)
+    ${PROJECT_SOURCE_DIR}/src/hash_djb2.c ${PROJECT_SOURCE_DIR}/src/hash_djb2.h)
 target_compile_options(test_setting PRIVATE ${WC_C23_FLAG})
 target_include_directories(test_setting
     PRIVATE ${PROJECT_BINARY_DIR} ${PROJECT_SOURCE_DIR}/src)

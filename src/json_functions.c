@@ -36,8 +36,8 @@
 #include "errors.h"
 #include "setting.h"
 #include "rwdt.h"
-#include "strfun.h"
-#include "hashfun.h"
+#include "string_functions.h"
+#include "hash_djb2.h"
 #include "json_functions.h"
 /*----------------------------------------------------------------------------*/
 /**

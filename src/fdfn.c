@@ -30,7 +30,7 @@
 #include <err.h>
 #include <string.h>
 #include "errors.h"
-#include "strfun.h"
+#include "string_functions.h"
 #include "fdfn.h"
 /*----------------------------------------------------------------------------*/
 /**

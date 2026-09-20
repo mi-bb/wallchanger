@@ -25,7 +25,7 @@
 #include "wallpaper_set.h"
 #include "image_info.h"
 #include "dlgsmsg.h"
-#include "strfun.h"
+#include "string_functions.h"
 #include "wmsfn.h"
 #include "setting.h"
 #include "dlgcmd.h"

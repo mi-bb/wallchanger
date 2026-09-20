@@ -28,7 +28,7 @@
 #include <flickcurl.h>
 #include <err.h>
 
-#include "strfun.h"
+#include "string_functions.h"
 #include "errors.h"
 #include "dlgsmsg.h"
 #include "cache_query.h"

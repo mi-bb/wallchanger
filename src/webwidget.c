@@ -27,7 +27,7 @@
 #include "json_functions.h"
 #include "search_item.h"
 #include "dlgsmsg.h"
-#include "strfun.h"
+#include "string_functions.h"
 #include "setts.h"
 #include "errors.h"
 #include "cfg_file.h"

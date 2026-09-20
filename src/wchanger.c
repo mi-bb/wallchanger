@@ -38,11 +38,11 @@
 #include "dirlist.h"
 #include "fdfn.h"
 #include "preview.h"
-#include "strfun.h"
+#include "string_functions.h"
 #include "errors.h"
 #include "cfg_file.h"
 #include "defs.h"
-#include "hashfun.h"
+#include "hash_djb2.h"
 #include "daemon.h"
 #include "wmsfn.h"
 /*----------------------------------------------------------------------------*/

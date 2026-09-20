@@ -23,11 +23,11 @@ set(WCHANGERD_SOURCES
     rwdt.c      rwdt.h
     randomm.c   randomm.h
     setting.c   setting.h
-    strfun.c    strfun.h
+    string_functions.c    string_functions.h
     fdfn.c      fdfn.h
     cfg_file.c   cfg_file.h
     cres.c      cres.h
-    hashfun.c   hashfun.h
+    hash_djb2.c   hash_djb2.h
     daemon.c      daemon.h
     procfn.c    procfn.h
     proc_item.c  proc_item.h
@@ -58,12 +58,12 @@ set(WCHANGERCFG_SOURCES
     randomm.c      randomm.h
     setting.c      setting.h
     preview.c      preview.h
-    strfun.c       strfun.h
+    string_functions.c       string_functions.h
     fdfn.c         fdfn.h
     cfg_file.c      cfg_file.h
     dirlist.c      dirlist.h
     cres.c         cres.h
-    hashfun.c      hashfun.h
+    hash_djb2.c      hash_djb2.h
     daemon.c         daemon.h
     procfn.c       procfn.h
     proc_item.c     proc_item.h

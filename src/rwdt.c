@@ -33,7 +33,7 @@
 #include <errno.h>
 #include "errors.h"
 #include "cres.h"
-#include "hashfun.h"
+#include "hash_djb2.h"
 #include "rwdt.h"
 /*----------------------------------------------------------------------------*/
 /**
