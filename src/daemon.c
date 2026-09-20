@@ -28,7 +28,7 @@
 #include <stdio.h>
 #include <sys/stat.h>
 #include <sysexits.h>
-#include "procfn.h"
+#include "process.h"
 #include "daemon.h"
 /*----------------------------------------------------------------------------*/
 /**

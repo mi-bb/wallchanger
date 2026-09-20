@@ -123,7 +123,7 @@ if(NOT BASHCOMPDIR)
     set(BASHCOMPDIR "${CMAKE_INSTALL_FULL_SYSCONFDIR}/bash_completion.d")
 endif()
 
-# FreeBSD procstat support; only src/procfn.c uses it, and only there.
+# FreeBSD procstat support; only src/process.c uses it, and only there.
 set(PROCSTAT_LIBRARY "")
 if(CMAKE_SYSTEM_NAME STREQUAL "FreeBSD")
     find_library(PROCSTAT_LIBRARY procstat REQUIRED)

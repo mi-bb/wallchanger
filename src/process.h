@@ -1,5 +1,5 @@
 /**
- * @file  procfn.h
+ * @file  process.h
  * @copyright Copyright (C) 2020-2026 Michał Bąbik
  *
  * This file is part of Wall Changer.
@@ -21,8 +21,8 @@
  *
  * @author Michal Babik <michal.babik@protonmail.com>
  */
-#ifndef PROCFN_H
-#define PROCFN_H
+#ifndef PROCESS_H
+#define PROCESS_H
 
 #include <sys/types.h>
 #include "proc_list.h"

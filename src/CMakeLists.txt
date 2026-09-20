@@ -29,7 +29,7 @@ set(WCHANGERD_SOURCES
     cres.c      cres.h
     hash_djb2.c   hash_djb2.h
     daemon.c      daemon.h
-    procfn.c    procfn.h
+    process.c    process.h
     proc_item.c  proc_item.h
     proc_list.c  proc_list.h
     cmdfn.c     cmdfn.h
@@ -65,7 +65,7 @@ set(WCHANGERCFG_SOURCES
     cres.c         cres.h
     hash_djb2.c      hash_djb2.h
     daemon.c         daemon.h
-    procfn.c       procfn.h
+    process.c       process.h
     proc_item.c     proc_item.h
     proc_list.c     proc_list.h
     wmsfn.c        wmsfn.h

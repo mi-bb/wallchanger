@@ -1,5 +1,5 @@
 /**
- * @file  procfn.c
+ * @file  process.c
  * @copyright Copyright (C) 2020-2026 Michał Bąbik
  *
  * This file is part of Wall Changer.
@@ -40,7 +40,7 @@
 #include <sys/stat.h>
 #include <signal.h>
 #include <ctype.h>
-#include "procfn.h"
+#include "process.h"
 /*----------------------------------------------------------------------------*/
 #if defined(__linux__)
 /**
