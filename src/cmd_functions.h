@@ -1,5 +1,5 @@
 /**
- * @file  cmdfn.h
+ * @file  cmd_functions.h
  * @copyright Copyright (C) 2019-2026 Michał Bąbik
  *
  * This file is part of Wall Changer.
@@ -21,8 +21,8 @@
  *
  * @author Michal Babik <michal.babik@protonmail.com>
  */
-#ifndef CMDFN_H
-#define CMDFN_H
+#ifndef CMD_FUNCTIONS_H
+#define CMD_FUNCTIONS_H
 /*----------------------------------------------------------------------------*/
 /**
  * @var   CMD_OPT_NONE
@@ -65,10 +65,10 @@ constexpr int CMD_OPT_ONCE    = 0x20;
  * @param[out] s_cfgpath Copy here config path if given in options
  * @return     none
  */
-void cmdfn_parse (int    argc,
-                  char **argv,
-                  int   *i_opt,
-                  char **s_cfgpath);
+void cmd_parse (int    argc,
+                char **argv,
+                int   *i_opt,
+                char **s_cfgpath);
 /*----------------------------------------------------------------------------*/
 #endif
 

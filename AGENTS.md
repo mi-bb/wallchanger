@@ -90,7 +90,7 @@ TCase names are declared in `setting_suite()` at the bottom of `tests/test_setti
 
 ### Daemon lifecycle (`wcngdmn.c`, `daemon.c/.h`, `process/process.c/.h`, `process/proc_list.c/.h`, `process/proc_item.c/.h`)
 
-`wcngdmn.c` is the `wchangerd` entry point: parses CLI args (`cmdfn.c/.h`, `cmdline.c/.h`), checks for/kills an already-running daemon via process-list scanning (`process/process.c` — includes a FreeBSD `procstat` path guarded by the FreeBSD-only `find_library(PROCSTAT_LIBRARY)` check in the root `CMakeLists.txt`), daemonizes (`dmfn_daemonize`), then loops: sleep for the configured interval (optionally time-aligned to the hour, see `check_time_align_val`), reload settings, change wallpaper.
+`wcngdmn.c` is the `wchangerd` entry point: parses CLI args (`cmd_functions.c/.h`, `cmdline.c/.h`), checks for/kills an already-running daemon via process-list scanning (`process/process.c` — includes a FreeBSD `procstat` path guarded by the FreeBSD-only `find_library(PROCSTAT_LIBRARY)` check in the root `CMakeLists.txt`), daemonizes (`dmfn_daemonize`), then loops: sleep for the configured interval (optionally time-aligned to the hour, see `check_time_align_val`), reload settings, change wallpaper.
 
 ### Wallpaper setting (`wallpaper_set.c/.h`)
 

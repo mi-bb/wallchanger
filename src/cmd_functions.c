@@ -1,5 +1,5 @@
 /**
- * @file  cmdfn.c
+ * @file  cmd_functions.c
  * @copyright Copyright (C) 2019-2026 Michał Bąbik
  *
  * This file is part of Wall Changer.
@@ -27,16 +27,16 @@
 #include <err.h>
 #include <sysexits.h>
 #include "cmdline.h"
-#include "cmdfn.h"
+#include "cmd_functions.h"
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Parse command line options, set i_opt and s_cfgpath.
  */
 void
-cmdfn_parse (int    argc,
-             char **argv,
-             int   *i_opt,
-             char **s_cfgpath)
+cmd_parse (int    argc,
+           char **argv,
+           int   *i_opt,
+           char **s_cfgpath)
 {
     struct gengetopt_args_info args_info;
     *i_opt = 0;

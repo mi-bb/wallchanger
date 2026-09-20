@@ -32,7 +32,7 @@ set(WCHANGERD_SOURCES
     process/process.c    process/process.h
     process/proc_item.c  process/proc_item.h
     process/proc_list.c  process/proc_list.h
-    cmdfn.c     cmdfn.h
+    cmd_functions.c     cmd_functions.h
     cmdline.c   cmdline.h
     wmsfn.c     wmsfn.h
     errors.c      errors.h

@@ -28,7 +28,7 @@
 #include <stdint.h>
 #include <stdio.h>
 #include <err.h>
-#include "cmdfn.h"
+#include "cmd_functions.h"
 #include "daemon.h"
 #include "chkwch.h"
 #include "randomm.h"
@@ -56,7 +56,7 @@ main (int    argc,
     RandMem  *rm_rand      = nullptr; /* Random memory */
 
     /* Parse command line options */
-    cmdfn_parse (argc, argv, &i_opt, &s_cfg_file);
+    cmd_parse (argc, argv, &i_opt, &s_cfg_file);
 
     /* Printing status */
     if (i_opt & CMD_OPT_STATUS) {
