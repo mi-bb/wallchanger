@@ -1,5 +1,5 @@
 /**
- * @file  rwdt.c
+ * @file  file_io.c
  * @copyright Copyright (C) 2019-2026 Michał Bąbik
  *
  * This file is part of Wall Changer.
@@ -17,7 +17,7 @@
  * You should have received a copy of the GNU General Public License
  * along with Wall Changer.  If not, see <https://www.gnu.org/licenses/>.
  *
- * @brief  Read / write data functions
+ * @brief  File read / write functions
  *
  * @author Michal Babik <michal.babik@protonmail.com>
  */
@@ -34,7 +34,7 @@
 #include "errors.h"
 #include "cres.h"
 #include "hash_djb2.h"
-#include "rwdt.h"
+#include "file_io.h"
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Read some data from file.

@@ -24,7 +24,7 @@
  * @author Michal Babik <michal.babik@protonmail.com>
  */
 #include "hash_djb2.h"
-#include "rwdt.h"
+#include "file_io.h"
 #include "errors.h"
 #ifdef DEBUG
 #include <stdio.h>

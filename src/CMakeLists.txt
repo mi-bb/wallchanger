@@ -20,7 +20,7 @@ set(WCHANGERD_SOURCES
     setts.c     setts.h
     json_file.c      json_file.h
     json_functions.c     json_functions.h
-    rwdt.c      rwdt.h
+    file_io.c      file_io.h
     randomm.c   randomm.h
     setting.c   setting.h
     string_functions.c    string_functions.h
@@ -53,7 +53,7 @@ set(WCHANGERCFG_SOURCES
     setts.c        setts.h
     json_file.c         json_file.h
     json_functions.c        json_functions.h
-    rwdt.c         rwdt.h
+    file_io.c         file_io.h
     icons.c         icons.h
     randomm.c      randomm.h
     setting.c      setting.h
