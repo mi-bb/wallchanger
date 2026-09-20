@@ -30,92 +30,92 @@
  * @brief  Function returns string with error message.
  */
 const char *
-err_get_message (const int i_err)
+err_get_message (const int err)
 {
-    const char *s_res = nullptr;
+    const char *result = nullptr;
 
-    switch (i_err) {
+    switch (err) {
 
         case ERR_OK:
-            s_res = "All OK";
+            result = "All OK";
             break;
 
         case ERR_FILE:
-            s_res = "File error (cannot access / bad permissions)";
+            result = "File error (cannot access / bad permissions)";
             break;
 
         case ERR_FILE_RW:
-            s_res = "File read / write error";
+            result = "File read / write error";
             break;
 
         case ERR_FILE_CR:
-            s_res = "File / directory can not be created";
+            result = "File / directory can not be created";
             break;
 
         case ERR_FILE_RM:
-            s_res = "File / directory can not be removed";
+            result = "File / directory can not be removed";
             break;
 
         case ERR_FILE_EX:
-            s_res = "File does not exist";
+            result = "File does not exist";
             break;
 
         case ERR_ALLOC:
-            s_res = "Alloc error";
+            result = "Alloc error";
             break;
 
         case ERR_TYPE:
-            s_res = "Wrong type passed";
+            result = "Wrong type passed";
             break;
 
         case ERR_CFG_NOF:
-            s_res = "Could not find a config file";
+            result = "Could not find a config file";
             break;
 
         default:
            break;
     }
-    return s_res;
+    return result;
 }
 /*----------------------------------------------------------------------------*/
 int
-err_ex_code (const int i_err)
+err_ex_code (const int err)
 {
-    int i_res = EX_OK;
+    int result = EX_OK;
 
-    switch (i_err) {
+    switch (err) {
 
         case ERR_OK:
-            i_res = EX_OK;
+            result = EX_OK;
             break;
         case ERR_FILE:
-            i_res = EX_NOINPUT;
+            result = EX_NOINPUT;
             break;
         case ERR_FILE_RW:
-            i_res = EX_IOERR;
+            result = EX_IOERR;
             break;
         case ERR_FILE_CR:
-            i_res = EX_CANTCREAT;
+            result = EX_CANTCREAT;
             break;
         case ERR_FILE_RM:
-            i_res = EX_IOERR;
+            result = EX_IOERR;
             break;
         case ERR_FILE_EX:
-            i_res = EX_NOINPUT;
+            result = EX_NOINPUT;
             break;
         case ERR_ALLOC:
-            i_res = EXIT_FAILURE;
+            result = EXIT_FAILURE;
             break;
         case ERR_TYPE:
-            i_res = EXIT_FAILURE;
+            result = EXIT_FAILURE;
             break;
         case ERR_CFG_NOF:
-            i_res = EX_UNAVAILABLE;
+            result = EX_UNAVAILABLE;
             break;
         default:
            break;
     }
-    return i_res;
+    return result;
 }
 /*----------------------------------------------------------------------------*/
 

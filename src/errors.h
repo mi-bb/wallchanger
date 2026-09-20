@@ -39,30 +39,30 @@ enum e_error_values : int {
     ERR_CFG_NOF  /**< No config file found */
 };
 /*----------------------------------------------------------------------------*/
-/* The GNU __attribute__ spellings used here and in file_dir_functions.h, hash_djb2.h,
- * json_functions.h, dirlist.h, dlgsmsg.h and proc_item.h are kept on purpose: C23's
- * nearest equivalents are not usable yet. [[unsequenced]] has to follow the
- * parameter list on GCC, and Clang does not know it at all (it is dropped
- * with -Wunknown-attributes), so it would silently lose the optimization on
- * one of the two supported compilers. [[nodiscard]], which both compilers
- * implement, is used in the standard form where it applies. */
+/* The GNU __attribute__ spellings used here and in file_dir_functions.h,
+ * hash_djb2.h, json_functions.h, dirlist.h, dlgsmsg.h and proc_item.h are kept
+ * on purpose: C23's nearest equivalents are not usable yet. [[unsequenced]]
+ * has to follow the parameter list on GCC, and Clang does not know it at all
+ * (it is dropped with -Wunknown-attributes), so it would silently lose the
+ * optimization on one of the two supported compilers. [[nodiscard]], which
+ * both compilers implement, is used in the standard form where it applies. */
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Function returns string with error message.
  *
- * @param[in]  i_err   Error number
+ * @param[in]  err   Error number
  * @return     String with message
  */
 [[nodiscard]]
-const char * err_get_message (const int i_err) __attribute__ ((const));
+const char * err_get_message (const int err) __attribute__ ((const));
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Get exit error codes for program errors.
  *
- * @param[in]  i_err   Error number
+ * @param[in]  err   Error number
  * @return     Integer with exit error code
  */
 [[nodiscard]]
-int          err_ex_code     (const int i_err) __attribute__ ((const));
+int          err_ex_code     (const int err) __attribute__ ((const));
 /*----------------------------------------------------------------------------*/
 #endif
