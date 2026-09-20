@@ -1,5 +1,5 @@
 /**
- * @file  webabyss.c
+ * @file  web_abyss.c
  * @copyright Copyright (C) 2019-2026 Michał Bąbik
  *
  * This file is part of Wall Changer.
@@ -38,7 +38,7 @@
 #include "setting.h"
 #include "url_data.h"
 #include "webwidget_common.h"
-#include "webabyss.h"
+#include "web_abyss.h"
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Enum with available search options.

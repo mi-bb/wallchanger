@@ -1,5 +1,5 @@
 /**
- * @file  webabyss.h
+ * @file  web_abyss.h
  * @copyright Copyright (C) 2019-2026 Michał Bąbik
  *
  * This file is part of Wall Changer.
@@ -21,8 +21,8 @@
  *
  * @author Michal Babik <michal.babik@protonmail.com>
  */
-#ifndef WEBABYSS_H
-#define WEBABYSS_H
+#ifndef WEB_ABYSS_H
+#define WEB_ABYSS_H
 
 #include "nstrings.h"
 #include "webwidget_struct.h"

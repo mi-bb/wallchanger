@@ -79,7 +79,7 @@ set(WCHANGERCFG_SOURCES
     web_pixabay.c   web_pixabay.h
     webflickr.c    webflickr.h
     webwallhaven.c webwallhaven.h
-    webabyss.c     webabyss.h
+    web_abyss.c     web_abyss.h
     webwidget_struct.h
     defs.h)
 

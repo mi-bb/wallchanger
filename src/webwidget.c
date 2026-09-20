@@ -38,7 +38,7 @@
 #include "webwidget_common.h"
 #include "web_pixabay.h"
 #include "webwallhaven.h"
-#include "webabyss.h"
+#include "web_abyss.h"
 #include "webflickr.h"
 #include "cache_query.h"
 #include "webwidget.h"
