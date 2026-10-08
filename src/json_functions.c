@@ -34,7 +34,7 @@
 
 #include "json_file.h"
 #include "errors.h"
-#include "setting.h"
+#include "setting_item.h"
 #include "file_io.h"
 #include "string_functions.h"
 #include "hash_djb2.h"

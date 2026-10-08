@@ -1,5 +1,5 @@
 /**
- * @file  setting.h
+ * @file  setting_item.h
  * @copyright Copyright (C) 2019-2026 Michał Bąbik
  *
  * This file is part of Wall Changer.

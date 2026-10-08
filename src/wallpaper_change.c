@@ -28,7 +28,7 @@
 #include <time.h>
 #include "cfg_file.h"
 #include "wallpaper_set.h"
-#include "setts.h"
+#include "settings.h"
 #include "errors.h"
 #include "window_manager_info.h"
 #include "wallpaper_change.h"

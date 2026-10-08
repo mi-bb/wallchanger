@@ -24,7 +24,7 @@
 #ifndef WINDOW_MANAGER_INFO_H
 #define WINDOW_MANAGER_INFO_H
 
-#include "setting.h"
+#include "setting_item.h"
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Get list of Xfce displays possible to set wallpaper.

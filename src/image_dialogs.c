@@ -23,7 +23,7 @@
  */
 #include <inttypes.h>
 #include <err.h>
-#include "setts.h"
+#include "settings.h"
 #include "webwidget.h"
 #include "image_dialogs.h"
 /*----------------------------------------------------------------------------*/

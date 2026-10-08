@@ -1,5 +1,5 @@
 /**
- * @file  setting.c
+ * @file  setting_item.c
  * @copyright Copyright (C) 2019-2026 Michał Bąbik
  *
  * This file is part of Wall Changer.
@@ -28,7 +28,7 @@
 #include <stdlib.h>
 #include <err.h>
 #include "hash_djb2.h"
-#include "setting.h"
+#include "setting_item.h"
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Setting initialization.

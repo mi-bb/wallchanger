@@ -26,7 +26,7 @@
 #include <stdint.h>
 #include <gtk/gtk.h>
 #include "dialog_data.h"
-#include "setts.h"
+#include "settings.h"
 #include "wallpaper_set.h"
 #include "icons.h"
 #include "image_dialogs.h"
@@ -34,7 +34,7 @@
 #include "message_dialogs.h"
 #include "wallpaper_set_command_dialog.h"
 #include "other_settings_dialog.h"
-#include "treev.h"
+#include "tree_view.h"
 #include "dir_content.h"
 #include "file_dir_functions.h"
 #include "preview.h"

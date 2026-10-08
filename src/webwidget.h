@@ -27,7 +27,7 @@
 #include <gtk/gtk.h>
 #include "config.h"
 #include "webwidget_struct.h"
-#include "setting.h"
+#include "setting_item.h"
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Free WebWidget item.

@@ -1,5 +1,5 @@
 /**
- * @file  setts.h
+ * @file  settings.h
  * @copyright Copyright (C) 2019-2026 Michał Bąbik
  *
  * This file is part of Wall Changer.
@@ -25,7 +25,7 @@
 #define SETTS_H
 
 #include "config.h"
-#include "setting.h"
+#include "setting_item.h"
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Settings enum values

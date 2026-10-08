@@ -24,7 +24,7 @@
 #ifndef WALLPAPER_SET_H
 #define WALLPAPER_SET_H
 #include "randomm.h"
-#include "setting.h"
+#include "setting_item.h"
 /*----------------------------------------------------------------------------*/
 /**
  * @fn  int wallpaper_set_change (Setting    *st_settings,

@@ -17,12 +17,12 @@ set(WCHANGERD_SOURCES
     daemon_main.c
     wallpaper_change.c    wallpaper_change.h
     wallpaper_set.c     wallpaper_set.h
-    setts.c     setts.h
+    settings.c     settings.h
     json_file.c      json_file.h
     json_functions.c     json_functions.h
     file_io.c      file_io.h
     randomm.c   randomm.h
-    setting.c   setting.h
+    setting_item.c   setting_item.h
     string_functions.c    string_functions.h
     file_dir_functions.c      file_dir_functions.h
     cfg_file.c   cfg_file.h
@@ -41,7 +41,7 @@ set(WCHANGERD_SOURCES
 set(WCHANGERCFG_SOURCES
     config_main.c
     dialog_data.c   dialog_data.h
-    treev.c        treev.h
+    tree_view.c        tree_view.h
     image_dialogs.c         image_dialogs.h
     wallpaper_set_command_dialog.c       wallpaper_set_command_dialog.h
     other_settings_dialog.c   other_settings_dialog.h
@@ -51,13 +51,13 @@ set(WCHANGERCFG_SOURCES
     url_data.c      url_data.h
     image_info.c   image_info.h
     wallpaper_set.c        wallpaper_set.h
-    setts.c        setts.h
+    settings.c        settings.h
     json_file.c         json_file.h
     json_functions.c        json_functions.h
     file_io.c         file_io.h
     icons.c         icons.h
     randomm.c      randomm.h
-    setting.c      setting.h
+    setting_item.c      setting_item.h
     preview.c      preview.h
     string_functions.c       string_functions.h
     file_dir_functions.c         file_dir_functions.h

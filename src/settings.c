@@ -1,5 +1,5 @@
 /**
- * @file  setts.c
+ * @file  settings.c
  * @copyright Copyright (C) 2019-2026 Michał Bąbik
  *
  * This file is part of Wall Changer.
@@ -26,8 +26,8 @@
 #include <stdio.h>
 #include <string.h>
 #include "json_functions.h"
-#include "setting.h"
-#include "setts.h"
+#include "setting_item.h"
+#include "settings.h"
 #include "errors.h"
 #include "defs.h"
 /*----------------------------------------------------------------------------*/

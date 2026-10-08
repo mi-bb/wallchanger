@@ -55,7 +55,7 @@ Keep it that way. On a compiler that already defaults to C23 (GCC >= 15) an impl
 
 ## Tests
 
-Single `check`-based binary exercising `setting.c` + `hash_djb2.c`: `build/tests/test_setting` (builds only when libcheck >= 0.15 is present, else silently skipped). Runs one suite/case via check's env vars:
+Single `check`-based binary exercising `setting_item.c` + `hash_djb2.c`: `build/tests/test_setting` (builds only when libcheck >= 0.15 is present, else silently skipped). Runs one suite/case via check's env vars:
 
 ```sh
 CK_RUN_SUITE="Setting" ./build/tests/test_setting
@@ -64,13 +64,13 @@ CK_FORK=no gdb ./build/tests/test_setting              # debuggable
 CK_VERBOSITY=verbose ./build/tests/test_setting        # list every test
 ```
 
-TCase names are declared in `setting_suite()` at the bottom of `tests/test_setting.c` (`Creation`, `Accessors`, `StringMutation`, `ListOps`, `ChildOps`, `Removal`, `Replace`, `Misc`) — add tests to the matching case rather than growing a new one per test. New test binaries go in `tests/CMakeLists.txt` with `add_test()`, gated on `BUILD_TESTING AND CHECK_FOUND` in the root file; list the `src/*.c` files under test directly in `_SOURCES` (no link against built binaries).
+TCase names are declared in `setting_suite()` at the bottom of `tests/test_setting_item.c` (`Creation`, `Accessors`, `StringMutation`, `ListOps`, `ChildOps`, `Removal`, `Replace`, `Misc`) — add tests to the matching case rather than growing a new one per test. New test binaries go in `tests/CMakeLists.txt` with `add_test()`, gated on `BUILD_TESTING AND CHECK_FOUND` in the root file; list the `src/*.c` files under test directly in `_SOURCES` (no link against built binaries).
 
 ## Architecture
 
 ### Two binaries sharing one `src/` tree
 
-`src/CMakeLists.txt` lists `WCHANGERD_SOURCES` and `WCHANGERCFG_SOURCES` separately, but both pull from the same pool of `.c`/`.h` files under `src/`. Core logic (settings, JSON I/O, wallpaper-set commands, process/daemon helpers, string/hash/random utilities) is shared; GTK dialog and web-search code (`dlgs*.c`, `treev.c`, `preview.c`, `web*.c`, `thumbnail.c`, `icons.c`) is exclusive to `wchangercfg`.
+`src/CMakeLists.txt` lists `WCHANGERD_SOURCES` and `WCHANGERCFG_SOURCES` separately, but both pull from the same pool of `.c`/`.h` files under `src/`. Core logic (settings, JSON I/O, wallpaper-set commands, process/daemon helpers, string/hash/random utilities) is shared; GTK dialog and web-search code (`dlgs*.c`, `tree_view.c`, `preview.c`, `web*.c`, `thumbnail.c`, `icons.c`) is exclusive to `wchangercfg`.
 
 `src/` is being reorganised from one flat directory into a subdirectory per subsystem — `src/process/` (process-list scanning) is the first; everything not yet grouped stays flat at the top of `src/`. The conventions for a subsystem directory:
 
@@ -83,8 +83,8 @@ TCase names are declared in `setting_suite()` at the bottom of `tests/test_setti
 
 - `cfg_file.c/.h` — locates and validates the config file (search order above).
 - `json_file.c` / `json_functions.c` — JSON object read/write helpers built on json-c.
-- `setting.c/.h` — the in-memory `Setting` data model (linked list of key/value settings, with parent/child nesting and a name hash from `hash_djb2.c`) that both binaries read/write.
-- `setts.c/.h` — higher-level settings load/apply logic used by both the daemon loop and the GUI.
+- `setting_item.c/.h` — the in-memory `Setting` data model (linked list of key/value settings, with parent/child nesting and a name hash from `hash_djb2.c`) that both binaries read/write.
+- `settings.c/.h` — higher-level settings load/apply logic used by both the daemon loop and the GUI.
 
 `wchangerd` reloads settings from disk on every wallpaper-change cycle (see `chk_setts_ch_wall` in `daemon_main.c`), so config changes made via `wchangercfg` take effect on the daemon's next interval without a restart — except the interval/time-align state itself, which is why `wchangerd --restart` is recommended after changing those.
 
@@ -104,9 +104,9 @@ Central point where a wallpaper is actually applied: builds the configured shell
 
 Each provider (`webflickr`, `webpixabay`, `webwallhaven`, `webabyss`) implements the same pattern against a shared `WebWidget` GTK widget (`webwidget.c/.h`, `webwidget_common.c` for the client-side glue, `webwidget_struct.h` for the shared struct). All use libcurl for HTTP and json-c to parse API responses; `web_flickr.c` additionally needs flickcurl/libxml2 and is compiled in only when those are detected. `cache_query.c/.h` and `url_data.c/.h` build the search queries/URLs; downloaded images are cached under `PTH_WALLP_DIR`, thumbnails under `PTH_THUMB_DIR`, and per-image metadata under `PTH_IINFO_DIR`/`PTH_QUERY_DIR` (see path defines in `defs.h`).
 
-### GUI structure (`config_main.c`, `dialog_data.c/.h`, `dlgs*.c/.h`, `treev.c/.h`)
+### GUI structure (`config_main.c`, `dialog_data.c/.h`, `dlgs*.c/.h`, `tree_view.c/.h`)
 
-`config_main.c` is the `wchangercfg` entry point and wires together the main settings window. `dialog_data.c/.h` (`DialogData`) bundles the window's widgets and current settings state, passed around to the get/set-from-widgets helper functions in each dialog source file. `treev.c/.h` manages the GtkTreeView showing the selected wallpaper list; `preview.c/.h` and `thumbnail.c/.h` handle image preview/thumbnail generation.
+`config_main.c` is the `wchangercfg` entry point and wires together the main settings window. `dialog_data.c/.h` (`DialogData`) bundles the window's widgets and current settings state, passed around to the get/set-from-widgets helper functions in each dialog source file. `tree_view.c/.h` manages the GtkTreeView showing the selected wallpaper list; `preview.c/.h` and `thumbnail.c/.h` handle image preview/thumbnail generation.
 
 ### Shared low-level utilities
 

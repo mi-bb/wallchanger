@@ -26,7 +26,7 @@
 #ifndef JSON_FUNCTIONS_H
 #define JSON_FUNCTIONS_H
 
-#include "setting.h"
+#include "setting_item.h"
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Get settings data from file.

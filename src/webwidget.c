@@ -28,7 +28,7 @@
 #include "search_item.h"
 #include "message_dialogs.h"
 #include "string_functions.h"
-#include "setts.h"
+#include "settings.h"
 #include "errors.h"
 #include "cfg_file.h"
 #include "file_dir_functions.h"

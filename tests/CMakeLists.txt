@@ -16,8 +16,8 @@
 # Only added by the top-level CMakeLists.txt when 'check' was found.
 
 add_executable(test_setting
-    test_setting.c
-    ${PROJECT_SOURCE_DIR}/src/setting.c ${PROJECT_SOURCE_DIR}/src/setting.h
+    test_setting_item.c
+    ${PROJECT_SOURCE_DIR}/src/setting_item.c ${PROJECT_SOURCE_DIR}/src/setting_item.h
     ${PROJECT_SOURCE_DIR}/src/hash_djb2.c ${PROJECT_SOURCE_DIR}/src/hash_djb2.h)
 target_compile_options(test_setting PRIVATE ${WC_C23_FLAG})
 target_include_directories(test_setting

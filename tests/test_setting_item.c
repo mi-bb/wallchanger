@@ -1,5 +1,5 @@
 /**
- * @file  test_setting.c
+ * @file  test_setting_item.c
  * @copyright Copyright (C) 2019-2026 Michał Bąbik
  *
  * This file is part of Wall Changer.
@@ -17,14 +17,14 @@
  * You should have received a copy of the GNU General Public License
  * along with Wall Changer.  If not, see <https://www.gnu.org/licenses/>.
  *
- * @brief  Unit tests for the Setting structure and functions (setting.c).
+ * @brief  Unit tests for the Setting structure and functions (setting_item.c).
  *
  * @author Michal Babik <michal.babik@protonmail.com>
  */
 #include <stdlib.h>
 #include <string.h>
 #include <check.h>
-#include "setting.h"
+#include "setting_item.h"
 #include "hash_djb2.h"
 /*----------------------------------------------------------------------------*/
 /* Creation and type accessors                                                */

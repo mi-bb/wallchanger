@@ -1,5 +1,5 @@
 /**
- * @file  treev.c
+ * @file  tree_view.c
  * @copyright Copyright (C) 2019-2026 Michał Bąbik
  *
  * This file is part of Wall Changer.
@@ -23,7 +23,7 @@
  */
 #include <stdint.h>
 #include "string_functions.h"
-#include "treev.h"
+#include "tree_view.h"
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  TreeView Columns

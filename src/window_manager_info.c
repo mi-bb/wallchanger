@@ -27,7 +27,7 @@
 #include <string.h>
 #include "process/process.h"
 #include "cfg_file.h"
-#include "setts.h"
+#include "settings.h"
 #include "string_functions.h"
 #include "defs.h"
 #include "errors.h"

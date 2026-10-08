@@ -1,5 +1,5 @@
 /**
- * @file  treev.h
+ * @file  tree_view.h
  * @copyright Copyright (C) 2019-2026 Michał Bąbik
  *
  * This file is part of Wall Changer.
@@ -26,7 +26,7 @@
 
 #include <gtk/gtk.h>
 #include "image_info.h"
-#include "setting.h"
+#include "setting_item.h"
 /*----------------------------------------------------------------------------*/
 /**
  * @fn  void treeview_add_items_glist (GtkWidget   *gw_tview,
