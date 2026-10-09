@@ -29,8 +29,8 @@
  *
  * @author Michal Babik <michal.babik@protonmail.com>
  */
-#ifndef SETTING_H
-#define SETTING_H
+#ifndef SETTING_ITEM_H
+#define SETTING_ITEM_H
 
 #include <inttypes.h>
 #include <stddef.h>

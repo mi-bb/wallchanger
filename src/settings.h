@@ -21,8 +21,8 @@
  *
  * @author Michal Babik <michal.babik@protonmail.com>
  */
-#ifndef SETTS_H
-#define SETTS_H
+#ifndef SETTINGS_H
+#define SETTINGS_H
 
 #include "config.h"
 #include "setting_item.h"

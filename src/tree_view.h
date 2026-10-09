@@ -21,8 +21,8 @@
  *
  * @author Michal Babik <michal.babik@protonmail.com>
  */
-#ifndef TREEV_H
-#define TREEV_H
+#ifndef TREE_VIEW_H
+#define TREE_VIEW_H
 
 #include <gtk/gtk.h>
 #include "image_info.h"

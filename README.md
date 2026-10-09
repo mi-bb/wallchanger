@@ -54,65 +54,31 @@ and write nothing into the checkout.
 The quickest way is the bundled presets:
 
 ```
-cmake --preset default
-cmake --build --preset default
+cmake --preset release
+cmake --build --preset release
 sudo cmake --install build
 ```
 
-`default` builds `RelWithDebInfo` in `./build`; `release` builds optimized
-with the prefix set to `/usr`; `debug` builds unoptimized with `-Wall
--Wextra`. Run `cmake --list-presets` to see them.
+`release` builds optimized with the prefix set to `/usr`
 
 Without presets, the equivalent commands are:
 
 ```
-cmake -S . -B build
+cmake -S . -B build -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/usr \
+    -DCMAKE_C_FLAGS="-march=native -O2 -pipe"
 cmake --build build
 sudo cmake --install build
 ```
 
-The build type defaults to `RelWithDebInfo`. To pick a different one, or
-to set a custom install prefix:
-
-```
-cmake -S . -B build -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/usr
-```
-
-For a normal daily use of this program a good option should be:
-
-```
-cmake -S . -B build -DCMAKE_C_COMPILER=gcc \
-    -DCMAKE_C_FLAGS="-march=native -O2 -pipe" -DCMAKE_INSTALL_PREFIX=/usr
-```
-
-- `-DCMAKE_C_COMPILER=gcc` — sets the C compiler (`clang` for Clang)
 - `-march=native` — enables all instruction subsets supported by the local machine
 - `-O2` — sets the code optimization to level 2
 - `-pipe` — use pipes rather than temporary files for communication between the various stages of compilation
 - `-DCMAKE_INSTALL_PREFIX=/usr` — where the app should be installed
 
-The C standard does not have to be given by hand. The sources are C23, and
-the build finds the option that enables it (`-std=gnu23` on compilers that
-do not already default to C23) and stops with an explanatory message if the
-compiler cannot provide C23 at all.
-
-Unit tests are built automatically when the `check` library is found, and
-can be run with:
-
-```
-ctest --test-dir build
-```
-
 To undo an install:
 
 ```
 sudo cmake --build build --target uninstall
-```
-
-A source tarball for a release can be produced with:
-
-```
-cpack --config build/CPackSourceConfig.cmake
 ```
 
 If compilation ends without problems, two executable files will be created:

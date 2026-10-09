@@ -21,6 +21,7 @@
       "displayName": "Release",
       "description": "Optimized build installed under /usr.",
       "cacheVariables": {
+        "CMAKE_C_FLAGS": "-march=native -O2 -pipe",
         "CMAKE_BUILD_TYPE": "Release",
         "CMAKE_INSTALL_PREFIX": "/usr"
       }
