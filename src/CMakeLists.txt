@@ -14,72 +14,73 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 set(WCHANGERD_SOURCES
-    wcngdmn.c
-    chkwch.c    chkwch.h
-    wpset.c     wpset.h
-    setts.c     setts.h
-    jsof.c      jsof.h
-    jsfun.c     jsfun.h
-    rwdt.c      rwdt.h
+    daemon_main.c
+    wallpaper_change.c    wallpaper_change.h
+    wallpaper_set.c     wallpaper_set.h
+    settings.c     settings.h
+    json_file.c      json_file.h
+    json_functions.c     json_functions.h
+    file_io.c      file_io.h
     randomm.c   randomm.h
-    setting.c   setting.h
-    strfun.c    strfun.h
-    fdfn.c      fdfn.h
-    cfgfile.c   cfgfile.h
+    setting_item.c   setting_item.h
+    string_functions.c    string_functions.h
+    file_dir_functions.c      file_dir_functions.h
+    cfg_file.c   cfg_file.h
     cres.c      cres.h
-    hashfun.c   hashfun.h
-    dmfn.c      dmfn.h
-    procfn.c    procfn.h
-    procitem.c  procitem.h
-    proclist.c  proclist.h
-    cmdfn.c     cmdfn.h
+    hash_djb2.c   hash_djb2.h
+    daemon.c      daemon.h
+    process/process.c    process/process.h
+    process/proc_item.c  process/proc_item.h
+    process/proc_list.c  process/proc_list.h
+    cmd_functions.c     cmd_functions.h
     cmdline.c   cmdline.h
-    wmsfn.c     wmsfn.h
-    errs.c      errs.h
+    window_manager_info.c     window_manager_info.h
+    errors.c      errors.h
     defs.h)
 
 set(WCHANGERCFG_SOURCES
-    wchanger.c
-    dialogdata.c   dialogdata.h
-    treev.c        treev.h
-    dlgs.c         dlgs.h
-    dlgcmd.c       dlgcmd.h
-    dlgothsett.c   dlgothsett.h
-    dlgsmsg.c      dlgsmsg.h
-    searchitem.c   searchitem.h
-    urldata.c      urldata.h
-    iminfo.c       iminfo.h
-    wpset.c        wpset.h
-    setts.c        setts.h
-    jsof.c         jsof.h
-    jsfun.c        jsfun.h
-    rwdt.c         rwdt.h
-    imgs.c         imgs.h
+    config_main.c
+    dialog_data.c   dialog_data.h
+    tree_view.c        tree_view.h
+    image_dialogs.c         image_dialogs.h
+    wallpaper_set_command_dialog.c       wallpaper_set_command_dialog.h
+    other_settings_dialog.c   other_settings_dialog.h
+    dialogs_other.c   dialogs_other.h
+    message_dialogs.c      message_dialogs.h
+    search_item.c   search_item.h
+    url_data.c      url_data.h
+    image_info.c   image_info.h
+    wallpaper_set.c        wallpaper_set.h
+    settings.c        settings.h
+    json_file.c         json_file.h
+    json_functions.c        json_functions.h
+    file_io.c         file_io.h
+    icons.c         icons.h
     randomm.c      randomm.h
-    setting.c      setting.h
+    setting_item.c      setting_item.h
     preview.c      preview.h
-    strfun.c       strfun.h
-    fdfn.c         fdfn.h
-    cfgfile.c      cfgfile.h
-    dirlist.c      dirlist.h
+    string_functions.c       string_functions.h
+    file_dir_functions.c         file_dir_functions.h
+    cfg_file.c      cfg_file.h
+    dir_content.c      dir_content.h
     cres.c         cres.h
-    hashfun.c      hashfun.h
-    dmfn.c         dmfn.h
-    procfn.c       procfn.h
-    procitem.c     procitem.h
-    proclist.c     proclist.h
-    wmsfn.c        wmsfn.h
-    errs.c         errs.h
+    hash_djb2.c      hash_djb2.h
+    daemon.c         daemon.h
+    process/process.c       process/process.h
+    process/proc_item.c     process/proc_item.h
+    process/proc_list.c     process/proc_list.h
+    window_manager_info.c        window_manager_info.h
+    errors.c         errors.h
     nstrings.c     nstrings.h
-    chquery.c      chquery.h
-    thumbs.c       thumbs.h
+    cache_query.c      cache_query.h
+    thumbnail.c       thumbnail.h
     webwidget.c    webwidget.h
-    webwidget_c.c  webwidget_c.h
-    webpixabay.c   webpixabay.h
-    webflickr.c    webflickr.h
-    webwallhaven.c webwallhaven.h
-    webabyss.c     webabyss.h
-    webwidget_s.h
+    webwidget_common.c  webwidget_common.h
+    web_pixabay.c   web_pixabay.h
+    web_flickr.c    web_flickr.h
+    web_wallhaven.c web_wallhaven.h
+    web_abyss.c     web_abyss.h
+    webwidget_struct.h
     defs.h)
 
 add_executable(wchangerd ${WCHANGERD_SOURCES})
@@ -99,7 +100,7 @@ foreach(target IN ITEMS wchangerd wchangercfg)
         PRIVATE ${PROJECT_BINARY_DIR} ${CMAKE_CURRENT_SOURCE_DIR})
     # HAVE_CONFIG_H: src/cmdline.c/.h (gengetopt output) guards its
     # config.h include on it.
-    # _GNU_SOURCE: src/iminfo.c needs it for strndup(). Defining it on the
+    # _GNU_SOURCE: src/image_info.c needs it for strndup(). Defining it on the
     # command line rather than in config.h also makes it immune to include
     # ordering.
     target_compile_definitions(${target} PRIVATE HAVE_CONFIG_H _GNU_SOURCE)

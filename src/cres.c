@@ -29,36 +29,36 @@
  * @brief  Create or resize dynamic array
  */
 void
-cres (void        **v_ptr,
-      const size_t  ul_num,
-      const size_t  ul_size)
+cres (void        **pointer,
+      const size_t  count,
+      const size_t  size)
 {
-    void *s_tmp = nullptr; /* Temp pointer for realloc */
+    void *tmp = nullptr; /* Temp pointer for realloc */
 
-    if (ul_size == 0 || ul_num == 0) {
-        if (*v_ptr != nullptr) {
-            free (*v_ptr);
-            *v_ptr = nullptr;
+    if (size == 0 || count == 0) {
+        if (*pointer != nullptr) {
+            free (*pointer);
+            *pointer = nullptr;
         }
         return;
     }
     else {
-        if (*v_ptr == nullptr) {
-            *v_ptr = malloc (ul_num * ul_size);
+        if (*pointer == nullptr) {
+            *pointer = malloc (count * size);
 
-            if (*v_ptr == nullptr) {
+            if (*pointer == nullptr) {
                 err (EXIT_FAILURE, nullptr);
             }
         }
         else {
-            s_tmp = realloc (*v_ptr, ul_num * ul_size);
+            tmp = realloc (*pointer, count * size);
 
-            if (s_tmp == nullptr) {
-                free (*v_ptr);
+            if (tmp == nullptr) {
+                free (*pointer);
                 err (EXIT_FAILURE, nullptr);
             }
             else {
-                *v_ptr = s_tmp;
+                *pointer = tmp;
             }
         }
     }

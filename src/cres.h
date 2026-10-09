@@ -29,14 +29,14 @@
 /**
  * @brief  Create or resize dynamic array
  *
- * @param[out] v_ptr    Pointer to data to create or resize
- * @param[in]  ul_num   Number of elements to allocate
- * @param[in]  ul_size  Size of each element
+ * @param[out] pointer  Pointer to data to create or resize
+ * @param[in]  count    Number of elements to allocate
+ * @param[in]  size     Size of each element
  * @return     None
  */
-void cres (void         **v_ptr,
-           const size_t   ul_num, 
-           const size_t   ul_size);
+void cres (void         **pointer,
+           const size_t   count, 
+           const size_t   size);
 /*----------------------------------------------------------------------------*/
 #endif
 

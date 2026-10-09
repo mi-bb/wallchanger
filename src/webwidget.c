@@ -23,24 +23,24 @@
  */
 #include <err.h>
 #include <ctype.h>
-#include "urldata.h"
-#include "jsfun.h"
-#include "searchitem.h"
-#include "dlgsmsg.h"
-#include "strfun.h"
-#include "setts.h"
-#include "errs.h"
-#include "cfgfile.h"
-#include "fdfn.h"
+#include "url_data.h"
+#include "json_functions.h"
+#include "search_item.h"
+#include "message_dialogs.h"
+#include "string_functions.h"
+#include "settings.h"
+#include "errors.h"
+#include "cfg_file.h"
+#include "file_dir_functions.h"
 #include "defs.h"
-#include "imgs.h"
+#include "icons.h"
 #include "nstrings.h"
-#include "webwidget_c.h"
-#include "webpixabay.h"
-#include "webwallhaven.h"
-#include "webabyss.h"
-#include "webflickr.h"
-#include "chquery.h"
+#include "webwidget_common.h"
+#include "web_pixabay.h"
+#include "web_wallhaven.h"
+#include "web_abyss.h"
+#include "web_flickr.h"
+#include "cache_query.h"
 #include "webwidget.h"
 /*----------------------------------------------------------------------------*/
 /**
@@ -127,7 +127,7 @@ download_progress_window (GtkWindow *gw_parent,
 
     /* Getting wallpaper save path and checking it's permissions, creating if
      * it doesn't exist */
-    s_wpdir = cfgfile_get_app_wallpapers_path ();
+    s_wpdir = cfg_file_get_app_wallpapers_path ();
 
     /* Setting progress step and making a pointer to list */
     f_step  = (float) 1.0 / (float) g_list_length (gl_item_list);
@@ -351,7 +351,7 @@ sel_combo_get_list (GtkWidget *gw_selected_combo)
 
     while (b_res) {
 
-        si_item = searchitem_new ();
+        si_item = search_item_new ();
         gtk_tree_model_get (gtm_model,             &gti_iter,
                             WW_SELCOMBO_FILE_NAME, &si_item->s_file_name,
                             WW_SELCOMBO_IMAGE_URL, &si_item->s_image_url,
@@ -775,7 +775,7 @@ webwidget_combobox_create (Setting *st_settings)
                                      GDK_TYPE_PIXBUF);
 
     for (i = 0; i < WEB_SERV_CNT; ++i) {
-        gp_logo = get_image (ww_logo_id (i));
+        gp_logo = get_icon (ww_logo_id (i));
         ns_data = ww_get_api_key_data (st_settings, i);
         gtk_list_store_append (list_store, &iter);
         gtk_list_store_set (list_store, &iter,
@@ -899,7 +899,7 @@ event_imgview_activated (GtkIconView *iconview,
 
         gtk_image_clear (GTK_IMAGE (ww_widget->gw_ii_simage));
 
-        gp_logo = get_image (ww_logo_id (ww_widget->i_active_service));
+        gp_logo = get_icon (ww_logo_id (ww_widget->i_active_service));
 
         if (gp_logo != nullptr) {
             gtk_image_set_from_pixbuf (GTK_IMAGE (ww_widget->gw_ii_simage),
@@ -961,7 +961,7 @@ webwidget_imgview_create (void)
  * @return  Result widget
  */
 static GtkWidget *
-webwidget_imageinfo_create (WebWidget *ww_widget)
+webwidget_image_info_create (WebWidget *ww_widget)
 {
     GtkWidget *gw_widget;
     GtkWidget *gw_service_image;
@@ -1076,11 +1076,11 @@ webwidget_create (Setting    *st_settings,
 
     webwidget_init (ww_widget);
 
-    cachequery_delete_older_than (ww_name (WEB_SERV_PIXABAY),   1);
-    cachequery_delete_older_than (ww_name (WEB_SERV_WALLHAVEN), 1);
-    cachequery_delete_older_than (ww_name (WEB_SERV_WALLABYSS), 1);
+    cache_query_delete_older_than (ww_name (WEB_SERV_PIXABAY),   1);
+    cache_query_delete_older_than (ww_name (WEB_SERV_WALLHAVEN), 1);
+    cache_query_delete_older_than (ww_name (WEB_SERV_WALLABYSS), 1);
 #ifdef HAVE_FLICKCURL
-    cachequery_delete_older_than (ww_name (WEB_SERV_FLICKR),    1);
+    cache_query_delete_older_than (ww_name (WEB_SERV_FLICKR),    1);
 #endif
 
     if ((st_sett = settings_find (st_settings,
@@ -1088,8 +1088,8 @@ webwidget_create (Setting    *st_settings,
         ww_widget->i_thumb_quality = (int) setting_get_int (st_sett);
     }
     ww_widget->s_cfg_file   = strdup (s_cfg_file);
-    ww_widget->s_wallp_dir  = cfgfile_get_app_wallpapers_path ();
-    ww_widget->gw_ii_widget = webwidget_imageinfo_create (ww_widget);
+    ww_widget->s_wallp_dir  = cfg_file_get_app_wallpapers_path ();
+    ww_widget->gw_ii_widget = webwidget_image_info_create (ww_widget);
 
     gw_web_combo = webwidget_combobox_create (st_settings);
     gw_img_view  = webwidget_imgview_create ();
@@ -1108,7 +1108,7 @@ webwidget_create (Setting    *st_settings,
     gw_search_opts_btn = gtk_button_new_with_label ("Search opts");
     gw_sett_button     = gtk_button_new ();
     gtk_widget_set_tooltip_text (gw_sett_button, "Service settings");
-    gp_pbuf = get_image (W_ICON_SETTING);
+    gp_pbuf = get_icon (W_ICON_SETTING);
     gw_img = gtk_image_new_from_pixbuf (gp_pbuf);
     gtk_button_set_image (GTK_BUTTON (gw_sett_button), gw_img);
     g_object_unref (gp_pbuf);
@@ -1207,7 +1207,7 @@ save_selected_wallpapers (GtkWidget *gw_dialog,
 
     gl_items = sel_combo_get_list (ww_widget->gw_selected_combo);
     gl_res   = download_progress_window (GTK_WINDOW (gw_dialog), gl_items);
-    g_list_free_full (gl_items, (GDestroyNotify) searchitem_free);
+    g_list_free_full (gl_items, (GDestroyNotify) search_item_free);
 
     return gl_res;
 }

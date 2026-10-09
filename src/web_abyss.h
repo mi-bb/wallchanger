@@ -1,0 +1,58 @@
+/**
+ * @file  web_abyss.h
+ * @copyright Copyright (C) 2019-2026 Michał Bąbik
+ *
+ * This file is part of Wall Changer.
+ *
+ * Wall Changer is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Wall Changer is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Wall Changer.  If not, see <https://www.gnu.org/licenses/>.
+ *
+ * @brief  Settings for searching the Wallpaper Abyss website.
+ *
+ * @author Michal Babik <michal.babik@protonmail.com>
+ */
+#ifndef WEB_ABYSS_H
+#define WEB_ABYSS_H
+
+#include "nstrings.h"
+#include "webwidget_struct.h"
+/*----------------------------------------------------------------------------*/
+/**
+ * @brief  Search in Wallpaper Abyss database.
+ *
+ * @param[in,out] ww_widget  WebWidget with widgets and search data
+ * @param[in]     ns_data    N strings with API keys
+ * @return        none
+ */
+void   wallpaperabyss_search             (WebWidget      *ww_widget,
+                                          const NStrings *ns_data);
+/*----------------------------------------------------------------------------*/
+/**
+ * @brief  Dialog with Wallpaper Abyss service settings.
+ *
+ * @param[in,out] ns_data  N strings to get and write API keys
+ * @return        Dialog response
+ */
+int    wallpaperabyss_settings_dialog    (NStrings       *ns_data);
+/*----------------------------------------------------------------------------*/
+/**
+ * @brief  Options for image search dialog.
+ *
+ * @param[in,out] ww_widget  WebWidget with widgets and search data
+ * @return        String with image options. After use it should be freed
+ *                using free.
+ */
+char * wallpaperabyss_search_opts_dialog (WebWidget      *ww_widget);
+/*----------------------------------------------------------------------------*/
+#endif
+

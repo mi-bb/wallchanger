@@ -41,7 +41,7 @@ set(PACKAGE_BUGREPORT "michal.babik@protonmail.com")
 # pins the modern spelling (CMake's own feature table still asks GCC for
 # -std=gnu2x).
 #
-# The GNU dialects are tried first because src/iminfo.c calls strndup(),
+# The GNU dialects are tried first because src/image_info.c calls strndup(),
 # which a strict -std=c23 hides.  The probe doubles as the capability
 # check the compile feature used to provide.
 include(CheckCSourceCompiles)
@@ -123,7 +123,7 @@ if(NOT BASHCOMPDIR)
     set(BASHCOMPDIR "${CMAKE_INSTALL_FULL_SYSCONFDIR}/bash_completion.d")
 endif()
 
-# FreeBSD procstat support; only src/procfn.c uses it, and only there.
+# FreeBSD procstat support; only src/process/process.c uses it, and only there.
 set(PROCSTAT_LIBRARY "")
 if(CMAKE_SYSTEM_NAME STREQUAL "FreeBSD")
     find_library(PROCSTAT_LIBRARY procstat REQUIRED)
