@@ -16,9 +16,9 @@
 # CMake build description. Builds are out-of-source only
 # (cmake --preset default configures and builds in ./build).
 
-# 3.21 is the real floor: it is the version CMakePresets.json's "version": 3
-# requires, and the first release that knows the c_std_23 compile feature.
-cmake_minimum_required(VERSION 3.21)
+# 3.22 is the floor: it makes CMP0128 default to NEW, so CMAKE_C_STANDARD
+# below always puts a -std= flag on the compile line (see the comment there).
+cmake_minimum_required(VERSION 3.22)
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
@@ -30,55 +30,23 @@ project(wallchanger
 
 set(PACKAGE_BUGREPORT "michal.babik@protonmail.com")
 
-# The sources use C23 with GNU extensions.  The standard is passed explicitly
-# rather than through target_compile_features(... c_std_23), because that only
-# emits a -std= flag when the compiler's own default is *older* than C23: on a
-# compiler that already defaults to it (GCC >= 15) the compile line carries no
-# standard at all, and every libclang-based tool reading compile_commands.json
-# - clangd, clang-tidy, include-what-you-use - falls back to gnu17 and reports
-# each nullptr/constexpr/bool in the tree as an error.  Passing it always also
-# keeps the build reproducible across compilers with different defaults, and
-# pins the modern spelling (CMake's own feature table still asks GCC for
-# -std=gnu2x).
-#
-# The GNU dialects are tried first because src/image_info.c calls strndup(),
-# which a strict -std=c23 hides.  The probe doubles as the capability
-# check the compile feature used to provide.
-include(CheckCSourceCompiles)
+# The sources use C23 with GNU extensions (src/image_info.c calls strndup(),
+# which a strict -std=c23 hides).  CMake picks the spelling the compiler knows
+# (-std=gnu23 or -std=gnu2x).  CMP0128 (NEW since CMake 3.22) makes it emit
+# the flag even when the compiler's own default already matches, so libclang-based
+# tools reading compile_commands.json - clangd, clang-tidy, include-what-you-
+# use - do not fall back to gnu17 on GCC >= 15.  Do not pass -std= by hand.
+set(CMAKE_C_STANDARD 23)
+set(CMAKE_C_STANDARD_REQUIRED ON)
+set(CMAKE_C_EXTENSIONS ON)
 
-set(WC_C23_TEST_SOURCE [=[
-/* C23: nullptr constant, standard attributes, constexpr, enum with a
-   fixed underlying type - all used by src/.  */
-constexpr int wc_answer = 42;
-enum wc_enum : int { WC_ENUM_VALUE = 1 };
-[[maybe_unused]] static int wc_unused (void *p) { return p == nullptr; }
-int main (void)
-{
-    static_assert (wc_answer == 42, "constexpr");
-    return WC_ENUM_VALUE - 1;
-}
-]=])
-
-set(WC_C23_FLAG "WC_C23_FLAG-NOTFOUND")
-foreach(wc_flag IN ITEMS -std=gnu23 -std=c23 -std=gnu2x -std=c2x)
-    string(MAKE_C_IDENTIFIER "WC_HAVE_C23${wc_flag}" wc_result_var)
-    set(CMAKE_REQUIRED_FLAGS "${wc_flag}")
-    check_c_source_compiles("${WC_C23_TEST_SOURCE}" ${wc_result_var})
-    unset(CMAKE_REQUIRED_FLAGS)
-    if(${wc_result_var})
-        set(WC_C23_FLAG "${wc_flag}")
-        break()
-    endif()
-endforeach()
-
-if(NOT WC_C23_FLAG)
+if((CMAKE_C_COMPILER_ID STREQUAL "GNU" AND CMAKE_C_COMPILER_VERSION VERSION_LESS 13) OR
+   (CMAKE_C_COMPILER_ID MATCHES "Clang" AND CMAKE_C_COMPILER_VERSION VERSION_LESS 16))
     message(FATAL_ERROR
-        "${CMAKE_C_COMPILER} does not support C23.\n"
-        "Wall Changer requires a C23-capable compiler (GCC >= 13 or "
-        "Clang >= 16).\n"
+        "${CMAKE_C_COMPILER} is too old for C23.\n"
+        "Wall Changer requires GCC >= 13 or Clang >= 16.\n"
         "Set the compiler with -DCMAKE_C_COMPILER=gcc-13 or similar.")
 endif()
-message(STATUS "C23 option: ${WC_C23_FLAG}")
 
 if(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
     set(CMAKE_BUILD_TYPE RelWithDebInfo CACHE STRING "Build type" FORCE)

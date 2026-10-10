@@ -42,13 +42,13 @@ The program works on GNU/Linux and FreeBSD.
 - json-c (>= 0.12.1)
 - libcurl (>= 7.68.0)
 
-To build the program, CMake (>= 3.21) is required.
+To build the program, CMake (>= 3.22) is required.
 
 ## Installation and running
 
 ### Building with CMake
 
-The program is built with CMake (>= 3.21). Builds are always out-of-source
+The program is built with CMake (>= 3.22). Builds are always out-of-source
 and write nothing into the checkout.
 
 The quickest way is the bundled presets:

@@ -13,7 +13,7 @@ Config is read from `~/.config/wchanger/config.json` (falling back to `~/.config
 
 ## Build
 
-CMake (>= 3.21, out-of-source only):
+CMake (>= 3.22, out-of-source only):
 
 ```sh
 cmake --preset default && cmake --build --preset default
@@ -24,7 +24,7 @@ cmake -S . -B build -DCMAKE_C_COMPILER=gcc -DCMAKE_C_FLAGS="-march=native -O2 -p
 
 Presets: `default` = RelWithDebInfo in `./build`; `release` = optimized with the prefix set to `/usr`; `debug` = unoptimized with `-Wall -Wextra`.
 
-- Never pass `-std=` by hand. Sources are C23; the probe in `CMakeLists.txt` finds the dialect flag (`WC_C23_FLAG`) and it is applied with `target_compile_options` in `src/CMakeLists.txt` and `tests/CMakeLists.txt`. The probe errors out with a readable message if the compiler cannot provide C23 (GCC >= 13 or Clang >= 16 required).
+- Never pass `-std=` by hand. Sources are C23; `CMakeLists.txt` sets `CMAKE_C_STANDARD 23` with `CMAKE_C_EXTENSIONS ON` and CMake emits the flag for every target. A compiler-version check errors out with a readable message if the compiler is too old for C23 (GCC >= 13 or Clang >= 16 required).
 - Sources include `config.h` unqualified and get the build directory on the include path (`target_include_directories` in `src/CMakeLists.txt`).
 - `cmake/config.h.in` is hand-maintained; every new define that `src/` reads needs a matching `#cmakedefine` there, and only the results `src/` reads should be listed.
 - Release tarballs: `cpack --config build/CPackSourceConfig.cmake` (CPack source config in root `CMakeLists.txt`). Uninstall: `cmake --build build --target uninstall` (script template in `cmake/cmake_uninstall.cmake.in`).
@@ -36,9 +36,9 @@ Two constraints that are easy to break:
 
 ### C23 dialect flag
 
-The CMake probe tries the dialect options in order (`-std=gnu23`, `-std=c23`, `-std=gnu2x`, `-std=c2x`), GNU dialects first because a strict `-std=c23` hides `strndup()`, and passes the winner explicitly on every compile line rather than letting the compiler's default stand in.
+`CMAKE_C_STANDARD 23` + `CMAKE_C_EXTENSIONS ON` gives `-std=gnu23` (or `-std=gnu2x` on older compilers/CMake), GNU dialect because a strict `-std=c23` hides `strndup()`. Policy `CMP0128` is `NEW` (guaranteed by `cmake_minimum_required(VERSION 3.22)`) so the flag is emitted on every compile line even when the compiler's default already matches.
 
-Keep it that way. On a compiler that already defaults to C23 (GCC >= 15) an implicit standard leaves `compile_commands.json` with no `-std=` flag, and every libclang-based tool that reads it — clangd, clang-tidy, IWYU — falls back to `gnu17` and marks each `nullptr`/`constexpr`/`bool` in the tree as an error. Passing it always also keeps the build reproducible across compilers whose defaults differ. Do not switch to `target_compile_features(... c_std_23)`: it emits a flag only when the compiler's default is older than C23, and spells it `-std=gnu2x` when it does.
+Keep it that way. On a compiler that already defaults to C23 (GCC >= 15) an implicit standard leaves `compile_commands.json` with no `-std=` flag, and every libclang-based tool that reads it — clangd, clang-tidy, IWYU — falls back to `gnu17` and marks each `nullptr`/`constexpr`/`bool` in the tree as an error. Do not lower the CMake minimum below 3.22, and do not use `target_compile_features(... c_std_23)`.
 
 `compile_commands.json` at the root is a symlink into `build/`; `.clangd` pins `-std=gnu23` only as a fallback for files absent from the compile database.
 
