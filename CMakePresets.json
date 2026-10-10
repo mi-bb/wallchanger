@@ -2,7 +2,7 @@
   "version": 3,
   "cmakeMinimumRequired": {
     "major": 3,
-    "minor": 21,
+    "minor": 22,
     "patch": 0
   },
   "configurePresets": [
@@ -12,14 +12,16 @@
       "description": "Out-of-source build in ./build, with debug info.",
       "binaryDir": "${sourceDir}/build",
       "cacheVariables": {
-        "CMAKE_BUILD_TYPE": "RelWithDebInfo"
+        "CMAKE_BUILD_TYPE": "RelWithDebInfo",
+        "CMAKE_EXPORT_COMPILE_COMMANDS": "ON"
       }
     },
     {
       "name": "release",
       "inherits": "default",
       "displayName": "Release",
-      "description": "Optimized build installed under /usr.",
+      "description": "Optimized build in ./build/release, installed under /usr.",
+      "binaryDir": "${sourceDir}/build/release",
       "cacheVariables": {
         "CMAKE_C_FLAGS": "-march=native -O2 -pipe",
         "CMAKE_BUILD_TYPE": "Release",
@@ -30,34 +32,51 @@
       "name": "debug",
       "inherits": "default",
       "displayName": "Debug",
-      "description": "Unoptimized build with assertions and extra warnings.",
+      "description": "Unoptimized build in ./build/debug with extra warnings.",
+      "binaryDir": "${sourceDir}/build/debug",
       "cacheVariables": {
         "CMAKE_BUILD_TYPE": "Debug",
         "CMAKE_C_FLAGS": "-Wall -Wextra"
       }
+    },
+    {
+      "name": "asan",
+      "inherits": "debug",
+      "displayName": "Debug + ASan/UBSan",
+      "description": "Debug build in ./build/asan with AddressSanitizer and UndefinedBehaviorSanitizer.",
+      "binaryDir": "${sourceDir}/build/asan",
+      "cacheVariables": {
+        "CMAKE_C_FLAGS": "-Wall -Wextra -fsanitize=address,undefined -fno-omit-frame-pointer",
+        "CMAKE_EXE_LINKER_FLAGS": "-fsanitize=address,undefined"
+      }
     }
   ],
   "buildPresets": [
-    {
-      "name": "default",
-      "configurePreset": "default"
-    },
-    {
-      "name": "release",
-      "configurePreset": "release"
-    },
-    {
-      "name": "debug",
-      "configurePreset": "debug"
-    }
+    { "name": "default", "configurePreset": "default" },
+    { "name": "release", "configurePreset": "release" },
+    { "name": "debug", "configurePreset": "debug" },
+    { "name": "asan", "configurePreset": "asan" }
   ],
   "testPresets": [
     {
       "name": "default",
       "configurePreset": "default",
-      "output": {
-        "outputOnFailure": true
-      }
+      "output": { "outputOnFailure": true }
+    },
+    {
+      "name": "release",
+      "inherits": "default",
+      "configurePreset": "release"
+    },
+    {
+      "name": "debug",
+      "inherits": "default",
+      "configurePreset": "debug"
+    },
+    {
+      "name": "asan",
+      "inherits": "default",
+      "configurePreset": "asan"
     }
   ]
 }

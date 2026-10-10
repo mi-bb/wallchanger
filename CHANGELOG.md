@@ -23,9 +23,16 @@ and this project adheres to
 
 ## [Unreleased]
 
+### Added
+
+- CMake `asan` preset (debug build with AddressSanitizer and UBSan), plus test
+  presets for `release`, `debug` and `asan`.
+
 ### Changed
 
 - Raised the CMake minimum from 3.21 to 3.22.
+- The `release` and `debug` CMake presets now build in `build/release` and
+  `build/debug` instead of sharing `./build` with `default`.
 
 ## [1.7.1] - 2026-10-09
 
