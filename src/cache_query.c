@@ -84,74 +84,74 @@
 /**
  * @brief  Convert SearchItem item to json_object.
  *
- * @param[in] si_item  SearchItem item to convert
+ * @param[in] item  SearchItem item to convert
  * @return    New json_object with search data.
  */
 static json_object *
-cache_query_search_item_to_json (const SearchItem *si_item)
+cache_query_search_item_to_json (const SearchItem *item)
 {
     json_object *j_res;  /* Result Json obj/array to return */
     json_object *j_val;  /* Json value to add to result */
 
     j_res = json_object_new_object();
 
-    if (!str_is_empty (si_item->s_id)) {
-        j_val = json_object_new_string (si_item->s_id);
+    if (!str_is_empty (item->id)) {
+        j_val = json_object_new_string (item->id);
         json_object_object_add_ex (j_res, JS_ID, j_val,
                                    JSON_C_OBJECT_ADD_KEY_IS_NEW);
     }
-    if (!str_is_empty (si_item->s_author_name)) {
-        j_val = json_object_new_string (si_item->s_author_name);
+    if (!str_is_empty (item->author_name)) {
+        j_val = json_object_new_string (item->author_name);
         json_object_object_add_ex (j_res, JS_AUTH_NAME, j_val,
                                    JSON_C_OBJECT_ADD_KEY_IS_NEW);
     }
-    if (!str_is_empty (si_item->s_author_url)) {
-        j_val = json_object_new_string (si_item->s_author_url);
+    if (!str_is_empty (item->author_url)) {
+        j_val = json_object_new_string (item->author_url);
         json_object_object_add_ex (j_res, JS_AUTH_URL, j_val,
                                    JSON_C_OBJECT_ADD_KEY_IS_NEW);
     }
-    if (!str_is_empty (si_item->s_file_name)) {
-        j_val = json_object_new_string (si_item->s_file_name);
+    if (!str_is_empty (item->file_name)) {
+        j_val = json_object_new_string (item->file_name);
         json_object_object_add_ex (j_res, JS_FILE_NAME, j_val,
                                    JSON_C_OBJECT_ADD_KEY_IS_NEW);
     }
-    if (!str_is_empty (si_item->s_display_name)) {
-        j_val = json_object_new_string (si_item->s_display_name);
+    if (!str_is_empty (item->display_name)) {
+        j_val = json_object_new_string (item->display_name);
         json_object_object_add_ex (j_res, JS_DISP_NAME, j_val,
                                    JSON_C_OBJECT_ADD_KEY_IS_NEW);
     }
-    if (!str_is_empty (si_item->s_display_markup)) {
-        j_val = json_object_new_string (si_item->s_display_markup);
+    if (!str_is_empty (item->display_markup)) {
+        j_val = json_object_new_string (item->display_markup);
         json_object_object_add_ex (j_res, JS_DISP_MKUP, j_val,
                                    JSON_C_OBJECT_ADD_KEY_IS_NEW);
     }
-    if (!str_is_empty (si_item->s_page_url)) {
-        j_val = json_object_new_string (si_item->s_page_url);
+    if (!str_is_empty (item->page_url)) {
+        j_val = json_object_new_string (item->page_url);
         json_object_object_add_ex (j_res, JS_PAGE_URL, j_val,
                                    JSON_C_OBJECT_ADD_KEY_IS_NEW);
     }
-    if (!str_is_empty (si_item->s_image_url)) {
-        j_val = json_object_new_string (si_item->s_image_url);
+    if (!str_is_empty (item->image_url)) {
+        j_val = json_object_new_string (item->image_url);
         json_object_object_add_ex (j_res, JS_IMAGE_URL, j_val,
                                    JSON_C_OBJECT_ADD_KEY_IS_NEW);
     }
-    if (!str_is_empty (si_item->s_thumb_url)) {
-        j_val = json_object_new_string (si_item->s_thumb_url);
+    if (!str_is_empty (item->thumb_url)) {
+        j_val = json_object_new_string (item->thumb_url);
         json_object_object_add_ex (j_res, JS_THUMB_URL, j_val,
                                    JSON_C_OBJECT_ADD_KEY_IS_NEW);
     }
-    if (!str_is_empty (si_item->s_service_name)) {
-        j_val = json_object_new_string (si_item->s_service_name);
+    if (!str_is_empty (item->service_name)) {
+        j_val = json_object_new_string (item->service_name);
         json_object_object_add_ex (j_res, JS_SERV_NAME, j_val,
                                    JSON_C_OBJECT_ADD_KEY_IS_NEW);
     }
-    if (si_item->i_width > 0) {
-        j_val = json_object_new_int (si_item->i_width);
+    if (item->width > 0) {
+        j_val = json_object_new_int (item->width);
         json_object_object_add_ex (j_res, JS_WIDTH, j_val,
                                    JSON_C_OBJECT_ADD_KEY_IS_NEW);
     }
-    if (si_item->i_height > 0) {
-        j_val = json_object_new_int (si_item->i_height);
+    if (item->height > 0) {
+        j_val = json_object_new_int (item->height);
         json_object_object_add_ex (j_res, JS_HEIGHT, j_val,
                                    JSON_C_OBJECT_ADD_KEY_IS_NEW);
     }
@@ -167,75 +167,75 @@ cache_query_search_item_to_json (const SearchItem *si_item)
 static SearchItem *
 cache_query_json_to_search_item (json_object *j_obj)
 {
-    SearchItem  *si_item; /* Item to return */
+    SearchItem  *item; /* Item to return */
     json_object *j_val;   /* Reading/checking val */
 
-    si_item = search_item_new ();
+    item = search_item_new ();
 
     if (json_object_object_get_ex (j_obj, JS_ID, &j_val) &&
         json_object_get_type (j_val) == json_type_string) {
 
-        search_item_set_id_string (si_item, json_object_get_string (j_val));
+        search_item_set_id_string (item, json_object_get_string (j_val));
     }
     if (json_object_object_get_ex (j_obj, JS_AUTH_NAME, &j_val) &&
         json_object_get_type (j_val) == json_type_string) {
 
-        search_item_set_author_name (si_item, json_object_get_string (j_val));
+        search_item_set_author_name (item, json_object_get_string (j_val));
     }
     if (json_object_object_get_ex (j_obj, JS_AUTH_URL, &j_val) &&
         json_object_get_type (j_val) == json_type_string) {
 
-        search_item_set_author_url (si_item, json_object_get_string (j_val));
+        search_item_set_author_url (item, json_object_get_string (j_val));
     }
     if (json_object_object_get_ex (j_obj, JS_FILE_NAME, &j_val) &&
         json_object_get_type (j_val) == json_type_string) {
 
-        search_item_set_file_name (si_item, json_object_get_string (j_val));
+        search_item_set_file_name (item, json_object_get_string (j_val));
     }
     if (json_object_object_get_ex (j_obj, JS_DISP_NAME, &j_val) &&
         json_object_get_type (j_val) == json_type_string) {
 
-        search_item_set_display_name (si_item, json_object_get_string (j_val));
+        search_item_set_display_name (item, json_object_get_string (j_val));
     }
     if (json_object_object_get_ex (j_obj, JS_DISP_MKUP, &j_val) &&
         json_object_get_type (j_val) == json_type_string) {
 
-        search_item_set_display_markup (si_item, json_object_get_string (j_val));
+        search_item_set_display_markup (item, json_object_get_string (j_val));
     }
     if (json_object_object_get_ex (j_obj, JS_PAGE_URL, &j_val) &&
         json_object_get_type (j_val) == json_type_string) {
 
-        search_item_set_page_url (si_item, json_object_get_string (j_val));
+        search_item_set_page_url (item, json_object_get_string (j_val));
     }
     if (json_object_object_get_ex (j_obj, JS_IMAGE_URL, &j_val) &&
         json_object_get_type (j_val) == json_type_string) {
 
-        search_item_set_image_url (si_item, json_object_get_string (j_val));
+        search_item_set_image_url (item, json_object_get_string (j_val));
     }
     if (json_object_object_get_ex (j_obj, JS_THUMB_URL, &j_val) &&
         json_object_get_type (j_val) == json_type_string) {
 
-        search_item_set_thumb_url (si_item, json_object_get_string (j_val));
+        search_item_set_thumb_url (item, json_object_get_string (j_val));
     }
     if (json_object_object_get_ex (j_obj, JS_SERV_NAME, &j_val) &&
         json_object_get_type (j_val) == json_type_string) {
 
-        search_item_set_service_name (si_item, json_object_get_string (j_val));
+        search_item_set_service_name (item, json_object_get_string (j_val));
     }
     if (json_object_object_get_ex (j_obj, JS_WIDTH, &j_val) &&
         json_object_get_type (j_val) == json_type_int) {
 
-        search_item_set_width (si_item, json_object_get_int (j_val));
+        search_item_set_width (item, json_object_get_int (j_val));
     }
     if (json_object_object_get_ex (j_obj, JS_HEIGHT, &j_val) &&
         json_object_get_type (j_val) == json_type_int) {
 
-        search_item_set_height (si_item, json_object_get_int (j_val));
+        search_item_set_height (item, json_object_get_int (j_val));
     }
 #ifdef DEBUG
-    search_item_print (si_item);
+    search_item_print (item);
 #endif
-    return si_item;
+    return item;
 }
 /*----------------------------------------------------------------------------*/
 /**

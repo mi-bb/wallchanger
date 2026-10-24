@@ -177,17 +177,17 @@ download_progress_window (GtkWindow *gw_parent,
         f_frac  += f_step;
         si_item  = gl_item_list->data;
 
-        ui_nlen = (size_t) g_utf8_strlen (si_item->s_file_name, -1);
+        ui_nlen = (size_t) g_utf8_strlen (si_item->file_name, -1);
 
         if (ui_nlen > NAME_LEN) {
-            g_utf8_strncpy (s_nbuff, si_item->s_file_name, NAME_LEN);
+            g_utf8_strncpy (s_nbuff, si_item->file_name, NAME_LEN);
             strcat (s_nbuff, "...");
         }
         else {
-            strcpy (s_nbuff, si_item->s_file_name);
+            strcpy (s_nbuff, si_item->file_name);
         }
         s_fn = str_comb (s_wpdir, "/");
-        str_append (&s_fn, si_item->s_file_name);
+        str_append (&s_fn, si_item->file_name);
         s_markup = g_markup_printf_escaped (s_format, s_nbuff);
 
         gtk_label_set_markup (GTK_LABEL (gw_label), s_markup);
@@ -196,9 +196,9 @@ download_progress_window (GtkWindow *gw_parent,
         while (gtk_events_pending ())
             gtk_main_iteration ();
 #ifdef DEBUG
-        printf ("downloading:%s\nto:%s\n", si_item->s_image_url, s_fn);
+        printf ("downloading:%s\nto:%s\n", si_item->image_url, s_fn);
 #endif
-        urldata_get_to_file (si_item->s_image_url, s_fn, &s_err);
+        urldata_get_to_file (si_item->image_url, s_fn, &s_err);
         if (s_err != nullptr) {
             message_dialog_error (nullptr, s_err);
             free (s_err);
@@ -353,8 +353,8 @@ sel_combo_get_list (GtkWidget *gw_selected_combo)
 
         si_item = search_item_new ();
         gtk_tree_model_get (gtm_model,             &gti_iter,
-                            WW_SELCOMBO_FILE_NAME, &si_item->s_file_name,
-                            WW_SELCOMBO_IMAGE_URL, &si_item->s_image_url,
+                            WW_SELCOMBO_FILE_NAME, &si_item->file_name,
+                            WW_SELCOMBO_IMAGE_URL, &si_item->image_url,
                             -1);
         gl_res = g_list_prepend (gl_res, si_item);
         b_res = gtk_tree_model_iter_next (gtm_model, &gti_iter);
@@ -814,10 +814,10 @@ webwidget_combobox_create (Setting *st_settings)
 static GtkWidget *
 webwidget_selected_combobox_create (void)
 {
-    GtkWidget       *gw_combo;      /* Result ComboBox */
-    GtkCellRenderer *cell;          /* CellRenderer */
-    GtkListStore    *list_store;    /* ListStore for combobox data */
-    GtkTreeIter      iter;          /* TreeIter */
+    GtkWidget       *gw_combo;   /* Result ComboBox */
+    GtkCellRenderer *cell;       /* CellRenderer */
+    GtkListStore    *list_store; /* ListStore for combobox data */
+    GtkTreeIter      iter;       /* TreeIter */
 
     list_store = gtk_list_store_new (WW_SELCOMBO_CNT,
                                      GDK_TYPE_PIXBUF,

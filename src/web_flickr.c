@@ -252,43 +252,43 @@ my_message_handler([[maybe_unused]] void *user_data,
 static SearchItem *
 flickrphoto_to_search_item (flickcurl_photo *fp_photo)
 {
-    SearchItem *si_item = nullptr;
+    SearchItem *item = nullptr;
     char       *s_name  = nullptr;
     const char *s_title = nullptr;
 
-    si_item = search_item_new ();
+    item = search_item_new ();
     s_title = fp_photo->fields[PHOTO_FIELD_title].string;
 
     if (fp_photo->fields[PHOTO_FIELD_owner_realname].string != nullptr) {
         search_item_set_author_name (
-                si_item, fp_photo->fields[PHOTO_FIELD_owner_realname].string);
+                item, fp_photo->fields[PHOTO_FIELD_owner_realname].string);
     }
     else if (fp_photo->fields[PHOTO_FIELD_owner_username].string != nullptr) {
         search_item_set_author_name (
-                si_item, fp_photo->fields[PHOTO_FIELD_owner_username].string);
+                item, fp_photo->fields[PHOTO_FIELD_owner_username].string);
     }
 
     s_name = str_is_empty (s_title) ? strdup (fp_photo->id) : strdup (s_title);
     remove_non_alpha_space (s_name);
 
-    search_item_set_service_name (si_item, ww_name (WEB_SERV_FLICKR));
-    search_item_set_display_name (si_item, s_name);
-    search_item_set_display_markup (si_item, s_name);
+    search_item_set_service_name (item, ww_name (WEB_SERV_FLICKR));
+    search_item_set_display_name (item, s_name);
+    search_item_set_display_markup (item, s_name);
     free (s_name);
 
-    search_item_set_id_string (si_item, fp_photo->id);
+    search_item_set_id_string (item, fp_photo->id);
 
-    si_item->s_thumb_url = flickcurl_photo_as_source_uri (fp_photo, 'm');
-    si_item->s_page_url  = flickcurl_photo_as_page_uri (fp_photo);
+    item->thumb_url = flickcurl_photo_as_source_uri (fp_photo, 'm');
+    item->page_url  = flickcurl_photo_as_page_uri (fp_photo);
 
     if (fp_photo->fields[PHOTO_FIELD_originalformat].string != nullptr)
-        si_item->s_image_url = flickcurl_photo_as_source_uri (fp_photo, 'o');
+        item->image_url = flickcurl_photo_as_source_uri (fp_photo, 'o');
     else
-        si_item->s_image_url = flickcurl_photo_as_source_uri (fp_photo, 'b');
+        item->image_url = flickcurl_photo_as_source_uri (fp_photo, 'b');
 
-    si_item->s_file_name = flickr_create_file_name (si_item->s_display_name,
-                                                    si_item->s_image_url,
-                                                    si_item->s_id);
+    item->file_name = flickr_create_file_name (item->display_name,
+                                                    item->image_url,
+                                                    item->id);
 #ifdef DEBUG
     printf ("ID : %s\n", fp_photo->id);
     printf ("Title : %s\n", fp_photo->fields[PHOTO_FIELD_title].string);
@@ -296,11 +296,11 @@ flickrphoto_to_search_item (flickcurl_photo *fp_photo)
             fp_photo->fields[PHOTO_FIELD_owner_realname].string);
     printf ("author2 : %s\n",
             fp_photo->fields[PHOTO_FIELD_owner_username].string);
-    printf ("Author : %s\n",si_item->s_author_name);
-    printf ("Page url : %s\n",si_item->s_page_url);
-    printf ("Thumb url : %s\n",si_item->s_thumb_url);
-    printf ("Image url : %s\n",si_item->s_image_url);
-    printf ("File name : %s\n",si_item->s_file_name);
+    printf ("Author : %s\n",item->author_name);
+    printf ("Page url : %s\n",item->page_url);
+    printf ("Thumb url : %s\n",item->thumb_url);
+    printf ("Image url : %s\n",item->image_url);
+    printf ("File name : %s\n",item->file_name);
     flickcurl_photo_field_type field_type;
     for (field_type = 0; field_type <= PHOTO_FIELD_LAST; field_type++) {
         flickcurl_field_value_type datatype = fp_photo->fields[field_type].type;

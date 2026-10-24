@@ -100,7 +100,7 @@ static const char *s_toprange[] = {
  * @return        none
  */
 static void
-wallhaven_process_item_set_names (SearchItem *si_item)
+wallhaven_process_item_set_names (SearchItem *item)
 {
     //char *s_base_name = NULL; /* Base name for processing */
     char *s_file_name = nullptr; /* Name for file to save */
@@ -108,27 +108,27 @@ wallhaven_process_item_set_names (SearchItem *si_item)
     char *s_ext       = nullptr; /* Pointer to extension */
     const char *s_format = "%s\n<span font_size=\"small\">[%dx%d]</span>";
 
-    if (si_item->s_id == nullptr)
+    if (item->id == nullptr)
         return;
-    else if (si_item->s_image_url == nullptr)
+    else if (item->image_url == nullptr)
         return;
 
     /* Create file name, add image extension to base name */
-    s_ext = strrchr (si_item->s_image_url, '.');
+    s_ext = strrchr (item->image_url, '.');
     if (s_ext != nullptr) {
         s_file_name = str_comb (ww_name (WEB_SERV_WALLHAVEN), "_");
-        str_append (&s_file_name, si_item->s_id);
+        str_append (&s_file_name, item->id);
         str_append (&s_file_name, s_ext);
     }
     /* Display name to show on image list */
-    s_disp_name = si_item->s_id;
+    s_disp_name = item->id;
 
     /* Save names in SearchItem */
-    search_item_set_file_name    (si_item, s_file_name);
-    search_item_set_display_name (si_item, s_disp_name);
-    /* search_item_set_display_markup (si_item, s_disp_name); */
-    si_item->s_display_markup = g_markup_printf_escaped (
-            s_format, s_disp_name, si_item->i_width, si_item->i_height);
+    search_item_set_file_name    (item, s_file_name);
+    search_item_set_display_name (item, s_disp_name);
+    /* search_item_set_display_markup (item, s_disp_name); */
+    item->display_markup = g_markup_printf_escaped (
+            s_format, s_disp_name, item->width, item->height);
 
     free (s_file_name);
 }
@@ -145,22 +145,22 @@ wallhaven_json_obj_to_search_item (json_object *j_obj)
     json_object *j_val;
     json_object *j_val2;
 
-    SearchItem *si_item = search_item_new ();
+    SearchItem *item = search_item_new ();
 
-    search_item_set_service_name (si_item, ww_name (WEB_SERV_WALLHAVEN));
+    search_item_set_service_name (item, ww_name (WEB_SERV_WALLHAVEN));
 
     if (json_object_object_get_ex (j_obj, "id", &j_val) &&
         json_object_get_type (j_val) == json_type_string) {
 
-        search_item_set_id_string (si_item, json_object_get_string (j_val));
+        search_item_set_id_string (item, json_object_get_string (j_val));
 #ifdef DEBUG
-        printf ("photo id : %s\n", si_item->s_id);
+        printf ("photo id : %s\n", item->id);
 #endif
     }
     if (json_object_object_get_ex (j_obj, "dimension_x", &j_val) &&
         json_object_get_type (j_val) == json_type_int) {
 
-        search_item_set_width (si_item, json_object_get_int (j_val));
+        search_item_set_width (item, json_object_get_int (j_val));
 #ifdef DEBUG
         printf ("width : %d\n", json_object_get_int (j_val));
 #endif
@@ -168,7 +168,7 @@ wallhaven_json_obj_to_search_item (json_object *j_obj)
     if (json_object_object_get_ex (j_obj, "dimension_y", &j_val) &&
         json_object_get_type (j_val) == json_type_int) {
 
-        search_item_set_height (si_item, json_object_get_int (j_val));
+        search_item_set_height (item, json_object_get_int (j_val));
 #ifdef DEBUG
         printf ("height : %d\n", json_object_get_int (j_val));
 #endif
@@ -176,7 +176,7 @@ wallhaven_json_obj_to_search_item (json_object *j_obj)
     if (json_object_object_get_ex (j_obj, "url", &j_val) &&
         json_object_get_type (j_val) == json_type_string) {
 
-        search_item_set_page_url (si_item, json_object_get_string (j_val));
+        search_item_set_page_url (item, json_object_get_string (j_val));
 #ifdef DEBUG
         printf ("url : %s\n", json_object_get_string (j_val));
 #endif
@@ -184,7 +184,7 @@ wallhaven_json_obj_to_search_item (json_object *j_obj)
     if (json_object_object_get_ex (j_obj, "path", &j_val) &&
         json_object_get_type (j_val) == json_type_string) {
 
-        search_item_set_image_url (si_item, json_object_get_string (j_val));
+        search_item_set_image_url (item, json_object_get_string (j_val));
 #ifdef DEBUG
         printf ("image url : %s\n", json_object_get_string (j_val));
 #endif
@@ -195,15 +195,15 @@ wallhaven_json_obj_to_search_item (json_object *j_obj)
         if (json_object_object_get_ex (j_val, "small", &j_val2) &&
             json_object_get_type (j_val2) == json_type_string) {
 
-            search_item_set_thumb_url (si_item, json_object_get_string (j_val2));
+            search_item_set_thumb_url (item, json_object_get_string (j_val2));
 #ifdef DEBUG
             printf ("thumb url : %s\n", json_object_get_string (j_val2));
 #endif
         }
     }
-    wallhaven_process_item_set_names (si_item);
+    wallhaven_process_item_set_names (item);
 
-    return si_item;
+    return item;
 }
 /*----------------------------------------------------------------------------*/
 /**
@@ -221,10 +221,10 @@ wallhaven_json_to_webwidget (const char *s_buff,
 {
     json_object *j_obj;            /* Json with search data */
     json_object *j_val;            /* Some value */
-    json_object *j_val2;            /* Some value */
+    json_object *j_val2;           /* Some value */
     json_object *j_arr;            /* For array data */
     enum json_tokener_error j_err; /* Json error output */
-    SearchItem *si_item = nullptr;    /* For image info */
+    SearchItem *item = nullptr;    /* For image info */
     size_t      i       = 0;       /* i */
     size_t      ui_cnt  = 0;       /* Elements in array */
 
@@ -261,13 +261,13 @@ wallhaven_json_to_webwidget (const char *s_buff,
 
             for (i = 0; i < ui_cnt; ++i) {
                 if ((j_val = json_object_array_get_idx (j_arr, i)) != nullptr) {
-                    si_item = wallhaven_json_obj_to_search_item (j_val);
+                    item = wallhaven_json_obj_to_search_item (j_val);
                     add_search_item_to_img_view (ww_widget->gw_img_view,
-                                                 si_item,
+                                                 item,
                                                  ww_widget->s_wallp_dir,
                                                  ww_name (WEB_SERV_WALLHAVEN),
                                                  ww_widget->i_thumb_quality);
-                    cache_query_append_item (cq_query, si_item);
+                    cache_query_append_item (cq_query, item);
                 }
             }
         }
@@ -285,7 +285,7 @@ wallhaven_search (WebWidget      *ww_widget,
     UrlData    *ud_data  = nullptr; /* For search results */
     CacheQuery *cq_query = nullptr; /* For cache saving */
     char       *s_query  = nullptr; /* For search query */
-    int         i_err    = 0;    /* Error output */
+    int         i_err    = 0;       /* Error output */
 
     if (str_is_empty_warn (ns_data->s_str[0], "Wallhaven API key is not set"))
         return;

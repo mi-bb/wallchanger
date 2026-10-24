@@ -283,9 +283,9 @@ char *
 combo_get_active_str (GtkWidget *gw_combo,
                       const int  i_col)
 {
-    GtkTreeModel *model; /* TreeModel */
-    GtkTreeIter   iter;  /* TreeIter */
-    char *s_ret = nullptr;  /* Return string */
+    GtkTreeModel *model;   /* TreeModel */
+    GtkTreeIter   iter;    /* TreeIter */
+    char *s_ret = nullptr; /* Return string */
 
     if (gtk_combo_box_get_active_iter (GTK_COMBO_BOX (gw_combo), &iter)) {
 
@@ -341,38 +341,38 @@ add_search_item_to_img_view (GtkWidget        *gw_iconview,
                              const char       *s_service_name,
                              const int         i_thumb_quality)
 {
-    GtkListStore *list_store;      /* ListStore */
-    GdkPixbuf    *gp_pbuf  = nullptr; /* Pixbuf with thumbnail */
-    GtkTreeIter   iter;            /* TreeIter */
+    GtkListStore *list_store;        /* ListStore */
+    GdkPixbuf    *gp_pbuf = nullptr; /* Pixbuf with thumbnail */
+    GtkTreeIter   iter;              /* TreeIter */
 
     list_store = GTK_LIST_STORE (gtk_icon_view_get_model (
                 GTK_ICON_VIEW (gw_iconview)));
 
-    if (si_item->s_thumb_url == nullptr)
+    if (si_item->thumb_url == nullptr)
         return;
 
     gp_pbuf = thumbnail_get (s_service_name,
-                             si_item->s_id,
+                             si_item->id,
                              i_thumb_quality,
-                             si_item->s_thumb_url);
+                             si_item->thumb_url);
 
     if (gp_pbuf != nullptr) {
 
-        wallpaper_check_mark (s_wallp_dir, si_item->s_file_name, gp_pbuf);
+        wallpaper_check_mark (s_wallp_dir, si_item->file_name, gp_pbuf);
 
         gtk_list_store_append(list_store, &iter);
         gtk_list_store_set(list_store, &iter,
                            WEB_COL_PIXBUF,    gp_pbuf,
-                           WEB_COL_WIDTH,     si_item->i_width,
-                           WEB_COL_HEIGHT,    si_item->i_height,
-                           WEB_COL_ID,        si_item->s_id,
-                           WEB_COL_DISP_NAME, si_item->s_display_name,
-                           WEB_COL_AUTHOR,    si_item->s_author_name,
-                           WEB_COL_MARKUP,    si_item->s_display_markup,
-                           WEB_COL_FILE_NAME, si_item->s_file_name,
-                           WEB_COL_PAGE_URL,  si_item->s_page_url,
-                           WEB_COL_IMAGE_URL, si_item->s_image_url,
-                           WEB_COL_THUMB_URL, si_item->s_thumb_url,
+                           WEB_COL_WIDTH,     si_item->width,
+                           WEB_COL_HEIGHT,    si_item->height,
+                           WEB_COL_ID,        si_item->id,
+                           WEB_COL_DISP_NAME, si_item->display_name,
+                           WEB_COL_AUTHOR,    si_item->author_name,
+                           WEB_COL_MARKUP,    si_item->display_markup,
+                           WEB_COL_FILE_NAME, si_item->file_name,
+                           WEB_COL_PAGE_URL,  si_item->page_url,
+                           WEB_COL_IMAGE_URL, si_item->image_url,
+                           WEB_COL_THUMB_URL, si_item->thumb_url,
                            -1);
         g_object_unref (gp_pbuf);
     }
@@ -389,8 +389,8 @@ check_for_cached_query (WebWidget  *ww_widget,
                         const char *s_service_name)
 {
     CacheQuery *cq_query_chk = nullptr; /* For checking cache availability */
-    int         i_err        = 0;    /* Error output */
-    int         i            = 0;    /* i */
+    int         i_err        = 0;       /* Error output */
+    int         i            = 0;       /* i */
 
     cq_query_chk = cache_query_check_query (s_service_name,
                                             ww_widget->s_query,
@@ -427,7 +427,7 @@ search_opts_to_str (const Setting *st_setts)
 {
     char          *s_res   = nullptr; /* String to return */
     const Setting *st_item = nullptr; /* For settings iteration */
-    char           s_buff[32];     /* Text buffer */
+    char           s_buff[32];        /* Text buffer */
 
     s_res   = strdup ("");
     st_item = st_setts;
