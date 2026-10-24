@@ -324,7 +324,7 @@ flickrphoto_to_search_item (flickcurl_photo *fp_photo)
                tag->count);
     }
 #endif
-    return si_item;
+    return item;
 }
 /*----------------------------------------------------------------------------*/
 /**
@@ -339,7 +339,7 @@ flickr_search (WebWidget      *ww_widget,
     flickcurl_photos_list       *photos_list = nullptr;
     flickcurl   *fc       = nullptr;
     CacheQuery  *cq_query = nullptr; /* For cache saving */
-    SearchItem  *si_item  = nullptr; /* Photo information */
+    SearchItem  *item  = nullptr; /* Photo information */
     char        *s_tags   = nullptr; /* Query tags */
     int          i_err    = 0;    /* Error output */
     int          i        = 0;    /* i */
@@ -385,13 +385,13 @@ flickr_search (WebWidget      *ww_widget,
         cq_query->i_found_cnt  = ww_widget->i_found_cnt;
 
         for(i = 0; i < photos_list->photos_count; ++i) {
-            si_item = flickrphoto_to_search_item (photos_list->photos[i]);
+            item = flickrphoto_to_search_item (photos_list->photos[i]);
             add_search_item_to_img_view (ww_widget->gw_img_view,
-                                         si_item,
+                                         item,
                                          ww_widget->s_wallp_dir,
                                          ww_name (WEB_SERV_FLICKR),
                                          ww_widget->i_thumb_quality);
-            cache_query_append_item (cq_query, si_item);
+            cache_query_append_item (cq_query, item);
         }
         i_err = cache_query_save (cq_query);
 
