@@ -239,10 +239,10 @@ combo_get_active_strings (GtkWidget *gw_combo,
 
         model = gtk_combo_box_get_model (GTK_COMBO_BOX (gw_combo));
         gtk_tree_model_get (model,          &iter,
-                            WW_COMBO_STR_1, &ns_data->s_str[0],
-                            WW_COMBO_STR_2, &ns_data->s_str[1],
-                            WW_COMBO_STR_3, &ns_data->s_str[2],
-                            WW_COMBO_STR_4, &ns_data->s_str[3],
+                            WW_COMBO_STR_1, &ns_data->str[0],
+                            WW_COMBO_STR_2, &ns_data->str[1],
+                            WW_COMBO_STR_3, &ns_data->str[2],
+                            WW_COMBO_STR_4, &ns_data->str[3],
                             -1);
     }
 }
@@ -267,10 +267,10 @@ combo_set_active_strings (GtkWidget      *gw_combo,
                     GTK_COMBO_BOX (gw_combo)));
 
         gtk_list_store_set (gls_slstore,    &gti_iter,
-                            WW_COMBO_STR_1, ns_data->s_str[0],
-                            WW_COMBO_STR_2, ns_data->s_str[1],
-                            WW_COMBO_STR_3, ns_data->s_str[2],
-                            WW_COMBO_STR_4, ns_data->s_str[3],
+                            WW_COMBO_STR_1, ns_data->str[0],
+                            WW_COMBO_STR_2, ns_data->str[1],
+                            WW_COMBO_STR_3, ns_data->str[2],
+                            WW_COMBO_STR_4, ns_data->str[3],
                             -1);
     }
 }
@@ -781,10 +781,10 @@ webwidget_combobox_create (Setting *st_settings)
         gtk_list_store_set (list_store, &iter,
                             WW_COMBO_ID,    i,
                             WW_COMBO_NAME,  ww_name (i),
-                            WW_COMBO_STR_1, ns_data->s_str[0],
-                            WW_COMBO_STR_2, ns_data->s_str[1],
-                            WW_COMBO_STR_3, ns_data->s_str[2],
-                            WW_COMBO_STR_4, ns_data->s_str[3],
+                            WW_COMBO_STR_1, ns_data->str[0],
+                            WW_COMBO_STR_2, ns_data->str[1],
+                            WW_COMBO_STR_3, ns_data->str[2],
+                            WW_COMBO_STR_4, ns_data->str[3],
                             WW_COMBO_LOGO,  gp_logo,
                             -1);
         g_object_unref (gp_logo);

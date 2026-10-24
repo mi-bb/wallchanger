@@ -116,20 +116,20 @@ ww_get_api_key_names (const int i_site)
 
     switch (i_site) {
         case WEB_SERV_PIXABAY:
-            str_append (&ns_data->s_str[0], "Pixabay api");
+            str_append (&ns_data->str[0], "Pixabay api");
             break;
         case WEB_SERV_WALLHAVEN:
-            str_append (&ns_data->s_str[0], "Wallhaven api");
+            str_append (&ns_data->str[0], "Wallhaven api");
             break;
         case WEB_SERV_WALLABYSS:
-            str_append (&ns_data->s_str[0], "Wallpaper Abyss api");
+            str_append (&ns_data->str[0], "Wallpaper Abyss api");
             break;
 #ifdef HAVE_FLICKCURL
         case WEB_SERV_FLICKR:
-            str_append (&ns_data->s_str[0], "Flickr client key");
-            str_append (&ns_data->s_str[1], "Flickr client secret");
-            str_append (&ns_data->s_str[2], "Flickr access token");
-            str_append (&ns_data->s_str[3], "Flickr access token secret");
+            str_append (&ns_data->str[0], "Flickr client key");
+            str_append (&ns_data->str[1], "Flickr client secret");
+            str_append (&ns_data->str[2], "Flickr access token");
+            str_append (&ns_data->str[3], "Flickr access token secret");
             break;
 #endif
         default:
@@ -154,10 +154,10 @@ ww_get_api_key_data (Setting  *st_settings,
     ns_data      = nstrings_new (4, NS_VAL_EMPTY);
 
     for (int i = 0; i < 4; ++i) {
-        if (ns_key_names->s_str[i][0] != '\0') {
-            st_sett = settings_find (st_settings, ns_key_names->s_str[i]);
+        if (ns_key_names->str[i][0] != '\0') {
+            st_sett = settings_find (st_settings, ns_key_names->str[i]);
             s_api   = st_sett == nullptr ? "" : setting_get_string (st_sett);
-            str_append (&ns_data->s_str[i], s_api);
+            str_append (&ns_data->str[i], s_api);
         }
     }
     nstrings_free (ns_key_names);
@@ -180,16 +180,16 @@ ww_update_api_key_data (const char *s_cfg_file,
     /* Get api key names for a given wallpaper site */
     ns_key_names = ww_get_api_key_names (i_site);
     /* Create Setting list with key name and key value */
-    st_setts = setting_new_string (ns_key_names->s_str[0],
-                                   ns_key_data->s_str[0]);
+    st_setts = setting_new_string (ns_key_names->str[0],
+                                   ns_key_data->str[0]);
 #ifdef HAVE_FLICKCURL
     if (i_site == WEB_SERV_FLICKR) {
         st_setts = settings_append (st_setts,
-            setting_new_string (ns_key_names->s_str[1], ns_key_data->s_str[1]));
+            setting_new_string (ns_key_names->str[1], ns_key_data->str[1]));
         st_setts = settings_append (st_setts,
-            setting_new_string (ns_key_names->s_str[2], ns_key_data->s_str[2]));
+            setting_new_string (ns_key_names->str[2], ns_key_data->str[2]));
         st_setts = settings_append (st_setts,
-            setting_new_string (ns_key_names->s_str[3], ns_key_data->s_str[3]));
+            setting_new_string (ns_key_names->str[3], ns_key_data->str[3]));
     }
 #endif
     /* Update config file with new data */

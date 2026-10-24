@@ -351,10 +351,10 @@ flickr_search (WebWidget      *ww_widget,
 
     flickcurl_set_error_handler (fc, my_message_handler, nullptr);
 
-    flickcurl_set_oauth_client_key    (fc, ns_data->s_str[0]);
-    flickcurl_set_oauth_client_secret (fc, ns_data->s_str[1]);
-    flickcurl_set_oauth_token         (fc, ns_data->s_str[2]);
-    flickcurl_set_oauth_token_secret  (fc, ns_data->s_str[3]);
+    flickcurl_set_oauth_client_key    (fc, ns_data->str[0]);
+    flickcurl_set_oauth_client_secret (fc, ns_data->str[1]);
+    flickcurl_set_oauth_token         (fc, ns_data->str[2]);
+    flickcurl_set_oauth_token_secret  (fc, ns_data->str[3]);
 
     strcpy (s_sort,  "interestingness-desc");
     strcpy (s_media, "photos");
@@ -484,10 +484,10 @@ flickr_settings_dialog (NStrings *ns_data)
     gtk_entry_set_width_chars (GTK_ENTRY (gw_ath_tok_entry), 35);
     gtk_entry_set_width_chars (GTK_ENTRY (gw_ath_sec_entry), 35);
 
-    gtk_entry_set_text (GTK_ENTRY (gw_cli_key_entry), ns_data->s_str[0]);
-    gtk_entry_set_text (GTK_ENTRY (gw_cli_sec_entry), ns_data->s_str[1]);
-    gtk_entry_set_text (GTK_ENTRY (gw_ath_tok_entry), ns_data->s_str[2]);
-    gtk_entry_set_text (GTK_ENTRY (gw_ath_sec_entry), ns_data->s_str[3]);
+    gtk_entry_set_text (GTK_ENTRY (gw_cli_key_entry), ns_data->str[0]);
+    gtk_entry_set_text (GTK_ENTRY (gw_cli_sec_entry), ns_data->str[1]);
+    gtk_entry_set_text (GTK_ENTRY (gw_ath_tok_entry), ns_data->str[2]);
+    gtk_entry_set_text (GTK_ENTRY (gw_ath_sec_entry), ns_data->str[3]);
 
     gtk_grid_attach (GTK_GRID (gw_client_grid),
                      gtk_label_new ("Flickr API client key:"),
@@ -610,15 +610,15 @@ flickr_settings_dialog (NStrings *ns_data)
         s_ath_tok = gtk_entry_get_text (GTK_ENTRY (gw_ath_tok_entry));
         s_ath_sec = gtk_entry_get_text (GTK_ENTRY (gw_ath_sec_entry));
 
-        free (ns_data->s_str[0]);
-        free (ns_data->s_str[1]);
-        free (ns_data->s_str[2]);
-        free (ns_data->s_str[3]);
+        free (ns_data->str[0]);
+        free (ns_data->str[1]);
+        free (ns_data->str[2]);
+        free (ns_data->str[3]);
 
-        ns_data->s_str[0] = strdup (s_cli_key);
-        ns_data->s_str[1] = strdup (s_cli_sec);
-        ns_data->s_str[2] = strdup (s_ath_tok);
-        ns_data->s_str[3] = strdup (s_ath_sec);
+        ns_data->str[0] = strdup (s_cli_key);
+        ns_data->str[1] = strdup (s_cli_sec);
+        ns_data->str[2] = strdup (s_ath_tok);
+        ns_data->str[3] = strdup (s_ath_sec);
     }
     gtk_widget_destroy (gw_dialog);
 

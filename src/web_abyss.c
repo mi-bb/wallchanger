@@ -262,7 +262,7 @@ wallpaperabyss_search (WebWidget      *ww_widget,
     char       *s_query  = nullptr; /* For search query */
     int         i_err    = 0;    /* Error output */
 
-    if (str_is_empty_warn (ns_data->s_str[0],
+    if (str_is_empty_warn (ns_data->str[0],
                            "Wallpaper Abyss API key is not set"))
         return;
 
@@ -270,7 +270,7 @@ wallpaperabyss_search (WebWidget      *ww_widget,
 
     ud_data = urldata_search_wallabyss (s_query,
                                         ww_widget->s_search_opts,
-                                        ns_data->s_str[0],
+                                        ns_data->str[0],
                                         ww_widget->i_page);
     if (ud_data->errbuf != nullptr) {
         message_dialog_error (nullptr, ud_data->errbuf);
@@ -325,7 +325,7 @@ wallpaperabyss_settings_dialog (NStrings *ns_data)
 
     gw_api_entry = gtk_entry_new ();
 
-    gtk_entry_set_text (GTK_ENTRY (gw_api_entry), ns_data->s_str[0]);
+    gtk_entry_set_text (GTK_ENTRY (gw_api_entry), ns_data->str[0]);
 
     /* Packing dialog widgets */
     gtk_box_pack_start (GTK_BOX (gw_content_box),
@@ -352,8 +352,8 @@ wallpaperabyss_settings_dialog (NStrings *ns_data)
     i_res = gtk_dialog_run (GTK_DIALOG (gw_dialog));
 
     if (i_res == GTK_RESPONSE_ACCEPT) {
-        free (ns_data->s_str[0]);
-        ns_data->s_str[0] = strdup (
+        free (ns_data->str[0]);
+        ns_data->str[0] = strdup (
                 gtk_entry_get_text (GTK_ENTRY (gw_api_entry)));
     }
     gtk_widget_destroy (gw_dialog);
