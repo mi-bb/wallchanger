@@ -34,165 +34,165 @@ int
 str_compare (const char *a,
              const char *b)
 {
-    int i_res = 0; /* Function result */
+    int result = 0; /* Function result */
 
     if (a == nullptr || b == nullptr) {
         if (a == nullptr && b == nullptr) {
-            i_res = 0;
+            result = 0;
         }
         else {
             if (a == nullptr) {
-                i_res = -1;
+                result = -1;
             }
             else {
-                i_res = 1;
+                result = 1;
             }
         }
     }
     else {
-        i_res = strcmp (a, b);
+        result = strcmp (a, b);
     }
-    return i_res;
+    return result;
 }
 /*----------------------------------------------------------------------------*/
 /**
- * @brief  Replace one string with another in a given src_dest string.
+ * @brief  Replace one string with another in a given src string.
  */ 
 char *
-str_replace_in (const char *s_src,
-                const char *s_fr,
-                const char *s_to)
+str_replace_in (const char *src,
+                const char *from,
+                const char *to)
 {
-    const char *sp      = s_src; /* Copy s_src pointer */
-    const char *pn      = nullptr;  /* Find string pointer */
-    char       *s_res   = nullptr;  /* Result string */
-    size_t      ul_len  = 0;     /* Length to allocate */
-    size_t      ul_flen = 0;     /* Length of s_fr */
-    size_t      ul_tlen = 0;     /* Length if s_to */
+    const char *sp       = src; /* Copy src pointer */
+    const char *pn       = nullptr;  /* Find string pointer */
+    char       *result   = nullptr;  /* Result string */
+    size_t      len      = 0;   /* Length to allocate */
+    size_t      from_len = 0;   /* Length of from */
+    size_t      to_len   = 0;   /* Length of to */
 
-    ul_flen = strlen (s_fr);
-    ul_tlen = strlen (s_to);
-    ul_len  = strlen (s_src) + 1;
+    from_len = strlen (from);
+    to_len   = strlen (to);
+    len      = strlen (src) + 1;
 
-    cres ((void**) &s_res, ul_len, sizeof (char));
-    s_res[0] = '\0';
+    cres ((void**) &result, len, sizeof (char));
+    result[0] = '\0';
 
     /* while there are "replace from" in source string */
-    while ((pn = strstr (sp, s_fr)) != nullptr) {
+    while ((pn = strstr (sp, from)) != nullptr) {
 
-        ul_len += ul_tlen;
-        ul_len -= ul_flen;
+        len += to_len;
+        len -= from_len;
 
-        cres ((void**) &s_res, ul_len, sizeof (char));
+        cres ((void**) &result, len, sizeof (char));
         /* append original text from last found up to new found */
-        strncat (s_res, sp, (size_t) (pn - sp));
+        strncat (result, sp, (size_t) (pn - sp));
         /* append "replace to" */
-        strcat (s_res, s_to);
+        strcat (result, to);
 
         /* change source pointer to "after found" */
-        sp = pn + ul_flen; 
+        sp = pn + from_len; 
     }
-    strcat (s_res, sp);
+    strcat (result, sp);
 
-    return s_res;
+    return result;
 }
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Make command to set wallpaper.
  */ 
 char *
-str_set_up_wallpaper_command (const char *s_cmd,
-                              const char *s_fname,
-                              const char *s_sign)
+str_set_up_wallpaper_command (const char *cmd,
+                              const char *fname,
+                              const char *sign)
 {
-    char *s_res = nullptr; /* Result string */
+    char *result = nullptr; /* Result string */
 
-    if (strstr (s_cmd, s_sign) == nullptr) {
-        s_res = str_comb (s_cmd, " \"");
-        str_append (&s_res, s_fname);
-        str_append (&s_res, "\"");
+    if (strstr (cmd, sign) == nullptr) {
+        result = str_comb (cmd, " \"");
+        str_append (&result, fname);
+        str_append (&result, "\"");
     }
     else {
-        s_res = str_replace_in (s_cmd, s_sign, s_fname);
+        result = str_replace_in (cmd, sign, fname);
     }
-    str_append (&s_res, " &");
-    return s_res;
+    str_append (&result, " &");
+    return result;
 }
 /*----------------------------------------------------------------------------*/
 /**
- * @brief  Copy ui_num chars from s_src to s_dest and add a null sign.
+ * @brief  Copy num chars from src to dest and add a null sign.
  */
 void
-str_ncpy (char         * __restrict s_dest,
-          const char   * __restrict s_src,
-          const size_t  ui_num)
+str_ncpy (char         * __restrict dest,
+          const char   * __restrict src,
+          const size_t  num)
 {
     size_t i = 0;
-    while (i++ < ui_num && *s_src)
-        *s_dest++ = *s_src++;
-    *s_dest = '\0'; 
+    while (i++ < num && *src)
+        *dest++ = *src++;
+    *dest = '\0'; 
 }
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Combine 2 strings into one.
  */
 char *
-str_comb (const char *s_str1,
-          const char *s_str2)
+str_comb (const char *str1,
+          const char *str2)
 {
-    char   *s_ret   = nullptr; /* Return string */
-    size_t  ui_str1 = 0;    /* Length of str1 */
-    size_t  ui_str2 = 0;    /* Length of str2 */
+    char   *result = nullptr; /* Return string */
+    size_t  str1_len = 0;    /* Length of str1 */
+    size_t  str2_len = 0;    /* Length of str2 */
 
-    if (s_str1 == nullptr && s_str2 == nullptr)
+    if (str1 == nullptr && str2 == nullptr)
         return nullptr;
-    else if (s_str1 == nullptr && s_str2 != nullptr)
-        return strdup (s_str2);
-    else if (s_str1 != nullptr && s_str2 == nullptr)
-        return strdup (s_str1);
+    else if (str1 == nullptr && str2 != nullptr)
+        return strdup (str2);
+    else if (str1 != nullptr && str2 == nullptr)
+        return strdup (str1);
 
-    ui_str1 = strlen (s_str1);
-    ui_str2 = strlen (s_str2) + 1;
+    str1_len = strlen (str1);
+    str2_len = strlen (str2) + 1;
 
-    cres ((void**) &s_ret, ui_str1 + ui_str2, sizeof (char));
+    cres ((void**) &result, str1_len + str2_len, sizeof (char));
 
-    memcpy (s_ret, s_str1, ui_str1);
-    memcpy (s_ret + ui_str1, s_str2, ui_str2);
+    memcpy (result, str1, str1_len);
+    memcpy (result + str1_len, str2, str2_len);
 
-    return s_ret;
+    return result;
 }
 /*----------------------------------------------------------------------------*/
 /**
- * @brief  Append string s_src to s_dst.
+ * @brief  Append string src to dst.
  */
 void
-str_append (char       **s_dst,
-            const char  *s_src)
+str_append (char       **dst,
+            const char  *src)
 {
-    size_t ui_dst = 0; /* length of dst string */
-    size_t ui_src = 0; /* Length of src string */
+    size_t dst_len = 0; /* length of dst string */
+    size_t src_len = 0; /* Length of src string */
 
-    if (s_src == nullptr)
+    if (src == nullptr)
         return;
     else
-        ui_src = strlen (s_src) + 1;
+        src_len = strlen (src) + 1;
 
-    if (*s_dst != nullptr)
-        ui_dst = strlen (*s_dst);
+    if (*dst != nullptr)
+        dst_len = strlen (*dst);
 
-    cres ((void**) s_dst, ui_src + ui_dst, sizeof (char));
+    cres ((void**) dst, src_len + dst_len, sizeof (char));
 
-    memcpy ((*s_dst)+ui_dst, s_src, ui_src);
+    memcpy ((*dst)+dst_len, src, src_len);
 }
 /*----------------------------------------------------------------------------*/
 /**
- * @brief  Replace newline 0A characters in s_str string to space.
+ * @brief  Replace newline 0A characters in str string to space.
  */
 void
-newline_to_space (char *s_str)
+newline_to_space (char *str)
 {
-    while ((s_str = strchr (s_str, '\n')) != nullptr) {
-        *s_str++ = ' ';
+    while ((str = strchr (str, '\n')) != nullptr) {
+        *str++ = ' ';
     }
 }
 /*----------------------------------------------------------------------------*/

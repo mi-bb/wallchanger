@@ -35,29 +35,29 @@
  * @param[in] b  String b
  * @return    Compare result
  *
- * @fn  char * str_replace_in (const char *s_src,
- *                             const char *s_fr, const char *s_to)
+ * @fn  char * str_replace_in (const char *src,
+ *                             const char *from, const char *to)
  *
- * @brief  Replace one string with another in a given src_dest string.
+ * @brief  Replace one string with another in a given src string.
  *
- * Function searches in src_dest string for s_fr and replaces it with s_to
+ * Function searches in src string for from and replaces it with to
  * string.
  * Return value is the final result.
  *
- * @param[in] s_src  Pointer to source string to examine
- * @param[in] s_fr   Pointer to string with "change from" text
- * @param[in] s_to   Pointer to string with "change to" text
+ * @param[in] src  Pointer to source string to examine
+ * @param[in] from Pointer to string with "change from" text
+ * @param[in] to   Pointer to string with "change to" text
  * @return    New string
  *
- * @fn  char * str_set_up_wallpaper_command (const char *s_cmd,
- *                                           const char *s_fname,
- *                                           const char *s_sign)
+ * @fn  char * str_set_up_wallpaper_command (const char *cmd,
+ *                                           const char *fname,
+ *                                           const char *sign)
  *
  * @brief  Make wallpapet set command.
  *
- * @param[in] s_cmd    Wallpaper set command 
- * @param[in] s_fname  Wallpaper file name 
- * @param[in] s_sign   String to swap with wallpapet name
+ * @param[in] cmd    Wallpaper set command 
+ * @param[in] fname  Wallpaper file name 
+ * @param[in] sign   String to swap with wallpapet name
  * @return    String with command
  */
 /*----------------------------------------------------------------------------*/
@@ -65,69 +65,69 @@ int    str_compare                  (const char   *a,
                                      const char   *b)
                                      __attribute__ ((pure));
 
-char * str_replace_in               (const char   *s_src,
-                                     const char   *s_fr,
-                                     const char   *s_to)
+char * str_replace_in               (const char   *src,
+                                     const char   *from,
+                                     const char   *to)
        __attribute__ ((nonnull (1,2,3), returns_nonnull));
 
-char * str_set_up_wallpaper_command (const char   *s_cmd,
-                                     const char   *s_fname,
-                                     const char   *s_sign)
+char * str_set_up_wallpaper_command (const char   *cmd,
+                                     const char   *fname,
+                                     const char   *sign)
        __attribute__ ((nonnull (1,2,3), returns_nonnull));
 /*----------------------------------------------------------------------------*/
 /**
- * @brief  Copy ui_num chars from s_src to s_dest and add a null sign.
+ * @brief  Copy num chars from src to dest and add a null sign.
  *
- *         Copy ui_num chars from s_src to s_dest and add a null sign.
- *         If a null sign is found in s_src before ui_num chars, copy
+ *         Copy num chars from src to dest and add a null sign.
+ *         If a null sign is found in src before num chars, copy
  *         process will stop and null sign will be added.
  *
- * @param[out] s_dest  Destination string buffer
- * @param[in]  s_src   Source string
- * @param[in]  ui_num  Number of chars to copy
+ * @param[out] dest  Destination string buffer
+ * @param[in]  src   Source string
+ * @param[in]  num   Number of chars to copy
  * @return     none
  */
-void   str_ncpy (char         * __restrict s_dest,
-                 const char   * __restrict s_src,
-                 const size_t  ui_num)
+void   str_ncpy (char         * __restrict dest,
+                 const char   * __restrict src,
+                 const size_t  num)
        __attribute__ ((nonnull (1,2)));
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Combine 2 strings into one.
  *
- * @param[in] s_str1  First string
- * @param[in] s_str2  Second string
- * @return    String made of s_str1 and s_str2
+ * @param[in] str1  First string
+ * @param[in] str2  Second string
+ * @return    String made of str1 and str2
  */
-char * str_comb (const char *s_str1,
-                 const char *s_str2);
+char * str_comb (const char *str1,
+                 const char *str2);
 /*----------------------------------------------------------------------------*/
 /**
- * @brief  Append string s_src to s_dst.
+ * @brief  Append string src to dst.
  *
- * @param[out] s_dst Pointer to result append string process
- * @param[in]  s_src Source string which should be appended to s_dst
+ * @param[out] dst Pointer to result append string process
+ * @param[in]  src Source string which should be appended to dst
  * @return     none
  */
-void str_append (char       **s_dst,
-                 const char  *s_src);
+void str_append (char       **dst,
+                 const char  *src);
 /*----------------------------------------------------------------------------*/
 /**
- * @brief  Replace newline 0A characters in s_str string to space.
+ * @brief  Replace newline 0A characters in str string to space.
  *
- * @param[in,out] s_str  String to process
+ * @param[in,out] str  String to process
  * @return        none
  */
-void newline_to_space (char *s_str);
+void newline_to_space (char *str);
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Check if string is empty.
  *
- * @param[in] s_str  Input string
+ * @param[in] str  Input string
  * @return    1 if string is empty, 0 if not
  */
-static inline int str_is_empty (const char *s_str) {
-    return (s_str == nullptr || s_str[0] == '\0');
+static inline int str_is_empty (const char *str) {
+    return (str == nullptr || str[0] == '\0');
 }
 /*----------------------------------------------------------------------------*/
 #endif
