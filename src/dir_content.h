@@ -30,28 +30,27 @@
  * @brief  Get list of files in a directory, filter out non images and
  *         return list in GList format.
  *
- * @param[in]  s_dir  Directory path to scan
+ * @param[in]  dir  Directory path to scan
  * @return     GList with file names 
  */
-GList * get_dir_content_filter_images   (const char *s_dir)
+GList * get_dir_content_filter_images   (const char *dir)
                                          __attribute__ ((nonnull (1)));
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Get size of all files in a directory.
- *s_res
- * @param[in]  s_path  Directory path to scan
+ *
+ * @param[in]  path  Directory path to scan
  * @return     Size of files in folder
  */
-goffset get_dir_size                    (const char *s_path)
+goffset get_dir_size                    (const char *path)
                                          __attribute__ ((nonnull (1)));
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Delete files in given directory.
  *
- * @param[in]  s_path  Directory path to scan
+ * @param[in]  path  Directory path to scan
  * @return     none
  */
-void    delete_dir_content              (const char *s_path);
+void    delete_dir_content              (const char *path);
 /*----------------------------------------------------------------------------*/
 #endif
-

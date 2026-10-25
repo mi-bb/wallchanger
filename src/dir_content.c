@@ -29,11 +29,11 @@
 #include "dir_content.h"
 /*----------------------------------------------------------------------------*/
 /**
- * @fn  static const char * get_file_ext (const char *s_fn)
+ * @fn  static const char * get_file_ext (const char *fn)
  *
  * @brief  Get file extension.
  *
- * @param[in]  s_fn String with file path
+ * @param[in]  fn String with file path
  * @return     Pointer to file extension
  *
  * @fn  static GHashTable * get_pbuf_exts_to_ghash (void)
@@ -42,41 +42,41 @@
  *
  * @return  Hash table with extensions
  *
- * @fn  static GList * get_directory_filtered_content_glist (const char *s_dir,
-                                                             GHashTable *gh_exts)
+ * @fn  static GList * get_directory_filtered_content_glist (const char *dir,
+                                                             GHashTable *ext_hash)
 
  * @brief  Get list of files in directory, filter extensions from GHashTable,
  *         return as GList.
  *
- * @param[in]  s_dir    Directory path to scan
- * @param[in]  gh_exts  GHashTable with extensions
+ * @param[in]  dir       Directory path to scan
+ * @param[in]  ext_hash  GHashTable with extensions
  * @return     GList with file names
  */
 /*----------------------------------------------------------------------------*/
-static const char * get_file_ext                         (const char *s_fn);
+static const char * get_file_ext                         (const char *fn);
 
 static GHashTable * get_pbuf_exts_to_ghash               (void);
 
-static GList      * get_directory_filtered_content_glist (const char *s_dir,
-                                                          GHashTable *gh_exts)
+static GList      * get_directory_filtered_content_glist (const char *dir,
+                                                          GHashTable *ext_hash)
                     __attribute__ ((nonnull (1)));
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Get file extension.
  */
 static const char *
-get_file_ext (const char *s_fn)
+get_file_ext (const char *fn)
 {
-    const char *s_ext = nullptr; /* Pointer to extension in string */
-    const char *s_p   = nullptr; /* Pointer to first right . */
+    const char *ext = nullptr; /* Pointer to extension in string */
+    const char *dot = nullptr; /* Pointer to first right . */
 
-    if (s_fn == nullptr)
+    if (fn == nullptr)
         return nullptr;
 
-    if ((s_p = strrchr (s_fn, '.')) != nullptr) {
-        s_ext = s_p+1;
+    if ((dot = strrchr (fn, '.')) != nullptr) {
+        ext = dot+1;
     }
-    return s_ext;
+    return ext;
 }
 /*----------------------------------------------------------------------------*/
 /**
@@ -85,48 +85,48 @@ get_file_ext (const char *s_fn)
 static GHashTable *
 get_pbuf_exts_to_ghash (void)
 {
-    GdkPixbufFormat  *gpf          = nullptr; /* Single pixbuf format */
-    GSList           *gsl_formats  = nullptr; /* Copy of pixbuf list */
-    GSList           *gsl_formats1 = nullptr; /* Pixbuf list */
+    GdkPixbufFormat  *format       = nullptr; /* Single pixbuf format */
+    GSList           *formats      = nullptr; /* Copy of pixbuf list */
+    GSList           *formats_list = nullptr; /* Pixbuf list */
     char            **exts         = nullptr; /* Exstension list for a pixbuf */
     char            **it           = nullptr; /* For list iteration */
 
-    GHashTable *gh_res = g_hash_table_new_full (g_str_hash, g_str_equal,
-                                                g_free, nullptr);
+    GHashTable *ext_hash = g_hash_table_new_full (g_str_hash, g_str_equal,
+                                                  g_free, nullptr);
     /* Get information about image formats supported by GdkPixbuf */
-    gsl_formats1 = gdk_pixbuf_get_formats ();
-    gsl_formats  = gsl_formats1;
+    formats_list = gdk_pixbuf_get_formats ();
+    formats      = formats_list;
 
 #ifdef DEBUG
     printf ("Valid extensions : ");
 #endif
 
-    while (gsl_formats != nullptr) {
+    while (formats != nullptr) {
 
-        gpf = gsl_formats->data;
+        format = formats->data;
 
         /* Get extension list for current format */
-        exts = gdk_pixbuf_format_get_extensions (gpf);
+        exts = gdk_pixbuf_format_get_extensions (format);
 
         for (it = exts; *it != nullptr; it++) {
 #ifdef DEBUG
             printf ("%s ", *it);
 #endif
             /* Insert extension to hash table */
-            g_hash_table_add (gh_res, strdup (*it));
+            g_hash_table_add (ext_hash, strdup (*it));
         }
         /* Free extensions list */
         g_strfreev (exts);
 
-        gsl_formats = gsl_formats->next;
+        formats = formats->next;
     }
 #ifdef DEBUG
     printf ("\n");
 #endif
 
-    g_slist_free (gsl_formats1);
+    g_slist_free (formats_list);
 
-    return gh_res;
+    return ext_hash;
 }
 /*----------------------------------------------------------------------------*/
 /**
@@ -134,35 +134,35 @@ get_pbuf_exts_to_ghash (void)
  *         return as GList.
  */
 static GList *
-get_directory_filtered_content_glist (const char *s_dir,
-                                      GHashTable *gh_exts)
+get_directory_filtered_content_glist (const char *dir,
+                                      GHashTable *ext_hash)
 {
-    GList      *gl_files = nullptr; /* Result file list */
-    char       *s_pthfn  = nullptr; /* Full file name with path */
-    char       *s_path   = nullptr; /* File path */
-    const char *s_ext    = nullptr; /* File extension */
-    size_t      ui_dlen  = 0;    /* Path string length */
-    size_t      ui_flen  = 0;    /* File name length */
-    DIR        *dr;              /* Dirent directory */
-    struct dirent *de;           /* Dirent struct */
+    GList      *files     = nullptr; /* Result file list */
+    char       *full_path = nullptr; /* Full file name with path */
+    char       *path      = nullptr; /* File path */
+    const char *ext       = nullptr; /* File extension */
+    size_t      dir_len   = 0; /* Path string length */
+    size_t      name_len  = 0; /* File name length */
+    DIR        *dr;            /* Dirent directory */
+    struct dirent *de;         /* Dirent struct */
 
-    ui_dlen = strlen (s_dir);
+    dir_len = strlen (dir);
     /* Reserve 1 more for a slash later */
-    s_path = malloc ((ui_dlen + 2) * sizeof (char));
+    path = malloc ((dir_len + 2) * sizeof (char));
 
-    if (s_path == nullptr) {
+    if (path == nullptr) {
         err (EXIT_FAILURE, nullptr);
     }
-    memcpy (s_path, s_dir, ui_dlen);
+    memcpy (path, dir, dir_len);
 
-    if (s_path[ui_dlen-1] != '/') {
-        s_path[ui_dlen++] = '/';
+    if (path[dir_len-1] != '/') {
+        path[dir_len++] = '/';
     }
-    s_path[ui_dlen] = '\0';
+    path[dir_len] = '\0';
 
-    if ((dr = opendir (s_path)) == nullptr) {
-        warn ("%s", s_path);
-        free (s_path);
+    if ((dr = opendir (path)) == nullptr) {
+        warn ("%s", path);
+        free (path);
         return nullptr;
     }
 
@@ -170,30 +170,30 @@ get_directory_filtered_content_glist (const char *s_dir,
 
         if (de->d_type == DT_REG) {
 
-            s_ext = get_file_ext (de->d_name);
+            ext = get_file_ext (de->d_name);
 
-            if (s_ext != nullptr &&
-                g_hash_table_lookup (gh_exts, s_ext) != nullptr) {
+            if (ext != nullptr &&
+                g_hash_table_lookup (ext_hash, ext) != nullptr) {
 
-                ui_flen = strlen (de->d_name);
+                name_len = strlen (de->d_name);
 
-                s_pthfn = malloc ((ui_dlen + ui_flen + 1) * sizeof (char));
-                if (s_pthfn == nullptr) {
+                full_path = malloc ((dir_len + name_len + 1) * sizeof (char));
+                if (full_path == nullptr) {
                     err (EXIT_FAILURE, nullptr);
                 }
-                memcpy (s_pthfn, s_path, ui_dlen);
-                memcpy (s_pthfn + ui_dlen, de->d_name, ui_flen);
-                s_pthfn[ui_dlen + ui_flen] = '\0';
+                memcpy (full_path, path, dir_len);
+                memcpy (full_path + dir_len, de->d_name, name_len);
+                full_path[dir_len + name_len] = '\0';
 
-                gl_files = g_list_prepend (gl_files, s_pthfn);
+                files = g_list_prepend (files, full_path);
             }
         }
     }
-    free (s_path);
+    free (path);
 
     closedir(dr);
 
-    return g_list_reverse (gl_files);
+    return g_list_reverse (files);
 }
 /*----------------------------------------------------------------------------*/
 /**
@@ -201,140 +201,139 @@ get_directory_filtered_content_glist (const char *s_dir,
  *         return list in GList format.
  */
 GList *
-get_dir_content_filter_images (const char *s_dir)
+get_dir_content_filter_images (const char *dir)
 {
-    GList      *gl_files = nullptr;  /* Images in directory */
-    GHashTable *gh_exts  = nullptr;  /* List of extensions */
+    GList      *files     = nullptr;  /* Images in directory */
+    GHashTable *ext_hash  = nullptr;  /* List of extensions */
 
     /* Append to list extensions of image types supported by GdkPixbuf */
-    gh_exts = get_pbuf_exts_to_ghash ();
+    ext_hash = get_pbuf_exts_to_ghash ();
 
     /* Scan directory for files, filter them and append to file list */
-    gl_files = get_directory_filtered_content_glist (s_dir, gh_exts);
+    files = get_directory_filtered_content_glist (dir, ext_hash);
 
-    g_hash_table_destroy (gh_exts);
-    return gl_files;
+    g_hash_table_destroy (ext_hash);
+    return files;
 }
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Enumerate folder content and get size of files.
  *
- * @param[in]  gf_dir       Gfile of directory to scan
- * @param[in]  i_recursive  Scan also subfilders
- * @param[out] i_size       Size output
+ * @param[in]  dir       Gfile of directory to scan
+ * @param[in]  recursive Scan also subfilders
+ * @param[out] size      Size output
  * @return     none
  */
 static void
-enumerate_folder_get_size (GFile    *gf_dir,
-                           const int i_recursive,
-                           goffset  *i_size)
+enumerate_folder_get_size (GFile    *dir,
+                           const int recursive,
+                           goffset  *size)
 {
-    GFileEnumerator *f_enum;
-    GError          *g_err;
-    GFile           *g_file;
-    GFileInfo       *f_info;
-    GFileType        f_type;
+    GFileEnumerator *enumerator;
+    GError          *error;
+    GFile           *file;
+    GFileInfo       *info;
+    GFileType        file_type;
 
     #ifdef DEBUG
-        printf ("Enumerating folder %s\n", g_file_peek_path (gf_dir));
+        printf ("Enumerating folder %s\n", g_file_peek_path (dir));
     #endif
 
-    f_enum = g_file_enumerate_children (gf_dir,
-                                        "standard::*",
-                                        G_FILE_QUERY_INFO_NONE,
-                                        nullptr,
-                                        &g_err);
+    enumerator = g_file_enumerate_children (dir,
+                                           "standard::*",
+                                           G_FILE_QUERY_INFO_NONE,
+                                           nullptr,
+                                           &error);
     do {
-        g_file_enumerator_iterate (f_enum, &f_info, &g_file, nullptr, &g_err);
-        if (f_info != nullptr) {
-            f_type = g_file_info_get_file_type (f_info);
-            if (f_type == G_FILE_TYPE_DIRECTORY && i_recursive) {
-                enumerate_folder_get_size (g_file, i_recursive, i_size);
+        g_file_enumerator_iterate (enumerator, &info, &file, nullptr, &error);
+        if (info != nullptr) {
+            file_type = g_file_info_get_file_type (info);
+            if (file_type == G_FILE_TYPE_DIRECTORY && recursive) {
+                enumerate_folder_get_size (file, recursive, size);
                 }
-            if (f_type == G_FILE_TYPE_REGULAR) {
-                *i_size += g_file_info_get_size (f_info);
+            if (file_type == G_FILE_TYPE_REGULAR) {
+                *size += g_file_info_get_size (info);
             }
         }
     }
-    while (f_info != nullptr);
+    while (info != nullptr);
 
-    g_object_unref (f_enum);
+    g_object_unref (enumerator);
 }
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Enumerate and delete folder content.
  *
- * @param[in]  gf_dir       Gfile of directory to scan
- * @param[in]  i_recursive  Scan also subfilders
+ * @param[in]  dir       Gfile of directory to scan
+ * @param[in]  recursive Scan also subfilders
  * @return     none
  */
 static void
-enumerate_folder_delete (GFile    *gf_dir,
-                         const int i_recursive)
+enumerate_folder_delete (GFile    *dir,
+                         const int recursive)
 {
-    GFileEnumerator *f_enum;
-    GError          *g_err;
-    GFile           *g_file;
-    GFileInfo       *f_info;
-    GFileType        f_type;
+    GFileEnumerator *enumerator;
+    GError          *error;
+    GFile           *file;
+    GFileInfo       *info;
+    GFileType        file_type;
 
     #ifdef DEBUG
-        printf ("Enumerating folder %s\n", g_file_peek_path (gf_dir));
+        printf ("Enumerating folder %s\n", g_file_peek_path (dir));
     #endif
 
-    f_enum = g_file_enumerate_children (gf_dir,
-                                        "standard::*",
-                                        G_FILE_QUERY_INFO_NONE,
-                                        nullptr,
-                                        &g_err);
+    enumerator = g_file_enumerate_children (dir,
+                                           "standard::*",
+                                           G_FILE_QUERY_INFO_NONE,
+                                           nullptr,
+                                           &error);
     do {
-        g_file_enumerator_iterate (f_enum, &f_info, &g_file, nullptr, &g_err);
-        if (f_info != nullptr) {
-            f_type = g_file_info_get_file_type (f_info);
-            if (f_type == G_FILE_TYPE_DIRECTORY && i_recursive) {
-                enumerate_folder_delete (g_file, i_recursive);
+        g_file_enumerator_iterate (enumerator, &info, &file, nullptr, &error);
+        if (info != nullptr) {
+            file_type = g_file_info_get_file_type (info);
+            if (file_type == G_FILE_TYPE_DIRECTORY && recursive) {
+                enumerate_folder_delete (file, recursive);
                 }
-            if (f_type == G_FILE_TYPE_REGULAR) {
-                g_file_delete (g_file, nullptr, nullptr);
+            if (file_type == G_FILE_TYPE_REGULAR) {
+                g_file_delete (file, nullptr, nullptr);
             }
         }
     }
-    while (f_info != nullptr);
+    while (info != nullptr);
 
-    g_object_unref (f_enum);
+    g_object_unref (enumerator);
 }
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Get size of all files in a directory.
  */
 goffset
-get_dir_size (const char *s_path)
+get_dir_size (const char *path)
 {
-    GFile   *g_path;
-    goffset  i_size = 0;
+    GFile   *file;
+    goffset  size = 0;
 
-    g_path = g_file_new_for_path (s_path);
+    file = g_file_new_for_path (path);
 
-    enumerate_folder_get_size (g_path, 0, &i_size);
+    enumerate_folder_get_size (file, 0, &size);
 
-    g_object_unref (g_path);
+    g_object_unref (file);
 
-    return i_size;
+    return size;
 }
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Delete files in given directory.
  */
 void
-delete_dir_content (const char *s_path)
+delete_dir_content (const char *path)
 {
-    GFile   *g_path;
+    GFile *file;
 
-    g_path = g_file_new_for_path (s_path);
+    file = g_file_new_for_path (path);
 
-    enumerate_folder_delete (g_path, 0);
+    enumerate_folder_delete (file, 0);
 
-    g_object_unref (g_path);
+    g_object_unref (file);
 }
 /*----------------------------------------------------------------------------*/
-
