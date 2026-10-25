@@ -46,29 +46,29 @@ int
 main (int    argc,
       char **argv)
 {
-    uint32_t  ui_cnt       = 0;    /* Time align parts counter */
-    uint32_t  ui_sleep     = 0;    /* Sleep time */
-    uint32_t  ui_ch_int    = 0;    /* Change interval value */
-    uint32_t  ui_ch_int_n  = 0;    /* New change interval value */
-    int       i_opt        = 0;    /* Command line options */
-    int       i_atime_opt  = 0;    /* Time align option */
-    char     *s_cfg_file    = nullptr; /* Config file path */
-    RandMem  *rm_rand      = nullptr; /* Random memory */
+    uint32_t  time_align_count    = 0;  /* Time align parts counter */
+    uint32_t  sleep_time          = 0;  /* Sleep time */
+    uint32_t  change_interval     = 0;  /* Change interval value */
+    uint32_t  new_change_interval = 0;  /* New change interval value */
+    int       options             = 0;  /* Command line options */
+    int       time_align_option   = 0;  /* Time align option */
+    char     *config_file         = nullptr; /* Config file path */
+    RandMem  *rand_mem            = nullptr; /* Random memory */
 
     /* Parse command line options */
-    cmd_parse (argc, argv, &i_opt, &s_cfg_file);
+    cmd_parse (argc, argv, &options, &config_file);
 
     /* Printing status */
-    if (i_opt & CMD_OPT_STATUS) {
+    if (options & CMD_OPT_STATUS) {
         daemon_print_status_exit ();
     }
     /* Stopping daemon */
-    if (i_opt & CMD_OPT_STOP) {
+    if (options & CMD_OPT_STOP) {
         daemon_kill ();
         exit (EXIT_SUCCESS);
     }
     /* Restarting daemon - stopping existing one */
-    if (i_opt & CMD_OPT_RESTART && daemon_kill ()) {
+    if (options & CMD_OPT_RESTART && daemon_kill ()) {
         sleep500 ();
     }
     /* Check wchangerd process presence, exit if it is running */
@@ -76,42 +76,42 @@ main (int    argc,
     /* Checking if display is available */
     check_display_exit ();
     /* Check config file correctness */
-    check_config_file (&s_cfg_file);
+    check_config_file (&config_file);
     /* Init random number structure */
-    rm_rand = randomm_new ();
+    rand_mem = randomm_new ();
     /* Load settings and set wallpaper */
-    ui_ch_int = chk_setts_ch_wall (s_cfg_file, rm_rand, &i_atime_opt);
+    change_interval = chk_setts_ch_wall (config_file, rand_mem, &time_align_option);
     /* Exiting after first wallpaper change, --once option */
-    if (i_opt & CMD_OPT_ONCE) {
-        randomm_free (rm_rand);
-        free (s_cfg_file);
+    if (options & CMD_OPT_ONCE) {
+        randomm_free (rand_mem);
+        free (config_file);
         exit (EXIT_SUCCESS);
     }
     /* Starting daemon */
-    if ((i_opt & CMD_OPT_START) || (i_opt & CMD_OPT_RESTART)) {
+    if ((options & CMD_OPT_START) || (options & CMD_OPT_RESTART)) {
         puts ("Starting wchangerd daemon");
         daemon_daemonize ();
     }
     while (1) {
-        ui_sleep = ui_ch_int;
+        sleep_time = change_interval;
         /* Time align enabled
          * If counter is 0 count align sleep time and
          * number of standard interval sleeps before getting
          * to full hour */
-        if (i_atime_opt && ui_cnt-- == 0) {
-            ui_sleep = check_time_align_val (ui_ch_int, &ui_cnt);
+        if (time_align_option && time_align_count-- == 0) {
+            sleep_time = check_time_align_val (change_interval, &time_align_count);
         }
-        if (ui_sleep) {
-            sleep (ui_sleep);
-            ui_ch_int_n = chk_setts_ch_wall (s_cfg_file, rm_rand, &i_atime_opt);
+        if (sleep_time) {
+            sleep (sleep_time);
+            new_change_interval = chk_setts_ch_wall (config_file, rand_mem, &time_align_option);
         }
-        if (ui_ch_int_n != ui_ch_int) {
-            ui_ch_int = ui_ch_int_n;
-            ui_cnt = 0;
+        if (new_change_interval != change_interval) {
+            change_interval = new_change_interval;
+            time_align_count = 0;
         }
     }
-    randomm_free (rm_rand);
-    free (s_cfg_file);
+    randomm_free (rand_mem);
+    free (config_file);
     exit (EXIT_SUCCESS);
 }
 /*----------------------------------------------------------------------------*/

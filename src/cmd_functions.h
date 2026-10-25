@@ -55,20 +55,20 @@ constexpr int CMD_OPT_CONFIG  = 0x10;
 constexpr int CMD_OPT_ONCE    = 0x20;
 /*----------------------------------------------------------------------------*/
 /**
- * @brief  Parse command line options, set i_opt and s_cfgpath.
+ * @brief  Parse command line options, set options and config_path.
  *
- * @param[in] argc       Arguments passed to the program from the environment
- *                       in which the program is run
- * @param[in] argv       Pointer to the first element of an array of pointers
- *                       that represent the arguments passed to the program
- * @param[out] i_opt     Set here command line options
- * @param[out] s_cfgpath Copy here config path if given in options
+ * @param[in] argc         Arguments passed to the program from the environment
+ *                         in which the program is run
+ * @param[in] argv         Pointer to the first element of an array of pointers
+ *                         that represent the arguments passed to the program
+ * @param[out] options     Set here command line options
+ * @param[out] config_path Copy here config path if given in options
  * @return     none
  */
 void cmd_parse (int    argc,
                 char **argv,
-                int   *i_opt,
-                char **s_cfgpath);
+                int   *options,
+                char **config_path);
 /*----------------------------------------------------------------------------*/
 #endif
 
