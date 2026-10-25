@@ -54,19 +54,19 @@
  * @return        Change interval value
  *
  * @fn  static void set_wallpaper_ch_interval (const DialogData *dd_data,
- *                                             const uint32_t    i_val)
+ *                                             const uint32_t    val)
  *
  * @brief  Set wallpaper change interval value to widgets
  *
  * @param[in,out] dd_data  DialogData object with settings and widget data
- * @param[in]     i_val    Change interval value to set
+ * @param[in]     val      Change interval value to set
  * @return        none
  */
 /*----------------------------------------------------------------------------*/
 static uint32_t    get_wallpaper_ch_interval   (const DialogData  *dd_data);
 
 static void        set_wallpaper_ch_interval   (const DialogData  *dd_data,
-                                                const uint32_t     i_val);
+                                                const uint32_t     val);
 /*----------------------------------------------------------------------------*/
 /**
  * @fn  static Setting * widgets_get_settings (const DialogData  *dd_data)
@@ -77,25 +77,25 @@ static void        set_wallpaper_ch_interval   (const DialogData  *dd_data,
  * @return        List of settings
  *
  * @fn  static void widgets_set_settings (const DialogData  *dd_data,
- *                                        Setting           *st_settings,
- *                                        Setting           *st_wmlist,
- *                                        int               *i_err)
+ *                                        Setting           *settings,
+ *                                        Setting           *wmlist,
+ *                                        int               *err)
  *
  * @brief  Loading data from list of settings to program window.
  *
- * @param[in,out] dd_data      DialogData object with settings and widget data
- * @param[in]     st_settings  List with settings
- * @param[in]     st_wmlist    List with window manager info
- * @param[out]    i_err        Error output
+ * @param[in,out] dd_data   DialogData object with settings and widget data
+ * @param[in]     settings  List with settings
+ * @param[in]     wmlist    List with window manager info
+ * @param[out]    err       Error output
  * @return        none
  */
 /*----------------------------------------------------------------------------*/
 static Setting   * widgets_get_settings        (const DialogData  *dd_data);
 
 static void        widgets_set_settings        (const DialogData  *dd_data,
-                                                Setting           *st_settings,
-                                                Setting           *st_wmlist,
-                                                int               *i_err);
+                                                Setting           *settings,
+                                                Setting           *wmlist,
+                                                int               *err);
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Sets statusbar info about actual config file.
@@ -197,7 +197,7 @@ static void        activate                    (GtkApplication    *app,
  * @fn  static void event_img_list_activated (GtkTreeView       *tree_view,
  *                                            GtkTreePath       *path,
  *                                            GtkTreeViewColumn *column,
- *                                            GtkWidget         *gw_img_prev)
+ *                                            GtkWidget         *img_prev)
  *
  * @brief  Make preview image widget of image (file path).
  *
@@ -205,7 +205,7 @@ static void        activate                    (GtkApplication    *app,
  * @param[in]  path         The GtkTreePath for the activated row
  * @param      column       The GtkTreeViewColumn in which the activation
  *                          occurred
- * @param[out] gw_img_prev  Preview image widget
+ * @param[out] img_prev     Preview image widget
  * @return none
  *
  * @fn  static gboolean event_treeview_key_press (GtkWidget         *widget,
@@ -240,7 +240,7 @@ static void        event_save_settings_pressed (const DialogData  *dd_data);
 static void        event_img_list_activated    (GtkTreeView       *tree_view,
                                                 GtkTreePath       *path,
                                                 GtkTreeViewColumn *column,
-                                                GtkWidget         *gw_img_prev);
+                                                GtkWidget         *img_prev);
 
 static gboolean    event_treeview_key_press    (GtkWidget         *widget,
                                                 GdkEventKey       *event,
@@ -314,14 +314,14 @@ static gboolean    daemon_monitor              (gpointer data);
  *
  * @return     Result widget
  *
- * @fn  static GtkWidget * create_image_button (const char   *s_label,
- *                                              const char   *s_hint,
- *                                              const IconImg i_but)
+ * @fn  static GtkWidget * create_image_button (const char   *label,
+ *                                              const char   *hint,
+ *                                              const IconImg icon)
  * @brief  Create button with icon/label/hint.
  *
- * @param[in] s_label  Button label
- * @param[in] s_hint   Button hint
- * @param[in] i_but    Icon number
+ * @param[in] label  Button label
+ * @param[in] hint   Button hint
+ * @param[in] icon   Icon number
  * @return    Button
  *
  * @fn  static GtkWidget * create_buttons_widget (DialogData *dd_data)
@@ -348,9 +348,9 @@ static gboolean    daemon_monitor              (gpointer data);
 /*----------------------------------------------------------------------------*/
 static GtkWidget * create_title_widget         (void);
 
-static GtkWidget * create_image_button         (const char        *s_label,
-                                                const char        *s_hint,
-                                                const IconImg      i_but);
+static GtkWidget * create_image_button         (const char        *label,
+                                                const char        *hint,
+                                                const IconImg      icon);
 
 static GtkWidget * create_buttons_widget       (DialogData        *dd_data);
 
@@ -367,26 +367,26 @@ static GtkWidget * create_daemon_widget        (DialogData        *dd_data);
 static char *
 cfg_file_check_create_dirs (void)
 {
-    char *s_ret = nullptr;
-    int   i_err = ERR_OK;
-    int   i     = 0;
-    char *s_dirs[3];
+    char *ret = nullptr;
+    int   err = ERR_OK;
+    int   i   = 0;
+    char *dirs[3];
 
-    s_dirs[0] = cfg_file_get_query_path ();
-    s_dirs[1] = cfg_file_get_app_thumbnails_path ();
-    s_dirs[2] = cfg_file_get_app_wallpapers_path ();
+    dirs[0] = cfg_file_get_query_path ();
+    dirs[1] = cfg_file_get_app_thumbnails_path ();
+    dirs[2] = cfg_file_get_app_wallpapers_path ();
 
     for (i = 0; i < 3; ++i) {
-        if ((i_err = dir_create_with_subdirs (s_dirs[i])) != ERR_OK) {
-            s_ret = str_comb (s_dirs[i], "\n");
-            str_append (&s_ret, err_get_message (i_err));
+        if ((err = dir_create_with_subdirs (dirs[i])) != ERR_OK) {
+            ret = str_comb (dirs[i], "\n");
+            str_append (&ret, err_get_message (err));
             break;
         }
     }
     for (i = 0; i < 3; ++i) {
-        free (s_dirs[i]);
+        free (dirs[i]);
     }
-    return s_ret;
+    return ret;
 }
 /*----------------------------------------------------------------------------*/
 /**
@@ -395,18 +395,18 @@ cfg_file_check_create_dirs (void)
 static uint32_t
 get_wallpaper_ch_interval (const DialogData *dd_data)
 {
-    uint32_t ui_res = 0; /* Wallpaper change interval in minutes */
+    uint32_t res = 0; /* Wallpaper change interval in minutes */
 
     /* Get spinbutton value of change time interval */
-    ui_res = (uint32_t) gtk_spin_button_get_value (
+    res = (uint32_t) gtk_spin_button_get_value (
             GTK_SPIN_BUTTON (dd_data->gw_interval));
 
     /* Check combobox setting if value is supposed to be minutes or hours.
      * If value is set to hours multiply returned value by 60 */
     if (gtk_combo_box_get_active (GTK_COMBO_BOX (dd_data->gw_inter_combo)) == 1)
-        ui_res *= 60;
+        res *= 60;
 
-    return ui_res;
+    return res;
 }
 /*----------------------------------------------------------------------------*/
 /**
@@ -414,16 +414,16 @@ get_wallpaper_ch_interval (const DialogData *dd_data)
  */
 static void
 set_wallpaper_ch_interval (const DialogData *dd_data,
-                           const uint32_t    i_val)
+                           const uint32_t    val)
 {
-    uint32_t ui_tmp = i_val; /* Temp interval value */
+    uint32_t tmp = val; /* Temp interval value */
 
     /* Check if minutes value can be displayed as hours */
-    if ((ui_tmp / 60 >= 1) && (ui_tmp % 60 == 0)) {
+    if ((tmp / 60 >= 1) && (tmp % 60 == 0)) {
 
         /* If value can be hours set combobox to hours */
         gtk_combo_box_set_active (GTK_COMBO_BOX (dd_data->gw_inter_combo), 1);
-        ui_tmp /= 60;
+        tmp /= 60;
     }
     else {
         /* Value is suppose to be set as minutes set combobox to minutes */
@@ -431,7 +431,7 @@ set_wallpaper_ch_interval (const DialogData *dd_data,
     }
     /* Set spinbutton value with change interval */
     gtk_spin_button_set_value (GTK_SPIN_BUTTON (dd_data->gw_interval),
-                               (double) ui_tmp);
+                               (double) tmp);
 }
 /*----------------------------------------------------------------------------*/
 /**
@@ -440,43 +440,43 @@ set_wallpaper_ch_interval (const DialogData *dd_data,
 static Setting *
 widgets_get_settings (const DialogData *dd_data)
 {
-    Setting    *st_setts = nullptr; /* Setting item to return */
-    const char *s_val    = nullptr; /* Value for a string setting */
-    int64_t     i_val    = 0;    /* Value for an integer setting */
+    Setting    *settings = nullptr; /* Setting item to return */
+    const char *str      = nullptr; /* Value for a string setting */
+    int64_t     val      = 0;       /* Value for an integer setting */
 
     /* Get wallpaper list from treeview and add to settlist */
-    st_setts = setting_new_array (get_setting_name (SETT_WALL_ARRAY));
-    setting_add_child (st_setts, treeview_get_setting_data (dd_data->gw_view));
+    settings = setting_new_array (get_setting_name (SETT_WALL_ARRAY));
+    setting_add_child (settings, treeview_get_setting_data (dd_data->gw_view));
 
     /* Get random wallpaper setting */
-    i_val = (int64_t) gtk_toggle_button_get_active (
+    val = (int64_t) gtk_toggle_button_get_active (
                 GTK_TOGGLE_BUTTON (dd_data->gw_random));
-    settings_append (st_setts,
-            setting_new_int (get_setting_name (SETT_RANDOM_OPT), i_val));
+    settings_append (settings,
+            setting_new_int (get_setting_name (SETT_RANDOM_OPT), val));
 
     /* Get last used wallpaper on start setting */
-    i_val = (int64_t) gtk_toggle_button_get_active (
+    val = (int64_t) gtk_toggle_button_get_active (
                 GTK_TOGGLE_BUTTON (dd_data->gw_lastused));
-    settings_append (st_setts,
-            setting_new_int (get_setting_name (SETT_LAST_USED_OPT), i_val));
+    settings_append (settings,
+            setting_new_int (get_setting_name (SETT_LAST_USED_OPT), val));
 
     /* Get time align setting */
-    i_val = (int64_t) gtk_toggle_button_get_active (
+    val = (int64_t) gtk_toggle_button_get_active (
                 GTK_TOGGLE_BUTTON (dd_data->gw_timealign));
-    settings_append (st_setts,
-            setting_new_int (get_setting_name (SETT_TIME_ALIGN_OPT), i_val));
+    settings_append (settings,
+            setting_new_int (get_setting_name (SETT_TIME_ALIGN_OPT), val));
 
     /* Get wallpaper change interval setting */
-    i_val = (int64_t) get_wallpaper_ch_interval (dd_data);
-    settings_append (st_setts,
-            setting_new_int (get_setting_name (SETT_INTERVAL_VAL), i_val));
+    val = (int64_t) get_wallpaper_ch_interval (dd_data);
+    settings_append (settings,
+            setting_new_int (get_setting_name (SETT_INTERVAL_VAL), val));
 
     /* Get wallpaper set command */
-    s_val = gtk_entry_get_text (GTK_ENTRY (dd_data->gw_command));
-    settings_append (st_setts,
-            setting_new_string (get_setting_name (SETT_BG_CMD), s_val));
+    str = gtk_entry_get_text (GTK_ENTRY (dd_data->gw_command));
+    settings_append (settings,
+            setting_new_string (get_setting_name (SETT_BG_CMD), str));
 
-    return st_setts;
+    return settings;
 }
 /*----------------------------------------------------------------------------*/
 /**
@@ -484,80 +484,80 @@ widgets_get_settings (const DialogData *dd_data)
  */
 static void
 widgets_set_settings (const DialogData *dd_data,
-                      Setting          *st_setts,
-                      Setting          *st_wmlist,
-                      int              *i_err)
+                      Setting          *settings,
+                      Setting          *wmlist,
+                      int              *err)
 {
-    Setting    *st_item    = nullptr; /* Setting to read */
-    int         i_w        = 0;    /* Window width value */
-    int         i_h        = 0;    /* Window height value */
-    const char *s_lastused = nullptr; /* Last used wallpapet string */
-    char       *s_cmd      = nullptr; /* Wallpaper set command */
+    Setting    *item     = nullptr; /* Setting to read */
+    int         width    = 0;       /* Window width value */
+    int         height   = 0;       /* Window height value */
+    const char *lastused = nullptr; /* Last used wallpapet string */
+    char       *cmd      = nullptr; /* Wallpaper set command */
 
-    *i_err = ERR_OK;
+    *err = ERR_OK;
 
     /* Check window managers and set wallpaper set command */
-    s_cmd = wms_get_wallpaper_command (dd_data->s_cfg_file,
-                                       st_setts,
-                                       st_wmlist,
-                                       i_err);
-    if (*i_err != ERR_OK) {
-        free (s_cmd);
+    cmd = wms_get_wallpaper_command (dd_data->s_cfg_file,
+                                     settings,
+                                     wmlist,
+                                     err);
+    if (*err != ERR_OK) {
+        free (cmd);
         return;
     }
-    gtk_entry_set_text (GTK_ENTRY (dd_data->gw_command), s_cmd);
-    free (s_cmd);
+    gtk_entry_set_text (GTK_ENTRY (dd_data->gw_command), cmd);
+    free (cmd);
 
     /* Set last used wallpaper on start setting */
-    st_item = settings_find (st_setts, get_setting_name (SETT_LAST_USED_OPT));
-    if (st_item != nullptr) {
+    item = settings_find (settings, get_setting_name (SETT_LAST_USED_OPT));
+    if (item != nullptr) {
         gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (dd_data->gw_lastused),
-                                      (gboolean) setting_get_int (st_item));
+                                      (gboolean) setting_get_int (item));
     }
     /* Set minutes/hours of wallpaper change interval */
-    st_item = settings_find (st_setts, get_setting_name (SETT_INTERVAL_VAL));
-    if (st_item != nullptr) {
+    item = settings_find (settings, get_setting_name (SETT_INTERVAL_VAL));
+    if (item != nullptr) {
         set_wallpaper_ch_interval (dd_data,
-                                   (uint32_t) setting_get_int (st_item));
+                                   (uint32_t) setting_get_int (item));
     }
     /* Set wallpaper random choose setting */
-    st_item = settings_find (st_setts, get_setting_name (SETT_RANDOM_OPT));
-    if (st_item != nullptr) {
+    item = settings_find (settings, get_setting_name (SETT_RANDOM_OPT));
+    if (item != nullptr) {
         gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (dd_data->gw_random),
-                                      (gboolean) setting_get_int (st_item));
+                                      (gboolean) setting_get_int (item));
     }
     /* Set time align setting */
-    st_item = settings_find (st_setts, get_setting_name (SETT_TIME_ALIGN_OPT));
-    if (st_item != nullptr) {
+    item = settings_find (settings, get_setting_name (SETT_TIME_ALIGN_OPT));
+    if (item != nullptr) {
         gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (dd_data->gw_timealign),
-                                      (gboolean) setting_get_int (st_item));
+                                      (gboolean) setting_get_int (item));
     }
     /* Get wallpaper list and add to treeview */
-    st_item = settings_find (st_setts, get_setting_name (SETT_WALL_ARRAY));
-    if (st_item != nullptr) {
+    item = settings_find (settings, get_setting_name (SETT_WALL_ARRAY));
+    if (item != nullptr) {
         treeview_add_items_setting (dd_data->gw_view,
-                                    setting_get_child (st_item));
+                                    setting_get_child (item));
     }
     /* Set window dimensions */
-    st_item = settings_find (st_setts, get_setting_name (SETT_WIN_WIDTH));
-    if (st_item != nullptr) {
-        i_w = (int) setting_get_int (st_item);
+    item = settings_find (settings, get_setting_name (SETT_WIN_WIDTH));
+    if (item != nullptr) {
+        width = (int) setting_get_int (item);
     }
-    st_item = settings_find (st_setts, get_setting_name (SETT_WIN_HEIGHT));
-    if (st_item != nullptr) {
-        i_h = (int) setting_get_int (st_item);
+    item = settings_find (settings, get_setting_name (SETT_WIN_HEIGHT));
+    if (item != nullptr) {
+        height = (int) setting_get_int (item);
     }
-    gtk_window_set_default_size (GTK_WINDOW (dd_data->gw_window), i_w, i_h);
+    gtk_window_set_default_size (GTK_WINDOW (dd_data->gw_window), width, height);
 
     /* Check if there is last used wallpaper info, if it is select it on
      * list and make a preview image */
-    st_item = settings_find (st_setts, get_setting_name (SETT_LAST_USED_STR));
-    if (st_item != nullptr)
-        s_lastused = setting_get_string (st_item);
+    item = settings_find (settings, get_setting_name (SETT_LAST_USED_STR));
+    if (item != nullptr)
+        lastused = setting_get_string (item);
 
-    if (s_lastused != nullptr) {
-        preview_from_file (dd_data->gw_imgprev, s_lastused);
-        treeview_find_select_item (dd_data->gw_view, s_lastused);
+    if (lastused != nullptr) {
+        preview_from_file (dd_data->gw_imgprev, lastused);
+        treeview_find_select_item (dd_data->gw_view, lastused);
     }
 }
 /*----------------------------------------------------------------------------*/
@@ -567,15 +567,15 @@ widgets_set_settings (const DialogData *dd_data,
 static void
 statusbar_push_config_info (const DialogData *dd_data)
 {
-    char *s_info = nullptr;
+    char *info = nullptr;
 
-    s_info = dialog_data_get_status_config_info (dd_data);
+    info = dialog_data_get_status_config_info (dd_data);
 
     gtk_statusbar_push (GTK_STATUSBAR (dd_data->gw_statusbar),
             gtk_statusbar_get_context_id (GTK_STATUSBAR (dd_data->gw_statusbar),
                                           STATUS_CONFIG),
-            s_info);
-    free (s_info);
+            info);
+    free (info);
 }
 /*----------------------------------------------------------------------------*/
 /**
@@ -584,13 +584,13 @@ statusbar_push_config_info (const DialogData *dd_data)
 static void
 event_add_img_pressed (const DialogData *dd_data)
 {
-    GSList *gsl_files = nullptr; /* List with files from dialog */
+    GSList *files = nullptr; /* List with files from dialog */
 
     /* Run image select dialog and get selected files */
-    if ((gsl_files = add_images_dialog (dd_data->gw_window)) != nullptr) {
+    if ((files = add_images_dialog (dd_data->gw_window)) != nullptr) {
         /* Add items to TreeView */
-        treeview_add_items_gslist (dd_data->gw_view, gsl_files);
-        g_slist_free_full (gsl_files, g_free);
+        treeview_add_items_gslist (dd_data->gw_view, files);
+        g_slist_free_full (files, g_free);
     }
 }
 /*----------------------------------------------------------------------------*/
@@ -600,18 +600,18 @@ event_add_img_pressed (const DialogData *dd_data)
 static void
 event_add_img_dir_pressed (const DialogData *dd_data)
 {
-    char  *s_folder = nullptr;  /* Selecred directory name */
-    GList *gl_files = nullptr;  /* Images in directory */
+    char  *folder = nullptr; /* Selecred directory name */
+    GList *files  = nullptr; /* Images in directory */
 
     /* Run directory select dialog and get selected directory name */
-    if ((s_folder = add_images_folder_dialog (dd_data->gw_window)) != nullptr) {
+    if ((folder = add_images_folder_dialog (dd_data->gw_window)) != nullptr) {
         /* Scan directory for files and append them to file list */
-        if ((gl_files = get_dir_content_filter_images (s_folder)) != nullptr) {
+        if ((files = get_dir_content_filter_images (folder)) != nullptr) {
             /* Add items to TreeView */
-            treeview_add_items_glist (dd_data->gw_view, gl_files);
-            g_list_free_full (gl_files, g_free);
+            treeview_add_items_glist (dd_data->gw_view, files);
+            g_list_free_full (files, g_free);
         }
-        g_free (s_folder);
+        g_free (folder);
     }
 }
 /*----------------------------------------------------------------------------*/
@@ -621,12 +621,12 @@ event_add_img_dir_pressed (const DialogData *dd_data)
 static void
 event_add_img_web_pressed (const DialogData *dd_data)
 {
-    GList *gl_list = nullptr; /* List with wallpapers to add */
+    GList *list = nullptr; /* List with wallpapers to add */
 
-    gl_list = add_images_from_web_dialog (dd_data->gw_window,
-                                          dd_data->s_cfg_file);
-    treeview_add_items_glist (dd_data->gw_view, gl_list);
-    g_list_free_full (gl_list, (GDestroyNotify) free);
+    list = add_images_from_web_dialog (dd_data->gw_window,
+                                       dd_data->s_cfg_file);
+    treeview_add_items_glist (dd_data->gw_view, list);
+    g_list_free_full (list, (GDestroyNotify) free);
 }
 /*----------------------------------------------------------------------------*/
 /**
@@ -635,34 +635,34 @@ event_add_img_web_pressed (const DialogData *dd_data)
 static void
 event_set_wallpaper_pressed (const DialogData *dd_data)
 {
-    GtkTreeSelection *gts_sele;         /* TreeSelection */
-    GtkTreeModel     *gtm_model;        /* TreeModel */
-    GtkTreeIter       gti_iter;         /* TreeIter */
-    ImageInfo        *ii_info;          /* Wallpaper image info */
-    GList            *gl_list   = nullptr; /* List of selected wallpapers */
-    const char       *s_cmd     = nullptr; /* Wallpaper set command */
-    int               i_err     = 0;    /* Error output */
+    GtkTreeSelection *selection;      /* TreeSelection */
+    GtkTreeModel     *model;          /* TreeModel */
+    GtkTreeIter       iter;           /* TreeIter */
+    ImageInfo        *info;           /* Wallpaper image info */
+    GList            *list = nullptr; /* List of selected wallpapers */
+    const char       *cmd  = nullptr; /* Wallpaper set command */
+    int               err  = 0;       /* Error output */
 
-    gtm_model = gtk_tree_view_get_model (GTK_TREE_VIEW (dd_data->gw_view));
-    gts_sele  = gtk_tree_view_get_selection (GTK_TREE_VIEW (dd_data->gw_view));
-    gl_list   = gtk_tree_selection_get_selected_rows (gts_sele, &gtm_model);
+    model     = gtk_tree_view_get_model (GTK_TREE_VIEW (dd_data->gw_view));
+    selection = gtk_tree_view_get_selection (GTK_TREE_VIEW (dd_data->gw_view));
+    list      = gtk_tree_selection_get_selected_rows (selection, &model);
 
-    if (gl_list == nullptr)
+    if (list == nullptr)
         return;
 
-    if (gtk_tree_model_get_iter (gtm_model, &gti_iter, gl_list->data)) {
+    if (gtk_tree_model_get_iter (model, &iter, list->data)) {
 
-        ii_info = treemodel_get_data (gtm_model, gti_iter);
-        s_cmd   = gtk_entry_get_text (GTK_ENTRY (dd_data->gw_command));
-        i_err   = wallpaper_dialog_set (s_cmd,
-                                        image_info_get_file_path (ii_info),
-                                        dialog_data_get_cfg_file (dd_data));
-        if (i_err != ERR_OK) {
-            message_dialog_error (dd_data->gw_window, err_get_message (i_err));
+        info = treemodel_get_data (model, iter);
+        cmd  = gtk_entry_get_text (GTK_ENTRY (dd_data->gw_command));
+        err  = wallpaper_dialog_set (cmd,
+                                     image_info_get_file_path (info),
+                                     dialog_data_get_cfg_file (dd_data));
+        if (err != ERR_OK) {
+            message_dialog_error (dd_data->gw_window, err_get_message (err));
         }
-        image_info_free (ii_info);
+        image_info_free (info);
     }
-    g_list_free_full (gl_list, (GDestroyNotify) gtk_tree_path_free);
+    g_list_free_full (list, (GDestroyNotify) gtk_tree_path_free);
 }
 /*----------------------------------------------------------------------------*/
 /**
@@ -671,16 +671,16 @@ event_set_wallpaper_pressed (const DialogData *dd_data)
 static void
 event_save_settings_pressed (const DialogData *dd_data)
 {
-    Setting *st_settings; /* List of settings */
-    int      i_err = 0;   /* Error value */
+    Setting *settings; /* List of settings */
+    int      err = 0;  /* Error value */
 
-    st_settings = widgets_get_settings (dd_data);
-    i_err = setts_check_update_file (dialog_data_get_cfg_file (dd_data),
-                                     st_settings);
-    settings_free_all (st_settings);
+    settings = widgets_get_settings (dd_data);
+    err = setts_check_update_file (dialog_data_get_cfg_file (dd_data),
+                                   settings);
+    settings_free_all (settings);
 
-    if (i_err != ERR_OK) {
-        message_dialog_error (dd_data->gw_window, err_get_message (i_err));
+    if (err != ERR_OK) {
+        message_dialog_error (dd_data->gw_window, err_get_message (err));
     }
 }
 /*----------------------------------------------------------------------------*/
@@ -691,20 +691,20 @@ static void
 event_img_list_activated (GtkTreeView       *tree_view,
                           GtkTreePath       *path,
                           [[maybe_unused]] GtkTreeViewColumn *column,
-                          GtkWidget         *gw_img_prev)
+                          GtkWidget         *img_prev)
 {
-    GtkTreeModel *gtm_model; /* TreeModel */
-    GtkTreeIter   gti_iter;  /* TreeIter */
-    ImageInfo    *ii_info;   /* Wallpaper image info */
+    GtkTreeModel *model; /* TreeModel */
+    GtkTreeIter   iter;  /* TreeIter */
+    ImageInfo    *info;  /* Wallpaper image info */
 
-    gtm_model = gtk_tree_view_get_model (tree_view);
+    model = gtk_tree_view_get_model (tree_view);
 
-    if (gtk_tree_model_get_iter (gtm_model, &gti_iter, path)) {
+    if (gtk_tree_model_get_iter (model, &iter, path)) {
 
-        ii_info = treemodel_get_data (gtm_model, gti_iter);
+        info = treemodel_get_data (model, iter);
 
-        preview_from_file (gw_img_prev, image_info_get_file_path (ii_info));
-        image_info_free (ii_info);
+        preview_from_file (img_prev, image_info_get_file_path (info));
+        image_info_free (info);
     }
 }
 /*----------------------------------------------------------------------------*/
@@ -730,51 +730,51 @@ static void
 event_interval_changed (GtkSpinButton    *spin_button,
                         const DialogData *dd_data)
 {
-    static int    i_prev   = 0;    /* Previous interval value */
-    GtkTreeModel *gtm_model;       /* TreeModel */
-    GtkComboBox  *gcb_box;         /* ComboBox */
-    GtkTreeIter   gti_iter;        /* TreeIter */
-    char         *s_min    = nullptr; /* String for minute entry */
-    char         *s_hour   = nullptr; /* String for hour entry */
-    int           i_val    = 0;    /* Actual interval value */
-    int           i_id     = 0;    /* id position */
-    int           i_en     = 0;    /* entry position */
-    int           i_change = 0;    /* Change text or not */
+    static int    prev      = 0;       /* Previous interval value */
+    GtkTreeModel *model;               /* TreeModel */
+    GtkComboBox  *combo;               /* ComboBox */
+    GtkTreeIter   iter;                /* TreeIter */
+    char         *minute    = nullptr; /* String for minute entry */
+    char         *hour      = nullptr; /* String for hour entry */
+    int           val       = 0;       /* Actual interval value */
+    int           id_col    = 0;       /* id position */
+    int           entry_col = 0;       /* entry position */
+    int           change    = 0;       /* Change text or not */
 
-    gcb_box = GTK_COMBO_BOX (dd_data->gw_inter_combo);
-    s_min   = strdup ("minute");
-    s_hour  = strdup ("hour");
-    i_val   = gtk_spin_button_get_value_as_int (spin_button);
+    combo  = GTK_COMBO_BOX (dd_data->gw_inter_combo);
+    minute = strdup ("minute");
+    hour   = strdup ("hour");
+    val    = gtk_spin_button_get_value_as_int (spin_button);
 
-    if (i_prev == 1 && i_val != 1) {
-        i_change = 1;
-        str_append (&s_min,  "s");
-        str_append (&s_hour, "s");
+    if (prev == 1 && val != 1) {
+        change = 1;
+        str_append (&minute,  "s");
+        str_append (&hour, "s");
     }
-    else if (i_prev != 1 && i_val == 1) {
-        i_change = 1;
+    else if (prev != 1 && val == 1) {
+        change = 1;
     }
-    if (i_change) {
-        gtm_model = gtk_combo_box_get_model (gcb_box);
-        i_id      = gtk_combo_box_get_id_column (gcb_box);
-        i_en      = gtk_combo_box_get_entry_text_column (gcb_box);
+    if (change) {
+        model     = gtk_combo_box_get_model (combo);
+        id_col    = gtk_combo_box_get_id_column (combo);
+        entry_col = gtk_combo_box_get_entry_text_column (combo);
 
-        if (gtk_tree_model_get_iter_first (gtm_model, &gti_iter)) {
-            gtk_list_store_set (GTK_LIST_STORE (gtm_model), &gti_iter,
-                        i_id, s_min,
-                        i_en, s_min,
+        if (gtk_tree_model_get_iter_first (model, &iter)) {
+            gtk_list_store_set (GTK_LIST_STORE (model), &iter,
+                        id_col,    minute,
+                        entry_col, minute,
                         -1);
-            if (gtk_tree_model_iter_next (gtm_model, &gti_iter)) {
-                gtk_list_store_set (GTK_LIST_STORE (gtm_model), &gti_iter,
-                        i_id, s_hour,
-                        i_en, s_hour,
+            if (gtk_tree_model_iter_next (model, &iter)) {
+                gtk_list_store_set (GTK_LIST_STORE (model), &iter,
+                        id_col,    hour,
+                        entry_col, hour,
                         -1);
             }
         }
     }
-    free (s_min);
-    free (s_hour);
-    i_prev = i_val;
+    free (minute);
+    free (hour);
+    prev = val;
 }
 /*----------------------------------------------------------------------------*/
 /**
@@ -783,18 +783,18 @@ event_interval_changed (GtkSpinButton    *spin_button,
 static void
 event_command_button_pressed (const DialogData *dd_data)
 {
-    GSList *gsl_files = nullptr; /* For wallpaers */
-    char   *s_command = nullptr; /* Command from dialog */
+    GSList *files   = nullptr; /* For wallpaers */
+    char   *command = nullptr; /* Command from dialog */
 
-    gsl_files = treeview_get_data (dd_data->gw_view);
-    s_command = wp_set_command_dialog_run (dd_data->gw_window,
-            gtk_entry_get_text (GTK_ENTRY (dd_data->gw_command)), gsl_files);
+    files = treeview_get_data (dd_data->gw_view);
+    command = wp_set_command_dialog_run (dd_data->gw_window,
+            gtk_entry_get_text (GTK_ENTRY (dd_data->gw_command)), files);
 
-    if (s_command != nullptr) {
-        gtk_entry_set_text (GTK_ENTRY (dd_data->gw_command), s_command);
-        free (s_command);
+    if (command != nullptr) {
+        gtk_entry_set_text (GTK_ENTRY (dd_data->gw_command), command);
+        free (command);
     }
-    g_slist_free_full (gsl_files, (GDestroyNotify) image_info_free);
+    g_slist_free_full (files, (GDestroyNotify) image_info_free);
 }
 /*----------------------------------------------------------------------------*/
 /**
@@ -817,27 +817,27 @@ event_on_delete (GtkWidget        *window,
                  [[maybe_unused]] GdkEvent *event,
                  const DialogData *dd_data)
 {
-    GtkWidget *dialog;        /* Question dialog */
-    Setting   *st_settings;   /* Program settings */
-    char      *s_buff = nullptr; /* Buffer for settings data */
-    int        i_res  = 0;    /* Dialog result */
-    int        i_err  = 0;    /* Error value */
-    int        i_w    = 0;    /* Window width */
-    int        i_h    = 0;    /* Window height */
+    GtkWidget *dialog;           /* Question dialog */
+    Setting   *settings;         /* Program settings */
+    char      *buff   = nullptr; /* Buffer for settings data */
+    int        res    = 0;       /* Dialog result */
+    int        err    = 0;       /* Error value */
+    int        width  = 0;       /* Window width */
+    int        height = 0;       /* Window height */
 
-    gtk_window_get_size (GTK_WINDOW (window), &i_w, &i_h);
+    gtk_window_get_size (GTK_WINDOW (window), &width, &height);
 
-    st_settings = widgets_get_settings (dd_data);
+    settings = widgets_get_settings (dd_data);
 
-    s_buff  = setts_check_update (dialog_data_get_cfg_file (dd_data),
-                                  st_settings,
-                                  &i_err);
-    settings_free_all (st_settings);
+    buff  = setts_check_update (dialog_data_get_cfg_file (dd_data),
+                                settings,
+                                &err);
+    settings_free_all (settings);
 
-    if (i_err != ERR_OK) {
-        message_dialog_error (GTK_WINDOW (window), err_get_message (i_err));
+    if (err != ERR_OK) {
+        message_dialog_error (GTK_WINDOW (window), err_get_message (err));
     }
-    if (s_buff != nullptr) {
+    if (buff != nullptr) {
         dialog = gtk_message_dialog_new (GTK_WINDOW (window),
                                          GTK_DIALOG_DESTROY_WITH_PARENT,
                                          GTK_MESSAGE_QUESTION,
@@ -845,20 +845,20 @@ event_on_delete (GtkWidget        *window,
             "Settings changed, do you want to save them ?");
         gtk_window_set_title (GTK_WINDOW (dialog), "Settings changed");
 
-        i_res = gtk_dialog_run (GTK_DIALOG (dialog));
+        res = gtk_dialog_run (GTK_DIALOG (dialog));
         gtk_widget_destroy (dialog);
 
-        if (i_res == GTK_RESPONSE_YES) {
-            i_err = setts_update_file (dialog_data_get_cfg_file (dd_data),
-                                       s_buff);
-            if (i_err != ERR_OK) {
+        if (res == GTK_RESPONSE_YES) {
+            err = setts_update_file (dialog_data_get_cfg_file (dd_data),
+                                     buff);
+            if (err != ERR_OK) {
                 message_dialog_error (GTK_WINDOW (window),
-                                      err_get_message (i_err));
+                                      err_get_message (err));
             }
         }
-        free (s_buff);
+        free (buff);
     }
-    setts_update_window_size (dialog_data_get_cfg_file (dd_data), i_w, i_h);
+    setts_update_window_size (dialog_data_get_cfg_file (dd_data), width, height);
     return FALSE;
 }
 /*----------------------------------------------------------------------------*/
@@ -888,9 +888,9 @@ event_stop_daemon_pressed (DialogData *dd_data)
 static void
 event_other_settings_pressed (DialogData *dd_data)
 {
-    char *s_fn = treeview_get_one_file (dd_data->gw_view);
-    other_settings_dialog (dd_data->gw_window, dd_data->s_cfg_file, s_fn);
-    free (s_fn);
+    char *file = treeview_get_one_file (dd_data->gw_view);
+    other_settings_dialog (dd_data->gw_window, dd_data->s_cfg_file, file);
+    free (file);
 }
 /*----------------------------------------------------------------------------*/
 /**
@@ -920,52 +920,52 @@ daemon_monitor (gpointer data)
 static GtkWidget *
 create_title_widget (void)
 {
-    GtkWidget  *gw_widget; /* Widget to return */
-    const char *s_str    = APP_NAME " - Program settings";
-    const char *s_format = "<span size=\"20000\" weight=\"bold\" "
-                           "style=\"italic\">%s</span>";
-                           //"foreground=\"#0099e6\" style=\"italic\">%s</span>";
-    char       *s_markup = nullptr;
-    GtkWidget  *gw_label = gtk_label_new (nullptr);
+    GtkWidget  *widget; /* Widget to return */
+    const char *str    = APP_NAME " - Program settings";
+    const char *format = "<span size=\"20000\" weight=\"bold\" "
+                         "style=\"italic\">%s</span>";
+                         //"foreground=\"#0099e6\" style=\"italic\">%s</span>";
+    char       *markup = nullptr;
+    GtkWidget  *label  = gtk_label_new (nullptr);
 
-    gw_widget = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 4);
+    widget = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 4);
 
-    s_markup = g_markup_printf_escaped (s_format, s_str);
-    gtk_label_set_markup (GTK_LABEL (gw_label), s_markup);
-    g_free (s_markup);
+    markup = g_markup_printf_escaped (format, str);
+    gtk_label_set_markup (GTK_LABEL (label), markup);
+    g_free (markup);
 
-    gtk_box_pack_start (GTK_BOX (gw_widget),
-                        gw_label,
+    gtk_box_pack_start (GTK_BOX (widget),
+                        label,
                         FALSE, FALSE, 24);
-    return gw_widget;
+    return widget;
 }
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Create button with icon/label/hint.
  */
 static GtkWidget *
-create_image_button (const char   *s_label,
-                     const char   *s_hint,
-                     const IconImg i_but)
+create_image_button (const char   *label,
+                     const char   *hint,
+                     const IconImg icon)
 {
-    GtkWidget *gw_btn;         /* Return button with image */
-    GtkWidget *gw_img;         /* Image widget to put in button */
-    GdkPixbuf *gd_pix = nullptr;  /* Pixbuf for image data */
+    GtkWidget *button;           /* Return button with image */
+    GtkWidget *image;            /* Image widget to put in button */
+    GdkPixbuf *pixbuf = nullptr; /* Pixbuf for image data */
 
-    gw_btn = gtk_button_new ();
+    button = gtk_button_new ();
 
-    if (!str_is_empty (s_label))
-        gtk_button_set_label (GTK_BUTTON (gw_btn), s_label);
+    if (!str_is_empty (label))
+        gtk_button_set_label (GTK_BUTTON (button), label);
 
-    if (!str_is_empty (s_hint))
-        gtk_widget_set_tooltip_text (gw_btn, s_hint);
+    if (!str_is_empty (hint))
+        gtk_widget_set_tooltip_text (button, hint);
 
-    if (i_but < W_IMG_COUNT && (gd_pix = get_icon (i_but)) != nullptr) {
-        gw_img = gtk_image_new_from_pixbuf (gd_pix);
-        gtk_button_set_image (GTK_BUTTON (gw_btn), gw_img);
-        g_object_unref (gd_pix);
+    if (icon < W_IMG_COUNT && (pixbuf = get_icon (icon)) != nullptr) {
+        image = gtk_image_new_from_pixbuf (pixbuf);
+        gtk_button_set_image (GTK_BUTTON (button), image);
+        g_object_unref (pixbuf);
     }
-    return gw_btn;
+    return button;
 }
 /*----------------------------------------------------------------------------*/
 /**
@@ -974,112 +974,112 @@ create_image_button (const char   *s_label,
 static GtkWidget *
 create_buttons_widget (DialogData *dd_data)
 {
-    GtkWidget *gw_widget; /* Widget to return */
-    GtkWidget *gw_button; /* For buttons */
+    GtkWidget *widget; /* Widget to return */
+    GtkWidget *button; /* For buttons */
 
-    gw_widget = gtk_box_new (GTK_ORIENTATION_VERTICAL, 4);
+    widget = gtk_box_new (GTK_ORIENTATION_VERTICAL, 4);
 
-    gw_button = create_image_button (nullptr, "Add images", W_ICON_ADD);
-    gtk_box_pack_start (GTK_BOX (gw_widget),
-                        gw_button,
+    button = create_image_button (nullptr, "Add images", W_ICON_ADD);
+    gtk_box_pack_start (GTK_BOX (widget),
+                        button,
                         FALSE, FALSE, 4);
-    g_signal_connect_swapped (gw_button,
+    g_signal_connect_swapped (button,
                               "clicked",
                               G_CALLBACK (event_add_img_pressed),
                               dd_data);
-    gw_button = create_image_button (nullptr, "Add images from folder",
+    button = create_image_button (nullptr, "Add images from folder",
                                      W_ICON_ADD_DIR);
-    g_signal_connect_swapped (gw_button,
+    g_signal_connect_swapped (button,
                               "clicked",
                               G_CALLBACK (event_add_img_dir_pressed),
                               dd_data);
-    gtk_box_pack_start (GTK_BOX (gw_widget),
-                        gw_button,
+    gtk_box_pack_start (GTK_BOX (widget),
+                        button,
                         FALSE, FALSE, 4);
-    gw_button = create_image_button (nullptr, "Add wallpapers from web",
+    button = create_image_button (nullptr, "Add wallpapers from web",
                                      W_ICON_ADD_WEB);
-    g_signal_connect_swapped (gw_button,
+    g_signal_connect_swapped (button,
                               "clicked",
                               G_CALLBACK (event_add_img_web_pressed),
                               dd_data);
-    gtk_box_pack_start (GTK_BOX (gw_widget),
-                        gw_button,
+    gtk_box_pack_start (GTK_BOX (widget),
+                        button,
                         FALSE, FALSE, 4);
-    gw_button = create_image_button (nullptr, "Remove selected images",
+    button = create_image_button (nullptr, "Remove selected images",
                                      W_ICON_REMOVE);
-    gtk_box_pack_start (GTK_BOX (gw_widget),
-                        gw_button,
+    gtk_box_pack_start (GTK_BOX (widget),
+                        button,
                         FALSE, FALSE, 4);
-    g_signal_connect_swapped (gw_button,
+    g_signal_connect_swapped (button,
                               "clicked",
                               G_CALLBACK (treeview_remove_selected),
                               dd_data->gw_view);
-    gw_button = create_image_button (nullptr, "Move up", W_ICON_UP);
-    gtk_box_pack_start (GTK_BOX (gw_widget),
-                        gw_button,
+    button = create_image_button (nullptr, "Move up", W_ICON_UP);
+    gtk_box_pack_start (GTK_BOX (widget),
+                        button,
                         FALSE, FALSE, 4);
-    g_signal_connect_swapped (gw_button,
+    g_signal_connect_swapped (button,
                               "clicked",
                               G_CALLBACK (treeview_move_up),
                               dd_data->gw_view);
-    gw_button = create_image_button (nullptr, "Move down", W_ICON_DOWN);
-    gtk_box_pack_start (GTK_BOX (gw_widget),
-                        gw_button,
+    button = create_image_button (nullptr, "Move down", W_ICON_DOWN);
+    gtk_box_pack_start (GTK_BOX (widget),
+                        button,
                         FALSE, FALSE, 4);
-    g_signal_connect_swapped (gw_button,
+    g_signal_connect_swapped (button,
                               "clicked",
                               G_CALLBACK (treeview_move_down),
                               dd_data->gw_view);
-    gw_button = create_image_button (nullptr, "Remove duplicates", W_ICON_DUPL);
-    gtk_box_pack_start (GTK_BOX (gw_widget),
-                        gw_button,
+    button = create_image_button (nullptr, "Remove duplicates", W_ICON_DUPL);
+    gtk_box_pack_start (GTK_BOX (widget),
+                        button,
                         FALSE, FALSE, 4);
-    g_signal_connect_swapped (gw_button,
+    g_signal_connect_swapped (button,
                               "clicked",
                               G_CALLBACK (treeview_remove_duplicates),
                               dd_data->gw_view);
-    gw_button = create_image_button (nullptr, "Set wallpaper", W_ICON_SCREEN);
-    gtk_box_pack_start (GTK_BOX (gw_widget),
-                        gw_button,
+    button = create_image_button (nullptr, "Set wallpaper", W_ICON_SCREEN);
+    gtk_box_pack_start (GTK_BOX (widget),
+                        button,
                         FALSE, FALSE, 4);
-    g_signal_connect_swapped (gw_button,
+    g_signal_connect_swapped (button,
                               "clicked",
                               G_CALLBACK (event_set_wallpaper_pressed),
                               dd_data);
-    gw_button = create_image_button (nullptr, "Save settings", W_ICON_FLOPPY);
-    gtk_box_pack_start (GTK_BOX (gw_widget),
-                        gw_button,
+    button = create_image_button (nullptr, "Save settings", W_ICON_FLOPPY);
+    gtk_box_pack_start (GTK_BOX (widget),
+                        button,
                         FALSE, FALSE, 4);
-    g_signal_connect_swapped (gw_button,
+    g_signal_connect_swapped (button,
                               "clicked",
                               G_CALLBACK (event_save_settings_pressed),
                               dd_data);
-    gw_button = create_image_button (nullptr, "Other settings", W_ICON_SETTING);
-    gtk_box_pack_start (GTK_BOX (gw_widget),
-                        gw_button,
+    button = create_image_button (nullptr, "Other settings", W_ICON_SETTING);
+    gtk_box_pack_start (GTK_BOX (widget),
+                        button,
                         FALSE, FALSE, 4);
-    g_signal_connect_swapped (gw_button,
+    g_signal_connect_swapped (button,
                               "clicked",
                               G_CALLBACK (event_other_settings_pressed),
                               dd_data);
-    gw_button = create_image_button (nullptr, "About Wall Changer", W_ICON_INFO);
-    gtk_box_pack_start (GTK_BOX (gw_widget),
-                        gw_button,
+    button = create_image_button (nullptr, "About Wall Changer", W_ICON_INFO);
+    gtk_box_pack_start (GTK_BOX (widget),
+                        button,
                         FALSE, FALSE, 4);
-    g_signal_connect_swapped (gw_button,
+    g_signal_connect_swapped (button,
                               "clicked",
                               G_CALLBACK (about_app_dialog),
                               GTK_WINDOW (dd_data->gw_window));
-    gw_button = create_image_button (nullptr, "Exit configuration dialog",
+    button = create_image_button (nullptr, "Exit configuration dialog",
                                      W_ICON_EXIT);
-    g_signal_connect_swapped (gw_button,
+    g_signal_connect_swapped (button,
                               "clicked",
                               G_CALLBACK (gtk_window_close),
                               dd_data->gw_window);
-    gtk_box_pack_start (GTK_BOX (gw_widget),
-                        gw_button,
+    gtk_box_pack_start (GTK_BOX (widget),
+                        button,
                         FALSE, FALSE, 4);
-    return gw_widget;
+    return widget;
 }
 /*----------------------------------------------------------------------------*/
 /**
@@ -1088,158 +1088,158 @@ create_buttons_widget (DialogData *dd_data)
 static GtkWidget *
 create_settings_widget (DialogData *dd_data)
 {
-    GtkWidget     *gw_widget;            /* Widget to return */
-    GtkWidget     *gw_random_button;     /* Random image GtkCheckButton */
-    GtkWidget     *gw_button_selectlast; /* Set last used GtkCheckButton */
-    GtkWidget     *gw_align_button;      /* Time align GtkCheckButton */
-    GtkWidget     *gw_command_label;     /* Wallpaper set cmd GtkLabel */
-    GtkWidget     *gw_command_button;    /* Button for command dialog */
-    GtkWidget     *gw_command_entry;     /* Wallpaper set cmd GtkEntry */
-    GtkWidget     *gw_interval_label;    /* Time interval GtkLabel */
-    GtkWidget     *gw_spinbutton;        /* Time interval GtkSpinButton */
-    GtkAdjustment *ga_adjustment;        /* Time interval GtkAdjustment */
-    GtkWidget     *gw_time_combo;        /* Time interval GtkComboBoxText*/
-    GtkWidget     *gw_autostart_button;  /* Autostart file GtkCheckButton */
+    GtkWidget     *widget;            /* Widget to return */
+    GtkWidget     *random_button;     /* Random image GtkCheckButton */
+    GtkWidget     *button_selectlast; /* Set last used GtkCheckButton */
+    GtkWidget     *align_button;      /* Time align GtkCheckButton */
+    GtkWidget     *command_label;     /* Wallpaper set cmd GtkLabel */
+    GtkWidget     *command_button;    /* Button for command dialog */
+    GtkWidget     *command_entry;     /* Wallpaper set cmd GtkEntry */
+    GtkWidget     *interval_label;    /* Time interval GtkLabel */
+    GtkWidget     *spinbutton;        /* Time interval GtkSpinButton */
+    GtkAdjustment *adjustment;        /* Time interval GtkAdjustment */
+    GtkWidget     *time_combo;        /* Time interval GtkComboBoxText*/
+    GtkWidget     *autostart_button;  /* Autostart file GtkCheckButton */
 
     /* Random wallpaper change button */
-    gw_random_button = gtk_check_button_new ();
-    gtk_widget_set_tooltip_markup (gw_random_button, 
+    random_button = gtk_check_button_new ();
+    gtk_widget_set_tooltip_markup (random_button, 
         "When <b>enabled</b> wallpaper images will be selected randomly.\n"
         "When <b>disabled</b> wallpapers will be set in the same order as "
         "they appear on the list");
-    gtk_button_set_label (GTK_BUTTON (gw_random_button),
+    gtk_button_set_label (GTK_BUTTON (random_button),
                           "Random wallpaper change");
 
     /* Select last used wallpaper button */
-    gw_button_selectlast = gtk_check_button_new ();
-    gtk_widget_set_tooltip_markup (gw_button_selectlast,
+    button_selectlast = gtk_check_button_new ();
+    gtk_widget_set_tooltip_markup (button_selectlast,
         "When <b>enabled</b> first wallpaper set on program start will "
         " be the last one previously set.\n"
         "When <b>disabled</b> wallpaper will be set randomly or next in list "
         "to the last one before stop.");
-    gtk_button_set_label (GTK_BUTTON (gw_button_selectlast),
+    gtk_button_set_label (GTK_BUTTON (button_selectlast),
                           "Select last used wallpaper at start");
 
     /* Time align button */
-    gw_align_button = gtk_check_button_new ();
-    gtk_widget_set_tooltip_markup (gw_align_button, 
+    align_button = gtk_check_button_new ();
+    gtk_widget_set_tooltip_markup (align_button, 
         "This option enables time align, when <b>enabled</b> wallpaper"
         " change intervals will be set for changes to appear on full hour."
         "\ne.g. interval is set to 20 minutes, daemon starts at"
         " 10:15, first interval will be changed to 5 minutes so changes"
         " will appear on 10:20, 10:40, 11:00 ..."
         );
-    gtk_button_set_label (GTK_BUTTON (gw_align_button), "Align");
+    gtk_button_set_label (GTK_BUTTON (align_button), "Align");
 
     /* Wallpaper set command entry */
-    gw_command_label = gtk_label_new ("Background set command : ");
-    gtk_label_set_xalign (GTK_LABEL (gw_command_label), 0);
-    gw_command_entry = gtk_entry_new ();
+    command_label = gtk_label_new ("Background set command : ");
+    gtk_label_set_xalign (GTK_LABEL (command_label), 0);
+    command_entry = gtk_entry_new ();
 
-    gtk_widget_set_tooltip_markup (gw_command_entry,
+    gtk_widget_set_tooltip_markup (command_entry,
         "This command will be executed to set background image\n"
         "e.g. <b>feh --bg-fill</b>\nFor more complex commands use <b>[F]</b>" 
         " as a file name\ne.g. <b>feh --bg-fill \"[F]\"</b>");
-    gw_command_button = gtk_button_new_with_label ("Select");
+    command_button = gtk_button_new_with_label ("Select");
     /*
-    gtk_widget_set_tooltip_text (gw_command_button,
+    gtk_widget_set_tooltip_text (command_button,
         "Open wallpaper command select window.");
     */
-    g_signal_connect_swapped (gw_command_button,
+    g_signal_connect_swapped (command_button,
                               "clicked",
                               G_CALLBACK (event_command_button_pressed),
                               dd_data);
 
     /* Background change interval widgets */
-    ga_adjustment = gtk_adjustment_new (30.0, 1.0, 6000.0, 1.0, 5.0, 0.0);
-    gw_spinbutton = gtk_spin_button_new (ga_adjustment, 1.0, 0);
-    gtk_widget_set_tooltip_markup (gw_spinbutton,
+    adjustment = gtk_adjustment_new (30.0, 1.0, 6000.0, 1.0, 5.0, 0.0);
+    spinbutton = gtk_spin_button_new (adjustment, 1.0, 0);
+    gtk_widget_set_tooltip_markup (spinbutton,
             "Time between background changes");
-    gw_interval_label = gtk_label_new ("Background change interval : ");
-    gtk_label_set_xalign (GTK_LABEL (gw_interval_label), 0);
-    gw_time_combo = gtk_combo_box_text_new ();
-    gtk_combo_box_text_append (GTK_COMBO_BOX_TEXT (gw_time_combo),
+    interval_label = gtk_label_new ("Background change interval : ");
+    gtk_label_set_xalign (GTK_LABEL (interval_label), 0);
+    time_combo = gtk_combo_box_text_new ();
+    gtk_combo_box_text_append (GTK_COMBO_BOX_TEXT (time_combo),
                                nullptr,
                                "minutes");
-    gtk_combo_box_text_append (GTK_COMBO_BOX_TEXT (gw_time_combo),
+    gtk_combo_box_text_append (GTK_COMBO_BOX_TEXT (time_combo),
                                nullptr,
                                "hours");
-    gtk_combo_box_set_active (GTK_COMBO_BOX (gw_time_combo), 0);
+    gtk_combo_box_set_active (GTK_COMBO_BOX (time_combo), 0);
 
-    g_signal_connect (gw_spinbutton, "value-changed",
+    g_signal_connect (spinbutton, "value-changed",
                       G_CALLBACK (event_interval_changed), dd_data);
 
     /* Autostart button */
-    gw_autostart_button = gtk_check_button_new ();
-    gtk_widget_set_tooltip_markup (gw_autostart_button, 
+    autostart_button = gtk_check_button_new ();
+    gtk_widget_set_tooltip_markup (autostart_button, 
         "When <b>enabled</b> wchangerd daemon entry will be placed in "
         "users autostart directory."
         "\nWhen <b>disabled</b> daemon entry will be removed from "
         "users autostart directory."
         "\nThis will allow to start (restart actually) wchangerd daemon "
         " in XDG Autostart compatible window managers.");
-    gtk_button_set_label (GTK_BUTTON (gw_autostart_button),
+    gtk_button_set_label (GTK_BUTTON (autostart_button),
                           "Create autostart entry");
-    gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (gw_autostart_button),
+    gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (autostart_button),
                                   cfg_file_autostart_exists ());
-    g_signal_connect (gw_autostart_button, "toggled",
+    g_signal_connect (autostart_button, "toggled",
                       G_CALLBACK (event_autostart_toggled), nullptr);
 
     /* Setting pointers in DialogData */
-    dd_data->gw_random      = gw_random_button;
-    dd_data->gw_lastused    = gw_button_selectlast;
-    dd_data->gw_command     = gw_command_entry;
-    dd_data->gw_interval    = gw_spinbutton;
-    dd_data->gw_timealign   = gw_align_button;
-    dd_data->gw_inter_combo = gw_time_combo;
+    dd_data->gw_random      = random_button;
+    dd_data->gw_lastused    = button_selectlast;
+    dd_data->gw_command     = command_entry;
+    dd_data->gw_interval    = spinbutton;
+    dd_data->gw_timealign   = align_button;
+    dd_data->gw_inter_combo = time_combo;
 
     /* Container for settings widgets */
-    gw_widget = gtk_grid_new ();
-    gtk_grid_set_column_spacing (GTK_GRID (gw_widget), 8);
-    gtk_grid_set_row_spacing (GTK_GRID (gw_widget), 8);
-    gtk_grid_set_row_homogeneous (GTK_GRID (gw_widget), TRUE);
+    widget = gtk_grid_new ();
+    gtk_grid_set_column_spacing (GTK_GRID (widget), 8);
+    gtk_grid_set_row_spacing (GTK_GRID (widget), 8);
+    gtk_grid_set_row_homogeneous (GTK_GRID (widget), TRUE);
 
     /* Packing time interval widgets */
-    gtk_grid_attach (GTK_GRID (gw_widget),
-                     gw_interval_label, 0, 0, 1, 1);
-    gtk_grid_attach_next_to (GTK_GRID (gw_widget),
-                             gw_spinbutton, gw_interval_label,
+    gtk_grid_attach (GTK_GRID (widget),
+                     interval_label, 0, 0, 1, 1);
+    gtk_grid_attach_next_to (GTK_GRID (widget),
+                             spinbutton, interval_label,
                              GTK_POS_RIGHT, 1, 1);
-    gtk_grid_attach_next_to (GTK_GRID (gw_widget),
-                             gw_time_combo, gw_spinbutton,
+    gtk_grid_attach_next_to (GTK_GRID (widget),
+                             time_combo, spinbutton,
                              GTK_POS_RIGHT, 1, 1);
-    gtk_grid_attach_next_to (GTK_GRID (gw_widget),
-                             gw_align_button, gw_time_combo,
+    gtk_grid_attach_next_to (GTK_GRID (widget),
+                             align_button, time_combo,
                              GTK_POS_RIGHT, 1, 1);
 
     /* Packing background set command */
-    gtk_grid_attach_next_to (GTK_GRID (gw_widget),
-                             gw_command_label, gw_interval_label,
+    gtk_grid_attach_next_to (GTK_GRID (widget),
+                             command_label, interval_label,
                              GTK_POS_BOTTOM, 1, 1);
-    gtk_grid_attach_next_to (GTK_GRID (gw_widget),
-                             gw_command_entry, gw_command_label,
+    gtk_grid_attach_next_to (GTK_GRID (widget),
+                             command_entry, command_label,
                              GTK_POS_RIGHT, 2, 1);
-    gtk_grid_attach_next_to (GTK_GRID (gw_widget),
-                             gw_command_button, gw_command_entry,
+    gtk_grid_attach_next_to (GTK_GRID (widget),
+                             command_button, command_entry,
                              GTK_POS_RIGHT, 1, 1);
 
     /* Separator for checkbuttons */
-    gtk_grid_attach (GTK_GRID (gw_widget),
+    gtk_grid_attach (GTK_GRID (widget),
                      gtk_separator_new (GTK_ORIENTATION_VERTICAL),
                      4, 0, 1, 3);
 
     /* Packing button for random change */
-    gtk_grid_attach (GTK_GRID (gw_widget),
-                     gw_random_button, 5, 0, 1, 1);
-    gtk_grid_attach_next_to (GTK_GRID (gw_widget),
-                             gw_button_selectlast, gw_random_button,
+    gtk_grid_attach (GTK_GRID (widget),
+                     random_button, 5, 0, 1, 1);
+    gtk_grid_attach_next_to (GTK_GRID (widget),
+                             button_selectlast, random_button,
                              GTK_POS_BOTTOM, 1, 1);
 
     /* Packing autostart widget */
-    gtk_grid_attach_next_to (GTK_GRID (gw_widget),
-                             gw_autostart_button, gw_button_selectlast,
+    gtk_grid_attach_next_to (GTK_GRID (widget),
+                             autostart_button, button_selectlast,
                              GTK_POS_BOTTOM, 1, 1);
-    return gw_widget;
+    return widget;
 }
 /*----------------------------------------------------------------------------*/
 /**
@@ -1248,46 +1248,46 @@ create_settings_widget (DialogData *dd_data)
 static GtkWidget *
 create_daemon_widget (DialogData *dd_data)
 {
-    GtkWidget *gw_widget; /* Widget to return */
-    GtkWidget *gw_button; /* For buttons */
-    GtkWidget *gw_label;  /* Daemon label */
+    GtkWidget *widget; /* Widget to return */
+    GtkWidget *button; /* For buttons */
+    GtkWidget *label;  /* Daemon label */
 
     /* Grid to pack widgets */
-    gw_widget = gtk_grid_new ();
-    gtk_grid_set_row_spacing (GTK_GRID (gw_widget), 4);
-    gtk_grid_set_column_spacing (GTK_GRID (gw_widget), 4);
+    widget = gtk_grid_new ();
+    gtk_grid_set_row_spacing (GTK_GRID (widget), 4);
+    gtk_grid_set_column_spacing (GTK_GRID (widget), 4);
 
     /* Daemon name label */
-    gw_label = gtk_label_new ("wchangerd");
-    gtk_label_set_xalign (GTK_LABEL (gw_label), 0.5);
+    label = gtk_label_new ("wchangerd");
+    gtk_label_set_xalign (GTK_LABEL (label), 0.5);
 
-    gtk_grid_attach (GTK_GRID (gw_widget), gw_label, 0, 0, 2, 1);
+    gtk_grid_attach (GTK_GRID (widget), label, 0, 0, 2, 1);
 
     /* Daemon run status label */
     dd_data->gw_dm_label = gtk_label_new (" ");
     gtk_label_set_xalign (GTK_LABEL (dd_data->gw_dm_label), 0.5);
 
-    gtk_grid_attach (GTK_GRID (gw_widget), dd_data->gw_dm_label, 0, 1, 2, 1);
+    gtk_grid_attach (GTK_GRID (widget), dd_data->gw_dm_label, 0, 1, 2, 1);
 
     /* Start daemon button */
-    gw_button = create_image_button (nullptr, "Start wchangerd daemon",
+    button = create_image_button (nullptr, "Start wchangerd daemon",
                                      W_ICON_PLAY);
-    g_signal_connect_swapped (gw_button, "clicked",
+    g_signal_connect_swapped (button, "clicked",
                               G_CALLBACK (event_start_daemon_pressed), dd_data);
 
-    gtk_grid_attach (GTK_GRID (gw_widget), gw_button, 0, 2, 1, 1);
+    gtk_grid_attach (GTK_GRID (widget), button, 0, 2, 1, 1);
 
     /* Stop daemon button */
-    gw_button = create_image_button (nullptr, "Stop wchangerd daemon",
+    button = create_image_button (nullptr, "Stop wchangerd daemon",
                                      W_ICON_STOP);
-    g_signal_connect_swapped (gw_button, "clicked",
+    g_signal_connect_swapped (button, "clicked",
                               G_CALLBACK (event_stop_daemon_pressed), dd_data);
 
-    gtk_grid_attach (GTK_GRID (gw_widget), gw_button, 1, 2, 1, 1);
+    gtk_grid_attach (GTK_GRID (widget), button, 1, 2, 1, 1);
 
-    gtk_widget_set_halign (gw_widget, GTK_ALIGN_CENTER);
+    gtk_widget_set_halign (widget, GTK_ALIGN_CENTER);
 
-    return gw_widget;
+    return widget;
 }
 /*----------------------------------------------------------------------------*/
 /**
@@ -1297,146 +1297,146 @@ static void
 activate (GtkApplication *app,
           DialogData     *dd_data)
 {
-    GtkWidget  *gw_window;          /* Application window */
-    GtkWidget  *gw_title_widget;    /* Top title widget */
-    GtkWidget  *gw_tview;           /* Wallpaper list TreeView */
-    GtkWidget  *gw_scroll;          /* Scrolled window for wallpaper list */
-    GtkWidget  *gw_buttons_widget;  /* Buttons widget */
-    GtkWidget  *gw_img_prev;        /* Wallpaper preview widget */
-    GtkWidget  *gw_box_prev;        /* Widget for wallpaper preview */
-    GtkWidget  *gw_box_list_btns;   /* Widget for list, buttons, preview */
-    GtkWidget  *gw_settings_widget; /* Settings for wallpaper changing */
-    GtkWidget  *gw_box_main;        /* Main box to pack everything */
-    GtkWidget  *gw_statusbar;       /* Bottom status bar */
-    Setting    *st_settings;        /* Program settings */
-    Setting    *st_wm      = nullptr;  /* Window manager info */
-    GdkPixbuf  *gd_pix     = nullptr;  /* Default widget icon */
-    char       *s_err      = nullptr;  /* For error output */
-    int         i_err      = 0;     /* For error output */
+    GtkWidget  *window;            /* Application window */
+    GtkWidget  *title_widget;      /* Top title widget */
+    GtkWidget  *tree_view;         /* Wallpaper list TreeView */
+    GtkWidget  *scroll;            /* Scrolled window for wallpaper list */
+    GtkWidget  *buttons_widget;    /* Buttons widget */
+    GtkWidget  *img_prev;          /* Wallpaper preview widget */
+    GtkWidget  *box_prev;          /* Widget for wallpaper preview */
+    GtkWidget  *box_list_btns;     /* Widget for list, buttons, preview */
+    GtkWidget  *settings_widget;   /* Settings for wallpaper changing */
+    GtkWidget  *box_main;          /* Main box to pack everything */
+    GtkWidget  *statusbar;         /* Bottom status bar */
+    Setting    *settings;          /* Program settings */
+    Setting    *wm      = nullptr; /* Window manager info */
+    GdkPixbuf  *pixbuf  = nullptr; /* Default widget icon */
+    char       *err_msg = nullptr; /* For error output */
+    int         err     = 0;       /* For error output */
 
     /* Find config file and set config file name */
     dialog_data_do_config_file_stuff (dd_data);
 
     /* Image preview widget */
-    gw_img_prev = gtk_image_new ();
-    dd_data->gw_imgprev = gw_img_prev;
+    img_prev = gtk_image_new ();
+    dd_data->gw_imgprev = img_prev;
 
     /* Main window */
-    gw_window = gtk_application_window_new (app);
-    gtk_window_set_title (GTK_WINDOW (gw_window), APP_NAME " v" APP_VER);
-    g_signal_connect (gw_window, "delete-event",
+    window = gtk_application_window_new (app);
+    gtk_window_set_title (GTK_WINDOW (window), APP_NAME " v" APP_VER);
+    g_signal_connect (window, "delete-event",
                       G_CALLBACK (event_on_delete), dd_data);
-    dd_data->gw_window = GTK_WINDOW (gw_window);
+    dd_data->gw_window = GTK_WINDOW (window);
 
     /* Create application directories */
-    if ((s_err = cfg_file_check_create_dirs ()) != nullptr) {
-        message_dialog_error (dd_data->gw_window, s_err);
-        free (s_err);
+    if ((err_msg = cfg_file_check_create_dirs ()) != nullptr) {
+        message_dialog_error (dd_data->gw_window, err_msg);
+        free (err_msg);
         g_application_quit (G_APPLICATION (app));
         return;
     }
     /* Default widget icon */
-    if ((gd_pix = get_icon (W_ICON_ABOUT)) != nullptr) {
-        gtk_window_set_default_icon (gd_pix);
-        g_object_unref (gd_pix);
+    if ((pixbuf = get_icon (W_ICON_ABOUT)) != nullptr) {
+        gtk_window_set_default_icon (pixbuf);
+        g_object_unref (pixbuf);
     }
     /* Treeview for background file list */
-    gw_tview = create_tview ();
-    dd_data->gw_view = gw_tview;
-    g_signal_connect (gw_tview, "row-activated",
-                      G_CALLBACK (event_img_list_activated), gw_img_prev);
-    g_signal_connect (G_OBJECT (gw_tview), "key-press-event",
+    tree_view = create_tview ();
+    dd_data->gw_view = tree_view;
+    g_signal_connect (tree_view, "row-activated",
+                      G_CALLBACK (event_img_list_activated), img_prev);
+    g_signal_connect (G_OBJECT (tree_view), "key-press-event",
                       G_CALLBACK (event_treeview_key_press), dd_data);
 
-    gw_title_widget    = create_title_widget ();
-    gw_buttons_widget  = create_buttons_widget (dd_data);
-    gw_settings_widget = create_settings_widget (dd_data);
-    gw_statusbar       = gtk_statusbar_new ();
-    dd_data->gw_statusbar = gw_statusbar;
+    title_widget    = create_title_widget ();
+    buttons_widget  = create_buttons_widget (dd_data);
+    settings_widget = create_settings_widget (dd_data);
+    statusbar       = gtk_statusbar_new ();
+    dd_data->gw_statusbar = statusbar;
 
-    preview_from_file (gw_img_prev, nullptr);
+    preview_from_file (img_prev, nullptr);
 
     /* Scrolled window for TreeView */
-    gw_scroll = gtk_scrolled_window_new (nullptr, nullptr);
-    gtk_container_add (GTK_CONTAINER (gw_scroll), gw_tview);
+    scroll = gtk_scrolled_window_new (nullptr, nullptr);
+    gtk_container_add (GTK_CONTAINER (scroll), tree_view);
 
     /* Box with wallpaper preview */
-    gw_box_prev = gtk_box_new (GTK_ORIENTATION_VERTICAL, 4);
-    gtk_box_pack_start (GTK_BOX (gw_box_prev),
-                        gw_img_prev,
+    box_prev = gtk_box_new (GTK_ORIENTATION_VERTICAL, 4);
+    gtk_box_pack_start (GTK_BOX (box_prev),
+                        img_prev,
                         FALSE, FALSE, 4);
-    gtk_box_pack_start (GTK_BOX (gw_box_prev),
+    gtk_box_pack_start (GTK_BOX (box_prev),
                         create_preview_label (),
                         FALSE, FALSE, 4);
-    gtk_box_pack_start (GTK_BOX (gw_box_prev),
+    gtk_box_pack_start (GTK_BOX (box_prev),
                         create_daemon_widget (dd_data),
                         FALSE, FALSE, 4);
 
     /* Pack file list, button box, separatr and wallpaper preview */
-    gw_box_list_btns = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 4);
-    gtk_box_pack_start (GTK_BOX (gw_box_list_btns),
-                        gw_scroll,
+    box_list_btns = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 4);
+    gtk_box_pack_start (GTK_BOX (box_list_btns),
+                        scroll,
                         TRUE, TRUE, 4);
-    gtk_box_pack_start (GTK_BOX (gw_box_list_btns),
-                        gw_buttons_widget,
+    gtk_box_pack_start (GTK_BOX (box_list_btns),
+                        buttons_widget,
                         FALSE, FALSE, 4);
-    gtk_box_pack_start (GTK_BOX (gw_box_list_btns),
+    gtk_box_pack_start (GTK_BOX (box_list_btns),
                         gtk_separator_new (GTK_ORIENTATION_VERTICAL),
                         FALSE, FALSE, 4);
-    gtk_box_pack_start (GTK_BOX (gw_box_list_btns),
-                        gw_box_prev,
+    gtk_box_pack_start (GTK_BOX (box_list_btns),
+                        box_prev,
                         FALSE, FALSE, 4);
 
     /* Pack in main box title and box with list, buttons and preview */
-    gw_box_main = gtk_box_new (GTK_ORIENTATION_VERTICAL, 4);
-    gtk_box_pack_start (GTK_BOX (gw_box_main),
-                        gw_title_widget,
+    box_main = gtk_box_new (GTK_ORIENTATION_VERTICAL, 4);
+    gtk_box_pack_start (GTK_BOX (box_main),
+                        title_widget,
                         FALSE, FALSE, 4);
-    gtk_box_pack_start (GTK_BOX (gw_box_main),
-                        gw_box_list_btns,
+    gtk_box_pack_start (GTK_BOX (box_main),
+                        box_list_btns,
                         TRUE, TRUE, 4);
 
     /* Pack in main box separator and settings */
-    gtk_box_pack_start (GTK_BOX (gw_box_main),
+    gtk_box_pack_start (GTK_BOX (box_main),
                         gtk_separator_new (GTK_ORIENTATION_HORIZONTAL),
                         FALSE, FALSE, 4);
-    gtk_box_pack_start (GTK_BOX (gw_box_main),
-                        gw_settings_widget,
+    gtk_box_pack_start (GTK_BOX (box_main),
+                        settings_widget,
                         FALSE, FALSE, 4);
 
-    gtk_box_pack_start (GTK_BOX (gw_box_main),
-                        gw_statusbar,
+    gtk_box_pack_start (GTK_BOX (box_main),
+                        statusbar,
                         FALSE, FALSE, 4);
 
     statusbar_push_config_info (dd_data);
 
-    gtk_container_set_border_width (GTK_CONTAINER (gw_box_main), 10);
-    gtk_container_add (GTK_CONTAINER (gw_window), gw_box_main);
+    gtk_container_set_border_width (GTK_CONTAINER (box_main), 10);
+    gtk_container_add (GTK_CONTAINER (window), box_main);
 
     /* Read program settings */
-    st_settings = setts_read (dialog_data_get_cfg_file (dd_data), &i_err);
+    settings = setts_read (dialog_data_get_cfg_file (dd_data), &err);
 
     /* Check window managers data config file for new wms and */
     /* get window manager data */
-    if ((i_err = wms_check_for_new_wms ()) == ERR_OK) {
-        st_wm = wms_get_wm_info (&i_err);
+    if ((err = wms_check_for_new_wms ()) == ERR_OK) {
+        wm = wms_get_wm_info (&err);
     }
-    if (i_err != ERR_OK) {
-        message_dialog_error (nullptr, err_get_message (i_err));
-        settings_free_all (st_settings);
-        settings_free_all (st_wm);
+    if (err != ERR_OK) {
+        message_dialog_error (nullptr, err_get_message (err));
+        settings_free_all (settings);
+        settings_free_all (wm);
         g_application_quit (G_APPLICATION (app));
         return;
     }
-    st_settings = setts_check_defaults (st_settings);
+    settings = setts_check_defaults (settings);
 
-    widgets_set_settings (dd_data, st_settings, st_wm, &i_err);
+    widgets_set_settings (dd_data, settings, wm, &err);
 
-    settings_free_all (st_wm);
-    settings_free_all (st_settings);
+    settings_free_all (wm);
+    settings_free_all (settings);
 
-    if (i_err != ERR_OK) {
-        message_dialog_error (nullptr, err_get_message (i_err));
+    if (err != ERR_OK) {
+        message_dialog_error (nullptr, err_get_message (err));
         g_application_quit (G_APPLICATION (app));
         return;
     }
@@ -1449,8 +1449,8 @@ activate (GtkApplication *app,
                                   dd_data,
                                   nullptr);
 
-    gtk_window_set_application (GTK_WINDOW (gw_window), GTK_APPLICATION (app));
-    gtk_widget_show_all (gw_window);
+    gtk_window_set_application (GTK_WINDOW (window), GTK_APPLICATION (app));
+    gtk_widget_show_all (window);
 }
 /*----------------------------------------------------------------------------*/
 /**
@@ -1471,10 +1471,10 @@ local_options ([[maybe_unused]] GApplication *application,
                GVariantDict *options,
                DialogData   *dd_data)
 {
-    char *s_val = nullptr;
+    char *str = nullptr;
 
-    if (g_variant_dict_lookup (options, "config", "s", &s_val)) {
-        dd_data->s_cfg_file = strdup (s_val);
+    if (g_variant_dict_lookup (options, "config", "s", &str)) {
+        dd_data->s_cfg_file = strdup (str);
     }
     return -1;
 }
