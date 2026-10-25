@@ -31,56 +31,56 @@
  *
  * @brief  Structure for storing wallpaper search query data.
  *
- * @var   CacheQuery::si_items
+ * @var   CacheQuery::items
  * @brief List of SearchItem items with image search data.
  *
- * @var   CacheQuery::s_file
+ * @var   CacheQuery::file
  * @brief Name of file with cached data
  *
- * @var   CacheQuery::s_date
+ * @var   CacheQuery::date
  * @brief Date of search query
  *
- * @var   CacheQuery::s_query
+ * @var   CacheQuery::query
  * @brief Query string
  *
- * @var   CacheQuery::s_search_opts
+ * @var   CacheQuery::search_opts
  * @brief String with search options
  *
- * @var   CacheQuery::i_sicnt
+ * @var   CacheQuery::count
  * @brief Number of SearchItem images
  *
- * @var   CacheQuery::i_page
+ * @var   CacheQuery::page
  * @brief Page number
  *
- * @var   CacheQuery::i_found_cnt
+ * @var   CacheQuery::found_cnt
  * @brief Number of found images
  */
 typedef struct
 CacheQuery {
-    SearchItem **si_items;
-    char        *s_file;
-    char        *s_date;
-    char        *s_query;
-    char        *s_search_opts;
-    int          i_sicnt;
-    int          i_page;
-    int          i_found_cnt;
+    SearchItem **items;
+    char        *file;
+    char        *date;
+    char        *query;
+    char        *search_opts;
+    int          count;
+    int          page;
+    int          found_cnt;
 } CacheQuery;
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Create new CacheQuery item.
  *
- * @param[in] s_service_name  Name of image service.
- * @param[in] s_query         Search query
- * @param[in] s_search_opts   Search options
- * @param[in] i_page          Page number
+ * @param[in] service_name  Name of image service.
+ * @param[in] query         Search query
+ * @param[in] search_opts   Search options
+ * @param[in] page          Page number
  * @return    New CacheQuery item, it should be freed using cache_query_free
  */
 [[nodiscard]]
-CacheQuery * cache_query_new               (const char *s_service_name,
-                                            const char *s_query,
-                                            const char *s_search_opts,
-                                            const int   i_page);
+CacheQuery * cache_query_new               (const char *service_name,
+                                            const char *query,
+                                            const char *search_opts,
+                                            const int   page);
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Free CacheQuery item.
@@ -94,29 +94,29 @@ void         cache_query_free              (CacheQuery *cq_query);
  * @brief  Append SearchItem item to list.
  *
  * @param[out] cq_query  CacheQuery item
- * @param[in]  si_item   SearchItem item to add
+ * @param[in]  item      SearchItem item to add
  * @return     none
  */
 void         cache_query_append_item       (CacheQuery *cq_query,
-                                            SearchItem *si_item);
+                                            SearchItem *item);
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Check if there is a cached data for query.
  *
- * @param[in]  s_service_name  Name of image service.
- * @param[in]  s_query         Search query
- * @param[in]  s_search_opts   Search options
- * @param[in]  i_page          Page number
- * @param[out] i_err           Error output
+ * @param[in]  service_name  Name of image service.
+ * @param[in]  query         Search query
+ * @param[in]  search_opts   Search options
+ * @param[in]  page          Page number
+ * @param[out] err           Error output
  * @return     CacheQuery item with search results or null if there is no cached
  *             data, it should be freed using cache_query_free
  */
 [[nodiscard]]
-CacheQuery * cache_query_check_query       (const char *s_service_name,
-                                            const char *s_query,
-                                            const char *s_search_opts,
-                                            const int   i_page,
-                                            int        *i_err);
+CacheQuery * cache_query_check_query       (const char *service_name,
+                                            const char *query,
+                                            const char *search_opts,
+                                            const int   page,
+                                            int        *err);
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Save cached search data to a service cache file.
@@ -127,15 +127,15 @@ CacheQuery * cache_query_check_query       (const char *s_service_name,
 int          cache_query_save              (CacheQuery *cq_query);
 /*----------------------------------------------------------------------------*/
 /**
- * @brief  Check cache query file for entries older that i_days and delete
+ * @brief  Check cache query file for entries older that days and delete
  *         them.
  *
- * @param[in]  s_service_name  Name of image service.
- * @param[in]  i_days          Entries older that this value will be removed
+ * @param[in]  service_name  Name of image service.
+ * @param[in]  days          Entries older that this value will be removed
  * @return     Process status
  */
-int          cache_query_delete_older_than (const char *s_service_name,
-                                            const int   i_days);
+int          cache_query_delete_older_than (const char *service_name,
+                                            const int   days);
 /*----------------------------------------------------------------------------*/
 #endif
 

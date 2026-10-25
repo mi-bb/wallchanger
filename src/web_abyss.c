@@ -285,7 +285,7 @@ wallpaperabyss_search (WebWidget      *ww_widget,
                     GTK_ICON_VIEW (ww_widget->gw_img_view))));
 
         wallpaperabyss_json_to_webwidget (ud_data->buffer, ww_widget, cq_query);
-        cq_query->i_found_cnt = ww_widget->i_found_cnt;
+        cq_query->found_cnt = ww_widget->i_found_cnt;
 
         i_err = cache_query_save (cq_query);
 

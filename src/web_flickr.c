@@ -382,7 +382,7 @@ flickr_search (WebWidget      *ww_widget,
                                     ww_widget->i_page);
 
         ww_widget->i_found_cnt = photos_list->total_count;
-        cq_query->i_found_cnt  = ww_widget->i_found_cnt;
+        cq_query->found_cnt  = ww_widget->i_found_cnt;
 
         for(i = 0; i < photos_list->photos_count; ++i) {
             item = flickrphoto_to_search_item (photos_list->photos[i]);

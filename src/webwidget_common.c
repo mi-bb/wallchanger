@@ -404,11 +404,11 @@ check_for_cached_query (WebWidget  *ww_widget,
         gtk_list_store_clear (GTK_LIST_STORE (gtk_icon_view_get_model (
                         GTK_ICON_VIEW (ww_widget->gw_img_view))));
 
-        ww_widget->i_found_cnt = cq_query_chk->i_found_cnt;
+        ww_widget->i_found_cnt = cq_query_chk->found_cnt;
 
-        for (i = 0; i < cq_query_chk->i_sicnt; ++i) {
+        for (i = 0; i < cq_query_chk->count; ++i) {
             add_search_item_to_img_view (ww_widget->gw_img_view,
-                                         cq_query_chk->si_items[i],
+                                         cq_query_chk->items[i],
                                          ww_widget->s_wallp_dir,
                                          s_service_name,
                                          ww_widget->i_thumb_quality);
