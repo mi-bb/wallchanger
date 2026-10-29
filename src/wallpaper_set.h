@@ -27,63 +27,63 @@
 #include "setting_item.h"
 /*----------------------------------------------------------------------------*/
 /**
- * @fn  int wallpaper_set_change (Setting    *st_settings,
- *                                RandMem    *rm_rand,
- *                                const char *s_cfg_file)
+ * @fn  int wallpaper_set_change (Setting    *settings,
+ *                                RandMem    *rand,
+ *                                const char *cfg_file)
  *
  * @brief  Wallpaper change during program work.
  *
- * @param[in,out] st_settings  Program settings
- * @param[in,out] rm_rand      Raddom memory structure
- * @param[in]     s_cfg_file   Config file path
+ * @param[in,out] settings  Program settings
+ * @param[in,out] rand       Raddom memory structure
+ * @param[in]     cfg_file   Config file path
  * @return        Wallpaper change status
  *
- * @fn  int wallpaper_set_startup_set (Setting    *st_settings,
- *                                     RandMem    *rm_rand,
- *                                     const char *s_cfg_file)
+ * @fn  int wallpaper_set_startup_set (Setting    *settings,
+ *                                     RandMem    *rand,
+ *                                     const char *cfg_file)
  *
  * @brief  Setting wallpaper image at program startup.
  *
- * @param[in,out] st_settings  Program settings
- * @param[in,out] rm_rand      Raddom memory structure
- * @param[in]     s_cfg_file   Config file path
+ * @param[in,out] settings  Program settings
+ * @param[in,out] rand       Raddom memory structure
+ * @param[in]     cfg_file   Config file path
  * @return        Wallpaper set status
  *
- * @fn  void wallpaper_test_set (const char *s_cmd,
- *                               const char *s_file)
+ * @fn  void wallpaper_test_set (const char *cmd,
+ *                               const char *file)
  *
  * @brief  Setting wallpaper with configuration dialog.
  *
- * @param[in]  s_cmd       Wallpaper set command
- * @param[in]  s_file      Wallpaper file path
+ * @param[in]  cmd    Wallpaper set command
+ * @param[in]  file   Wallpaper file path
  * @return     none
  *
- * @fn  int wallpaper_dialog_set (const char *s_cmd,
- *                                const char *s_file,
- *                                const char *s_cfg_file)
+ * @fn  int wallpaper_dialog_set (const char *cmd,
+ *                                const char *file,
+ *                                const char *cfg_file)
  *
  * @brief  Setting wallpaper with settings dialog.
  *
- * @param[in]  s_cmd       Wallpaper set command
- * @param[in]  s_file      Wallpaper file path
- * @param[in]  s_cfg_file  Config file path
+ * @param[in]  cmd       Wallpaper set command
+ * @param[in]  file      Wallpaper file path
+ * @param[in]  cfg_file  Config file path
  * @return     Wallpaper set status
  */
 /*----------------------------------------------------------------------------*/
-int  wallpaper_set_change      (Setting    *st_settings,
-                                RandMem    *rm_rand,
-                                const char *s_cfg_file);
+int  wallpaper_set_change      (Setting    *settings,
+                                RandMem    *rand,
+                                const char *cfg_file);
 
-int  wallpaper_set_startup_set (Setting    *st_settings,
-                                RandMem    *rm_rand,
-                                const char *s_cfg_file);
+int  wallpaper_set_startup_set (Setting    *settings,
+                                RandMem    *rand,
+                                const char *cfg_file);
 
-void wallpaper_test_set        (const char *s_cmd,
-                                const char *s_file);
+void wallpaper_test_set        (const char *cmd,
+                                const char *file);
 
-int  wallpaper_dialog_set      (const char *s_cmd,
-                                const char *s_file,
-                                const char *s_cfg_file)
+int  wallpaper_dialog_set      (const char *cmd,
+                                const char *file,
+                                const char *cfg_file)
                                 __attribute__ ((nonnull (1, 2, 3)));
 /*----------------------------------------------------------------------------*/
 #endif

@@ -68,125 +68,125 @@ enum gw_cmd_widgets {
 /**
  * @brief  Run Xfce wallpaper set command configuration dialog.
  *
- * @param[in] gw_parent  Window widget for setting dialog modal
+ * @param[in] parent  Window widget for setting dialog modal
  * @return    String with wallpaper set command or null. It should be
  *            freed after use using free.
  */
-static char * xfce_dialog_run (GtkWindow *gw_parent);
+static char * xfce_dialog_run (GtkWindow *parent);
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Set active combobox position based on wm's name.
  *
- * @param[in,out] gw_combo ComboBox item
- * @param[in]     s_name   Window manager's name
+ * @param[in,out] combo ComboBox item
+ * @param[in]     name  Window manager's name
  * @return        none
  */
 static void
-combo_set_active_by_wm_name (GtkWidget  *gw_combo,
-                             const char *s_name)
+combo_set_active_by_wm_name (GtkWidget  *combo,
+                             const char *name)
 {
-    GtkTreeModel *gtm_model;
+    GtkTreeModel *model;
     GtkTreeIter   iter;
-    int           i_res   = 0;    /* Getting iter result */
-    char         *s_cname = nullptr; /* For wm name from combobox */
+    int           res        = 0;       /* Getting iter result */
+    char         *combo_name = nullptr; /* For wm name from combobox */
 
-    gtm_model = gtk_combo_box_get_model (GTK_COMBO_BOX (gw_combo));
-    i_res     = gtk_tree_model_get_iter_first (gtm_model, &iter);
+    model = gtk_combo_box_get_model (GTK_COMBO_BOX (combo));
+    res   = gtk_tree_model_get_iter_first (model, &iter);
 
-    while (i_res) {
-        gtk_tree_model_get (gtm_model, &iter, WM_COLUMN_NAME, &s_cname, -1);
-        if (strcmp (s_name, s_cname) == 0) {
-            gtk_combo_box_set_active_iter (GTK_COMBO_BOX (gw_combo), &iter);
-            free (s_cname);
+    while (res) {
+        gtk_tree_model_get (model, &iter, WM_COLUMN_NAME, &combo_name, -1);
+        if (strcmp (name, combo_name) == 0) {
+            gtk_combo_box_set_active_iter (GTK_COMBO_BOX (combo), &iter);
+            free (combo_name);
             break;
         }
-        free (s_cname);
-        i_res = gtk_tree_model_iter_next (gtm_model, &iter);
+        free (combo_name);
+        res = gtk_tree_model_iter_next (model, &iter);
     }
 }
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Set text in window manager search label.
  *
- * @param[out] gw_label  Label to set text
- * @param[in]  s_txt     Text to set in label
+ * @param[out] label  Label to set text
+ * @param[in]  text   Text to set in label
  * @return     none
  */
 static void
-wm_label_set_text (GtkWidget  *gw_label,
-                   const char *s_txt)
+wm_label_set_text (GtkWidget  *label,
+                   const char *text)
 {
-    if (strcmp (s_txt, "Unknown") == 0) {
-        gtk_label_set_markup (GTK_LABEL (gw_label),
+    if (strcmp (text, "Unknown") == 0) {
+        gtk_label_set_markup (GTK_LABEL (label),
             "<span font_size=\"large\">Could not find the window manager that "
             "is currently in use.</span>");
     }
     else {
-        char *s_markup = g_markup_printf_escaped (
+        char *markup = g_markup_printf_escaped (
             "<span foreground=\"#0099e6\" font_size=\"large\">Found window "
             "maganer: <span weight=\"bold\">%s</span></span>",
-            s_txt);
-        gtk_label_set_markup (GTK_LABEL (gw_label), s_markup);
-        free (s_markup);
+            text);
+        gtk_label_set_markup (GTK_LABEL (label), markup);
+        free (markup);
     }
 }
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Set text in TextView.
  *
- * @param[in,out] gw_tview  TextView widget
- * @param[in]     s_txt     text to set
+ * @param[in,out] textview  TextView widget
+ * @param[in]     text      text to set
  * @return        none
  */
 static void
-textview_set_text (GtkWidget  *gw_tview,
-                   const char *s_txt)
+textview_set_text (GtkWidget  *textview,
+                   const char *text)
 {
-    GtkTextBuffer *buffer = gtk_text_view_get_buffer (GTK_TEXT_VIEW (gw_tview));
-    gtk_text_buffer_set_text (buffer, s_txt, -1);
+    GtkTextBuffer *buffer = gtk_text_view_get_buffer (GTK_TEXT_VIEW (textview));
+    gtk_text_buffer_set_text (buffer, text, -1);
 }
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Get text from TextView.
  *
- * @param[in,out] gw_tview  TextView widget
+ * @param[in,out] textview  TextView widget
  * @return        String with text, it should be freed using free after use
  */
 static char *
-textview_get_text (GtkWidget *gw_tview)
+textview_get_text (GtkWidget *textview)
 {
-    char          *s_txt = nullptr; /* String to return */
-    GtkTextBuffer *buffer;       /* TextBuffer */
-    GtkTextIter    it_start;     /* Start of text */
-    GtkTextIter    it_end;       /* End of text */
+    char          *text = nullptr; /* String to return */
+    GtkTextBuffer *buffer;         /* TextBuffer */
+    GtkTextIter    start;          /* Start of text */
+    GtkTextIter    end;            /* End of text */
 
-    buffer = gtk_text_view_get_buffer (GTK_TEXT_VIEW (gw_tview));
-    gtk_text_buffer_get_start_iter (buffer, &it_start);
-    gtk_text_buffer_get_end_iter (buffer, &it_end);
-    s_txt = gtk_text_buffer_get_text (buffer, &it_start, &it_end, FALSE);
-    newline_to_space (s_txt);
+    buffer = gtk_text_view_get_buffer (GTK_TEXT_VIEW (textview));
+    gtk_text_buffer_get_start_iter (buffer, &start);
+    gtk_text_buffer_get_end_iter (buffer, &end);
+    text = gtk_text_buffer_get_text (buffer, &start, &end, FALSE);
+    newline_to_space (text);
 
-    return s_txt;
+    return text;
 }
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Creates ComboBox with window managers.
  *
- * @param[in] st_wmlist  List with window manager info.
+ * @param[in] wm_list  List with window manager info.
  * @return    ComboBox widget
  */
 static GtkWidget *
-wm_combo (Setting *st_wmlist)
+wm_combo (Setting *wm_list)
 {
-    GtkWidget       *gw_combo;       /* Result ComboBox */
-    GtkCellRenderer *cell;           /* CellRenderer */
-    GtkListStore    *list_store;     /* ListStore for window manager data */
-    GtkTreeIter      iter;           /* TreeIter */
-    Setting         *st_wm   = nullptr; /* Window manager info list */
-    Setting         *st_cmd  = nullptr; /* For wallpaper set command */
-    Setting         *st_unkn = nullptr; /* For setting with unknown wm */
-    const char      *s_name  = nullptr; /* For window manager name string */
-    const char      *s_cmd   = nullptr; /* For wallpaper set command string */
+    GtkWidget       *combo;           /* Result ComboBox */
+    GtkCellRenderer *cell;            /* CellRenderer */
+    GtkListStore    *list_store;      /* ListStore for window manager data */
+    GtkTreeIter      iter;            /* TreeIter */
+    Setting         *wm           = nullptr; /* Window manager info list */
+    Setting         *cmd_setting  = nullptr; /* For wallpaper set command */
+    Setting         *unknown      = nullptr; /* For setting with unknown wm */
+    const char      *name         = nullptr; /* For window manager name string */
+    const char      *cmd          = nullptr; /* For wallp set command string */
 
     list_store = gtk_list_store_new (WM_COLUMN_COUNT,
                                      G_TYPE_STRING,
@@ -194,24 +194,24 @@ wm_combo (Setting *st_wmlist)
 
     gtk_tree_sortable_set_sort_column_id (GTK_TREE_SORTABLE (list_store),
                                           WM_COLUMN_NAME, GTK_SORT_ASCENDING);
-    st_wm = st_wmlist;
+    wm = wm_list;
 
-    while (st_wm != nullptr) {
-        s_name = setting_get_name (st_wm);
-        if (strcmp (s_name, "Unknown") == 0) {
-            st_unkn = st_wm;
-            st_wm = st_wm->next;
+    while (wm != nullptr) {
+        name = setting_get_name (wm);
+        if (strcmp (name, "Unknown") == 0) {
+            unknown = wm;
+            wm = wm->next;
             continue;
         }
-        if ((st_cmd = setting_find_child (st_wm, "Command")) != nullptr)
-            s_cmd = setting_get_string (st_cmd);
+        if ((cmd_setting = setting_find_child (wm, "Command")) != nullptr)
+            cmd = setting_get_string (cmd_setting);
 
         gtk_list_store_append (list_store, &iter);
         gtk_list_store_set (list_store, &iter,
-                            WM_COLUMN_NAME,    s_name,
-                            WM_COLUMN_COMMAND, s_cmd,
+                            WM_COLUMN_NAME,    name,
+                            WM_COLUMN_COMMAND, cmd,
                             -1);
-        st_wm = st_wm->next;
+        wm = wm->next;
     }
 
     gtk_tree_sortable_set_sort_column_id (
@@ -219,108 +219,108 @@ wm_combo (Setting *st_wmlist)
             GTK_TREE_SORTABLE_UNSORTED_SORT_COLUMN_ID,
             GTK_SORT_ASCENDING);
 
-    s_name = setting_get_name (st_unkn);
-    if ((st_cmd = setting_find_child (st_unkn, "Command")) != nullptr)
-        s_cmd = setting_get_string (st_cmd);
+    name = setting_get_name (unknown);
+    if ((cmd_setting = setting_find_child (unknown, "Command")) != nullptr)
+        cmd = setting_get_string (cmd_setting);
     gtk_list_store_prepend (list_store, &iter);
     gtk_list_store_set (list_store, &iter,
-                                WM_COLUMN_NAME,    s_name,
-                                WM_COLUMN_COMMAND, s_cmd,
-                                -1);
+                        WM_COLUMN_NAME,    name,
+                        WM_COLUMN_COMMAND, cmd,
+                        -1);
 
-    gw_combo = gtk_combo_box_new_with_model (GTK_TREE_MODEL (list_store));
+    combo = gtk_combo_box_new_with_model (GTK_TREE_MODEL (list_store));
 
     g_object_unref (G_OBJECT (list_store));
 
     cell = gtk_cell_renderer_text_new ();
 
-    gtk_cell_layout_pack_start (GTK_CELL_LAYOUT (gw_combo), cell, TRUE);
-    gtk_cell_layout_add_attribute (GTK_CELL_LAYOUT (gw_combo),
+    gtk_cell_layout_pack_start (GTK_CELL_LAYOUT (combo), cell, TRUE);
+    gtk_cell_layout_add_attribute (GTK_CELL_LAYOUT (combo),
                                    cell, "text", WM_COLUMN_NAME);
-    return gw_combo;
+    return combo;
 }
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Creates ComboBox with wallpaper list.
  *
- * @param[in]  gsl_iinfo List with wallpaper ImageInfo items.
+ * @param[in]  images  List with wallpaper ImageInfo items.
  * @return     ComboBox widget
  */
 static GtkWidget *
-preview_combo (const GSList *gsl_iinfo)
+preview_combo (const GSList *images)
 {
-    GtkWidget       *gw_combo;      /* Result ComboBox */
-    GtkCellRenderer *cell;          /* CellRenderer */
-    GtkListStore    *list_store;    /* ListStore for wallpaper data */
-    ImageInfo       *ii_info;       /* ImageInfo for gsl_iinfo data */
-    GtkTreeIter      iter;          /* TreeIter */
-    int              i_cnt = 0;     /* For wallpaper counting */
-    char s_prev [PREV_LEN * 4 + 4]; /* Buffer for file name length checking */
+    GtkWidget       *combo;       /* Result ComboBox */
+    GtkCellRenderer *cell;        /* CellRenderer */
+    GtkListStore    *list_store;  /* ListStore for wallpaper data */
+    ImageInfo       *ii_info;     /* ImageInfo for images data */
+    GtkTreeIter      iter;        /* TreeIter */
+    int              cnt = 0;     /* For wallpaper counting */
+    char name [PREV_LEN * 4 + 4]; /* Buffer for file name length checking */
 
     list_store = gtk_list_store_new (PREV_COLUMN_COUNT,
                                      G_TYPE_STRING,
                                      G_TYPE_STRING);
-    while (gsl_iinfo != nullptr && i_cnt++ < 10) {
+    while (images != nullptr && cnt++ < 10) {
 
-        ii_info = (ImageInfo *) gsl_iinfo->data;
+        ii_info = (ImageInfo *) images->data;
         /* Check file name length and shrink to PREV_LEN if it is longer
          * so ComboBox will not be so wide with longer names */
         if (g_utf8_strlen (ii_info->s_file_name, -1) > PREV_LEN) {
-            g_utf8_strncpy (s_prev, ii_info->s_file_name, PREV_LEN);
-            strcat (s_prev, "...");
+            g_utf8_strncpy (name, ii_info->s_file_name, PREV_LEN);
+            strcat (name, "...");
         }
         else {
-            strcpy (s_prev, ii_info->s_file_name);
+            strcpy (name, ii_info->s_file_name);
         }
         gtk_list_store_append (list_store, &iter);
         gtk_list_store_set (list_store, &iter,
-                                PREV_NAME_SHOW, s_prev,
-                                PREV_NAME_FULL, ii_info->s_file_path,
-                                -1);
-        gsl_iinfo = gsl_iinfo->next;
+                            PREV_NAME_SHOW, name,
+                            PREV_NAME_FULL, ii_info->s_file_path,
+                            -1);
+        images = images->next;
     }
-    gw_combo = gtk_combo_box_new_with_model (GTK_TREE_MODEL (list_store));
+    combo = gtk_combo_box_new_with_model (GTK_TREE_MODEL (list_store));
 
     g_object_unref (G_OBJECT (list_store));
 
     cell = gtk_cell_renderer_text_new ();
 
-    gtk_cell_layout_pack_start (GTK_CELL_LAYOUT (gw_combo), cell, TRUE);
-    gtk_cell_layout_add_attribute (GTK_CELL_LAYOUT (gw_combo),
+    gtk_cell_layout_pack_start (GTK_CELL_LAYOUT (combo), cell, TRUE);
+    gtk_cell_layout_add_attribute (GTK_CELL_LAYOUT (combo),
                                    cell, "text", PREV_NAME_SHOW);
 
     if (gtk_tree_model_get_iter_first (GTK_TREE_MODEL (list_store), &iter))
-        gtk_combo_box_set_active_iter (GTK_COMBO_BOX (gw_combo), &iter);
+        gtk_combo_box_set_active_iter (GTK_COMBO_BOX (combo), &iter);
 
-    return gw_combo;
+    return combo;
 }
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Clicked button to get wm's default saved wallpaper set command.
  *
- * @param[in] gw_array  Array with combo and entry widgets
+ * @param[in] widgets  Array with combo and entry widgets
  * @return    none
  */
 static void
-event_get_saved_button_clicked (GtkWidget **gw_array)
+event_get_saved_button_clicked (GtkWidget **widgets)
 {
-    GtkTreeModel *model;        /* TreeModel */
-    GtkTreeIter   iter;         /* TreeIter */
-    char         *s_cmd = nullptr; /* Wallpaper set command */
+    GtkTreeModel *model;         /* TreeModel */
+    GtkTreeIter   iter;          /* TreeIter */
+    char         *cmd = nullptr; /* Wallpaper set command */
 
     if (gtk_combo_box_get_active_iter (
-                GTK_COMBO_BOX (gw_array[GW_CMD_WM_COMBO]), &iter)) {
+                GTK_COMBO_BOX (widgets[GW_CMD_WM_COMBO]), &iter)) {
 
         model = gtk_combo_box_get_model (
-                GTK_COMBO_BOX (gw_array[GW_CMD_WM_COMBO]));
-        gtk_tree_model_get (model, &iter, WM_COLUMN_COMMAND, &s_cmd, -1);
+                GTK_COMBO_BOX (widgets[GW_CMD_WM_COMBO]));
+        gtk_tree_model_get (model, &iter, WM_COLUMN_COMMAND, &cmd, -1);
 
-        if (s_cmd != nullptr) {
-            textview_set_text (gw_array[GW_CMD_TREEVIEW], s_cmd);
-            free (s_cmd);
+        if (cmd != nullptr) {
+            textview_set_text (widgets[GW_CMD_TREEVIEW], cmd);
+            free (cmd);
         }
         else {
-            textview_set_text (gw_array[GW_CMD_TREEVIEW], "");
+            textview_set_text (widgets[GW_CMD_TREEVIEW], "");
         }
     }
 }
@@ -328,121 +328,121 @@ event_get_saved_button_clicked (GtkWidget **gw_array)
 /**
  * @brief  Clicked button to get wm's application default wallpaper set command.
  *
- * @param[in] gw_array  Array with combo and entry widgets
+ * @param[in] widgets  Array with combo and entry widgets
  * @return    none
  */
 static void
-event_get_default_button_clicked (GtkWidget **gw_array)
+event_get_default_button_clicked (GtkWidget **widgets)
 {
-    GtkTreeModel *model;              /* TreeModel */
-    GtkTreeIter   iter;               /* TreeIter */
-    char         *s_name      = nullptr; /* Window manager name */
-    char         *s_cmd       = nullptr; /* Wallpaper set command */
-    Setting      *st_settings = nullptr; /* For window manager setting list */
-    Setting      *st_item     = nullptr; /* For checking wm name and command */
-    int           i_err       = 0;    /* Error output */
+    GtkTreeModel *model;               /* TreeModel */
+    GtkTreeIter   iter;                /* TreeIter */
+    char         *name      = nullptr; /* Window manager name */
+    char         *cmd       = nullptr; /* Wallpaper set command */
+    Setting      *settings  = nullptr; /* For window manager setting list */
+    Setting      *item      = nullptr; /* For checking wm name and command */
+    int           err       = 0;       /* Error output */
 
     if (gtk_combo_box_get_active_iter (
-                GTK_COMBO_BOX (gw_array[GW_CMD_WM_COMBO]), &iter)) {
+                GTK_COMBO_BOX (widgets[GW_CMD_WM_COMBO]), &iter)) {
 
         /* Load settings from deffiles template */
-        st_settings = wms_get_wm_info_data (&i_err);
-        if (i_err != ERR_OK) {
-            message_dialog_error (GTK_WINDOW (gw_array[GW_CMD_DIALOG]),
-                                  err_get_message (i_err));
+        settings = wms_get_wm_info_data (&err);
+        if (err != ERR_OK) {
+            message_dialog_error (GTK_WINDOW (widgets[GW_CMD_DIALOG]),
+                                  err_get_message (err));
             return;
         }
         model = gtk_combo_box_get_model (
-                GTK_COMBO_BOX (gw_array[GW_CMD_WM_COMBO]));
-        gtk_tree_model_get (model, &iter, WM_COLUMN_NAME, &s_name, -1);
+                GTK_COMBO_BOX (widgets[GW_CMD_WM_COMBO]));
+        gtk_tree_model_get (model, &iter, WM_COLUMN_NAME, &name, -1);
 
         /* If wm is Xfce select display for command */
-        if (strcmp (s_name, "Xfce") == 0) {
-            s_cmd = xfce_dialog_run (GTK_WINDOW (gw_array[GW_CMD_DIALOG]));
+        if (strcmp (name, "Xfce") == 0) {
+            cmd = xfce_dialog_run (GTK_WINDOW (widgets[GW_CMD_DIALOG]));
         }
         /* Find selected wm in default info data */
-        else if ((st_item = setting_find_child (st_settings, s_name)) != nullptr) {
-            if ((st_item = setting_find_child (st_item, "Command")) != nullptr) {
-                s_cmd = strdup (setting_get_string (st_item));
+        else if ((item = setting_find_child (settings, name)) != nullptr) {
+            if ((item = setting_find_child (item, "Command")) != nullptr) {
+                cmd = strdup (setting_get_string (item));
             }
         }
         /* Set command if it is OK */
-        if (s_cmd != nullptr) {
-            textview_set_text (gw_array[GW_CMD_TREEVIEW], s_cmd);
-            free (s_cmd);
+        if (cmd != nullptr) {
+            textview_set_text (widgets[GW_CMD_TREEVIEW], cmd);
+            free (cmd);
         }
-        free (s_name);
-        settings_free_all (st_settings);
+        free (name);
+        settings_free_all (settings);
     }
 }
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Clicked button to save wallpaper set command for selected wm.
  *
- * @param[in] gw_array  Array with combo and entry widgets
+ * @param[in] widgets  Array with combo and entry widgets
  * @return    none
  */
 static void
-event_save_command_button_clicked (GtkWidget **gw_array)
+event_save_command_button_clicked (GtkWidget **widgets)
 {
-    GtkTreeModel *model;            /* TreeModel */
-    GtkTreeIter   iter;             /* TreeIter */
-    char         *s_name    = nullptr; /* Window manager name */
-    char         *s_command = nullptr; /* String for wallpaper command */
-    int           i_err     = 0;    /* Error output */
+    GtkTreeModel *model;              /* TreeModel */
+    GtkTreeIter   iter;               /* TreeIter */
+    char         *name     = nullptr; /* Window manager name */
+    char         *command  = nullptr; /* String for wallpaper command */
+    int           err      = 0;       /* Error output */
 
     if (gtk_combo_box_get_active_iter (
-                GTK_COMBO_BOX (gw_array[GW_CMD_WM_COMBO]), &iter)) {
+                GTK_COMBO_BOX (widgets[GW_CMD_WM_COMBO]), &iter)) {
 
         model = gtk_combo_box_get_model (
-                GTK_COMBO_BOX (gw_array[GW_CMD_WM_COMBO]));
-        gtk_tree_model_get (model, &iter, WM_COLUMN_NAME, &s_name, -1);
+                GTK_COMBO_BOX (widgets[GW_CMD_WM_COMBO]));
+        gtk_tree_model_get (model, &iter, WM_COLUMN_NAME, &name, -1);
 
-        s_command = textview_get_text (gw_array[GW_CMD_TREEVIEW]);
+        command = textview_get_text (widgets[GW_CMD_TREEVIEW]);
 
-        if ((i_err = wms_update_wm_command (s_name, s_command)) == ERR_OK) {
+        if ((err = wms_update_wm_command (name, command)) == ERR_OK) {
             gtk_list_store_set (GTK_LIST_STORE (model), &iter,
-                                WM_COLUMN_COMMAND, s_command,
+                                WM_COLUMN_COMMAND, command,
                                 -1);
         }
         else {
             /* err (EXIT_FAILURE, NULL); */
-            message_dialog_error (GTK_WINDOW (gw_array[GW_CMD_DIALOG]),
-                                  err_get_message (i_err));
+            message_dialog_error (GTK_WINDOW (widgets[GW_CMD_DIALOG]),
+                                  err_get_message (err));
         }
-        free (s_name);
-        free (s_command);
+        free (name);
+        free (command);
     }
 }
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Clicked button to test wallpaper set command.
  *
- * @param[in] gw_array  Array with combo and entry widgets
+ * @param[in] widgets  Array with combo and entry widgets
  * @return    none
  */
 static void
-event_test_button_clicked (GtkWidget **gw_array)
+event_test_button_clicked (GtkWidget **widgets)
 {
-    GtkTreeModel *model;            /* TreeModel */
-    GtkTreeIter   iter;             /* TreeIter */
-    char         *s_file    = nullptr; /* String for wallpaper file */
-    char         *s_command = nullptr; /* String for wallpaper command */
+    GtkTreeModel *model;              /* TreeModel */
+    GtkTreeIter   iter;               /* TreeIter */
+    char         *file     = nullptr; /* String for wallpaper file */
+    char         *command  = nullptr; /* String for wallpaper command */
 
     if (gtk_combo_box_get_active_iter (
-                GTK_COMBO_BOX (gw_array[GW_CMD_PREV_COMBO]), &iter)) {
+                GTK_COMBO_BOX (widgets[GW_CMD_PREV_COMBO]), &iter)) {
 
         model = gtk_combo_box_get_model (
-                GTK_COMBO_BOX (gw_array[GW_CMD_PREV_COMBO]));
-        gtk_tree_model_get (model, &iter, PREV_NAME_FULL, &s_file, -1 );
+                GTK_COMBO_BOX (widgets[GW_CMD_PREV_COMBO]));
+        gtk_tree_model_get (model, &iter, PREV_NAME_FULL, &file, -1 );
     }
-    s_command = textview_get_text (gw_array[GW_CMD_TREEVIEW]);
+    command = textview_get_text (widgets[GW_CMD_TREEVIEW]);
 
-    if (s_command != nullptr && s_file != nullptr) {
-        wallpaper_test_set (s_command, s_file);
+    if (command != nullptr && file != nullptr) {
+        wallpaper_test_set (command, file);
     }
-    free (s_command);
-    free (s_file);
+    free (command);
+    free (file);
 }
 /*----------------------------------------------------------------------------*/
 /**
@@ -453,50 +453,50 @@ event_test_button_clicked (GtkWidget **gw_array)
 static GtkWidget *
 create_command_textview (void)
 {
-    GtkWidget   *gw_widget = gtk_text_view_new ();
-    GtkTextView *gtv_view  = GTK_TEXT_VIEW (gw_widget);
+    GtkWidget   *widget = gtk_text_view_new ();
+    GtkTextView *view   = GTK_TEXT_VIEW (widget);
 
     /* Settings for command treeview */
-    gtk_text_view_set_wrap_mode      (gtv_view, GTK_WRAP_WORD);
-    gtk_text_view_set_editable       (gtv_view, TRUE);
-    gtk_text_view_set_cursor_visible (gtv_view, TRUE);
-    gtk_text_view_set_accepts_tab    (gtv_view, FALSE);
-    gtk_text_view_set_monospace      (gtv_view, TRUE);
-    gtk_text_view_set_border_window_size (gtv_view, GTK_TEXT_WINDOW_LEFT,   8);
-    gtk_text_view_set_border_window_size (gtv_view, GTK_TEXT_WINDOW_RIGHT,  8);
-    gtk_text_view_set_border_window_size (gtv_view, GTK_TEXT_WINDOW_TOP,    8);
-    gtk_text_view_set_border_window_size (gtv_view, GTK_TEXT_WINDOW_BOTTOM, 8);
+    gtk_text_view_set_wrap_mode      (view, GTK_WRAP_WORD);
+    gtk_text_view_set_editable       (view, TRUE);
+    gtk_text_view_set_cursor_visible (view, TRUE);
+    gtk_text_view_set_accepts_tab    (view, FALSE);
+    gtk_text_view_set_monospace      (view, TRUE);
+    gtk_text_view_set_border_window_size (view, GTK_TEXT_WINDOW_LEFT,   8);
+    gtk_text_view_set_border_window_size (view, GTK_TEXT_WINDOW_RIGHT,  8);
+    gtk_text_view_set_border_window_size (view, GTK_TEXT_WINDOW_TOP,    8);
+    gtk_text_view_set_border_window_size (view, GTK_TEXT_WINDOW_BOTTOM, 8);
 
-    return gw_widget;
+    return widget;
 }
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Run Xfce wallpaper set command configuration dialog.
  *
- * @param[in] gw_parent  Window widget for setting dialog modal
+ * @param[in] parent  Window widget for setting dialog modal
  * @return    String with wallpaper set command or null. It should be
  *            freed after use using free.
  */
 static char *
-xfce_dialog_run (GtkWindow *gw_parent)
+xfce_dialog_run (GtkWindow *parent)
 {
-    GtkWidget   *gw_dialog;              /* Xfce command dialog */
-    GtkWidget   *gw_tlabel;              /* Title label */
-    GtkWidget   *gw_content_box;         /* Dialog's box */
-    GtkWidget   *gw_radiobtn     = nullptr; /* Radiobutton */
-    GtkToggleButton *gtb_btn     = nullptr; /* ToggleButton */
-    GSList      *gs_list         = nullptr; /* List for buttons */
-    char        *s_res           = nullptr; /* Result command string */
-    int          i_res           = 0;    /* Dialog result */
-    char       **s_displays      = nullptr; /* Null term. list of xfce displays */
-    char       **s_it            = nullptr; /* For display list iteration */
-    const char  *s_disp          = nullptr; /* Selected display string */
+    GtkWidget       *dialog;      /* Xfce command dialog */
+    GtkWidget       *title_label; /* Title label */
+    GtkWidget       *content_box; /* Dialog's box */
+    GtkWidget       *radio_button = nullptr; /* Radiobutton */
+    GtkToggleButton *button       = nullptr; /* ToggleButton */
+    GSList          *group        = nullptr; /* List for buttons */
+    char            *command      = nullptr; /* Result command string */
+    int              res          = 0;       /* Dialog result */
+    char           **displays     = nullptr; /* Null term. list of xfce displays */
+    char           **it           = nullptr; /* For display list iteration */
+    const char      *display      = nullptr; /* Selected display string */
 
     GtkDialogFlags flags = GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT;
 
-    gw_dialog = gtk_dialog_new_with_buttons (
+    dialog = gtk_dialog_new_with_buttons (
                                       "Xfce wallpaper set command configuration",
-                                      gw_parent,
+                                      parent,
                                       flags,
                                       "_OK",
                                       GTK_RESPONSE_ACCEPT,
@@ -504,90 +504,90 @@ xfce_dialog_run (GtkWindow *gw_parent)
                                       GTK_RESPONSE_REJECT,
                                       nullptr);
 
-    gw_content_box = gtk_dialog_get_content_area (GTK_DIALOG (gw_dialog));
-    gtk_container_set_border_width (GTK_CONTAINER (gw_content_box), 8);
+    content_box = gtk_dialog_get_content_area (GTK_DIALOG (dialog));
+    gtk_container_set_border_width (GTK_CONTAINER (content_box), 8);
 
-    s_displays = wms_get_xfce_display_list ();
-    gw_tlabel  = *s_displays == nullptr ?
-                 gtk_label_new ("Could not find Xfce screens") :
-                 gtk_label_new ("Select display to set wallpaper:");
+    displays   = wms_get_xfce_display_list ();
+    title_label = *displays == nullptr ?
+                  gtk_label_new ("Could not find Xfce screens") :
+                  gtk_label_new ("Select display to set wallpaper:");
 
-    gtk_box_pack_start (GTK_BOX (gw_content_box),
-                        gw_tlabel,
+    gtk_box_pack_start (GTK_BOX (content_box),
+                        title_label,
                         FALSE, FALSE, 4);
 
-    for (s_it = s_displays; *s_it != nullptr; ++s_it) {
-        gw_radiobtn = gtk_radio_button_new_with_label_from_widget (
-                GTK_RADIO_BUTTON (gw_radiobtn), *s_it);
-        gtk_widget_set_name (gw_radiobtn, *s_it);
+    for (it = displays; *it != nullptr; ++it) {
+        radio_button = gtk_radio_button_new_with_label_from_widget (
+                GTK_RADIO_BUTTON (radio_button), *it);
+        gtk_widget_set_name (radio_button, *it);
 
-        gtk_box_pack_start (GTK_BOX (gw_content_box), gw_radiobtn,
+        gtk_box_pack_start (GTK_BOX (content_box), radio_button,
                         FALSE, FALSE, 4);
     }
-    wms_free_xfce_display_list (s_displays);
+    wms_free_xfce_display_list (displays);
 
-    gtk_widget_show_all (gw_content_box);
+    gtk_widget_show_all (content_box);
 
-    i_res = gtk_dialog_run (GTK_DIALOG (gw_dialog));
+    res = gtk_dialog_run (GTK_DIALOG (dialog));
 
-    if (i_res == GTK_RESPONSE_ACCEPT && gw_radiobtn != nullptr) {
-        gs_list = gtk_radio_button_get_group (GTK_RADIO_BUTTON (gw_radiobtn));
-        while (gs_list != nullptr) {
-            gtb_btn = gs_list->data;
-            if (gtk_toggle_button_get_active (gtb_btn)) {
-                s_disp = gtk_widget_get_name (GTK_WIDGET (gtb_btn));
+    if (res == GTK_RESPONSE_ACCEPT && radio_button != nullptr) {
+        group = gtk_radio_button_get_group (GTK_RADIO_BUTTON (radio_button));
+        while (group != nullptr) {
+            button = group->data;
+            if (gtk_toggle_button_get_active (button)) {
+                display = gtk_widget_get_name (GTK_WIDGET (button));
                 break;
             }
-            gs_list = gs_list->next;
+            group = group->next;
         }
     }
-    if (s_disp != nullptr) {
-        s_res = wms_get_xfce_command (s_disp);
+    if (display != nullptr) {
+        command = wms_get_xfce_command (display);
     }
-    gtk_widget_destroy (gw_dialog);
+    gtk_widget_destroy (dialog);
 
-    return s_res;
+    return command;
 }
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Run wallpaper set command configuration dialog.
  */
 char *
-wp_set_command_dialog_run (GtkWindow    *gw_parent,
-                           const char   *s_current_cmd,
-                           const GSList *gsl_iinfo)
+wp_set_command_dialog_run (GtkWindow    *parent,
+                           const char   *current_cmd,
+                           const GSList *images)
 {
-    GtkWidget *gw_dialog;         /* Wallpaper set command dialog */
-    GtkWidget *gw_content_box;    /* Dialog's box */
-    GtkWidget *gw_wm_label;       /* Finding window manager label */
-    GtkWidget *gw_combo_label;    /* Label for window manager combo */
-    GtkWidget *gw_wm_combo;       /* ComboBox with window managers */
-    GtkWidget *gw_get_sav_btn;    /* Button for getting saved app wall cmd */
-    GtkWidget *gw_get_def_btn;    /* Button for getting app default wall cmd */
-    GtkWidget *gw_save_def_btn;   /* Button for saving default wall cmd */
-    GtkWidget *gw_wm_box;         /* Box for window manager combo and button */
-    GtkWidget *gw_tview;          /* Wallpaper set command textview */
-    GtkWidget *gw_preview_combo;  /* ComboBox with wallpapers */
-    GtkWidget *gw_test_btn;       /* Button for testing wallpaper command */
-    GtkWidget *gw_test_box;       /* Box for test button and wallpaper list */
-    GtkWidget *gw_array[GW_CMD_CNT]; /* Array with widgets for clicked events */
-    const Setting *st_crwm = nullptr;/* Current window manager info */
-    Setting   *st_wms   = nullptr;   /* Window manager info list */
-    char      *s_result = nullptr;   /* Result string with wall set command */
-    int        i_res    = 0;      /* Config dialog result */
-    int        i_err    = ERR_OK; /* Error output */
+    GtkWidget *dialog;              /* Wallpaper set command dialog */
+    GtkWidget *content_box;         /* Dialog's box */
+    GtkWidget *wm_label;            /* Finding window manager label */
+    GtkWidget *combo_label;         /* Label for window manager combo */
+    GtkWidget *wm_combo_box;        /* ComboBox with window managers */
+    GtkWidget *get_saved_btn;       /* Button for getting saved app wall cmd */
+    GtkWidget *get_default_btn;     /* Button for getting app default wall cmd */
+    GtkWidget *save_btn;            /* Button for saving default wall cmd */
+    GtkWidget *wm_box;              /* Box for window manager combo and button */
+    GtkWidget *textview;            /* Wallpaper set command textview */
+    GtkWidget *wallpaper_combo;     /* ComboBox with wallpapers */
+    GtkWidget *test_btn;            /* Button for testing wallpaper command */
+    GtkWidget *test_box;            /* Box for test button and wallpaper list */
+    GtkWidget *widgets[GW_CMD_CNT]; /* Array with widgets for clicked events */
+    const Setting *current_wm = nullptr; /* Current window manager info */
+    Setting   *wms     = nullptr;   /* Window manager info list */
+    char      *result  = nullptr;   /* Result string with wall set command */
+    int        res     = 0;         /* Config dialog result */
+    int        err     = ERR_OK;    /* Error output */
 
     GtkDialogFlags flags = GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT;
 
-    st_wms = wms_get_wm_info (&i_err);
+    wms = wms_get_wm_info (&err);
 
-    if (i_err != ERR_OK) {
-        message_dialog_error (gw_parent, err_get_message (i_err));
+    if (err != ERR_OK) {
+        message_dialog_error (parent, err_get_message (err));
         return nullptr;
     }
-    gw_dialog = gtk_dialog_new_with_buttons (
+    dialog = gtk_dialog_new_with_buttons (
                                       "Wallpaper set command configuration",
-                                      gw_parent,
+                                      parent,
                                       flags,
                                       "_OK",
                                       GTK_RESPONSE_ACCEPT,
@@ -595,135 +595,134 @@ wp_set_command_dialog_run (GtkWindow    *gw_parent,
                                       GTK_RESPONSE_REJECT,
                                       nullptr);
 
-    gw_wm_label      = gtk_label_new (nullptr);
-    gw_tview         = create_command_textview ();
-    gw_wm_combo      = wm_combo (st_wms);
-    gw_get_sav_btn   = gtk_button_new_with_label ("Get saved");
-    gw_get_def_btn   = gtk_button_new_with_label ("Get app default");
-    gw_save_def_btn  = gtk_button_new_with_label (
+    wm_label        = gtk_label_new (nullptr);
+    textview        = create_command_textview ();
+    wm_combo_box    = wm_combo (wms);
+    get_saved_btn   = gtk_button_new_with_label ("Get saved");
+    get_default_btn = gtk_button_new_with_label ("Get app default");
+    save_btn        = gtk_button_new_with_label (
             "Save command for selected window manager");
-    gw_test_btn      = gtk_button_new_with_label ("Test");
-    gw_test_box      = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 4);
-    gw_wm_box        = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 4);
-    gw_content_box   = gtk_dialog_get_content_area (GTK_DIALOG (gw_dialog));
-    gw_preview_combo = preview_combo (gsl_iinfo);
-    gw_combo_label   = gtk_label_new (
+    test_btn        = gtk_button_new_with_label ("Test");
+    test_box        = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 4);
+    wm_box          = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 4);
+    content_box     = gtk_dialog_get_content_area (GTK_DIALOG (dialog));
+    wallpaper_combo = preview_combo (images);
+    combo_label     = gtk_label_new (
             "List of window managers with provided wallpaer set commands:");
 
-    gtk_widget_set_tooltip_markup (gw_get_sav_btn,
+    gtk_widget_set_tooltip_markup (get_saved_btn,
             "Get wallpaper set command for selected window manager "
             "(from user's config file).");
-    gtk_widget_set_tooltip_markup (gw_get_def_btn,
+    gtk_widget_set_tooltip_markup (get_default_btn,
             "Get wallpaper set command for selected window manager "
             "(application default).");
-    gtk_widget_set_tooltip_markup (gw_save_def_btn,
+    gtk_widget_set_tooltip_markup (save_btn,
             "Save wallpaper set command for selected window manager "
             "(in user's config file).");
 
-    gtk_container_set_border_width (GTK_CONTAINER (gw_content_box), 8);
+    gtk_container_set_border_width (GTK_CONTAINER (content_box), 8);
 
-    gw_array[GW_CMD_WM_COMBO]   = gw_wm_combo;
-    gw_array[GW_CMD_PREV_COMBO] = gw_preview_combo;
-    gw_array[GW_CMD_TREEVIEW]   = gw_tview;
-    gw_array[GW_CMD_DIALOG]     = gw_dialog;
+    widgets[GW_CMD_WM_COMBO]   = wm_combo_box;
+    widgets[GW_CMD_PREV_COMBO] = wallpaper_combo;
+    widgets[GW_CMD_TREEVIEW]   = textview;
+    widgets[GW_CMD_DIALOG]     = dialog;
 
     /* Packing window manager box */
-    gtk_box_pack_start (GTK_BOX (gw_wm_box), gw_wm_combo,
+    gtk_box_pack_start (GTK_BOX (wm_box), wm_combo_box,
                         TRUE, TRUE, 0);
-    gtk_box_pack_start (GTK_BOX (gw_wm_box), gw_get_sav_btn,
+    gtk_box_pack_start (GTK_BOX (wm_box), get_saved_btn,
                         FALSE, FALSE, 0);
-    gtk_box_pack_start (GTK_BOX (gw_wm_box), gw_get_def_btn,
+    gtk_box_pack_start (GTK_BOX (wm_box), get_default_btn,
                         FALSE, FALSE, 0);
 
     /* Setting command from main window */
-    if (s_current_cmd != nullptr)
-        textview_set_text (gw_tview, s_current_cmd);
+    if (current_cmd != nullptr)
+        textview_set_text (textview, current_cmd);
 
     /* Trying to detect what window manager is in use and set wm label text and
      * combobox active index to found wm */
-    if ((st_crwm = wms_get_current_wm (st_wms)) != nullptr) {
-        combo_set_active_by_wm_name (gw_wm_combo, setting_get_name (st_crwm));
-        wm_label_set_text (gw_wm_label, setting_get_name (st_crwm));
+    if ((current_wm = wms_get_current_wm (wms)) != nullptr) {
+        combo_set_active_by_wm_name (wm_combo_box, setting_get_name (current_wm));
+        wm_label_set_text (wm_label, setting_get_name (current_wm));
     }
-    settings_free_all (st_wms);
+    settings_free_all (wms);
 
     /* Packing wallpaper command test box with test button and combobox with
      * sample wallpapers*/
-    gtk_box_pack_start (GTK_BOX (gw_test_box), gw_test_btn,
+    gtk_box_pack_start (GTK_BOX (test_box), test_btn,
                         FALSE, FALSE, 0);
-    gtk_box_pack_start (GTK_BOX (gw_test_box), gw_preview_combo,
+    gtk_box_pack_start (GTK_BOX (test_box), wallpaper_combo,
                         TRUE, TRUE, 0);
 
     /* Found window manager labels */
-    gtk_box_pack_start (GTK_BOX (gw_content_box),
+    gtk_box_pack_start (GTK_BOX (content_box),
                         gtk_label_new ("Looking for window manager..."),
                         FALSE, FALSE, 4);
-    gtk_box_pack_start (GTK_BOX (gw_content_box),
+    gtk_box_pack_start (GTK_BOX (content_box),
                         gtk_separator_new (GTK_ORIENTATION_HORIZONTAL),
                         FALSE, FALSE, 4);
-    gtk_box_pack_start (GTK_BOX (gw_content_box), gw_wm_label,
+    gtk_box_pack_start (GTK_BOX (content_box), wm_label,
                         FALSE, FALSE, 4);
 
-    gtk_box_pack_start (GTK_BOX (gw_content_box),
+    gtk_box_pack_start (GTK_BOX (content_box),
                         gtk_separator_new (GTK_ORIENTATION_HORIZONTAL),
                         FALSE, FALSE, 4);
 
     /* Window manager label and combobox */
-    gtk_box_pack_start (GTK_BOX (gw_content_box), gw_combo_label,
+    gtk_box_pack_start (GTK_BOX (content_box), combo_label,
                         FALSE, FALSE, 4);
-    gtk_box_pack_start (GTK_BOX (gw_content_box), gw_wm_box,
+    gtk_box_pack_start (GTK_BOX (content_box), wm_box,
                         FALSE, FALSE, 4);
 
-    gtk_box_pack_start (GTK_BOX (gw_content_box),
+    gtk_box_pack_start (GTK_BOX (content_box),
                         gtk_separator_new (GTK_ORIENTATION_HORIZONTAL),
                         FALSE, FALSE, 4);
 
     /* Wallpaper set command label, treeview, save command button */
-    gtk_box_pack_start (GTK_BOX (gw_content_box),
+    gtk_box_pack_start (GTK_BOX (content_box),
                         gtk_label_new ("Wallpaper set command:"),
                         FALSE, FALSE, 4);
-    gtk_box_pack_start (GTK_BOX (gw_content_box), gw_tview,
+    gtk_box_pack_start (GTK_BOX (content_box), textview,
                         TRUE, TRUE, 4);
-    gtk_box_pack_start (GTK_BOX (gw_content_box), gw_save_def_btn,
+    gtk_box_pack_start (GTK_BOX (content_box), save_btn,
                         FALSE, FALSE, 4);
 
-    gtk_box_pack_start (GTK_BOX (gw_content_box),
+    gtk_box_pack_start (GTK_BOX (content_box),
                         gtk_separator_new (GTK_ORIENTATION_HORIZONTAL),
                         FALSE, FALSE, 4);
 
     /* Testing label, and box with combo and button */
-    gtk_box_pack_start (GTK_BOX (gw_content_box),
+    gtk_box_pack_start (GTK_BOX (content_box),
                      gtk_label_new ("Test command using wallpaper from list:"),
                         FALSE, FALSE, 4);
-    gtk_box_pack_start (GTK_BOX (gw_content_box), gw_test_box,
+    gtk_box_pack_start (GTK_BOX (content_box), test_box,
                         FALSE, FALSE, 4);
 
-    g_signal_connect_swapped (gw_get_sav_btn, "clicked",
+    g_signal_connect_swapped (get_saved_btn, "clicked",
                               G_CALLBACK (event_get_saved_button_clicked),
-                              gw_array);
+                              widgets);
 
-    g_signal_connect_swapped (gw_get_def_btn, "clicked",
+    g_signal_connect_swapped (get_default_btn, "clicked",
                               G_CALLBACK (event_get_default_button_clicked),
-                              gw_array);
+                              widgets);
 
-    g_signal_connect_swapped (gw_save_def_btn, "clicked",
+    g_signal_connect_swapped (save_btn, "clicked",
                               G_CALLBACK (event_save_command_button_clicked),
-                              gw_array);
+                              widgets);
 
-    g_signal_connect_swapped (gw_test_btn, "clicked",
+    g_signal_connect_swapped (test_btn, "clicked",
                               G_CALLBACK (event_test_button_clicked),
-                              gw_array);
+                              widgets);
 
-    gtk_widget_show_all (gw_content_box);
+    gtk_widget_show_all (content_box);
 
-    i_res = gtk_dialog_run (GTK_DIALOG (gw_dialog));
+    res = gtk_dialog_run (GTK_DIALOG (dialog));
 
-    if (i_res == GTK_RESPONSE_ACCEPT) {
-        s_result = textview_get_text (gw_tview);
+    if (res == GTK_RESPONSE_ACCEPT) {
+        result = textview_get_text (textview);
     }
-    gtk_widget_destroy (gw_dialog);
+    gtk_widget_destroy (dialog);
 
-    return s_result;
+    return result;
 }
 /*----------------------------------------------------------------------------*/
-

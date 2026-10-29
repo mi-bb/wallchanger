@@ -34,219 +34,220 @@
 #include "wallpaper_set.h"
 /*----------------------------------------------------------------------------*/
 /**
- * @fn  static void wallpaper_set_file (const char *s_cmd,
- *                                      const char *s_wall)
+ * @fn  static void wallpaper_set_file (const char *cmd,
+ *                                      const char *wall)
  *
  * @brief  Set given file as a wallpaper.
  *
- * @param[in]  s_cmd   Wallpaper set command
- * @param[in]  s_wall  Wallpaper file
+ * @param[in]  cmd   Wallpaper set command
+ * @param[in]  wall  Wallpaper file
  * @return     none
  *
- * @fn  static const char * wallpaper_set_random (Setting *st_settings,
- *                                                RandMem *rm_rand)
+ * @fn  static const char * wallpaper_set_random (Setting *settings,
+ *                                                RandMem *rand)
  *
  * @brief  Set random image from list as a wallpaper.
  *
- * @param[in,out] st_settings  Program settings
- * @param[in,out] rm_rand      Raddom memory structure
+ * @param[in,out] settings  Program settings
+ * @param[in,out] rand      Raddom memory structure
  * @return        Wallpaper file path
  *
- * @fn  static const char * wallpaper_set_next_in_list (Setting *st_settings)
+ * @fn  static const char * wallpaper_set_next_in_list (Setting *settings)
  *
  * @brief  Set next wallpaper from list.
  *
- * @param[in,out] st_settings  Program settings
+ * @param[in,out] settings  Program settings
  * @return        Wallpaper file path
  */
 /*----------------------------------------------------------------------------*/
-static void         wallpaper_set_file         (const char *s_cmd,
-                                                const char *s_wall)
+static void         wallpaper_set_file         (const char *cmd,
+                                                const char *wall)
                     __attribute__ ((nonnull (1, 2)));
 
-static const char * wallpaper_set_random       (Setting    *st_settings,
-                                                RandMem    *rm_rand);
+static const char * wallpaper_set_random       (Setting    *settings,
+                                                RandMem    *rand);
 
-static const char * wallpaper_set_next_in_list (Setting    *st_settings);
+static const char * wallpaper_set_next_in_list (Setting    *settings);
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Set given file as a wallpaper. 
  */
 static void
-wallpaper_set_file (const char *s_cmd,
-                    const char *s_wall)
+wallpaper_set_file (const char *cmd,
+                    const char *wall)
 {
-    char *s_cmdn = nullptr;              /* Wallpaper set command */
-    [[maybe_unused]] int i_res = 0;   /* Result of system command */
+    char *command = nullptr;             /* Wallpaper set command */
+    [[maybe_unused]] int res = 0;        /* Result of system command */
 
-    s_cmdn = str_set_up_wallpaper_command (s_cmd, s_wall, "[F]");
+    command = str_set_up_wallpaper_command (cmd, wall, "[F]");
 
-    if (s_cmdn == nullptr)
+    if (command == nullptr)
         return;
 
     #ifdef DEBUG
-    printf ("Setting wallpaper command %s\n", s_cmdn);
+    printf ("Setting wallpaper command %s\n", command);
     #endif
 
-    i_res = system (s_cmdn);
+    res = system (command);
 
-    free (s_cmdn);
+    free (command);
 }
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Set random image from list as a wallpaper.
  */
 static const char *
-wallpaper_set_random (Setting *st_settings,
-                      RandMem *rm_rand)
+wallpaper_set_random (Setting *settings,
+                      RandMem *rand)
 {
-    const char *s_file   = nullptr; /* Wallpaper file name */
-    Setting    *st_walls = nullptr; /* Setting with wallpaper */
-    Setting    *st_sett  = nullptr; /* For concrete setting */
-    size_t      ui_pos   = 0;    /* Random wallpaper position */
+    const char *file   = nullptr; /* Wallpaper file name */
+    Setting    *walls  = nullptr; /* Setting with wallpaper */
+    Setting    *sett   = nullptr; /* For concrete setting */
+    size_t      pos    = 0;       /* Random wallpaper position */
 
     /* Get wallaper list setting */
-    st_walls = settings_find (st_settings, get_setting_name (SETT_WALL_ARRAY));
+    walls = settings_find (settings, get_setting_name (SETT_WALL_ARRAY));
     /* Exit function if there is no wallpapers in an array */
-    if ((st_walls = setting_get_child (st_walls)) == nullptr)
+    if ((walls = setting_get_child (walls)) == nullptr)
         return nullptr;
 
     /* Get random number */
-    ui_pos = randomm_get_number (rm_rand);
+    pos = randomm_get_number (rand);
 
     /* Get the file name at the random position */
-    if ((st_sett = setting_get_at_pos (st_walls, ui_pos)) != nullptr)
-        s_file = setting_get_string (st_sett);
+    if ((sett = setting_get_at_pos (walls, pos)) != nullptr)
+        file = setting_get_string (sett);
 
-    if (s_file != nullptr) {
+    if (file != nullptr) {
         /* Save wallpaper as last used in settings */
-        st_sett = setting_new_string (get_setting_name (SETT_LAST_USED_STR),
-                                      s_file);
-        //settings_append_or_replace (setting_get_child (st_settings), st_sett);
-        st_settings = settings_append_or_replace (st_settings, st_sett);
+        sett = setting_new_string (get_setting_name (SETT_LAST_USED_STR),
+                                   file);
+        //settings_append_or_replace (setting_get_child (settings), sett);
+        settings = settings_append_or_replace (settings, sett);
         /* Set wallpaper */
-        st_sett = settings_find (st_settings, get_setting_name (SETT_BG_CMD));
-        if (st_sett != nullptr) {
-            wallpaper_set_file (setting_get_string (st_sett), s_file);
+        sett = settings_find (settings, get_setting_name (SETT_BG_CMD));
+        if (sett != nullptr) {
+            wallpaper_set_file (setting_get_string (sett), file);
         }
     }
-    return s_file;
+    return file;
 }
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Set next wallpaper from list.
  */
 static const char *
-wallpaper_set_next_in_list (Setting *st_settings)
+wallpaper_set_next_in_list (Setting *settings)
 {
-    Setting       *st_walls = nullptr; /* Setting with wallpaper */
-    Setting       *st_sett  = nullptr; /* For setting operations */
-    Setting       *st_item  = nullptr; /* For iteration */
-    const char    *s_file   = nullptr; /* File path */
-    uint_fast32_t  ui_hash  = 0;    /* Last used wall name hash */
+    Setting       *walls     = nullptr; /* Setting with wallpaper */
+    Setting       *sett      = nullptr; /* For setting operations */
+    Setting       *item      = nullptr; /* For iteration */
+    const char    *file      = nullptr; /* File path */
+    uint_fast32_t  last_hash = 0;       /* Last used wall name hash */
 
     /* Get wallaper list setting */
-    st_walls = settings_find (st_settings, get_setting_name (SETT_WALL_ARRAY));
+    walls = settings_find (settings, get_setting_name (SETT_WALL_ARRAY));
     /* Exit function if there is no wallpapers in an array */
-    if ((st_walls = setting_get_child (st_walls)) == nullptr)
+    if ((walls = setting_get_child (walls)) == nullptr)
         return nullptr;
     /* Get last used wallpaper setting and file path */
-    st_sett = settings_find (st_settings, get_setting_name (SETT_LAST_USED_STR));
-    if (st_sett != nullptr) {
-        ui_hash = hash (setting_get_string (st_sett));
+    sett = settings_find (settings, get_setting_name (SETT_LAST_USED_STR));
+    if (sett != nullptr) {
+        last_hash = hash (setting_get_string (sett));
     }
-    st_sett = st_walls;
+    sett = walls;
     /* Find file in wallpapers array */
-    st_item = st_walls;
-    while (st_item != nullptr) {
-        /*if (strcmp (setting_get_string (st_item), s_file) == 0) {*/
-        if (hash (setting_get_string (st_item)) == ui_hash) {
-            st_sett = st_item;
+    item = walls;
+    while (item != nullptr) {
+        /*if (strcmp (setting_get_string (item), file) == 0) {*/
+        if (hash (setting_get_string (item)) == last_hash) {
+            sett = item;
             break;
         }
-        st_item = st_item->next;
+        item = item->next;
     }
     /* Get next wallpaper or first if list ended */
-    s_file = st_sett->next != nullptr ? setting_get_string (st_sett->next) :
-                                     setting_get_string (st_walls);
+    file = sett->next != nullptr ? setting_get_string (sett->next) :
+                                   setting_get_string (walls);
     /* Save wallpaper as last used in settings */
-    st_sett = setting_new_string (get_setting_name (SETT_LAST_USED_STR),
-                                  s_file);
-    st_settings = settings_append_or_replace (st_settings, st_sett);
+    sett = setting_new_string (get_setting_name (SETT_LAST_USED_STR),
+                               file);
+    settings = settings_append_or_replace (settings, sett);
     /* Set wallpaper */
-    st_sett = settings_find (st_settings, get_setting_name (SETT_BG_CMD));
-    if (st_sett != nullptr) {
-        wallpaper_set_file (setting_get_string (st_sett), s_file);
+    sett = settings_find (settings, get_setting_name (SETT_BG_CMD));
+    if (sett != nullptr) {
+        wallpaper_set_file (setting_get_string (sett), file);
     }
-    return s_file;
+    return file;
 }
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Wallpaper change during program work.
  */
 int
-wallpaper_set_change (Setting    *st_settings,
-                      RandMem    *rm_rand,
-                      const char *s_cfg_file)
+wallpaper_set_change (Setting    *settings,
+                      RandMem    *rand,
+                      const char *cfg_file)
 {
-    Setting    *st_sett = nullptr; /* For setting with random opt */
-    const char *s_lu    = nullptr; /* For file name of last used wallpaper */
+    Setting    *sett      = nullptr; /* For setting with random opt */
+    const char *last_used = nullptr; /* For file name of last used wallpaper */
 
-    st_sett = settings_find (st_settings, get_setting_name (SETT_RANDOM_OPT));
+    sett = settings_find (settings, get_setting_name (SETT_RANDOM_OPT));
 
-    s_lu = (st_sett != nullptr && setting_get_int (st_sett)) ?
-           wallpaper_set_random (st_settings, rm_rand) : 
-           wallpaper_set_next_in_list (st_settings);
+    last_used = (sett != nullptr && setting_get_int (sett)) ?
+                wallpaper_set_random (settings, rand) :
+                wallpaper_set_next_in_list (settings);
 
-    return s_lu != nullptr ? setts_update_last_used (s_cfg_file, s_lu) : ERR_OK;
+    return last_used != nullptr ? setts_update_last_used (cfg_file, last_used) :
+                                  ERR_OK;
 }
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Setting wallpaper image at program startup.
  */
 int
-wallpaper_set_startup_set (Setting    *st_settings,
-                           RandMem    *rm_rand,
-                           const char *s_cfg_file)
+wallpaper_set_startup_set (Setting    *settings,
+                           RandMem    *rand,
+                           const char *cfg_file)
 {
-    Setting *st_opt = nullptr; /* For setting with last used option */
-    Setting *st_st  = nullptr; /* For setting with last used wallpaper name */
-    Setting *st_cmd = nullptr; /* For wallpaper set command */
+    Setting *opt       = nullptr; /* For setting with last used option */
+    Setting *last_used = nullptr; /* For setting with last used wallpaper name */
+    Setting *cmd       = nullptr; /* For wallpaper set command */
 
-    st_opt = settings_find (st_settings, get_setting_name (SETT_LAST_USED_OPT));
-    st_st  = settings_find (st_settings, get_setting_name (SETT_LAST_USED_STR));
-    st_cmd = settings_find (st_settings, get_setting_name (SETT_BG_CMD));
+    opt       = settings_find (settings, get_setting_name (SETT_LAST_USED_OPT));
+    last_used = settings_find (settings, get_setting_name (SETT_LAST_USED_STR));
+    cmd       = settings_find (settings, get_setting_name (SETT_BG_CMD));
 
-    if (st_opt != nullptr && st_st != nullptr && st_cmd != nullptr &&
-        setting_get_int (st_opt)) {
-    
-        wallpaper_set_file (setting_get_string (st_cmd),
-                            setting_get_string (st_st));
+    if (opt != nullptr && last_used != nullptr && cmd != nullptr &&
+        setting_get_int (opt)) {
+
+        wallpaper_set_file (setting_get_string (cmd),
+                            setting_get_string (last_used));
         return ERR_OK;
     }
-    return wallpaper_set_change (st_settings, rm_rand, s_cfg_file);
+    return wallpaper_set_change (settings, rand, cfg_file);
 }
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Setting wallpaper with configuration dialog.
  */
 void
-wallpaper_test_set (const char *s_cmd,
-                    const char *s_file)
+wallpaper_test_set (const char *cmd,
+                    const char *file)
 {
-    wallpaper_set_file (s_cmd, s_file);
+    wallpaper_set_file (cmd, file);
 }
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Setting wallpaper with settings dialog.
  */
 int
-wallpaper_dialog_set (const char *s_cmd,
-                      const char *s_file,
-                      const char *s_cfg_file)
+wallpaper_dialog_set (const char *cmd,
+                      const char *file,
+                      const char *cfg_file)
 {
-    wallpaper_set_file (s_cmd, s_file);
-    return setts_update_last_used (s_cfg_file, s_file);
+    wallpaper_set_file (cmd, file);
+    return setts_update_last_used (cfg_file, file);
 }
 /*----------------------------------------------------------------------------*/
 
