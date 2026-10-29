@@ -27,36 +27,36 @@
 /**
  * @brief  Check file permissions (read write), existence. 
  *
- * @param[in] s_file  File name to check
+ * @param[in] file  File name to check
  * @return    Checking status
  */
-int    file_check_permissions (const char *s_file)
+int    file_check_permissions (const char *file)
        __attribute__ ((nonnull (1)));
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Check directory permissions, existence and create if needed. 
  *
- * @param[in] s_dir  Directory name to check / create
+ * @param[in] dir  Directory name to check / create
  * @return    Checking / creating status
  */
-int    dir_check_permissions (const char *s_file)
+int    dir_check_permissions (const char *dir)
        __attribute__ ((nonnull (1)));
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Create directory with subfolders if it doesn't exist.
  *
- * @param[in] s_dn  Directory path
+ * @param[in] dir_path  Directory path
  * @return    Process result
  */
-int    dir_create_with_subdirs (const char *s_dn);
+int    dir_create_with_subdirs (const char *dir_path);
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Create file with subfolders if it doesn't exist.
  *
- * @param[in] s_fn  File path
+ * @param[in] file_path  File path
  * @return    Process result
  */
-int    file_create_with_subdirs (const char *s_fn)
+int    file_create_with_subdirs (const char *file_path)
        __attribute__ ((nonnull (1)));
 /*----------------------------------------------------------------------------*/
 /**
@@ -106,4 +106,3 @@ char * dir_get_data (void) __attribute__ ((malloc));
 char * dir_get_autostart (void);
 /*----------------------------------------------------------------------------*/
 #endif
-

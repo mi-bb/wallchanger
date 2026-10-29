@@ -38,13 +38,13 @@
 void
 daemon_daemonize (void)
 {
-    int  i_res = 0;
+    int  res = 0;
     long i     = 0;
 
-    i_res = fork ();
-    if (i_res > 0)
+    res = fork ();
+    if (res > 0)
         exit (EXIT_SUCCESS);
-    else if (i_res < 0)
+    else if (res < 0)
         err (EXIT_FAILURE, nullptr);
 
     if (setsid () < 0)
@@ -53,14 +53,14 @@ daemon_daemonize (void)
     signal (SIGCHLD, SIG_IGN);
     signal (SIGHUP, SIG_IGN);
 
-    i_res = fork ();
-    if (i_res > 0)
+    res = fork ();
+    if (res > 0)
         exit (EXIT_SUCCESS);
-    else if (i_res < 0)
+    else if (res < 0)
         err (EXIT_FAILURE, nullptr);
 
     umask (0);
-    i_res = chdir ("/");
+    res = chdir ("/");
     for (i = sysconf (_SC_OPEN_MAX); i >= 0; --i) {
         close ((int) i);
     }
@@ -92,9 +92,9 @@ daemon_check_exit (void)
 void
 daemon_print_status_exit (void)
 {
-    int i_cnt = 0;
+    int cnt = 0;
 
-    if ((i_cnt = daemon_check_presence ()) > 0) {
+    if ((cnt = daemon_check_presence ()) > 0) {
         puts ("wchangerd is running");
         exit (EXIT_SUCCESS);
     }
@@ -120,17 +120,17 @@ daemon_start (void)
 int
 daemon_kill (void)
 {
-    int i_cnt = 0;
+    int cnt = 0;
 
     printf ("Stopping wchangerd ... ");
 
-    if ((i_cnt = process_kill_all_except_current ("wchangerd")) > 0) {
+    if ((cnt = process_kill_all_except_current ("wchangerd")) > 0) {
         printf ("Stopped\n");
     }
     else {
         printf ("Could not find wchangerd\n");
     }
-    return i_cnt;
+    return cnt;
 }
 /*----------------------------------------------------------------------------*/
 /**

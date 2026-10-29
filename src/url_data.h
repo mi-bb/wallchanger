@@ -57,82 +57,81 @@ UrlData * urldata_new           (void);
 /**
  * @brief  Free UrlData item.
  *
- * @param[out] ud_data  UrlData item to free
+ * @param[out] url_data  UrlData item to free
  * @return     none
  */
-void      urldata_free          (UrlData    *ud_data);
+void      urldata_free          (UrlData    *url_data);
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Get data from given url.
  *
- * @param[in] s_url  Url to download data
+ * @param[in] url  Url to download data
  * @return    UrlData item with downloaded data or error info
  */
-UrlData * urldata_get_data      (const char *s_url);
+UrlData * urldata_get_data      (const char *url);
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Download data from url to file.
  *
- * @param[in]  s_url  Url to download data
- * @param[in]  s_fn   File where data should be saved
- * @param[out] s_err  String for error output
+ * @param[in]  url  Url to download data
+ * @param[in]  fn   File where data should be saved
+ * @param[out] err  String for error output
  * @return     none
  */
-void      urldata_get_to_file   (const char *s_url,
-                                 const char *s_fn,
-                                 char      **s_err);
+void      urldata_get_to_file   (const char *url,
+                                 const char *fn,
+                                 char      **err);
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Search Pixabay for images.
  *
- * @param[in] s_query        Search query
- * @param[in] s_search_opts  Search options
- * @param[in] s_api_key      Pixabay API key
- * @param[in] i_page         Results page number
+ * @param[in] query        Search query
+ * @param[in] search_opts  Search options
+ * @param[in] api_key      Pixabay API key
+ * @param[in] page         Results page number
  * @return    UrlData item with downloaded data or error info
  */
-UrlData * urldata_search_pixabay (const char *s_query,
-                                  const char *s_search_opts,
-                                  const char *s_api_key,
-                                  const int   i_page);
+UrlData * urldata_search_pixabay (const char *query,
+                                  const char *search_opts,
+                                  const char *api_key,
+                                  const int   page);
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Search Wallhaven for images.
  *
- * @param[in] s_query        Search query
- * @param[in] s_search_opts  Search options
- * @param[in] s_api_key      Wallhaven API key
- * @param[in] i_page         Results page number
+ * @param[in] query        Search query
+ * @param[in] search_opts  Search options
+ * @param[in] api_key      Wallhaven API key
+ * @param[in] page         Results page number
  * @return    UrlData item with downloaded data or error info
  */
-UrlData * urldata_search_wallhaven (const char *s_query,
-                                    const char *s_search_opts,
-                                    const char *s_api_key,
-                                    const int   i_page);
+UrlData * urldata_search_wallhaven (const char *query,
+                                    const char *search_opts,
+                                    const char *api_key,
+                                    const int   page);
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Search Wallpaper Abyss for images.
  *
- * @param[in] s_query        Search query
- * @param[in] s_search_opts  Search options
- * @param[in] s_api_key      Wallpaper Abyss API key
- * @param[in] i_page         Results page number
+ * @param[in] query        Search query
+ * @param[in] search_opts  Search options
+ * @param[in] api_key      Wallpaper Abyss API key
+ * @param[in] page         Results page number
  * @return    UrlData item with downloaded data or error info
  */
-UrlData * urldata_search_wallabyss (const char *s_query,
-                                    const char *s_search_opts,
-                                    const char *s_api_key,
-                                    const int   i_page);
+UrlData * urldata_search_wallabyss (const char *query,
+                                   const char *search_opts,
+                                   const char *api_key,
+                                   const int   page);
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Check if UrlData's data buffer is not empty.
  *
- * @param[in] ud_data  UrlData item to check
+ * @param[in] ud  UrlData item to check
  * @return    1 if data buffer is full, 0 if not
  */
-static inline int urldata_full (UrlData *ud_data) {
-    return ud_data->buffer[0] != '\0';
+static inline int urldata_full (UrlData *ud) {
+    return ud->buffer[0] != '\0';
 }
 /*----------------------------------------------------------------------------*/
 #endif
-

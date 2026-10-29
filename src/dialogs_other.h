@@ -29,11 +29,11 @@
 /**
  * @brief  Dialog with information about application.
  *
- * @param[in] gw_parent  Parent window
+ * @param[in] parent  Parent window
  * @return    none
  */
 /*----------------------------------------------------------------------------*/
-void     about_app_dialog           (GtkWindow  *gw_parent);
+void     about_app_dialog           (GtkWindow  *parent);
 /*----------------------------------------------------------------------------*/
 #endif
 

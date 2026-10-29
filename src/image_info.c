@@ -30,22 +30,22 @@
 #include "string_functions.h"
 /*----------------------------------------------------------------------------*/
 /**
- * @fn  static void image_info_init (ImageInfo *ii_info)
+ * @fn  static void image_info_init (ImageInfo *info)
  *
  * @brief  Init ImageInfo data.
  *
- * @param[out] ii_info  Pointer to ImageInfo object
+ * @param[out] info  Pointer to ImageInfo object
  * @return     none
  */
 static void
-image_info_init (ImageInfo *ii_info)
+image_info_init (ImageInfo *info)
 {
-    ii_info->s_file_path    = nullptr;
-    ii_info->s_file_name    = nullptr;
-    ii_info->s_file_dir     = nullptr;
-    ii_info->s_width_height = nullptr;
-    ii_info->i_height       = 0;
-    ii_info->i_width        = 0;
+    info->file_path    = nullptr;
+    info->file_name    = nullptr;
+    info->file_dir     = nullptr;
+    info->width_height = nullptr;
+    info->height       = 0;
+    info->width        = 0;
 }
 /*----------------------------------------------------------------------------*/
 /**
@@ -54,150 +54,149 @@ image_info_init (ImageInfo *ii_info)
 ImageInfo *
 image_info_new (void)
 {
-    ImageInfo *ii_res;
+    ImageInfo *res;
 
-    if ((ii_res = malloc (sizeof (ImageInfo))) == nullptr)
+    if ((res = malloc (sizeof (ImageInfo))) == nullptr)
         err (EXIT_FAILURE, nullptr);
 
-    image_info_init (ii_res);
+    image_info_init (res);
 
-    return ii_res;
+    return res;
 }
 /*----------------------------------------------------------------------------*/
 /**
- * @brief  Create new ImageInfo object with data gathered from file s_fname
+ * @brief  Create new ImageInfo object with data gathered from file fname
  */
 ImageInfo *
-image_info_new_from_file (const char *s_fname)
+image_info_new_from_file (const char *fname)
 {
-    ImageInfo  *ii_info = nullptr; /* Result ImageInfo */
-    char       *s_path  = nullptr; /* String for file path */
-    const char *s_p     = nullptr; /* Pointer to right position of / */
-    int         i_w     = 0;    /* Image width */
-    int         i_h     = 0;    /* Image height */
+    ImageInfo  *info  = nullptr; /* Result ImageInfo */
+    char       *path  = nullptr; /* String for file path */
+    const char *slash = nullptr; /* Pointer to right position of / */
+    int         width = 0;       /* Image width */
+    int         height = 0;      /* Image height */
 
-    ii_info = image_info_new ();
-    image_info_set_file_path (ii_info, s_fname);
+    info = image_info_new ();
+    image_info_set_file_path (info, fname);
 
-    if ((s_p = strrchr (s_fname, '/')) == nullptr) {
-        image_info_set_file_name (ii_info, s_fname);
-        image_info_set_file_dir (ii_info, "");
+    if ((slash = strrchr (fname, '/')) == nullptr) {
+        image_info_set_file_name (info, fname);
+        image_info_set_file_dir (info, "");
     }
     else {
-        ++s_p;
-        image_info_set_file_name (ii_info, s_p);
-        s_path = strndup (s_fname, (size_t) (s_p - s_fname));
-        image_info_set_file_dir (ii_info, s_path);
-        free (s_path);
+        ++slash;
+        image_info_set_file_name (info, slash);
+        path = strndup (fname, (size_t) (slash - fname));
+        image_info_set_file_dir (info, path);
+        free (path);
     }
 
-    gdk_pixbuf_get_file_info (s_fname,
-                              &i_w,
-                              &i_h);
+    gdk_pixbuf_get_file_info (fname,
+                              &width,
+                              &height);
 
-    image_info_set_width (ii_info, i_w);
-    image_info_set_height (ii_info, i_h);
+    image_info_set_width (info, width);
+    image_info_set_height (info, height);
 
-    image_info_set_wxh (ii_info, i_w, i_h);
+    image_info_set_wxh (info, width, height);
 
-    return ii_info;
+    return info;
 }
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Free ImageInfo data.
  */
 void
-image_info_free (ImageInfo *ii_info)
+image_info_free (ImageInfo *info)
 {
-    g_free (ii_info->s_file_path);
-    g_free (ii_info->s_file_name);
-    g_free (ii_info->s_file_dir);
-    g_free (ii_info->s_width_height);
-    g_free (ii_info);
+    g_free (info->file_path);
+    g_free (info->file_name);
+    g_free (info->file_dir);
+    g_free (info->width_height);
+    g_free (info);
 }
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Get image info of files in list and store it in ImageInfo list.
  */
 GSList *
-file_paths_to_image_info (const GSList *gsl_files)
+file_paths_to_image_info (const GSList *files)
 {
-    GSList       *gsl_iinfo = nullptr; /* Result ImageInfo list */
-    char         *s_fn      = nullptr; /* File path */
-    ImageInfo    *ii_info;          /* ImageInfo to add to list */
+    GSList     *info_list = nullptr; /* Result ImageInfo list */
+    char       *fn        = nullptr; /* File path */
+    ImageInfo  *info;                /* ImageInfo to add to list */
 
-    while (gsl_files != nullptr) {
+    while (files != nullptr) {
 
-        if ((s_fn = (char *) gsl_files->data) != nullptr) {
+        if ((fn = (char *) files->data) != nullptr) {
 
-            ii_info = image_info_new_from_file (s_fn);
+            info = image_info_new_from_file (fn);
 
-            if (image_info_get_height (ii_info) > 0 &&
-                image_info_get_width (ii_info) > 0)
+            if (image_info_get_height (info) > 0 &&
+                image_info_get_width (info) > 0)
 
-                gsl_iinfo = g_slist_append (gsl_iinfo, ii_info);
+                info_list = g_slist_append (info_list, info);
         }
-        gsl_files = gsl_files->next;
+        files = files->next;
     }
-    return gsl_iinfo;
+    return info_list;
 }
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Set the full file name string (dir + file name)
  */
 void
-image_info_set_file_path (ImageInfo  *ii_info, 
-                          const char *s_name)
+image_info_set_file_path (ImageInfo  *info,
+                          const char *name)
 {
-    if (ii_info->s_file_path != nullptr)
-        free (ii_info->s_file_path);
+    if (info->file_path != nullptr)
+        free (info->file_path);
 
-    ii_info->s_file_path = strdup (s_name);
+    info->file_path = strdup (name);
 }
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Set the file name string
  */
 void
-image_info_set_file_name (ImageInfo  *ii_info, 
-                          const char *s_name)
+image_info_set_file_name (ImageInfo  *info,
+                          const char *name)
 {
-    if (ii_info->s_file_name != nullptr)
-        free (ii_info->s_file_name);
+    if (info->file_name != nullptr)
+        free (info->file_name);
 
-    ii_info->s_file_name = strdup (s_name);
+    info->file_name = strdup (name);
 }
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Set the file dir string
  */
 void
-image_info_set_file_dir (ImageInfo  *ii_info, 
-                         const char *s_name)
+image_info_set_file_dir (ImageInfo  *info,
+                         const char *name)
 {
-    if (ii_info->s_file_dir != nullptr)
-        free (ii_info->s_file_dir);
+    if (info->file_dir != nullptr)
+        free (info->file_dir);
 
-    ii_info->s_file_dir = strdup (s_name);
+    info->file_dir = strdup (name);
 }
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Get string with image dimensions (width x height)
  */
 void
-image_info_set_wxh (ImageInfo *ii_info,
-                    const int  i_w,
-                    const int  i_h)
+image_info_set_wxh (ImageInfo *info,
+                    const int  width,
+                    const int  height)
 {
-    char s_tmp [41]; /* Temp string, I think it is long enough */
-    int  n = 0;      /* Length of string with dimensions */
+    char tmp [41]; /* Temp string, I think it is long enough */
+    int  len = 0;  /* Length of string with dimensions */
 
-    n = snprintf (s_tmp, 41, "%dx%d", i_w, i_h);
-    if      (n < 0)  n = 0;
-    else if (n > 40) n = 40;
-    cres ((void**) &ii_info->s_width_height, (size_t) (n + 1), sizeof (char));
-    memcpy (ii_info->s_width_height, s_tmp, (size_t) n);
-    ii_info->s_width_height[n] = '\0';
+    len = snprintf (tmp, 41, "%dx%d", width, height);
+    if      (len < 0)  len = 0;
+    else if (len > 40) len = 40;
+    cres ((void**) &info->width_height, (size_t) (len + 1), sizeof (char));
+    memcpy (info->width_height, tmp, (size_t) len);
+    info->width_height[len] = '\0';
 }
 /*----------------------------------------------------------------------------*/
-

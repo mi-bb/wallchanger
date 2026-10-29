@@ -27,33 +27,33 @@
 #include <stdint.h>
 /*----------------------------------------------------------------------------*/
 /**
- * @fn  char * read_file_data (const char    *s_fname,
- *                             int           *i_err,
- *                             int           *i_hash)
+ * @fn  char * read_file_data (const char    *fname,
+ *                             int           *err,
+ *                             uint_fast32_t *hash_out)
  *
  * @brief  Read some data from file.
  *
- * @param[in]  s_fname File name
- * @param[out] i_err   Error output
- * @param[out] i_hash  Pointer to hash
+ * @param[in]  fname     File name
+ * @param[out] err       Error output
+ * @param[out] hash_out  Pointer to hash
  * @return     Read data
  *
- * @fn  int save_file_data (const char *s_fname, const char *s_buff)
+ * @fn  int save_file_data (const char *fname, const char *buff)
  *
  * @brief  Save a bunch of data to file.
  *
- * @param[in]  s_fname File name
- * @param[in]  s_buff  Buffer with data
+ * @param[in]  fname File name
+ * @param[in]  buff  Buffer with data
  * @return     Writing status
  */
 /*----------------------------------------------------------------------------*/
-char * read_file_data      (const char    *s_fname,
-                            int           *i_err,
-                            uint_fast32_t  *i_hash)
+char * read_file_data      (const char    *fname,
+                            int           *err,
+                            uint_fast32_t *hash_out)
                             __attribute__ ((nonnull (1)));
 
-int    save_file_data      (const char    *s_fname,
-                            const char    *s_buff)
+int    save_file_data      (const char    *fname,
+                            const char    *buff)
                             __attribute__ ((nonnull (1,2)));
 /*----------------------------------------------------------------------------*/
 #endif

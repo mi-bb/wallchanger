@@ -35,34 +35,34 @@
 UrlData *
 urldata_new (void)
 {
-    UrlData *ud_data = nullptr;
+    UrlData *ud = nullptr;
 
-    if ((ud_data = malloc (sizeof (UrlData))) == nullptr)
+    if ((ud = malloc (sizeof (UrlData))) == nullptr)
         err (EXIT_FAILURE, nullptr);
 
-    ud_data->size = 0;
-    ud_data->errbuf = nullptr;
+    ud->size = 0;
+    ud->errbuf = nullptr;
 
-    if ((ud_data->buffer = malloc (sizeof (char))) == nullptr)
+    if ((ud->buffer = malloc (sizeof (char))) == nullptr)
         err (EXIT_FAILURE, nullptr);
 
-    ud_data->buffer[0] = '\0';
+    ud->buffer[0] = '\0';
 
-    return ud_data;
+    return ud;
 }
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Free UrlData item.
  */
 void
-urldata_free (UrlData *ud_data)
+urldata_free (UrlData *url_data)
 {
-    if (ud_data == nullptr)
+    if (url_data == nullptr)
         return;
 
-    free (ud_data->buffer);
-    free (ud_data->errbuf);
-    free (ud_data);
+    free (url_data->buffer);
+    free (url_data->errbuf);
+    free (url_data);
 }
 /*----------------------------------------------------------------------------*/
 static size_t
@@ -71,41 +71,41 @@ url_write (void   *data,
            size_t  nmemb,
            void   *userp)
 {
-    UrlData *u_data  = nullptr;
-    char    *s_buff  = nullptr;
-    size_t   ui_size = 0;
+    UrlData *url_data     = nullptr;
+    char    *buff   = nullptr;
+    size_t   bytes  = 0;
  
-    ui_size = size * nmemb;
-    u_data  = (UrlData *) userp;
-    if ((s_buff = realloc (u_data->buffer, u_data->size + ui_size + 1)) == nullptr)
+    bytes = size * nmemb;
+    url_data    = (UrlData *) userp;
+    if ((buff = realloc (url_data->buffer, url_data->size + bytes + 1)) == nullptr)
         err (EXIT_FAILURE, nullptr);
  
-    u_data->buffer = s_buff;
-    memcpy (& (u_data->buffer[u_data->size]), data, ui_size);
-    u_data->size += ui_size;
-    u_data->buffer[u_data->size] = '\0';
+    url_data->buffer = buff;
+    memcpy (& (url_data->buffer[url_data->size]), data, bytes);
+    url_data->size += bytes;
+    url_data->buffer[url_data->size] = '\0';
 
-    return ui_size;
+    return bytes;
 }
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Get data from given url.
  */
 UrlData *
-urldata_get_data (const char *s_url)
+urldata_get_data (const char *url)
 {
-    UrlData  *ud_data = nullptr;
+    UrlData  *url_data = nullptr;
     CURL     *curl;
     CURLcode  res;
     char      errbuf[CURL_ERROR_SIZE];
 
-    ud_data = urldata_new ();
+    url_data = urldata_new ();
     curl_global_init (CURL_GLOBAL_ALL);
     curl = curl_easy_init ();
 
     if (curl) {
-        curl_easy_setopt (curl, CURLOPT_URL, s_url);
-        curl_easy_setopt (curl, CURLOPT_WRITEDATA, (void *) ud_data);
+        curl_easy_setopt (curl, CURLOPT_URL, url);
+        curl_easy_setopt (curl, CURLOPT_WRITEDATA, (void *) url_data);
         curl_easy_setopt (curl, CURLOPT_WRITEFUNCTION, url_write);
         curl_easy_setopt (curl, CURLOPT_ERRORBUFFER, errbuf);
         errbuf[0] = '\0';
@@ -115,15 +115,15 @@ urldata_get_data (const char *s_url)
         res = curl_easy_perform (curl);
  
         if (res != CURLE_OK) {
-            ud_data->errbuf = strdup (strlen (errbuf) ?
+            url_data->errbuf = strdup (strlen (errbuf) ?
                                       errbuf : curl_easy_strerror (res));
-            warnx ("libcurl: (%d) %s", res, ud_data->errbuf);
+            warnx ("libcurl: (%d) %s", res, url_data->errbuf);
         }
         curl_easy_cleanup (curl);
     }
     curl_global_cleanup ();
 
-    return ud_data;
+    return url_data;
 }
 /*----------------------------------------------------------------------------*/
 static size_t
@@ -139,16 +139,16 @@ write_data (void   *ptr,
  * @brief  Download data from url to file.
  */
 void
-urldata_get_to_file (const char *s_url,
-                     const char *s_fn,
-                     char      **s_err)
+urldata_get_to_file (const char *url,
+                     const char *fn,
+                     char      **err)
 {
     CURL     *curl;
-    FILE     *f_file;
+    FILE     *file;
     CURLcode  res;
     char      errbuf[CURL_ERROR_SIZE];
 
-    if (access (s_fn, F_OK) == 0) {
+    if (access (fn, F_OK) == 0) {
         return;
     }
  
@@ -156,7 +156,7 @@ urldata_get_to_file (const char *s_url,
     curl = curl_easy_init ();
 
     if (curl) {
-        curl_easy_setopt (curl, CURLOPT_URL, s_url);
+        curl_easy_setopt (curl, CURLOPT_URL, url);
         curl_easy_setopt (curl, CURLOPT_FAILONERROR, 1L);
 #ifdef DEBUG
         curl_easy_setopt (curl, CURLOPT_VERBOSE, 1L);
@@ -165,17 +165,17 @@ urldata_get_to_file (const char *s_url,
         curl_easy_setopt (curl, CURLOPT_ERRORBUFFER, errbuf);
         errbuf[0] = '\0';
      
-        f_file = fopen (s_fn, "wb");
-        if (f_file) {
-            curl_easy_setopt (curl, CURLOPT_WRITEDATA, f_file);
+        file = fopen (fn, "wb");
+        if (file) {
+            curl_easy_setopt (curl, CURLOPT_WRITEDATA, file);
             res = curl_easy_perform (curl);
-            fclose (f_file);
+            fclose (file);
     
             if (res != CURLE_OK) {
-                *s_err = strdup (strlen (errbuf) ?
+                *err = strdup (strlen (errbuf) ?
                                  errbuf : curl_easy_strerror (res));
-                warnx ("libcurl: (%d) %s", res, *s_err);
-                unlink (s_fn);
+                warnx ("libcurl: (%d) %s", res, *err);
+                unlink (fn);
             }
         }
         curl_easy_cleanup (curl);
@@ -187,35 +187,35 @@ urldata_get_to_file (const char *s_url,
  * @brief  Search Pixabay for images.
  */
 UrlData *
-urldata_search_pixabay (const char *s_query,
-                        const char *s_search_opts,
-                        const char *s_api_key,
-                        const int   i_page)
+urldata_search_pixabay (const char *query,
+                        const char *search_opts,
+                        const char *api_key,
+                        const int   page)
 {
-    UrlData  *ud_data = nullptr;
-    char     *s_url   = nullptr;
-    char      s_page[64];
+    UrlData  *url_data = nullptr;
+    char     *url = nullptr;
+    char      page_str[64];
     CURL     *curl;
     CURLcode  res;
     char      errbuf[CURL_ERROR_SIZE];
 
-    ud_data = urldata_new ();
+    url_data = urldata_new ();
     curl_global_init (CURL_GLOBAL_ALL);
     curl = curl_easy_init ();
 
     if (curl) {
-        sprintf (s_page,     "%d", i_page);
-        s_url = str_comb ("https://pixabay.com/api/?key=", s_api_key);
-        str_append (&s_url, "&q=");
-        str_append (&s_url, s_query);
-        str_append (&s_url, "&page=");
-        str_append (&s_url, s_page);
-        str_append (&s_url, "&image_type=photo");
-        str_append (&s_url, str_is_empty (s_search_opts) ?
-                            "&per_page=12" : s_search_opts);
+        sprintf (page_str, "%d", page);
+        url = str_comb ("https://pixabay.com/api/?key=", api_key);
+        str_append (&url, "&q=");
+        str_append (&url, query);
+        str_append (&url, "&page=");
+        str_append (&url, page_str);
+        str_append (&url, "&image_type=photo");
+        str_append (&url, str_is_empty (search_opts) ?
+                            "&per_page=12" : search_opts);
 
-        curl_easy_setopt (curl, CURLOPT_URL, s_url);
-        curl_easy_setopt (curl, CURLOPT_WRITEDATA, (void *) ud_data);
+        curl_easy_setopt (curl, CURLOPT_URL, url);
+        curl_easy_setopt (curl, CURLOPT_WRITEDATA, (void *) url_data);
         curl_easy_setopt (curl, CURLOPT_WRITEFUNCTION, url_write);
         curl_easy_setopt (curl, CURLOPT_ERRORBUFFER, errbuf);
         errbuf[0] = '\0';
@@ -225,50 +225,50 @@ urldata_search_pixabay (const char *s_query,
         res = curl_easy_perform (curl);
  
         if (res != CURLE_OK) {
-            ud_data->errbuf = strdup (strlen (errbuf) ?
+            url_data->errbuf = strdup (strlen (errbuf) ?
                               errbuf : curl_easy_strerror (res));
-            warnx ("libcurl: (%d) %s", res, ud_data->errbuf);
+            warnx ("libcurl: (%d) %s", res, url_data->errbuf);
         }
  
         curl_easy_cleanup (curl);
     }
     curl_global_cleanup ();
 
-    return ud_data;
+    return url_data;
 }
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Search Wallhaven for images.
  */
 UrlData *
-urldata_search_wallhaven (const char *s_query,
-                          const char *s_search_opts,
-                          const char *s_api_key,
-                          const int   i_page)
+urldata_search_wallhaven (const char *query,
+                          const char *search_opts,
+                          const char *api_key,
+                          const int   page)
 {
-    UrlData  *ud_data = nullptr;
-    char     *s_url   = nullptr;
-    char      s_page[64];
+    UrlData  *url_data = nullptr;
+    char     *url = nullptr;
+    char      page_str[64];
     CURL     *curl;
     CURLcode  res;
     char      errbuf[CURL_ERROR_SIZE];
 
-    ud_data = urldata_new ();
+    url_data = urldata_new ();
     curl_global_init (CURL_GLOBAL_ALL);
     curl = curl_easy_init ();
     if (curl) {
-        sprintf (s_page, "%d", i_page);
-        s_url = str_comb ("https://wallhaven.cc/api/v1/search?apikey=",
-                          s_api_key);
-        str_append (&s_url, "&q=");
-        str_append (&s_url, s_query);
-        str_append (&s_url, "&page=");
-        str_append (&s_url, s_page);
-        str_append (&s_url, str_is_empty (s_search_opts) ?
-                            "&sorting=relevance" : s_search_opts);
+        sprintf (page_str, "%d", page);
+        url = str_comb ("https://wallhaven.cc/api/v1/search?apikey=",
+                          api_key);
+        str_append (&url, "&q=");
+        str_append (&url, query);
+        str_append (&url, "&page=");
+        str_append (&url, page_str);
+        str_append (&url, str_is_empty (search_opts) ?
+                            "&sorting=relevance" : search_opts);
 
-        curl_easy_setopt (curl, CURLOPT_URL, s_url);
-        curl_easy_setopt (curl, CURLOPT_WRITEDATA, (void *) ud_data);
+        curl_easy_setopt (curl, CURLOPT_URL, url);
+        curl_easy_setopt (curl, CURLOPT_WRITEDATA, (void *) url_data);
         curl_easy_setopt (curl, CURLOPT_WRITEFUNCTION, url_write);
         curl_easy_setopt (curl, CURLOPT_ERRORBUFFER, errbuf);
         errbuf[0] = '\0';
@@ -279,50 +279,50 @@ urldata_search_wallhaven (const char *s_query,
         res = curl_easy_perform (curl);
  
         if (res != CURLE_OK) {
-            ud_data->errbuf = strdup (strlen (errbuf) ?
+            url_data->errbuf = strdup (strlen (errbuf) ?
                               errbuf : curl_easy_strerror (res));
-            warnx ("libcurl: (%d) %s", res, ud_data->errbuf);
+            warnx ("libcurl: (%d) %s", res, url_data->errbuf);
         }
  
         curl_easy_cleanup (curl);
     }
     curl_global_cleanup ();
 
-    return ud_data;
+    return url_data;
 }
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Search Wallpaper Abyss for images.
  */
 UrlData *
-urldata_search_wallabyss (const char *s_query,
-                          const char *s_search_opts,
-                          const char *s_api_key,
-                          const int   i_page)
+urldata_search_wallabyss (const char *query,
+                          const char *search_opts,
+                          const char *api_key,
+                          const int   page)
 {
-    UrlData  *ud_data = nullptr;
-    char     *s_url   = nullptr;
-    char      s_page[64];
+    UrlData  *url_data = nullptr;
+    char     *url = nullptr;
+    char      page_str[64];
     CURL     *curl;
     CURLcode  res;
     char      errbuf[CURL_ERROR_SIZE];
 
-    ud_data = urldata_new ();
+    url_data = urldata_new ();
     curl_global_init (CURL_GLOBAL_ALL);
     curl = curl_easy_init ();
     if (curl) {
-        sprintf (s_page, "%d", i_page);
-        s_url = str_comb ("https://wall.alphacoders.com/api2.0/get.php?auth=",
-                          s_api_key);
-        str_append (&s_url, "&method=search&term=");
-        str_append (&s_url, s_query);
-        str_append (&s_url, "&info_level=2&page=");
-        str_append (&s_url, s_page);
-        if (!str_is_empty (s_search_opts))
-            str_append (&s_url, s_search_opts);
+        sprintf (page_str, "%d", page);
+        url = str_comb ("https://wall.alphacoders.com/api2.0/get.php?auth=",
+                          api_key);
+        str_append (&url, "&method=search&term=");
+        str_append (&url, query);
+        str_append (&url, "&info_level=2&page=");
+        str_append (&url, page_str);
+        if (!str_is_empty (search_opts))
+            str_append (&url, search_opts);
 
-        curl_easy_setopt (curl, CURLOPT_URL, s_url);
-        curl_easy_setopt (curl, CURLOPT_WRITEDATA, (void *) ud_data);
+        curl_easy_setopt (curl, CURLOPT_URL, url);
+        curl_easy_setopt (curl, CURLOPT_WRITEDATA, (void *) url_data);
         curl_easy_setopt (curl, CURLOPT_WRITEFUNCTION, url_write);
         curl_easy_setopt (curl, CURLOPT_ERRORBUFFER, errbuf);
         errbuf[0] = '\0';
@@ -332,15 +332,15 @@ urldata_search_wallabyss (const char *s_query,
         res = curl_easy_perform (curl);
  
         if (res != CURLE_OK) {
-            ud_data->errbuf = strdup (strlen (errbuf) ?
+            url_data->errbuf = strdup (strlen (errbuf) ?
                               errbuf : curl_easy_strerror (res));
-            warnx ("libcurl: (%d) %s", res, ud_data->errbuf);
+            warnx ("libcurl: (%d) %s", res, url_data->errbuf);
         }
         curl_easy_cleanup (curl);
     }
     curl_global_cleanup ();
 
-    return ud_data;
+    return url_data;
 }
 /*----------------------------------------------------------------------------*/
  

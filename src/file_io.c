@@ -40,87 +40,87 @@
  * @brief  Read some data from file.
  */
 char *
-read_file_data (const char    *s_fname,
-                int           *i_err,
-                uint_fast32_t  *i_hash)
+read_file_data (const char    *fname,
+                int           *err,
+                uint_fast32_t *hash_out)
 {
-    char   *s_buff = nullptr; /* Result data from file */
-    FILE   *f_file;        /* Data file */
-    long    l_size = 0;    /* File size */
-    size_t  ui_res = 0;    /* Read data count */
+    char   *buff = nullptr; /* Result data from file */
+    FILE   *file;           /* Data file */
+    long    size = 0;       /* File size */
+    size_t  res  = 0;       /* Read data count */
 
-    if (i_hash != nullptr)
-        *i_hash = 0;
+    if (hash_out != nullptr)
+        *hash_out = 0;
 
     errno = 0;
 
-    f_file = fopen (s_fname, "rb");
+    file = fopen (fname, "rb");
     /* Error opening file */
-    if (f_file == nullptr) {
-        *i_err = errno == ENOENT ? ERR_FILE_EX : ERR_FILE;
-        warn ("%s", s_fname);
+    if (file == nullptr) {
+        *err = errno == ENOENT ? ERR_FILE_EX : ERR_FILE;
+        warn ("%s", fname);
         return nullptr;
     }
     /* get file size */
-    fseek (f_file , 0 , SEEK_END);
-    l_size = ftell (f_file);
-    rewind (f_file);
+    fseek (file , 0 , SEEK_END);
+    size = ftell (file);
+    rewind (file);
 
     /* Empty file */
-    if (l_size == 0) {
-        *i_err = ERR_OK;
-        fclose (f_file);
+    if (size == 0) {
+        *err = ERR_OK;
+        fclose (file);
         return nullptr;
     }
     /* Function failure */
-    if (l_size < 0) {
-        *i_err = ERR_FILE_RW;
-        warn ("%s", s_fname);
-        fclose (f_file);
+    if (size < 0) {
+        *err = ERR_FILE_RW;
+        warn ("%s", fname);
+        fclose (file);
         return nullptr;
     }
-    cres ((void**) &s_buff, (size_t) l_size + 1, sizeof (char));
-    s_buff[0] = '\0';
+    cres ((void**) &buff, (size_t) size + 1, sizeof (char));
+    buff[0] = '\0';
     /* copy the file into the buffer */
-    ui_res = fread (s_buff, 1, (size_t) l_size, f_file);
-    s_buff[l_size] = '\0';
+    res = fread (buff, 1, (size_t) size, file);
+    buff[size] = '\0';
 
-    if (ui_res != (size_t) l_size) {
-        *i_err = ERR_FILE_RW;
-        warn ("%s", s_fname);
+    if (res != (size_t) size) {
+        *err = ERR_FILE_RW;
+        warn ("%s", fname);
     }
-    fclose (f_file);
+    fclose (file);
 
-    *i_err = ERR_OK;
-    if (i_hash != nullptr)
-        *i_hash = hash (s_buff);
+    *err = ERR_OK;
+    if (hash_out != nullptr)
+        *hash_out = hash (buff);
 
-    return s_buff;
+    return buff;
 }
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Save a bunch of data to file.
  */
 int
-save_file_data (const char *s_fname,
-                const char *s_buff)
+save_file_data (const char *fname,
+                const char *buff)
 {
-    FILE   *f_file;  /* File to save data */
-    size_t  ui_res;  /* Save data count */
-    size_t  ui_size; /* Buffer size */
+    FILE   *file;  /* File to save data */
+    size_t  res;   /* Save data count */
+    size_t  size;  /* Buffer size */
 
-    f_file = fopen (s_fname, "wb");
+    file = fopen (fname, "wb");
 
-    if (f_file == nullptr) {
-        warn ("%s", s_fname);
+    if (file == nullptr) {
+        warn ("%s", fname);
         return ERR_FILE;
     }
-    ui_size = strlen(s_buff);
-    ui_res  = fwrite (s_buff, sizeof (char), ui_size, f_file);
-    fclose (f_file);
+    size = strlen(buff);
+    res  = fwrite (buff, sizeof (char), size, file);
+    fclose (file);
 
-    if (ui_res != ui_size) {
-        warn ("%s", s_fname);
+    if (res != size) {
+        warn ("%s", fname);
         return ERR_FILE_RW;
         }
     return ERR_OK;

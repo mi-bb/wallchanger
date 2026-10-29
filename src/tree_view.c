@@ -41,34 +41,34 @@ enum e_tree_view_columns {
 /**
  * @fn  static void liststore_set_item (GtkListStore    *gls_list,
  *                                      GtkTreeIter     *gti_iter,
- *                                      const ImageInfo *ii_info)
+ *                                      const ImageInfo *info)
  *
  * @brief  Set data in GtkListStore.
  *
- * Sets data from ii_info ImageInfo to gls_list GtkListStore row pointed
+ * Sets data from info ImageInfo to gls_list GtkListStore row pointed
  * by gti_iter GtkTreeIter.
  *
  * @param[out] gls_list GtkListStore to set data
  * @param[in]  gti_iter GtkTreeIter row address
- * @param[in]  ii_info  Data in ImageInfo object
+ * @param[in]  info  Data in ImageInfo object
  * @return     none
  *
  * @fn  static void treeview_add_item (GtkWidget       *gw_tview,
- *                                     const ImageInfo *ii_info)
+ *                                     const ImageInfo *info)
  *
  * @brief  Insert single data item to GtkListStore.
  *
  * @param[out] gw_tview    TreeView in which data should be added
- * @param[in]  ii_info  data in ImageInfo object
+ * @param[in]  info  data in ImageInfo object
  * @return     none
  */
 /*----------------------------------------------------------------------------*/
 static void liststore_set_item    (GtkListStore    *gls_list,
                                    GtkTreeIter     *gti_iter,
-                                   const ImageInfo *ii_info);
+                                   const ImageInfo *info);
 
 static void treeview_add_item     (GtkWidget       *gw_tview,
-                                   const ImageInfo *ii_info);
+                                   const ImageInfo *info);
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Set data in GtkListStore.
@@ -76,15 +76,15 @@ static void treeview_add_item     (GtkWidget       *gw_tview,
 static void
 liststore_set_item (GtkListStore    *gls_list,
                     GtkTreeIter     *gti_iter,
-                    const ImageInfo *ii_info)
+                    const ImageInfo *info)
 {
     gtk_list_store_set (gls_list, gti_iter,
-                        COL_FILE_PATH,    image_info_get_file_path (ii_info),
-                        COL_FILE_NAME,    image_info_get_file_name (ii_info),
-                        COL_FILE_DIR,     image_info_get_file_dir  (ii_info),
-                        COL_WIDTH_HEIGHT, image_info_get_wxh       (ii_info),
-                        COL_WIDTH,        image_info_get_width     (ii_info),
-                        COL_HEIGHT,       image_info_get_height    (ii_info),
+                        COL_FILE_PATH,    image_info_get_file_path (info),
+                        COL_FILE_NAME,    image_info_get_file_name (info),
+                        COL_FILE_DIR,     image_info_get_file_dir  (info),
+                        COL_WIDTH_HEIGHT, image_info_get_wxh       (info),
+                        COL_WIDTH,        image_info_get_width     (info),
+                        COL_HEIGHT,       image_info_get_height    (info),
                         -1);
 }
 /*----------------------------------------------------------------------------*/
@@ -93,7 +93,7 @@ liststore_set_item (GtkListStore    *gls_list,
  */
 static void
 treeview_add_item (GtkWidget       *gw_tview,
-                   const ImageInfo *ii_info)
+                   const ImageInfo *info)
 {
     GtkListStore *gls_store;
     GtkTreeIter   gti_iter;
@@ -102,7 +102,7 @@ treeview_add_item (GtkWidget       *gw_tview,
                 GTK_TREE_VIEW (gw_tview)));
 
     gtk_list_store_append (gls_store, &gti_iter);
-    liststore_set_item (gls_store, &gti_iter, ii_info);
+    liststore_set_item (gls_store, &gti_iter, info);
 }
 /*----------------------------------------------------------------------------*/
 /**
@@ -113,16 +113,16 @@ treeview_add_items_glist (GtkWidget   *gw_tview,
                           const GList *gl_files)
 {
     const char *s_fn    = nullptr; /* String for file path */
-    ImageInfo  *ii_info = nullptr; /* Image information */
+    ImageInfo  *info = nullptr; /* Image information */
 
     while (gl_files != nullptr) {
 
         s_fn = (const char *) gl_files->data;
 
-        if ((ii_info = image_info_new_from_file (s_fn)) != nullptr) {
+        if ((info = image_info_new_from_file (s_fn)) != nullptr) {
 
-            treeview_add_item (gw_tview, ii_info);
-            image_info_free (ii_info);
+            treeview_add_item (gw_tview, info);
+            image_info_free (info);
         }
         gl_files = gl_files->next;
     }
@@ -136,15 +136,15 @@ treeview_add_items_gslist (GtkWidget    *gw_tview,
                            const GSList *gl_files)
 {
     const char *s_fn    = nullptr; /* String for file path */
-    ImageInfo  *ii_info = nullptr; /* Image information */
+    ImageInfo  *info = nullptr; /* Image information */
 
     while (gl_files != nullptr) {
 
         s_fn = (const char *) gl_files->data;
 
-        if ((ii_info = image_info_new_from_file (s_fn)) != nullptr) {
-            treeview_add_item (gw_tview, ii_info);
-            image_info_free (ii_info);
+        if ((info = image_info_new_from_file (s_fn)) != nullptr) {
+            treeview_add_item (gw_tview, info);
+            image_info_free (info);
         }
         gl_files = gl_files->next;
     }
@@ -158,13 +158,13 @@ treeview_add_items_setting (GtkWidget     *gw_tview,
                             const Setting *st_wallpapers)
 {
     const char *s_fn    = nullptr; /* File name to process */
-    ImageInfo  *ii_info = nullptr; /* ImageInfo wallpaper info */
+    ImageInfo  *info = nullptr; /* ImageInfo wallpaper info */
 
     while (st_wallpapers != nullptr) {
         if ((s_fn = setting_get_string (st_wallpapers)) != nullptr) {
-            if ((ii_info = image_info_new_from_file (s_fn)) != nullptr) {
-                treeview_add_item (gw_tview, ii_info);
-                image_info_free (ii_info);
+            if ((info = image_info_new_from_file (s_fn)) != nullptr) {
+                treeview_add_item (gw_tview, info);
+                image_info_free (info);
             }
         }
         st_wallpapers = st_wallpapers->next;
@@ -178,17 +178,17 @@ ImageInfo *
 treemodel_get_data (GtkTreeModel *gtm_model,
                     GtkTreeIter   gti_iter)
 {
-    ImageInfo *ii_info = image_info_new ();
+    ImageInfo *info = image_info_new ();
 
     gtk_tree_model_get (gtm_model, &gti_iter,
-            COL_FILE_PATH,     &ii_info->s_file_path, 
-            COL_FILE_NAME,     &ii_info->s_file_name,
-            COL_FILE_DIR,      &ii_info->s_file_dir,
-            COL_WIDTH_HEIGHT,  &ii_info->s_width_height,
-            COL_WIDTH,         &ii_info->i_width,
-            COL_HEIGHT,        &ii_info->i_height,
+            COL_FILE_PATH,     &info->file_path, 
+            COL_FILE_NAME,     &info->file_name,
+            COL_FILE_DIR,      &info->file_dir,
+            COL_WIDTH_HEIGHT,  &info->width_height,
+            COL_WIDTH,         &info->width,
+            COL_HEIGHT,        &info->height,
             -1);
-    return ii_info;
+    return info;
 }
 /*----------------------------------------------------------------------------*/
 /**
@@ -198,21 +198,21 @@ GSList *
 treeview_get_data (GtkWidget *gw_tview)
 {
     GtkTreeModel *gtm_model;         /* TreeModel */
-    ImageInfo    *ii_info;           /* Wallpaper image info */
+    ImageInfo    *info;           /* Wallpaper image info */
     GtkTreeIter   gti_iter;          /* TreeIter */
-    GSList       *gsl_iinfo = nullptr;  /* ImageInfo return list */
+    GSList       *info_list = nullptr;  /* ImageInfo return list */
     gboolean      b_res     = FALSE; /* Find item result */
 
     gtm_model = gtk_tree_view_get_model (GTK_TREE_VIEW (gw_tview));
     b_res     = gtk_tree_model_get_iter_first (gtm_model, &gti_iter);
 
     while (b_res) {
-        ii_info = treemodel_get_data (gtm_model, gti_iter);
-        gsl_iinfo = g_slist_append (gsl_iinfo, ii_info);
+        info = treemodel_get_data (gtm_model, gti_iter);
+        info_list = g_slist_append (info_list, info);
 
         b_res = gtk_tree_model_iter_next (gtm_model, &gti_iter);
     }
-    return gsl_iinfo;
+    return info_list;
 }
 /*----------------------------------------------------------------------------*/
 Setting *
@@ -221,17 +221,17 @@ treeview_get_setting_data (GtkWidget *gw_tview)
     GtkTreeModel *gtm_model;       /* TreeModel */
     GtkTreeIter   gti_iter;        /* TreeIter */
     Setting      *st_data = nullptr;  /* Setting item to return */
-    ImageInfo    *ii_info = nullptr;  /* Info with wallpaper data */
+    ImageInfo    *info = nullptr;  /* Info with wallpaper data */
     gboolean      b_res   = FALSE; /* Find item result */
 
     gtm_model = gtk_tree_view_get_model (GTK_TREE_VIEW (gw_tview));
     b_res     = gtk_tree_model_get_iter_first (gtm_model, &gti_iter);
 
     while (b_res) {
-        ii_info = treemodel_get_data (gtm_model, gti_iter);
+        info = treemodel_get_data (gtm_model, gti_iter);
         st_data = settings_append (st_data,
-                setting_new_string (nullptr, image_info_get_file_path (ii_info)));
-        image_info_free (ii_info);
+                setting_new_string (nullptr, image_info_get_file_path (info)));
+        image_info_free (info);
 
         b_res = gtk_tree_model_iter_next (gtm_model, &gti_iter);
     }
