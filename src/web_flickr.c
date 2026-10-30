@@ -358,7 +358,7 @@ flickr_search (WebWidget      *ww_widget,
 
     strcpy (s_sort,  "interestingness-desc");
     strcpy (s_media, "photos");
-    s_tags = str_replace_in (ww_widget->s_query, " ", ",");
+    s_tags = str_replace_in (ww_widget->query, " ", ",");
 
     flickcurl_search_params_init (&params);
     params.sort  = s_sort;
@@ -367,30 +367,30 @@ flickr_search (WebWidget      *ww_widget,
 
     flickcurl_photos_list_params_init (&list_params);
     list_params.per_page = 12;
-    list_params.page     = ww_widget->i_page;
+    list_params.page     = ww_widget->page;
     list_params.extras   = "original_format,o_dims,url_o,url_t";
 
     photos_list = flickcurl_photos_search_params (fc, &params, &list_params);
 
     gtk_list_store_clear (GTK_LIST_STORE (gtk_icon_view_get_model (
-                    GTK_ICON_VIEW (ww_widget->gw_img_view))));
+                    GTK_ICON_VIEW (ww_widget->img_view))));
 
     if (photos_list != nullptr) {
         cq_query = cache_query_new (ww_name (WEB_SERV_FLICKR),
-                                    ww_widget->s_query,
-                                    ww_widget->s_search_opts,
-                                    ww_widget->i_page);
+                                    ww_widget->query,
+                                    ww_widget->search_opts,
+                                    ww_widget->page);
 
-        ww_widget->i_found_cnt = photos_list->total_count;
-        cq_query->found_cnt  = ww_widget->i_found_cnt;
+        ww_widget->found_cnt = photos_list->total_count;
+        cq_query->found_cnt  = ww_widget->found_cnt;
 
         for(i = 0; i < photos_list->photos_count; ++i) {
             item = flickrphoto_to_search_item (photos_list->photos[i]);
-            add_search_item_to_img_view (ww_widget->gw_img_view,
+            add_search_item_to_img_view (ww_widget->img_view,
                                          item,
-                                         ww_widget->s_wallp_dir,
+                                         ww_widget->wallpaper_dir,
                                          ww_name (WEB_SERV_FLICKR),
-                                         ww_widget->i_thumb_quality);
+                                         ww_widget->thumb_quality);
             cache_query_append_item (cq_query, item);
         }
         i_err = cache_query_save (cq_query);

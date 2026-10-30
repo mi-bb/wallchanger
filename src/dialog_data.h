@@ -32,54 +32,54 @@
  *
  * @brief  Structure to pass widgets and settings to callback
  *
- * @var   DialogData::gw_window
+ * @var   DialogData::window
  * @brief Pointer to main config dialog window
- * @var   DialogData::gw_view
+ * @var   DialogData::view
  * @brief Pointer to TreeView with wallpaper list
- * @var   DialogData::gw_random
+ * @var   DialogData::random
  * @brief Pointer to CheckBox for selecting random wallpapers
- * @var   DialogData::gw_lastused
+ * @var   DialogData::last_used
  * @brief Pointer to CheckBox for restoring last used wallpaper on start
- * @var   DialogData::gw_timealign
+ * @var   DialogData::time_align
  * @brief Pointer to CheckBox for time aligning
- * @var   DialogData::gw_command
+ * @var   DialogData::command
  * @brief Pointer to Entry with command to set wallpaper
- * @var   DialogData::gw_interval
+ * @var   DialogData::interval
  * @brief Pointer to CheckBox for selecting wallpaper change interval
- * @var   DialogData::gw_inter_combo
+ * @var   DialogData::interval_combo
  * @brief Pointer to ComboBox for selecting wallpapet change interval
- * @var   DialogData::gw_dm_label
+ * @var   DialogData::daemon_label
  * @brief Daemon info label
- * @var   DialogData::gw_statusbar
+ * @var   DialogData::status_bar
  * @brief Status bar
- * @var   DialogData::gw_imgprev
+ * @var   DialogData::img_preview
  * @brief Wallpaper preview image
- * @var   DialogData::s_cfg_file
+ * @var   DialogData::config_file
  * @brief Config file path
  */
 typedef struct
 DialogData {
-    GtkWindow  *gw_window;      /* App window pointer */
-    GtkWidget  *gw_view;        /* TreeView file list widget */
-    GtkWidget  *gw_random;      /* Random background select check box */
-    GtkWidget  *gw_lastused;    /* Set last used wallpaper check box */
-    GtkWidget  *gw_timealign;   /* Time align check box */
-    GtkWidget  *gw_command;     /* Set wallpaper command entry */
-    GtkWidget  *gw_interval;    /* Time interval check button */
-    GtkWidget  *gw_inter_combo; /* Time interval combo box */
-    GtkWidget  *gw_dm_label;    /* Daemon info label */
-    GtkWidget  *gw_statusbar;   /* Status bar */
-    GtkWidget  *gw_imgprev;     /* Wallpaper preview image */
-    char       *s_cfg_file;     /* Config file string */
+    GtkWindow  *window;         /* App window pointer */
+    GtkWidget  *view;           /* TreeView file list widget */
+    GtkWidget  *random;         /* Random background select check box */
+    GtkWidget  *last_used;      /* Set last used wallpaper check box */
+    GtkWidget  *time_align;     /* Time align check box */
+    GtkWidget  *command;        /* Set wallpaper command entry */
+    GtkWidget  *interval;       /* Time interval check button */
+    GtkWidget  *interval_combo; /* Time interval combo box */
+    GtkWidget  *daemon_label;   /* Daemon info label */
+    GtkWidget  *status_bar;     /* Status bar */
+    GtkWidget  *img_preview;    /* Wallpaper preview image */
+    char       *config_file;    /* Config file path */
 } DialogData;
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Free DialogData object.
  *
- * @param[out] dd_data  DialogData object to free
+ * @param[out] data  DialogData object to free
  * @return     None
  */
-void         dialog_data_free                   (DialogData       *dd_data);
+void         dialog_data_free                   (DialogData       *data);
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Create new DialogData object.
@@ -90,30 +90,30 @@ DialogData * dialog_data_new                    (void);
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Look for config file, try to create it if not found. When
- *         s_cfg_file from dd_data is not null, checks it. Exits on fail.
+ *         config_file from data is not null, checks it. Exits on fail.
  *
- * @param[in] dd_data  DialogData object
+ * @param[in] data  DialogData object
  * @return    none
  */
-void         dialog_data_do_config_file_stuff   (DialogData       *dd_data);
+void         dialog_data_do_config_file_stuff   (DialogData       *data);
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Get config file path from dialog_data.
  *
- * @param[in] dd_data  DialogData object
+ * @param[in] data  DialogData object
  * @return    String with config file path
  */
 static inline const char *
-dialog_data_get_cfg_file (const DialogData *dd_data) {
-    return (const char*) dd_data->s_cfg_file;
+dialog_data_get_cfg_file (const DialogData *data) {
+    return (const char*) data->config_file;
 }
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Get information about config file for status bar.
  *
- * @param[in] dd_data  DialogData object
+ * @param[in] data  DialogData object
  * @return    String with config file information
  */
-char       * dialog_data_get_status_config_info (const DialogData *dd_data);
+char       * dialog_data_get_status_config_info (const DialogData *data);
 /*----------------------------------------------------------------------------*/
 #endif

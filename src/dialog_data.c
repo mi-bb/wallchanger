@@ -29,39 +29,39 @@
 /**
  * @brief  DialogData initialization.
  *
- * @param[out]  dd_data  DialogData item
+ * @param[out]  data  DialogData item
  * @return      none
  */
-static void dialog_data_init (DialogData *dd_data);
+static void dialog_data_init (DialogData *data);
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Free DialogData object.
  */
 void
-dialog_data_free (DialogData *dd_data)
+dialog_data_free (DialogData *data)
 {
-    free (dd_data->s_cfg_file);
-    free (dd_data);
+    free (data->config_file);
+    free (data);
 }
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  DialogData initialization.
  */
 static void
-dialog_data_init (DialogData *dd_data)
+dialog_data_init (DialogData *data)
 {
-    dd_data->gw_window      = nullptr;
-    dd_data->gw_view        = nullptr;
-    dd_data->gw_random      = nullptr;
-    dd_data->gw_lastused    = nullptr;
-    dd_data->gw_timealign   = nullptr;
-    dd_data->gw_command     = nullptr;
-    dd_data->gw_interval    = nullptr;
-    dd_data->gw_inter_combo = nullptr;
-    dd_data->gw_dm_label    = nullptr;
-    dd_data->gw_statusbar   = nullptr;
-    dd_data->gw_imgprev     = nullptr;
-    dd_data->s_cfg_file     = nullptr;
+    data->window         = nullptr;
+    data->view           = nullptr;
+    data->random         = nullptr;
+    data->last_used      = nullptr;
+    data->time_align     = nullptr;
+    data->command        = nullptr;
+    data->interval       = nullptr;
+    data->interval_combo = nullptr;
+    data->daemon_label   = nullptr;
+    data->status_bar     = nullptr;
+    data->img_preview    = nullptr;
+    data->config_file    = nullptr;
 }
 /*----------------------------------------------------------------------------*/
 /**
@@ -70,25 +70,25 @@ dialog_data_init (DialogData *dd_data)
 DialogData *
 dialog_data_new (void)
 {
-    DialogData *dd_data = nullptr;   /* DialogData item to return */
+    DialogData *data = nullptr;   /* DialogData item to return */
 
-    if ((dd_data = malloc (sizeof (DialogData))) == nullptr)
+    if ((data = malloc (sizeof (DialogData))) == nullptr)
         err (EXIT_FAILURE, nullptr);
 
-    dialog_data_init (dd_data);
+    dialog_data_init (data);
 
-    return dd_data;
+    return data;
 }
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Look for config file, try to create it if not found. When
- *         s_cfg_file from dd_data is not null, checks it. Exits on fail.
+ *         config_file from data is not null, checks it. Exits on fail.
  */
 void
-dialog_data_do_config_file_stuff (DialogData *dd_data)
+dialog_data_do_config_file_stuff (DialogData *data)
 {
-    if (cfg_file_config_file_stuff (&dd_data->s_cfg_file, 1) != ERR_OK) {
-        dialog_data_free (dd_data);
+    if (cfg_file_config_file_stuff (&data->config_file, 1) != ERR_OK) {
+        dialog_data_free (data);
         exit (EXIT_FAILURE);
     }
 }
@@ -97,23 +97,23 @@ dialog_data_do_config_file_stuff (DialogData *dd_data)
  * @brief  Get information about config file for status bar.
  */
 char *
-dialog_data_get_status_config_info (const DialogData *dd_data)
+dialog_data_get_status_config_info (const DialogData *data)
 {
-    char   *s_ret   = nullptr; /* Result string */
-    size_t  ui_plen = 0;    /* Prefix text length */
-    size_t  ui_clen = 0;    /* Config file name length */
+    char   *result      = nullptr; /* Result string */
+    size_t  prefix_len  = 0;       /* Prefix text length */
+    size_t  config_len  = 0;       /* Config file name length */
 
-    ui_plen = strlen (STATUS_CONFIG);
-    ui_clen = strlen (dd_data->s_cfg_file);
+    prefix_len = strlen (STATUS_CONFIG);
+    config_len = strlen (data->config_file);
 
-    if ((s_ret = malloc ((ui_plen + ui_clen + 1) * sizeof (char))) == nullptr)
+    if ((result = malloc ((prefix_len + config_len + 1) * sizeof (char))) == nullptr)
         err (EXIT_FAILURE, nullptr);
 
-    memcpy (s_ret, STATUS_CONFIG, ui_plen);
-    memcpy (s_ret + ui_plen, dd_data->s_cfg_file, ui_clen);
-    s_ret[ui_plen + ui_clen] = '\0';
+    memcpy (result, STATUS_CONFIG, prefix_len);
+    memcpy (result + prefix_len, data->config_file, config_len);
+    result[prefix_len + config_len] = '\0';
 
-    return s_ret;
+    return result;
 }
 /*----------------------------------------------------------------------------*/
 

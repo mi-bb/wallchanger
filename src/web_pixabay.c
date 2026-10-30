@@ -328,9 +328,9 @@ pixabay_json_to_webwidget (const char  *s_buff,
         if (json_object_object_get_ex (j_obj, "totalHits", &j_val) &&
             json_object_get_type (j_val) == json_type_int) {
 
-            ww_widget->i_found_cnt = json_object_get_int (j_val);
+            ww_widget->found_cnt = json_object_get_int (j_val);
 #ifdef DEBUG
-            printf ("found images : %d\n", ww_widget->i_found_cnt);
+            printf ("found images : %d\n", ww_widget->found_cnt);
 #endif
         }
         if (json_object_object_get_ex (j_obj, "hits", &j_arr) &&
@@ -341,11 +341,11 @@ pixabay_json_to_webwidget (const char  *s_buff,
             for (i = 0; i < ui_cnt; ++i) {
                 if ((j_val = json_object_array_get_idx (j_arr, i)) != nullptr) {
                     item = pixabay_json_obj_to_search_item (j_val);
-                    add_search_item_to_img_view (ww_widget->gw_img_view,
+                    add_search_item_to_img_view (ww_widget->img_view,
                                                  item,
-                                                 ww_widget->s_wallp_dir,
+                                                 ww_widget->wallpaper_dir,
                                                  ww_name (WEB_SERV_PIXABAY),
-                                                 ww_widget->i_thumb_quality);
+                                                 ww_widget->thumb_quality);
                     cache_query_append_item (cq_query, item);
                 }
             }
@@ -369,32 +369,32 @@ pixabay_search (WebWidget      *ww_widget,
     if (str_is_empty_warn (ns_data->str[0], "Pixabay API key is not set"))
         return;
 
-    s_query = str_replace_in (ww_widget->s_query, " ", "+");
+    s_query = str_replace_in (ww_widget->query, " ", "+");
 
 #ifdef DEBUG
-    printf ("query : %s\n", ww_widget->s_query);
-    printf ("search opts : %s\n", ww_widget->s_search_opts);
+    printf ("query : %s\n", ww_widget->query);
+    printf ("search opts : %s\n", ww_widget->search_opts);
 #endif
 
     ud_data = urldata_search_pixabay (s_query,
-                                      ww_widget->s_search_opts,
+                                      ww_widget->search_opts,
                                       ns_data->str[0],
-                                      ww_widget->i_page);
+                                      ww_widget->page);
     if (ud_data->errbuf != nullptr) {
         message_dialog_error (nullptr, ud_data->errbuf);
     }
     else if (urldata_full (ud_data)) {
         cq_query = cache_query_new (ww_name (WEB_SERV_PIXABAY),
-                                    ww_widget->s_query,
-                                    ww_widget->s_search_opts,
-                                    ww_widget->i_page);
+                                    ww_widget->query,
+                                    ww_widget->search_opts,
+                                    ww_widget->page);
 
         gtk_list_store_clear (GTK_LIST_STORE (gtk_icon_view_get_model (
-                        GTK_ICON_VIEW (ww_widget->gw_img_view))));
+                        GTK_ICON_VIEW (ww_widget->img_view))));
 
         pixabay_json_to_webwidget (ud_data->buffer, ww_widget,
                                    cq_query);
-        cq_query->found_cnt = ww_widget->i_found_cnt;
+        cq_query->found_cnt = ww_widget->found_cnt;
 
         i_err = cache_query_save (cq_query);
 
@@ -856,7 +856,7 @@ pixabay_search_opts_dialog (WebWidget *ww_widget)
 
     gtk_box_pack_start (GTK_BOX (gw_content_box), gw_hbox, FALSE, FALSE, 4);
 
-    st_settings = setts_read (ww_widget->s_cfg_file, &i_err);
+    st_settings = setts_read (ww_widget->config_file, &i_err);
     set_search_opts (gw_array, st_settings);
     settings_free_all (st_settings);
 
@@ -871,7 +871,7 @@ pixabay_search_opts_dialog (WebWidget *ww_widget)
 #ifdef DEBUG
         settings_print (st_settings);
 #endif
-        setts_check_update_file (ww_widget->s_cfg_file, st_settings);
+        setts_check_update_file (ww_widget->config_file, st_settings);
         s_res = search_opts_to_str (setting_get_child (st_settings));
         settings_free_all (st_settings);
     }

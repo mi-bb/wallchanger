@@ -36,9 +36,9 @@
  * @brief  Get webwidget name.
  */
 const char *
-ww_name (const int i_site)
+ww_name (const int site)
 {
-    switch (i_site) {
+    switch (site) {
         case WEB_SERV_PIXABAY:
             return "Pixabay";
         case WEB_SERV_WALLHAVEN:
@@ -59,9 +59,9 @@ ww_name (const int i_site)
  * @brief  Get webwidget options name.
  */
 const char *
-ww_opts (const int i_site)
+ww_opts (const int site)
 {
-    switch (i_site) {
+    switch (site) {
         case WEB_SERV_PIXABAY:
             return "Pixabay_opts";
         case WEB_SERV_WALLHAVEN:
@@ -82,9 +82,9 @@ ww_opts (const int i_site)
  * @brief  Get webwidget logo image id based on webwidget if.
  */
 int
-ww_logo_id (const int i_site)
+ww_logo_id (const int site)
 {
-    switch (i_site) {
+    switch (site) {
         case WEB_SERV_PIXABAY:
             return W_LOGO_PIXABAY;
         case WEB_SERV_WALLHAVEN:
@@ -104,277 +104,277 @@ ww_logo_id (const int i_site)
 /**
  * @brief  Get settings API names.
  *
- * @param[in] i_site  Site id
+ * @param[in] site  Site id
  * @return    NStrings item with API names
  */
 static NStrings *
-ww_get_api_key_names (const int i_site)
+ww_get_api_key_names (const int site)
 {
-    NStrings *ns_data = nullptr;
+    NStrings *nstrings = nullptr;
 
-    ns_data = nstrings_new (4, NS_VAL_EMPTY);
+    nstrings = nstrings_new (4, NS_VAL_EMPTY);
 
-    switch (i_site) {
+    switch (site) {
         case WEB_SERV_PIXABAY:
-            str_append (&ns_data->str[0], "Pixabay api");
+            str_append (&nstrings->str[0], "Pixabay api");
             break;
         case WEB_SERV_WALLHAVEN:
-            str_append (&ns_data->str[0], "Wallhaven api");
+            str_append (&nstrings->str[0], "Wallhaven api");
             break;
         case WEB_SERV_WALLABYSS:
-            str_append (&ns_data->str[0], "Wallpaper Abyss api");
+            str_append (&nstrings->str[0], "Wallpaper Abyss api");
             break;
 #ifdef HAVE_FLICKCURL
         case WEB_SERV_FLICKR:
-            str_append (&ns_data->str[0], "Flickr client key");
-            str_append (&ns_data->str[1], "Flickr client secret");
-            str_append (&ns_data->str[2], "Flickr access token");
-            str_append (&ns_data->str[3], "Flickr access token secret");
+            str_append (&nstrings->str[0], "Flickr client key");
+            str_append (&nstrings->str[1], "Flickr client secret");
+            str_append (&nstrings->str[2], "Flickr access token");
+            str_append (&nstrings->str[3], "Flickr access token secret");
             break;
 #endif
         default:
             break;
     }
-    return ns_data;
+    return nstrings;
 }
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Get API key data of given service from settings.
  */
 NStrings *
-ww_get_api_key_data (Setting  *st_settings,
-                     const int i_site)
+ww_get_api_key_data (Setting  *settings,
+                     const int site)
 {
-    NStrings   *ns_key_names = nullptr;  /* API key names in settings */
-    NStrings   *ns_data      = nullptr;  /* Data to rerutn */
-    Setting    *st_sett      = nullptr;  /* For individual setting */
-    const char *s_api        = nullptr;  /* For API key */
+    NStrings   *key_names = nullptr;  /* API key names in settings */
+    NStrings   *nstrings  = nullptr;  /* Data to rerutn */
+    Setting    *setting   = nullptr;  /* For individual setting */
+    const char *api       = nullptr;  /* For API key */
 
-    ns_key_names = ww_get_api_key_names (i_site);
-    ns_data      = nstrings_new (4, NS_VAL_EMPTY);
+    key_names = ww_get_api_key_names (site);
+    nstrings      = nstrings_new (4, NS_VAL_EMPTY);
 
     for (int i = 0; i < 4; ++i) {
-        if (ns_key_names->str[i][0] != '\0') {
-            st_sett = settings_find (st_settings, ns_key_names->str[i]);
-            s_api   = st_sett == nullptr ? "" : setting_get_string (st_sett);
-            str_append (&ns_data->str[i], s_api);
+        if (key_names->str[i][0] != '\0') {
+            setting = settings_find (settings, key_names->str[i]);
+            api   = setting == nullptr ? "" : setting_get_string (setting);
+            str_append (&nstrings->str[i], api);
         }
     }
-    nstrings_free (ns_key_names);
+    nstrings_free (key_names);
 
-    return ns_data;
+    return nstrings;
 }
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Update API key data in settings.
  */
 int
-ww_update_api_key_data (const char *s_cfg_file,
-                        NStrings   *ns_key_data,
-                        const int   i_site)
+ww_update_api_key_data (const char *cfg_file,
+                        NStrings   *key_data,
+                        const int   site)
 {
-    Setting  *st_setts;       /* Setting list for key data */
-    NStrings *ns_key_names;   /* Key names for i_site site */
-    int       i_res = ERR_OK; /* Error output */
+    Setting  *settings;     /* Setting list for key data */
+    NStrings *key_names;    /* Key names for the site */
+    int       res = ERR_OK; /* Error output */
 
     /* Get api key names for a given wallpaper site */
-    ns_key_names = ww_get_api_key_names (i_site);
+    key_names = ww_get_api_key_names (site);
     /* Create Setting list with key name and key value */
-    st_setts = setting_new_string (ns_key_names->str[0],
-                                   ns_key_data->str[0]);
+    settings = setting_new_string (key_names->str[0],
+                                   key_data->str[0]);
 #ifdef HAVE_FLICKCURL
-    if (i_site == WEB_SERV_FLICKR) {
-        st_setts = settings_append (st_setts,
-            setting_new_string (ns_key_names->str[1], ns_key_data->str[1]));
-        st_setts = settings_append (st_setts,
-            setting_new_string (ns_key_names->str[2], ns_key_data->str[2]));
-        st_setts = settings_append (st_setts,
-            setting_new_string (ns_key_names->str[3], ns_key_data->str[3]));
+    if (site == WEB_SERV_FLICKR) {
+        settings = settings_append (settings,
+            setting_new_string (key_names->str[1], key_data->str[1]));
+        settings = settings_append (settings,
+            setting_new_string (key_names->str[2], key_data->str[2]));
+        settings = settings_append (settings,
+            setting_new_string (key_names->str[3], key_data->str[3]));
     }
 #endif
     /* Update config file with new data */
-    i_res = setts_check_update_file (s_cfg_file, st_setts);
+    res = setts_check_update_file (cfg_file, settings);
 
-    settings_free_all (st_setts);
-    nstrings_free (ns_key_names);
+    settings_free_all (settings);
+    nstrings_free (key_names);
 
-    return i_res;
+    return res;
 }
 /*----------------------------------------------------------------------------*/
 /**
- * @brief  Check if string s_txt is null or empty and show message s_msg
+ * @brief  Check if string str is null or empty and show message msg
  *         if it is.
  */
 int
-str_is_empty_warn (const char *s_str,
-                   const char *s_msg)
+str_is_empty_warn (const char *str,
+                   const char *msg)
 {
-    if (str_is_empty (s_str)) {
-        if (s_msg != nullptr)
-            message_dialog_warning (nullptr, s_msg);
+    if (str_is_empty (str)) {
+        if (msg != nullptr)
+            message_dialog_warning (nullptr, msg);
         return 1;
     }
     return 0;
 }
 /*----------------------------------------------------------------------------*/
 /**
- * @brief  Check if string s_txt is made of alphanumeric chars and spaces
- *         and show message s_msg if it is not.
+ * @brief  Check if string str is made of alphanumeric chars and spaces
+ *         and show message msg if it is not.
  */
 int
-str_is_alnum_or_space_warn (const char *s_str,
-                            const char *s_msg)
+str_is_alnum_or_space_warn (const char *str,
+                            const char *msg)
 {
-    gunichar u_c; /* Uni char to examine */
+    gunichar c; /* Uni char to examine */
 
-    while (*s_str != '\0') {
-        u_c = g_utf8_get_char (s_str);
-        if (!g_unichar_isalnum (u_c) && !g_unichar_isspace (u_c)) {
-            if (s_msg != nullptr)
-                message_dialog_warning (nullptr, s_msg);
+    while (*str != '\0') {
+        c = g_utf8_get_char (str);
+        if (!g_unichar_isalnum (c) && !g_unichar_isspace (c)) {
+            if (msg != nullptr)
+                message_dialog_warning (nullptr, msg);
             return 0;
         }
-        s_str = g_utf8_find_next_char (s_str, nullptr);
+        str = g_utf8_find_next_char (str, nullptr);
     }
     return 1;
 }
 /*----------------------------------------------------------------------------*/
 /**
- * @brief  Check if string s_txt is made of unicode chars
- *         and show message s_msg if it is not.
+ * @brief  Check if string str is made of unicode chars
+ *         and show message msg if it is not.
  */
 int
-check_unicode_warn (const char *s_str,
-                    const char *s_msg)
+check_unicode_warn (const char *str,
+                    const char *msg)
 {
-    if (!g_utf8_validate (s_str, -1, nullptr)) {
-        if (s_msg != nullptr)
-            message_dialog_warning (nullptr, s_msg);
+    if (!g_utf8_validate (str, -1, nullptr)) {
+        if (msg != nullptr)
+            message_dialog_warning (nullptr, msg);
         return 0;
     }
     return 1;
 }
 /*----------------------------------------------------------------------------*/
 /**
- * @brief  Check from string s_txt all non alphanumeric chars and non spaces.
+ * @brief  Check from string str all non alphanumeric chars and non spaces.
  */
 void
-remove_non_alpha_space (char *s_str)
+remove_non_alpha_space (char *str)
 {
-    gunichar  u_c;    /* Uni char to examine */
-    char     *s_next; /* Position of next char */
+    gunichar  c;    /* Uni char to examine */
+    char     *next; /* Position of next char */
 
-    while (*s_str != '\0') {
-        u_c = g_utf8_get_char (s_str);
-        if (!g_unichar_isalnum (u_c) && !g_unichar_isspace (u_c)) {
-            s_next = g_utf8_find_next_char (s_str, nullptr);
-            memmove (s_str, s_next, strlen (s_next) + 1);
+    while (*str != '\0') {
+        c = g_utf8_get_char (str);
+        if (!g_unichar_isalnum (c) && !g_unichar_isspace (c)) {
+            next = g_utf8_find_next_char (str, nullptr);
+            memmove (str, next, strlen (next) + 1);
         }
         else {
-            s_str = g_utf8_find_next_char (s_str, nullptr);
+            str = g_utf8_find_next_char (str, nullptr);
         }
     }
 }
 /*----------------------------------------------------------------------------*/
 /**
- * @brief  Get string value from Combobox's active i_col column.
+ * @brief  Get string value from Combobox's active col column.
  */
 char *
-combo_get_active_str (GtkWidget *gw_combo,
-                      const int  i_col)
+combo_get_active_str (GtkWidget *combo,
+                      const int  col)
 {
-    GtkTreeModel *model;   /* TreeModel */
-    GtkTreeIter   iter;    /* TreeIter */
-    char *s_ret = nullptr; /* Return string */
+    GtkTreeModel *model; /* TreeModel */
+    GtkTreeIter   iter;  /* TreeIter */
+    char *ret = nullptr; /* Return string */
 
-    if (gtk_combo_box_get_active_iter (GTK_COMBO_BOX (gw_combo), &iter)) {
+    if (gtk_combo_box_get_active_iter (GTK_COMBO_BOX (combo), &iter)) {
 
-        model = gtk_combo_box_get_model (GTK_COMBO_BOX (gw_combo));
-        gtk_tree_model_get (model, &iter, i_col, &s_ret, -1);
+        model = gtk_combo_box_get_model (GTK_COMBO_BOX (combo));
+        gtk_tree_model_get (model, &iter, col, &ret, -1);
     }
-    return s_ret;
+    return ret;
 }
 /*----------------------------------------------------------------------------*/
 /**
- * @brief  Check if given wallpaper is already in wallpaper dir and mark gp_pbuf
+ * @brief  Check if given wallpaper is already in wallpaper dir and mark pixbuf
  *         with check mark if it is.
  *
- * @param[in]  s_wallp_dir  Wallpaper directory
- * @param[in]  s_file_name  Wallpaper file to check
- * @param[out] gp_pbuf      Thumbnail pixbuf
+ * @param[in]  wallpaper_dir  Wallpaper directory
+ * @param[in]  file_name      Wallpaper file to check
+ * @param[out] pixbuf         Thumbnail pixbuf
  * @return     none
  */
 static void
-wallpaper_check_mark (const char *s_wallp_dir,
-                      const char *s_file_name,
-                      GdkPixbuf  *gp_pbuf)
+wallpaper_check_mark (const char *wallpaper_dir,
+                      const char *file_name,
+                      GdkPixbuf  *pixbuf)
 {
-    GdkPixbuf *gp_check = nullptr; /* Pixbuf for check image */
-    char      *s_wlfn   = nullptr; /* Wallpaper file path */
+    GdkPixbuf *check_pixbuf = nullptr; /* Pixbuf for check image */
+    char      *file_path    = nullptr; /* Wallpaper file path */
 
-    s_wlfn = str_comb (s_wallp_dir, "/");
-    str_append (&s_wlfn, s_file_name);
+    file_path = str_comb (wallpaper_dir, "/");
+    str_append (&file_path, file_name);
 
-    if (file_check_permissions (s_wlfn) == ERR_OK) {
+    if (file_check_permissions (file_path) == ERR_OK) {
 
-        gp_check = get_icon (W_IMG_CHECK);
-        gdk_pixbuf_composite (gp_check, gp_pbuf,
+        check_pixbuf = get_icon (W_IMG_CHECK);
+        gdk_pixbuf_composite (check_pixbuf, pixbuf,
                               0, 0,
-                              gdk_pixbuf_get_width (gp_check),
-                              gdk_pixbuf_get_height (gp_check),
+                              gdk_pixbuf_get_width (check_pixbuf),
+                              gdk_pixbuf_get_height (check_pixbuf),
                               0, 0,
                               1.0, 1.0,
                               GDK_INTERP_HYPER,
                               255);
-        g_object_unref (gp_check);
+        g_object_unref (check_pixbuf);
     }
-    free (s_wlfn);
+    free (file_path);
 }
 /*----------------------------------------------------------------------------*/
 /**
- * @brief  Add image based on si_item data to icon view.
+ * @brief  Add image based on item data to icon view.
  */
 void
-add_search_item_to_img_view (GtkWidget        *gw_iconview,
-                             const SearchItem *si_item,
-                             const char       *s_wallp_dir,
-                             const char       *s_service_name,
-                             const int         i_thumb_quality)
+add_search_item_to_img_view (GtkWidget        *iconview,
+                             const SearchItem *item,
+                             const char       *wallpaper_dir,
+                             const char       *service_name,
+                             const int         thumb_quality)
 {
-    GtkListStore *list_store;        /* ListStore */
-    GdkPixbuf    *gp_pbuf = nullptr; /* Pixbuf with thumbnail */
-    GtkTreeIter   iter;              /* TreeIter */
+    GtkListStore *list_store;       /* ListStore */
+    GdkPixbuf    *pixbuf = nullptr; /* Pixbuf with thumbnail */
+    GtkTreeIter   iter;             /* TreeIter */
 
     list_store = GTK_LIST_STORE (gtk_icon_view_get_model (
-                GTK_ICON_VIEW (gw_iconview)));
+                GTK_ICON_VIEW (iconview)));
 
-    if (si_item->thumb_url == nullptr)
+    if (item->thumb_url == nullptr)
         return;
 
-    gp_pbuf = thumbnail_get (s_service_name,
-                             si_item->id,
-                             i_thumb_quality,
-                             si_item->thumb_url);
+    pixbuf = thumbnail_get (service_name,
+                             item->id,
+                             thumb_quality,
+                             item->thumb_url);
 
-    if (gp_pbuf != nullptr) {
+    if (pixbuf != nullptr) {
 
-        wallpaper_check_mark (s_wallp_dir, si_item->file_name, gp_pbuf);
+        wallpaper_check_mark (wallpaper_dir, item->file_name, pixbuf);
 
         gtk_list_store_append(list_store, &iter);
         gtk_list_store_set(list_store, &iter,
-                           WEB_COL_PIXBUF,    gp_pbuf,
-                           WEB_COL_WIDTH,     si_item->width,
-                           WEB_COL_HEIGHT,    si_item->height,
-                           WEB_COL_ID,        si_item->id,
-                           WEB_COL_DISP_NAME, si_item->display_name,
-                           WEB_COL_AUTHOR,    si_item->author_name,
-                           WEB_COL_MARKUP,    si_item->display_markup,
-                           WEB_COL_FILE_NAME, si_item->file_name,
-                           WEB_COL_PAGE_URL,  si_item->page_url,
-                           WEB_COL_IMAGE_URL, si_item->image_url,
-                           WEB_COL_THUMB_URL, si_item->thumb_url,
+                           WEB_COL_PIXBUF,    pixbuf,
+                           WEB_COL_WIDTH,     item->width,
+                           WEB_COL_HEIGHT,    item->height,
+                           WEB_COL_ID,        item->id,
+                           WEB_COL_DISP_NAME, item->display_name,
+                           WEB_COL_AUTHOR,    item->author_name,
+                           WEB_COL_MARKUP,    item->display_markup,
+                           WEB_COL_FILE_NAME, item->file_name,
+                           WEB_COL_PAGE_URL,  item->page_url,
+                           WEB_COL_IMAGE_URL, item->image_url,
+                           WEB_COL_THUMB_URL, item->thumb_url,
                            -1);
-        g_object_unref (gp_pbuf);
+        g_object_unref (pixbuf);
     }
     while (gtk_events_pending ())
         gtk_main_iteration ();
@@ -385,35 +385,35 @@ add_search_item_to_img_view (GtkWidget        *gw_iconview,
  *         was found.
  */
 int
-check_for_cached_query (WebWidget  *ww_widget,
-                        const char *s_service_name)
+check_for_cached_query (WebWidget  *widget,
+                        const char *service_name)
 {
-    CacheQuery *cq_query_chk = nullptr; /* For checking cache availability */
-    int         i_err        = 0;       /* Error output */
+    CacheQuery *cached_query = nullptr; /* For checking cache availability */
+    int         err          = 0;       /* Error output */
     int         i            = 0;       /* i */
 
-    cq_query_chk = cache_query_check_query (s_service_name,
-                                            ww_widget->s_query,
-                                            ww_widget->s_search_opts,
-                                            ww_widget->i_page,
-                                            &i_err);
-    if (i_err != ERR_OK) {
-        message_dialog_error (nullptr, err_get_message (i_err));
+    cached_query = cache_query_check_query (service_name,
+                                            widget->query,
+                                            widget->search_opts,
+                                            widget->page,
+                                            &err);
+    if (err != ERR_OK) {
+        message_dialog_error (nullptr, err_get_message (err));
     }
-    if (cq_query_chk != nullptr) {
+    if (cached_query != nullptr) {
         gtk_list_store_clear (GTK_LIST_STORE (gtk_icon_view_get_model (
-                        GTK_ICON_VIEW (ww_widget->gw_img_view))));
+                        GTK_ICON_VIEW (widget->img_view))));
 
-        ww_widget->i_found_cnt = cq_query_chk->found_cnt;
+        widget->found_cnt = cached_query->found_cnt;
 
-        for (i = 0; i < cq_query_chk->count; ++i) {
-            add_search_item_to_img_view (ww_widget->gw_img_view,
-                                         cq_query_chk->items[i],
-                                         ww_widget->s_wallp_dir,
-                                         s_service_name,
-                                         ww_widget->i_thumb_quality);
+        for (i = 0; i < cached_query->count; ++i) {
+            add_search_item_to_img_view (widget->img_view,
+                                         cached_query->items[i],
+                                         widget->wallpaper_dir,
+                                         service_name,
+                                         widget->thumb_quality);
         }
-        cache_query_free (cq_query_chk);
+        cache_query_free (cached_query);
         return 1;
     }
     return 0;
@@ -423,28 +423,28 @@ check_for_cached_query (WebWidget  *ww_widget,
  * @brief  Converts image search options in Setting format to string for url.
  */
 char *
-search_opts_to_str (const Setting *st_setts)
+search_opts_to_str (const Setting *settings)
 {
-    char          *s_res   = nullptr; /* String to return */
-    const Setting *st_item = nullptr; /* For settings iteration */
-    char           s_buff[32];        /* Text buffer */
+    char          *res     = nullptr; /* String to return */
+    const Setting *setting = nullptr; /* For settings iteration */
+    char           buff[32];          /* Text buffer */
 
-    s_res   = strdup ("");
-    st_item = st_setts;
+    res = strdup ("");
+    setting = settings;
 
-    while (st_item != nullptr) {
-        str_append (&s_res, "&");
-        str_append (&s_res, setting_get_name (st_item));
-        str_append (&s_res, "=");
-        if (setting_get_type (st_item) == SET_VAL_INT) {
-            sprintf (s_buff, "%" PRId64, setting_get_int (st_item));
-            str_append (&s_res, s_buff);
+    while (setting != nullptr) {
+        str_append (&res, "&");
+        str_append (&res, setting_get_name (setting));
+        str_append (&res, "=");
+        if (setting_get_type (setting) == SET_VAL_INT) {
+            sprintf (buff, "%" PRId64, setting_get_int (setting));
+            str_append (&res, buff);
         }
-        else if (setting_get_type (st_item) == SET_VAL_STRING) {
-            str_append (&s_res, setting_get_string (st_item));
+        else if (setting_get_type (setting) == SET_VAL_STRING) {
+            str_append (&res, setting_get_string (setting));
         }
-        st_item = st_item->next;
+        setting = setting->next;
     }
-    return s_res;
+    return res;
 }
 /*----------------------------------------------------------------------------*/

@@ -66,135 +66,135 @@ enum e_img_list_columns : int {
 /**
  * @brief  Get webwidget name.
  *
- * @param[in] i_site  Site id
+ * @param[in] site  Site id
  * @return    String with webwidget name
  */
-const char * ww_name                (const int i_site) __attribute__ ((const));
+const char * ww_name                (const int site) __attribute__ ((const));
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Get webwidget options name.
  *
- * @param[in] i_site  Site id
+ * @param[in] site  Site id
  * @return    String with webwidget name
  */
-const char * ww_opts                (const int i_site) __attribute__ ((const));
+const char * ww_opts                (const int site) __attribute__ ((const));
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Get webwidget logo image id based on webwidget if.
  *
- * @param[in] i_site  Site id
+ * @param[in] site  Site id
  * @return    Logo id
  */
-int          ww_logo_id             (const int i_site) __attribute__ ((const));
+int          ww_logo_id             (const int site) __attribute__ ((const));
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Get API key data of given service from settings.
  *
- * @param[in] st_settings  Settings item
- * @param[in] i_site       Image service id
+ * @param[in] settings  Settings item
+ * @param[in] site      Image service id
  * @return    NStrings item with API key data
  */
-NStrings   * ww_get_api_key_data    (Setting   *st_settings,
-                                     const int  i_site);
+NStrings   * ww_get_api_key_data    (Setting   *settings,
+                                     const int  site);
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Update API key data in settings.
  *
- * @param[in] s_cfg_file   Config file path
- * @param[in] ns_key_data  NStrings item with API key data
- * @param[in] i_site       Image service id
+ * @param[in] cfg_file  Config file path
+ * @param[in] key_data  NStrings item with API key data
+ * @param[in] site      Image service id
  * @return    Process result
  */
-int          ww_update_api_key_data (const char *s_cfg_file,
-                                     NStrings   *ns_key_data,
-                                     const int   i_site);
+int          ww_update_api_key_data (const char *cfg_file,
+                                     NStrings   *key_data,
+                                     const int   site);
 /*----------------------------------------------------------------------------*/
 /**
- * @brief  Check if string s_str is null or empty and show message s_msg
+ * @brief  Check if string str is null or empty and show message msg
  *         if it is.
  *
- * @param[in]  s_str  String to check
- * @param[in]  s_msg  Message to show
+ * @param[in]  str  String to check
+ * @param[in]  msg  Message to show
  * @return     1 if string is empty, 0 if it is not.
  */
-int    str_is_empty_warn          (const char *s_str,
-                                   const char *s_msg);
+int    str_is_empty_warn          (const char *str,
+                                   const char *msg);
 /*----------------------------------------------------------------------------*/
 /**
- * @brief  Check if string s_str is made of alphanumeric chars and spaces
- *         and show message s_msg if it is not.
+ * @brief  Check if string str is made of alphanumeric chars and spaces
+ *         and show message msg if it is not.
  *
- * @param[in]  s_str  String to check
- * @param[in]  s_msg  Message to show
+ * @param[in]  str  String to check
+ * @param[in]  msg  Message to show
  * @return     1 if string is made of alphanumeric chars and spaces,
  *             0 if it is not.
  */
-int    str_is_alnum_or_space_warn (const char *s_str,
-                                   const char *s_msg);
+int    str_is_alnum_or_space_warn (const char *str,
+                                   const char *msg);
 /*----------------------------------------------------------------------------*/
 /**
- * @brief  Check if string s_str is made of unicode chars
- *         and show message s_msg if it is not.
+ * @brief  Check if string str is made of unicode chars
+ *         and show message msg if it is not.
  *
- * @param[in]  s_str  String to check
- * @param[in]  s_msg  Message to show
+ * @param[in]  str  String to check
+ * @param[in]  msg  Message to show
  * @return     1 if string is made of unicode chars, 0 if it is not.
  */
-int    check_unicode_warn         (const char *s_str,
-                                   const char *s_msg);
+int    check_unicode_warn         (const char *str,
+                                   const char *msg);
 /*----------------------------------------------------------------------------*/
 /**
- * @brief  Check from string s_str all non alphanumeric chars and non spaces.
+ * @brief  Check from string str all non alphanumeric chars and non spaces.
  *
- * @param[in]  s_str  String to process
+ * @param[in]  str  String to process
  * @return     none
  */
-void   remove_non_alpha_space     (char *s_str);
+void   remove_non_alpha_space     (char *str);
 /*----------------------------------------------------------------------------*/
 /**
- * @brief  Get string value from Combobox's active i_col column.
+ * @brief  Get string value from Combobox's active col column.
  *
- * @param[in] gw_combo  Combobox
- * @param[in] i_col     Column with data
+ * @param[in] combo  Combobox
+ * @param[in] col    Column with data
  * @return    String value
  */
-char * combo_get_active_str       (GtkWidget  *gw_combo,
-                                   const int   i_col);
+char * combo_get_active_str       (GtkWidget  *combo,
+                                   const int   col);
 /*----------------------------------------------------------------------------*/
 /**
- * @brief  Add image based on si_item data to icon view.
+ * @brief  Add image based on item data to icon view.
  *
- * @param[out] gw_iconview       IconView to add image
- * @param[in]  si_item           SearchItem with image data
- * @param[in]  s_wallp_dir       String with app's wallpaper directory
- * @param[in]  s_service_name    Name of search service
- * @param[in]  i_thumb_quality   Thumbnail jpg quality
+ * @param[out] iconview       IconView to add image
+ * @param[in]  item           SearchItem with image data
+ * @param[in]  wallpaper_dir  String with app's wallpaper directory
+ * @param[in]  service_name   Name of search service
+ * @param[in]  thumb_quality  Thumbnail jpg quality
  * @return     none
  */
-void   add_search_item_to_img_view (GtkWidget        *gw_iconview,
-                                    const SearchItem *si_item,
-                                    const char       *s_wallp_dir,
-                                    const char       *s_service_name,
-                                    const int         i_thumb_quality);
+void   add_search_item_to_img_view (GtkWidget        *iconview,
+                                    const SearchItem *item,
+                                    const char       *wallpaper_dir,
+                                    const char       *service_name,
+                                    const int         thumb_quality);
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Check for search query cached info, get info and add items if info
  *         was found.
  *
- * @param[in,out] ww_widget         WebWidget item
- * @param[in]     s_service_name    Name of search service
+ * @param[in,out] widget        WebWidget item
+ * @param[in]     service_name  Name of search service
  * @return        1 if cached query was found, 0 if not
  */
-int    check_for_cached_query     (WebWidget        *ww_widget,
-                                   const char       *s_service_name);
+int    check_for_cached_query     (WebWidget        *widget,
+                                   const char       *service_name);
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Converts image search options in Setting format to string for url.
  *
- * @param[in] st_setts  Setting item with search options
+ * @param[in] settings  Setting item with search options
  * @return    String with image options. After use it should be freed
  *            using free.
  */
-char * search_opts_to_str         (const Setting    *st_setts);
+char * search_opts_to_str         (const Setting    *settings);
 /*----------------------------------------------------------------------------*/
 #endif

@@ -36,81 +36,81 @@ char   ** wms_get_xfce_display_list  (void);
 /**
  * @brief  Free null terminated list of strings.
  *
- * @param[in,out]  s_list  Null terminated list of strings
+ * @param[in,out]  list  Null terminated list of strings
  * @return         none
  */
-void      wms_free_xfce_display_list (char      **s_list);
+void      wms_free_xfce_display_list (char      **list);
 /*----------------------------------------------------------------------------*/
 /**
- * @brief  Create Xfce wallpaper set command with display name given in s_disp.
+ * @brief  Create Xfce wallpaper set command with display name given in disp.
  *
- * @param[in] s_disp  String with display for command
+ * @param[in] disp  String with display for command
  * @return    New string with wallpaper set command. After use it should be
  *            freed using free.
  */
-char    * wms_get_xfce_command       (const char *s_disp);
+char    * wms_get_xfce_command       (const char *disp);
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Get window manager info from user's local config file.
  *
- * @param[out] i_err  Error output
+ * @param[out] err  Error output
  * @return     List of Setting items with window manager info
  */
-Setting * wms_get_wm_info_home       (int        *i_err);
+Setting * wms_get_wm_info_home       (int        *err);
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Get window manager info from default config file.
  *
- * @param[out] i_err  Error output
+ * @param[out] err  Error output
  * @return     List of Setting items with window manager info
  */
-Setting * wms_get_wm_info_data       (int        *i_err);
+Setting * wms_get_wm_info_data       (int        *err);
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Get window manager info from user's config file and if it is not
  *         present, get data from default config file.
  *
- * @param[out] i_err  Error output
+ * @param[out] err  Error output
  * @return     List of Setting items with window manager info
  */
-Setting * wms_get_wm_info            (int        *i_err);
+Setting * wms_get_wm_info            (int        *err);
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Find window manager that is currently in use.
  *
- * @param[in]  st_wmsl  List of Setting items
+ * @param[in]  wmlist  List of Setting items
  *
  * @return     Setting item with info about window manager, pointing into
- *             st_wmsl. It must not be freed separately - it stays owned by
- *             st_wmsl.
+ *             wmlist. It must not be freed separately - it stays owned by
+ *             wmlist.
  */
-const Setting * wms_get_current_wm   (const Setting *st_wmsl);
+const Setting * wms_get_current_wm   (const Setting *wmlist);
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Update wallpaper set command in window manager info config file.
  *
- * @param[in] s_wm_name  Name of window manager
- * @param[in] s_command  New command to set wallpaper
+ * @param[in] wm_name  Name of window manager
+ * @param[in] command  New command to set wallpaper
  * @return    Saving file status, ERR_OK or error code
  */
-int       wms_update_wm_command      (const char *s_wm_name,
-                                      const char *s_command);
+int       wms_update_wm_command      (const char *wm_name,
+                                      const char *command);
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Compare previously used window manager with present one, set
  *         wallpaper change command.
  *
- * @param[in]  s_cfg_file   Config file path
- * @param[in]  st_settings  List of Setting items
- * @param[in]  st_wmlist    Window manager info list
- * @param[out] i_err        Error output
+ * @param[in]  cfg_file  Config file path
+ * @param[in]  settings  List of Setting items
+ * @param[in]  wmlist    Window manager info list
+ * @param[out] err       Error output
  * @return     String with wallpaper set command. After use it should be freed
  *             using free
  */
-char    * wms_get_wallpaper_command  (const char *s_cfg_file,
-                                      Setting    *st_settings,
-                                      Setting    *st_wmlist,
-                                      int        *i_err);
+char    * wms_get_wallpaper_command  (const char *cfg_file,
+                                      Setting    *settings,
+                                      Setting    *wmlist,
+                                      int        *err);
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Compare user's wm info with default app wm info.

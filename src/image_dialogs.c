@@ -84,22 +84,22 @@ add_images_from_web_dialog (GtkWindow  *parent,
 
     /* Scrolled window for wallpeper icon view */
     scrolled_window = gtk_scrolled_window_new (
-        gtk_scrollable_get_hadjustment (GTK_SCROLLABLE (web_widget->gw_img_view)),
-        gtk_scrollable_get_vadjustment (GTK_SCROLLABLE (web_widget->gw_img_view)));
+        gtk_scrollable_get_hadjustment (GTK_SCROLLABLE (web_widget->img_view)),
+        gtk_scrollable_get_vadjustment (GTK_SCROLLABLE (web_widget->img_view)));
 
     gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (scrolled_window),
                                     GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
 
-    gtk_container_add (GTK_CONTAINER (scrolled_window), web_widget->gw_img_view);
+    gtk_container_add (GTK_CONTAINER (scrolled_window), web_widget->img_view);
 
     /* Boxes for result label, nav widget and image info */
     hbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 4);
     box  = gtk_box_new (GTK_ORIENTATION_VERTICAL,   4);
     gtk_box_pack_start (GTK_BOX (box),
-                        web_widget->gw_count_label,
+                        web_widget->count_label,
                         FALSE, FALSE, 4);
     gtk_box_pack_start (GTK_BOX (box),
-                        web_widget->gw_nav_box,
+                        web_widget->nav_box,
                         FALSE, FALSE, 4);
     gtk_box_pack_start (GTK_BOX (hbox),
                         box,
@@ -108,7 +108,7 @@ add_images_from_web_dialog (GtkWindow  *parent,
                         gtk_separator_new (GTK_ORIENTATION_VERTICAL),
                         FALSE, FALSE, 4);
     gtk_box_pack_start (GTK_BOX (hbox),
-                        web_widget->gw_ii_widget,
+                        web_widget->image_info_widget,
                         FALSE, FALSE, 4);
 
     /* Packing dialog widgets */
@@ -116,7 +116,7 @@ add_images_from_web_dialog (GtkWindow  *parent,
                         gtk_label_new ("Wallpaper search query: "),
                         FALSE, FALSE, 4);
     gtk_box_pack_start (GTK_BOX (content_box),
-                        web_widget->gw_search_box,
+                        web_widget->search_box,
                         FALSE, FALSE, 4);
     gtk_box_pack_start (GTK_BOX (content_box),
                         gtk_separator_new (GTK_ORIENTATION_HORIZONTAL),
@@ -134,7 +134,7 @@ add_images_from_web_dialog (GtkWindow  *parent,
                         gtk_separator_new (GTK_ORIENTATION_HORIZONTAL),
                         FALSE, FALSE, 4);
     gtk_box_pack_start (GTK_BOX (content_box),
-                        web_widget->gw_selected_box,
+                        web_widget->selected_box,
                         FALSE, FALSE, 4);
 
     gtk_widget_show_all (content_box);

@@ -32,30 +32,30 @@
 /**
  * @brief  Free WebWidget item.
  *
- * @param[out] ww_widget  WebWidget item to free
+ * @param[out] widget  WebWidget item to free
  * @return     none
  */
-void        webwidget_free           (WebWidget  *ww_widget);
+void        webwidget_free           (WebWidget  *widget);
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Create WebWidget item with widgets and data for wallpaper search.
  *
- * @param[in] st_settings  Settings needed to create widgets
- * @param[in] s_cfg_file   Config file path
+ * @param[in] settings  Settings needed to create widgets
+ * @param[in] cfg_file  Config file path
  * @return    WebWidget item
  */
-WebWidget * webwidget_create         (Setting    *st_settings,
-                                      const char *s_cfg_file);
+WebWidget * webwidget_create         (Setting    *settings,
+                                      const char *cfg_file);
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Save selected wallpapers in user's app share folder.
  *
- * @param[in] gw_dialog  Getting wallpapers from web dialog
- * @param[in] ww_widget  WebWidget item
+ * @param[in] dialog  Getting wallpapers from web dialog
+ * @param[in] widget  WebWidget item
  * @return    List with wallpapers for adding to wallpaper list.
  */
-GList     * save_selected_wallpapers (GtkWidget  *gw_dialog,
-                                      WebWidget  *ww_widget);
+GList     * save_selected_wallpapers (GtkWidget  *dialog,
+                                      WebWidget  *widget);
 /*----------------------------------------------------------------------------*/
 #endif
 

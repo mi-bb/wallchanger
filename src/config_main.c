@@ -46,53 +46,53 @@
 #include "window_manager_info.h"
 /*----------------------------------------------------------------------------*/
 /**
- * @fn  static uint32_t get_wallpaper_ch_interval (const DialogData *dd_data)
+ * @fn  static uint32_t get_wallpaper_ch_interval (const DialogData *data)
  *
  * @brief  Get wallpaper change minutes interval from widgets
  *
- * @param[in,out] dd_data  DialogData object with settings and widget data
+ * @param[in,out] data  DialogData object with settings and widget data
  * @return        Change interval value
  *
- * @fn  static void set_wallpaper_ch_interval (const DialogData *dd_data,
+ * @fn  static void set_wallpaper_ch_interval (const DialogData *data,
  *                                             const uint32_t    val)
  *
  * @brief  Set wallpaper change interval value to widgets
  *
- * @param[in,out] dd_data  DialogData object with settings and widget data
- * @param[in]     val      Change interval value to set
+ * @param[in,out] data  DialogData object with settings and widget data
+ * @param[in]     val   Change interval value to set
  * @return        none
  */
 /*----------------------------------------------------------------------------*/
-static uint32_t    get_wallpaper_ch_interval   (const DialogData  *dd_data);
+static uint32_t    get_wallpaper_ch_interval   (const DialogData  *data);
 
-static void        set_wallpaper_ch_interval   (const DialogData  *dd_data,
+static void        set_wallpaper_ch_interval   (const DialogData  *data,
                                                 const uint32_t     val);
 /*----------------------------------------------------------------------------*/
 /**
- * @fn  static Setting * widgets_get_settings (const DialogData  *dd_data)
+ * @fn  static Setting * widgets_get_settings (const DialogData  *data)
  *
  * @brief  Read settings from widgets and store them in WallSett object.
  *
- * @param[in,out] dd_data  DialogData object with settings and widget data
+ * @param[in,out] data  DialogData object with settings and widget data
  * @return        List of settings
  *
- * @fn  static void widgets_set_settings (const DialogData  *dd_data,
+ * @fn  static void widgets_set_settings (const DialogData  *data,
  *                                        Setting           *settings,
  *                                        Setting           *wmlist,
  *                                        int               *err)
  *
  * @brief  Loading data from list of settings to program window.
  *
- * @param[in,out] dd_data   DialogData object with settings and widget data
+ * @param[in,out] data      DialogData object with settings and widget data
  * @param[in]     settings  List with settings
  * @param[in]     wmlist    List with window manager info
  * @param[out]    err       Error output
  * @return        none
  */
 /*----------------------------------------------------------------------------*/
-static Setting   * widgets_get_settings        (const DialogData  *dd_data);
+static Setting   * widgets_get_settings        (const DialogData  *data);
 
-static void        widgets_set_settings        (const DialogData  *dd_data,
+static void        widgets_set_settings        (const DialogData  *data,
                                                 Setting           *settings,
                                                 Setting           *wmlist,
                                                 int               *err);
@@ -100,98 +100,98 @@ static void        widgets_set_settings        (const DialogData  *dd_data,
 /**
  * @brief  Sets statusbar info about actual config file.
  *
- * @param[in,out] dd_data  DialogData object with settings and widget data
+ * @param[in,out] data  DialogData object with settings and widget data
  * @return        none
  */
-static void        statusbar_push_config_info  (const DialogData *dd_data);
+static void        statusbar_push_config_info  (const DialogData *data);
 /*----------------------------------------------------------------------------*/
 /**
  * @fn  static gboolean event_on_delete (GtkWidget        *window,
  *                                       GdkEvent         *event,
- *                                       const DialogData *dd_data)
+ *                                       const DialogData *data)
  *
  * @brief  On main window delete, check settings.
  *
- * @param[in] window   Window that received the signal
- * @param[in] event    Event that triggered signal
- * @param[in] dd_data  DialogData object with widgets and settings info
+ * @param[in] window  Window that received the signal
+ * @param[in] event   Event that triggered signal
+ * @param[in] data    DialogData object with widgets and settings info
  * @return    Stop or propagate event further 
  *
- * @fn  static void shutdown (GtkApplication *application, DialogData *dd_data);
+ * @fn  static void shutdown (GtkApplication *application, DialogData *data);
  *
  * @brief  Application shutdown signal.
  *
  * @param[in,out] application  Pointer to GtkApplication
- * @param[in,out] dd_data      DialogData object with widgets and settings info
+ * @param[in,out] data         DialogData object with widgets and settings info
  * @return        none
  *
  * @fn  static gint local_options (GApplication *application,
  *                                 GVariantDict *options,
- *                                 DialogData   *dd_data)
+ *                                 DialogData   *data)
  *
  * @brief  Handling command line options.
  *
  * @param[in,out] application  Pointer to GtkApplication
  * @param[in]     options      Options dictionary
- * @param[in,out] dd_data      DialogData object with widgets and settings info
+ * @param[in,out] data         DialogData object with widgets and settings info
  *
- * @fn  static void activate (GtkApplication *app, DialogData *dd_data)
+ * @fn  static void activate (GtkApplication *app, DialogData *data)
  *
  * @brief  Application activate signal.
  *
- * @param[in,out] app      Pointer to GtkApplication
- * @param[in,out] dd_data  DialogData object with settings and widget data
+ * @param[in,out] app   Pointer to GtkApplication
+ * @param[in,out] data  DialogData object with settings and widget data
  * @return        none
  */
 /*----------------------------------------------------------------------------*/
 static gboolean    event_on_delete             (GtkWidget         *window,
                                                 GdkEvent          *event,
-                                                const DialogData  *dd_data);
+                                                const DialogData  *data);
 
 static void        shutdown                    (GtkApplication    *application,
-                                                DialogData        *dd_data);
+                                                DialogData        *data);
 
 static gint        local_options               (GApplication      *application,
                                                 GVariantDict      *options,
-                                                DialogData        *dd_data);
+                                                DialogData        *data);
 
 static void        activate                    (GtkApplication    *app,
-                                                DialogData        *dd_data);
+                                                DialogData        *data);
 /*----------------------------------------------------------------------------*/
 /**
- * @fn  static void event_add_img_pressed (const DialogData *dd_data)
+ * @fn  static void event_add_img_pressed (const DialogData *data)
  *
  * @brief  "Add images" button pressed.
  *
- * @param[in,out] dd_data  DialogData object with settings and widget data
+ * @param[in,out] data  DialogData object with settings and widget data
  * @return        none
  *
- * @fn  static void event_add_img_dir_pressed (const DialogData *dd_data)
+ * @fn  static void event_add_img_dir_pressed (const DialogData *data)
  *
  * @brief  "Add images from folder" button pressed.
  *
- * @param[in,out] dd_data  DialogData object with settings and widget data
+ * @param[in,out] data  DialogData object with settings and widget data
  * @return        none
  *
- * @fn  static void event_add_img_web_pressed (const DialogData *dd_data)
+ * @fn  static void event_add_img_web_pressed (const DialogData *data)
  *
  * @brief  "Add images from web" button pressed.
  *
- * @param[in,out] dd_data  DialogData object with settings and widget data
+ * @param[in,out] data  DialogData object with settings and widget data
  * @return        none
  *
- * @fn  static void event_set_wallpaper_pressed (const DialogData *dd_data)
+ * @fn  static void event_set_wallpaper_pressed (const DialogData *data)
  *
  * @brief  "Set wallpaper" button pressed.
  *
- * @param[in,out] dd_data  DialogData object with settings and widget data
+ * @param[in,out] data  DialogData object with settings and widget data
  * @return        none
  *
- * @fn  static void event_save_settings_pressed (const DialogData *dd_data)
+ * @fn  static void event_save_settings_pressed (const DialogData *data)
  *
  * @brief  "Save settings" button pressed.
  *
- * @param[in,out] dd_data  DialogData object with settings and widget data
+ * @param[in,out] data  DialogData object with settings and widget data
  * @return none
  *
  * @fn  static void event_img_list_activated (GtkTreeView       *tree_view,
@@ -201,21 +201,21 @@ static void        activate                    (GtkApplication    *app,
  *
  * @brief  Make preview image widget of image (file path).
  *
- * @param[in]  tree_view    The object on which the signal is emitted
- * @param[in]  path         The GtkTreePath for the activated row
- * @param      column       The GtkTreeViewColumn in which the activation
- *                          occurred
- * @param[out] img_prev     Preview image widget
+ * @param[in]  tree_view  The object on which the signal is emitted
+ * @param[in]  path       The GtkTreePath for the activated row
+ * @param      column     The GtkTreeViewColumn in which the activation
+ *                        occurred
+ * @param[out] img_prev   Preview image widget
  * @return none
  *
  * @fn  static gboolean event_treeview_key_press (GtkWidget         *widget,
  *                                                GdkEventKey       *event,
- *                                                const DialogData  *dd_data)
+ *                                                const DialogData  *data)
  * @brief  React to key pressed in TreeView.
  *
- * @param[in]     widget   The object which received the signal
- * @param[in]     event    The event which triggered this signal
- * @param[in,out] dd_data  DialogData object with widgets and settings info
+ * @param[in]     widget  The object which received the signal
+ * @param[in]     event   The event which triggered this signal
+ * @param[in,out] data    DialogData object with widgets and settings info
  *
  * @fn  static void event_autostart_toggled (GtkToggleButton   *togglebutton,
  *                                           gpointer           user_data)
@@ -227,15 +227,15 @@ static void        activate                    (GtkApplication    *app,
  * @return    none
  */
 /*----------------------------------------------------------------------------*/
-static void        event_add_img_pressed       (const DialogData  *dd_data);
+static void        event_add_img_pressed       (const DialogData  *data);
 
-static void        event_add_img_dir_pressed   (const DialogData  *dd_data);
+static void        event_add_img_dir_pressed   (const DialogData  *data);
 
-static void        event_add_img_web_pressed   (const DialogData  *dd_data);
+static void        event_add_img_web_pressed   (const DialogData  *data);
 
-static void        event_set_wallpaper_pressed (const DialogData  *dd_data);
+static void        event_set_wallpaper_pressed (const DialogData  *data);
 
-static void        event_save_settings_pressed (const DialogData  *dd_data);
+static void        event_save_settings_pressed (const DialogData  *data);
 
 static void        event_img_list_activated    (GtkTreeView       *tree_view,
                                                 GtkTreePath       *path,
@@ -244,68 +244,68 @@ static void        event_img_list_activated    (GtkTreeView       *tree_view,
 
 static gboolean    event_treeview_key_press    (GtkWidget         *widget,
                                                 GdkEventKey       *event,
-                                                const DialogData  *dd_data);
+                                                const DialogData  *data);
 
 static void        event_autostart_toggled     (GtkToggleButton   *togglebutton,
                                                 gpointer           user_data);
 /*----------------------------------------------------------------------------*/
 /**
  * @fn  static void event_interval_changed (GtkSpinButton    *spin_button,
- *                                          const DialogData *dd_data)
+ *                                          const DialogData *data)
  *
  * @brief  Wallpaper change interval changed
  *
  * @param[in]     spin_button  Spin button with interval value
- * @param[in,out] dd_data  DialogData object with settings and widget data
+ * @param[in,out] data         DialogData object with settings and widget data
  * @return        none
  *
- * @fn  static void event_command_button_pressed (const DialogData *dd_data)
+ * @fn  static void event_command_button_pressed (const DialogData *data)
  *
  * @brief  Command select button pressed.
  *
- * @param[in,out] dd_data  DialogData object with widgets and settings info
+ * @param[in,out] data  DialogData object with widgets and settings info
  * @return        none
  *
- * @fn  static void event_start_daemon_pressed (DialogData *dd_data)
+ * @fn  static void event_start_daemon_pressed (DialogData *data)
  *
  * @brief  Start background daemon process
  *
- * @param[in,out] dd_data  DialogData object with settings and widget data
+ * @param[in,out] data  DialogData object with settings and widget data
  * @return        none
  *
- * @fn  static void event_stop_daemon_pressed (DialogData *dd_data)
+ * @fn  static void event_stop_daemon_pressed (DialogData *data)
  *
  * @brief  Stop background daemon process
  *
- * @param[in,out] dd_data  DialogData object with settings and widget data
+ * @param[in,out] data  DialogData object with settings and widget data
  * @return        none
  *
- * @fn  static void event_other_settings_pressed (DialogData *dd_data)
+ * @fn  static void event_other_settings_pressed (DialogData *data)
  *
  * @brief  Other settings button pressed.
  *
- * @param[in,out] dd_data  DialogData object with widgets and settings info
+ * @param[in,out] data  DialogData object with widgets and settings info
  * @return        none
  */
 /*----------------------------------------------------------------------------*/
 static void        event_interval_changed       (GtkSpinButton     *spin_button,
-                                                 const DialogData  *dd_data);
+                                                 const DialogData  *data);
 
-static void        event_command_button_pressed (const DialogData  *dd_data);
+static void        event_command_button_pressed (const DialogData  *data);
 
-static void        event_start_daemon_pressed   (DialogData        *dd_data);
+static void        event_start_daemon_pressed   (DialogData        *data);
 
-static void        event_stop_daemon_pressed    (DialogData        *dd_data);
+static void        event_stop_daemon_pressed    (DialogData        *data);
 
-static void        event_other_settings_pressed (DialogData        *dd_data);
+static void        event_other_settings_pressed (DialogData        *data);
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Monitors running of wchangerd daemon.
  *
- * @param[out]  data  DialogData object with widgets and settings info
+ * @param[out]  user_data  DialogData object with widgets and settings info
  * @return      Remove source or not
  */
-static gboolean    daemon_monitor              (gpointer data);
+static gboolean    daemon_monitor              (gpointer user_data);
 /*----------------------------------------------------------------------------*/
 /**
  * @fn static GtkWidget * create_title_widget (void)
@@ -324,25 +324,25 @@ static gboolean    daemon_monitor              (gpointer data);
  * @param[in] icon   Icon number
  * @return    Button
  *
- * @fn  static GtkWidget * create_buttons_widget (DialogData *dd_data)
+ * @fn  static GtkWidget * create_buttons_widget (DialogData *data)
  *
  * @brief  Create side buttons widget.
  *
- * @param[in,out] dd_data    DialogData object with widgets and settings info
+ * @param[in,out] data  DialogData object with widgets and settings info
  * @return        Result widget
  *
- * @fn  static GtkWidget * create_settings_widget (DialogData *dd_data)
+ * @fn  static GtkWidget * create_settings_widget (DialogData *data)
  *
  * @brief  Creates widget with settings for wallpaper changing.
  *
- * @param[in,out] dd_data    DialogData object with settings and widget data
+ * @param[in,out] data  DialogData object with settings and widget data
  * @return        Settings widget
  *
- * @fn  static GtkWidget * create_daemon_widget (DialogData *dd_data)
+ * @fn  static GtkWidget * create_daemon_widget (DialogData *data)
  *
  * @brief  Creates widget for monitoring, starting and stopping wchangerd
  *
- * @param[in,out] dd_data    DialogData object with settings and widget data
+ * @param[in,out] data  DialogData object with settings and widget data
  * @return        none
  */
 /*----------------------------------------------------------------------------*/
@@ -352,11 +352,11 @@ static GtkWidget * create_image_button         (const char        *label,
                                                 const char        *hint,
                                                 const IconImg      icon);
 
-static GtkWidget * create_buttons_widget       (DialogData        *dd_data);
+static GtkWidget * create_buttons_widget       (DialogData        *data);
 
-static GtkWidget * create_settings_widget      (DialogData        *dd_data);
+static GtkWidget * create_settings_widget      (DialogData        *data);
 
-static GtkWidget * create_daemon_widget        (DialogData        *dd_data);
+static GtkWidget * create_daemon_widget        (DialogData        *data);
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Create application directories, return error message on error.
@@ -393,17 +393,17 @@ cfg_file_check_create_dirs (void)
  * @brief  Get wallpaper change minutes interval from widgets
  */
 static uint32_t
-get_wallpaper_ch_interval (const DialogData *dd_data)
+get_wallpaper_ch_interval (const DialogData *data)
 {
     uint32_t res = 0; /* Wallpaper change interval in minutes */
 
     /* Get spinbutton value of change time interval */
     res = (uint32_t) gtk_spin_button_get_value (
-            GTK_SPIN_BUTTON (dd_data->gw_interval));
+            GTK_SPIN_BUTTON (data->interval));
 
     /* Check combobox setting if value is supposed to be minutes or hours.
      * If value is set to hours multiply returned value by 60 */
-    if (gtk_combo_box_get_active (GTK_COMBO_BOX (dd_data->gw_inter_combo)) == 1)
+    if (gtk_combo_box_get_active (GTK_COMBO_BOX (data->interval_combo)) == 1)
         res *= 60;
 
     return res;
@@ -413,7 +413,7 @@ get_wallpaper_ch_interval (const DialogData *dd_data)
  * @brief  Set wallpaper change interval value to widgets
  */
 static void
-set_wallpaper_ch_interval (const DialogData *dd_data,
+set_wallpaper_ch_interval (const DialogData *data,
                            const uint32_t    val)
 {
     uint32_t tmp = val; /* Temp interval value */
@@ -422,15 +422,15 @@ set_wallpaper_ch_interval (const DialogData *dd_data,
     if ((tmp / 60 >= 1) && (tmp % 60 == 0)) {
 
         /* If value can be hours set combobox to hours */
-        gtk_combo_box_set_active (GTK_COMBO_BOX (dd_data->gw_inter_combo), 1);
+        gtk_combo_box_set_active (GTK_COMBO_BOX (data->interval_combo), 1);
         tmp /= 60;
     }
     else {
         /* Value is suppose to be set as minutes set combobox to minutes */
-        gtk_combo_box_set_active (GTK_COMBO_BOX (dd_data->gw_inter_combo), 0);
+        gtk_combo_box_set_active (GTK_COMBO_BOX (data->interval_combo), 0);
     }
     /* Set spinbutton value with change interval */
-    gtk_spin_button_set_value (GTK_SPIN_BUTTON (dd_data->gw_interval),
+    gtk_spin_button_set_value (GTK_SPIN_BUTTON (data->interval),
                                (double) tmp);
 }
 /*----------------------------------------------------------------------------*/
@@ -438,7 +438,7 @@ set_wallpaper_ch_interval (const DialogData *dd_data,
  * @brief  Read settings from widgets and store them in WallSett object.
  */
 static Setting *
-widgets_get_settings (const DialogData *dd_data)
+widgets_get_settings (const DialogData *data)
 {
     Setting    *settings = nullptr; /* Setting item to return */
     const char *str      = nullptr; /* Value for a string setting */
@@ -446,33 +446,33 @@ widgets_get_settings (const DialogData *dd_data)
 
     /* Get wallpaper list from treeview and add to settlist */
     settings = setting_new_array (get_setting_name (SETT_WALL_ARRAY));
-    setting_add_child (settings, treeview_get_setting_data (dd_data->gw_view));
+    setting_add_child (settings, treeview_get_setting_data (data->view));
 
     /* Get random wallpaper setting */
     val = (int64_t) gtk_toggle_button_get_active (
-                GTK_TOGGLE_BUTTON (dd_data->gw_random));
+                GTK_TOGGLE_BUTTON (data->random));
     settings_append (settings,
             setting_new_int (get_setting_name (SETT_RANDOM_OPT), val));
 
     /* Get last used wallpaper on start setting */
     val = (int64_t) gtk_toggle_button_get_active (
-                GTK_TOGGLE_BUTTON (dd_data->gw_lastused));
+                GTK_TOGGLE_BUTTON (data->last_used));
     settings_append (settings,
             setting_new_int (get_setting_name (SETT_LAST_USED_OPT), val));
 
     /* Get time align setting */
     val = (int64_t) gtk_toggle_button_get_active (
-                GTK_TOGGLE_BUTTON (dd_data->gw_timealign));
+                GTK_TOGGLE_BUTTON (data->time_align));
     settings_append (settings,
             setting_new_int (get_setting_name (SETT_TIME_ALIGN_OPT), val));
 
     /* Get wallpaper change interval setting */
-    val = (int64_t) get_wallpaper_ch_interval (dd_data);
+    val = (int64_t) get_wallpaper_ch_interval (data);
     settings_append (settings,
             setting_new_int (get_setting_name (SETT_INTERVAL_VAL), val));
 
     /* Get wallpaper set command */
-    str = gtk_entry_get_text (GTK_ENTRY (dd_data->gw_command));
+    str = gtk_entry_get_text (GTK_ENTRY (data->command));
     settings_append (settings,
             setting_new_string (get_setting_name (SETT_BG_CMD), str));
 
@@ -483,7 +483,7 @@ widgets_get_settings (const DialogData *dd_data)
  * @brief  Loading data from SettList list of settings to program window.
  */
 static void
-widgets_set_settings (const DialogData *dd_data,
+widgets_set_settings (const DialogData *data,
                       Setting          *settings,
                       Setting          *wmlist,
                       int              *err)
@@ -497,7 +497,7 @@ widgets_set_settings (const DialogData *dd_data,
     *err = ERR_OK;
 
     /* Check window managers and set wallpaper set command */
-    cmd = wms_get_wallpaper_command (dd_data->s_cfg_file,
+    cmd = wms_get_wallpaper_command (data->config_file,
                                      settings,
                                      wmlist,
                                      err);
@@ -505,37 +505,37 @@ widgets_set_settings (const DialogData *dd_data,
         free (cmd);
         return;
     }
-    gtk_entry_set_text (GTK_ENTRY (dd_data->gw_command), cmd);
+    gtk_entry_set_text (GTK_ENTRY (data->command), cmd);
     free (cmd);
 
     /* Set last used wallpaper on start setting */
     item = settings_find (settings, get_setting_name (SETT_LAST_USED_OPT));
     if (item != nullptr) {
-        gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (dd_data->gw_lastused),
+        gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (data->last_used),
                                       (gboolean) setting_get_int (item));
     }
     /* Set minutes/hours of wallpaper change interval */
     item = settings_find (settings, get_setting_name (SETT_INTERVAL_VAL));
     if (item != nullptr) {
-        set_wallpaper_ch_interval (dd_data,
+        set_wallpaper_ch_interval (data,
                                    (uint32_t) setting_get_int (item));
     }
     /* Set wallpaper random choose setting */
     item = settings_find (settings, get_setting_name (SETT_RANDOM_OPT));
     if (item != nullptr) {
-        gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (dd_data->gw_random),
+        gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (data->random),
                                       (gboolean) setting_get_int (item));
     }
     /* Set time align setting */
     item = settings_find (settings, get_setting_name (SETT_TIME_ALIGN_OPT));
     if (item != nullptr) {
-        gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (dd_data->gw_timealign),
+        gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (data->time_align),
                                       (gboolean) setting_get_int (item));
     }
     /* Get wallpaper list and add to treeview */
     item = settings_find (settings, get_setting_name (SETT_WALL_ARRAY));
     if (item != nullptr) {
-        treeview_add_items_setting (dd_data->gw_view,
+        treeview_add_items_setting (data->view,
                                     setting_get_child (item));
     }
     /* Set window dimensions */
@@ -547,7 +547,7 @@ widgets_set_settings (const DialogData *dd_data,
     if (item != nullptr) {
         height = (int) setting_get_int (item);
     }
-    gtk_window_set_default_size (GTK_WINDOW (dd_data->gw_window), width, height);
+    gtk_window_set_default_size (GTK_WINDOW (data->window), width, height);
 
     /* Check if there is last used wallpaper info, if it is select it on
      * list and make a preview image */
@@ -556,8 +556,8 @@ widgets_set_settings (const DialogData *dd_data,
         lastused = setting_get_string (item);
 
     if (lastused != nullptr) {
-        preview_from_file (dd_data->gw_imgprev, lastused);
-        treeview_find_select_item (dd_data->gw_view, lastused);
+        preview_from_file (data->img_preview, lastused);
+        treeview_find_select_item (data->view, lastused);
     }
 }
 /*----------------------------------------------------------------------------*/
@@ -565,14 +565,14 @@ widgets_set_settings (const DialogData *dd_data,
  * @brief  Sets statusbar info about actual config file.
  */
 static void
-statusbar_push_config_info (const DialogData *dd_data)
+statusbar_push_config_info (const DialogData *data)
 {
     char *info = nullptr;
 
-    info = dialog_data_get_status_config_info (dd_data);
+    info = dialog_data_get_status_config_info (data);
 
-    gtk_statusbar_push (GTK_STATUSBAR (dd_data->gw_statusbar),
-            gtk_statusbar_get_context_id (GTK_STATUSBAR (dd_data->gw_statusbar),
+    gtk_statusbar_push (GTK_STATUSBAR (data->status_bar),
+            gtk_statusbar_get_context_id (GTK_STATUSBAR (data->status_bar),
                                           STATUS_CONFIG),
             info);
     free (info);
@@ -582,14 +582,14 @@ statusbar_push_config_info (const DialogData *dd_data)
  * @brief  "Add images" button pressed.
  */
 static void
-event_add_img_pressed (const DialogData *dd_data)
+event_add_img_pressed (const DialogData *data)
 {
     GSList *files = nullptr; /* List with files from dialog */
 
     /* Run image select dialog and get selected files */
-    if ((files = add_images_dialog (dd_data->gw_window)) != nullptr) {
+    if ((files = add_images_dialog (data->window)) != nullptr) {
         /* Add items to TreeView */
-        treeview_add_items_gslist (dd_data->gw_view, files);
+        treeview_add_items_gslist (data->view, files);
         g_slist_free_full (files, g_free);
     }
 }
@@ -598,17 +598,17 @@ event_add_img_pressed (const DialogData *dd_data)
  * @brief  "Add images from folder" button pressed.
  */
 static void
-event_add_img_dir_pressed (const DialogData *dd_data)
+event_add_img_dir_pressed (const DialogData *data)
 {
     char  *folder = nullptr; /* Selecred directory name */
     GList *files  = nullptr; /* Images in directory */
 
     /* Run directory select dialog and get selected directory name */
-    if ((folder = add_images_folder_dialog (dd_data->gw_window)) != nullptr) {
+    if ((folder = add_images_folder_dialog (data->window)) != nullptr) {
         /* Scan directory for files and append them to file list */
         if ((files = get_dir_content_filter_images (folder)) != nullptr) {
             /* Add items to TreeView */
-            treeview_add_items_glist (dd_data->gw_view, files);
+            treeview_add_items_glist (data->view, files);
             g_list_free_full (files, g_free);
         }
         g_free (folder);
@@ -619,13 +619,13 @@ event_add_img_dir_pressed (const DialogData *dd_data)
  * @brief  "Add images from web" button pressed.
  */
 static void
-event_add_img_web_pressed (const DialogData *dd_data)
+event_add_img_web_pressed (const DialogData *data)
 {
     GList *list = nullptr; /* List with wallpapers to add */
 
-    list = add_images_from_web_dialog (dd_data->gw_window,
-                                       dd_data->s_cfg_file);
-    treeview_add_items_glist (dd_data->gw_view, list);
+    list = add_images_from_web_dialog (data->window,
+                                       data->config_file);
+    treeview_add_items_glist (data->view, list);
     g_list_free_full (list, (GDestroyNotify) free);
 }
 /*----------------------------------------------------------------------------*/
@@ -633,7 +633,7 @@ event_add_img_web_pressed (const DialogData *dd_data)
  * @brief  "Set wallpaper" button pressed.
  */
 static void
-event_set_wallpaper_pressed (const DialogData *dd_data)
+event_set_wallpaper_pressed (const DialogData *data)
 {
     GtkTreeSelection *selection;      /* TreeSelection */
     GtkTreeModel     *model;          /* TreeModel */
@@ -643,8 +643,8 @@ event_set_wallpaper_pressed (const DialogData *dd_data)
     const char       *cmd  = nullptr; /* Wallpaper set command */
     int               err  = 0;       /* Error output */
 
-    model     = gtk_tree_view_get_model (GTK_TREE_VIEW (dd_data->gw_view));
-    selection = gtk_tree_view_get_selection (GTK_TREE_VIEW (dd_data->gw_view));
+    model     = gtk_tree_view_get_model (GTK_TREE_VIEW (data->view));
+    selection = gtk_tree_view_get_selection (GTK_TREE_VIEW (data->view));
     list      = gtk_tree_selection_get_selected_rows (selection, &model);
 
     if (list == nullptr)
@@ -653,12 +653,12 @@ event_set_wallpaper_pressed (const DialogData *dd_data)
     if (gtk_tree_model_get_iter (model, &iter, list->data)) {
 
         info = treemodel_get_data (model, iter);
-        cmd  = gtk_entry_get_text (GTK_ENTRY (dd_data->gw_command));
+        cmd  = gtk_entry_get_text (GTK_ENTRY (data->command));
         err  = wallpaper_dialog_set (cmd,
                                      image_info_get_file_path (info),
-                                     dialog_data_get_cfg_file (dd_data));
+                                     dialog_data_get_cfg_file (data));
         if (err != ERR_OK) {
-            message_dialog_error (dd_data->gw_window, err_get_message (err));
+            message_dialog_error (data->window, err_get_message (err));
         }
         image_info_free (info);
     }
@@ -669,18 +669,18 @@ event_set_wallpaper_pressed (const DialogData *dd_data)
  * @brief  "Save settings" button pressed.
  */
 static void
-event_save_settings_pressed (const DialogData *dd_data)
+event_save_settings_pressed (const DialogData *data)
 {
     Setting *settings; /* List of settings */
     int      err = 0;  /* Error value */
 
-    settings = widgets_get_settings (dd_data);
-    err = setts_check_update_file (dialog_data_get_cfg_file (dd_data),
+    settings = widgets_get_settings (data);
+    err = setts_check_update_file (dialog_data_get_cfg_file (data),
                                    settings);
     settings_free_all (settings);
 
     if (err != ERR_OK) {
-        message_dialog_error (dd_data->gw_window, err_get_message (err));
+        message_dialog_error (data->window, err_get_message (err));
     }
 }
 /*----------------------------------------------------------------------------*/
@@ -714,11 +714,11 @@ event_img_list_activated (GtkTreeView       *tree_view,
 static gboolean
 event_treeview_key_press ([[maybe_unused]] GtkWidget *widget,
                           GdkEventKey      *event,
-                          const DialogData *dd_data)
+                          const DialogData *data)
 {
     /* Catch Del key in TreeView and delete item on list */
     if (event->keyval == GDK_KEY_Delete) {
-        treeview_remove_selected (dd_data->gw_view);
+        treeview_remove_selected (data->view);
     }
     return FALSE;
 }
@@ -728,7 +728,7 @@ event_treeview_key_press ([[maybe_unused]] GtkWidget *widget,
  */
 static void
 event_interval_changed (GtkSpinButton    *spin_button,
-                        const DialogData *dd_data)
+                        const DialogData *data)
 {
     static int    prev      = 0;       /* Previous interval value */
     GtkTreeModel *model;               /* TreeModel */
@@ -741,7 +741,7 @@ event_interval_changed (GtkSpinButton    *spin_button,
     int           entry_col = 0;       /* entry position */
     int           change    = 0;       /* Change text or not */
 
-    combo  = GTK_COMBO_BOX (dd_data->gw_inter_combo);
+    combo  = GTK_COMBO_BOX (data->interval_combo);
     minute = strdup ("minute");
     hour   = strdup ("hour");
     val    = gtk_spin_button_get_value_as_int (spin_button);
@@ -781,17 +781,17 @@ event_interval_changed (GtkSpinButton    *spin_button,
  * @brief  Command select button pressed.
  */
 static void
-event_command_button_pressed (const DialogData *dd_data)
+event_command_button_pressed (const DialogData *data)
 {
     GSList *files   = nullptr; /* For wallpaers */
     char   *command = nullptr; /* Command from dialog */
 
-    files = treeview_get_data (dd_data->gw_view);
-    command = wp_set_command_dialog_run (dd_data->gw_window,
-            gtk_entry_get_text (GTK_ENTRY (dd_data->gw_command)), files);
+    files = treeview_get_data (data->view);
+    command = wp_set_command_dialog_run (data->window,
+            gtk_entry_get_text (GTK_ENTRY (data->command)), files);
 
     if (command != nullptr) {
-        gtk_entry_set_text (GTK_ENTRY (dd_data->gw_command), command);
+        gtk_entry_set_text (GTK_ENTRY (data->command), command);
         free (command);
     }
     g_slist_free_full (files, (GDestroyNotify) image_info_free);
@@ -815,7 +815,7 @@ event_autostart_toggled (GtkToggleButton *togglebutton,
 static gboolean
 event_on_delete (GtkWidget        *window,
                  [[maybe_unused]] GdkEvent *event,
-                 const DialogData *dd_data)
+                 const DialogData *data)
 {
     GtkWidget *dialog;           /* Question dialog */
     Setting   *settings;         /* Program settings */
@@ -827,9 +827,9 @@ event_on_delete (GtkWidget        *window,
 
     gtk_window_get_size (GTK_WINDOW (window), &width, &height);
 
-    settings = widgets_get_settings (dd_data);
+    settings = widgets_get_settings (data);
 
-    buff  = setts_check_update (dialog_data_get_cfg_file (dd_data),
+    buff  = setts_check_update (dialog_data_get_cfg_file (data),
                                 settings,
                                 &err);
     settings_free_all (settings);
@@ -849,7 +849,7 @@ event_on_delete (GtkWidget        *window,
         gtk_widget_destroy (dialog);
 
         if (res == GTK_RESPONSE_YES) {
-            err = setts_update_file (dialog_data_get_cfg_file (dd_data),
+            err = setts_update_file (dialog_data_get_cfg_file (data),
                                      buff);
             if (err != ERR_OK) {
                 message_dialog_error (GTK_WINDOW (window),
@@ -858,7 +858,7 @@ event_on_delete (GtkWidget        *window,
         }
         free (buff);
     }
-    setts_update_window_size (dialog_data_get_cfg_file (dd_data), width, height);
+    setts_update_window_size (dialog_data_get_cfg_file (data), width, height);
     return FALSE;
 }
 /*----------------------------------------------------------------------------*/
@@ -866,30 +866,30 @@ event_on_delete (GtkWidget        *window,
  * @brief  Start background daemon process
  */
 static void
-event_start_daemon_pressed (DialogData *dd_data)
+event_start_daemon_pressed (DialogData *data)
 {
     daemon_start ();
-    daemon_monitor (dd_data);
+    daemon_monitor (data);
 }
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Stop background daemon process
  */
 static void
-event_stop_daemon_pressed (DialogData *dd_data)
+event_stop_daemon_pressed (DialogData *data)
 {
     daemon_kill ();
-    daemon_monitor (dd_data);
+    daemon_monitor (data);
 }
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Other settings button pressed.
  */
 static void
-event_other_settings_pressed (DialogData *dd_data)
+event_other_settings_pressed (DialogData *data)
 {
-    char *file = treeview_get_one_file (dd_data->gw_view);
-    other_settings_dialog (dd_data->gw_window, dd_data->s_cfg_file, file);
+    char *file = treeview_get_one_file (data->view);
+    other_settings_dialog (data->window, data->config_file, file);
     free (file);
 }
 /*----------------------------------------------------------------------------*/
@@ -897,17 +897,17 @@ event_other_settings_pressed (DialogData *dd_data)
  * @brief  Monitors running of wchangerd daemon.
  */
 static gboolean
-daemon_monitor (gpointer data)
+daemon_monitor (gpointer user_data)
 {
-    DialogData *dd_data = (DialogData *) data;
+    DialogData *data = (DialogData *) user_data;
 
     if (daemon_check_presence ()) {
-        gtk_label_set_markup (GTK_LABEL (dd_data->gw_dm_label), 
+        gtk_label_set_markup (GTK_LABEL (data->daemon_label), 
                 "<span weight=\"bold\" foreground=\"#009900\" "
                 "style=\"italic\">running</span>");
     }
     else {
-        gtk_label_set_markup (GTK_LABEL (dd_data->gw_dm_label), 
+        gtk_label_set_markup (GTK_LABEL (data->daemon_label), 
                 "<span weight=\"bold\" foreground=\"#000000\" "
                 "style=\"italic\">stopped</span>");
     }
@@ -972,7 +972,7 @@ create_image_button (const char   *label,
  * @brief  Create side buttons widget.
  */
 static GtkWidget *
-create_buttons_widget (DialogData *dd_data)
+create_buttons_widget (DialogData *data)
 {
     GtkWidget *widget; /* Widget to return */
     GtkWidget *button; /* For buttons */
@@ -986,13 +986,13 @@ create_buttons_widget (DialogData *dd_data)
     g_signal_connect_swapped (button,
                               "clicked",
                               G_CALLBACK (event_add_img_pressed),
-                              dd_data);
+                              data);
     button = create_image_button (nullptr, "Add images from folder",
                                      W_ICON_ADD_DIR);
     g_signal_connect_swapped (button,
                               "clicked",
                               G_CALLBACK (event_add_img_dir_pressed),
-                              dd_data);
+                              data);
     gtk_box_pack_start (GTK_BOX (widget),
                         button,
                         FALSE, FALSE, 4);
@@ -1001,7 +1001,7 @@ create_buttons_widget (DialogData *dd_data)
     g_signal_connect_swapped (button,
                               "clicked",
                               G_CALLBACK (event_add_img_web_pressed),
-                              dd_data);
+                              data);
     gtk_box_pack_start (GTK_BOX (widget),
                         button,
                         FALSE, FALSE, 4);
@@ -1013,7 +1013,7 @@ create_buttons_widget (DialogData *dd_data)
     g_signal_connect_swapped (button,
                               "clicked",
                               G_CALLBACK (treeview_remove_selected),
-                              dd_data->gw_view);
+                              data->view);
     button = create_image_button (nullptr, "Move up", W_ICON_UP);
     gtk_box_pack_start (GTK_BOX (widget),
                         button,
@@ -1021,7 +1021,7 @@ create_buttons_widget (DialogData *dd_data)
     g_signal_connect_swapped (button,
                               "clicked",
                               G_CALLBACK (treeview_move_up),
-                              dd_data->gw_view);
+                              data->view);
     button = create_image_button (nullptr, "Move down", W_ICON_DOWN);
     gtk_box_pack_start (GTK_BOX (widget),
                         button,
@@ -1029,7 +1029,7 @@ create_buttons_widget (DialogData *dd_data)
     g_signal_connect_swapped (button,
                               "clicked",
                               G_CALLBACK (treeview_move_down),
-                              dd_data->gw_view);
+                              data->view);
     button = create_image_button (nullptr, "Remove duplicates", W_ICON_DUPL);
     gtk_box_pack_start (GTK_BOX (widget),
                         button,
@@ -1037,7 +1037,7 @@ create_buttons_widget (DialogData *dd_data)
     g_signal_connect_swapped (button,
                               "clicked",
                               G_CALLBACK (treeview_remove_duplicates),
-                              dd_data->gw_view);
+                              data->view);
     button = create_image_button (nullptr, "Set wallpaper", W_ICON_SCREEN);
     gtk_box_pack_start (GTK_BOX (widget),
                         button,
@@ -1045,7 +1045,7 @@ create_buttons_widget (DialogData *dd_data)
     g_signal_connect_swapped (button,
                               "clicked",
                               G_CALLBACK (event_set_wallpaper_pressed),
-                              dd_data);
+                              data);
     button = create_image_button (nullptr, "Save settings", W_ICON_FLOPPY);
     gtk_box_pack_start (GTK_BOX (widget),
                         button,
@@ -1053,7 +1053,7 @@ create_buttons_widget (DialogData *dd_data)
     g_signal_connect_swapped (button,
                               "clicked",
                               G_CALLBACK (event_save_settings_pressed),
-                              dd_data);
+                              data);
     button = create_image_button (nullptr, "Other settings", W_ICON_SETTING);
     gtk_box_pack_start (GTK_BOX (widget),
                         button,
@@ -1061,7 +1061,7 @@ create_buttons_widget (DialogData *dd_data)
     g_signal_connect_swapped (button,
                               "clicked",
                               G_CALLBACK (event_other_settings_pressed),
-                              dd_data);
+                              data);
     button = create_image_button (nullptr, "About Wall Changer", W_ICON_INFO);
     gtk_box_pack_start (GTK_BOX (widget),
                         button,
@@ -1069,13 +1069,13 @@ create_buttons_widget (DialogData *dd_data)
     g_signal_connect_swapped (button,
                               "clicked",
                               G_CALLBACK (about_app_dialog),
-                              GTK_WINDOW (dd_data->gw_window));
+                              GTK_WINDOW (data->window));
     button = create_image_button (nullptr, "Exit configuration dialog",
                                      W_ICON_EXIT);
     g_signal_connect_swapped (button,
                               "clicked",
                               G_CALLBACK (gtk_window_close),
-                              dd_data->gw_window);
+                              data->window);
     gtk_box_pack_start (GTK_BOX (widget),
                         button,
                         FALSE, FALSE, 4);
@@ -1086,7 +1086,7 @@ create_buttons_widget (DialogData *dd_data)
  * @brief  Creates widget with settings for wallpaper changing.
  */
 static GtkWidget *
-create_settings_widget (DialogData *dd_data)
+create_settings_widget (DialogData *data)
 {
     GtkWidget     *widget;            /* Widget to return */
     GtkWidget     *random_button;     /* Random image GtkCheckButton */
@@ -1148,7 +1148,7 @@ create_settings_widget (DialogData *dd_data)
     g_signal_connect_swapped (command_button,
                               "clicked",
                               G_CALLBACK (event_command_button_pressed),
-                              dd_data);
+                              data);
 
     /* Background change interval widgets */
     adjustment = gtk_adjustment_new (30.0, 1.0, 6000.0, 1.0, 5.0, 0.0);
@@ -1167,7 +1167,7 @@ create_settings_widget (DialogData *dd_data)
     gtk_combo_box_set_active (GTK_COMBO_BOX (time_combo), 0);
 
     g_signal_connect (spinbutton, "value-changed",
-                      G_CALLBACK (event_interval_changed), dd_data);
+                      G_CALLBACK (event_interval_changed), data);
 
     /* Autostart button */
     autostart_button = gtk_check_button_new ();
@@ -1186,12 +1186,12 @@ create_settings_widget (DialogData *dd_data)
                       G_CALLBACK (event_autostart_toggled), nullptr);
 
     /* Setting pointers in DialogData */
-    dd_data->gw_random      = random_button;
-    dd_data->gw_lastused    = button_selectlast;
-    dd_data->gw_command     = command_entry;
-    dd_data->gw_interval    = spinbutton;
-    dd_data->gw_timealign   = align_button;
-    dd_data->gw_inter_combo = time_combo;
+    data->random         = random_button;
+    data->last_used      = button_selectlast;
+    data->command        = command_entry;
+    data->interval       = spinbutton;
+    data->time_align     = align_button;
+    data->interval_combo = time_combo;
 
     /* Container for settings widgets */
     widget = gtk_grid_new ();
@@ -1246,7 +1246,7 @@ create_settings_widget (DialogData *dd_data)
  * @brief  Creates widget for monitoring, starting and stopping wchangerd
  */
 static GtkWidget *
-create_daemon_widget (DialogData *dd_data)
+create_daemon_widget (DialogData *data)
 {
     GtkWidget *widget; /* Widget to return */
     GtkWidget *button; /* For buttons */
@@ -1264,16 +1264,16 @@ create_daemon_widget (DialogData *dd_data)
     gtk_grid_attach (GTK_GRID (widget), label, 0, 0, 2, 1);
 
     /* Daemon run status label */
-    dd_data->gw_dm_label = gtk_label_new (" ");
-    gtk_label_set_xalign (GTK_LABEL (dd_data->gw_dm_label), 0.5);
+    data->daemon_label = gtk_label_new (" ");
+    gtk_label_set_xalign (GTK_LABEL (data->daemon_label), 0.5);
 
-    gtk_grid_attach (GTK_GRID (widget), dd_data->gw_dm_label, 0, 1, 2, 1);
+    gtk_grid_attach (GTK_GRID (widget), data->daemon_label, 0, 1, 2, 1);
 
     /* Start daemon button */
     button = create_image_button (nullptr, "Start wchangerd daemon",
                                      W_ICON_PLAY);
     g_signal_connect_swapped (button, "clicked",
-                              G_CALLBACK (event_start_daemon_pressed), dd_data);
+                              G_CALLBACK (event_start_daemon_pressed), data);
 
     gtk_grid_attach (GTK_GRID (widget), button, 0, 2, 1, 1);
 
@@ -1281,7 +1281,7 @@ create_daemon_widget (DialogData *dd_data)
     button = create_image_button (nullptr, "Stop wchangerd daemon",
                                      W_ICON_STOP);
     g_signal_connect_swapped (button, "clicked",
-                              G_CALLBACK (event_stop_daemon_pressed), dd_data);
+                              G_CALLBACK (event_stop_daemon_pressed), data);
 
     gtk_grid_attach (GTK_GRID (widget), button, 1, 2, 1, 1);
 
@@ -1295,7 +1295,7 @@ create_daemon_widget (DialogData *dd_data)
  */
 static void
 activate (GtkApplication *app,
-          DialogData     *dd_data)
+          DialogData     *data)
 {
     GtkWidget  *window;            /* Application window */
     GtkWidget  *title_widget;      /* Top title widget */
@@ -1315,22 +1315,22 @@ activate (GtkApplication *app,
     int         err     = 0;       /* For error output */
 
     /* Find config file and set config file name */
-    dialog_data_do_config_file_stuff (dd_data);
+    dialog_data_do_config_file_stuff (data);
 
     /* Image preview widget */
     img_prev = gtk_image_new ();
-    dd_data->gw_imgprev = img_prev;
+    data->img_preview = img_prev;
 
     /* Main window */
     window = gtk_application_window_new (app);
     gtk_window_set_title (GTK_WINDOW (window), APP_NAME " v" APP_VER);
     g_signal_connect (window, "delete-event",
-                      G_CALLBACK (event_on_delete), dd_data);
-    dd_data->gw_window = GTK_WINDOW (window);
+                      G_CALLBACK (event_on_delete), data);
+    data->window = GTK_WINDOW (window);
 
     /* Create application directories */
     if ((err_msg = cfg_file_check_create_dirs ()) != nullptr) {
-        message_dialog_error (dd_data->gw_window, err_msg);
+        message_dialog_error (data->window, err_msg);
         free (err_msg);
         g_application_quit (G_APPLICATION (app));
         return;
@@ -1342,17 +1342,17 @@ activate (GtkApplication *app,
     }
     /* Treeview for background file list */
     tree_view = create_tview ();
-    dd_data->gw_view = tree_view;
+    data->view = tree_view;
     g_signal_connect (tree_view, "row-activated",
                       G_CALLBACK (event_img_list_activated), img_prev);
     g_signal_connect (G_OBJECT (tree_view), "key-press-event",
-                      G_CALLBACK (event_treeview_key_press), dd_data);
+                      G_CALLBACK (event_treeview_key_press), data);
 
     title_widget    = create_title_widget ();
-    buttons_widget  = create_buttons_widget (dd_data);
-    settings_widget = create_settings_widget (dd_data);
+    buttons_widget  = create_buttons_widget (data);
+    settings_widget = create_settings_widget (data);
     statusbar       = gtk_statusbar_new ();
-    dd_data->gw_statusbar = statusbar;
+    data->status_bar = statusbar;
 
     preview_from_file (img_prev, nullptr);
 
@@ -1369,7 +1369,7 @@ activate (GtkApplication *app,
                         create_preview_label (),
                         FALSE, FALSE, 4);
     gtk_box_pack_start (GTK_BOX (box_prev),
-                        create_daemon_widget (dd_data),
+                        create_daemon_widget (data),
                         FALSE, FALSE, 4);
 
     /* Pack file list, button box, separatr and wallpaper preview */
@@ -1408,13 +1408,13 @@ activate (GtkApplication *app,
                         statusbar,
                         FALSE, FALSE, 4);
 
-    statusbar_push_config_info (dd_data);
+    statusbar_push_config_info (data);
 
     gtk_container_set_border_width (GTK_CONTAINER (box_main), 10);
     gtk_container_add (GTK_CONTAINER (window), box_main);
 
     /* Read program settings */
-    settings = setts_read (dialog_data_get_cfg_file (dd_data), &err);
+    settings = setts_read (dialog_data_get_cfg_file (data), &err);
 
     /* Check window managers data config file for new wms and */
     /* get window manager data */
@@ -1430,7 +1430,7 @@ activate (GtkApplication *app,
     }
     settings = setts_check_defaults (settings);
 
-    widgets_set_settings (dd_data, settings, wm, &err);
+    widgets_set_settings (data, settings, wm, &err);
 
     settings_free_all (wm);
     settings_free_all (settings);
@@ -1441,12 +1441,12 @@ activate (GtkApplication *app,
         return;
     }
     /* Set info about wchangerd daemon presence */
-    daemon_monitor (dd_data);
+    daemon_monitor (data);
     /* Add gtk thread for checking wchangerd daemon process presence */
     gdk_threads_add_timeout_full (G_PRIORITY_LOW,
                                   3000,
                                   daemon_monitor,
-                                  dd_data,
+                                  data,
                                   nullptr);
 
     gtk_window_set_application (GTK_WINDOW (window), GTK_APPLICATION (app));
@@ -1458,9 +1458,9 @@ activate (GtkApplication *app,
  */
 static void
 shutdown ([[maybe_unused]] GtkApplication *application,
-          DialogData     *dd_data)
+          DialogData     *data)
 {
-    dialog_data_free (dd_data);
+    dialog_data_free (data);
 }
 /*----------------------------------------------------------------------------*/
 /**
@@ -1469,12 +1469,12 @@ shutdown ([[maybe_unused]] GtkApplication *application,
 static gint
 local_options ([[maybe_unused]] GApplication *application,
                GVariantDict *options,
-               DialogData   *dd_data)
+               DialogData   *data)
 {
     char *str = nullptr;
 
     if (g_variant_dict_lookup (options, "config", "s", &str)) {
-        dd_data->s_cfg_file = strdup (str);
+        data->config_file = strdup (str);
     }
     return -1;
 }
@@ -1493,10 +1493,10 @@ main (int    argc,
       char **argv)
 {
     GtkApplication *app;
-    DialogData     *dd_data;
+    DialogData     *data;
     int             status;
 
-    dd_data = dialog_data_new ();
+    data = dialog_data_new ();
     app = gtk_application_new ("org.nongnu.WallChanger",
                                G_APPLICATION_DEFAULT_FLAGS);
     g_application_add_main_option (G_APPLICATION (app),
@@ -1506,10 +1506,10 @@ main (int    argc,
                                    G_OPTION_ARG_STRING,
                                    "Path to config file",
                                    "FILENAME");
-    g_signal_connect (app, "activate", G_CALLBACK (activate), dd_data);
-    g_signal_connect (app, "shutdown", G_CALLBACK (shutdown), dd_data);
+    g_signal_connect (app, "activate", G_CALLBACK (activate), data);
+    g_signal_connect (app, "shutdown", G_CALLBACK (shutdown), data);
     g_signal_connect (app, "handle-local-options",
-            G_CALLBACK (local_options), dd_data);
+            G_CALLBACK (local_options), data);
     g_set_application_name (APP_NAME);
     status = g_application_run (G_APPLICATION (app), argc, argv);
     g_object_unref (app);
