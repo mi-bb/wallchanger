@@ -61,48 +61,48 @@ enum e_flickr_array {
  * @brief  Generate authorization link based on client API keys and request
  *         tokens.
  *
- * @param[in,out] gw_array  Array with widgets
+ * @param[in,out] widgets  Array with widgets
  * @return        none
  */
 static void
-event_flickr_auth_link_generate (GtkWidget **gw_array)
+event_flickr_auth_link_generate (GtkWidget **widgets)
 {
-    const char *s_cli_key = nullptr; /* Client key */
-    const char *s_cli_sec = nullptr; /* Client secret */
-    const char *s_req_tok = nullptr; /* Request token */
-    const char *s_req_sec = nullptr; /* Request token secret */
-    char       *s_uri     = nullptr; /* Authorization url */
+    const char *cli_key = nullptr; /* Client key */
+    const char *cli_sec = nullptr; /* Client secret */
+    const char *req_tok = nullptr; /* Request token */
+    const char *req_sec = nullptr; /* Request token secret */
+    char       *uri     = nullptr; /* Authorization url */
     flickcurl  *fc;
     [[maybe_unused]] int rc = 0;
 
-    s_cli_key = gtk_entry_get_text (GTK_ENTRY (gw_array[FLA_CLI_KEY]));
-    s_cli_sec = gtk_entry_get_text (GTK_ENTRY (gw_array[FLA_CLI_SEC]));
+    cli_key = gtk_entry_get_text (GTK_ENTRY (widgets[FLA_CLI_KEY]));
+    cli_sec = gtk_entry_get_text (GTK_ENTRY (widgets[FLA_CLI_SEC]));
 
-    if (str_is_empty_warn (s_cli_key, "Empty client key"))
+    if (str_is_empty_warn (cli_key, "Empty client key"))
         return;
-    else if (str_is_empty_warn (s_cli_sec, "Empty client secret"))
+    else if (str_is_empty_warn (cli_sec, "Empty client secret"))
         return;
 
     flickcurl_init ();
 
     fc = flickcurl_new ();
 
-    flickcurl_set_oauth_client_key (fc, s_cli_key);
-    flickcurl_set_oauth_client_secret (fc, s_cli_sec);
+    flickcurl_set_oauth_client_key (fc, cli_key);
+    flickcurl_set_oauth_client_secret (fc, cli_sec);
 
     rc = flickcurl_oauth_create_request_token (fc, nullptr);
 
-    s_req_tok = flickcurl_get_oauth_request_token (fc);
-    s_req_sec = flickcurl_get_oauth_request_token_secret (fc);
+    req_tok = flickcurl_get_oauth_request_token (fc);
+    req_sec = flickcurl_get_oauth_request_token_secret (fc);
 
-    s_uri = flickcurl_oauth_get_authorize_uri (fc);
+    uri = flickcurl_oauth_get_authorize_uri (fc);
 
-    gtk_entry_set_text (GTK_ENTRY (gw_array[FLA_REQ_TOK]), s_req_tok);
-    gtk_entry_set_text (GTK_ENTRY (gw_array[FLA_REQ_SEC]), s_req_sec);
-    gtk_link_button_set_uri (GTK_LINK_BUTTON (gw_array[FLA_AUT_LNK]), s_uri);
-    gtk_button_set_label (GTK_BUTTON (gw_array[FLA_AUT_LNK]), s_uri);
+    gtk_entry_set_text (GTK_ENTRY (widgets[FLA_REQ_TOK]), req_tok);
+    gtk_entry_set_text (GTK_ENTRY (widgets[FLA_REQ_SEC]), req_sec);
+    gtk_link_button_set_uri (GTK_LINK_BUTTON (widgets[FLA_AUT_LNK]), uri);
+    gtk_button_set_label (GTK_BUTTON (widgets[FLA_AUT_LNK]), uri);
 
-    free (s_uri);
+    free (uri);
     flickcurl_free (fc);
     flickcurl_finish ();
 }
@@ -110,55 +110,55 @@ event_flickr_auth_link_generate (GtkWidget **gw_array)
 /**
  * @brief  Generate access keys based on authorization key.
  *
- * @param[in,out] gw_array  Array with widgets
+ * @param[in,out] widgets  Array with widgets
  * @return        none
  */
 static void
-event_flickr_access_keys_generate (GtkWidget **gw_array)
+event_flickr_access_keys_generate (GtkWidget **widgets)
 {
-    const char *s_cli_key  = nullptr; /* Client key */
-    const char *s_cli_sec  = nullptr; /* Client secret */
-    const char *s_req_tok  = nullptr; /* Request token */
-    const char *s_req_sec  = nullptr; /* Request token secret */
-    const char *s_ath_tok  = nullptr; /* Access token */
-    const char *s_ath_sec  = nullptr; /* Access token secret */
-    const char *s_verifier = nullptr; /* Verify code */
+    const char *cli_key  = nullptr; /* Client key */
+    const char *cli_sec  = nullptr; /* Client secret */
+    const char *req_tok  = nullptr; /* Request token */
+    const char *req_sec  = nullptr; /* Request token secret */
+    const char *ath_tok  = nullptr; /* Access token */
+    const char *ath_sec  = nullptr; /* Access token secret */
+    const char *verifier = nullptr; /* Verify code */
     flickcurl  *fc;
     [[maybe_unused]] int rc = 0;
 
-    s_cli_key  = gtk_entry_get_text (GTK_ENTRY (gw_array[FLA_CLI_KEY]));
-    s_cli_sec  = gtk_entry_get_text (GTK_ENTRY (gw_array[FLA_CLI_SEC]));
-    s_req_tok  = gtk_entry_get_text (GTK_ENTRY (gw_array[FLA_REQ_TOK]));
-    s_req_sec  = gtk_entry_get_text (GTK_ENTRY (gw_array[FLA_REQ_SEC]));
-    s_verifier = gtk_entry_get_text (GTK_ENTRY (gw_array[FLA_VER_CD]));
+    cli_key  = gtk_entry_get_text (GTK_ENTRY (widgets[FLA_CLI_KEY]));
+    cli_sec  = gtk_entry_get_text (GTK_ENTRY (widgets[FLA_CLI_SEC]));
+    req_tok  = gtk_entry_get_text (GTK_ENTRY (widgets[FLA_REQ_TOK]));
+    req_sec  = gtk_entry_get_text (GTK_ENTRY (widgets[FLA_REQ_SEC]));
+    verifier = gtk_entry_get_text (GTK_ENTRY (widgets[FLA_VER_CD]));
 
-    if      (str_is_empty_warn (s_cli_key,  "Empty client key"))
+    if      (str_is_empty_warn (cli_key,  "Empty client key"))
         return;
-    else if (str_is_empty_warn (s_cli_sec,  "Empty client secret"))
+    else if (str_is_empty_warn (cli_sec,  "Empty client secret"))
         return;
-    else if (str_is_empty_warn (s_req_tok,  "Empty request token"))
+    else if (str_is_empty_warn (req_tok,  "Empty request token"))
         return;
-    else if (str_is_empty_warn (s_req_sec,  "Empty request token secret"))
+    else if (str_is_empty_warn (req_sec,  "Empty request token secret"))
         return;
-    else if (str_is_empty_warn (s_verifier, "Empty verify code"))
+    else if (str_is_empty_warn (verifier, "Empty verify code"))
         return;
 
     flickcurl_init ();
 
     fc = flickcurl_new ();
 
-    flickcurl_set_oauth_client_key (fc, s_cli_key);
-    flickcurl_set_oauth_client_secret (fc, s_cli_sec);
-    flickcurl_set_oauth_request_token (fc, s_req_tok);
-    flickcurl_set_oauth_request_token_secret (fc, s_req_sec);
+    flickcurl_set_oauth_client_key (fc, cli_key);
+    flickcurl_set_oauth_client_secret (fc, cli_sec);
+    flickcurl_set_oauth_request_token (fc, req_tok);
+    flickcurl_set_oauth_request_token_secret (fc, req_sec);
 
-    rc = flickcurl_oauth_create_access_token (fc, s_verifier);
+    rc = flickcurl_oauth_create_access_token (fc, verifier);
 
-    s_ath_tok = flickcurl_get_oauth_token (fc);
-    s_ath_sec = flickcurl_get_oauth_token_secret (fc);
+    ath_tok = flickcurl_get_oauth_token (fc);
+    ath_sec = flickcurl_get_oauth_token_secret (fc);
 
-    gtk_entry_set_text (GTK_ENTRY (gw_array[FLA_ATH_TOK]), s_ath_tok);
-    gtk_entry_set_text (GTK_ENTRY (gw_array[FLA_ATH_SEC]), s_ath_sec);
+    gtk_entry_set_text (GTK_ENTRY (widgets[FLA_ATH_TOK]), ath_tok);
+    gtk_entry_set_text (GTK_ENTRY (widgets[FLA_ATH_SEC]), ath_sec);
 
     flickcurl_free (fc);
     flickcurl_finish ();
@@ -167,70 +167,70 @@ event_flickr_access_keys_generate (GtkWidget **gw_array)
 /**
  * @brief  Create file name using image title (display name) and url.
  *
- * @param[in]  s_disp_name  Display name (image title)
- * @param[in]  s_image_url  Image url (used for getting extension)
- * @param[in]  s_image_id   Image id
+ * @param[in]  disp_name  Display name (image title)
+ * @param[in]  image_url  Image url (used for getting extension)
+ * @param[in]  image_id   Image id
  * @return     New string with name for saving file. After use it should be
  *             freed using free.
  */
 static char *
-flickr_create_file_name (const char *s_disp_name,
-                         const char *s_image_url,
-                         const char *s_image_id)
+flickr_create_file_name (const char *disp_name,
+                         const char *image_url,
+                         const char *image_id)
 {
-    const char *s_ext   = nullptr; /* Pointer to extension */
-    const char *s_end   = nullptr; /* Pointer to end of valid string */
-    char       *s_tmp   = nullptr; /* Temporary string */
-    char       *s_first = nullptr; /* Pointer to first char of temp string */
-    size_t      ui_inc  = 0;    /* Increment step for char write */
-    size_t      ui_slen = 0;    /* Length of source display name */
-    size_t      ui_elen = 0;    /* Length of extension string */
-    size_t      ui_ilen = 0;    /* Length of id string */
-    gunichar    u_c;            /* Uni char to examine */
+    const char *ext   = nullptr; /* Pointer to extension */
+    const char *end   = nullptr; /* Pointer to end of valid string */
+    char       *tmp   = nullptr; /* Temporary string */
+    char       *first = nullptr; /* Pointer to first char of temp string */
+    size_t      inc   = 0;       /* Increment step for char write */
+    size_t      slen  = 0;       /* Length of source display name */
+    size_t      elen  = 0;       /* Length of extension string */
+    size_t      ilen  = 0;       /* Length of id string */
+    gunichar    u_c;             /* Uni char to examine */
 
-    ui_slen = strlen (s_disp_name);
-    ui_ilen = strlen (s_image_id);
+    slen = strlen (disp_name);
+    ilen = strlen (image_id);
 
     /* Get extension pointer and length */
-    s_ext = strrchr (s_image_url, '.');
-    if (s_ext != nullptr)
-        ui_elen = strlen (s_ext);
+    ext = strrchr (image_url, '.');
+    if (ext != nullptr)
+        elen = strlen (ext);
 
     /* Alloc space for name, 4 times more because of unicode grow possibility */
-    s_tmp = malloc ((4 * ui_slen + ui_ilen + ui_elen + 2) * sizeof (char));
-    memset (s_tmp, '\0', 4 * ui_slen + ui_ilen + ui_elen + 2);
+    tmp = malloc ((4 * slen + ilen + elen + 2) * sizeof (char));
+    memset (tmp, '\0', 4 * slen + ilen + elen + 2);
 
-    s_first = s_tmp;
+    first = tmp;
 
     /* Examine name char by char */
-    while (*s_disp_name != '\0') {
-        ui_inc = 0;
-        u_c = g_utf8_get_char (s_disp_name);
+    while (*disp_name != '\0') {
+        inc = 0;
+        u_c = g_utf8_get_char (disp_name);
         /* Copy only alphanumeric chars, convert to lowercase if needed,
          * convert spaces to underscores */
         if (g_unichar_isalnum (u_c)) {
             if (g_unichar_isupper (u_c))
                 u_c = g_unichar_tolower (u_c);
-            ui_inc = (size_t) g_unichar_to_utf8 (u_c, s_tmp);
+            inc = (size_t) g_unichar_to_utf8 (u_c, tmp);
         }
         else if (g_unichar_isspace (u_c))
-            ui_inc = (size_t) g_unichar_to_utf8 ('_', s_tmp);
+            inc = (size_t) g_unichar_to_utf8 ('_', tmp);
 
-        s_tmp += ui_inc;
-        s_disp_name = g_utf8_find_next_char (s_disp_name, nullptr);
+        tmp += inc;
+        disp_name = g_utf8_find_next_char (disp_name, nullptr);
     }
-    ui_slen = strlen (s_first);
+    slen = strlen (first);
 
     /* Check name length if it is smaller than 255 bytes and shrink if needed */
-    if (ui_slen + ui_elen + ui_ilen + 1 >= 255) {
-        ui_slen = 255 - ui_elen - ui_ilen - 1;
+    if (slen + elen + ilen + 1 >= 255) {
+        slen = 255 - elen - ilen - 1;
     }
-    g_utf8_validate (s_first, (gssize) ui_slen, &s_end);
-    s_first[s_end - s_first] = '-';
-    memcpy (s_first + (s_end - s_first) + 1, s_image_id, ui_ilen);
-    memcpy (s_first + (s_end - s_first) + ui_ilen + 1, s_ext, ui_elen + 1);
+    g_utf8_validate (first, (gssize) slen, &end);
+    first[end - first] = '-';
+    memcpy (first + (end - first) + 1, image_id, ilen);
+    memcpy (first + (end - first) + ilen + 1, ext, elen + 1);
 
-    return s_first;
+    return first;
 }
 /*----------------------------------------------------------------------------*/
 /**
@@ -246,56 +246,56 @@ my_message_handler([[maybe_unused]] void *user_data,
 /**
  * @brief  Convert Flickr flickcurl_photo info to SearchItem item.
  *
- * @param[in] fp_photo  flickcurl_photo object to convert
+ * @param[in] photo  flickcurl_photo object to convert
  * @return    SearchItem item
  */
 static SearchItem *
-flickrphoto_to_search_item (flickcurl_photo *fp_photo)
+flickrphoto_to_search_item (flickcurl_photo *photo)
 {
-    SearchItem *item = nullptr;
-    char       *s_name  = nullptr;
-    const char *s_title = nullptr;
+    SearchItem *item  = nullptr;
+    char       *name  = nullptr;
+    const char *title = nullptr;
 
     item = search_item_new ();
-    s_title = fp_photo->fields[PHOTO_FIELD_title].string;
+    title = photo->fields[PHOTO_FIELD_title].string;
 
-    if (fp_photo->fields[PHOTO_FIELD_owner_realname].string != nullptr) {
+    if (photo->fields[PHOTO_FIELD_owner_realname].string != nullptr) {
         search_item_set_author_name (
-                item, fp_photo->fields[PHOTO_FIELD_owner_realname].string);
+                item, photo->fields[PHOTO_FIELD_owner_realname].string);
     }
-    else if (fp_photo->fields[PHOTO_FIELD_owner_username].string != nullptr) {
+    else if (photo->fields[PHOTO_FIELD_owner_username].string != nullptr) {
         search_item_set_author_name (
-                item, fp_photo->fields[PHOTO_FIELD_owner_username].string);
+                item, photo->fields[PHOTO_FIELD_owner_username].string);
     }
 
-    s_name = str_is_empty (s_title) ? strdup (fp_photo->id) : strdup (s_title);
-    remove_non_alpha_space (s_name);
+    name = str_is_empty (title) ? strdup (photo->id) : strdup (title);
+    remove_non_alpha_space (name);
 
     search_item_set_service_name (item, ww_name (WEB_SERV_FLICKR));
-    search_item_set_display_name (item, s_name);
-    search_item_set_display_markup (item, s_name);
-    free (s_name);
+    search_item_set_display_name (item, name);
+    search_item_set_display_markup (item, name);
+    free (name);
 
-    search_item_set_id_string (item, fp_photo->id);
+    search_item_set_id_string (item, photo->id);
 
-    item->thumb_url = flickcurl_photo_as_source_uri (fp_photo, 'm');
-    item->page_url  = flickcurl_photo_as_page_uri (fp_photo);
+    item->thumb_url = flickcurl_photo_as_source_uri (photo, 'm');
+    item->page_url  = flickcurl_photo_as_page_uri (photo);
 
-    if (fp_photo->fields[PHOTO_FIELD_originalformat].string != nullptr)
-        item->image_url = flickcurl_photo_as_source_uri (fp_photo, 'o');
+    if (photo->fields[PHOTO_FIELD_originalformat].string != nullptr)
+        item->image_url = flickcurl_photo_as_source_uri (photo, 'o');
     else
-        item->image_url = flickcurl_photo_as_source_uri (fp_photo, 'b');
+        item->image_url = flickcurl_photo_as_source_uri (photo, 'b');
 
     item->file_name = flickr_create_file_name (item->display_name,
                                                     item->image_url,
                                                     item->id);
 #ifdef DEBUG
-    printf ("ID : %s\n", fp_photo->id);
-    printf ("Title : %s\n", fp_photo->fields[PHOTO_FIELD_title].string);
+    printf ("ID : %s\n", photo->id);
+    printf ("Title : %s\n", photo->fields[PHOTO_FIELD_title].string);
     printf ("author1 : %s\n",
-            fp_photo->fields[PHOTO_FIELD_owner_realname].string);
+            photo->fields[PHOTO_FIELD_owner_realname].string);
     printf ("author2 : %s\n",
-            fp_photo->fields[PHOTO_FIELD_owner_username].string);
+            photo->fields[PHOTO_FIELD_owner_username].string);
     printf ("Author : %s\n",item->author_name);
     printf ("Page url : %s\n",item->page_url);
     printf ("Thumb url : %s\n",item->thumb_url);
@@ -303,18 +303,18 @@ flickrphoto_to_search_item (flickcurl_photo *fp_photo)
     printf ("File name : %s\n",item->file_name);
     flickcurl_photo_field_type field_type;
     for (field_type = 0; field_type <= PHOTO_FIELD_LAST; field_type++) {
-        flickcurl_field_value_type datatype = fp_photo->fields[field_type].type;
+        flickcurl_field_value_type datatype = photo->fields[field_type].type;
 
         if (datatype != VALUE_TYPE_NONE)
             printf("field %s (%d) with %s value: '%s' / %d\n", 
                    flickcurl_get_photo_field_label(field_type), (int)field_type,
                    flickcurl_get_field_value_type_label(datatype),
-                   fp_photo->fields[field_type].string,
-                   fp_photo->fields[field_type].integer);
+                   photo->fields[field_type].string,
+                   photo->fields[field_type].integer);
     }
 
-    for(int i = 0; i < fp_photo->tags_count; i++) {
-        flickcurl_tag* tag=fp_photo->tags[i];
+    for(int i = 0; i < photo->tags_count; i++) {
+        flickcurl_tag* tag=photo->tags[i];
         printf ("%d) %s tag: id %s author ID %s name %s raw '%s' "
                "cooked '%s' count %d\n",
                i, (tag->machine_tag ? "machine" : "regular"),
@@ -331,77 +331,77 @@ flickrphoto_to_search_item (flickcurl_photo *fp_photo)
  * @brief  Search in Flickr database.
  */
 void
-flickr_search (WebWidget      *ww_widget,
-               const NStrings *ns_data)
+flickr_search (WebWidget      *widget,
+               const NStrings *strings)
 {
     flickcurl_photos_list_params list_params;
     flickcurl_search_params      params;
     flickcurl_photos_list       *photos_list = nullptr;
-    flickcurl   *fc       = nullptr;
-    CacheQuery  *cq_query = nullptr; /* For cache saving */
+    flickcurl   *fc    = nullptr;
+    CacheQuery  *cache = nullptr; /* For cache saving */
     SearchItem  *item  = nullptr; /* Photo information */
-    char        *s_tags   = nullptr; /* Query tags */
-    int          i_err    = 0;    /* Error output */
-    int          i        = 0;    /* i */
-    char         s_sort[64];      /* Sorting information */
-    char         s_media[16];     /* Media type to search */
+    char        *tags  = nullptr; /* Query tags */
+    int          err   = 0;       /* Error output */
+    int          i     = 0;       /* i */
+    char         sort[64];        /* Sorting information */
+    char         media[16];       /* Media type to search */
 
     flickcurl_init ();
     fc = flickcurl_new ();
 
     flickcurl_set_error_handler (fc, my_message_handler, nullptr);
 
-    flickcurl_set_oauth_client_key    (fc, ns_data->str[0]);
-    flickcurl_set_oauth_client_secret (fc, ns_data->str[1]);
-    flickcurl_set_oauth_token         (fc, ns_data->str[2]);
-    flickcurl_set_oauth_token_secret  (fc, ns_data->str[3]);
+    flickcurl_set_oauth_client_key    (fc, strings->str[0]);
+    flickcurl_set_oauth_client_secret (fc, strings->str[1]);
+    flickcurl_set_oauth_token         (fc, strings->str[2]);
+    flickcurl_set_oauth_token_secret  (fc, strings->str[3]);
 
-    strcpy (s_sort,  "interestingness-desc");
-    strcpy (s_media, "photos");
-    s_tags = str_replace_in (ww_widget->query, " ", ",");
+    strcpy (sort,  "interestingness-desc");
+    strcpy (media, "photos");
+    tags = str_replace_in (widget->query, " ", ",");
 
     flickcurl_search_params_init (&params);
-    params.sort  = s_sort;
-    params.tags  = s_tags;
-    params.media = s_media;
+    params.sort  = sort;
+    params.tags  = tags;
+    params.media = media;
 
     flickcurl_photos_list_params_init (&list_params);
     list_params.per_page = 12;
-    list_params.page     = ww_widget->page;
+    list_params.page     = widget->page;
     list_params.extras   = "original_format,o_dims,url_o,url_t";
 
     photos_list = flickcurl_photos_search_params (fc, &params, &list_params);
 
     gtk_list_store_clear (GTK_LIST_STORE (gtk_icon_view_get_model (
-                    GTK_ICON_VIEW (ww_widget->img_view))));
+                    GTK_ICON_VIEW (widget->img_view))));
 
     if (photos_list != nullptr) {
-        cq_query = cache_query_new (ww_name (WEB_SERV_FLICKR),
-                                    ww_widget->query,
-                                    ww_widget->search_opts,
-                                    ww_widget->page);
+        cache = cache_query_new (ww_name (WEB_SERV_FLICKR),
+                                    widget->query,
+                                    widget->search_opts,
+                                    widget->page);
 
-        ww_widget->found_cnt = photos_list->total_count;
-        cq_query->found_cnt  = ww_widget->found_cnt;
+        widget->found_cnt = photos_list->total_count;
+        cache->found_cnt  = widget->found_cnt;
 
         for(i = 0; i < photos_list->photos_count; ++i) {
             item = flickrphoto_to_search_item (photos_list->photos[i]);
-            add_search_item_to_img_view (ww_widget->img_view,
+            add_search_item_to_img_view (widget->img_view,
                                          item,
-                                         ww_widget->wallpaper_dir,
+                                         widget->wallpaper_dir,
                                          ww_name (WEB_SERV_FLICKR),
-                                         ww_widget->thumb_quality);
-            cache_query_append_item (cq_query, item);
+                                         widget->thumb_quality);
+            cache_query_append_item (cache, item);
         }
-        i_err = cache_query_save (cq_query);
+        err = cache_query_save (cache);
 
-        if (i_err != ERR_OK) {
-            message_dialog_error (nullptr, err_get_message (i_err));
+        if (err != ERR_OK) {
+            message_dialog_error (nullptr, err_get_message (err));
         }
         flickcurl_free_photos_list (photos_list);
-        cache_query_free (cq_query);
+        cache_query_free (cache);
     }
-    free (s_tags);
+    free (tags);
     flickcurl_free (fc);
     flickcurl_finish ();
 }
@@ -410,34 +410,34 @@ flickr_search (WebWidget      *ww_widget,
  * @brief  Dialog with Flickr service settings.
  */
 int
-flickr_settings_dialog (NStrings *ns_data)
+flickr_settings_dialog (NStrings *strings)
 {
-    GtkWidget *gw_dialog;         /* Flickr settings dialog */
-    GtkWidget *gw_content_box;    /* Dialog's box */
-    GtkWidget *gw_cli_key_entry;  /* Entry for API key */
-    GtkWidget *gw_cli_sec_entry;  /* Entry for API secret */
-    GtkWidget *gw_verify_entry;   /* Entry for verifier */
-    GtkWidget *gw_auth_button;    /* Button to authorize app */
-    GtkWidget *gw_auth_link;      /* Authorization link */
-    GtkWidget *gw_gen_acc_button; /* Button to authorize app */
-    GtkWidget *gw_req_tok_entry;  /* Entry for API request token */
-    GtkWidget *gw_req_sec_entry;  /* Entry for API request secret */
-    GtkWidget *gw_ath_tok_entry;  /* Entry for API access key */
-    GtkWidget *gw_ath_sec_entry;  /* Entry for API access secret */
-    GtkWidget *gw_client_grid;    /* Grid for client API keys */
-    GtkWidget *gw_request_grid;   /* Grid for request keys */
-    GtkWidget *gw_verify_grid;    /* Grid for verify code */
-    GtkWidget *gw_access_grid;    /* Grid for access keys */
-    GtkWidget *gw_array[FLA_CNT]; /* Widgets for events */
-    const char *s_cli_key = nullptr; /* Client key */
-    const char *s_cli_sec = nullptr; /* Client secret */
-    const char *s_ath_tok = nullptr; /* Access token */
-    const char *s_ath_sec = nullptr; /* Access token secret */
-    int         i_res     = 0;    /* Dialog result */
+    GtkWidget *dialog;         /* Flickr settings dialog */
+    GtkWidget *content_box;    /* Dialog's box */
+    GtkWidget *cli_key_entry;  /* Entry for API key */
+    GtkWidget *cli_sec_entry;  /* Entry for API secret */
+    GtkWidget *verify_entry;   /* Entry for verifier */
+    GtkWidget *auth_button;    /* Button to authorize app */
+    GtkWidget *auth_link;      /* Authorization link */
+    GtkWidget *gen_acc_button; /* Button to authorize app */
+    GtkWidget *req_tok_entry;  /* Entry for API request token */
+    GtkWidget *req_sec_entry;  /* Entry for API request secret */
+    GtkWidget *ath_tok_entry;  /* Entry for API access key */
+    GtkWidget *ath_sec_entry;  /* Entry for API access secret */
+    GtkWidget *client_grid;    /* Grid for client API keys */
+    GtkWidget *request_grid;   /* Grid for request keys */
+    GtkWidget *verify_grid;    /* Grid for verify code */
+    GtkWidget *access_grid;    /* Grid for access keys */
+    GtkWidget *widgets[FLA_CNT];   /* Widgets for events */
+    const char *cli_key = nullptr; /* Client key */
+    const char *cli_sec = nullptr; /* Client secret */
+    const char *ath_tok = nullptr; /* Access token */
+    const char *ath_sec = nullptr; /* Access token secret */
+    int         res     = 0;       /* Dialog result */
 
     GtkDialogFlags flags = GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT;
 
-    gw_dialog = gtk_dialog_new_with_buttons ("Flickr configuration",
+    dialog = gtk_dialog_new_with_buttons ("Flickr configuration",
                                              nullptr,
                                              flags,
                                              "_OK",
@@ -446,183 +446,183 @@ flickr_settings_dialog (NStrings *ns_data)
                                              GTK_RESPONSE_REJECT,
                                              nullptr);
 
-    gw_content_box = gtk_dialog_get_content_area (GTK_DIALOG (gw_dialog));
-    gtk_container_set_border_width (GTK_CONTAINER (gw_content_box), 8);
+    content_box = gtk_dialog_get_content_area (GTK_DIALOG (dialog));
+    gtk_container_set_border_width (GTK_CONTAINER (content_box), 8);
 
-    gw_client_grid = gtk_grid_new ();
-    gtk_grid_set_row_spacing (GTK_GRID (gw_client_grid), 8);
-    gtk_grid_set_column_spacing (GTK_GRID (gw_client_grid), 8);
-    gtk_widget_set_halign (gw_client_grid, GTK_ALIGN_CENTER);
+    client_grid = gtk_grid_new ();
+    gtk_grid_set_row_spacing (GTK_GRID (client_grid), 8);
+    gtk_grid_set_column_spacing (GTK_GRID (client_grid), 8);
+    gtk_widget_set_halign (client_grid, GTK_ALIGN_CENTER);
 
-    gw_request_grid = gtk_grid_new ();
-    gtk_grid_set_row_spacing (GTK_GRID (gw_request_grid), 8);
-    gtk_grid_set_column_spacing (GTK_GRID (gw_request_grid), 8);
-    gtk_widget_set_halign (gw_request_grid, GTK_ALIGN_CENTER);
+    request_grid = gtk_grid_new ();
+    gtk_grid_set_row_spacing (GTK_GRID (request_grid), 8);
+    gtk_grid_set_column_spacing (GTK_GRID (request_grid), 8);
+    gtk_widget_set_halign (request_grid, GTK_ALIGN_CENTER);
 
-    gw_verify_grid = gtk_grid_new ();
-    gtk_grid_set_row_spacing (GTK_GRID (gw_verify_grid), 8);
-    gtk_grid_set_column_spacing (GTK_GRID (gw_verify_grid), 8);
-    gtk_widget_set_halign (gw_verify_grid, GTK_ALIGN_CENTER);
+    verify_grid = gtk_grid_new ();
+    gtk_grid_set_row_spacing (GTK_GRID (verify_grid), 8);
+    gtk_grid_set_column_spacing (GTK_GRID (verify_grid), 8);
+    gtk_widget_set_halign (verify_grid, GTK_ALIGN_CENTER);
 
-    gw_access_grid = gtk_grid_new ();
-    gtk_grid_set_row_spacing (GTK_GRID (gw_access_grid), 8);
-    gtk_grid_set_column_spacing (GTK_GRID (gw_access_grid), 8);
-    gtk_widget_set_halign (gw_access_grid, GTK_ALIGN_CENTER);
+    access_grid = gtk_grid_new ();
+    gtk_grid_set_row_spacing (GTK_GRID (access_grid), 8);
+    gtk_grid_set_column_spacing (GTK_GRID (access_grid), 8);
+    gtk_widget_set_halign (access_grid, GTK_ALIGN_CENTER);
 
-    gw_cli_key_entry = gtk_entry_new ();
-    gw_cli_sec_entry = gtk_entry_new ();
-    gw_verify_entry  = gtk_entry_new ();
-    gw_req_tok_entry = gtk_entry_new ();
-    gw_req_sec_entry = gtk_entry_new ();
-    gw_ath_tok_entry = gtk_entry_new ();
-    gw_ath_sec_entry = gtk_entry_new ();
+    cli_key_entry = gtk_entry_new ();
+    cli_sec_entry = gtk_entry_new ();
+    verify_entry  = gtk_entry_new ();
+    req_tok_entry = gtk_entry_new ();
+    req_sec_entry = gtk_entry_new ();
+    ath_tok_entry = gtk_entry_new ();
+    ath_sec_entry = gtk_entry_new ();
 
-    gtk_entry_set_width_chars (GTK_ENTRY (gw_cli_key_entry), 35);
-    gtk_entry_set_width_chars (GTK_ENTRY (gw_cli_sec_entry), 35);
-    gtk_entry_set_width_chars (GTK_ENTRY (gw_req_tok_entry), 35);
-    gtk_entry_set_width_chars (GTK_ENTRY (gw_req_sec_entry), 35);
-    gtk_entry_set_width_chars (GTK_ENTRY (gw_ath_tok_entry), 35);
-    gtk_entry_set_width_chars (GTK_ENTRY (gw_ath_sec_entry), 35);
+    gtk_entry_set_width_chars (GTK_ENTRY (cli_key_entry), 35);
+    gtk_entry_set_width_chars (GTK_ENTRY (cli_sec_entry), 35);
+    gtk_entry_set_width_chars (GTK_ENTRY (req_tok_entry), 35);
+    gtk_entry_set_width_chars (GTK_ENTRY (req_sec_entry), 35);
+    gtk_entry_set_width_chars (GTK_ENTRY (ath_tok_entry), 35);
+    gtk_entry_set_width_chars (GTK_ENTRY (ath_sec_entry), 35);
 
-    gtk_entry_set_text (GTK_ENTRY (gw_cli_key_entry), ns_data->str[0]);
-    gtk_entry_set_text (GTK_ENTRY (gw_cli_sec_entry), ns_data->str[1]);
-    gtk_entry_set_text (GTK_ENTRY (gw_ath_tok_entry), ns_data->str[2]);
-    gtk_entry_set_text (GTK_ENTRY (gw_ath_sec_entry), ns_data->str[3]);
+    gtk_entry_set_text (GTK_ENTRY (cli_key_entry), strings->str[0]);
+    gtk_entry_set_text (GTK_ENTRY (cli_sec_entry), strings->str[1]);
+    gtk_entry_set_text (GTK_ENTRY (ath_tok_entry), strings->str[2]);
+    gtk_entry_set_text (GTK_ENTRY (ath_sec_entry), strings->str[3]);
 
-    gtk_grid_attach (GTK_GRID (gw_client_grid),
+    gtk_grid_attach (GTK_GRID (client_grid),
                      gtk_label_new ("Flickr API client key:"),
                      0, 0, 1, 1);
-    gtk_grid_attach (GTK_GRID (gw_client_grid),
+    gtk_grid_attach (GTK_GRID (client_grid),
                      gtk_label_new ("Flickr API client secret:"),
                      1, 0, 1, 1);
-    gtk_grid_attach (GTK_GRID (gw_client_grid),
-                     gw_cli_key_entry,
+    gtk_grid_attach (GTK_GRID (client_grid),
+                     cli_key_entry,
                      0, 1, 1, 1);
-    gtk_grid_attach (GTK_GRID (gw_client_grid),
-                     gw_cli_sec_entry,
+    gtk_grid_attach (GTK_GRID (client_grid),
+                     cli_sec_entry,
                      1, 1, 1, 1);
 
-    gtk_grid_attach (GTK_GRID (gw_request_grid),
+    gtk_grid_attach (GTK_GRID (request_grid),
                      gtk_label_new ("Flickr request token:"),
                      0, 0, 1, 1);
-    gtk_grid_attach (GTK_GRID (gw_request_grid),
+    gtk_grid_attach (GTK_GRID (request_grid),
                      gtk_label_new ("Flickr request secret:"),
                      1, 0, 1, 1);
-    gtk_grid_attach (GTK_GRID (gw_request_grid),
-                     gw_req_tok_entry,
+    gtk_grid_attach (GTK_GRID (request_grid),
+                     req_tok_entry,
                      0, 1, 1, 1);
-    gtk_grid_attach (GTK_GRID (gw_request_grid),
-                     gw_req_sec_entry,
+    gtk_grid_attach (GTK_GRID (request_grid),
+                     req_sec_entry,
                      1, 1, 1, 1);
 
-    gtk_grid_attach (GTK_GRID (gw_verify_grid),
+    gtk_grid_attach (GTK_GRID (verify_grid),
                      gtk_label_new (
                          "Paste here verifier text got after authorization:"),
                      0, 0, 1, 1);
-    gtk_grid_attach (GTK_GRID (gw_verify_grid),
-                     gw_verify_entry,
+    gtk_grid_attach (GTK_GRID (verify_grid),
+                     verify_entry,
                      1, 0, 1, 1);
 
-    gtk_grid_attach (GTK_GRID (gw_access_grid),
+    gtk_grid_attach (GTK_GRID (access_grid),
                      gtk_label_new ("Flickr access token:"),
                      0, 0, 1, 1);
-    gtk_grid_attach (GTK_GRID (gw_access_grid),
+    gtk_grid_attach (GTK_GRID (access_grid),
                      gtk_label_new ("Flickr access token secret:"),
                      1, 0, 1, 1);
-    gtk_grid_attach (GTK_GRID (gw_access_grid),
-                     gw_ath_tok_entry,
+    gtk_grid_attach (GTK_GRID (access_grid),
+                     ath_tok_entry,
                      0, 1, 1, 1);
-    gtk_grid_attach (GTK_GRID (gw_access_grid),
-                     gw_ath_sec_entry,
+    gtk_grid_attach (GTK_GRID (access_grid),
+                     ath_sec_entry,
                      1, 1, 1, 1);
 
-    gw_auth_button = gtk_button_new_with_label ("Generate authorization url");
-    gw_auth_link = gtk_link_button_new ("");
-    gw_gen_acc_button = gtk_button_new_with_label (
+    auth_button = gtk_button_new_with_label ("Generate authorization url");
+    auth_link = gtk_link_button_new ("");
+    gen_acc_button = gtk_button_new_with_label (
             "Generate access token and access token secret");
 
-    gw_array[FLA_CLI_KEY] = gw_cli_key_entry;
-    gw_array[FLA_CLI_SEC] = gw_cli_sec_entry;
-    gw_array[FLA_AUT_LNK] = gw_auth_link;
-    gw_array[FLA_VER_CD]  = gw_verify_entry;
-    gw_array[FLA_REQ_TOK] = gw_req_tok_entry;
-    gw_array[FLA_REQ_SEC] = gw_req_sec_entry;
-    gw_array[FLA_ATH_TOK] = gw_ath_tok_entry;
-    gw_array[FLA_ATH_SEC] = gw_ath_sec_entry;
+    widgets[FLA_CLI_KEY] = cli_key_entry;
+    widgets[FLA_CLI_SEC] = cli_sec_entry;
+    widgets[FLA_AUT_LNK] = auth_link;
+    widgets[FLA_VER_CD]  = verify_entry;
+    widgets[FLA_REQ_TOK] = req_tok_entry;
+    widgets[FLA_REQ_SEC] = req_sec_entry;
+    widgets[FLA_ATH_TOK] = ath_tok_entry;
+    widgets[FLA_ATH_SEC] = ath_sec_entry;
 
-    g_signal_connect_swapped (gw_auth_button, "clicked",
-            G_CALLBACK (event_flickr_auth_link_generate), gw_array);
-    g_signal_connect_swapped (gw_gen_acc_button, "clicked",
-            G_CALLBACK (event_flickr_access_keys_generate), gw_array);
+    g_signal_connect_swapped (auth_button, "clicked",
+            G_CALLBACK (event_flickr_auth_link_generate), widgets);
+    g_signal_connect_swapped (gen_acc_button, "clicked",
+            G_CALLBACK (event_flickr_access_keys_generate), widgets);
 
     /* Packing dialog widgets */
-    gtk_box_pack_start (GTK_BOX (gw_content_box),
+    gtk_box_pack_start (GTK_BOX (content_box),
                         gtk_label_new (
     "To get your API keys, you need to be registered on the Flickr website and "
     " fill the form for a key:"),
                         FALSE, FALSE, 4);
-    gtk_box_pack_start (GTK_BOX (gw_content_box),
+    gtk_box_pack_start (GTK_BOX (content_box),
                         gtk_label_new ("(set application type as \"mobile\")"),
                         FALSE, FALSE, 4);
-    gtk_box_pack_start (GTK_BOX (gw_content_box),
+    gtk_box_pack_start (GTK_BOX (content_box),
                         gtk_link_button_new (
         "https://www.flickr.com/services/apps/create/apply/"),
                         FALSE, FALSE, 4);
-    gtk_box_pack_start (GTK_BOX (gw_content_box),
-                        gw_client_grid,
+    gtk_box_pack_start (GTK_BOX (content_box),
+                        client_grid,
                         FALSE, FALSE, 4);
-    gtk_box_pack_start (GTK_BOX (gw_content_box),
+    gtk_box_pack_start (GTK_BOX (content_box),
                         gtk_label_new (
     "After you get API keys, you need to generate url to authorize app."),
                         FALSE, FALSE, 4);
-    gtk_box_pack_start (GTK_BOX (gw_content_box),
-                        gw_auth_button,
+    gtk_box_pack_start (GTK_BOX (content_box),
+                        auth_button,
                         FALSE, FALSE, 4);
-    gtk_box_pack_start (GTK_BOX (gw_content_box),
-                        gw_request_grid,
+    gtk_box_pack_start (GTK_BOX (content_box),
+                        request_grid,
                         FALSE, FALSE, 4);
-    gtk_box_pack_start (GTK_BOX (gw_content_box),
-                        gw_auth_link,
+    gtk_box_pack_start (GTK_BOX (content_box),
+                        auth_link,
                         FALSE, FALSE, 4);
-    gtk_box_pack_start (GTK_BOX (gw_content_box),
-                        gw_verify_grid,
+    gtk_box_pack_start (GTK_BOX (content_box),
+                        verify_grid,
                         FALSE, FALSE, 4);
-    gtk_box_pack_start (GTK_BOX (gw_content_box),
+    gtk_box_pack_start (GTK_BOX (content_box),
                         gtk_label_new ("And finally"),
                         FALSE, FALSE, 4);
-    gtk_box_pack_start (GTK_BOX (gw_content_box),
-                        gw_gen_acc_button,
+    gtk_box_pack_start (GTK_BOX (content_box),
+                        gen_acc_button,
                         FALSE, FALSE, 4);
-    gtk_box_pack_start (GTK_BOX (gw_content_box),
-                        gw_access_grid,
+    gtk_box_pack_start (GTK_BOX (content_box),
+                        access_grid,
                         FALSE, FALSE, 4);
-    gtk_box_pack_start (GTK_BOX (gw_content_box),
+    gtk_box_pack_start (GTK_BOX (content_box),
                         gtk_separator_new (GTK_ORIENTATION_HORIZONTAL),
                         FALSE, FALSE, 4);
 
-    gtk_widget_show_all (gw_content_box);
+    gtk_widget_show_all (content_box);
 
-    i_res = gtk_dialog_run (GTK_DIALOG (gw_dialog));
+    res = gtk_dialog_run (GTK_DIALOG (dialog));
 
-    if (i_res == GTK_RESPONSE_ACCEPT) {
-        s_cli_key = gtk_entry_get_text (GTK_ENTRY (gw_cli_key_entry));
-        s_cli_sec = gtk_entry_get_text (GTK_ENTRY (gw_cli_sec_entry));
-        s_ath_tok = gtk_entry_get_text (GTK_ENTRY (gw_ath_tok_entry));
-        s_ath_sec = gtk_entry_get_text (GTK_ENTRY (gw_ath_sec_entry));
+    if (res == GTK_RESPONSE_ACCEPT) {
+        cli_key = gtk_entry_get_text (GTK_ENTRY (cli_key_entry));
+        cli_sec = gtk_entry_get_text (GTK_ENTRY (cli_sec_entry));
+        ath_tok = gtk_entry_get_text (GTK_ENTRY (ath_tok_entry));
+        ath_sec = gtk_entry_get_text (GTK_ENTRY (ath_sec_entry));
 
-        free (ns_data->str[0]);
-        free (ns_data->str[1]);
-        free (ns_data->str[2]);
-        free (ns_data->str[3]);
+        free (strings->str[0]);
+        free (strings->str[1]);
+        free (strings->str[2]);
+        free (strings->str[3]);
 
-        ns_data->str[0] = strdup (s_cli_key);
-        ns_data->str[1] = strdup (s_cli_sec);
-        ns_data->str[2] = strdup (s_ath_tok);
-        ns_data->str[3] = strdup (s_ath_sec);
+        strings->str[0] = strdup (cli_key);
+        strings->str[1] = strdup (cli_sec);
+        strings->str[2] = strdup (ath_tok);
+        strings->str[3] = strdup (ath_sec);
     }
-    gtk_widget_destroy (gw_dialog);
+    gtk_widget_destroy (dialog);
 
-    return i_res;
+    return res;
 }
 /*----------------------------------------------------------------------------*/
 

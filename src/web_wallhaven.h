@@ -31,29 +31,29 @@
 /**
  * @brief  Search in Wallhaven database.
  *
- * @param[in,out] ww_widget  WebWidget with widgets and search data
- * @param[in]     ns_data    N strings with API keys
+ * @param[in,out] widget  WebWidget with widgets and search data
+ * @param[in]     strings N strings with API keys
  * @return        none
  */
-void   wallhaven_search           (WebWidget      *ww_widget,
-                                   const NStrings *ns_data);
+void   wallhaven_search           (WebWidget      *widget,
+                                   const NStrings *strings);
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Dialog with Wallhaven service settings.
  *
- * @param[in,out] ns_data  N strings to get and write API keys
+ * @param[in,out] strings  N strings to get and write API keys
  * @return        Dialog response
  */
-int    wallhaven_settings_dialog    (NStrings     *ns_data);
+int    wallhaven_settings_dialog    (NStrings     *strings);
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Options for image search dialog.
  *
- * @param[in,out] ww_widget  WebWidget with widgets and search data
+ * @param[in,out] widget  WebWidget with widgets and search data
  * @return        String with image options. After use it should be freed
  *                using free.
  */
-char * wallhaven_search_opts_dialog (WebWidget    *ww_widget);
+char * wallhaven_search_opts_dialog (WebWidget    *widget);
 /*----------------------------------------------------------------------------*/
 #endif 
 

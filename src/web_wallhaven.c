@@ -62,33 +62,33 @@ enum e_options {
 };
 /*----------------------------------------------------------------------------*/
 /**
- * @var   s_opts
+ * @var   opts
  * @brief Array with option names
  */
-static const char *s_opts[] = {
+static const char *opts[] = {
     "categories",  "sorting", "order", "topRange", "atleast", "resolutions",
     "ratios", "colors", "categories", nullptr, nullptr, "purity", nullptr
 };
 /*----------------------------------------------------------------------------*/
 /**
- * @var   s_sort
+ * @var   sort
  * @brief Sorting options
  */
-static const char *s_sort[] = {
+static const char *sort[] = {
     "date_added", "relevance", "random", "views", "favorites", "toplist", nullptr
 };
 /*----------------------------------------------------------------------------*/
 /**
- * @var   s_order
+ * @var   order
  * @brief Sorting order
  */
-static const char *s_order[] = {"desc", "asc", nullptr};
+static const char *order[] = {"desc", "asc", nullptr};
 /*----------------------------------------------------------------------------*/
 /**
- * @var   s_toprange
+ * @var   toprange
  * @brief Top range options
  */
-static const char *s_toprange[] = {
+static const char *toprange[] = {
     "1d", "3d", "1w", "1M" , "3M", "6M", "1y", nullptr
 };
 /*----------------------------------------------------------------------------*/
@@ -96,17 +96,17 @@ static const char *s_toprange[] = {
  * @brief  Process SearchIem item with image data and create name for icon view
  *         and for image file to save.
  *
- * @param[in,out] si_item  SearchItem item to process.
+ * @param[in,out] item  SearchItem item to process.
  * @return        none
  */
 static void
 wallhaven_process_item_set_names (SearchItem *item)
 {
-    //char *s_base_name = NULL; /* Base name for processing */
-    char *s_file_name = nullptr; /* Name for file to save */
-    char *s_disp_name = nullptr; /* Name to display on list */
-    char *s_ext       = nullptr; /* Pointer to extension */
-    const char *s_format = "%s\n<span font_size=\"small\">[%dx%d]</span>";
+    //char *base_name = NULL; /* Base name for processing */
+    char *file_name = nullptr; /* Name for file to save */
+    char *disp_name = nullptr; /* Name to display on list */
+    char *ext       = nullptr; /* Pointer to extension */
+    const char *format = "%s\n<span font_size=\"small\">[%dx%d]</span>";
 
     if (item->id == nullptr)
         return;
@@ -114,90 +114,90 @@ wallhaven_process_item_set_names (SearchItem *item)
         return;
 
     /* Create file name, add image extension to base name */
-    s_ext = strrchr (item->image_url, '.');
-    if (s_ext != nullptr) {
-        s_file_name = str_comb (ww_name (WEB_SERV_WALLHAVEN), "_");
-        str_append (&s_file_name, item->id);
-        str_append (&s_file_name, s_ext);
+    ext = strrchr (item->image_url, '.');
+    if (ext != nullptr) {
+        file_name = str_comb (ww_name (WEB_SERV_WALLHAVEN), "_");
+        str_append (&file_name, item->id);
+        str_append (&file_name, ext);
     }
     /* Display name to show on image list */
-    s_disp_name = item->id;
+    disp_name = item->id;
 
     /* Save names in SearchItem */
-    search_item_set_file_name    (item, s_file_name);
-    search_item_set_display_name (item, s_disp_name);
-    /* search_item_set_display_markup (item, s_disp_name); */
+    search_item_set_file_name    (item, file_name);
+    search_item_set_display_name (item, disp_name);
+    /* search_item_set_display_markup (item, disp_name); */
     item->display_markup = g_markup_printf_escaped (
-            s_format, s_disp_name, item->width, item->height);
+            format, disp_name, item->width, item->height);
 
-    free (s_file_name);
+    free (file_name);
 }
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Convert Wallhaven json image info to SearchItem item.
  *
- * @param[in] j_obj  Json object to convert
+ * @param[in] obj  Json object to convert
  * @return    SearchItem item
  */
 static SearchItem *
-wallhaven_json_obj_to_search_item (json_object *j_obj)
+wallhaven_json_obj_to_search_item (json_object *obj)
 {
-    json_object *j_val;
-    json_object *j_val2;
+    json_object *val;
+    json_object *val2;
 
     SearchItem *item = search_item_new ();
 
     search_item_set_service_name (item, ww_name (WEB_SERV_WALLHAVEN));
 
-    if (json_object_object_get_ex (j_obj, "id", &j_val) &&
-        json_object_get_type (j_val) == json_type_string) {
+    if (json_object_object_get_ex (obj, "id", &val) &&
+        json_object_get_type (val) == json_type_string) {
 
-        search_item_set_id_string (item, json_object_get_string (j_val));
+        search_item_set_id_string (item, json_object_get_string (val));
 #ifdef DEBUG
         printf ("photo id : %s\n", item->id);
 #endif
     }
-    if (json_object_object_get_ex (j_obj, "dimension_x", &j_val) &&
-        json_object_get_type (j_val) == json_type_int) {
+    if (json_object_object_get_ex (obj, "dimension_x", &val) &&
+        json_object_get_type (val) == json_type_int) {
 
-        search_item_set_width (item, json_object_get_int (j_val));
+        search_item_set_width (item, json_object_get_int (val));
 #ifdef DEBUG
-        printf ("width : %d\n", json_object_get_int (j_val));
+        printf ("width : %d\n", json_object_get_int (val));
 #endif
     }
-    if (json_object_object_get_ex (j_obj, "dimension_y", &j_val) &&
-        json_object_get_type (j_val) == json_type_int) {
+    if (json_object_object_get_ex (obj, "dimension_y", &val) &&
+        json_object_get_type (val) == json_type_int) {
 
-        search_item_set_height (item, json_object_get_int (j_val));
+        search_item_set_height (item, json_object_get_int (val));
 #ifdef DEBUG
-        printf ("height : %d\n", json_object_get_int (j_val));
+        printf ("height : %d\n", json_object_get_int (val));
 #endif
     }
-    if (json_object_object_get_ex (j_obj, "url", &j_val) &&
-        json_object_get_type (j_val) == json_type_string) {
+    if (json_object_object_get_ex (obj, "url", &val) &&
+        json_object_get_type (val) == json_type_string) {
 
-        search_item_set_page_url (item, json_object_get_string (j_val));
+        search_item_set_page_url (item, json_object_get_string (val));
 #ifdef DEBUG
-        printf ("url : %s\n", json_object_get_string (j_val));
+        printf ("url : %s\n", json_object_get_string (val));
 #endif
     }
-    if (json_object_object_get_ex (j_obj, "path", &j_val) &&
-        json_object_get_type (j_val) == json_type_string) {
+    if (json_object_object_get_ex (obj, "path", &val) &&
+        json_object_get_type (val) == json_type_string) {
 
-        search_item_set_image_url (item, json_object_get_string (j_val));
+        search_item_set_image_url (item, json_object_get_string (val));
 #ifdef DEBUG
-        printf ("image url : %s\n", json_object_get_string (j_val));
+        printf ("image url : %s\n", json_object_get_string (val));
 #endif
     }
-    if (json_object_object_get_ex (j_obj, "thumbs", &j_val) &&
-        json_object_get_type (j_val) == json_type_object) {
+    if (json_object_object_get_ex (obj, "thumbs", &val) &&
+        json_object_get_type (val) == json_type_object) {
 
-        if (json_object_object_get_ex (j_val, "small", &j_val2) &&
-            json_object_get_type (j_val2) == json_type_string) {
+        if (json_object_object_get_ex (val, "small", &val2) &&
+            json_object_get_type (val2) == json_type_string) {
 
-            search_item_set_thumb_url (item, json_object_get_string (j_val2));
+            search_item_set_thumb_url (item, json_object_get_string (val2));
 #ifdef DEBUG
-            printf ("thumb url : %s\n", json_object_get_string (j_val2));
+            printf ("thumb url : %s\n", json_object_get_string (val2));
 #endif
         }
     }
@@ -209,69 +209,69 @@ wallhaven_json_obj_to_search_item (json_object *j_obj)
 /**
  * @brief  Analyze Wallhaven json search response and add results to image list.
  *
- * @param[in]  s_buff     String with json data
- * @param[out] ww_widget  Webwidget to set data
- * @param[out] cq_query   CacheQuery item to insert SearchItem items
+ * @param[in]  buffer  String with json data
+ * @param[out] widget  Webwidget to set data
+ * @param[out] cache   CacheQuery item to insert SearchItem items
  * @return     none
  */
 static void
-wallhaven_json_to_webwidget (const char *s_buff,
-                             WebWidget  *ww_widget,
-                             CacheQuery *cq_query)
+wallhaven_json_to_webwidget (const char *buffer,
+                             WebWidget  *widget,
+                             CacheQuery *cache)
 {
-    json_object *j_obj;            /* Json with search data */
-    json_object *j_val;            /* Some value */
-    json_object *j_val2;           /* Some value */
-    json_object *j_arr;            /* For array data */
-    enum json_tokener_error j_err; /* Json error output */
-    SearchItem *item = nullptr;    /* For image info */
-    size_t      i       = 0;       /* i */
-    size_t      ui_cnt  = 0;       /* Elements in array */
+    json_object *obj;  /* Json with search data */
+    json_object *val;  /* Some value */
+    json_object *val2; /* Some value */
+    json_object *arr;  /* For array data */
+    enum json_tokener_error json_err; /* Json error output */
+    SearchItem *item = nullptr;  /* For image info */
+    size_t      cnt  = 0;  /* Elements in array */
+    size_t      i    = 0;
 
-    j_obj = json_tokener_parse_verbose (s_buff, &j_err);
-    if (j_obj == nullptr ||
-        json_object_get_type (j_obj) != json_type_object ||
-        j_err != json_tokener_success) {
+    obj = json_tokener_parse_verbose (buffer, &json_err);
+    if (obj == nullptr ||
+        json_object_get_type (obj) != json_type_object ||
+        json_err != json_tokener_success) {
 #ifdef DEBUG
-        printf ("Json error: %d\n", j_err);
-        printf ("Json type:  %d\n", json_object_get_type (j_obj));
+        printf ("Json error: %d\n", json_err);
+        printf ("Json type:  %d\n", json_object_get_type (obj));
         printf ("Error converting json to stlist, wrong json file\n");
 #endif
-        if (j_obj != nullptr)
-            json_object_put (j_obj);
+        if (obj != nullptr)
+            json_object_put (obj);
     }
     else {
-        if (json_object_object_get_ex (j_obj, "meta", &j_val) &&
-            json_object_get_type (j_val) == json_type_object) {
+        if (json_object_object_get_ex (obj, "meta", &val) &&
+            json_object_get_type (val) == json_type_object) {
 
-            if (json_object_object_get_ex (j_val, "total", &j_val2) &&
-                json_object_get_type (j_val2) == json_type_int) {
+            if (json_object_object_get_ex (val, "total", &val2) &&
+                json_object_get_type (val2) == json_type_int) {
 
-                ww_widget->found_cnt = json_object_get_int (j_val2);
+                widget->found_cnt = json_object_get_int (val2);
 #ifdef DEBUG
-                printf ("found images : %d\n", ww_widget->found_cnt);
+                printf ("found images : %d\n", widget->found_cnt);
 #endif
             }
         }
 
-        if (json_object_object_get_ex (j_obj, "data", &j_arr) &&
-            json_object_get_type (j_arr) == json_type_array) {
+        if (json_object_object_get_ex (obj, "data", &arr) &&
+            json_object_get_type (arr) == json_type_array) {
 
-            ui_cnt = json_object_array_length (j_arr);
+            cnt = json_object_array_length (arr);
 
-            for (i = 0; i < ui_cnt; ++i) {
-                if ((j_val = json_object_array_get_idx (j_arr, i)) != nullptr) {
-                    item = wallhaven_json_obj_to_search_item (j_val);
-                    add_search_item_to_img_view (ww_widget->img_view,
+            for (i = 0; i < cnt; ++i) {
+                if ((val = json_object_array_get_idx (arr, i)) != nullptr) {
+                    item = wallhaven_json_obj_to_search_item (val);
+                    add_search_item_to_img_view (widget->img_view,
                                                  item,
-                                                 ww_widget->wallpaper_dir,
+                                                 widget->wallpaper_dir,
                                                  ww_name (WEB_SERV_WALLHAVEN),
-                                                 ww_widget->thumb_quality);
-                    cache_query_append_item (cq_query, item);
+                                                 widget->thumb_quality);
+                    cache_query_append_item (cache, item);
                 }
             }
         }
-        json_object_put (j_obj);
+        json_object_put (obj);
     }
 }
 /*----------------------------------------------------------------------------*/
@@ -279,63 +279,63 @@ wallhaven_json_to_webwidget (const char *s_buff,
  * @brief  Search in Wallhaven database.
  */
 void
-wallhaven_search (WebWidget      *ww_widget,
-                  const NStrings *ns_data)
+wallhaven_search (WebWidget      *widget,
+                  const NStrings *strings)
 {
-    UrlData    *ud_data  = nullptr; /* For search results */
-    CacheQuery *cq_query = nullptr; /* For cache saving */
-    char       *s_query  = nullptr; /* For search query */
-    int         i_err    = 0;       /* Error output */
+    UrlData    *data  = nullptr; /* For search results */
+    CacheQuery *cache = nullptr; /* For cache saving */
+    char       *search_query = nullptr; /* For search query */
+    int         err   = 0;       /* Error output */
 
-    if (str_is_empty_warn (ns_data->str[0], "Wallhaven API key is not set"))
+    if (str_is_empty_warn (strings->str[0], "Wallhaven API key is not set"))
         return;
 
-    s_query = str_replace_in (ww_widget->query, " ", "+");
+    search_query = str_replace_in (widget->query, " ", "+");
 
-    ud_data = urldata_search_wallhaven (s_query,
-                                        ww_widget->search_opts,
-                                        ns_data->str[0],
-                                        ww_widget->page);
-    if (ud_data->errbuf != nullptr) {
-        message_dialog_error (nullptr, ud_data->errbuf);
+    data = urldata_search_wallhaven (search_query,
+                                        widget->search_opts,
+                                        strings->str[0],
+                                        widget->page);
+    if (data->errbuf != nullptr) {
+        message_dialog_error (nullptr, data->errbuf);
     }
-    else if (urldata_full (ud_data)) {
-        cq_query = cache_query_new (ww_name (WEB_SERV_WALLHAVEN),
-                                    ww_widget->query,
-                                    ww_widget->search_opts,
-                                    ww_widget->page);
+    else if (urldata_full (data)) {
+        cache = cache_query_new (ww_name (WEB_SERV_WALLHAVEN),
+                                    widget->query,
+                                    widget->search_opts,
+                                    widget->page);
 
         gtk_list_store_clear (GTK_LIST_STORE (gtk_icon_view_get_model (
-                    GTK_ICON_VIEW (ww_widget->img_view))));
+                    GTK_ICON_VIEW (widget->img_view))));
 
-        wallhaven_json_to_webwidget (ud_data->buffer, ww_widget, cq_query);
-        cq_query->found_cnt = ww_widget->found_cnt;
+        wallhaven_json_to_webwidget (data->buffer, widget, cache);
+        cache->found_cnt = widget->found_cnt;
 
-        i_err = cache_query_save (cq_query);
+        err = cache_query_save (cache);
 
-        if (i_err != ERR_OK) {
-            message_dialog_error (nullptr, err_get_message (i_err));
+        if (err != ERR_OK) {
+            message_dialog_error (nullptr, err_get_message (err));
         }
-        cache_query_free (cq_query);
+        cache_query_free (cache);
     }
-    urldata_free (ud_data);
-    free (s_query);
+    urldata_free (data);
+    free (search_query);
 }
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Dialog with Wallhaven service settings.
  */
 int
-wallhaven_settings_dialog (NStrings *ns_data)
+wallhaven_settings_dialog (NStrings *strings)
 {
-    GtkWidget *gw_dialog;      /* Wallhaven settings dialog */
-    GtkWidget *gw_content_box; /* Dialog's box */
-    GtkWidget *gw_api_entry;   /* Entry for API key */
-    int        i_res = 0;      /* Dialog result */
+    GtkWidget *dialog;      /* Wallhaven settings dialog */
+    GtkWidget *content_box; /* Dialog's box */
+    GtkWidget *api_entry;   /* Entry for API key */
+    int        res = 0;     /* Dialog result */
 
     GtkDialogFlags flags = GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT;
 
-    gw_dialog = gtk_dialog_new_with_buttons ("Wallhaven configuration",
+    dialog = gtk_dialog_new_with_buttons ("Wallhaven configuration",
                                              nullptr,
                                              flags,
                                              "_OK",
@@ -344,147 +344,147 @@ wallhaven_settings_dialog (NStrings *ns_data)
                                              GTK_RESPONSE_REJECT,
                                              nullptr);
 
-    gw_content_box = gtk_dialog_get_content_area (GTK_DIALOG (gw_dialog));
-    gtk_container_set_border_width (GTK_CONTAINER (gw_content_box), 8);
+    content_box = gtk_dialog_get_content_area (GTK_DIALOG (dialog));
+    gtk_container_set_border_width (GTK_CONTAINER (content_box), 8);
 
-    gw_api_entry = gtk_entry_new ();
+    api_entry = gtk_entry_new ();
 
-    gtk_entry_set_text (GTK_ENTRY (gw_api_entry), ns_data->str[0]);
+    gtk_entry_set_text (GTK_ENTRY (api_entry), strings->str[0]);
 
     /* Packing dialog widgets */
-    gtk_box_pack_start (GTK_BOX (gw_content_box),
+    gtk_box_pack_start (GTK_BOX (content_box),
                         gtk_label_new ("Wallhaven API key:"),
                         FALSE, FALSE, 4);
-    gtk_box_pack_start (GTK_BOX (gw_content_box),
-                        gw_api_entry,
+    gtk_box_pack_start (GTK_BOX (content_box),
+                        api_entry,
                         FALSE, FALSE, 4);
-    gtk_box_pack_start (GTK_BOX (gw_content_box),
+    gtk_box_pack_start (GTK_BOX (content_box),
                         gtk_separator_new (GTK_ORIENTATION_HORIZONTAL),
                         FALSE, FALSE, 4);
-    gtk_box_pack_start (GTK_BOX (gw_content_box),
+    gtk_box_pack_start (GTK_BOX (content_box),
                         gtk_label_new (
     "To get your API key, you need to be registered on the Wallhaven website "
     " and paste API key from: "),
                         FALSE, FALSE, 4);
-    gtk_box_pack_start (GTK_BOX (gw_content_box),
+    gtk_box_pack_start (GTK_BOX (content_box),
                         gtk_link_button_new (
                             "https://wallhaven.cc/settings/account"),
                         FALSE, FALSE, 4);
 
-    gtk_widget_show_all (gw_content_box);
+    gtk_widget_show_all (content_box);
 
-    i_res = gtk_dialog_run (GTK_DIALOG (gw_dialog));
+    res = gtk_dialog_run (GTK_DIALOG (dialog));
 
-    if (i_res == GTK_RESPONSE_ACCEPT) {
-        free (ns_data->str[0]);
-        ns_data->str[0] = strdup (
-                gtk_entry_get_text (GTK_ENTRY (gw_api_entry)));
+    if (res == GTK_RESPONSE_ACCEPT) {
+        free (strings->str[0]);
+        strings->str[0] = strdup (
+                gtk_entry_get_text (GTK_ENTRY (api_entry)));
     }
-    gtk_widget_destroy (gw_dialog);
+    gtk_widget_destroy (dialog);
 
-    return i_res;
+    return res;
 }
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Get search options from Setting item to widgets.
  *
- * @param[out] gw_array  Array with settings widgets
- * @param[in]  st_setts  Setting item with list of options
+ * @param[out] widgets   Array with settings widgets
+ * @param[in]  settings  Setting item with list of options
  * @return     none
  */
 static void
-set_search_opts (GtkWidget **gw_array,
-                 Setting    *st_setts)
+set_search_opts (GtkWidget **widgets,
+                 Setting    *settings)
 {
-    Setting    *st_set  = nullptr;
-    Setting    *st_item = nullptr;
-    const char *s_val   = nullptr;
+    Setting    *set  = nullptr;
+    Setting    *item = nullptr;
+    const char *val  = nullptr;
     int i = 0;
 
-    st_set = setting_get_child (settings_find (st_setts,
+    set = setting_get_child (settings_find (settings,
                                                ww_opts (WEB_SERV_WALLHAVEN)));
 
-    if (st_set == nullptr) {
+    if (set == nullptr) {
         return;
     }
 #ifdef DEBUG
-    settings_print (st_set);
+    settings_print (set);
 #endif
 
-    if ((st_item = settings_find (st_set, s_opts[GW_SORTING])) != nullptr) {
+    if ((item = settings_find (set, opts[GW_SORTING])) != nullptr) {
 #ifdef DEBUG
-        printf ("set : %s %s\n", s_opts[GW_SORTING],
-                setting_get_string (st_item));
+        printf ("set : %s %s\n", opts[GW_SORTING],
+                setting_get_string (item));
 #endif
-        gtk_combo_box_set_active_id (GTK_COMBO_BOX (gw_array[GW_SORTING]),
-                                     setting_get_string (st_item));
+        gtk_combo_box_set_active_id (GTK_COMBO_BOX (widgets[GW_SORTING]),
+                                     setting_get_string (item));
     }
-    if ((st_item = settings_find (st_set, s_opts[GW_TOPRANGE])) != nullptr) {
+    if ((item = settings_find (set, opts[GW_TOPRANGE])) != nullptr) {
 #ifdef DEBUG
-        printf ("set : %s %s\n", s_opts[GW_TOPRANGE],
-                setting_get_string (st_item));
+        printf ("set : %s %s\n", opts[GW_TOPRANGE],
+                setting_get_string (item));
 #endif
-        gtk_combo_box_set_active_id (GTK_COMBO_BOX (gw_array[GW_TOPRANGE]),
-                                     setting_get_string (st_item));
+        gtk_combo_box_set_active_id (GTK_COMBO_BOX (widgets[GW_TOPRANGE]),
+                                     setting_get_string (item));
     }
-    if ((st_item = settings_find (st_set, s_opts[GW_ORDER])) != nullptr) {
+    if ((item = settings_find (set, opts[GW_ORDER])) != nullptr) {
 #ifdef DEBUG
-        printf ("set : %s %s\n", s_opts[GW_ORDER],
-                setting_get_string (st_item));
+        printf ("set : %s %s\n", opts[GW_ORDER],
+                setting_get_string (item));
 #endif
-        gtk_combo_box_set_active_id (GTK_COMBO_BOX (gw_array[GW_ORDER]),
-                                     setting_get_string (st_item));
+        gtk_combo_box_set_active_id (GTK_COMBO_BOX (widgets[GW_ORDER]),
+                                     setting_get_string (item));
     }
-    if ((st_item = settings_find (st_set, s_opts[GW_ATLEAST])) != nullptr) {
+    if ((item = settings_find (set, opts[GW_ATLEAST])) != nullptr) {
 #ifdef DEBUG
         printf ("set : %s %s\n",
-                s_opts[GW_ATLEAST], setting_get_string (st_item));
+                opts[GW_ATLEAST], setting_get_string (item));
 #endif
-        gtk_entry_set_text (GTK_ENTRY (gw_array[GW_ATLEAST]),
-                            setting_get_string (st_item));
+        gtk_entry_set_text (GTK_ENTRY (widgets[GW_ATLEAST]),
+                            setting_get_string (item));
     }
-    if ((st_item = settings_find (st_set, s_opts[GW_RESOLUTIONS])) != nullptr) {
+    if ((item = settings_find (set, opts[GW_RESOLUTIONS])) != nullptr) {
 #ifdef DEBUG
         printf ("set : %s %s\n",
-                s_opts[GW_RESOLUTIONS], setting_get_string (st_item));
+                opts[GW_RESOLUTIONS], setting_get_string (item));
 #endif
-        gtk_entry_set_text (GTK_ENTRY (gw_array[GW_RESOLUTIONS]),
-                            setting_get_string (st_item));
+        gtk_entry_set_text (GTK_ENTRY (widgets[GW_RESOLUTIONS]),
+                            setting_get_string (item));
     }
-    if ((st_item = settings_find (st_set, s_opts[GW_RATIOS])) != nullptr) {
+    if ((item = settings_find (set, opts[GW_RATIOS])) != nullptr) {
 #ifdef DEBUG
         printf ("set : %s %s\n",
-                s_opts[GW_RATIOS], setting_get_string (st_item));
+                opts[GW_RATIOS], setting_get_string (item));
 #endif
-        gtk_entry_set_text (GTK_ENTRY (gw_array[GW_RATIOS]),
-                            setting_get_string (st_item));
+        gtk_entry_set_text (GTK_ENTRY (widgets[GW_RATIOS]),
+                            setting_get_string (item));
     }
-    if ((st_item = settings_find (st_set, s_opts[GW_CATEG1])) != nullptr) {
+    if ((item = settings_find (set, opts[GW_CATEG1])) != nullptr) {
 #ifdef DEBUG
         printf ("set : %s %s\n",
-                s_opts[GW_CATEG1], setting_get_string (st_item));
+                opts[GW_CATEG1], setting_get_string (item));
 #endif
-        s_val = setting_get_string (st_item);
-        if (strlen (s_val) != 3)
+        val = setting_get_string (item);
+        if (strlen (val) != 3)
             return;
         for (i = GW_CATEG1; i <= GW_CATEG3; ++i) {
             gtk_check_menu_item_set_active (
-                    GTK_CHECK_MENU_ITEM (gw_array[i]),
-                    s_val[i - GW_CATEG1] == '1' ? TRUE : FALSE);
+                    GTK_CHECK_MENU_ITEM (widgets[i]),
+                    val[i - GW_CATEG1] == '1' ? TRUE : FALSE);
         }
     }
-    if ((st_item = settings_find (st_set, s_opts[GW_PURITY1])) != nullptr) {
+    if ((item = settings_find (set, opts[GW_PURITY1])) != nullptr) {
 #ifdef DEBUG
         printf ("set : %s %s\n",
-                s_opts[GW_PURITY1], setting_get_string (st_item));
+                opts[GW_PURITY1], setting_get_string (item));
 #endif
-        s_val = setting_get_string (st_item);
-        if (strlen (s_val) != 3)
+        val = setting_get_string (item);
+        if (strlen (val) != 3)
             return;
         for (i = GW_PURITY1; i <= GW_PURITY3; ++i) {
             gtk_check_menu_item_set_active (
-                    GTK_CHECK_MENU_ITEM (gw_array[i]),
-                    s_val[i - GW_PURITY1] == '1' ? TRUE : FALSE);
+                    GTK_CHECK_MENU_ITEM (widgets[i]),
+                    val[i - GW_PURITY1] == '1' ? TRUE : FALSE);
         }
     }
 }
@@ -492,107 +492,107 @@ set_search_opts (GtkWidget **gw_array,
 /**
  * @brief  Get search options from widgets to Setting item.
  *
- * @param[in,out] gw_array  Array with settings widgets
+ * @param[in,out] widgets  Array with settings widgets
  * @return        Setting items with search options
  */
 static Setting *
-get_search_opts (GtkWidget **gw_array)
+get_search_opts (GtkWidget **widgets)
 {
-    Setting    *st_sett = nullptr;
-    char       *s_val   = nullptr;
-    char       *s_val2  = nullptr;
-    const char *s_cval  = nullptr;
-    gboolean    b_val   = FALSE;
+    Setting    *sett    = nullptr;
+    char       *val     = nullptr;
+    char       *val2    = nullptr;
+    const char *cval    = nullptr;
+    gboolean    checked = FALSE;
     int         i       = 0;
 
     /* Getting sorting info */
-    s_val = gtk_combo_box_text_get_active_text (
-            GTK_COMBO_BOX_TEXT (gw_array[GW_SORTING]));
-    st_sett = settings_append (st_sett,
-            setting_new_string (s_opts[GW_SORTING], s_val));
+    val = gtk_combo_box_text_get_active_text (
+            GTK_COMBO_BOX_TEXT (widgets[GW_SORTING]));
+    sett = settings_append (sett,
+            setting_new_string (opts[GW_SORTING], val));
     /* If toplist is set */
-    if (strcmp (s_val, s_sort[5]) == 0) {
-        s_val2 = gtk_combo_box_text_get_active_text (
-                 GTK_COMBO_BOX_TEXT (gw_array[GW_TOPRANGE]));
-        st_sett = settings_append (st_sett,
-                         setting_new_string (s_opts[GW_TOPRANGE], s_val2));
-        free (s_val2);
+    if (strcmp (val, sort[5]) == 0) {
+        val2 = gtk_combo_box_text_get_active_text (
+                 GTK_COMBO_BOX_TEXT (widgets[GW_TOPRANGE]));
+        sett = settings_append (sett,
+                         setting_new_string (opts[GW_TOPRANGE], val2));
+        free (val2);
     }
-    free (s_val);
+    free (val);
 
     /* Getting order value */
-    s_val = gtk_combo_box_text_get_active_text (
-            GTK_COMBO_BOX_TEXT (gw_array[GW_ORDER]));
-    if (strcmp (s_val, s_order[0]) != 0) {
-        st_sett = settings_append (st_sett,
-                         setting_new_string (s_opts[GW_ORDER], s_val));
+    val = gtk_combo_box_text_get_active_text (
+            GTK_COMBO_BOX_TEXT (widgets[GW_ORDER]));
+    if (strcmp (val, order[0]) != 0) {
+        sett = settings_append (sett,
+                         setting_new_string (opts[GW_ORDER], val));
     }
-    free (s_val);
+    free (val);
 
     /* Getting at least value */
-    s_cval = gtk_entry_get_text (GTK_ENTRY (gw_array[GW_ATLEAST]));
-    if (s_cval[0] != '\0') {
-        st_sett = settings_append (st_sett,
-                         setting_new_string (s_opts[GW_ATLEAST], s_cval));
+    cval = gtk_entry_get_text (GTK_ENTRY (widgets[GW_ATLEAST]));
+    if (cval[0] != '\0') {
+        sett = settings_append (sett,
+                         setting_new_string (opts[GW_ATLEAST], cval));
     }
     /* Getting resolutions */
-    s_cval = gtk_entry_get_text (GTK_ENTRY (gw_array[GW_RESOLUTIONS]));
-    if (s_cval[0] != '\0') {
-        st_sett = settings_append (st_sett,
-                         setting_new_string (s_opts[GW_RESOLUTIONS], s_cval));
+    cval = gtk_entry_get_text (GTK_ENTRY (widgets[GW_RESOLUTIONS]));
+    if (cval[0] != '\0') {
+        sett = settings_append (sett,
+                         setting_new_string (opts[GW_RESOLUTIONS], cval));
     }
     /* Getting ratios */
-    s_cval = gtk_entry_get_text (GTK_ENTRY (gw_array[GW_RATIOS]));
-    if (s_cval[0] != '\0') {
-        st_sett = settings_append (st_sett,
-                         setting_new_string (s_opts[GW_RATIOS], s_cval));
+    cval = gtk_entry_get_text (GTK_ENTRY (widgets[GW_RATIOS]));
+    if (cval[0] != '\0') {
+        sett = settings_append (sett,
+                         setting_new_string (opts[GW_RATIOS], cval));
     }
     /* Getting category value */
-    s_val = strdup ("");
+    val = strdup ("");
     for (i = GW_CATEG1; i <= GW_CATEG3; ++i) {
-        b_val = gtk_check_menu_item_get_active (
-                GTK_CHECK_MENU_ITEM (gw_array[i]));
-        str_append (&s_val, b_val ? "1" : "0");
+        checked = gtk_check_menu_item_get_active (
+                GTK_CHECK_MENU_ITEM (widgets[i]));
+        str_append (&val, checked ? "1" : "0");
     }
-    st_sett = settings_append (st_sett,
-            setting_new_string (s_opts[GW_CATEG1], s_val));
-    free (s_val);
+    sett = settings_append (sett,
+            setting_new_string (opts[GW_CATEG1], val));
+    free (val);
     /* Getting purity value */
-    s_val = strdup ("");
+    val = strdup ("");
     for (i = GW_PURITY1; i <= GW_PURITY3; ++i) {
-        b_val = gtk_check_menu_item_get_active (
-                GTK_CHECK_MENU_ITEM (gw_array[i]));
-        str_append (&s_val, b_val ? "1" : "0");
+        checked = gtk_check_menu_item_get_active (
+                GTK_CHECK_MENU_ITEM (widgets[i]));
+        str_append (&val, checked ? "1" : "0");
     }
-    st_sett = settings_append (st_sett,
-            setting_new_string (s_opts[GW_PURITY1], s_val));
-    free (s_val);
+    sett = settings_append (sett,
+            setting_new_string (opts[GW_PURITY1], val));
+    free (val);
 
-    return st_sett;
+    return sett;
 }
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Options for image search dialog.
  */
 char *
-wallhaven_search_opts_dialog (WebWidget *ww_widget)
+wallhaven_search_opts_dialog (WebWidget *widget)
 {
-    GtkWidget     *gw_array[GW_CNT];   /* Array with widgets */
-    GtkWidget     *gw_dialog;          /* Pixabay settings dialog */
-    GtkWidget     *gw_content_box;     /* Dialog's box */
-    GtkWidget     *gw_box;             /* Box for widgets */
-    GtkWidget     *gw_hbox;            /* Horizontal box for widgets */
-    GtkWidget     *gw_menu;
-    GtkWidget     *gw_mbutton;
-    Setting       *st_settings = nullptr; /* Settings */
-    char          *s_res       = nullptr; /* Result string */
-    int            i_err       = 0;    /* Error output */
-    int            i_res       = 0;    /* Dialog result */
-    int            i           = 0;    /* i */
+    GtkWidget     *widgets[GW_CNT]; /* Array with widgets */
+    GtkWidget     *dialog;          /* Pixabay settings dialog */
+    GtkWidget     *content_box;     /* Dialog's box */
+    GtkWidget     *box;             /* Box for widgets */
+    GtkWidget     *hbox;            /* Horizontal box for widgets */
+    GtkWidget     *menu;
+    GtkWidget     *menu_button;
+    Setting       *settings = nullptr; /* Settings */
+    char          *result   = nullptr; /* Result string */
+    int            err      = 0;    /* Error output */
+    int            res      = 0;    /* Dialog result */
+    int            i        = 0;
 
     GtkDialogFlags flags = GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT;
 
-    gw_dialog = gtk_dialog_new_with_buttons ("Wallhaven search options",
+    dialog = gtk_dialog_new_with_buttons ("Wallhaven search options",
                                              nullptr,
                                              flags,
                                              "_OK",
@@ -601,195 +601,195 @@ wallhaven_search_opts_dialog (WebWidget *ww_widget)
                                              GTK_RESPONSE_REJECT,
                                              nullptr);
 
-    gw_content_box = gtk_dialog_get_content_area (GTK_DIALOG (gw_dialog));
-    gtk_container_set_border_width (GTK_CONTAINER (gw_content_box), 8);
-    gw_hbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 8);
+    content_box = gtk_dialog_get_content_area (GTK_DIALOG (dialog));
+    gtk_container_set_border_width (GTK_CONTAINER (content_box), 8);
+    hbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 8);
 
     /* Box for categories and purity */
-    gw_box = gtk_box_new (GTK_ORIENTATION_VERTICAL, 8);
+    box = gtk_box_new (GTK_ORIENTATION_VERTICAL, 8);
     /* Categories */
-    gw_menu    = gtk_menu_new ();
-    gw_mbutton = gtk_menu_button_new ();
-    gtk_button_set_label (GTK_BUTTON (gw_mbutton), "Category");
-    gw_array[GW_CATEG1] = gtk_check_menu_item_new_with_label ("General");
-    gw_array[GW_CATEG2] = gtk_check_menu_item_new_with_label ("Anime");
-    gw_array[GW_CATEG3] = gtk_check_menu_item_new_with_label ("People");
-    gtk_menu_shell_append (GTK_MENU_SHELL (gw_menu), gw_array[GW_CATEG1]);
-    gtk_menu_shell_append (GTK_MENU_SHELL (gw_menu), gw_array[GW_CATEG2]);
-    gtk_menu_shell_append (GTK_MENU_SHELL (gw_menu), gw_array[GW_CATEG3]);
-    gtk_widget_show (gw_array[GW_CATEG1]);
-    gtk_widget_show (gw_array[GW_CATEG2]);
-    gtk_widget_show (gw_array[GW_CATEG3]);
+    menu    = gtk_menu_new ();
+    menu_button = gtk_menu_button_new ();
+    gtk_button_set_label (GTK_BUTTON (menu_button), "Category");
+    widgets[GW_CATEG1] = gtk_check_menu_item_new_with_label ("General");
+    widgets[GW_CATEG2] = gtk_check_menu_item_new_with_label ("Anime");
+    widgets[GW_CATEG3] = gtk_check_menu_item_new_with_label ("People");
+    gtk_menu_shell_append (GTK_MENU_SHELL (menu), widgets[GW_CATEG1]);
+    gtk_menu_shell_append (GTK_MENU_SHELL (menu), widgets[GW_CATEG2]);
+    gtk_menu_shell_append (GTK_MENU_SHELL (menu), widgets[GW_CATEG3]);
+    gtk_widget_show (widgets[GW_CATEG1]);
+    gtk_widget_show (widgets[GW_CATEG2]);
+    gtk_widget_show (widgets[GW_CATEG3]);
     gtk_check_menu_item_set_active (
-            GTK_CHECK_MENU_ITEM (gw_array[GW_CATEG1]), TRUE);
+            GTK_CHECK_MENU_ITEM (widgets[GW_CATEG1]), TRUE);
     gtk_check_menu_item_set_active (
-            GTK_CHECK_MENU_ITEM (gw_array[GW_CATEG2]), TRUE);
+            GTK_CHECK_MENU_ITEM (widgets[GW_CATEG2]), TRUE);
     gtk_check_menu_item_set_active (
-            GTK_CHECK_MENU_ITEM (gw_array[GW_CATEG3]), TRUE);
-    gtk_menu_button_set_popup (GTK_MENU_BUTTON (gw_mbutton), gw_menu);
-    gtk_box_pack_start (GTK_BOX (gw_box), gw_mbutton, FALSE, FALSE, 4);
+            GTK_CHECK_MENU_ITEM (widgets[GW_CATEG3]), TRUE);
+    gtk_menu_button_set_popup (GTK_MENU_BUTTON (menu_button), menu);
+    gtk_box_pack_start (GTK_BOX (box), menu_button, FALSE, FALSE, 4);
 
     /* Purity */
-    gw_menu    = gtk_menu_new ();
-    gw_mbutton = gtk_menu_button_new ();
-    gtk_button_set_label (GTK_BUTTON (gw_mbutton), "Purity");
+    menu    = gtk_menu_new ();
+    menu_button = gtk_menu_button_new ();
+    gtk_button_set_label (GTK_BUTTON (menu_button), "Purity");
     /* Categories */
-    gw_array[GW_PURITY1] = gtk_check_menu_item_new_with_label ("sfw");
-    gw_array[GW_PURITY2] = gtk_check_menu_item_new_with_label ("sketchy");
-    gw_array[GW_PURITY3] = gtk_check_menu_item_new_with_label ("nsfw");
-    gtk_menu_shell_append (GTK_MENU_SHELL (gw_menu), gw_array[GW_PURITY1]);
-    gtk_menu_shell_append (GTK_MENU_SHELL (gw_menu), gw_array[GW_PURITY2]);
-    gtk_menu_shell_append (GTK_MENU_SHELL (gw_menu), gw_array[GW_PURITY3]);
-    gtk_widget_show (gw_array[GW_PURITY1]);
-    gtk_widget_show (gw_array[GW_PURITY2]);
-    gtk_widget_show (gw_array[GW_PURITY3]);
+    widgets[GW_PURITY1] = gtk_check_menu_item_new_with_label ("sfw");
+    widgets[GW_PURITY2] = gtk_check_menu_item_new_with_label ("sketchy");
+    widgets[GW_PURITY3] = gtk_check_menu_item_new_with_label ("nsfw");
+    gtk_menu_shell_append (GTK_MENU_SHELL (menu), widgets[GW_PURITY1]);
+    gtk_menu_shell_append (GTK_MENU_SHELL (menu), widgets[GW_PURITY2]);
+    gtk_menu_shell_append (GTK_MENU_SHELL (menu), widgets[GW_PURITY3]);
+    gtk_widget_show (widgets[GW_PURITY1]);
+    gtk_widget_show (widgets[GW_PURITY2]);
+    gtk_widget_show (widgets[GW_PURITY3]);
     gtk_check_menu_item_set_active (
-            GTK_CHECK_MENU_ITEM (gw_array[GW_PURITY1]), TRUE);
+            GTK_CHECK_MENU_ITEM (widgets[GW_PURITY1]), TRUE);
     gtk_check_menu_item_set_active (
-            GTK_CHECK_MENU_ITEM (gw_array[GW_PURITY2]), FALSE);
+            GTK_CHECK_MENU_ITEM (widgets[GW_PURITY2]), FALSE);
     gtk_check_menu_item_set_active (
-            GTK_CHECK_MENU_ITEM (gw_array[GW_PURITY3]), FALSE);
-    gtk_menu_button_set_popup (GTK_MENU_BUTTON (gw_mbutton), gw_menu);
-    gtk_box_pack_start (GTK_BOX (gw_box), gw_mbutton, FALSE, FALSE, 4);
+            GTK_CHECK_MENU_ITEM (widgets[GW_PURITY3]), FALSE);
+    gtk_menu_button_set_popup (GTK_MENU_BUTTON (menu_button), menu);
+    gtk_box_pack_start (GTK_BOX (box), menu_button, FALSE, FALSE, 4);
 
-    gtk_box_pack_start (GTK_BOX (gw_hbox), gw_box, FALSE, FALSE, 4);
+    gtk_box_pack_start (GTK_BOX (hbox), box, FALSE, FALSE, 4);
 
     /* Sorting combobox */
-    gw_array[GW_SORTING] = gtk_combo_box_text_new ();
-    gtk_widget_set_tooltip_text (gw_array[GW_SORTING],
+    widgets[GW_SORTING] = gtk_combo_box_text_new ();
+    gtk_widget_set_tooltip_text (widgets[GW_SORTING],
         "Method of sorting results.");
-    for (i = 0; s_sort[i] != nullptr; ++i) {
-        gtk_combo_box_text_append (GTK_COMBO_BOX_TEXT (gw_array[GW_SORTING]),
-                                   s_sort[i], s_sort[i]);
+    for (i = 0; sort[i] != nullptr; ++i) {
+        gtk_combo_box_text_append (GTK_COMBO_BOX_TEXT (widgets[GW_SORTING]),
+                                   sort[i], sort[i]);
     }
-    gtk_combo_box_set_active_id (GTK_COMBO_BOX (gw_array[GW_SORTING]),
-                                                s_sort[0]);
+    gtk_combo_box_set_active_id (GTK_COMBO_BOX (widgets[GW_SORTING]),
+                                                sort[0]);
     /* Box for sorting */
-    gw_box = gtk_box_new (GTK_ORIENTATION_VERTICAL, 8);
-    gtk_box_pack_start (GTK_BOX (gw_box),
+    box = gtk_box_new (GTK_ORIENTATION_VERTICAL, 8);
+    gtk_box_pack_start (GTK_BOX (box),
                         gtk_label_new ("Sorting:"),
                         FALSE, FALSE, 4);
-    gtk_box_pack_start (GTK_BOX (gw_box),
-                        gw_array[GW_SORTING],
+    gtk_box_pack_start (GTK_BOX (box),
+                        widgets[GW_SORTING],
                         FALSE, FALSE, 4);
-    gtk_box_pack_start (GTK_BOX (gw_hbox), gw_box, FALSE, FALSE, 4);
+    gtk_box_pack_start (GTK_BOX (hbox), box, FALSE, FALSE, 4);
 
     /* Order combobox */
-    gw_array[GW_ORDER] = gtk_combo_box_text_new ();
-    gtk_widget_set_tooltip_text (gw_array[GW_ORDER],
+    widgets[GW_ORDER] = gtk_combo_box_text_new ();
+    gtk_widget_set_tooltip_text (widgets[GW_ORDER],
         "Sorting order.");
-    for (i = 0; s_order[i] != nullptr; ++i) {
-        gtk_combo_box_text_append (GTK_COMBO_BOX_TEXT (gw_array[GW_ORDER]),
-                                   s_order[i], s_order[i]);
+    for (i = 0; order[i] != nullptr; ++i) {
+        gtk_combo_box_text_append (GTK_COMBO_BOX_TEXT (widgets[GW_ORDER]),
+                                   order[i], order[i]);
     }
-    gtk_combo_box_set_active_id (GTK_COMBO_BOX (gw_array[GW_ORDER]),
-                                                s_order[0]);
+    gtk_combo_box_set_active_id (GTK_COMBO_BOX (widgets[GW_ORDER]),
+                                                order[0]);
     /* Box for sorting */
-    gw_box = gtk_box_new (GTK_ORIENTATION_VERTICAL, 8);
+    box = gtk_box_new (GTK_ORIENTATION_VERTICAL, 8);
 
-    gtk_box_pack_start (GTK_BOX (gw_box),
+    gtk_box_pack_start (GTK_BOX (box),
                         gtk_label_new ("Sort order:"),
                         FALSE, FALSE, 4);
-    gtk_box_pack_start (GTK_BOX (gw_box),
-                        gw_array[GW_ORDER],
+    gtk_box_pack_start (GTK_BOX (box),
+                        widgets[GW_ORDER],
                         FALSE, FALSE, 4);
-    gtk_box_pack_start (GTK_BOX (gw_hbox), gw_box, FALSE, FALSE, 4);
+    gtk_box_pack_start (GTK_BOX (hbox), box, FALSE, FALSE, 4);
 
     /* Top range combobox */
-    gw_array[GW_TOPRANGE] = gtk_combo_box_text_new ();
-    gtk_widget_set_tooltip_text (gw_array[GW_TOPRANGE],
+    widgets[GW_TOPRANGE] = gtk_combo_box_text_new ();
+    gtk_widget_set_tooltip_text (widgets[GW_TOPRANGE],
           "Sorting must be set to 'toplist' for this setting to be activated");
-    for (i = 0; s_toprange[i] != nullptr; ++i) {
-        gtk_combo_box_text_append (GTK_COMBO_BOX_TEXT (gw_array[GW_TOPRANGE]),
-                                   s_toprange[i], s_toprange[i]);
+    for (i = 0; toprange[i] != nullptr; ++i) {
+        gtk_combo_box_text_append (GTK_COMBO_BOX_TEXT (widgets[GW_TOPRANGE]),
+                                   toprange[i], toprange[i]);
     }
-    gtk_combo_box_set_active_id (GTK_COMBO_BOX (gw_array[GW_TOPRANGE]),
-                                                s_toprange[3]);
+    gtk_combo_box_set_active_id (GTK_COMBO_BOX (widgets[GW_TOPRANGE]),
+                                                toprange[3]);
     /* Box for Top range */
-    gw_box = gtk_box_new (GTK_ORIENTATION_VERTICAL, 8);
+    box = gtk_box_new (GTK_ORIENTATION_VERTICAL, 8);
 
-    gtk_box_pack_start (GTK_BOX (gw_box),
+    gtk_box_pack_start (GTK_BOX (box),
                         gtk_label_new ("Top range:"),
                         FALSE, FALSE, 4);
-    gtk_box_pack_start (GTK_BOX (gw_box),
-                        gw_array[GW_TOPRANGE],
+    gtk_box_pack_start (GTK_BOX (box),
+                        widgets[GW_TOPRANGE],
                         FALSE, FALSE, 4);
-    gtk_box_pack_start (GTK_BOX (gw_hbox), gw_box, FALSE, FALSE, 4);
+    gtk_box_pack_start (GTK_BOX (hbox), box, FALSE, FALSE, 4);
 
     /* Atleast entry */
-    gw_array[GW_ATLEAST] = gtk_entry_new ();
-    gtk_widget_set_tooltip_text (gw_array[GW_ATLEAST],
+    widgets[GW_ATLEAST] = gtk_entry_new ();
+    gtk_widget_set_tooltip_text (widgets[GW_ATLEAST],
         "Minimum resolution allowed\ne.g. 1920x1080\n"
         "When this field is empty, all widths are allowed.");
     /* Box for atleast */
-    gw_box = gtk_box_new (GTK_ORIENTATION_VERTICAL, 8);
-    gtk_box_pack_start (GTK_BOX (gw_box),
+    box = gtk_box_new (GTK_ORIENTATION_VERTICAL, 8);
+    gtk_box_pack_start (GTK_BOX (box),
                         gtk_label_new ("At least:"),
                         FALSE, FALSE, 4);
-    gtk_box_pack_start (GTK_BOX (gw_box),
-                        gw_array[GW_ATLEAST],
+    gtk_box_pack_start (GTK_BOX (box),
+                        widgets[GW_ATLEAST],
                         FALSE, FALSE, 4);
-    gtk_box_pack_start (GTK_BOX (gw_hbox), gw_box, FALSE, FALSE, 4);
+    gtk_box_pack_start (GTK_BOX (hbox), box, FALSE, FALSE, 4);
 
     /* Resolution entry */
-    gw_array[GW_RESOLUTIONS] = gtk_entry_new ();
-    gtk_widget_set_tooltip_text (gw_array[GW_RESOLUTIONS],
+    widgets[GW_RESOLUTIONS] = gtk_entry_new ();
+    gtk_widget_set_tooltip_text (widgets[GW_RESOLUTIONS],
         "List of exact wallpaper resolutions. Single resolution allowed.\n"
         "e.g. 1920x1080,1920x1200\n"
         "When this field is empty, all widths are allowed.");
     /* Box for resolution */
-    gw_box = gtk_box_new (GTK_ORIENTATION_VERTICAL, 8);
-    gtk_box_pack_start (GTK_BOX (gw_box),
+    box = gtk_box_new (GTK_ORIENTATION_VERTICAL, 8);
+    gtk_box_pack_start (GTK_BOX (box),
                         gtk_label_new ("Resolutions:"),
                         FALSE, FALSE, 4);
-    gtk_box_pack_start (GTK_BOX (gw_box),
-                        gw_array[GW_RESOLUTIONS],
+    gtk_box_pack_start (GTK_BOX (box),
+                        widgets[GW_RESOLUTIONS],
                         FALSE, FALSE, 4);
-    gtk_box_pack_start (GTK_BOX (gw_hbox), gw_box, FALSE, FALSE, 4);
+    gtk_box_pack_start (GTK_BOX (hbox), box, FALSE, FALSE, 4);
 
     /* Ratios entry */
-    gw_array[GW_RATIOS] = gtk_entry_new ();
-    gtk_widget_set_tooltip_text (gw_array[GW_RATIOS],
+    widgets[GW_RATIOS] = gtk_entry_new ();
+    gtk_widget_set_tooltip_text (widgets[GW_RATIOS],
         "List of aspect ratios. Single ratio allowed.\n"
         "e.g. 16x9,16x10\n"
         "When this field is empty, all ratios are allowed.");
     /* Box for ratios */
-    gw_box = gtk_box_new (GTK_ORIENTATION_VERTICAL, 8);
-    gtk_box_pack_start (GTK_BOX (gw_box),
+    box = gtk_box_new (GTK_ORIENTATION_VERTICAL, 8);
+    gtk_box_pack_start (GTK_BOX (box),
                         gtk_label_new ("Ratios:"),
                         FALSE, FALSE, 4);
-    gtk_box_pack_start (GTK_BOX (gw_box),
-                        gw_array[GW_RATIOS],
+    gtk_box_pack_start (GTK_BOX (box),
+                        widgets[GW_RATIOS],
                         FALSE, FALSE, 4);
-    gtk_box_pack_start (GTK_BOX (gw_hbox), gw_box, FALSE, FALSE, 4);
+    gtk_box_pack_start (GTK_BOX (hbox), box, FALSE, FALSE, 4);
 
-    gtk_box_pack_start (GTK_BOX (gw_content_box), gw_hbox, FALSE, FALSE, 4);
+    gtk_box_pack_start (GTK_BOX (content_box), hbox, FALSE, FALSE, 4);
 
-    st_settings = setts_read (ww_widget->config_file, &i_err);
-    set_search_opts (gw_array, st_settings);
-    settings_free_all (st_settings);
+    settings = setts_read (widget->config_file, &err);
+    set_search_opts (widgets, settings);
+    settings_free_all (settings);
 
-    gtk_widget_show_all (gw_content_box);
+    gtk_widget_show_all (content_box);
 
-    i_res = gtk_dialog_run (GTK_DIALOG (gw_dialog));
+    res = gtk_dialog_run (GTK_DIALOG (dialog));
 
-    if (i_res == GTK_RESPONSE_ACCEPT) {
-        st_settings = setting_new_setting (ww_opts (WEB_SERV_WALLHAVEN));
+    if (res == GTK_RESPONSE_ACCEPT) {
+        settings = setting_new_setting (ww_opts (WEB_SERV_WALLHAVEN));
 
-        setting_add_child (st_settings, get_search_opts (gw_array));
+        setting_add_child (settings, get_search_opts (widgets));
 #ifdef DEBUG
-        settings_print (st_settings);
+        settings_print (settings);
 #endif
-        setts_check_update_file (ww_widget->config_file, st_settings);
-        s_res = search_opts_to_str (setting_get_child (st_settings));
-        settings_free_all (st_settings);
+        setts_check_update_file (widget->config_file, settings);
+        result = search_opts_to_str (setting_get_child (settings));
+        settings_free_all (settings);
     }
     else {
-        s_res = nullptr;
+        result = nullptr;
     }
-    gtk_widget_destroy (gw_dialog);
+    gtk_widget_destroy (dialog);
 
-    return s_res;
+    return result;
 }
 /*----------------------------------------------------------------------------*/
 

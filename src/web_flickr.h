@@ -34,20 +34,20 @@
 /**
  * @brief  Search in Flickr database.
  *
- * @param[in,out] ww_widget  WebWidget with widgets and search data
- * @param[in]     ns_data    N strings with API keys
+ * @param[in,out] widget  WebWidget with widgets and search data
+ * @param[in]     strings    N strings with API keys
  * @return        none
  */
-void flickr_search          (WebWidget      *ww_widget,
-                             const NStrings *ns_data);
+void flickr_search          (WebWidget      *widget,
+                             const NStrings *strings);
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Dialog with Flickr service settings.
  *
- * @param[in,out] ns_data  N strings to get and write API keys
+ * @param[in,out] strings  N strings to get and write API keys
  * @return        Dialog response
  */
-int  flickr_settings_dialog (NStrings       *ns_data);
+int  flickr_settings_dialog (NStrings       *strings);
 /*----------------------------------------------------------------------------*/
 #endif
 #endif

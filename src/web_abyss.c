@@ -50,10 +50,10 @@ enum e_options {
 };
 /*----------------------------------------------------------------------------*/
 /**
- * @var   s_opts
+ * @var   opts
  * @brief Array with option names
  */
-static const char *s_opts[] = {"width", "height", nullptr};
+static const char *opts[] = {"width", "height", nullptr};
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Process SearchIem item with image data and create name for icon view
@@ -65,10 +65,10 @@ static const char *s_opts[] = {"width", "height", nullptr};
 static void
 wallpaperabyss_process_item_set_names (SearchItem *item)
 {
-    char *s_file_name = nullptr; /* Name for file to save */
-    char *s_disp_name = nullptr; /* Name to display on list */
-    char *s_ext       = nullptr; /* Pointer to extension */
-    const char *s_format = "%s\n<span font_size=\"small\">[%dx%d]</span>";
+    char *file_name = nullptr; /* Name for file to save */
+    char *disp_name = nullptr; /* Name to display on list */
+    char *ext       = nullptr; /* Pointer to extension */
+    const char *format = "%s\n<span font_size=\"small\">[%dx%d]</span>";
 
     if (item->id == nullptr)
         return;
@@ -76,94 +76,94 @@ wallpaperabyss_process_item_set_names (SearchItem *item)
         return;
 
     /* Create file name, add image extension to base name */
-    s_ext = strrchr (item->image_url, '.');
-    if (s_ext != nullptr) {
-        s_file_name = str_comb (ww_name (WEB_SERV_WALLABYSS), "_");
-        str_append (&s_file_name, item->id);
-        str_append (&s_file_name, s_ext);
+    ext = strrchr (item->image_url, '.');
+    if (ext != nullptr) {
+        file_name = str_comb (ww_name (WEB_SERV_WALLABYSS), "_");
+        str_append (&file_name, item->id);
+        str_append (&file_name, ext);
     }
     /* Display name to show on image list */
-    s_disp_name = item->id;
+    disp_name = item->id;
 
     /* Save names in SearchItem */
-    search_item_set_file_name    (item, s_file_name);
-    search_item_set_display_name (item, s_disp_name);
-    /* search_item_set_display_markup (item, s_disp_name); */
+    search_item_set_file_name    (item, file_name);
+    search_item_set_display_name (item, disp_name);
+    /* search_item_set_display_markup (item, disp_name); */
     item->display_markup = g_markup_printf_escaped (
-            s_format, s_disp_name, item->width, item->height);
+            format, disp_name, item->width, item->height);
 #ifdef DEBUG
     printf ("fn : %s\n", item->file_name);
 #endif
-    free (s_file_name);
+    free (file_name);
 }
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Convert Wallpaper Abyss json image info to SearchItem item.
  *
- * @param[in] j_obj  Json object to convert
+ * @param[in] obj  Json object to convert
  * @return    SearchItem item
  */
 static SearchItem *
-wallpaperabyss_json_obj_to_search_item (json_object *j_obj)
+wallpaperabyss_json_obj_to_search_item (json_object *obj)
 {
-    json_object *j_val;
+    json_object *val;
 
     SearchItem *item = search_item_new ();
 
     search_item_set_service_name (item, ww_name (WEB_SERV_WALLABYSS));
 
-    if (json_object_object_get_ex (j_obj, "id", &j_val) &&
-        json_object_get_type (j_val) == json_type_string) {
+    if (json_object_object_get_ex (obj, "id", &val) &&
+        json_object_get_type (val) == json_type_string) {
 
-        search_item_set_id_string (item, json_object_get_string (j_val));
+        search_item_set_id_string (item, json_object_get_string (val));
 #ifdef DEBUG
         printf ("photo id : %s\n", item->id);
 #endif
     }
-    if (json_object_object_get_ex (j_obj, "width", &j_val) &&
-        json_object_get_type (j_val) == json_type_string) {
+    if (json_object_object_get_ex (obj, "width", &val) &&
+        json_object_get_type (val) == json_type_string) {
 
-        search_item_set_width (item, json_object_get_int (j_val));
+        search_item_set_width (item, json_object_get_int (val));
 #ifdef DEBUG
         printf ("width : %d\n", item->width);
 #endif
     }
-    if (json_object_object_get_ex (j_obj, "height", &j_val) &&
-        json_object_get_type (j_val) == json_type_string) {
+    if (json_object_object_get_ex (obj, "height", &val) &&
+        json_object_get_type (val) == json_type_string) {
 
-        search_item_set_height (item, json_object_get_int (j_val));
+        search_item_set_height (item, json_object_get_int (val));
 #ifdef DEBUG
         printf ("height : %d\n", item->height);
 #endif
     }
-    if (json_object_object_get_ex (j_obj, "user_name", &j_val) &&
-        json_object_get_type (j_val) == json_type_string) {
+    if (json_object_object_get_ex (obj, "user_name", &val) &&
+        json_object_get_type (val) == json_type_string) {
 
-        search_item_set_author_name (item, json_object_get_string (j_val));
+        search_item_set_author_name (item, json_object_get_string (val));
 #ifdef DEBUG
         printf ("author : %s\n", item->author_name);
 #endif
     }
-    if (json_object_object_get_ex (j_obj, "url_page", &j_val) &&
-        json_object_get_type (j_val) == json_type_string) {
+    if (json_object_object_get_ex (obj, "url_page", &val) &&
+        json_object_get_type (val) == json_type_string) {
 
-        search_item_set_page_url (item, json_object_get_string (j_val));
+        search_item_set_page_url (item, json_object_get_string (val));
 #ifdef DEBUG
-        printf ("url : %s\n", json_object_get_string (j_val));
+        printf ("url : %s\n", json_object_get_string (val));
 #endif
     }
-    if (json_object_object_get_ex (j_obj, "url_image", &j_val) &&
-        json_object_get_type (j_val) == json_type_string) {
+    if (json_object_object_get_ex (obj, "url_image", &val) &&
+        json_object_get_type (val) == json_type_string) {
 
-        search_item_set_image_url (item, json_object_get_string (j_val));
+        search_item_set_image_url (item, json_object_get_string (val));
 #ifdef DEBUG
         printf ("image url : %s\n", item->image_url);
 #endif
     }
-    if (json_object_object_get_ex (j_obj, "url_thumb", &j_val) &&
-        json_object_get_type (j_val) == json_type_string) {
+    if (json_object_object_get_ex (obj, "url_thumb", &val) &&
+        json_object_get_type (val) == json_type_string) {
 
-        search_item_set_thumb_url (item, json_object_get_string (j_val));
+        search_item_set_thumb_url (item, json_object_get_string (val));
 #ifdef DEBUG
         printf ("thumb url : %s\n", item->thumb_url);
 #endif
@@ -177,76 +177,76 @@ wallpaperabyss_json_obj_to_search_item (json_object *j_obj)
  * @brief  Analyze Wallpaper Abyss json search response and add results to
  *         image list.
  *
- * @param[in]  s_buff     String with json data
- * @param[out] ww_widget  Webwidget to set data
- * @param[out] cq_query   CacheQuery item to insert SearchItem items
+ * @param[in]  buffer  String with json data
+ * @param[out] widget  Webwidget to set data
+ * @param[out] cache   CacheQuery item to insert SearchItem items
  * @return     none
  */
 static void
-wallpaperabyss_json_to_webwidget (const char *s_buff,
-                                  WebWidget  *ww_widget,
-                                  CacheQuery *cq_query)
+wallpaperabyss_json_to_webwidget (const char *buffer,
+                                  WebWidget  *widget,
+                                  CacheQuery *cache)
 {
-    json_object *j_obj;            /* Json with search data */
-    json_object *j_val;            /* Some value */
-    json_object *j_arr;            /* For array data */
-    enum json_tokener_error j_err; /* Json error output */
-    SearchItem *si_item = nullptr;    /* For image info */
-    size_t      i       = 0;       /* i */
-    size_t      ui_cnt  = 0;       /* Elements in array */
+    json_object *obj;  /* Json with search data */
+    json_object *val;  /* Some value */
+    json_object *arr;  /* For array data */
+    enum json_tokener_error json_err; /* Json error output */
+    SearchItem *item = nullptr; /* For image info */
+    size_t      cnt  = 0;  /* Elements in array */
+    size_t      i    = 0;
 
-    j_obj = json_tokener_parse_verbose (s_buff, &j_err);
-    if (j_obj == nullptr ||
-        json_object_get_type (j_obj) != json_type_object ||
-        j_err != json_tokener_success) {
+    obj = json_tokener_parse_verbose (buffer, &json_err);
+    if (obj == nullptr ||
+        json_object_get_type (obj) != json_type_object ||
+        json_err != json_tokener_success) {
 #ifdef DEBUG
-        printf ("Json error: %d\n", j_err);
-        printf ("Json type:  %d\n", json_object_get_type (j_obj));
+        printf ("Json error: %d\n", json_err);
+        printf ("Json type:  %d\n", json_object_get_type (obj));
         printf ("Error converting json to stlist, wrong json file\n");
 #endif
-        if (j_obj != nullptr)
-            json_object_put (j_obj);
+        if (obj != nullptr)
+            json_object_put (obj);
     }
     else {
-        if (json_object_object_get_ex (j_obj, "success", &j_val) &&
-            json_object_get_type (j_val) == json_type_boolean) {
-            if (!json_object_get_boolean (j_val)) {
-                if (json_object_object_get_ex (j_obj, "error", &j_val) &&
-                    json_object_get_type (j_val) == json_type_string) {
-                    warnx ("%s\n", json_object_get_string (j_val));
+        if (json_object_object_get_ex (obj, "success", &val) &&
+            json_object_get_type (val) == json_type_boolean) {
+            if (!json_object_get_boolean (val)) {
+                if (json_object_object_get_ex (obj, "error", &val) &&
+                    json_object_get_type (val) == json_type_string) {
+                    warnx ("%s\n", json_object_get_string (val));
                 }
-                json_object_put (j_obj);
+                json_object_put (obj);
                 return;
             }
         }
 
-        if (json_object_object_get_ex (j_obj, "total_match", &j_val) &&
-            json_object_get_type (j_val) == json_type_string) {
+        if (json_object_object_get_ex (obj, "total_match", &val) &&
+            json_object_get_type (val) == json_type_string) {
 
-            ww_widget->found_cnt = json_object_get_int (j_val);
+            widget->found_cnt = json_object_get_int (val);
 #ifdef DEBUG
-            printf ("found images : %d\n", ww_widget->found_cnt);
+            printf ("found images : %d\n", widget->found_cnt);
 #endif
         }
 
-        if (json_object_object_get_ex (j_obj, "wallpapers", &j_arr) &&
-            json_object_get_type (j_arr) == json_type_array) {
+        if (json_object_object_get_ex (obj, "wallpapers", &arr) &&
+            json_object_get_type (arr) == json_type_array) {
 
-            ui_cnt = json_object_array_length (j_arr);
+            cnt = json_object_array_length (arr);
 
-            for (i = 0; i < ui_cnt; ++i) {
-                if ((j_val = json_object_array_get_idx (j_arr, i)) != nullptr) {
-                    si_item = wallpaperabyss_json_obj_to_search_item (j_val);
-                    add_search_item_to_img_view (ww_widget->img_view,
-                                                 si_item,
-                                                 ww_widget->wallpaper_dir,
+            for (i = 0; i < cnt; ++i) {
+                if ((val = json_object_array_get_idx (arr, i)) != nullptr) {
+                    item = wallpaperabyss_json_obj_to_search_item (val);
+                    add_search_item_to_img_view (widget->img_view,
+                                                 item,
+                                                 widget->wallpaper_dir,
                                                  ww_name (WEB_SERV_WALLABYSS),
-                                                 ww_widget->thumb_quality);
-                    cache_query_append_item (cq_query, si_item);
+                                                 widget->thumb_quality);
+                    cache_query_append_item (cache, item);
                 }
             }
         }
-        json_object_put (j_obj);
+        json_object_put (obj);
     }
 }
 /*----------------------------------------------------------------------------*/
@@ -254,64 +254,64 @@ wallpaperabyss_json_to_webwidget (const char *s_buff,
  * @brief  Search in Wallpaper Abyss database.
  */
 void
-wallpaperabyss_search (WebWidget      *ww_widget,
-                       const NStrings *ns_data)
+wallpaperabyss_search (WebWidget      *widget,
+                       const NStrings *strings)
 {
-    UrlData    *ud_data  = nullptr; /* For search results */
-    CacheQuery *cq_query = nullptr; /* For cache saving */
-    char       *s_query  = nullptr; /* For search query */
-    int         i_err    = 0;    /* Error output */
+    UrlData    *data  = nullptr; /* For search results */
+    CacheQuery *cache = nullptr; /* For cache saving */
+    char       *search_query = nullptr; /* For search query */
+    int         err    = 0;  /* Error output */
 
-    if (str_is_empty_warn (ns_data->str[0],
+    if (str_is_empty_warn (strings->str[0],
                            "Wallpaper Abyss API key is not set"))
         return;
 
-    s_query = str_replace_in (ww_widget->query, " ", "+");
+    search_query = str_replace_in (widget->query, " ", "+");
 
-    ud_data = urldata_search_wallabyss (s_query,
-                                        ww_widget->search_opts,
-                                        ns_data->str[0],
-                                        ww_widget->page);
-    if (ud_data->errbuf != nullptr) {
-        message_dialog_error (nullptr, ud_data->errbuf);
+    data = urldata_search_wallabyss (search_query,
+                                        widget->search_opts,
+                                        strings->str[0],
+                                        widget->page);
+    if (data->errbuf != nullptr) {
+        message_dialog_error (nullptr, data->errbuf);
     }
-    else if (urldata_full (ud_data)) {
-        cq_query = cache_query_new (ww_name (WEB_SERV_WALLABYSS),
-                                    ww_widget->query,
-                                    ww_widget->search_opts,
-                                    ww_widget->page);
+    else if (urldata_full (data)) {
+        cache = cache_query_new (ww_name (WEB_SERV_WALLABYSS),
+                                    widget->query,
+                                    widget->search_opts,
+                                    widget->page);
 
         gtk_list_store_clear (GTK_LIST_STORE (gtk_icon_view_get_model (
-                    GTK_ICON_VIEW (ww_widget->img_view))));
+                    GTK_ICON_VIEW (widget->img_view))));
 
-        wallpaperabyss_json_to_webwidget (ud_data->buffer, ww_widget, cq_query);
-        cq_query->found_cnt = ww_widget->found_cnt;
+        wallpaperabyss_json_to_webwidget (data->buffer, widget, cache);
+        cache->found_cnt = widget->found_cnt;
 
-        i_err = cache_query_save (cq_query);
+        err = cache_query_save (cache);
 
-        if (i_err != ERR_OK) {
-            message_dialog_error (nullptr, err_get_message (i_err));
+        if (err != ERR_OK) {
+            message_dialog_error (nullptr, err_get_message (err));
         }
-        cache_query_free (cq_query);
+        cache_query_free (cache);
     }
-    urldata_free (ud_data);
-    free (s_query);
+    urldata_free (data);
+    free (search_query);
 }
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Dialog with Wallpaper Abyss service settings.
  */
 int
-wallpaperabyss_settings_dialog (NStrings *ns_data)
+wallpaperabyss_settings_dialog (NStrings *strings)
 {
-    GtkWidget *gw_dialog;      /* Wallpaper Abyss settings dialog */
-    GtkWidget *gw_content_box; /* Dialog's box */
-    GtkWidget *gw_api_entry;   /* Entry for API key */
-    int        i_res = 0;      /* Dialog result */
+    GtkWidget *dialog;      /* Wallpaper Abyss settings dialog */
+    GtkWidget *content_box; /* Dialog's box */
+    GtkWidget *api_entry;   /* Entry for API key */
+    int        res = 0;     /* Dialog result */
 
     GtkDialogFlags flags = GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT;
 
-    gw_dialog = gtk_dialog_new_with_buttons ("Wallpaper Abyss configuration",
+    dialog = gtk_dialog_new_with_buttons ("Wallpaper Abyss configuration",
                                              nullptr,
                                              flags,
                                              "_OK",
@@ -320,84 +320,84 @@ wallpaperabyss_settings_dialog (NStrings *ns_data)
                                              GTK_RESPONSE_REJECT,
                                              nullptr);
 
-    gw_content_box = gtk_dialog_get_content_area (GTK_DIALOG (gw_dialog));
-    gtk_container_set_border_width (GTK_CONTAINER (gw_content_box), 8);
+    content_box = gtk_dialog_get_content_area (GTK_DIALOG (dialog));
+    gtk_container_set_border_width (GTK_CONTAINER (content_box), 8);
 
-    gw_api_entry = gtk_entry_new ();
+    api_entry = gtk_entry_new ();
 
-    gtk_entry_set_text (GTK_ENTRY (gw_api_entry), ns_data->str[0]);
+    gtk_entry_set_text (GTK_ENTRY (api_entry), strings->str[0]);
 
     /* Packing dialog widgets */
-    gtk_box_pack_start (GTK_BOX (gw_content_box),
+    gtk_box_pack_start (GTK_BOX (content_box),
                         gtk_label_new ("Wallpaper Abyss API key:"),
                         FALSE, FALSE, 4);
-    gtk_box_pack_start (GTK_BOX (gw_content_box),
-                        gw_api_entry,
+    gtk_box_pack_start (GTK_BOX (content_box),
+                        api_entry,
                         FALSE, FALSE, 4);
-    gtk_box_pack_start (GTK_BOX (gw_content_box),
+    gtk_box_pack_start (GTK_BOX (content_box),
                         gtk_separator_new (GTK_ORIENTATION_HORIZONTAL),
                         FALSE, FALSE, 4);
-    gtk_box_pack_start (GTK_BOX (gw_content_box),
+    gtk_box_pack_start (GTK_BOX (content_box),
                         gtk_label_new (
     "To get your API key, you need to be registered on the Wallpaper Abyss "
     "website and request it on: "),
                         FALSE, FALSE, 4);
-    gtk_box_pack_start (GTK_BOX (gw_content_box),
+    gtk_box_pack_start (GTK_BOX (content_box),
                         gtk_link_button_new (
                             "https://wall.alphacoders.com/api_signup.php"),
                         FALSE, FALSE, 4);
 
-    gtk_widget_show_all (gw_content_box);
+    gtk_widget_show_all (content_box);
 
-    i_res = gtk_dialog_run (GTK_DIALOG (gw_dialog));
+    res = gtk_dialog_run (GTK_DIALOG (dialog));
 
-    if (i_res == GTK_RESPONSE_ACCEPT) {
-        free (ns_data->str[0]);
-        ns_data->str[0] = strdup (
-                gtk_entry_get_text (GTK_ENTRY (gw_api_entry)));
+    if (res == GTK_RESPONSE_ACCEPT) {
+        free (strings->str[0]);
+        strings->str[0] = strdup (
+                gtk_entry_get_text (GTK_ENTRY (api_entry)));
     }
-    gtk_widget_destroy (gw_dialog);
+    gtk_widget_destroy (dialog);
 
-    return i_res;
+    return res;
 }
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Get search options from Setting item to widgets.
  *
- * @param[out] gw_array  Array with settings widgets
- * @param[in]  st_setts  Setting item with list of options
+ * @param[out] widgets   Array with settings widgets
+ * @param[in]  settings  Setting item with list of options
  * @return     none
  */
 static void
-set_search_opts (GtkWidget **gw_array,
-                 Setting    *st_setts)
+set_search_opts (GtkWidget **widgets,
+                 Setting    *settings)
 {
-    Setting *st_set  = nullptr;
-    Setting *st_item = nullptr;
+    Setting *set  = nullptr;
+    Setting *item = nullptr;
 
-    st_set = setting_get_child (settings_find (st_setts,
+    set = setting_get_child (settings_find (settings,
                                                ww_opts (WEB_SERV_WALLABYSS)));
 
-    if (st_set == nullptr) {
+    if (set == nullptr) {
         return;
     }
 #ifdef DEBUG
-    settings_print (st_set);
+    settings_print (set);
 #endif
-    if ((st_item = settings_find (st_set, s_opts[GW_WIDTH])) != nullptr) {
-        gtk_spin_button_set_value (GTK_SPIN_BUTTON (gw_array[GW_WIDTH]),
-                                   (double) setting_get_int (st_item));
+    if ((item = settings_find (set, opts[GW_WIDTH])) != nullptr) {
+        gtk_spin_button_set_value (GTK_SPIN_BUTTON (widgets[GW_WIDTH]),
+                                   (double) setting_get_int (item));
 #ifdef DEBUG
         printf ("set : %s %ld\n",
-                s_opts[GW_WIDTH], setting_get_int (st_item));
+                opts[GW_WIDTH], setting_get_int (item));
 #endif
     }
-    if ((st_item = settings_find (st_set, s_opts[GW_HEIGHT])) != nullptr) {
-        gtk_spin_button_set_value (GTK_SPIN_BUTTON (gw_array[GW_HEIGHT]),
-                                   (double) setting_get_int (st_item));
+    if ((item = settings_find (set, opts[GW_HEIGHT])) != nullptr) {
+        gtk_spin_button_set_value (GTK_SPIN_BUTTON (widgets[GW_HEIGHT]),
+                                   (double) setting_get_int (item));
 #ifdef DEBUG
         printf ("set : %s %ld\n",
-                s_opts[GW_HEIGHT], setting_get_int (st_item));
+                opts[GW_HEIGHT], setting_get_int (item));
 #endif
     }
 }
@@ -405,54 +405,54 @@ set_search_opts (GtkWidget **gw_array,
 /**
  * @brief  Get search options from widgets to Setting item.
  *
- * @param[in,out] gw_array  Array with settings widgets
+ * @param[in,out] widgets  Array with settings widgets
  * @return        Setting items with search options
  */
 static Setting *
-get_search_opts (GtkWidget **gw_array)
+get_search_opts (GtkWidget **widgets)
 {
-    Setting *st_sett = nullptr;
-    int      i_valw  = 0;
-    int      i_valh  = 0;
+    Setting *sett = nullptr;
+    int      valw = 0;
+    int      valh = 0;
 
-    i_valw = gtk_spin_button_get_value_as_int (
-             GTK_SPIN_BUTTON (gw_array[GW_WIDTH]));
-    i_valh = gtk_spin_button_get_value_as_int (
-             GTK_SPIN_BUTTON (gw_array[GW_HEIGHT]));
+    valw = gtk_spin_button_get_value_as_int (
+             GTK_SPIN_BUTTON (widgets[GW_WIDTH]));
+    valh = gtk_spin_button_get_value_as_int (
+             GTK_SPIN_BUTTON (widgets[GW_HEIGHT]));
 
-    if (i_valw > 0 && i_valh > 0) {
-        st_sett = settings_append (st_sett,
-                setting_new_int (s_opts[GW_WIDTH], i_valw));
-        st_sett = settings_append (st_sett,
-                setting_new_int (s_opts[GW_HEIGHT], i_valh));
+    if (valw > 0 && valh > 0) {
+        sett = settings_append (sett,
+                setting_new_int (opts[GW_WIDTH], valw));
+        sett = settings_append (sett,
+                setting_new_int (opts[GW_HEIGHT], valh));
     }
-    return st_sett;
+    return sett;
 }
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Options for image search dialog.
  */
 char *
-wallpaperabyss_search_opts_dialog (WebWidget *ww_widget)
+wallpaperabyss_search_opts_dialog (WebWidget *widget)
 {
-    GtkAdjustment *ga_adjust1;         /* Adjustment for width spinbutton */
-    GtkAdjustment *ga_adjust2;         /* Adjustment for height spinbutton */
-    GtkWidget     *gw_array[GW_CNT];   /* Array with widgets */
-    GtkWidget     *gw_dialog;          /* Pixabay settings dialog */
-    GtkWidget     *gw_content_box;     /* Dialog's box */
-    GtkWidget     *gw_box;             /* Box for widgets */
-    GtkWidget     *gw_hbox;            /* Horizontal box for widgets */
-    Setting       *st_settings = nullptr; /* Settings */
-    char          *s_res       = nullptr; /* Result string */
-    int            i_err       = 0;    /* Error output */
-    int            i_res       = 0;    /* Dialog result */
+    GtkAdjustment *adjust1;         /* Adjustment for width spinbutton */
+    GtkAdjustment *adjust2;         /* Adjustment for height spinbutton */
+    GtkWidget     *widgets[GW_CNT]; /* Array with widgets */
+    GtkWidget     *dialog;          /* Pixabay settings dialog */
+    GtkWidget     *content_box;     /* Dialog's box */
+    GtkWidget     *box;             /* Box for widgets */
+    GtkWidget     *hbox;            /* Horizontal box for widgets */
+    Setting       *settings = nullptr; /* Settings */
+    char          *result   = nullptr; /* Result string */
+    int            err      = 0;    /* Error output */
+    int            res      = 0;    /* Dialog result */
 
     GtkDialogFlags flags = GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT;
 
-    ga_adjust1 = gtk_adjustment_new (0.0, 0.0, 10000.0, 1.0, 100.0, 0.0);
-    ga_adjust2 = gtk_adjustment_new (0.0, 0.0, 10000.0, 1.0, 100.0, 0.0);
+    adjust1 = gtk_adjustment_new (0.0, 0.0, 10000.0, 1.0, 100.0, 0.0);
+    adjust2 = gtk_adjustment_new (0.0, 0.0, 10000.0, 1.0, 100.0, 0.0);
 
-    gw_dialog = gtk_dialog_new_with_buttons ("Wallpaper Abyss search options",
+    dialog = gtk_dialog_new_with_buttons ("Wallpaper Abyss search options",
                                              nullptr,
                                              flags,
                                              "_OK",
@@ -461,62 +461,62 @@ wallpaperabyss_search_opts_dialog (WebWidget *ww_widget)
                                              GTK_RESPONSE_REJECT,
                                              nullptr);
 
-    gw_content_box = gtk_dialog_get_content_area (GTK_DIALOG (gw_dialog));
-    gtk_container_set_border_width (GTK_CONTAINER (gw_content_box), 8);
-    gw_hbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 8);
+    content_box = gtk_dialog_get_content_area (GTK_DIALOG (dialog));
+    gtk_container_set_border_width (GTK_CONTAINER (content_box), 8);
+    hbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 8);
 
     /* Min image width and height */
-    gw_array[GW_WIDTH]  = gtk_spin_button_new (ga_adjust1, 1.0, 0);
-    gw_array[GW_HEIGHT] = gtk_spin_button_new (ga_adjust2, 1.0, 0);
-    gtk_widget_set_tooltip_text (gw_array[GW_WIDTH],
+    widgets[GW_WIDTH]  = gtk_spin_button_new (adjust1, 1.0, 0);
+    widgets[GW_HEIGHT] = gtk_spin_button_new (adjust2, 1.0, 0);
+    gtk_widget_set_tooltip_text (widgets[GW_WIDTH],
           "Image width. If 0 value is set, all widths are allowed.");
-    gtk_widget_set_tooltip_text (gw_array[GW_HEIGHT],
+    gtk_widget_set_tooltip_text (widgets[GW_HEIGHT],
           "Image height. If 0 value is set, all heights are allowed.");
-    gw_box = gtk_box_new (GTK_ORIENTATION_VERTICAL, 8);
-    gtk_box_pack_start (GTK_BOX (gw_box),
+    box = gtk_box_new (GTK_ORIENTATION_VERTICAL, 8);
+    gtk_box_pack_start (GTK_BOX (box),
                         gtk_label_new ("Image width:"),
                         FALSE, FALSE, 4);
-    gtk_box_pack_start (GTK_BOX (gw_box),
-                        gw_array[GW_WIDTH],
+    gtk_box_pack_start (GTK_BOX (box),
+                        widgets[GW_WIDTH],
                         FALSE, FALSE, 4);
-    gtk_box_pack_start (GTK_BOX (gw_hbox), gw_box, FALSE, FALSE, 4);
+    gtk_box_pack_start (GTK_BOX (hbox), box, FALSE, FALSE, 4);
 
-    gw_box = gtk_box_new (GTK_ORIENTATION_VERTICAL, 8);
-    gtk_box_pack_start (GTK_BOX (gw_box),
+    box = gtk_box_new (GTK_ORIENTATION_VERTICAL, 8);
+    gtk_box_pack_start (GTK_BOX (box),
                         gtk_label_new ("Image height:"),
                         FALSE, FALSE, 4);
-    gtk_box_pack_start (GTK_BOX (gw_box),
-                        gw_array[GW_HEIGHT],
+    gtk_box_pack_start (GTK_BOX (box),
+                        widgets[GW_HEIGHT],
                         FALSE, FALSE, 4);
-    gtk_box_pack_start (GTK_BOX (gw_hbox), gw_box, FALSE, FALSE, 4);
+    gtk_box_pack_start (GTK_BOX (hbox), box, FALSE, FALSE, 4);
 
-    gtk_box_pack_start (GTK_BOX (gw_content_box), gw_hbox, FALSE, FALSE, 4);
+    gtk_box_pack_start (GTK_BOX (content_box), hbox, FALSE, FALSE, 4);
 
-    st_settings = setts_read (ww_widget->config_file, &i_err);
-    set_search_opts (gw_array, st_settings);
-    settings_free_all (st_settings);
+    settings = setts_read (widget->config_file, &err);
+    set_search_opts (widgets, settings);
+    settings_free_all (settings);
 
-    gtk_widget_show_all (gw_content_box);
+    gtk_widget_show_all (content_box);
 
-    i_res = gtk_dialog_run (GTK_DIALOG (gw_dialog));
+    res = gtk_dialog_run (GTK_DIALOG (dialog));
 
-    if (i_res == GTK_RESPONSE_ACCEPT) {
-        st_settings = setting_new_setting (ww_opts (WEB_SERV_WALLABYSS));
+    if (res == GTK_RESPONSE_ACCEPT) {
+        settings = setting_new_setting (ww_opts (WEB_SERV_WALLABYSS));
 
-        setting_add_child (st_settings, get_search_opts (gw_array));
+        setting_add_child (settings, get_search_opts (widgets));
 #ifdef DEBUG
-        settings_print (st_settings);
+        settings_print (settings);
 #endif
-        setts_check_update_file (ww_widget->config_file, st_settings);
-        s_res = search_opts_to_str (setting_get_child (st_settings));
-        settings_free_all (st_settings);
+        setts_check_update_file (widget->config_file, settings);
+        result = search_opts_to_str (setting_get_child (settings));
+        settings_free_all (settings);
     }
     else {
-        s_res = nullptr;
+        result = nullptr;
     }
-    gtk_widget_destroy (gw_dialog);
+    gtk_widget_destroy (dialog);
 
-    return s_res;
+    return result;
 }
 /*----------------------------------------------------------------------------*/
 

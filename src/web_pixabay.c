@@ -57,19 +57,19 @@ enum e_options {
 };
 /*----------------------------------------------------------------------------*/
 /**
- * @var   s_opts
+ * @var   opts
  * @brief Array with option names
  */
-static const char *s_opts[] = {
+static const char *opts[] = {
     "category", "orientation", "editors_choice", "safesearch", "order",
     "min_width", "min_height", "per_page", "colors", nullptr
 };
 /*----------------------------------------------------------------------------*/
 /**
- * @var   s_category
+ * @var   category
  * @brief Array with image categories
  */
-static const char *s_category[] = {
+static const char *category[] = {
     "none", "backgrounds", "fashion", "nature", "science", "education",
     "feelings", "health", "people", "religion", "places", "animals",
     "industry", "computer", "food", "sports", "transportation", "travel",
@@ -77,89 +77,89 @@ static const char *s_category[] = {
 };
 /*----------------------------------------------------------------------------*/
 /**
- * @var   s_colour
+ * @var   colour
  * @brief Array with image colours
  */
-static const char *s_colour[] = {
+static const char *colour[] = {
     "any", "grayscale", "transparent", "red", "orange", "yellow", "green",
     "turquoise", "blue", "lilac", "pink", "white", "gray", "black",
     "brown", nullptr
 };
 /*----------------------------------------------------------------------------*/
 /**
- * @var   s_true_false
+ * @var   true_false
  * @brief Array with true and false value
  */
-static const char *s_true_false[] = {"false", "true", nullptr};
+static const char *true_false[] = {"false", "true", nullptr};
 /*----------------------------------------------------------------------------*/
 /**
- * @var   s_order
+ * @var   order
  * @brief Array with image sort orders
  */
-static const char *s_order[] = {"popular", "latest", nullptr};
+static const char *order[] = {"popular", "latest", nullptr};
 /*----------------------------------------------------------------------------*/
 /**
- * @var   s_orientation
+ * @var   orientation
  * @brief Array with image orientations
  */
-static const char *s_orientation[] = {"all", "horizontal", "vertical", nullptr};
+static const char *orientation[] = {"all", "horizontal", "vertical", nullptr};
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Extract base image name from image url.
  *
- * @param[in] s_url  Url to process
+ * @param[in] url  Url to process
  * @return    New string with base name. After use it should be freed using
  *            free.
  */
 static char *
-pixabay_extract_base_name (const char *s_url)
+pixabay_extract_base_name (const char *url)
 {
-    char *s_res  = nullptr; /* Result string */
-    char *s_repl = nullptr; /* For replacing text */
-    char *s_dup  = nullptr; /* Url duplicate */
+    char *result  = nullptr; /* Result string */
+    char *repl = nullptr; /* For replacing text */
+    char *dup  = nullptr; /* Url duplicate */
 
-    s_dup  = strdup (s_url);
-    s_repl = strrchr (s_dup, '/');
-    if (s_repl == nullptr) {
-        free (s_dup);
+    dup  = strdup (url);
+    repl = strrchr (dup, '/');
+    if (repl == nullptr) {
+        free (dup);
         return nullptr;
     }
-    *s_repl = '\0';
-    s_repl = strrchr (s_dup, '/');
-    if (s_repl == nullptr) {
-        free (s_dup);
+    *repl = '\0';
+    repl = strrchr (dup, '/');
+    if (repl == nullptr) {
+        free (dup);
         return nullptr;
     }
-    s_res = strdup (s_repl+1);
-    free (s_dup);
+    result = strdup (repl+1);
+    free (dup);
 
-    return s_res;
+    return result;
 }
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Create Image name for icon view from base name.
  *
- * @param[in] s_bname  Base name to process
+ * @param[in] bname  Base name to process
  * @return    New string with name. After use it should be freed using free.
  */
 static char *
-pixabay_create_display_name (const char *s_bname)
+pixabay_create_display_name (const char *bname)
 {
-    char  *s_res  = nullptr; /* Result string */
-    char  *s_repl = nullptr; /* For replacing text */
+    char  *result  = nullptr; /* Result string */
+    char  *repl = nullptr; /* For replacing text */
 
-    if (str_is_empty (s_bname))
+    if (str_is_empty (bname))
         return strdup ("");
 
-    s_res  = str_replace_in (s_bname, "-", " ");
-    gunichar gc = g_utf8_get_char (s_res);
+    result  = str_replace_in (bname, "-", " ");
+    gunichar gc = g_utf8_get_char (result);
     gc = g_unichar_toupper (gc);
-    g_unichar_to_utf8 (gc, s_res);
-    s_repl = s_res + strlen (s_res);
-    while (isdigit (*--s_repl));
-    *s_repl = '\0';
+    g_unichar_to_utf8 (gc, result);
+    repl = result + strlen (result);
+    while (isdigit (*--repl));
+    *repl = '\0';
 
-    return s_res;
+    return result;
 }
 /*----------------------------------------------------------------------------*/
 /**
@@ -172,11 +172,11 @@ pixabay_create_display_name (const char *s_bname)
 static void
 pixabay_process_item_set_names (SearchItem *item)
 {
-    char *s_base_name = nullptr; /* Base name for processing */
-    char *s_file_name = nullptr; /* Name for file to save */
-    char *s_disp_name = nullptr; /* Name to display on list */
-    char *s_ext       = nullptr; /* Pointer to extension */
-    const char *s_format = "%s\n<span font_size=\"small\">[%dx%d]</span>";
+    char *base_name = nullptr; /* Base name for processing */
+    char *file_name = nullptr; /* Name for file to save */
+    char *disp_name = nullptr; /* Name to display on list */
+    char *ext       = nullptr; /* Pointer to extension */
+    const char *format = "%s\n<span font_size=\"small\">[%dx%d]</span>";
 
     if (item->page_url == nullptr)
         return;
@@ -184,106 +184,106 @@ pixabay_process_item_set_names (SearchItem *item)
         return;
 
     /* Base name made of picture url */
-    s_base_name = pixabay_extract_base_name (item->page_url);
+    base_name = pixabay_extract_base_name (item->page_url);
 
     /* Create file name, add image extension to base name */
-    s_ext = strrchr (item->image_url, '.');
-    if (s_ext != nullptr) {
-        s_file_name = str_comb (s_base_name, s_ext);
+    ext = strrchr (item->image_url, '.');
+    if (ext != nullptr) {
+        file_name = str_comb (base_name, ext);
     }
     /* Display name to show on image list */
-    s_disp_name = pixabay_create_display_name (s_base_name);
+    disp_name = pixabay_create_display_name (base_name);
 
     /* Save names in SearchItem */
-    search_item_set_file_name      (item, s_file_name);
-    search_item_set_display_name   (item, s_disp_name);
-    /* search_item_set_display_markup (item, s_disp_name); */
+    search_item_set_file_name      (item, file_name);
+    search_item_set_display_name   (item, disp_name);
+    /* search_item_set_display_markup (item, disp_name); */
     item->display_markup = g_markup_printf_escaped (
-            s_format, s_disp_name, item->width, item->height);
+            format, disp_name, item->width, item->height);
 
-    free (s_base_name);
-    free (s_file_name);
-    free (s_disp_name);
+    free (base_name);
+    free (file_name);
+    free (disp_name);
 }
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Convert Pixabay json image info to SearchItem item.
  *
- * @param[in] j_obj  Json object to convert
+ * @param[in] obj  Json object to convert
  * @return    SearchItem item
  */
 static SearchItem *
-pixabay_json_obj_to_search_item (json_object *j_obj)
+pixabay_json_obj_to_search_item (json_object *obj)
 {
-    json_object *j_val;
+    json_object *val;
 
     SearchItem *item = search_item_new ();
 
     search_item_set_service_name (item, ww_name (WEB_SERV_PIXABAY));
 
-    if (json_object_object_get_ex (j_obj, "id", &j_val) &&
-        json_object_get_type (j_val) == json_type_int) {
+    if (json_object_object_get_ex (obj, "id", &val) &&
+        json_object_get_type (val) == json_type_int) {
 
         search_item_set_id_uint (item,
-                                 (uint64_t) json_object_get_int64 (j_val));
+                                 (uint64_t) json_object_get_int64 (val));
 #ifdef DEBUG
         printf ("photo id : %s\n", item->id);
 #endif
     }
-    if (json_object_object_get_ex (j_obj, "imageWidth", &j_val) &&
-        json_object_get_type (j_val) == json_type_int) {
+    if (json_object_object_get_ex (obj, "imageWidth", &val) &&
+        json_object_get_type (val) == json_type_int) {
 
-        search_item_set_width (item, json_object_get_int (j_val));
+        search_item_set_width (item, json_object_get_int (val));
 #ifdef DEBUG
-        printf ("width : %d\n", json_object_get_int (j_val));
+        printf ("width : %d\n", json_object_get_int (val));
 #endif
     }
-    if (json_object_object_get_ex (j_obj, "imageHeight", &j_val) &&
-        json_object_get_type (j_val) == json_type_int) {
+    if (json_object_object_get_ex (obj, "imageHeight", &val) &&
+        json_object_get_type (val) == json_type_int) {
 
-        search_item_set_height (item, json_object_get_int (j_val));
+        search_item_set_height (item, json_object_get_int (val));
 #ifdef DEBUG
-        printf ("height : %d\n", json_object_get_int (j_val));
+        printf ("height : %d\n", json_object_get_int (val));
 #endif
     }
-    if (json_object_object_get_ex (j_obj, "user", &j_val) &&
-        json_object_get_type (j_val) == json_type_string) {
+    if (json_object_object_get_ex (obj, "user", &val) &&
+        json_object_get_type (val) == json_type_string) {
 
-        search_item_set_author_name (item, json_object_get_string (j_val));
+        search_item_set_author_name (item, json_object_get_string (val));
 #ifdef DEBUG
-        printf ("author : %s\n", json_object_get_string (j_val));
+        printf ("author : %s\n", json_object_get_string (val));
 #endif
     }
-    if (json_object_object_get_ex (j_obj, "pageURL", &j_val) &&
-        json_object_get_type (j_val) == json_type_string) {
+    if (json_object_object_get_ex (obj, "pageURL", &val) &&
+        json_object_get_type (val) == json_type_string) {
 
-        search_item_set_page_url (item, json_object_get_string (j_val));
+        search_item_set_page_url (item, json_object_get_string (val));
 #ifdef DEBUG
-        printf ("url : %s\n", json_object_get_string (j_val));
+        printf ("url : %s\n", json_object_get_string (val));
 #endif
     }
-    if (json_object_object_get_ex (j_obj, "imageURL", &j_val) &&
-        json_object_get_type (j_val) == json_type_string) {
+    if (json_object_object_get_ex (obj, "imageURL", &val) &&
+        json_object_get_type (val) == json_type_string) {
 
-        search_item_set_image_url (item, json_object_get_string (j_val));
+        search_item_set_image_url (item, json_object_get_string (val));
 #ifdef DEBUG
-        printf ("image url : %s\n", json_object_get_string (j_val));
+        printf ("image url : %s\n", json_object_get_string (val));
 #endif
     }
-    else if (json_object_object_get_ex (j_obj, "largeImageURL", &j_val) &&
-        json_object_get_type (j_val) == json_type_string) {
+    else if (json_object_object_get_ex (obj, "largeImageURL", &val) &&
+        json_object_get_type (val) == json_type_string) {
 
-        search_item_set_image_url (item, json_object_get_string (j_val));
+        search_item_set_image_url (item, json_object_get_string (val));
 #ifdef DEBUG
-        printf ("image url : %s\n", json_object_get_string (j_val));
+        printf ("image url : %s\n", json_object_get_string (val));
 #endif
     }
-    if (json_object_object_get_ex (j_obj, "previewURL", &j_val) &&
-        json_object_get_type (j_val) == json_type_string) {
+    if (json_object_object_get_ex (obj, "previewURL", &val) &&
+        json_object_get_type (val) == json_type_string) {
 
-        search_item_set_thumb_url (item, json_object_get_string (j_val));
+        search_item_set_thumb_url (item, json_object_get_string (val));
 #ifdef DEBUG
-        printf ("thumb url : %s\n", json_object_get_string (j_val));
+        printf ("thumb url : %s\n", json_object_get_string (val));
 #endif
     }
     pixabay_process_item_set_names (item);
@@ -294,63 +294,63 @@ pixabay_json_obj_to_search_item (json_object *j_obj)
 /**
  * @brief  Analyze Pixabay json search response and add results to image list.
  *
- * @param[in]  s_buff     String with json data
- * @param[out] ww_widget  Webwidget to set data
- * @param[out] cq_query   CacheQuery item to insert SearchItem items
+ * @param[in]  buffer  String with json data
+ * @param[out] widget  Webwidget to set data
+ * @param[out] cache   CacheQuery item to insert SearchItem items
  * @return     none
  */
 static void
-pixabay_json_to_webwidget (const char  *s_buff,
-                           WebWidget   *ww_widget,
-                           CacheQuery  *cq_query)
+pixabay_json_to_webwidget (const char  *buffer,
+                           WebWidget   *widget,
+                           CacheQuery  *cache)
 {
-    json_object *j_obj;            /* Json with search data */
-    json_object *j_val;            /* Some value */
-    json_object *j_arr;            /* For array data */
-    enum json_tokener_error j_err; /* Json error output */
-    SearchItem *item = nullptr;    /* For image info */
-    size_t      i       = 0;       /* i */
-    size_t      ui_cnt  = 0;       /* Elements in array */
+    json_object *obj;  /* Json with search data */
+    json_object *val;  /* Some value */
+    json_object *arr;  /* For array data */
+    enum json_tokener_error json_err; /* Json error output */
+    SearchItem *item = nullptr; /* For image info */
+    size_t      cnt  = 0;       /* Elements in array */
+    size_t      i    = 0;
 
-    j_obj = json_tokener_parse_verbose (s_buff, &j_err);
-    if (j_obj == nullptr ||
-        json_object_get_type (j_obj) != json_type_object ||
-        j_err != json_tokener_success) {
+    obj = json_tokener_parse_verbose (buffer, &json_err);
+    if (obj == nullptr ||
+        json_object_get_type (obj) != json_type_object ||
+        json_err != json_tokener_success) {
 #ifdef DEBUG
-        printf ("Json error: %d\n", j_err);
-        printf ("Json type:  %d\n", json_object_get_type (j_obj));
+        printf ("Json error: %d\n", json_err);
+        printf ("Json type:  %d\n", json_object_get_type (obj));
         printf ("Error converting json to stlist, wrong json file\n");
 #endif
-        if (j_obj != nullptr)
-            json_object_put (j_obj);
+        if (obj != nullptr)
+            json_object_put (obj);
     }
     else {
-        if (json_object_object_get_ex (j_obj, "totalHits", &j_val) &&
-            json_object_get_type (j_val) == json_type_int) {
+        if (json_object_object_get_ex (obj, "totalHits", &val) &&
+            json_object_get_type (val) == json_type_int) {
 
-            ww_widget->found_cnt = json_object_get_int (j_val);
+            widget->found_cnt = json_object_get_int (val);
 #ifdef DEBUG
-            printf ("found images : %d\n", ww_widget->found_cnt);
+            printf ("found images : %d\n", widget->found_cnt);
 #endif
         }
-        if (json_object_object_get_ex (j_obj, "hits", &j_arr) &&
-            json_object_get_type (j_arr) == json_type_array) {
+        if (json_object_object_get_ex (obj, "hits", &arr) &&
+            json_object_get_type (arr) == json_type_array) {
 
-            ui_cnt = json_object_array_length (j_arr);
+            cnt = json_object_array_length (arr);
 
-            for (i = 0; i < ui_cnt; ++i) {
-                if ((j_val = json_object_array_get_idx (j_arr, i)) != nullptr) {
-                    item = pixabay_json_obj_to_search_item (j_val);
-                    add_search_item_to_img_view (ww_widget->img_view,
+            for (i = 0; i < cnt; ++i) {
+                if ((val = json_object_array_get_idx (arr, i)) != nullptr) {
+                    item = pixabay_json_obj_to_search_item (val);
+                    add_search_item_to_img_view (widget->img_view,
                                                  item,
-                                                 ww_widget->wallpaper_dir,
+                                                 widget->wallpaper_dir,
                                                  ww_name (WEB_SERV_PIXABAY),
-                                                 ww_widget->thumb_quality);
-                    cache_query_append_item (cq_query, item);
+                                                 widget->thumb_quality);
+                    cache_query_append_item (cache, item);
                 }
             }
         }
-        json_object_put (j_obj);
+        json_object_put (obj);
     }
 }
 /*----------------------------------------------------------------------------*/
@@ -358,69 +358,69 @@ pixabay_json_to_webwidget (const char  *s_buff,
  * @brief  Search in Pixabay database.
  */
 void
-pixabay_search (WebWidget      *ww_widget,
-                const NStrings *ns_data)
+pixabay_search (WebWidget      *widget,
+                const NStrings *strings)
 {
-    UrlData    *ud_data      = nullptr; /* For search results */
-    CacheQuery *cq_query     = nullptr; /* For cache saving */
-    char       *s_query      = nullptr; /* For search query */
-    int         i_err        = 0;    /* Error output */
+    UrlData    *data         = nullptr; /* For search results */
+    CacheQuery *cache        = nullptr; /* For cache saving */
+    char       *search_query = nullptr; /* For search query */
+    int         err          = 0;       /* Error output */
 
-    if (str_is_empty_warn (ns_data->str[0], "Pixabay API key is not set"))
+    if (str_is_empty_warn (strings->str[0], "Pixabay API key is not set"))
         return;
 
-    s_query = str_replace_in (ww_widget->query, " ", "+");
+    search_query = str_replace_in (widget->query, " ", "+");
 
 #ifdef DEBUG
-    printf ("query : %s\n", ww_widget->query);
-    printf ("search opts : %s\n", ww_widget->search_opts);
+    printf ("query : %s\n", widget->query);
+    printf ("search opts : %s\n", widget->search_opts);
 #endif
 
-    ud_data = urldata_search_pixabay (s_query,
-                                      ww_widget->search_opts,
-                                      ns_data->str[0],
-                                      ww_widget->page);
-    if (ud_data->errbuf != nullptr) {
-        message_dialog_error (nullptr, ud_data->errbuf);
+    data = urldata_search_pixabay (search_query,
+                                      widget->search_opts,
+                                      strings->str[0],
+                                      widget->page);
+    if (data->errbuf != nullptr) {
+        message_dialog_error (nullptr, data->errbuf);
     }
-    else if (urldata_full (ud_data)) {
-        cq_query = cache_query_new (ww_name (WEB_SERV_PIXABAY),
-                                    ww_widget->query,
-                                    ww_widget->search_opts,
-                                    ww_widget->page);
+    else if (urldata_full (data)) {
+        cache = cache_query_new (ww_name (WEB_SERV_PIXABAY),
+                                    widget->query,
+                                    widget->search_opts,
+                                    widget->page);
 
         gtk_list_store_clear (GTK_LIST_STORE (gtk_icon_view_get_model (
-                        GTK_ICON_VIEW (ww_widget->img_view))));
+                        GTK_ICON_VIEW (widget->img_view))));
 
-        pixabay_json_to_webwidget (ud_data->buffer, ww_widget,
-                                   cq_query);
-        cq_query->found_cnt = ww_widget->found_cnt;
+        pixabay_json_to_webwidget (data->buffer, widget,
+                                   cache);
+        cache->found_cnt = widget->found_cnt;
 
-        i_err = cache_query_save (cq_query);
+        err = cache_query_save (cache);
 
-        if (i_err != ERR_OK) {
-            message_dialog_error (nullptr, err_get_message (i_err));
+        if (err != ERR_OK) {
+            message_dialog_error (nullptr, err_get_message (err));
         }
-        cache_query_free (cq_query);
+        cache_query_free (cache);
     }
-    urldata_free (ud_data);
-    free (s_query);
+    urldata_free (data);
+    free (search_query);
 }
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Dialog with Pixabay service settings.
  */
 int
-pixabay_settings_dialog (NStrings *ns_data)
+pixabay_settings_dialog (NStrings *strings)
 {
-    GtkWidget *gw_dialog;      /* Pixabay settings dialog */
-    GtkWidget *gw_content_box; /* Dialog's box */
-    GtkWidget *gw_api_entry;   /* Entry for API key */
-    int        i_res = 0;      /* Dialog result */
+    GtkWidget *dialog;      /* Pixabay settings dialog */
+    GtkWidget *content_box; /* Dialog's box */
+    GtkWidget *api_entry;   /* Entry for API key */
+    int        res = 0;     /* Dialog result */
 
     GtkDialogFlags flags = GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT;
 
-    gw_dialog = gtk_dialog_new_with_buttons ("Pixabay configuration",
+    dialog = gtk_dialog_new_with_buttons ("Pixabay configuration",
                                              nullptr,
                                              flags,
                                              "_OK",
@@ -429,118 +429,118 @@ pixabay_settings_dialog (NStrings *ns_data)
                                              GTK_RESPONSE_REJECT,
                                              nullptr);
 
-    gw_content_box = gtk_dialog_get_content_area (GTK_DIALOG (gw_dialog));
-    gtk_container_set_border_width (GTK_CONTAINER (gw_content_box), 8);
+    content_box = gtk_dialog_get_content_area (GTK_DIALOG (dialog));
+    gtk_container_set_border_width (GTK_CONTAINER (content_box), 8);
 
-    gw_api_entry = gtk_entry_new ();
+    api_entry = gtk_entry_new ();
 
-    gtk_entry_set_text (GTK_ENTRY (gw_api_entry), ns_data->str[0]);
+    gtk_entry_set_text (GTK_ENTRY (api_entry), strings->str[0]);
 
     /* Packing dialog widgets */
-    gtk_box_pack_start (GTK_BOX (gw_content_box),
+    gtk_box_pack_start (GTK_BOX (content_box),
                         gtk_label_new ("Pixabay API key:"),
                         FALSE, FALSE, 4);
-    gtk_box_pack_start (GTK_BOX (gw_content_box),
-                        gw_api_entry,
+    gtk_box_pack_start (GTK_BOX (content_box),
+                        api_entry,
                         FALSE, FALSE, 4);
-    gtk_box_pack_start (GTK_BOX (gw_content_box),
+    gtk_box_pack_start (GTK_BOX (content_box),
                         gtk_separator_new (GTK_ORIENTATION_HORIZONTAL),
                         FALSE, FALSE, 4);
-    gtk_box_pack_start (GTK_BOX (gw_content_box),
+    gtk_box_pack_start (GTK_BOX (content_box),
                         gtk_label_new (
     "To get your API key, you need to be registered on the Pixabay website and "
     " paste API key from: "),
                         FALSE, FALSE, 4);
-    gtk_box_pack_start (GTK_BOX (gw_content_box),
+    gtk_box_pack_start (GTK_BOX (content_box),
                         gtk_link_button_new ("https://pixabay.com/api/docs/"),
                         FALSE, FALSE, 4);
-    gtk_box_pack_start (GTK_BOX (gw_content_box),
+    gtk_box_pack_start (GTK_BOX (content_box),
                         gtk_label_new (
     "You should consider applying for a full access API key on this page, so "
     "you will get access to full size photos.\n"
     "Without full access key images will have max width/height of 1280px."),
                         FALSE, FALSE, 4);
 
-    gtk_widget_show_all (gw_content_box);
+    gtk_widget_show_all (content_box);
 
-    i_res = gtk_dialog_run (GTK_DIALOG (gw_dialog));
+    res = gtk_dialog_run (GTK_DIALOG (dialog));
 
-    if (i_res == GTK_RESPONSE_ACCEPT) {
-        free (ns_data->str[0]);
-        ns_data->str[0] = strdup (
-                gtk_entry_get_text (GTK_ENTRY (gw_api_entry)));
+    if (res == GTK_RESPONSE_ACCEPT) {
+        free (strings->str[0]);
+        strings->str[0] = strdup (
+                gtk_entry_get_text (GTK_ENTRY (api_entry)));
     }
-    gtk_widget_destroy (gw_dialog);
+    gtk_widget_destroy (dialog);
 
-    return i_res;
+    return res;
 }
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Get search options from Setting item to widgets.
  *
- * @param[out] gw_array  Array with settings widgets
- * @param[in]  st_setts  Setting item with list of options
+ * @param[out] widgets   Array with settings widgets
+ * @param[in]  settings  Setting item with list of options
  * @return     none
  */
 static void
-set_search_opts (GtkWidget **gw_array,
-                 Setting    *st_setts)
+set_search_opts (GtkWidget **widgets,
+                 Setting    *settings)
 {
-    Setting *st_set  = nullptr;
-    Setting *st_item = nullptr;
+    Setting *set  = nullptr;
+    Setting *item = nullptr;
 
-    st_set = setting_get_child (settings_find (st_setts,
+    set = setting_get_child (settings_find (settings,
                                                ww_opts (WEB_SERV_PIXABAY)));
 
-    if (st_set == nullptr) {
+    if (set == nullptr) {
         return;
     }
 #ifdef DEBUG
-    settings_print (st_set);
+    settings_print (set);
 #endif
     for (int i = 0; i < GW_CNT; ++i) {
         if (i == GW_COLOUR || i == GW_COLOUR_ENTRY ||
             i == GW_MIN_WIDTH || i == GW_MIN_HEIGHT || i == GW_PER_PAGE)
             continue;
-        if ((st_item = settings_find (st_set, s_opts[i])) != nullptr) {
+        if ((item = settings_find (set, opts[i])) != nullptr) {
 #ifdef DEBUG
-            printf ("set : %s %s\n", s_opts[i], setting_get_string (st_item));
+            printf ("set : %s %s\n", opts[i], setting_get_string (item));
 #endif
-            gtk_combo_box_set_active_id (GTK_COMBO_BOX (gw_array[i]),
-                                         setting_get_string (st_item));
+            gtk_combo_box_set_active_id (GTK_COMBO_BOX (widgets[i]),
+                                         setting_get_string (item));
         }
     }
-    if ((st_item = settings_find (st_set, s_opts[GW_COLOUR])) != nullptr) {
+    if ((item = settings_find (set, opts[GW_COLOUR])) != nullptr) {
 #ifdef DEBUG
         printf ("set : %s %s\n",
-                s_opts[GW_COLOUR], setting_get_string (st_item));
+                opts[GW_COLOUR], setting_get_string (item));
 #endif
-        gtk_entry_set_text (GTK_ENTRY (gw_array[GW_COLOUR_ENTRY]),
-                            setting_get_string (st_item));
+        gtk_entry_set_text (GTK_ENTRY (widgets[GW_COLOUR_ENTRY]),
+                            setting_get_string (item));
     }
 
-    if ((st_item = settings_find (st_set, s_opts[GW_MIN_WIDTH])) != nullptr) {
-        gtk_spin_button_set_value (GTK_SPIN_BUTTON (gw_array[GW_MIN_WIDTH]),
-                                   (double) setting_get_int (st_item));
+    if ((item = settings_find (set, opts[GW_MIN_WIDTH])) != nullptr) {
+        gtk_spin_button_set_value (GTK_SPIN_BUTTON (widgets[GW_MIN_WIDTH]),
+                                   (double) setting_get_int (item));
 #ifdef DEBUG
         printf ("set : %s %ld\n",
-                s_opts[GW_MIN_WIDTH], setting_get_int (st_item));
+                opts[GW_MIN_WIDTH], setting_get_int (item));
 #endif
     }
-    if ((st_item = settings_find (st_set, s_opts[GW_MIN_HEIGHT])) != nullptr) {
-        gtk_spin_button_set_value (GTK_SPIN_BUTTON (gw_array[GW_MIN_HEIGHT]),
-                                   (double) setting_get_int (st_item));
+    if ((item = settings_find (set, opts[GW_MIN_HEIGHT])) != nullptr) {
+        gtk_spin_button_set_value (GTK_SPIN_BUTTON (widgets[GW_MIN_HEIGHT]),
+                                   (double) setting_get_int (item));
 #ifdef DEBUG
         printf ("set : %s %ld\n",
-                s_opts[GW_MIN_HEIGHT], setting_get_int (st_item));
+                opts[GW_MIN_HEIGHT], setting_get_int (item));
 #endif
     }
-    if ((st_item = settings_find (st_set, s_opts[GW_PER_PAGE])) != nullptr) {
-        gtk_spin_button_set_value (GTK_SPIN_BUTTON (gw_array[GW_PER_PAGE]),
-                                   (double) setting_get_int (st_item));
+    if ((item = settings_find (set, opts[GW_PER_PAGE])) != nullptr) {
+        gtk_spin_button_set_value (GTK_SPIN_BUTTON (widgets[GW_PER_PAGE]),
+                                   (double) setting_get_int (item));
 #ifdef DEBUG
         printf ("set : %s %ld\n",
-                s_opts[GW_PER_PAGE], setting_get_int (st_item));
+                opts[GW_PER_PAGE], setting_get_int (item));
 #endif
     }
 }
@@ -548,131 +548,131 @@ set_search_opts (GtkWidget **gw_array,
 /**
  * @brief  Get search options from widgets to Setting item.
  *
- * @param[in,out] gw_array  Array with settings widgets
+ * @param[in,out] widgets  Array with settings widgets
  * @return        Setting items with search options
  */
 static Setting *
-get_search_opts (GtkWidget **gw_array)
+get_search_opts (GtkWidget **widgets)
 {
-    Setting    *st_sett = nullptr;
-    char       *s_val   = nullptr;
-    const char *s_val2  = nullptr;
-    int         i_val   = 0;
+    Setting    *sett    = nullptr;
+    char       *val     = nullptr;
+    const char *val2    = nullptr;
+    int         int_val = 0;
 
-    s_val = gtk_combo_box_text_get_active_text (
-            GTK_COMBO_BOX_TEXT (gw_array[GW_ORDER]));
-    st_sett = setting_new_string (s_opts[GW_ORDER], s_val);
-    free (s_val);
+    val = gtk_combo_box_text_get_active_text (
+            GTK_COMBO_BOX_TEXT (widgets[GW_ORDER]));
+    sett = setting_new_string (opts[GW_ORDER], val);
+    free (val);
 
-    s_val = gtk_combo_box_text_get_active_text (
-            GTK_COMBO_BOX_TEXT (gw_array[GW_ORIENTATION]));
-    if (strcmp (s_val, s_orientation[0]) != 0) {
-        st_sett = settings_append (st_sett,
-                setting_new_string (s_opts[GW_ORIENTATION], s_val));
+    val = gtk_combo_box_text_get_active_text (
+            GTK_COMBO_BOX_TEXT (widgets[GW_ORIENTATION]));
+    if (strcmp (val, orientation[0]) != 0) {
+        sett = settings_append (sett,
+                setting_new_string (opts[GW_ORIENTATION], val));
     }
-    free (s_val);
+    free (val);
 
-    s_val = gtk_combo_box_text_get_active_text (
-            GTK_COMBO_BOX_TEXT (gw_array[GW_CATEGORY]));
-    if (strcmp (s_val, s_category[0]) != 0) {
-        st_sett = settings_append (st_sett,
-                         setting_new_string (s_opts[GW_CATEGORY], s_val));
+    val = gtk_combo_box_text_get_active_text (
+            GTK_COMBO_BOX_TEXT (widgets[GW_CATEGORY]));
+    if (strcmp (val, category[0]) != 0) {
+        sett = settings_append (sett,
+                         setting_new_string (opts[GW_CATEGORY], val));
     }
-    free (s_val);
+    free (val);
 
-    s_val2 = gtk_entry_get_text (GTK_ENTRY (gw_array[GW_COLOUR_ENTRY]));
-    if (s_val2[0] != '\0') {
-        st_sett = settings_append (st_sett,
-                         setting_new_string (s_opts[GW_COLOUR], s_val2));
+    val2 = gtk_entry_get_text (GTK_ENTRY (widgets[GW_COLOUR_ENTRY]));
+    if (val2[0] != '\0') {
+        sett = settings_append (sett,
+                         setting_new_string (opts[GW_COLOUR], val2));
     }
-    s_val = gtk_combo_box_text_get_active_text (
-            GTK_COMBO_BOX_TEXT (gw_array[GW_ED_CHOICE]));
-    st_sett = settings_append (st_sett,
-            setting_new_string (s_opts[GW_ED_CHOICE], s_val));
-    free (s_val);
+    val = gtk_combo_box_text_get_active_text (
+            GTK_COMBO_BOX_TEXT (widgets[GW_ED_CHOICE]));
+    sett = settings_append (sett,
+            setting_new_string (opts[GW_ED_CHOICE], val));
+    free (val);
 
-    s_val = gtk_combo_box_text_get_active_text (
-            GTK_COMBO_BOX_TEXT (gw_array[GW_SAFE_SEARCH]));
-    st_sett = settings_append (st_sett,
-                     setting_new_string (s_opts[GW_SAFE_SEARCH], s_val));
-    free (s_val);
+    val = gtk_combo_box_text_get_active_text (
+            GTK_COMBO_BOX_TEXT (widgets[GW_SAFE_SEARCH]));
+    sett = settings_append (sett,
+                     setting_new_string (opts[GW_SAFE_SEARCH], val));
+    free (val);
 
-    i_val = gtk_spin_button_get_value_as_int (
-            GTK_SPIN_BUTTON (gw_array[GW_MIN_WIDTH]));
-    if (i_val > 0) {
-        st_sett = settings_append (st_sett,
-                         setting_new_int (s_opts[GW_MIN_WIDTH], i_val));
+    int_val = gtk_spin_button_get_value_as_int (
+            GTK_SPIN_BUTTON (widgets[GW_MIN_WIDTH]));
+    if (int_val > 0) {
+        sett = settings_append (sett,
+                         setting_new_int (opts[GW_MIN_WIDTH], int_val));
     }
 
-    i_val = gtk_spin_button_get_value_as_int (
-            GTK_SPIN_BUTTON (gw_array[GW_MIN_HEIGHT]));
-    if (i_val > 0) {
-        st_sett = settings_append (st_sett,
-                         setting_new_int (s_opts[GW_MIN_HEIGHT], i_val));
+    int_val = gtk_spin_button_get_value_as_int (
+            GTK_SPIN_BUTTON (widgets[GW_MIN_HEIGHT]));
+    if (int_val > 0) {
+        sett = settings_append (sett,
+                         setting_new_int (opts[GW_MIN_HEIGHT], int_val));
     }
-    i_val = gtk_spin_button_get_value_as_int (
-            GTK_SPIN_BUTTON (gw_array[GW_PER_PAGE]));
-    st_sett = settings_append (st_sett,
-            setting_new_int (s_opts[GW_PER_PAGE], i_val));
+    int_val = gtk_spin_button_get_value_as_int (
+            GTK_SPIN_BUTTON (widgets[GW_PER_PAGE]));
+    sett = settings_append (sett,
+            setting_new_int (opts[GW_PER_PAGE], int_val));
 
-    return st_sett;
+    return sett;
 }
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Colour combobox changed, add colour to colour entry.
  *
- * @param[in,out] gw_array  Array with settings widgets
+ * @param[in,out] widgets  Array with settings widgets
  * @return        none
  */
 static void
-event_combo_changed (GtkWidget **gw_array)
+event_combo_changed (GtkWidget **widgets)
 {
-    char *s_entxt = nullptr;
-    char *s_txt   = nullptr;
+    char *entxt = nullptr;
+    char *txt   = nullptr;
 
-    s_txt = gtk_combo_box_text_get_active_text (
-            GTK_COMBO_BOX_TEXT (gw_array[GW_COLOUR]));
+    txt = gtk_combo_box_text_get_active_text (
+            GTK_COMBO_BOX_TEXT (widgets[GW_COLOUR]));
 
-    if (s_txt != nullptr && strcmp (s_txt, s_colour[0]) != 0) {
-        s_entxt = strdup (gtk_entry_get_text (GTK_ENTRY (
-                          gw_array[GW_COLOUR_ENTRY])));
-        if (s_entxt[0] != '\0')
-            str_append (&s_entxt, ",");
-        str_append (&s_entxt, s_txt);
+    if (txt != nullptr && strcmp (txt, colour[0]) != 0) {
+        entxt = strdup (gtk_entry_get_text (GTK_ENTRY (
+                          widgets[GW_COLOUR_ENTRY])));
+        if (entxt[0] != '\0')
+            str_append (&entxt, ",");
+        str_append (&entxt, txt);
 
-        gtk_entry_set_text (GTK_ENTRY (gw_array[GW_COLOUR_ENTRY]), s_entxt);
-        free (s_entxt);
+        gtk_entry_set_text (GTK_ENTRY (widgets[GW_COLOUR_ENTRY]), entxt);
+        free (entxt);
     }
-    free (s_txt);
+    free (txt);
 }
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Options for image search dialog.
  */
 char *
-pixabay_search_opts_dialog (WebWidget *ww_widget)
+pixabay_search_opts_dialog (WebWidget *widget)
 {
-    GtkAdjustment *ga_adjust1;         /* Adjustment for max w spinbutton */
-    GtkAdjustment *ga_adjust2;         /* Adjustment for max h spinbutton */
-    GtkAdjustment *ga_adjust3;         /* Adjustment for per page spinbutton */
-    GtkWidget     *gw_array[GW_CNT];   /* Array with widgets */
-    GtkWidget     *gw_dialog;          /* Pixabay settings dialog */
-    GtkWidget     *gw_content_box;     /* Dialog's box */
-    GtkWidget     *gw_box;             /* Box for widgets */
-    GtkWidget     *gw_hbox;            /* Horizontal box for widgets */
-    Setting       *st_settings = nullptr; /* Settings */
-    char          *s_res       = nullptr; /* Result string */
-    int            i_err       = 0;    /* Error output */
-    int            i_res       = 0;    /* Dialog result */
-    int            i           = 0;    /* i */
+    GtkAdjustment *adjust1;         /* Adjustment for max w spinbutton */
+    GtkAdjustment *adjust2;         /* Adjustment for max h spinbutton */
+    GtkAdjustment *adjust3;         /* Adjustment for per page spinbutton */
+    GtkWidget     *widgets[GW_CNT]; /* Array with widgets */
+    GtkWidget     *dialog;          /* Pixabay settings dialog */
+    GtkWidget     *content_box;     /* Dialog's box */
+    GtkWidget     *box;             /* Box for widgets */
+    GtkWidget     *hbox;            /* Horizontal box for widgets */
+    Setting       *settings = nullptr; /* Settings */
+    char          *result   = nullptr; /* Result string */
+    int            err      = 0;    /* Error output */
+    int            res      = 0;    /* Dialog result */
+    int            i        = 0;    /* i */
 
     GtkDialogFlags flags = GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT;
 
-    ga_adjust1 = gtk_adjustment_new (0.0, 0.0, 10000.0, 1.0, 100.0, 0.0);
-    ga_adjust2 = gtk_adjustment_new (0.0, 0.0, 10000.0, 1.0, 100.0, 0.0);
-    ga_adjust3 = gtk_adjustment_new (12.0, 3.0, 200.0, 1.0, 2.0, 0.0);
+    adjust1 = gtk_adjustment_new (0.0, 0.0, 10000.0, 1.0, 100.0, 0.0);
+    adjust2 = gtk_adjustment_new (0.0, 0.0, 10000.0, 1.0, 100.0, 0.0);
+    adjust3 = gtk_adjustment_new (12.0, 3.0, 200.0, 1.0, 2.0, 0.0);
 
-    gw_dialog = gtk_dialog_new_with_buttons ("Pixabay search options",
+    dialog = gtk_dialog_new_with_buttons ("Pixabay search options",
                                              nullptr,
                                              flags,
                                              "_OK",
@@ -681,206 +681,206 @@ pixabay_search_opts_dialog (WebWidget *ww_widget)
                                              GTK_RESPONSE_REJECT,
                                              nullptr);
 
-    gw_content_box = gtk_dialog_get_content_area (GTK_DIALOG (gw_dialog));
-    gtk_container_set_border_width (GTK_CONTAINER (gw_content_box), 8);
-    gw_hbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 8);
+    content_box = gtk_dialog_get_content_area (GTK_DIALOG (dialog));
+    gtk_container_set_border_width (GTK_CONTAINER (content_box), 8);
+    hbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 8);
 
     /* Orientation combobox */
-    gw_array[GW_ORIENTATION] = gtk_combo_box_text_new ();
-    gtk_widget_set_tooltip_text (gw_array[GW_ORIENTATION],
+    widgets[GW_ORIENTATION] = gtk_combo_box_text_new ();
+    gtk_widget_set_tooltip_text (widgets[GW_ORIENTATION],
         "Whether an image is wider than it is tall, or taller than it is wide");
-    for (i = 0; s_orientation[i] != nullptr; ++i) {
-        gtk_combo_box_text_append (GTK_COMBO_BOX_TEXT (gw_array[GW_ORIENTATION]),
-                                   s_orientation[i], s_orientation[i]);
+    for (i = 0; orientation[i] != nullptr; ++i) {
+        gtk_combo_box_text_append (GTK_COMBO_BOX_TEXT (widgets[GW_ORIENTATION]),
+                                   orientation[i], orientation[i]);
     }
-    gtk_combo_box_set_active_id (GTK_COMBO_BOX (gw_array[GW_ORIENTATION]),
-                                                s_orientation[0]);
+    gtk_combo_box_set_active_id (GTK_COMBO_BOX (widgets[GW_ORIENTATION]),
+                                                orientation[0]);
     /* Box for orientation */
-    gw_box = gtk_box_new (GTK_ORIENTATION_VERTICAL, 8);
-    gtk_box_pack_start (GTK_BOX (gw_box),
+    box = gtk_box_new (GTK_ORIENTATION_VERTICAL, 8);
+    gtk_box_pack_start (GTK_BOX (box),
                         gtk_label_new ("Orientation:"),
                         FALSE, FALSE, 4);
-    gtk_box_pack_start (GTK_BOX (gw_box),
-                        gw_array[GW_ORIENTATION],
+    gtk_box_pack_start (GTK_BOX (box),
+                        widgets[GW_ORIENTATION],
                         FALSE, FALSE, 4);
-    gtk_box_pack_start (GTK_BOX (gw_hbox), gw_box, FALSE, FALSE, 4);
+    gtk_box_pack_start (GTK_BOX (hbox), box, FALSE, FALSE, 4);
 
     /* Category combobox */
-    gw_array[GW_CATEGORY] = gtk_combo_box_text_new ();
-    gtk_widget_set_tooltip_text (gw_array[GW_CATEGORY],
+    widgets[GW_CATEGORY] = gtk_combo_box_text_new ();
+    gtk_widget_set_tooltip_text (widgets[GW_CATEGORY],
                                  "Filter results by category");
-    for (i = 0; s_category[i] != nullptr; ++i) {
-        gtk_combo_box_text_append (GTK_COMBO_BOX_TEXT (gw_array[GW_CATEGORY]),
-                                   s_category[i], s_category[i]);
+    for (i = 0; category[i] != nullptr; ++i) {
+        gtk_combo_box_text_append (GTK_COMBO_BOX_TEXT (widgets[GW_CATEGORY]),
+                                   category[i], category[i]);
     }
-    gtk_combo_box_set_active_id (GTK_COMBO_BOX (gw_array[GW_CATEGORY]),
-                                 s_category[0]);
+    gtk_combo_box_set_active_id (GTK_COMBO_BOX (widgets[GW_CATEGORY]),
+                                 category[0]);
     /* Box for category */
-    gw_box = gtk_box_new (GTK_ORIENTATION_VERTICAL, 8);
-    gtk_box_pack_start (GTK_BOX (gw_box),
+    box = gtk_box_new (GTK_ORIENTATION_VERTICAL, 8);
+    gtk_box_pack_start (GTK_BOX (box),
                         gtk_label_new ("Category:"),
                         FALSE, FALSE, 4);
-    gtk_box_pack_start (GTK_BOX (gw_box),
-                        gw_array[GW_CATEGORY],
+    gtk_box_pack_start (GTK_BOX (box),
+                        widgets[GW_CATEGORY],
                         FALSE, FALSE, 4);
-    gtk_box_pack_start (GTK_BOX (gw_hbox), gw_box, FALSE, FALSE, 4);
+    gtk_box_pack_start (GTK_BOX (hbox), box, FALSE, FALSE, 4);
 
     /* Editor's choice combobox */
-    gw_array[GW_ED_CHOICE] = gtk_combo_box_text_new ();
-    gtk_widget_set_tooltip_text (gw_array[GW_ED_CHOICE],
+    widgets[GW_ED_CHOICE] = gtk_combo_box_text_new ();
+    gtk_widget_set_tooltip_text (widgets[GW_ED_CHOICE],
             "Select images that have received an Editor's Choice award");
-    for (i = 0; s_true_false[i] != nullptr; ++i) {
-        gtk_combo_box_text_append (GTK_COMBO_BOX_TEXT (gw_array[GW_ED_CHOICE]),
-                                   s_true_false[i], s_true_false[i]);
+    for (i = 0; true_false[i] != nullptr; ++i) {
+        gtk_combo_box_text_append (GTK_COMBO_BOX_TEXT (widgets[GW_ED_CHOICE]),
+                                   true_false[i], true_false[i]);
     }
-    gtk_combo_box_set_active_id (GTK_COMBO_BOX (gw_array[GW_ED_CHOICE]),
-                                 s_true_false[0]);
+    gtk_combo_box_set_active_id (GTK_COMBO_BOX (widgets[GW_ED_CHOICE]),
+                                 true_false[0]);
     /* Box for editor's choice */
-    gw_box = gtk_box_new (GTK_ORIENTATION_VERTICAL, 8);
-    gtk_box_pack_start (GTK_BOX (gw_box),
+    box = gtk_box_new (GTK_ORIENTATION_VERTICAL, 8);
+    gtk_box_pack_start (GTK_BOX (box),
                         gtk_label_new ("Editor's choice:"),
                         FALSE, FALSE, 4);
-    gtk_box_pack_start (GTK_BOX (gw_box),
-                        gw_array[GW_ED_CHOICE],
+    gtk_box_pack_start (GTK_BOX (box),
+                        widgets[GW_ED_CHOICE],
                         FALSE, FALSE, 4);
-    gtk_box_pack_start (GTK_BOX (gw_hbox), gw_box, FALSE, FALSE, 4);
+    gtk_box_pack_start (GTK_BOX (hbox), box, FALSE, FALSE, 4);
 
     /* Safe search combobox */
-    gw_array[GW_SAFE_SEARCH] = gtk_combo_box_text_new ();
-    gtk_widget_set_tooltip_text (gw_array[GW_SAFE_SEARCH],
+    widgets[GW_SAFE_SEARCH] = gtk_combo_box_text_new ();
+    gtk_widget_set_tooltip_text (widgets[GW_SAFE_SEARCH],
         "A flag indicating that only images suitable for all ages should be "
         "returned");
-    for (i = 0; s_true_false[i] != nullptr; ++i) {
-        gtk_combo_box_text_append (GTK_COMBO_BOX_TEXT (gw_array[GW_SAFE_SEARCH]),
-                                   s_true_false[i], s_true_false[i]);
+    for (i = 0; true_false[i] != nullptr; ++i) {
+        gtk_combo_box_text_append (GTK_COMBO_BOX_TEXT (widgets[GW_SAFE_SEARCH]),
+                                   true_false[i], true_false[i]);
     }
-    gtk_combo_box_set_active_id (GTK_COMBO_BOX (gw_array[GW_SAFE_SEARCH]),
-                                 s_true_false[0]);
+    gtk_combo_box_set_active_id (GTK_COMBO_BOX (widgets[GW_SAFE_SEARCH]),
+                                 true_false[0]);
     /* Box for safe search */
-    gw_box = gtk_box_new (GTK_ORIENTATION_VERTICAL, 8);
-    gtk_box_pack_start (GTK_BOX (gw_box),
+    box = gtk_box_new (GTK_ORIENTATION_VERTICAL, 8);
+    gtk_box_pack_start (GTK_BOX (box),
                         gtk_label_new ("Safe search:"),
                         FALSE, FALSE, 4);
-    gtk_box_pack_start (GTK_BOX (gw_box),
-                        gw_array[GW_SAFE_SEARCH],
+    gtk_box_pack_start (GTK_BOX (box),
+                        widgets[GW_SAFE_SEARCH],
                         FALSE, FALSE, 4);
-    gtk_box_pack_start (GTK_BOX (gw_hbox), gw_box, FALSE, FALSE, 4);
+    gtk_box_pack_start (GTK_BOX (hbox), box, FALSE, FALSE, 4);
 
     /* Order combobox */
-    gw_array[GW_ORDER] = gtk_combo_box_text_new ();
-    gtk_widget_set_tooltip_text (gw_array[GW_ORDER],
+    widgets[GW_ORDER] = gtk_combo_box_text_new ();
+    gtk_widget_set_tooltip_text (widgets[GW_ORDER],
                                  "How the results should be ordered");
-    for (i = 0; s_order[i] != nullptr; ++i) {
-        gtk_combo_box_text_append (GTK_COMBO_BOX_TEXT (gw_array[GW_ORDER]),
-                                   s_order[i], s_order[i]);
+    for (i = 0; order[i] != nullptr; ++i) {
+        gtk_combo_box_text_append (GTK_COMBO_BOX_TEXT (widgets[GW_ORDER]),
+                                   order[i], order[i]);
     }
-    gtk_combo_box_set_active_id (GTK_COMBO_BOX (gw_array[GW_ORDER]),
-                                 s_order[0]);
+    gtk_combo_box_set_active_id (GTK_COMBO_BOX (widgets[GW_ORDER]),
+                                 order[0]);
     /* Box for order */
-    gw_box = gtk_box_new (GTK_ORIENTATION_VERTICAL, 8);
-    gtk_box_pack_start (GTK_BOX (gw_box),
+    box = gtk_box_new (GTK_ORIENTATION_VERTICAL, 8);
+    gtk_box_pack_start (GTK_BOX (box),
                         gtk_label_new ("Order:"),
                         FALSE, FALSE, 4);
-    gtk_box_pack_start (GTK_BOX (gw_box),
-                        gw_array[GW_ORDER],
+    gtk_box_pack_start (GTK_BOX (box),
+                        widgets[GW_ORDER],
                         FALSE, FALSE, 4);
-    gtk_box_pack_start (GTK_BOX (gw_hbox), gw_box, FALSE, FALSE, 4);
+    gtk_box_pack_start (GTK_BOX (hbox), box, FALSE, FALSE, 4);
 
     /* Min image width and height */
-    gw_array[GW_MIN_WIDTH]  = gtk_spin_button_new (ga_adjust1, 1.0, 0);
-    gw_array[GW_MIN_HEIGHT] = gtk_spin_button_new (ga_adjust2, 1.0, 0);
-    gtk_widget_set_tooltip_text (gw_array[GW_MIN_WIDTH],
+    widgets[GW_MIN_WIDTH]  = gtk_spin_button_new (adjust1, 1.0, 0);
+    widgets[GW_MIN_HEIGHT] = gtk_spin_button_new (adjust2, 1.0, 0);
+    gtk_widget_set_tooltip_text (widgets[GW_MIN_WIDTH],
           "Minimum image width. If 0 value is set, all widths are allowed.");
-    gtk_widget_set_tooltip_text (gw_array[GW_MIN_HEIGHT],
+    gtk_widget_set_tooltip_text (widgets[GW_MIN_HEIGHT],
           "Minimum image height. If 0 value is set, all heights are allowed.");
-    gw_box = gtk_box_new (GTK_ORIENTATION_VERTICAL, 8);
-    gtk_box_pack_start (GTK_BOX (gw_box),
+    box = gtk_box_new (GTK_ORIENTATION_VERTICAL, 8);
+    gtk_box_pack_start (GTK_BOX (box),
                         gtk_label_new ("Min width:"),
                         FALSE, FALSE, 4);
-    gtk_box_pack_start (GTK_BOX (gw_box),
-                        gw_array[GW_MIN_WIDTH],
+    gtk_box_pack_start (GTK_BOX (box),
+                        widgets[GW_MIN_WIDTH],
                         FALSE, FALSE, 4);
-    gtk_box_pack_start (GTK_BOX (gw_hbox), gw_box, FALSE, FALSE, 4);
+    gtk_box_pack_start (GTK_BOX (hbox), box, FALSE, FALSE, 4);
 
-    gw_box = gtk_box_new (GTK_ORIENTATION_VERTICAL, 8);
-    gtk_box_pack_start (GTK_BOX (gw_box),
+    box = gtk_box_new (GTK_ORIENTATION_VERTICAL, 8);
+    gtk_box_pack_start (GTK_BOX (box),
                         gtk_label_new ("Min height:"),
                         FALSE, FALSE, 4);
-    gtk_box_pack_start (GTK_BOX (gw_box),
-                        gw_array[GW_MIN_HEIGHT],
+    gtk_box_pack_start (GTK_BOX (box),
+                        widgets[GW_MIN_HEIGHT],
                         FALSE, FALSE, 4);
-    gtk_box_pack_start (GTK_BOX (gw_hbox), gw_box, FALSE, FALSE, 4);
+    gtk_box_pack_start (GTK_BOX (hbox), box, FALSE, FALSE, 4);
 
-    gtk_box_pack_start (GTK_BOX (gw_content_box), gw_hbox, FALSE, FALSE, 4);
+    gtk_box_pack_start (GTK_BOX (content_box), hbox, FALSE, FALSE, 4);
 
     /* Box for colour */
-    gw_hbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 8);
+    hbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 8);
 
     /* Colour combobox */
-    gw_array[GW_COLOUR] = gtk_combo_box_text_new ();
-    gtk_widget_set_tooltip_text (gw_array[GW_COLOUR],
+    widgets[GW_COLOUR] = gtk_combo_box_text_new ();
+    gtk_widget_set_tooltip_text (widgets[GW_COLOUR],
             "Filter images by color properties");
-    for (i = 0; s_colour[i] != nullptr; ++i) {
-        gtk_combo_box_text_append (GTK_COMBO_BOX_TEXT (gw_array[GW_COLOUR]),
-                                   s_colour[i], s_colour[i]);
+    for (i = 0; colour[i] != nullptr; ++i) {
+        gtk_combo_box_text_append (GTK_COMBO_BOX_TEXT (widgets[GW_COLOUR]),
+                                   colour[i], colour[i]);
     }
-    gtk_combo_box_set_active_id (GTK_COMBO_BOX (gw_array[GW_COLOUR]),
-                                 s_colour[0]);
-    g_signal_connect_swapped (gw_array[GW_COLOUR], "changed",
-                              G_CALLBACK (event_combo_changed), gw_array);
-    gtk_box_pack_start (GTK_BOX (gw_hbox),
+    gtk_combo_box_set_active_id (GTK_COMBO_BOX (widgets[GW_COLOUR]),
+                                 colour[0]);
+    g_signal_connect_swapped (widgets[GW_COLOUR], "changed",
+                              G_CALLBACK (event_combo_changed), widgets);
+    gtk_box_pack_start (GTK_BOX (hbox),
                         gtk_label_new ("Colour:"),
                         FALSE, FALSE, 4);
-    gtk_box_pack_start (GTK_BOX (gw_hbox),
-                        gw_array[GW_COLOUR],
+    gtk_box_pack_start (GTK_BOX (hbox),
+                        widgets[GW_COLOUR],
                         FALSE, FALSE, 4);
     /* Colour entry */
-    gw_array[GW_COLOUR_ENTRY] = gtk_entry_new ();
-    gtk_widget_set_tooltip_text (gw_array[GW_COLOUR_ENTRY],
+    widgets[GW_COLOUR_ENTRY] = gtk_entry_new ();
+    gtk_widget_set_tooltip_text (widgets[GW_COLOUR_ENTRY],
             "Filter images by color properties. A comma separated list of "
             "values may be used to select multiple properties.");
-    gtk_box_pack_start (GTK_BOX (gw_hbox),
-                        gw_array[GW_COLOUR_ENTRY],
+    gtk_box_pack_start (GTK_BOX (hbox),
+                        widgets[GW_COLOUR_ENTRY],
                         TRUE, TRUE, 4);
 
     /* Per page */
-    gw_array[GW_PER_PAGE] = gtk_spin_button_new (ga_adjust3, 1.0, 0);
-    gtk_widget_set_tooltip_text (gw_array[GW_PER_PAGE],
+    widgets[GW_PER_PAGE] = gtk_spin_button_new (adjust3, 1.0, 0);
+    gtk_widget_set_tooltip_text (widgets[GW_PER_PAGE],
             "Determine the number of results per page (3-200).");
-    gtk_box_pack_start (GTK_BOX (gw_hbox),
+    gtk_box_pack_start (GTK_BOX (hbox),
                         gtk_label_new ("Images per page:"),
                         FALSE, FALSE, 4);
-    gtk_box_pack_start (GTK_BOX (gw_hbox),
-                        gw_array[GW_PER_PAGE],
+    gtk_box_pack_start (GTK_BOX (hbox),
+                        widgets[GW_PER_PAGE],
                         FALSE, FALSE, 4);
 
-    gtk_box_pack_start (GTK_BOX (gw_content_box), gw_hbox, FALSE, FALSE, 4);
+    gtk_box_pack_start (GTK_BOX (content_box), hbox, FALSE, FALSE, 4);
 
-    st_settings = setts_read (ww_widget->config_file, &i_err);
-    set_search_opts (gw_array, st_settings);
-    settings_free_all (st_settings);
+    settings = setts_read (widget->config_file, &err);
+    set_search_opts (widgets, settings);
+    settings_free_all (settings);
 
-    gtk_widget_show_all (gw_content_box);
+    gtk_widget_show_all (content_box);
 
-    i_res = gtk_dialog_run (GTK_DIALOG (gw_dialog));
+    res = gtk_dialog_run (GTK_DIALOG (dialog));
 
-    if (i_res == GTK_RESPONSE_ACCEPT) {
-        st_settings = setting_new_setting (ww_opts (WEB_SERV_PIXABAY));
+    if (res == GTK_RESPONSE_ACCEPT) {
+        settings = setting_new_setting (ww_opts (WEB_SERV_PIXABAY));
 
-        setting_add_child (st_settings, get_search_opts (gw_array));
+        setting_add_child (settings, get_search_opts (widgets));
 #ifdef DEBUG
-        settings_print (st_settings);
+        settings_print (settings);
 #endif
-        setts_check_update_file (ww_widget->config_file, st_settings);
-        s_res = search_opts_to_str (setting_get_child (st_settings));
-        settings_free_all (st_settings);
+        setts_check_update_file (widget->config_file, settings);
+        result = search_opts_to_str (setting_get_child (settings));
+        settings_free_all (settings);
     }
     else {
-        s_res = nullptr;
+        result = nullptr;
     }
-    gtk_widget_destroy (gw_dialog);
+    gtk_widget_destroy (dialog);
 
-    return s_res;
+    return result;
 }
 /*----------------------------------------------------------------------------*/
 
