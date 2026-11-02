@@ -32,47 +32,47 @@
  * @brief  Get settings data from file.
  *
  * Reads settings from json file, returns SettList with settings or empty if
- * file is empty. Returns null if read error. Sets error code in i_err.
+ * file is empty. Returns null if read error. Sets error code in err.
  *
- * @param[in]  s_fname  Config file name
- * @param[out] i_err    Pointer to integer for error output
+ * @param[in]  fname  Config file name
+ * @param[out] err    Pointer to integer for error output
  * @return     List of settings
  */
 /*----------------------------------------------------------------------------*/
-Setting * json_settings_read (const char *s_fname,
-                              int        *i_err)
-                              __attribute__ ((nonnull (1)));
+Setting *json_settings_read (const char *fname,
+                             int        *err)
+                             __attribute__ ((nonnull (1)));
 /*----------------------------------------------------------------------------*/
 /**
- * @fn  char * json_settings_check_for_update  (const Setting *st_settings,
-   *                                            const char    *s_fname,
- *                                            int           *i_err)
+ * @fn  char * json_settings_check_for_update  (const Setting *settings,
+   *                                            const char    *fname,
+ *                                            int           *err)
  *
  * @brief  Check if settings in list are an update to settings stored in
  *         settings file.
  *
  * Function converts Setting list of settings to Json object, reads Json
- * data from file s_fname, and checks if they differ in content.
- * If there is no difference s_res_buff is set to null pointer and returned.
+ * data from file fname, and checks if they differ in content.
+ * If there is no difference res_buff is set to null pointer and returned.
  * If they are different, the new config Json raw data is written to
- * s_res_buff and returned.
- * Function saves error code in i_err.
+ * res_buff and returned.
+ * Function saves error code in err.
  *
- * @param[in]  st_settings List of Setting items
- * @param[in]  s_fname     Config file name
- * @param[out] i_err       Error output
+ * @param[in]  settings List of Setting items
+ * @param[in]  fname    Config file name
+ * @param[out] err       Error output
  * @return     String with updated settings or null if there is no update.
  *
- * @fn  int json_settings_update_file (const char *s_buff, const char *s_fname)
+ * @fn  int json_settings_update_file (const char *buff, const char *fname)
  *
  * @brief  Update file with new data.
  *
- * @param[in]  s_buff   String with data to save
- * @param[in]  s_fname  File name to save data
+ * @param[in]  buff   String with data to save
+ * @param[in]  fname  File name to save data
  * @return     Saving file status, ERR_OK or error code
  *
- * @fn  int json_settings_check_update_file (Setting    *st_settings,
-   *                                         const char *s_fname)
+ * @fn  int json_settings_check_update_file (Setting    *settings,
+   *                                         const char *fname)
  *
  * @brief  Check if settings are an update to saved ones and update file with
  *         new data if they are.
@@ -80,23 +80,23 @@ Setting * json_settings_read (const char *s_fname,
  * Function runs json_settings_check_for_update and json_settings_update_file
  * if settings are an update.
  *
- * @param[in]  st_settings  List of Setting items
- * @param[in]  s_fname      File name to save data
+ * @param[in]  settings  List of Setting items
+ * @param[in]  fname     File name to save data
  * @return     Saving file status, ERR_OK or error code
  */
 /*----------------------------------------------------------------------------*/
-char * json_settings_check_for_update  (const Setting *st_settings,
-                                        const char    *s_fname,
-                                        int           *i_err)
-                                        __attribute__ ((nonnull (2)));
+char *json_settings_check_for_update  (const Setting *settings,
+                                       const char    *fname,
+                                       int           *err)
+                                       __attribute__ ((nonnull (2)));
 
-int    json_settings_update_file       (const char    *s_buff,
-                                        const char    *s_fname)
-                                        __attribute__ ((nonnull (1, 2)));
+int   json_settings_update_file       (const char    *buff,
+                                       const char    *fname)
+                                       __attribute__ ((nonnull (1, 2)));
 
-int    json_settings_check_update_file (const Setting *st_settings,
-                                        const char    *s_fname)
-                                        __attribute__ ((nonnull (2)));
+int   json_settings_check_update_file (const Setting *settings,
+                                       const char    *fname)
+                                       __attribute__ ((nonnull (2)));
 /*----------------------------------------------------------------------------*/
 #endif
 

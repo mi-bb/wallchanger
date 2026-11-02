@@ -33,8 +33,8 @@
  * @param[in]  dir  Directory path to scan
  * @return     GList with file names 
  */
-GList * get_dir_content_filter_images   (const char *dir)
-                                         __attribute__ ((nonnull (1)));
+GList *get_dir_content_filter_images (const char *dir)
+                                      __attribute__ ((nonnull (1)));
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Get size of all files in a directory.
@@ -42,8 +42,8 @@ GList * get_dir_content_filter_images   (const char *dir)
  * @param[in]  path  Directory path to scan
  * @return     Size of files in folder
  */
-goffset get_dir_size                    (const char *path)
-                                         __attribute__ ((nonnull (1)));
+goffset get_dir_size (const char *path)
+                      __attribute__ ((nonnull (1)));
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Delete files in given directory.
@@ -51,6 +51,6 @@ goffset get_dir_size                    (const char *path)
  * @param[in]  path  Directory path to scan
  * @return     none
  */
-void    delete_dir_content              (const char *path);
+void delete_dir_content (const char *path);
 /*----------------------------------------------------------------------------*/
 #endif

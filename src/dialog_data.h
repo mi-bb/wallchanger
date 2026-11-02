@@ -59,18 +59,18 @@
  */
 typedef struct
 DialogData {
-    GtkWindow  *window;         /* App window pointer */
-    GtkWidget  *view;           /* TreeView file list widget */
-    GtkWidget  *random;         /* Random background select check box */
-    GtkWidget  *last_used;      /* Set last used wallpaper check box */
-    GtkWidget  *time_align;     /* Time align check box */
-    GtkWidget  *command;        /* Set wallpaper command entry */
-    GtkWidget  *interval;       /* Time interval check button */
-    GtkWidget  *interval_combo; /* Time interval combo box */
-    GtkWidget  *daemon_label;   /* Daemon info label */
-    GtkWidget  *status_bar;     /* Status bar */
-    GtkWidget  *img_preview;    /* Wallpaper preview image */
-    char       *config_file;    /* Config file path */
+    GtkWindow *window;         /* App window pointer */
+    GtkWidget *view;           /* TreeView file list widget */
+    GtkWidget *random;         /* Random background select check box */
+    GtkWidget *last_used;      /* Set last used wallpaper check box */
+    GtkWidget *time_align;     /* Time align check box */
+    GtkWidget *command;        /* Set wallpaper command entry */
+    GtkWidget *interval;       /* Time interval check button */
+    GtkWidget *interval_combo; /* Time interval combo box */
+    GtkWidget *daemon_label;   /* Daemon info label */
+    GtkWidget *status_bar;     /* Status bar */
+    GtkWidget *img_preview;    /* Wallpaper preview image */
+    char      *config_file;    /* Config file path */
 } DialogData;
 /*----------------------------------------------------------------------------*/
 /**
@@ -79,14 +79,14 @@ DialogData {
  * @param[out] data  DialogData object to free
  * @return     None
  */
-void         dialog_data_free                   (DialogData       *data);
+void dialog_data_free (DialogData *data);
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Create new DialogData object.
  *
  * @return  New DialogData object
  */
-DialogData * dialog_data_new                    (void);
+DialogData *dialog_data_new (void);
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Look for config file, try to create it if not found. When
@@ -95,7 +95,7 @@ DialogData * dialog_data_new                    (void);
  * @param[in] data  DialogData object
  * @return    none
  */
-void         dialog_data_do_config_file_stuff   (DialogData       *data);
+void dialog_data_do_config_file_stuff (DialogData *data);
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Get config file path from dialog_data.
@@ -114,6 +114,6 @@ dialog_data_get_cfg_file (const DialogData *data) {
  * @param[in] data  DialogData object
  * @return    String with config file information
  */
-char       * dialog_data_get_status_config_info (const DialogData *data);
+char *dialog_data_get_status_config_info (const DialogData *data);
 /*----------------------------------------------------------------------------*/
 #endif

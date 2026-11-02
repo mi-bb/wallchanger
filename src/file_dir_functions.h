@@ -30,8 +30,7 @@
  * @param[in] file  File name to check
  * @return    Checking status
  */
-int    file_check_permissions (const char *file)
-       __attribute__ ((nonnull (1)));
+int file_check_permissions (const char *file) __attribute__ ((nonnull (1)));
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Check directory permissions, existence and create if needed. 
@@ -39,8 +38,7 @@ int    file_check_permissions (const char *file)
  * @param[in] dir  Directory name to check / create
  * @return    Checking / creating status
  */
-int    dir_check_permissions (const char *dir)
-       __attribute__ ((nonnull (1)));
+int dir_check_permissions (const char *dir) __attribute__ ((nonnull (1)));
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Create directory with subfolders if it doesn't exist.
@@ -48,7 +46,7 @@ int    dir_check_permissions (const char *dir)
  * @param[in] dir_path  Directory path
  * @return    Process result
  */
-int    dir_create_with_subdirs (const char *dir_path);
+int dir_create_with_subdirs (const char *dir_path);
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Create file with subfolders if it doesn't exist.
@@ -56,8 +54,8 @@ int    dir_create_with_subdirs (const char *dir_path);
  * @param[in] file_path  File path
  * @return    Process result
  */
-int    file_create_with_subdirs (const char *file_path)
-       __attribute__ ((nonnull (1)));
+int file_create_with_subdirs (const char *file_path)
+    __attribute__ ((nonnull (1)));
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Get user's home config path.
@@ -65,21 +63,21 @@ int    file_create_with_subdirs (const char *file_path)
  * @return  String with home config path, after use it thould be freed using
  *          free.
  */
-char * dir_get_home_config (void);
+char *dir_get_home_config (void);
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Get temp dir path.
  *
  * @return  String with temp path, after use it thould be freed using free.
  */
-char * dir_get_temp (void);
+char *dir_get_temp (void);
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Get user's cache dir path.
  *
  * @return  String with cache path, after use it thould be freed using free.
  */
-char * dir_get_cache (void);
+char *dir_get_cache (void);
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Get user's home data dir.
@@ -87,7 +85,7 @@ char * dir_get_cache (void);
  * @return  String with user's home data path, after use it thould be freed
  *          using free.
  */
-char * dir_get_home_data (void);
+char *dir_get_home_data (void);
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Get system data dir path.
@@ -95,7 +93,7 @@ char * dir_get_home_data (void);
  * @return  String with system data path, after use it thould be freed using
  *          free.
  */
-char * dir_get_data (void) __attribute__ ((malloc));
+char *dir_get_data (void) __attribute__ ((malloc));
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Get user's autostart dir.
@@ -103,6 +101,6 @@ char * dir_get_data (void) __attribute__ ((malloc));
  * @return  String with user's autostart path, after use it thould be freed
  *          using free.
  */
-char * dir_get_autostart (void);
+char *dir_get_autostart (void);
 /*----------------------------------------------------------------------------*/
 #endif
