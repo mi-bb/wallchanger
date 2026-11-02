@@ -29,45 +29,45 @@
  * @brief  Create new NStrings item.
  */
 NStrings *
-nstrings_new (const size_t ui_cnt,
-              const int    i_type)
+nstrings_new (const size_t count,
+              const int    type)
 {
-    NStrings *ns_data = nullptr;
-    size_t          i = 0;
+    NStrings *nstrings = nullptr;
+    size_t           i = 0;
 
-    if ((ns_data = malloc (sizeof (NStrings))) == nullptr)
+    if ((nstrings = malloc (sizeof (NStrings))) == nullptr)
         err (EXIT_FAILURE, nullptr);
 
-    if ((ns_data->s_str = malloc ((ui_cnt + 1) * sizeof (char*))) == nullptr)
+    if ((nstrings->str = malloc ((count + 1) * sizeof (char*))) == nullptr)
         err (EXIT_FAILURE, nullptr);
 
-    if (i_type == NS_VAL_NULL) {
-        for (i = 0; i < ui_cnt; ++i) {
-            ns_data->s_str[i] = nullptr;
+    if (type == NS_VAL_NULL) {
+        for (i = 0; i < count; ++i) {
+            nstrings->str[i] = nullptr;
         }
     }
     else {
-        for (i = 0; i < ui_cnt; ++i) {
-            ns_data->s_str[i] = malloc (sizeof (char));
-            ns_data->s_str[i][0] = '\0';
+        for (i = 0; i < count; ++i) {
+            nstrings->str[i] = malloc (sizeof (char));
+            nstrings->str[i][0] = '\0';
         }
     }
-    ns_data->ui_cnt = ui_cnt;
-    ns_data->s_str[ui_cnt] = nullptr;
+    nstrings->count = count;
+    nstrings->str[count] = nullptr;
 
-    return ns_data;
+    return nstrings;
 }
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Free NStrings item data.
  */
 void
-nstrings_free (NStrings *ns_data)
+nstrings_free (NStrings *nstrings)
 {
-    for (size_t i = 0; i < ns_data->ui_cnt; ++i) {
-        free (ns_data->s_str[i]);
+    for (size_t i = 0; i < nstrings->count; ++i) {
+        free (nstrings->str[i]);
     }
-    free (ns_data);
+    free (nstrings);
 }
 /*----------------------------------------------------------------------------*/
 

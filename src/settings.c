@@ -66,151 +66,151 @@ SettingData {
  * @brief  Get name of setting in config file, based on enum value.
  */
 const char *
-get_setting_name (const int i_val)
+get_setting_name (const int val)
 {
-    const char *s_res = nullptr;
+    const char *res = nullptr;
 
-    switch (i_val) {
+    switch (val) {
         case SETT_BG_CMD:
-            s_res = "Background set command";
+            res = "Background set command";
             break;
 
         case SETT_LAST_USED_OPT:
-            s_res = "Set last used wallpaper";
+            res = "Set last used wallpaper";
             break;
         
         case SETT_LAST_USED_STR:
-            s_res = "Last used wallpaper file";
+            res = "Last used wallpaper file";
             break;
 
         case SETT_LAST_USED_WM:
-            s_res = "Last used window manager";
+            res = "Last used window manager";
             break;
 
         case SETT_WIN_WIDTH:
-            s_res = "Window width";
+            res = "Window width";
             break;
 
         case SETT_WIN_HEIGHT:
-            s_res = "Window height";
+            res = "Window height";
             break;
 
         case SETT_RANDOM_OPT:
-            s_res = "Random wallpaper";
+            res = "Random wallpaper";
             break;
 
         case SETT_INTERVAL_VAL:
-            s_res = "Wallpaper change interval";
+            res = "Wallpaper change interval";
             break;
 
         case SETT_TIME_ALIGN_OPT:
-            s_res = "Time align";
+            res = "Time align";
             break;
 
         case SETT_WALL_ARRAY:
-            s_res = "Backgrounds";
+            res = "Backgrounds";
             break;
 
         case SETT_WEB_DLG_WIDTH:
-            s_res = "Web dialog width";
+            res = "Web dialog width";
             break;
 
         case SETT_WEB_DLG_HEIGHT:
-            s_res = "Web dialog height";
+            res = "Web dialog height";
             break;
 
         case SETT_THUMB_QUALITY:
-            s_res = "Thumbnail quality";
+            res = "Thumbnail quality";
             break;
 
         default:
             break;
     }
-    return s_res;
+    return res;
 }
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Read program settings. 
  */
 Setting *
-setts_read (const char *s_cfg_file,
-            int        *i_err)
+setts_read (const char *cfg_file,
+            int        *err)
 {
-    return json_settings_read (s_cfg_file, i_err);
+    return json_settings_read (cfg_file, err);
 }
 /*----------------------------------------------------------------------------*/
 /**
- * @brief  Check for a Setting with name as in sd_data presence and insert
- *         new one with data as in sd_data.
+ * @brief  Check for a Setting with the name from data and insert a new
+ *         one with the values from data if it is missing.
  *
- * @param[in] st_settings  List of Setting items
- * @param[in] sd_data      Data with setting info to examine
+ * @param[in] settings  List of Setting items
+ * @param[in] data      Data with setting info to examine
  * @return    List of Setting items, with new one appended if it was
- *            missing. Must be used, as it may differ from st_settings
+ *            missing. Must be used, as it may differ from settings
  *            if the list was empty.
  */
 static Setting *
-setts_check_setting (Setting           *st_settings,
-                     const SettingData *sd_data)
+setts_check_setting (Setting           *settings,
+                     const SettingData *data)
 {
-    const char *s_name = nullptr;
-    Setting    *st_sett;
+    const char *name = nullptr;
+    Setting    *sett;
 
-    s_name = get_setting_name (sd_data->setting_id);
+    name = get_setting_name (data->setting_id);
 
-    if ((st_sett = settings_find (st_settings, s_name)) == nullptr) {
+    if ((sett = settings_find (settings, name)) == nullptr) {
 #ifdef DEBUG
-        printf ("%s", s_name);
+        printf ("%s", name);
         printf (" not present, setting default ");
 #endif
-        if (sd_data->setting_type == SET_VAL_INT) {
+        if (data->setting_type == SET_VAL_INT) {
 #ifdef DEBUG
-            printf ("%" PRId64 "\n", sd_data->default_int);
+            printf ("%" PRId64 "\n", data->default_int);
 #endif
-            st_settings = settings_append (st_settings,
-                    setting_new_int (s_name, sd_data->default_int));
+            settings = settings_append (settings,
+                    setting_new_int (name, data->default_int));
         }
-        else if (sd_data->setting_type == SET_VAL_DOUBLE) {
+        else if (data->setting_type == SET_VAL_DOUBLE) {
 #ifdef DEBUG
-            printf ("%f\n", sd_data->default_double);
+            printf ("%f\n", data->default_double);
 #endif
-            st_settings = settings_append (st_settings,
-                    setting_new_double (s_name, sd_data->default_double));
+            settings = settings_append (settings,
+                    setting_new_double (name, data->default_double));
         }
-        else if (sd_data->setting_type == SET_VAL_STRING) {
+        else if (data->setting_type == SET_VAL_STRING) {
 #ifdef DEBUG
-            printf ("%s\n", sd_data->default_string);
+            printf ("%s\n", data->default_string);
 #endif
-            st_settings = settings_append (st_settings,
-                    setting_new_string (s_name, sd_data->default_string));
+            settings = settings_append (settings,
+                    setting_new_string (name, data->default_string));
         }
-        else if (sd_data->setting_type == SET_VAL_ARRAY) {
+        else if (data->setting_type == SET_VAL_ARRAY) {
 #ifdef DEBUG
             printf ("\n");
 #endif
-            st_settings = settings_append (st_settings,
-                          setting_new_array (s_name));
+            settings = settings_append (settings,
+                          setting_new_array (name));
         }
     }
     else {
 #ifdef DEBUG
-        printf ("%s", s_name);
+        printf ("%s", name);
         printf (" OK\n");
 #endif
     }
 
-    return st_settings;
+    return settings;
 }
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Check Setting list values and set default ones if needed.
  */
 Setting *
-setts_check_defaults (Setting *st_settings)
+setts_check_defaults (Setting *settings)
 {
-    SettingData *sd_data;
+    SettingData *data;
 
-    SettingData sdd[] = {
+    SettingData defaults[] = {
         {SETT_LAST_USED_OPT,  SET_VAL_INT,    DEFAULT_LAST_USED_OPT, 0, ""},
         {SETT_LAST_USED_WM,   SET_VAL_STRING, 0, 0, DEFAULT_LAST_USED_WM},
         {SETT_RANDOM_OPT,     SET_VAL_INT,    DEFAULT_RANDOM_OPT, 0, ""},
@@ -226,111 +226,111 @@ setts_check_defaults (Setting *st_settings)
         {-1, 0, 0, 0, ""}
     };
 
-    for (sd_data = sdd; sd_data->setting_id != -1; ++sd_data) {
-        st_settings = setts_check_setting (st_settings, sd_data);
+    for (data = defaults; data->setting_id != -1; ++data) {
+        settings = setts_check_setting (settings, data);
     }
 
-    return st_settings;
+    return settings;
 }
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Update last used wallpaper position in config file. 
  */
 int
-setts_update_last_used (const char *s_cfg_file,
-                        const char *s_last_used)
+setts_update_last_used (const char *cfg_file,
+                        const char *last_used)
 {
-    Setting  *st_settings;
-    int       i_res = ERR_OK;
+    Setting  *settings;
+    int       res = ERR_OK;
 
-    st_settings = setting_new_string (get_setting_name (SETT_LAST_USED_STR),
-                                      s_last_used);
+    settings = setting_new_string (get_setting_name (SETT_LAST_USED_STR),
+                                      last_used);
 
-    i_res = json_settings_check_update_file (st_settings, s_cfg_file);
-    settings_free_all (st_settings);
-    return i_res;
+    res = json_settings_check_update_file (settings, cfg_file);
+    settings_free_all (settings);
+    return res;
 }
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Update last used window manager value in config file. 
  */
 int
-setts_update_last_used_wm (const char *s_cfg_file,
-                           const char *s_last_used_wm)
+setts_update_last_used_wm (const char *cfg_file,
+                           const char *last_used_wm)
 {
-    Setting  *st_settings;
-    int       i_res = ERR_OK;
+    Setting  *settings;
+    int       res = ERR_OK;
 
-    st_settings = setting_new_string (get_setting_name (SETT_LAST_USED_WM),
-                                      s_last_used_wm);
+    settings = setting_new_string (get_setting_name (SETT_LAST_USED_WM),
+                                      last_used_wm);
 
-    i_res = json_settings_check_update_file (st_settings, s_cfg_file);
-    settings_free_all (st_settings);
-    return i_res;
+    res = json_settings_check_update_file (settings, cfg_file);
+    settings_free_all (settings);
+    return res;
 }
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Update window size in config file. 
  */
 int
-setts_update_window_size (const char *s_cfg_file,
-                          const int   i_w,
-                          const int   i_h)
+setts_update_window_size (const char *cfg_file,
+                          const int   w,
+                          const int   h)
 {
-    Setting  *st_settings = nullptr;
-    int       i_res = ERR_OK;
+    Setting  *settings = nullptr;
+    int       res = ERR_OK;
 
-    st_settings = settings_append (st_settings,
+    settings = settings_append (settings,
                      setting_new_int (get_setting_name (SETT_WIN_WIDTH),
-                                      (int64_t) i_w));
-    st_settings = settings_append (st_settings,
+                                      (int64_t) w));
+    settings = settings_append (settings,
                      setting_new_int (get_setting_name (SETT_WIN_HEIGHT),
-                                      (int64_t) i_h));
+                                      (int64_t) h));
 
-    i_res = json_settings_check_update_file (st_settings, s_cfg_file);
-    settings_free_all (st_settings);
-    return i_res;
+    res = json_settings_check_update_file (settings, cfg_file);
+    settings_free_all (settings);
+    return res;
 }
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Update wallpaper from web dialog size in config file.
  */
 int
-setts_update_web_dlg_size (const char *s_cfg_file,
-                           const int   i_w,
-                           const int   i_h)
+setts_update_web_dlg_size (const char *cfg_file,
+                           const int   w,
+                           const int   h)
 {
-    Setting  *st_settings = nullptr;
-    int       i_res = ERR_OK;
+    Setting  *settings = nullptr;
+    int       res = ERR_OK;
 
-    st_settings = settings_append (st_settings,
+    settings = settings_append (settings,
                      setting_new_int (get_setting_name (SETT_WEB_DLG_WIDTH),
-                                      (int64_t) i_w));
-    st_settings = settings_append (st_settings,
+                                      (int64_t) w));
+    settings = settings_append (settings,
                      setting_new_int (get_setting_name (SETT_WEB_DLG_HEIGHT),
-                                      (int64_t) i_h));
+                                      (int64_t) h));
 
-    i_res = json_settings_check_update_file (st_settings, s_cfg_file);
-    settings_free_all (st_settings);
-    return i_res;
+    res = json_settings_check_update_file (settings, cfg_file);
+    settings_free_all (settings);
+    return res;
 }
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Update thumbnail jpg quality.
  */
 int
-setts_update_thumb_quality (const char *s_cfg_file,
-                            const int   i_jpgq)
+setts_update_thumb_quality (const char *cfg_file,
+                            const int   jpgq)
 {
-    Setting  *st_settings;
-    int       i_res = ERR_OK;
+    Setting  *settings;
+    int       res = ERR_OK;
 
-    st_settings = setting_new_int (get_setting_name (SETT_THUMB_QUALITY),
-                                   i_jpgq);
+    settings = setting_new_int (get_setting_name (SETT_THUMB_QUALITY),
+                                   jpgq);
 
-    i_res = json_settings_check_update_file (st_settings, s_cfg_file);
-    settings_free_all (st_settings);
-    return i_res;
+    res = json_settings_check_update_file (settings, cfg_file);
+    settings_free_all (settings);
+    return res;
 }
 /*----------------------------------------------------------------------------*/
 /**
@@ -338,21 +338,21 @@ setts_update_thumb_quality (const char *s_cfg_file,
  *         stored in settings file.
  */
 char *
-setts_check_update (const char    *s_cfg_file,
-                    const Setting *st_settings,
-                    int           *i_err)
+setts_check_update (const char    *cfg_file,
+                    const Setting *settings,
+                    int           *err)
 {
-    return json_settings_check_for_update (st_settings, s_cfg_file, i_err);
+    return json_settings_check_for_update (settings, cfg_file, err);
 }
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Update file with new data.
  */
 int
-setts_update_file (const char *s_cfg_file,
-                   const char *s_buff)
+setts_update_file (const char *cfg_file,
+                   const char *buff)
 {
-    return json_settings_update_file (s_buff, s_cfg_file);
+    return json_settings_update_file (buff, cfg_file);
 }
 /*----------------------------------------------------------------------------*/
 /**
@@ -360,9 +360,9 @@ setts_update_file (const char *s_cfg_file,
  *         if they are.
  */
 int
-setts_check_update_file (const char    *s_cfg_file,
-                         const Setting *st_settings)
+setts_check_update_file (const char    *cfg_file,
+                         const Setting *settings)
 {
-    return json_settings_check_update_file (st_settings, s_cfg_file);
+    return json_settings_check_update_file (settings, cfg_file);
 }
 /*----------------------------------------------------------------------------*/

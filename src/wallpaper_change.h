@@ -34,13 +34,13 @@ void print_now (void);
 /**
  * @brief  Count time to align intervals to next full hour.
  *
- * @param[in]      ui_ch_int  Wallpepr change interval 
- * @param[in,out]  ui_cnt     Number of changes before next align count
+ * @param[in]      change_interval  Wallpaper change interval 
+ * @param[in,out]  time_align_count Number of changes before next align count
  *
  * @return Sleep time in seconds
  */
-uint32_t check_time_align_val (const uint32_t  ui_ch_int,
-                               uint32_t       *ui_cnt);
+uint32_t check_time_align_val (const uint32_t  change_interval,
+                               uint32_t       *time_align_count);
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Check if display is present, exit if it is not.
@@ -50,13 +50,13 @@ uint32_t check_time_align_val (const uint32_t  ui_ch_int,
 void check_display_exit (void);
 /*----------------------------------------------------------------------------*/
 /**
- * @brief  Look for config files in standard locations, if s_file is not null
- *         check s_file path for existence. Exit on fail.
+ * @brief  Look for config files in standard locations, if config_file is not null
+ *         check config_file path for existence. Exit on fail.
  *
- * @param[in,out]  s_file  Pointer to config file string variable
+ * @param[in,out]  config_file  Pointer to config file string variable
  * @return         none
  */
-void check_config_file (char **s_file);
+void check_config_file (char **config_file);
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Loads settings, checks for changes in wallpaper list length and
@@ -68,14 +68,14 @@ void check_config_file (char **s_file);
  * needed and changes wallpaper.
  * Function returns wallpaper change interval to use with main loop.
  *
- * @param[in,out] s_cfg_file  Config file path
- * @param[in,out] rm_rand     RandMem object
- * @param[in,out] i_algntime  For time align option value
+ * @param[in,out] config_file  Config file path
+ * @param[in,out] rand_mem     RandMem object
+ * @param[in,out] time_align_option  For time align option value
  * @return    Wallpaper change interval
  */
-uint32_t chk_setts_ch_wall (char     *s_cfg_file,
-                            RandMem  *rm_rand,
-                            int      *i_algntime);
+uint32_t chk_setts_ch_wall (char     *config_file,
+                            RandMem  *rand_mem,
+                            int      *time_align_option);
 /*----------------------------------------------------------------------------*/
 #endif
 

@@ -61,9 +61,9 @@ typedef enum IconImg : int {
 /**
  * @brief  Get icon from stored data.
  *
- * @param[in]  i_img  Image number
+ * @param[in]  image_no  Image number
  * @return     Pixbuf with image
  */
-GdkPixbuf *get_icon (const IconImg i_img);
+GdkPixbuf *get_icon (const IconImg image_no);
 /*----------------------------------------------------------------------------*/
 #endif

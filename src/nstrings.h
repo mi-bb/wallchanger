@@ -38,36 +38,36 @@ enum e_nstring_type : int {
  *
  * @brief  Structure for storing n strings.
  *
- * @var   NStrings::s_str
+ * @var   NStrings::str
  * @brief Array of strings
  *
- * @var   NStrings::ui_cnt
+ * @var   NStrings::count
  * @brief Number of strings
  */
 typedef struct
 NStrings {
-    char   **s_str;
-    size_t   ui_cnt;
+    char   **str;
+    size_t   count;
 } NStrings;
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Create new NStrings item.
  *
- * @param[in] ui_cnt  Number of strings
- * @param[in] i_type  Type of strings
+ * @param[in] count  Number of strings
+ * @param[in] type   Type of strings
  * @return  New NStrings item.
  */
 [[nodiscard]]
-NStrings * nstrings_new  (const size_t ui_cnt,
-                          const int    i_type);
+NStrings * nstrings_new  (const size_t count,
+                          const int    type);
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Free NStrings item data.
  *
- * @param[out] ns_data  NStrings item to free.
+ * @param[out] nstrings  NStrings item to free.
  * @return     none
  */
-void       nstrings_free (NStrings    *ns_data);
+void       nstrings_free (NStrings    *nstrings);
 /*----------------------------------------------------------------------------*/
 #endif
 

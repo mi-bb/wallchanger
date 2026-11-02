@@ -39,43 +39,43 @@
 /**
  * @brief  Init SearchItem item.
  *
- * @param[out] si_item  SearchItem item
+ * @param[out] item  SearchItem item
  * @return     none
  */
 static void
-search_item_init (SearchItem *si_item)
+search_item_init (SearchItem *item)
 {
-    si_item->s_id             = nullptr;
-    si_item->s_author_name    = nullptr;
-    si_item->s_author_url     = nullptr;
-    si_item->s_file_name      = nullptr;
-    si_item->s_display_name   = nullptr;
-    si_item->s_display_markup = nullptr;
-    si_item->s_page_url       = nullptr;
-    si_item->s_image_url      = nullptr;
-    si_item->s_thumb_url      = nullptr;
-    si_item->s_service_name   = nullptr;
-    si_item->i_width          = 0;
-    si_item->i_height         = 0;
+    item->id             = nullptr;
+    item->author_name    = nullptr;
+    item->author_url     = nullptr;
+    item->file_name      = nullptr;
+    item->display_name   = nullptr;
+    item->display_markup = nullptr;
+    item->page_url       = nullptr;
+    item->image_url      = nullptr;
+    item->thumb_url      = nullptr;
+    item->service_name   = nullptr;
+    item->width          = 0;
+    item->height         = 0;
 }
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Free SearchItem item.
  */
 void
-search_item_free (SearchItem *si_item)
+search_item_free (SearchItem *item)
 {
-    free (si_item->s_id);
-    free (si_item->s_author_name);
-    free (si_item->s_author_url);
-    free (si_item->s_file_name);
-    free (si_item->s_display_name);
-    free (si_item->s_display_markup);
-    free (si_item->s_page_url);
-    free (si_item->s_image_url);
-    free (si_item->s_thumb_url);
-    free (si_item->s_service_name);
-    free (si_item);
+    free (item->id);
+    free (item->author_name);
+    free (item->author_url);
+    free (item->file_name);
+    free (item->display_name);
+    free (item->display_markup);
+    free (item->page_url);
+    free (item->image_url);
+    free (item->thumb_url);
+    free (item->service_name);
+    free (item);
 }
 /*----------------------------------------------------------------------------*/
 /**
@@ -84,167 +84,167 @@ search_item_free (SearchItem *si_item)
 SearchItem *
 search_item_new (void)
 {
-    SearchItem *si_item = nullptr;
+    SearchItem *item = nullptr;
 
-    if ((si_item = malloc (sizeof (SearchItem))) == nullptr)
+    if ((item = malloc (sizeof (SearchItem))) == nullptr)
         err (EXIT_FAILURE, nullptr);
 
-    search_item_init (si_item);
+    search_item_init (item);
 
-    return si_item;
+    return item;
 }
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Set SearchItem's photo id string and int value based on int value.
  */
 void
-search_item_set_id_uint (SearchItem    *si_item,
+search_item_set_id_uint (SearchItem    *item,
                          const uint64_t val)
 {
-    char s_tmp[32];
+    char tmp[32];
 
-    sprintf (s_tmp, "%" PRIu64, val);
-    if (si_item->s_id != nullptr)
-        free (si_item->s_id);
-    si_item->s_id = strdup (s_tmp);
+    sprintf (tmp, "%" PRIu64, val);
+    if (item->id != nullptr)
+        free (item->id);
+    item->id = strdup (tmp);
 }
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Set SearchItem's photo id string and int value based on string value.
  */
 void
-search_item_set_id_string (SearchItem *si_item,
-                           const char *s_val)
+search_item_set_id_string (SearchItem *item,
+                           const char *val)
 {
-    if (si_item->s_id != nullptr)
-        free (si_item->s_id);
-    si_item->s_id = strdup (s_val);
+    if (item->id != nullptr)
+        free (item->id);
+    item->id = strdup (val);
 }
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Set SearchItem's author name.
  */
 void
-search_item_set_author_name (SearchItem *si_item,
-                             const char *s_val)
+search_item_set_author_name (SearchItem *item,
+                             const char *val)
 {
-    if (si_item->s_author_name != nullptr)
-        free (si_item->s_author_name);
-    si_item->s_author_name = strdup (s_val);
+    if (item->author_name != nullptr)
+        free (item->author_name);
+    item->author_name = strdup (val);
 }
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Set SearchItem's photo author url.
  */
 void
-search_item_set_author_url (SearchItem *si_item,
-                            const char *s_val)
+search_item_set_author_url (SearchItem *item,
+                            const char *val)
 {
-    if (si_item->s_author_url != nullptr)
-        free (si_item->s_author_url);
-    si_item->s_author_url = strdup (s_val);
+    if (item->author_url != nullptr)
+        free (item->author_url);
+    item->author_url = strdup (val);
 }
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Set SearchItem's file name.
  */
 void
-search_item_set_file_name (SearchItem *si_item,
-                           const char *s_val)
+search_item_set_file_name (SearchItem *item,
+                           const char *val)
 {
-    if (si_item->s_file_name != nullptr)
-        free (si_item->s_file_name);
-    si_item->s_file_name = strdup (s_val);
+    if (item->file_name != nullptr)
+        free (item->file_name);
+    item->file_name = strdup (val);
 }
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Set SearchItem's display name.
  */
 void
-search_item_set_display_name (SearchItem *si_item,
-                              const char *s_val)
+search_item_set_display_name (SearchItem *item,
+                              const char *val)
 {
-    if (si_item->s_display_name != nullptr)
-        free (si_item->s_display_name);
-    si_item->s_display_name = strdup (s_val);
+    if (item->display_name != nullptr)
+        free (item->display_name);
+    item->display_name = strdup (val);
 }
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Set SearchItem's markup.
  */
 void
-search_item_set_display_markup (SearchItem *si_item,
-                                const char *s_val)
+search_item_set_display_markup (SearchItem *item,
+                                const char *val)
 {
-    if (si_item->s_display_markup != nullptr)
-        free (si_item->s_display_markup);
-    si_item->s_display_markup = strdup (s_val);
+    if (item->display_markup != nullptr)
+        free (item->display_markup);
+    item->display_markup = strdup (val);
 }
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Set SearchItem's page url.
  */
 void
-search_item_set_page_url (SearchItem *si_item,
-                          const char *s_val)
+search_item_set_page_url (SearchItem *item,
+                          const char *val)
 {
-    if (si_item->s_page_url != nullptr)
-        free (si_item->s_page_url);
-    si_item->s_page_url = strdup (s_val);
+    if (item->page_url != nullptr)
+        free (item->page_url);
+    item->page_url = strdup (val);
 }
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Set SearchItem's image url.
  */
 void
-search_item_set_image_url (SearchItem *si_item,
-                           const char *s_val)
+search_item_set_image_url (SearchItem *item,
+                           const char *val)
 {
-    if (si_item->s_image_url != nullptr)
-        free (si_item->s_image_url);
-    si_item->s_image_url = strdup (s_val);
+    if (item->image_url != nullptr)
+        free (item->image_url);
+    item->image_url = strdup (val);
 }
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Set SearchItem's thumb url.
  */
 void
-search_item_set_thumb_url (SearchItem *si_item,
-                           const char *s_val)
+search_item_set_thumb_url (SearchItem *item,
+                           const char *val)
 {
-    if (si_item->s_thumb_url != nullptr)
-        free (si_item->s_thumb_url);
-    si_item->s_thumb_url = strdup (s_val);
+    if (item->thumb_url != nullptr)
+        free (item->thumb_url);
+    item->thumb_url = strdup (val);
 }
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Set SearchItem's service name.
  */
 void
-search_item_set_service_name (SearchItem *si_item,
-                              const char *s_val)
+search_item_set_service_name (SearchItem *item,
+                              const char *val)
 {
-    if (si_item->s_service_name != nullptr)
-        free (si_item->s_service_name);
-    si_item->s_service_name = strdup (s_val);
+    if (item->service_name != nullptr)
+        free (item->service_name);
+    item->service_name = strdup (val);
 }
 /*----------------------------------------------------------------------------*/
 #ifdef DEBUG
 void
-search_item_print (SearchItem *si_item)
+search_item_print (SearchItem *item)
 {
-    printf ("id          : %s\n", si_item->s_id);
-    printf ("author name : %s\n", si_item->s_author_name);
-    printf ("author url  : %s\n", si_item->s_author_url);
-    printf ("file name   : %s\n", si_item->s_file_name);
-    printf ("displ name  : %s\n", si_item->s_display_name);
-    printf ("displ mkup  : %s\n", si_item->s_display_markup);
-    printf ("page url    : %s\n", si_item->s_page_url);
-    printf ("image url   : %s\n", si_item->s_image_url);
-    printf ("thumb url   : %s\n", si_item->s_thumb_url);
-    printf ("serv name   : %s\n", si_item->s_service_name);
-    printf ("width       : %d\n", si_item->i_width);
-    printf ("height      : %d\n", si_item->i_height);
+    printf ("id          : %s\n", item->id);
+    printf ("author name : %s\n", item->author_name);
+    printf ("author url  : %s\n", item->author_url);
+    printf ("file name   : %s\n", item->file_name);
+    printf ("displ name  : %s\n", item->display_name);
+    printf ("displ mkup  : %s\n", item->display_markup);
+    printf ("page url    : %s\n", item->page_url);
+    printf ("image url   : %s\n", item->image_url);
+    printf ("thumb url   : %s\n", item->thumb_url);
+    printf ("serv name   : %s\n", item->service_name);
+    printf ("width       : %d\n", item->width);
+    printf ("height      : %d\n", item->height);
 }
 #endif
 /*----------------------------------------------------------------------------*/

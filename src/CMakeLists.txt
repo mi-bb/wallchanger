@@ -91,10 +91,6 @@ target_compile_definitions(wchangercfg PRIVATE G_DISABLE_DEPRECATED)
 target_link_libraries(wchangercfg PRIVATE PkgConfig::GTK PkgConfig::JSONC PkgConfig::CURL)
 
 foreach(target IN ITEMS wchangerd wchangercfg)
-    # The C23 dialect option probed by the top-level CMakeLists.txt. Passed
-    # explicitly so it reaches compile_commands.json even on a compiler that
-    # already defaults to C23; see the comment on the probe.
-    target_compile_options(${target} PRIVATE ${WC_C23_FLAG})
     # ${PROJECT_BINARY_DIR} holds the generated config.h.
     target_include_directories(${target}
         PRIVATE ${PROJECT_BINARY_DIR} ${CMAKE_CURRENT_SOURCE_DIR})

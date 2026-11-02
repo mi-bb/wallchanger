@@ -2422,24 +2422,24 @@ static const char *check_svg =
  * @brief  Make pixbuf from pure data without specific info, scale it to width
  *         of i_dim.
  *
- * @param[in]  s_data  Input data
- * @param[in]  i_size  Size of input data
- * @param[in]  i_dim   Image with for scaling
+ * @param[in]  data  Input data
+ * @param[in]  size  Size of input data
+ * @param[in]  dim   Image with for scaling
  * @return     Pixbuf with icon
  */
 static GdkPixbuf *
-pbuf_from_data_scaled (const unsigned char *s_data,
-                       gssize               i_size,
-                       int                  i_dim)
+pbuf_from_data_scaled (const unsigned char *data,
+                       gssize               size,
+                       int                  dim)
 {
-    GdkPixbuf    *g_pbuf = nullptr; /* Return pixbuf */
-    GInputStream *stream;        /* Stream for passing data to pixbuf */
+    GdkPixbuf    *result = nullptr; /* Return pixbuf */
+    GInputStream *stream;           /* Stream for passing data to pixbuf */
 
     stream = g_memory_input_stream_new ();
     g_memory_input_stream_add_data (G_MEMORY_INPUT_STREAM (stream),
-                                    s_data, i_size, nullptr);
-    g_pbuf = gdk_pixbuf_new_from_stream_at_scale (stream,
-                                                  i_dim,
+                                    data, size, nullptr);
+    result = gdk_pixbuf_new_from_stream_at_scale (stream,
+                                                  dim,
                                                   -1,
                                                   TRUE,
                                                   nullptr,
@@ -2447,160 +2447,160 @@ pbuf_from_data_scaled (const unsigned char *s_data,
     g_input_stream_close (stream, nullptr, nullptr);
     g_object_unref (stream);
 
-    return g_pbuf;
+    return result;
 }
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Make image from pure data without specific info.
  *
- * @param[in]  s_data  Input data
- * @param[in]  i_size  Size of input data
+ * @param[in]  data  Input data
+ * @param[in]  size  Size of input data
  * @return     Pixbuf with image
  */
 static GdkPixbuf *
-pbuf_from_data (const unsigned char *s_data,
-                gssize               i_size)
+pbuf_from_data (const unsigned char *data,
+                gssize               size)
 {
-    GdkPixbuf    *g_pbuf = nullptr; /* Return pixbuf */
-    GInputStream *stream;        /* Stream for passing data to pixbuf */
+    GdkPixbuf    *result = nullptr; /* Return pixbuf */
+    GInputStream *stream;           /* Stream for passing data to pixbuf */
 
     stream = g_memory_input_stream_new ();
     g_memory_input_stream_add_data (G_MEMORY_INPUT_STREAM (stream),
-                                    s_data, i_size, nullptr);
-    g_pbuf = gdk_pixbuf_new_from_stream (stream, nullptr, nullptr);
+                                    data, size, nullptr);
+    result = gdk_pixbuf_new_from_stream (stream, nullptr, nullptr);
     g_input_stream_close (stream, nullptr, nullptr);
     g_object_unref (stream);
 
-    return g_pbuf;
+    return result;
 }
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Get image from stored data.
  */
 GdkPixbuf *
-get_icon (const IconImg i_img)
+get_icon (const IconImg image_no)
 {
-    GdkPixbuf *gp_pbuf = nullptr; /* Return pixbuf */
+    GdkPixbuf *result = nullptr; /* Return pixbuf */
 
-    switch (i_img) {
+    switch (image_no) {
 
         case W_ICON_ADD:
-            gp_pbuf = pbuf_from_data_scaled ((const unsigned char*) add_svg,
+            result = pbuf_from_data_scaled ((const unsigned char*) add_svg,
                                              (gssize) strlen (add_svg),
                                              16);
             break;
 
         case W_ICON_ADD_DIR:
-            gp_pbuf = pbuf_from_data_scaled ((const unsigned char*) add_dir_svg,
+            result = pbuf_from_data_scaled ((const unsigned char*) add_dir_svg,
                                              (gssize) strlen (add_dir_svg),
                                              16);
             break;
 
         case W_ICON_ADD_WEB:
-            gp_pbuf = pbuf_from_data_scaled ((const unsigned char*) add_web_svg,
+            result = pbuf_from_data_scaled ((const unsigned char*) add_web_svg,
                                              (gssize) strlen (add_web_svg),
                                              16);
             break;
 
         case W_ICON_REMOVE:
-            gp_pbuf = pbuf_from_data_scaled ((const unsigned char*) rem_svg,
+            result = pbuf_from_data_scaled ((const unsigned char*) rem_svg,
                                              (gssize) strlen (rem_svg),
                                              16);
             break;
 
         case W_ICON_UP:
-            gp_pbuf = pbuf_from_data_scaled ((const unsigned char*) icon_up_svg,
+            result = pbuf_from_data_scaled ((const unsigned char*) icon_up_svg,
                                              (gssize) strlen (icon_up_svg),
                                              16);
             break;
 
         case W_ICON_DOWN:
-            gp_pbuf = pbuf_from_data_scaled (
+            result = pbuf_from_data_scaled (
                     (const unsigned char*) icon_down_svg,
                     (gssize) strlen (icon_down_svg),
                     16);
             break;
 
         case W_ICON_FLOPPY:
-            gp_pbuf = pbuf_from_data (icon_floppy, icon_floppy_size);
+            result = pbuf_from_data (icon_floppy, icon_floppy_size);
             break;
 
         case W_ICON_SCREEN:
-            gp_pbuf = pbuf_from_data (icon_screen, icon_screen_size);
+            result = pbuf_from_data (icon_screen, icon_screen_size);
             break;
 
         case W_ICON_DUPL:
-            gp_pbuf = pbuf_from_data_scaled ((const unsigned char*) dupl_svg,
+            result = pbuf_from_data_scaled ((const unsigned char*) dupl_svg,
                                              (gssize) strlen (dupl_svg),
                                              16);
             break;
 
         case W_ICON_INFO:
-            gp_pbuf = pbuf_from_data_scaled ((const unsigned char*) info_svg,
+            result = pbuf_from_data_scaled ((const unsigned char*) info_svg,
                                              (gssize) strlen (info_svg),
                                              20);
             break;
 
         case W_ICON_SETTING:
-            gp_pbuf = pbuf_from_data_scaled ((const unsigned char*) setting_svg,
+            result = pbuf_from_data_scaled ((const unsigned char*) setting_svg,
                                              (gssize) strlen (setting_svg),
                                              20);
             break;
 
         case W_ICON_EXIT:
-            gp_pbuf = pbuf_from_data (icon_exit, icon_exit_size);
+            result = pbuf_from_data (icon_exit, icon_exit_size);
             break;
 
         case W_ICON_ABOUT:
-            gp_pbuf = pbuf_from_data (image_about, image_about_size);
+            result = pbuf_from_data (image_about, image_about_size);
             break;
 
         case W_IMG_SCREEN_1:
-            gp_pbuf = pbuf_from_data (image_screen_1, image_screen_1_size);
+            result = pbuf_from_data (image_screen_1, image_screen_1_size);
             break;
 
         case W_IMG_SCREEN_2:
-            gp_pbuf = pbuf_from_data (image_screen_2, image_screen_2_size);
+            result = pbuf_from_data (image_screen_2, image_screen_2_size);
             break;
 
         case W_IMG_SCREEN_3:
-            gp_pbuf = pbuf_from_data (image_screen_3, image_screen3_size);
+            result = pbuf_from_data (image_screen_3, image_screen3_size);
             break;
 
         case W_ICON_PLAY:
-            gp_pbuf = pbuf_from_data_scaled ((const unsigned char*) play_svg,
+            result = pbuf_from_data_scaled ((const unsigned char*) play_svg,
                                              (gssize) strlen (play_svg),
                                              25);
             break;
 
         case W_ICON_STOP:
-            gp_pbuf = pbuf_from_data_scaled ((const unsigned char*) stop_svg,
+            result = pbuf_from_data_scaled ((const unsigned char*) stop_svg,
                                              (gssize) strlen (stop_svg),
                                              25);
             break;
 
         case W_IMG_CHECK:
-            gp_pbuf = pbuf_from_data_scaled ((const unsigned char*) check_svg,
+            result = pbuf_from_data_scaled ((const unsigned char*) check_svg,
                                              (gssize) strlen (check_svg),
                                              30);
             break;
 
         case W_LOGO_PIXABAY:
-            gp_pbuf = pbuf_from_data_scaled (
+            result = pbuf_from_data_scaled (
                     (const unsigned char*) logo_pixabay_svg,
                     (gssize) strlen (logo_pixabay_svg),
                     100);
             break;
         case W_LOGO_WALLHAVEN:
-            gp_pbuf = pbuf_from_data (logo_wallhaven, logo_wallhaven_size);
+            result = pbuf_from_data (logo_wallhaven, logo_wallhaven_size);
             break;
         case W_LOGO_WALLABYSS:
-            gp_pbuf = pbuf_from_data (logo_wallabyss, logo_wallabyss_size);
+            result = pbuf_from_data (logo_wallabyss, logo_wallabyss_size);
             break;
 
 #ifdef HAVE_FLICKCURL
         case W_LOGO_FLICKR:
-            gp_pbuf = pbuf_from_data_scaled (
+            result = pbuf_from_data_scaled (
                     (const unsigned char*) logo_flickr_svg,
                     (gssize) strlen (logo_flickr_svg),
                     100);
@@ -2613,7 +2613,7 @@ get_icon (const IconImg i_img)
         default:
             break;
     }
-    return gp_pbuf;
+    return result;
 }
 /*----------------------------------------------------------------------------*/
 

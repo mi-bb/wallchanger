@@ -54,7 +54,7 @@ enum e_error_values : int {
  * @return     String with message
  */
 [[nodiscard]]
-const char * err_get_message (const int err) __attribute__ ((const));
+const char *err_get_message (const int err) __attribute__ ((const));
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Get exit error codes for program errors.
@@ -63,6 +63,6 @@ const char * err_get_message (const int err) __attribute__ ((const));
  * @return     Integer with exit error code
  */
 [[nodiscard]]
-int          err_ex_code     (const int err) __attribute__ ((const));
+int err_ex_code (const int err) __attribute__ ((const));
 /*----------------------------------------------------------------------------*/
 #endif

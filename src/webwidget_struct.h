@@ -31,96 +31,96 @@
  *
  * @brief  Structure with wallpaper web search widgets and data.
  *
- * @var   WebWidget::gw_search_box
+ * @var   WebWidget::search_box
  * @brief Widget with search widgets
  *
- * @var   WebWidget::gw_nav_box
+ * @var   WebWidget::nav_box
  * @brief Widget with page navigation widgets
  *
- * @var   WebWidget::gw_combo
+ * @var   WebWidget::combo
  * @brief Combobox with image services
  *
- * @var   WebWidget::gw_entry
+ * @var   WebWidget::entry
  * @brief Search query entry
  *
- * @var   WebWidget::gw_nav_entry
+ * @var   WebWidget::nav_entry
  * @brief Custom page set entry
  *
- * @var   WebWidget::gw_img_view
+ * @var   WebWidget::img_view
  * @brief Image list icon view
  *
- * @var   WebWidget::gw_selected_combo
+ * @var   WebWidget::selected_combo
  * @brief Combobox with images selected for download
  *
- * @var   WebWidget::gw_selected_box
+ * @var   WebWidget::selected_box
  * @brief Widget with select for download widgets
  *
- * @var   WebWidget::gw_count_label
+ * @var   WebWidget::count_label
  * @brief Label for search results information
  *
- * @var   WebWidget::gw_ii_widget
+ * @var   WebWidget::image_info_widget
  * @brief Widget with image info widgets
  *
- * @var   WebWidget::gw_ii_simage
+ * @var   WebWidget::service_image
  * @brief Widget with image service image
  *
- * @var   WebWidget::gw_ii_author_label
+ * @var   WebWidget::author_label
  * @brief Widget with image author name
  *
- * @var   WebWidget::gw_ii_page_link
+ * @var   WebWidget::page_link
  * @brief Widget with link to author's page
  *
- * @var   WebWidget::gw_ii_dim_label
+ * @var   WebWidget::dim_label
  * @brief Widget with image dimensions
  *
- * @var   WebWidget::s_query
+ * @var   WebWidget::query
  * @brief String with search query
  *
- * @var   WebWidget::s_search_opts
+ * @var   WebWidget::search_opts
  * @brief String with search options
  *
- * @var   WebWidget::s_cfg_file
+ * @var   WebWidget::config_file
  * @brief String with config file path
  *
- * @var   WebWidget::s_wallp_dir
+ * @var   WebWidget::wallpaper_dir
  * @brief String with wallpaper directory
  *
- * @var   WebWidget::i_page
+ * @var   WebWidget::page
  * @brief Current page number
  *
- * @var   WebWidget::i_found_cnt
+ * @var   WebWidget::found_cnt
  * @brief Number of found images
  *
- * @var   WebWidget::i_active_service
+ * @var   WebWidget::active_service
  * @brief Id of active seaech service
  *
- * @var   WebWidget::i_thumb_quality
+ * @var   WebWidget::thumb_quality
  * @brief Thumbnail jpg quality
  */
 typedef struct
 WebWidget {
-    GtkWidget *gw_search_box;
-    GtkWidget *gw_nav_box;
-    GtkWidget *gw_combo;
-    GtkWidget *gw_entry;
-    GtkWidget *gw_nav_entry;
-    GtkWidget *gw_img_view;
-    GtkWidget *gw_selected_combo;
-    GtkWidget *gw_selected_box;
-    GtkWidget *gw_count_label;
-    GtkWidget *gw_ii_widget;
-    GtkWidget *gw_ii_simage;
-    GtkWidget *gw_ii_author_label;
-    GtkWidget *gw_ii_page_link;
-    GtkWidget *gw_ii_dim_label;
-    char      *s_query;
-    char      *s_search_opts;
-    char      *s_cfg_file;
-    char      *s_wallp_dir;
-    int        i_page;
-    int        i_found_cnt;
-    int        i_active_service;
-    int        i_thumb_quality;
+    GtkWidget *search_box;
+    GtkWidget *nav_box;
+    GtkWidget *combo;
+    GtkWidget *entry;
+    GtkWidget *nav_entry;
+    GtkWidget *img_view;
+    GtkWidget *selected_combo;
+    GtkWidget *selected_box;
+    GtkWidget *count_label;
+    GtkWidget *image_info_widget;
+    GtkWidget *service_image;
+    GtkWidget *author_label;
+    GtkWidget *page_link;
+    GtkWidget *dim_label;
+    char      *query;
+    char      *search_opts;
+    char      *config_file;
+    char      *wallpaper_dir;
+    int        page;
+    int        found_cnt;
+    int        active_service;
+    int        thumb_quality;
 } WebWidget;
 /*----------------------------------------------------------------------------*/
 #endif

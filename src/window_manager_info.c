@@ -36,20 +36,20 @@
 /**
  * @brief  Update window manager info file with new settings.
  *
- * @param[in]  st_wms  List of Setting items
+ * @param[in]  wms  List of Setting items
  * @return     Updating result
  */
 static int
-wms_update_wm_config (const Setting *st_wms)
+wms_update_wm_config (const Setting *wms)
 {
-    char *s_path = nullptr;   /* Config file path */
-    int   i_res  = ERR_OK; /* Error output */
+    char *path = nullptr;  /* Config file path */
+    int   res  = ERR_OK;   /* Error output */
 
-    s_path = cfg_file_get_wm_info_home_file_path ();
-    i_res  = setts_check_update_file (s_path, st_wms);
-    free (s_path);
+    path = cfg_file_get_wm_info_home_file_path ();
+    res  = setts_check_update_file (path, wms);
+    free (path);
 
-    return i_res;
+    return res;
 }
 /*----------------------------------------------------------------------------*/
 /**
@@ -58,111 +58,111 @@ wms_update_wm_config (const Setting *st_wms)
 char **
 wms_get_xfce_display_list (void)
 {
-    char   **s_ret    = nullptr; /* Null terminated list of displays to return */
-    char   **s_tmp    = nullptr; /* Temp for realloc */
-    char    *s_nl     = nullptr; /* Newline pos char */
-    size_t   ui_alloc = 0;    /* Number of strings to alloc */
-    size_t   i        = 0;    /* i */
-    char     s_buff[1024];    /* Buffer for fgets */
-    FILE    *f_file;          /* File */
+    char   **ret   = nullptr; /* Null terminated list of displays to return */
+    char   **tmp   = nullptr; /* Temp for realloc */
+    char    *nl    = nullptr; /* Newline pos char */
+    size_t   alloc = 0;       /* Number of strings to alloc */
+    size_t   i     = 0;       /* i */
+    char     buff[1024];      /* Buffer for fgets */
+    FILE    *file;            /* File */
 
-    if ((s_ret = malloc ((ui_alloc + 1) * sizeof (char*))) == nullptr)
+    if ((ret = malloc ((alloc + 1) * sizeof (char*))) == nullptr)
         err (EXIT_FAILURE, nullptr);
 
     /* Get output for xfce backdrop query */
-    f_file = popen ("xfconf-query -c xfce4-desktop -p /backdrop -l", "r");
+    file = popen ("xfconf-query -c xfce4-desktop -p /backdrop -l", "r");
 
-    if (f_file == nullptr) {
+    if (file == nullptr) {
         warnx ("Checking displays failed");
     }
     else {
-        while (fgets (s_buff, sizeof (s_buff), f_file) != nullptr) {
-            if (strstr (s_buff, "last-image") != nullptr) {
-                ++ui_alloc;
-                if ((s_nl = strchr (s_buff, '\n')) != nullptr) {
-                    *s_nl = '\0';
+        while (fgets (buff, sizeof (buff), file) != nullptr) {
+            if (strstr (buff, "last-image") != nullptr) {
+                ++alloc;
+                if ((nl = strchr (buff, '\n')) != nullptr) {
+                    *nl = '\0';
                 }
-                s_tmp = realloc (s_ret, (ui_alloc + 1) * sizeof (char*));
-                if (s_tmp == nullptr) {
-                    for (i = 0; i < ui_alloc-1; ++i)
-                        free (s_ret[i]);
-                    free (s_ret);
+                tmp = realloc (ret, (alloc + 1) * sizeof (char*));
+                if (tmp == nullptr) {
+                    for (i = 0; i < alloc-1; ++i)
+                        free (ret[i]);
+                    free (ret);
                     err (EXIT_FAILURE, nullptr);
                 }
-                s_ret = s_tmp;
-                s_ret[ui_alloc-1] = strdup (s_buff);
+                ret = tmp;
+                ret[alloc-1] = strdup (buff);
             }
         }
-        pclose (f_file);
+        pclose (file);
     }
-    s_ret[ui_alloc] = nullptr;
+    ret[alloc] = nullptr;
 
-    return s_ret;
+    return ret;
 }
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Free null terminated list of strings.
  */
 void
-wms_free_xfce_display_list (char **s_list)
+wms_free_xfce_display_list (char **list)
 {
-    char **s_it = nullptr;
+    char **it = nullptr;
 
-    for (s_it = s_list; *s_it != nullptr; ++s_it)
-        free (*s_it);
-    free (s_list);
+    for (it = list; *it != nullptr; ++it)
+        free (*it);
+    free (list);
 }
 /*----------------------------------------------------------------------------*/
 /**
- * @brief  Create Xfce wallpaper set command with display name given in s_disp.
+ * @brief  Create Xfce wallpaper set command with display name given in disp.
  */
 char *
-wms_get_xfce_command (const char *s_disp)
+wms_get_xfce_command (const char *disp)
 {
-    char *s_res = nullptr;
+    char *res = nullptr;
 
-    s_res = str_comb ("xfconf-query --channel xfce4-desktop --property ",
-                      s_disp);
-    str_append (&s_res, " --set \"[F]\"");
+    res = str_comb ("xfconf-query --channel xfce4-desktop --property ",
+                    disp);
+    str_append (&res, " --set \"[F]\"");
 
-    return s_res;
+    return res;
 }
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Get window manager info from user's local config file.
  */
 Setting *
-wms_get_wm_info_home (int *i_err)
+wms_get_wm_info_home (int *err)
 {
-    Setting *st_wms = nullptr; /* Setting list to return */
-    char    *s_path = nullptr; /* Config file path */
+    Setting *wms  = nullptr; /* Setting list to return */
+    char    *path = nullptr; /* Config file path */
 
-    *i_err = 0;
+    *err = 0;
 
-    s_path = cfg_file_get_wm_info_home_file_path ();
-    st_wms = setts_read (s_path, i_err);
+    path = cfg_file_get_wm_info_home_file_path ();
+    wms  = setts_read (path, err);
 
-    free (s_path);
+    free (path);
 
-    return st_wms;
+    return wms;
 }
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Get window manager info from default config file.
  */
 Setting *
-wms_get_wm_info_data (int *i_err)
+wms_get_wm_info_data (int *err)
 {
-    Setting *st_wms = nullptr; /* Setting list to return */
-    char    *s_path = nullptr; /* Config file path */
+    Setting *wms  = nullptr; /* Setting list to return */
+    char    *path = nullptr; /* Config file path */
 
-    *i_err = 0;
+    *err = 0;
 
-    if ((s_path = cfg_file_get_wm_info_data_file_path (i_err)) != nullptr) {
-        st_wms = setts_read (s_path, i_err);
-        free (s_path);
+    if ((path = cfg_file_get_wm_info_data_file_path (err)) != nullptr) {
+        wms = setts_read (path, err);
+        free (path);
     }
-    return st_wms;
+    return wms;
 }
 /*----------------------------------------------------------------------------*/
 /**
@@ -170,114 +170,114 @@ wms_get_wm_info_data (int *i_err)
  *         present, get data from default config file.
  */
 Setting *
-wms_get_wm_info (int *i_err)
+wms_get_wm_info (int *err)
 {
-    Setting *st_settings = nullptr; /* Setting list to return */
+    Setting *settings = nullptr; /* Setting list to return */
 
-    *i_err = 0;
+    *err = 0;
 
     /* Load user's wm info data */
-    st_settings = wms_get_wm_info_home (i_err);
+    settings = wms_get_wm_info_home (err);
 
-    if (*i_err == ERR_OK) {
-        return st_settings;
+    if (*err == ERR_OK) {
+        return settings;
     }
-    settings_free_all (st_settings);
+    settings_free_all (settings);
 
     warnx ("Loading default window manager info.");
 
     /* Load app default wm info data */
-    st_settings = wms_get_wm_info_data (i_err);
+    settings = wms_get_wm_info_data (err);
 
-    return st_settings;
+    return settings;
 }
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Find window manager that is currently in use.
  */
 const Setting *
-wms_get_current_wm (const Setting *st_wmsl)
+wms_get_current_wm (const Setting *wmlist)
 {
-    const char    *s_name  = nullptr; /* Window manager name string */
-    const char    *s_proc  = nullptr; /* Window manager process name string */
-    const Setting *st_proc = nullptr; /* Setting with process name info */
-    const Setting *st_wm   = nullptr; /* Setting with window manager info */
-    const Setting *st_unkn = nullptr; /* Setting for unknown window manager */
+    const char    *name       = nullptr; /* Window manager name string */
+    const char    *proc_name  = nullptr; /* Window manager process name string */
+    const Setting *proc_item  = nullptr; /* Setting with process name info */
+    const Setting *wm         = nullptr; /* Setting with window manager info */
+    const Setting *unknown_wm = nullptr; /* Setting for unknown window manager */
 
 #ifdef DEBUG
     printf ("Finding wm\n");
 #endif
-    st_wm = st_wmsl;
+    wm = wmlist;
 
-    while (st_wm != nullptr) {
-        s_name = setting_get_name (st_wm);
+    while (wm != nullptr) {
+        name = setting_get_name (wm);
 #ifdef DEBUG
-        printf ("%s\n", s_name);
+        printf ("%s\n", name);
 #endif
-        if (strcmp (s_name, "Unknown") == 0) {
-            st_unkn = st_wm;
-            st_wm = st_wm->next;
+        if (strcmp (name, "Unknown") == 0) {
+            unknown_wm = wm;
+            wm = wm->next;
             continue;
         }
-        st_proc = setting_get_child (setting_find_child (st_wm, "Proc"));
-        while (st_proc != nullptr) {
-            s_proc = setting_get_string (st_proc);
+        proc_item = setting_get_child (setting_find_child (wm, "Proc"));
+        while (proc_item != nullptr) {
+            proc_name = setting_get_string (proc_item);
 #ifdef DEBUG
-            printf (" %s", s_proc);
+            printf (" %s", proc_name);
 #endif
-            if (process_exists_b (s_proc)) {
+            if (process_exists_b (proc_name)) {
 #ifdef DEBUG
                 printf (" YES!\n");
 #endif
-                return st_wm;
+                return wm;
             }
-            st_proc = st_proc->next;
+            proc_item = proc_item->next;
         }
 #ifdef DEBUG
         printf (" nope\n");
 #endif
-        st_wm = st_wm->next;
+        wm = wm->next;
     }
-    return st_unkn;
+    return unknown_wm;
 }
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Update wallpaper set command in window manager info config file.
  */
 int
-wms_update_wm_command (const char *s_wm_name,
-                       const char *s_command)
+wms_update_wm_command (const char *wm_name,
+                       const char *command)
 {
-    Setting *st_wms  = nullptr;   /* Window manager info list */
-    Setting *st_item = nullptr;   /* For checking wm name and command */
-    char    *s_path  = nullptr;   /* Config file path */
-    int      i_err   = ERR_OK; /* Error output */
+    Setting *wms  = nullptr;  /* Window manager info list */
+    Setting *item = nullptr;  /* For checking wm name and command */
+    char    *path = nullptr;  /* Config file path */
+    int      err  = ERR_OK;   /* Error output */
 
     /* Load settings from config file */
-    s_path = cfg_file_get_wm_info_home_file_path ();
-    st_wms = setts_read (s_path, &i_err);
-    if (i_err != ERR_OK) {
+    path = cfg_file_get_wm_info_home_file_path ();
+    wms  = setts_read (path, &err);
+    if (err != ERR_OK) {
         /* err (EXIT_FAILURE, NULL); */
-        free (s_path);
-        settings_free_all (st_wms);
-        return i_err;
+        free (path);
+        settings_free_all (wms);
+        return err;
     }
 #ifdef DEBUG
-    printf ("WM : %s\nCM : %s\n", s_wm_name, s_command);
+    printf ("WM : %s\nCM : %s\n", wm_name, command);
 #endif
-    if ((st_item = settings_find (st_wms, s_wm_name)) != nullptr) {
-        if ((st_item = setting_find_child (st_item, "Command")) != nullptr) {
-            setting_set_string (st_item, s_command);
+    if ((item = settings_find (wms, wm_name)) != nullptr) {
+        if ((item = setting_find_child (item, "Command")) != nullptr) {
+            setting_set_string (item, command);
         }
     }
-    i_err = setts_check_update_file (s_path, setting_get_child (st_wms));
-    free (s_path);
+    err = setts_check_update_file (path, setting_get_child (wms));
+    free (path);
 #ifdef DEBUG
-    settings_print (st_wms);
+    settings_print (wms);
 #endif
-    settings_free_all (st_wms);
+    settings_free_all (wms);
 
-    return i_err;
+    return err;
 }
 /*----------------------------------------------------------------------------*/
 /**
@@ -285,109 +285,109 @@ wms_update_wm_command (const char *s_wm_name,
  *         wallpaper change command.
  */
 char *
-wms_get_wallpaper_command (const char *s_cfg_file,
-                           Setting    *st_setts,
-                           Setting    *st_wmlist,
-                           int        *i_err)
+wms_get_wallpaper_command (const char *cfg_file,
+                           Setting    *setts,
+                           Setting    *wmlist,
+                           int        *err)
 {
-    const Setting *st_cu_wm = nullptr; /* Current used wm setting */
-    const char *s_setts_cmd = nullptr; /* Command from settings */
-    const char *s_lu_wm     = nullptr; /* Last used wm string */
-    const char *s_cu_wm     = nullptr; /* Current used wm string */
+    const Setting *current_wm      = nullptr; /* Current used wm setting */
+    const char    *cmd             = nullptr; /* Command from settings */
+    const char    *last_wm_name    = nullptr; /* Last used wm string */
+    const char    *current_wm_name = nullptr; /* Current used wm string */
 
-    *i_err = ERR_OK;
+    *err = ERR_OK;
 
     /* Getting last used window manager name string */
-    s_lu_wm = setting_get_string (
-            settings_find (st_setts, get_setting_name (SETT_LAST_USED_WM)));
+    last_wm_name = setting_get_string (
+            settings_find (setts, get_setting_name (SETT_LAST_USED_WM)));
     /* Getting currently used window manager setting and name string */
-    st_cu_wm = wms_get_current_wm (st_wmlist);
-    s_cu_wm  = setting_get_name (st_cu_wm);
+    current_wm = wms_get_current_wm (wmlist);
+    current_wm_name = setting_get_name (current_wm);
 #ifdef DEBUG
-    printf ("WM last used: %s, current: %s\n", s_lu_wm, s_cu_wm);
+    printf ("WM last used: %s, current: %s\n", last_wm_name, current_wm_name);
 #endif
 
 #ifdef DEBUG
     puts (" Checking wm info");
 #endif
-    if (s_cu_wm == nullptr && s_lu_wm == nullptr) {
+    if (current_wm_name == nullptr && last_wm_name == nullptr) {
 #ifdef DEBUG
         puts ("  All nulls, settinf default");
 #endif
         return strdup (DEFAULT_BG_CMD);
     }
-    else if (s_lu_wm == nullptr || s_cu_wm == nullptr ||
-        strcmp (s_cu_wm, s_lu_wm) != 0) {
+    else if (last_wm_name == nullptr || current_wm_name == nullptr ||
+        strcmp (current_wm_name, last_wm_name) != 0) {
 #ifdef DEBUG
         puts ("  Current wm differs last used");
 #endif
-        s_setts_cmd = setting_get_string (
-                setting_find_child (st_cu_wm, "Command"));
-        *i_err = setts_update_last_used_wm (s_cfg_file, s_cu_wm);
+        cmd = setting_get_string (
+                setting_find_child (current_wm, "Command"));
+        *err = setts_update_last_used_wm (cfg_file, current_wm_name);
     }
     else {
 #ifdef DEBUG
         puts ("  Current wm equals last used");
 #endif
-        s_setts_cmd = setting_get_string (
-                settings_find (st_setts, get_setting_name (SETT_BG_CMD)));
+        cmd = setting_get_string (
+                settings_find (setts, get_setting_name (SETT_BG_CMD)));
     }
-    return strdup (s_setts_cmd != nullptr ? s_setts_cmd : DEFAULT_BG_CMD);
+    return strdup (cmd != nullptr ? cmd : DEFAULT_BG_CMD);
 }
 /*----------------------------------------------------------------------------*/
 /**
- * @brief  Check setting with wm info, remove from st_defaults all wms present
- *         in st_settings list.
+ * @brief  Check setting with wm info, remove from defaults all wms present
+ *         in home list.
  */
 int
 wms_check_for_new_wms (void)
 {
-    Setting *st_home      = nullptr;   /* For user's wm info */
-    Setting *st_nxt       = nullptr;   /* Next setting in list */
-    Setting *st_default   = nullptr;   /* For app default wm info */
-    Setting *st_item_home = nullptr;   /* Temp for saved data item */
-    Setting *st_item_def  = nullptr;   /* Temp for default data item */
-    int      i_err        = ERR_OK; /* Error output */
+    Setting *home      = nullptr;  /* For user's wm info */
+    Setting *next_item = nullptr;  /* Next setting in list */
+    Setting *defaults  = nullptr;  /* For app default wm info */
+    Setting *home_item = nullptr;  /* Temp for saved data item */
+    Setting *def_item  = nullptr;  /* Temp for default data item */
+    int      err       = ERR_OK;   /* Error output */
 
     /* Load user's wm info data */
-    st_home = wms_get_wm_info_home (&i_err);
+    home = wms_get_wm_info_home (&err);
     /* Load app default wm info data */
-    st_default = wms_get_wm_info_data (&i_err);
-    if (i_err != ERR_OK) {
-        settings_free_all (st_default);
-        settings_free_all (st_home);
-        return i_err;
+    defaults = wms_get_wm_info_data (&err);
+    if (err != ERR_OK) {
+        settings_free_all (defaults);
+        settings_free_all (home);
+        return err;
     }
     /* Iterate and remove from app default data wms present in user's info */
-    st_item_home = st_home;
+    home_item = home;
 
-    while (st_item_home != nullptr) {
+    while (home_item != nullptr) {
 
-        st_item_def = st_default;
+        def_item = defaults;
 
-        while (st_item_def != nullptr) {
+        while (def_item != nullptr) {
 
-            st_nxt = st_item_def->next;
+            next_item = def_item->next;
 
-            if (settings_equal_names (st_item_home, st_item_def)) {
+            if (settings_equal_names (home_item, def_item)) {
 #ifdef DEBUG
-                printf ("Removing %s\n", st_item_def->s_name);
+                printf ("Removing %s\n", def_item->s_name);
 #endif
-                st_default = setting_remove (st_item_def);
+                defaults = setting_remove (def_item);
                 break;
             }
-            st_item_def = st_nxt;
+            def_item = next_item;
         }
-        st_item_home = st_item_home->next;
+        home_item = home_item->next;
     }
     /* If there are some window managers left in app default wm data,
      * update user's wm data with this window managers */
-    if (setting_count_children (st_default) > 0) {
-        i_err = wms_update_wm_config (st_default);
+    if (setting_count_children (defaults) > 0) {
+        err = wms_update_wm_config (defaults);
     }
-    settings_free_all (st_default);
-    settings_free_all (st_home);
+    settings_free_all (defaults);
+    settings_free_all (home);
 
-    return i_err;
+    return err;
 }
 /*----------------------------------------------------------------------------*/

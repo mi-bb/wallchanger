@@ -34,26 +34,26 @@
 #include "file_dir_functions.h"
 /*----------------------------------------------------------------------------*/
 /**
- * @fn  static int check_permissions (const char *s_name, const int i_mode)
+ * @fn  static int check_permissions (const char *name, const int mode)
  *
  * @brief  Check permissions, existence of file or directory. 
  *
- * @param[in] s_name  Name of file / directory to check
- * @param[in] i_mode  Permissions to check
+ * @param[in] name  Name of file / directory to check
+ * @param[in] mode  Permissions to check
  * @return    Checking status
  *
- * @fn  static int dir_check_permissions_create (const char *s_dir)
+ * @fn  static int dir_check_permissions_create (const char *dir)
  *
  * @brief  Check directory permissions, existence and create if needed. 
  *
- * @param[in] s_dir  Directory name to check / create
+ * @param[in] dir  Directory name to check / create
  * @return    Checking / creating status
  *
- * @fn  static int file_check_permissions_create (const char *s_file)
+ * @fn  static int file_check_permissions_create (const char *file)
  *
  * @brief  Check file permissions, existence and maybe create it. 
  *
- * @param[in] s_file  Name of file to check / create
+ * @param[in] file  Name of file to check / create
  * @return    Checking / creating status
  *
  * @fn  static char * dir_get_home (void)
@@ -63,14 +63,14 @@
  * @return  String with home path, after use it thould be freed using free
  */
 /*----------------------------------------------------------------------------*/
-static int    check_permissions             (const char *s_name,
-                                             const int   i_mode)
+static int    check_permissions             (const char *name,
+                                             const int   mode)
                                              __attribute__ ((nonnull (1)));
 
-static int    dir_check_permissions_create  (const char *s_dir)
+static int    dir_check_permissions_create  (const char *dir)
                                              __attribute__ ((nonnull (1)));
 
-static int    file_check_permissions_create (const char *s_file)
+static int    file_check_permissions_create (const char *file)
                                              __attribute__ ((nonnull (1)));
 
 static char * dir_get_home                  (void);
@@ -79,14 +79,14 @@ static char * dir_get_home                  (void);
  * @brief  Check permissions, existence of file or directory. 
  */
 static int
-check_permissions (const char *s_name,
-                   const int   i_mode)
+check_permissions (const char *name,
+                   const int   mode)
 {
     /* check if file/dir exists */
-    if (access (s_name, F_OK) == 0) {
+    if (access (name, F_OK) == 0) {
         /* check permissions */
-        if (access (s_name, i_mode) != 0) {
-            /* warn ("%s", s_name); */
+        if (access (name, mode) != 0) {
+            /* warn ("%s", name); */
             return ERR_FILE;
         }
         else {
@@ -95,7 +95,7 @@ check_permissions (const char *s_name,
         }
     }
     else {
-        /* warn ("%s", s_name); */
+        /* warn ("%s", name); */
         /* File/dir does not exist */
         return ERR_FILE_EX;
     }
@@ -106,82 +106,82 @@ check_permissions (const char *s_name,
  * @brief  Check file permissions (read write), existence. 
  */
 int
-file_check_permissions (const char *s_file)
+file_check_permissions (const char *file)
 {
-    return check_permissions (s_file, W_OK | R_OK);
+    return check_permissions (file, W_OK | R_OK);
 }
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Check directory permissions (read, write, execute), existence. 
  */
 int
-dir_check_permissions (const char *s_dir)
+dir_check_permissions (const char *dir)
 {
-    return check_permissions (s_dir, R_OK | X_OK);
+    return check_permissions (dir, R_OK | X_OK);
 }
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Check directory permissions, existence and create if needed. 
  */
 static int
-dir_check_permissions_create (const char *s_dir)
+dir_check_permissions_create (const char *dir)
 {
-    int i_res  = ERR_OK; /* Error info */
-    int i_res2 = 0;      /* Result permissions */
+    int res  = ERR_OK; /* Error info */
+    int res2 = 0;      /* Result permissions */
 
-    i_res = dir_check_permissions (s_dir);
+    res = dir_check_permissions (dir);
 
     /* Everything OK */
-    if (i_res == ERR_OK) {
-        return i_res;
+    if (res == ERR_OK) {
+        return res;
     }
     /* If directory does not exist */
-    else if (i_res == ERR_FILE_EX) {
+    else if (res == ERR_FILE_EX) {
         /* try to create it */
-        i_res2 = mkdir (s_dir, 0700);
+        res2 = mkdir (dir, 0700);
 
-        if (i_res2 == 0) {
+        if (res2 == 0) {
             return ERR_OK;
         }
         else {
-            /* warn ("%s", s_dir); */
+            /* warn ("%s", dir); */
             return ERR_FILE_CR;
         }
     }
-    return i_res;
+    return res;
 }
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Check file permissions, existence and maybe create it. 
  */
 static int
-file_check_permissions_create (const char *s_file)
+file_check_permissions_create (const char *file)
 {
-    FILE *f_file;
-    int   i_res = ERR_OK;
+    FILE *stream;
+    int   res = ERR_OK;
 
-    i_res = file_check_permissions (s_file);
+    res = file_check_permissions (file);
 
     /* Everything OK */
-    if (i_res == ERR_OK) {
-        return i_res;
+    if (res == ERR_OK) {
+        return res;
     }
     /* If file does not exist */
-    else if (i_res == ERR_FILE_EX) {
+    else if (res == ERR_FILE_EX) {
         /* try to create it */
-        f_file = fopen (s_file, "a+");
+        stream = fopen (file, "a+");
 
-        if (f_file == nullptr) {
-            /* warn ("%s", s_file); */
+        if (stream == nullptr) {
+            /* warn ("%s", file); */
             return ERR_FILE_CR;
         }
         else {
             /* file created */
-            fclose (f_file);
+            fclose (stream);
             return ERR_OK;
         }
     }
-    return i_res;
+    return res;
 }
 /*----------------------------------------------------------------------------*/
 /**
@@ -190,14 +190,14 @@ file_check_permissions_create (const char *s_file)
 static char *
 dir_get_home (void)
 {
-    char *s_dir = nullptr;
+    char *dir = nullptr;
     /* Getting user's HOME path */
-    s_dir = getenv ("HOME");
+    dir = getenv ("HOME");
 
-    if (s_dir == nullptr || s_dir[0] == '\0') {
-        s_dir = getpwuid (getuid ())->pw_dir;
+    if (dir == nullptr || dir[0] == '\0') {
+        dir = getpwuid (getuid ())->pw_dir;
     }
-    return strdup (s_dir);
+    return strdup (dir);
 }
 /*----------------------------------------------------------------------------*/
 /**
@@ -206,16 +206,16 @@ dir_get_home (void)
 char *
 dir_get_home_config (void)
 {
-    char *s_dir = nullptr;
+    char *dir = nullptr;
     /* Getting user's config path */
-    s_dir = getenv ("XDG_CONFIG_HOME");
+    dir = getenv ("XDG_CONFIG_HOME");
 
-    if (s_dir == nullptr || s_dir[0] == '\0') {
-        s_dir = dir_get_home ();
-        str_append (&s_dir, "/.config");
-        return s_dir;
+    if (dir == nullptr || dir[0] == '\0') {
+        dir = dir_get_home ();
+        str_append (&dir, "/.config");
+        return dir;
     }
-    return strdup (s_dir);
+    return strdup (dir);
 }
 /*----------------------------------------------------------------------------*/
 /**
@@ -224,13 +224,13 @@ dir_get_home_config (void)
 char *
 dir_get_temp (void)
 {
-    char *s_dir = nullptr;
+    char *dir = nullptr;
     /* Getting temp path */
-    s_dir = getenv ("TMPDIR");
+    dir = getenv ("TMPDIR");
 
-    return (s_dir == nullptr || s_dir[0] == '\0') ?
+    return (dir == nullptr || dir[0] == '\0') ?
         strdup ("/tmp") :
-        strdup (s_dir);
+        strdup (dir);
 }
 /*----------------------------------------------------------------------------*/
 /**
@@ -239,16 +239,16 @@ dir_get_temp (void)
 char *
 dir_get_cache (void)
 {
-    char *s_dir = nullptr;
+    char *dir = nullptr;
     /* Getting cache path */
-    s_dir = getenv ("XDG_CACHE_HOME");
+    dir = getenv ("XDG_CACHE_HOME");
 
-    if (s_dir == nullptr || s_dir[0] == '\0') {
-        s_dir = dir_get_home ();
-        str_append (&s_dir, "/.cache");
-        return s_dir;
+    if (dir == nullptr || dir[0] == '\0') {
+        dir = dir_get_home ();
+        str_append (&dir, "/.cache");
+        return dir;
     }
-    return strdup (s_dir);
+    return strdup (dir);
 }
 /*----------------------------------------------------------------------------*/
 /**
@@ -257,16 +257,16 @@ dir_get_cache (void)
 char *
 dir_get_home_data (void)
 {
-    char *s_dir = nullptr;
+    char *dir = nullptr;
     /* Getting home data path */
-    s_dir = getenv ("XDG_DATA_HOME");
+    dir = getenv ("XDG_DATA_HOME");
 
-    if (s_dir == nullptr || s_dir[0] == '\0') {
-        s_dir = dir_get_home ();
-        str_append (&s_dir, "/.local/share");
-        return s_dir;
+    if (dir == nullptr || dir[0] == '\0') {
+        dir = dir_get_home ();
+        str_append (&dir, "/.local/share");
+        return dir;
     }
-    return strdup (s_dir);
+    return strdup (dir);
 }
 /*----------------------------------------------------------------------------*/
 /**
@@ -275,13 +275,13 @@ dir_get_home_data (void)
 char *
 dir_get_data (void)
 {
-    char *s_dir = nullptr;
+    char *dir = nullptr;
     /* Getting system DATA path */
-    s_dir = getenv ("XDG_DATA_DIRS");
+    dir = getenv ("XDG_DATA_DIRS");
 
-    return (s_dir == nullptr || s_dir[0] == '\0') ?
+    return (dir == nullptr || dir[0] == '\0') ?
         strdup ("/usr/local/share:/usr/share") :
-        strdup (s_dir);
+        strdup (dir);
 }
 /*----------------------------------------------------------------------------*/
 /**
@@ -290,54 +290,54 @@ dir_get_data (void)
 char *
 dir_get_autostart (void)
 {
-    char *s_dir = nullptr;
+    char *dir = nullptr;
 
-    s_dir = dir_get_home_config ();
-    str_append (&s_dir, "/autostart");
+    dir = dir_get_home_config ();
+    str_append (&dir, "/autostart");
 
-    return s_dir;
+    return dir;
 }
 /*----------------------------------------------------------------------------*/
 int
-dir_create_with_subdirs (const char *s_dn)
+dir_create_with_subdirs (const char *dir_path)
 {
-    char  *s_new  = nullptr; /* New string with dirs */
-    char  *s_sls  = nullptr; /* / position */
-    char  *s_dup  = nullptr; /* Duplicate of s_fn */
-    char  *s_tmp  = nullptr; /* Pointer to duplicate of s_fn */
-    int    i_err  = 0;    /* Error output */
-    size_t ui_len = 0;    /* Name length */
+    char  *new_path = nullptr; /* New string with dirs */
+    char  *slash    = nullptr; /* / position */
+    char  *dup      = nullptr; /* Duplicate of dir_path */
+    char  *tmp      = nullptr; /* Pointer to duplicate of dir_path */
+    int    err      = 0;       /* Error output */
+    size_t len      = 0;       /* Name length */
 
-    s_dup = strdup (s_dn);
-    s_tmp = s_dup;
+    dup = strdup (dir_path);
+    tmp = dup;
 
     /* Skip first / in file path */
-    if (*s_tmp == '/')
-        ++s_tmp;
+    if (*tmp == '/')
+        ++tmp;
 
     /* Find every / in path string */
-    while ((s_sls = strchr (s_tmp, '/')) != nullptr) {
+    while ((slash = strchr (tmp, '/')) != nullptr) {
         /* Replace found / with null */
-        *s_sls = '\0';
-        str_append (&s_new, "/");
+        *slash = '\0';
+        str_append (&new_path, "/");
         /* Append directory to new string */
-        str_append (&s_new, s_tmp);
+        str_append (&new_path, tmp);
         /* Check path permissions and try to create it if necessary */
-        if ((i_err = dir_check_permissions_create (s_new)) != ERR_OK) {
-            free (s_dup);
-            free (s_new);
-            warn ("%s", s_new);
-            return i_err;
+        if ((err = dir_check_permissions_create (new_path)) != ERR_OK) {
+            free (dup);
+            free (new_path);
+            warn ("%s", new_path);
+            return err;
         }
-        ui_len = (size_t) (s_sls - s_tmp);
-        /* *s_sls = '/'; */
-        s_tmp += ui_len + 1;
+        len = (size_t) (slash - tmp);
+        /* *slash = '/'; */
+        tmp += len + 1;
     }
-    free (s_dup);
-    free (s_new);
-    if ((i_err = dir_check_permissions_create (s_dn)) != ERR_OK) {
-        warn ("%s", s_dn);
-        return i_err;
+    free (dup);
+    free (new_path);
+    if ((err = dir_check_permissions_create (dir_path)) != ERR_OK) {
+        warn ("%s", dir_path);
+        return err;
     }
     return ERR_OK;
 }
@@ -346,48 +346,47 @@ dir_create_with_subdirs (const char *s_dn)
  * @brief  Create file with subfolders if it doesn't exist.
  */
 int
-file_create_with_subdirs (const char *s_fn)
+file_create_with_subdirs (const char *file_path)
 {
-    char  *s_new  = nullptr; /* New string with dirs */
-    char  *s_sls  = nullptr; /* / position */
-    char  *s_dup  = nullptr; /* Duplicate of s_fn */
-    char  *s_tmp  = nullptr; /* Pointer to duplicate of s_fn */
-    int    i_err  = 0;    /* Error output */
-    size_t ui_len = 0;    /* Name length */
+    char  *new_path = nullptr; /* New string with dirs */
+    char  *slash    = nullptr; /* / position */
+    char  *dup      = nullptr; /* Duplicate of file_path */
+    char  *tmp      = nullptr; /* Pointer to duplicate of file_path */
+    int    err      = 0;       /* Error output */
+    size_t len      = 0;       /* Name length */
 
-    s_dup = strdup (s_fn);
-    s_tmp = s_dup;
+    dup = strdup (file_path);
+    tmp = dup;
 
     /* Skip first / in file path */
-    if (*s_tmp == '/')
-        ++s_tmp;
+    if (*tmp == '/')
+        ++tmp;
 
     /* Find every / in path string */
-    while ((s_sls = strchr (s_tmp, '/')) != nullptr) {
+    while ((slash = strchr (tmp, '/')) != nullptr) {
         /* Replace found / with null */
-        *s_sls = '\0';
-        str_append (&s_new, "/");
+        *slash = '\0';
+        str_append (&new_path, "/");
         /* Append directory to new string */
-        str_append (&s_new, s_tmp);
+        str_append (&new_path, tmp);
         /* Check path permissions and try to create it if necessary */
-        if ((i_err = dir_check_permissions_create (s_new)) != ERR_OK) {
-            free (s_dup);
-            free (s_new);
-            warn ("%s", s_new);
-            return i_err;
+        if ((err = dir_check_permissions_create (new_path)) != ERR_OK) {
+            free (dup);
+            free (new_path);
+            warn ("%s", new_path);
+            return err;
         }
-        ui_len = (size_t) (s_sls - s_tmp);
-        /* *s_sls = '/'; */
-        s_tmp += ui_len + 1;
+        len = (size_t) (slash - tmp);
+        /* *slash = '/'; */
+        tmp += len + 1;
     }
-    free (s_dup);
-    free (s_new);
+    free (dup);
+    free (new_path);
 
-    if ((i_err = file_check_permissions_create (s_fn)) != ERR_OK) {
-        warn ("%s", s_fn);
-        return i_err;
+    if ((err = file_check_permissions_create (file_path)) != ERR_OK) {
+        warn ("%s", file_path);
+        return err;
     }
     return ERR_OK;
 }
 /*----------------------------------------------------------------------------*/
-

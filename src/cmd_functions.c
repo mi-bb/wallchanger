@@ -30,16 +30,16 @@
 #include "cmd_functions.h"
 /*----------------------------------------------------------------------------*/
 /**
- * @brief  Parse command line options, set i_opt and s_cfgpath.
+ * @brief  Parse command line options, set options and config_path.
  */
 void
 cmd_parse (int    argc,
            char **argv,
-           int   *i_opt,
-           char **s_cfgpath)
+           int   *options,
+           char **config_path)
 {
     struct gengetopt_args_info args_info;
-    *i_opt = 0;
+    *options = 0;
 
     if (cmdline_parser (argc, argv, &args_info) != 0)
         exit (EX_USAGE);
@@ -52,25 +52,25 @@ cmd_parse (int    argc,
         errx (EX_USAGE, "Stop and restart options can't be mixed together");
 
     if (args_info.start_given) {
-        *i_opt |= CMD_OPT_START;
+        *options |= CMD_OPT_START;
     }
     if (args_info.stop_given) {
-        *i_opt |= CMD_OPT_STOP;
+        *options |= CMD_OPT_STOP;
     }
     if (args_info.restart_given) {
-        *i_opt |= CMD_OPT_RESTART;
+        *options |= CMD_OPT_RESTART;
     }
     if (args_info.status_given) {
-        *i_opt |= CMD_OPT_STATUS;
+        *options |= CMD_OPT_STATUS;
     }
     if (args_info.once_given) {
-        *i_opt |= CMD_OPT_ONCE;
+        *options |= CMD_OPT_ONCE;
     }
     if (args_info.config_given &&
             !args_info.status_given && !args_info.stop_given) {
-        *i_opt |= CMD_OPT_CONFIG;
+        *options |= CMD_OPT_CONFIG;
         printf ("Config path %s\n", args_info.config_arg);
-        *s_cfgpath = strdup (args_info.config_arg);
+        *config_path = strdup (args_info.config_arg);
     }
     cmdline_parser_free (&args_info);
 }
