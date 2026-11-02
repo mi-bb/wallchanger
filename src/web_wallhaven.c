@@ -105,7 +105,7 @@ wallhaven_process_item_set_names (SearchItem *item)
     //char *base_name = NULL; /* Base name for processing */
     char *file_name = nullptr; /* Name for file to save */
     char *disp_name = nullptr; /* Name to display on list */
-    char *ext       = nullptr; /* Pointer to extension */
+    char *ext = nullptr;       /* Pointer to extension */
     const char *format = "%s\n<span font_size=\"small\">[%dx%d]</span>";
 
     if (item->id == nullptr)
@@ -577,18 +577,18 @@ get_search_opts (GtkWidget **widgets)
 char *
 wallhaven_search_opts_dialog (WebWidget *widget)
 {
-    GtkWidget     *widgets[GW_CNT]; /* Array with widgets */
-    GtkWidget     *dialog;          /* Pixabay settings dialog */
-    GtkWidget     *content_box;     /* Dialog's box */
-    GtkWidget     *box;             /* Box for widgets */
-    GtkWidget     *hbox;            /* Horizontal box for widgets */
-    GtkWidget     *menu;
-    GtkWidget     *menu_button;
-    Setting       *settings = nullptr; /* Settings */
-    char          *result   = nullptr; /* Result string */
-    int            err      = 0;    /* Error output */
-    int            res      = 0;    /* Dialog result */
-    int            i        = 0;
+    GtkWidget *widgets[GW_CNT]; /* Array with widgets */
+    GtkWidget *dialog;          /* Pixabay settings dialog */
+    GtkWidget *content_box;     /* Dialog's box */
+    GtkWidget *box;             /* Box for widgets */
+    GtkWidget *hbox;            /* Horizontal box for widgets */
+    GtkWidget *menu;
+    GtkWidget *menu_button;
+    Setting   *settings = nullptr; /* Settings */
+    char      *result   = nullptr; /* Result string */
+    int        err      = 0;    /* Error output */
+    int        res      = 0;    /* Dialog result */
+    int        i        = 0;
 
     GtkDialogFlags flags = GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT;
 

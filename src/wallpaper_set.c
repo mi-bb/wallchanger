@@ -100,10 +100,10 @@ static const char *
 wallpaper_set_random (Setting *settings,
                       RandMem *rand)
 {
-    const char *file   = nullptr; /* Wallpaper file name */
-    Setting    *walls  = nullptr; /* Setting with wallpaper */
-    Setting    *sett   = nullptr; /* For concrete setting */
-    size_t      pos    = 0;       /* Random wallpaper position */
+    const char *file  = nullptr; /* Wallpaper file name */
+    Setting    *walls = nullptr; /* Setting with wallpaper */
+    Setting    *sett  = nullptr; /* For concrete setting */
+    size_t      pos   = 0;       /* Random wallpaper position */
 
     /* Get wallaper list setting */
     walls = settings_find (settings, get_setting_name (SETT_WALL_ARRAY));

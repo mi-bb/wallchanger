@@ -34,8 +34,8 @@
  * @param[in]     strings N strings with API keys
  * @return        none
  */
-void   pixabay_search              (WebWidget      *widget,
-                                    const NStrings *strings);
+void pixabay_search (WebWidget      *widget,
+                     const NStrings *strings);
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Dialog with Pixabay service settings.
@@ -43,7 +43,7 @@ void   pixabay_search              (WebWidget      *widget,
  * @param[in,out] strings  N strings to get and write API keys
  * @return        Dialog response
  */
-int    pixabay_settings_dialog     (NStrings       *strings);
+int pixabay_settings_dialog (NStrings *strings);
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Options for image search dialog.
@@ -52,7 +52,7 @@ int    pixabay_settings_dialog     (NStrings       *strings);
  * @return        String with image options. After use it should be freed
  *                using free.
  */
-char * pixabay_search_opts_dialog  (WebWidget      *widget);
+char *pixabay_search_opts_dialog (WebWidget *widget);
 /*----------------------------------------------------------------------------*/
 #endif
 

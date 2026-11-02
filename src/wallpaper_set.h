@@ -34,8 +34,8 @@
  * @brief  Wallpaper change during program work.
  *
  * @param[in,out] settings  Program settings
- * @param[in,out] rand       Raddom memory structure
- * @param[in]     cfg_file   Config file path
+ * @param[in,out] rand      Random memory structure
+ * @param[in]     cfg_file  Config file path
  * @return        Wallpaper change status
  *
  * @fn  int wallpaper_set_startup_set (Setting    *settings,
@@ -45,8 +45,8 @@
  * @brief  Setting wallpaper image at program startup.
  *
  * @param[in,out] settings  Program settings
- * @param[in,out] rand       Raddom memory structure
- * @param[in]     cfg_file   Config file path
+ * @param[in,out] rand      Random memory structure
+ * @param[in]     cfg_file  Config file path
  * @return        Wallpaper set status
  *
  * @fn  void wallpaper_test_set (const char *cmd,
@@ -54,8 +54,8 @@
  *
  * @brief  Setting wallpaper with configuration dialog.
  *
- * @param[in]  cmd    Wallpaper set command
- * @param[in]  file   Wallpaper file path
+ * @param[in]  cmd   Wallpaper set command
+ * @param[in]  file  Wallpaper file path
  * @return     none
  *
  * @fn  int wallpaper_dialog_set (const char *cmd,

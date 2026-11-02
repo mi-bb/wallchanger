@@ -114,7 +114,7 @@ static const char *orientation[] = {"all", "horizontal", "vertical", nullptr};
 static char *
 pixabay_extract_base_name (const char *url)
 {
-    char *result  = nullptr; /* Result string */
+    char *result = nullptr; /* Result string */
     char *repl = nullptr; /* For replacing text */
     char *dup  = nullptr; /* Url duplicate */
 
@@ -145,8 +145,8 @@ pixabay_extract_base_name (const char *url)
 static char *
 pixabay_create_display_name (const char *bname)
 {
-    char  *result  = nullptr; /* Result string */
-    char  *repl = nullptr; /* For replacing text */
+    char *result = nullptr; /* Result string */
+    char *repl = nullptr; /* For replacing text */
 
     if (str_is_empty (bname))
         return strdup ("");
@@ -175,7 +175,7 @@ pixabay_process_item_set_names (SearchItem *item)
     char *base_name = nullptr; /* Base name for processing */
     char *file_name = nullptr; /* Name for file to save */
     char *disp_name = nullptr; /* Name to display on list */
-    char *ext       = nullptr; /* Pointer to extension */
+    char *ext = nullptr;       /* Pointer to extension */
     const char *format = "%s\n<span font_size=\"small\">[%dx%d]</span>";
 
     if (item->page_url == nullptr)

@@ -69,7 +69,7 @@ enum e_img_list_columns : int {
  * @param[in] site  Site id
  * @return    String with webwidget name
  */
-const char * ww_name                (const int site) __attribute__ ((const));
+const char *ww_name (const int site) __attribute__ ((const));
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Get webwidget options name.
@@ -77,7 +77,7 @@ const char * ww_name                (const int site) __attribute__ ((const));
  * @param[in] site  Site id
  * @return    String with webwidget name
  */
-const char * ww_opts                (const int site) __attribute__ ((const));
+const char *ww_opts (const int site) __attribute__ ((const));
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Get webwidget logo image id based on webwidget if.
@@ -85,7 +85,7 @@ const char * ww_opts                (const int site) __attribute__ ((const));
  * @param[in] site  Site id
  * @return    Logo id
  */
-int          ww_logo_id             (const int site) __attribute__ ((const));
+int ww_logo_id (const int site) __attribute__ ((const));
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Get API key data of given service from settings.
@@ -94,8 +94,8 @@ int          ww_logo_id             (const int site) __attribute__ ((const));
  * @param[in] site      Image service id
  * @return    NStrings item with API key data
  */
-NStrings   * ww_get_api_key_data    (Setting   *settings,
-                                     const int  site);
+NStrings *ww_get_api_key_data (Setting   *settings,
+                               const int  site);
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Update API key data in settings.
@@ -105,9 +105,9 @@ NStrings   * ww_get_api_key_data    (Setting   *settings,
  * @param[in] site      Image service id
  * @return    Process result
  */
-int          ww_update_api_key_data (const char *cfg_file,
-                                     NStrings   *key_data,
-                                     const int   site);
+int ww_update_api_key_data (const char *cfg_file,
+                            NStrings   *key_data,
+                            const int   site);
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Check if string str is null or empty and show message msg
@@ -117,8 +117,8 @@ int          ww_update_api_key_data (const char *cfg_file,
  * @param[in]  msg  Message to show
  * @return     1 if string is empty, 0 if it is not.
  */
-int    str_is_empty_warn          (const char *str,
-                                   const char *msg);
+int str_is_empty_warn (const char *str,
+                       const char *msg);
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Check if string str is made of alphanumeric chars and spaces
@@ -129,8 +129,8 @@ int    str_is_empty_warn          (const char *str,
  * @return     1 if string is made of alphanumeric chars and spaces,
  *             0 if it is not.
  */
-int    str_is_alnum_or_space_warn (const char *str,
-                                   const char *msg);
+int str_is_alnum_or_space_warn (const char *str,
+                                const char *msg);
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Check if string str is made of unicode chars
@@ -140,8 +140,8 @@ int    str_is_alnum_or_space_warn (const char *str,
  * @param[in]  msg  Message to show
  * @return     1 if string is made of unicode chars, 0 if it is not.
  */
-int    check_unicode_warn         (const char *str,
-                                   const char *msg);
+int check_unicode_warn (const char *str,
+                        const char *msg);
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Check from string str all non alphanumeric chars and non spaces.
@@ -149,7 +149,7 @@ int    check_unicode_warn         (const char *str,
  * @param[in]  str  String to process
  * @return     none
  */
-void   remove_non_alpha_space     (char *str);
+void remove_non_alpha_space (char *str);
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Get string value from Combobox's active col column.
@@ -158,8 +158,8 @@ void   remove_non_alpha_space     (char *str);
  * @param[in] col    Column with data
  * @return    String value
  */
-char * combo_get_active_str       (GtkWidget  *combo,
-                                   const int   col);
+char *combo_get_active_str (GtkWidget  *combo,
+                            const int   col);
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Add image based on item data to icon view.
@@ -171,11 +171,11 @@ char * combo_get_active_str       (GtkWidget  *combo,
  * @param[in]  thumb_quality  Thumbnail jpg quality
  * @return     none
  */
-void   add_search_item_to_img_view (GtkWidget        *iconview,
-                                    const SearchItem *item,
-                                    const char       *wallpaper_dir,
-                                    const char       *service_name,
-                                    const int         thumb_quality);
+void add_search_item_to_img_view (GtkWidget        *iconview,
+                                  const SearchItem *item,
+                                  const char       *wallpaper_dir,
+                                  const char       *service_name,
+                                  const int         thumb_quality);
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Check for search query cached info, get info and add items if info
@@ -185,8 +185,8 @@ void   add_search_item_to_img_view (GtkWidget        *iconview,
  * @param[in]     service_name  Name of search service
  * @return        1 if cached query was found, 0 if not
  */
-int    check_for_cached_query     (WebWidget        *widget,
-                                   const char       *service_name);
+int check_for_cached_query (WebWidget  *widget,
+                            const char *service_name);
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Converts image search options in Setting format to string for url.
@@ -195,6 +195,6 @@ int    check_for_cached_query     (WebWidget        *widget,
  * @return    String with image options. After use it should be freed
  *            using free.
  */
-char * search_opts_to_str         (const Setting    *settings);
+char *search_opts_to_str (const Setting *settings);
 /*----------------------------------------------------------------------------*/
 #endif

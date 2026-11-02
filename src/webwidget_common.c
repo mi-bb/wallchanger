@@ -389,8 +389,8 @@ check_for_cached_query (WebWidget  *widget,
                         const char *service_name)
 {
     CacheQuery *cached_query = nullptr; /* For checking cache availability */
-    int         err          = 0;       /* Error output */
-    int         i            = 0;       /* i */
+    int err = 0; /* Error output */
+    int i   = 0;
 
     cached_query = cache_query_check_query (service_name,
                                             widget->query,

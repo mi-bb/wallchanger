@@ -35,8 +35,8 @@
  * @param[in]     strings N strings with API keys
  * @return        none
  */
-void   wallhaven_search           (WebWidget      *widget,
-                                   const NStrings *strings);
+void wallhaven_search (WebWidget      *widget,
+                       const NStrings *strings);
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Dialog with Wallhaven service settings.
@@ -44,7 +44,7 @@ void   wallhaven_search           (WebWidget      *widget,
  * @param[in,out] strings  N strings to get and write API keys
  * @return        Dialog response
  */
-int    wallhaven_settings_dialog    (NStrings     *strings);
+int wallhaven_settings_dialog (NStrings *strings);
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Options for image search dialog.
@@ -53,7 +53,7 @@ int    wallhaven_settings_dialog    (NStrings     *strings);
  * @return        String with image options. After use it should be freed
  *                using free.
  */
-char * wallhaven_search_opts_dialog (WebWidget    *widget);
+char *wallhaven_search_opts_dialog (WebWidget *widget);
 /*----------------------------------------------------------------------------*/
 #endif 
 
