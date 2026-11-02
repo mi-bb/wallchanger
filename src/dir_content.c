@@ -220,7 +220,7 @@ get_dir_content_filter_images (const char *dir)
  * @brief  Enumerate folder content and get size of files.
  *
  * @param[in]  dir       Gfile of directory to scan
- * @param[in]  recursive Scan also subfilders
+ * @param[in]  recursive Scan also subfolders
  * @param[out] size      Size output
  * @return     none
  */

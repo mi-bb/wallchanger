@@ -71,12 +71,12 @@ url_write (void   *data,
            size_t  nmemb,
            void   *userp)
 {
-    UrlData *url_data     = nullptr;
-    char    *buff   = nullptr;
-    size_t   bytes  = 0;
+    UrlData *url_data = nullptr;
+    char    *buff     = nullptr;
+    size_t   bytes    = 0;
  
     bytes = size * nmemb;
-    url_data    = (UrlData *) userp;
+    url_data = (UrlData *) userp;
     if ((buff = realloc (url_data->buffer, url_data->size + bytes + 1)) == nullptr)
         err (EXIT_FAILURE, nullptr);
  

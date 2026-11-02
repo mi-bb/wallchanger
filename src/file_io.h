@@ -47,14 +47,14 @@
  * @return     Writing status
  */
 /*----------------------------------------------------------------------------*/
-char * read_file_data      (const char    *fname,
-                            int           *err,
-                            uint_fast32_t *hash_out)
-                            __attribute__ ((nonnull (1)));
+char *read_file_data (const char    *fname,
+                      int           *err,
+                      uint_fast32_t *hash_out)
+                      __attribute__ ((nonnull (1)));
 
-int    save_file_data      (const char    *fname,
-                            const char    *buff)
-                            __attribute__ ((nonnull (1,2)));
+int   save_file_data (const char    *fname,
+                      const char    *buff)
+                      __attribute__ ((nonnull (1,2)));
 /*----------------------------------------------------------------------------*/
 #endif
 

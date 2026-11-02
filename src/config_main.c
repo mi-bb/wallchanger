@@ -63,10 +63,10 @@
  * @return        none
  */
 /*----------------------------------------------------------------------------*/
-static uint32_t    get_wallpaper_ch_interval   (const DialogData  *data);
+static uint32_t get_wallpaper_ch_interval (const DialogData  *data);
 
-static void        set_wallpaper_ch_interval   (const DialogData  *data,
-                                                const uint32_t     val);
+static void     set_wallpaper_ch_interval (const DialogData  *data,
+                                           const uint32_t     val);
 /*----------------------------------------------------------------------------*/
 /**
  * @fn  static Setting * widgets_get_settings (const DialogData  *data)
@@ -90,12 +90,12 @@ static void        set_wallpaper_ch_interval   (const DialogData  *data,
  * @return        none
  */
 /*----------------------------------------------------------------------------*/
-static Setting   * widgets_get_settings        (const DialogData  *data);
+static Setting *widgets_get_settings (const DialogData  *data);
 
-static void        widgets_set_settings        (const DialogData  *data,
-                                                Setting           *settings,
-                                                Setting           *wmlist,
-                                                int               *err);
+static void     widgets_set_settings (const DialogData  *data,
+                                      Setting           *settings,
+                                      Setting           *wmlist,
+                                      int               *err);
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Sets statusbar info about actual config file.
@@ -103,7 +103,7 @@ static void        widgets_set_settings        (const DialogData  *data,
  * @param[in,out] data  DialogData object with settings and widget data
  * @return        none
  */
-static void        statusbar_push_config_info  (const DialogData *data);
+static void statusbar_push_config_info (const DialogData *data);
 /*----------------------------------------------------------------------------*/
 /**
  * @fn  static gboolean event_on_delete (GtkWidget        *window,
@@ -144,19 +144,19 @@ static void        statusbar_push_config_info  (const DialogData *data);
  * @return        none
  */
 /*----------------------------------------------------------------------------*/
-static gboolean    event_on_delete             (GtkWidget         *window,
-                                                GdkEvent          *event,
-                                                const DialogData  *data);
+static gboolean event_on_delete (GtkWidget        *window,
+                                 GdkEvent         *event,
+                                 const DialogData *data);
 
-static void        shutdown                    (GtkApplication    *application,
-                                                DialogData        *data);
+static void     shutdown        (GtkApplication   *application,
+                                 DialogData       *data);
 
-static gint        local_options               (GApplication      *application,
-                                                GVariantDict      *options,
-                                                DialogData        *data);
+static gint     local_options   (GApplication     *application,
+                                 GVariantDict     *options,
+                                 DialogData       *data);
 
-static void        activate                    (GtkApplication    *app,
-                                                DialogData        *data);
+static void     activate        (GtkApplication   *app,
+                                 DialogData       *data);
 /*----------------------------------------------------------------------------*/
 /**
  * @fn  static void event_add_img_pressed (const DialogData *data)
@@ -227,27 +227,27 @@ static void        activate                    (GtkApplication    *app,
  * @return    none
  */
 /*----------------------------------------------------------------------------*/
-static void        event_add_img_pressed       (const DialogData  *data);
+static void     event_add_img_pressed       (const DialogData  *data);
 
-static void        event_add_img_dir_pressed   (const DialogData  *data);
+static void     event_add_img_dir_pressed   (const DialogData  *data);
 
-static void        event_add_img_web_pressed   (const DialogData  *data);
+static void     event_add_img_web_pressed   (const DialogData  *data);
 
-static void        event_set_wallpaper_pressed (const DialogData  *data);
+static void     event_set_wallpaper_pressed (const DialogData  *data);
 
-static void        event_save_settings_pressed (const DialogData  *data);
+static void     event_save_settings_pressed (const DialogData  *data);
 
-static void        event_img_list_activated    (GtkTreeView       *tree_view,
-                                                GtkTreePath       *path,
-                                                GtkTreeViewColumn *column,
-                                                GtkWidget         *img_prev);
+static void     event_img_list_activated    (GtkTreeView       *tree_view,
+                                             GtkTreePath       *path,
+                                             GtkTreeViewColumn *column,
+                                             GtkWidget         *img_prev);
 
-static gboolean    event_treeview_key_press    (GtkWidget         *widget,
-                                                GdkEventKey       *event,
-                                                const DialogData  *data);
+static gboolean event_treeview_key_press    (GtkWidget         *widget,
+                                             GdkEventKey       *event,
+                                             const DialogData  *data);
 
-static void        event_autostart_toggled     (GtkToggleButton   *togglebutton,
-                                                gpointer           user_data);
+static void     event_autostart_toggled     (GtkToggleButton   *togglebutton,
+                                             gpointer           user_data);
 /*----------------------------------------------------------------------------*/
 /**
  * @fn  static void event_interval_changed (GtkSpinButton    *spin_button,
@@ -288,16 +288,16 @@ static void        event_autostart_toggled     (GtkToggleButton   *togglebutton,
  * @return        none
  */
 /*----------------------------------------------------------------------------*/
-static void        event_interval_changed       (GtkSpinButton     *spin_button,
-                                                 const DialogData  *data);
+static void event_interval_changed       (GtkSpinButton    *spin_button,
+                                          const DialogData *data);
 
-static void        event_command_button_pressed (const DialogData  *data);
+static void event_command_button_pressed (const DialogData *data);
 
-static void        event_start_daemon_pressed   (DialogData        *data);
+static void event_start_daemon_pressed   (DialogData       *data);
 
-static void        event_stop_daemon_pressed    (DialogData        *data);
+static void event_stop_daemon_pressed    (DialogData       *data);
 
-static void        event_other_settings_pressed (DialogData        *data);
+static void event_other_settings_pressed (DialogData       *data);
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Monitors running of wchangerd daemon.
@@ -305,7 +305,7 @@ static void        event_other_settings_pressed (DialogData        *data);
  * @param[out]  user_data  DialogData object with widgets and settings info
  * @return      Remove source or not
  */
-static gboolean    daemon_monitor              (gpointer user_data);
+static gboolean daemon_monitor (gpointer user_data);
 /*----------------------------------------------------------------------------*/
 /**
  * @fn static GtkWidget * create_title_widget (void)
@@ -346,17 +346,17 @@ static gboolean    daemon_monitor              (gpointer user_data);
  * @return        none
  */
 /*----------------------------------------------------------------------------*/
-static GtkWidget * create_title_widget         (void);
+static GtkWidget *create_title_widget    (void);
 
-static GtkWidget * create_image_button         (const char        *label,
-                                                const char        *hint,
-                                                const IconImg      icon);
+static GtkWidget *create_image_button    (const char    *label,
+                                          const char    *hint,
+                                          const IconImg  icon);
 
-static GtkWidget * create_buttons_widget       (DialogData        *data);
+static GtkWidget *create_buttons_widget  (DialogData    *data);
 
-static GtkWidget * create_settings_widget      (DialogData        *data);
+static GtkWidget *create_settings_widget (DialogData    *data);
 
-static GtkWidget * create_daemon_widget        (DialogData        *data);
+static GtkWidget *create_daemon_widget   (DialogData    *data);
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Create application directories, return error message on error.
@@ -1297,22 +1297,22 @@ static void
 activate (GtkApplication *app,
           DialogData     *data)
 {
-    GtkWidget  *window;            /* Application window */
-    GtkWidget  *title_widget;      /* Top title widget */
-    GtkWidget  *tree_view;         /* Wallpaper list TreeView */
-    GtkWidget  *scroll;            /* Scrolled window for wallpaper list */
-    GtkWidget  *buttons_widget;    /* Buttons widget */
-    GtkWidget  *img_prev;          /* Wallpaper preview widget */
-    GtkWidget  *box_prev;          /* Widget for wallpaper preview */
-    GtkWidget  *box_list_btns;     /* Widget for list, buttons, preview */
-    GtkWidget  *settings_widget;   /* Settings for wallpaper changing */
-    GtkWidget  *box_main;          /* Main box to pack everything */
-    GtkWidget  *statusbar;         /* Bottom status bar */
-    Setting    *settings;          /* Program settings */
-    Setting    *wm      = nullptr; /* Window manager info */
-    GdkPixbuf  *pixbuf  = nullptr; /* Default widget icon */
-    char       *err_msg = nullptr; /* For error output */
-    int         err     = 0;       /* For error output */
+    GtkWidget *window;            /* Application window */
+    GtkWidget *title_widget;      /* Top title widget */
+    GtkWidget *tree_view;         /* Wallpaper list TreeView */
+    GtkWidget *scroll;            /* Scrolled window for wallpaper list */
+    GtkWidget *buttons_widget;    /* Buttons widget */
+    GtkWidget *img_prev;          /* Wallpaper preview widget */
+    GtkWidget *box_prev;          /* Widget for wallpaper preview */
+    GtkWidget *box_list_btns;     /* Widget for list, buttons, preview */
+    GtkWidget *settings_widget;   /* Settings for wallpaper changing */
+    GtkWidget *box_main;          /* Main box to pack everything */
+    GtkWidget *statusbar;         /* Bottom status bar */
+    Setting   *settings;          /* Program settings */
+    Setting   *wm      = nullptr; /* Window manager info */
+    GdkPixbuf *pixbuf  = nullptr; /* Default widget icon */
+    char      *err_msg = nullptr; /* For error output */
+    int        err     = 0;       /* For error output */
 
     /* Find config file and set config file name */
     dialog_data_do_config_file_stuff (data);
@@ -1458,7 +1458,7 @@ activate (GtkApplication *app,
  */
 static void
 shutdown ([[maybe_unused]] GtkApplication *application,
-          DialogData     *data)
+          DialogData *data)
 {
     dialog_data_free (data);
 }

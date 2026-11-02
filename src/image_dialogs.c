@@ -69,14 +69,14 @@ add_images_from_web_dialog (GtkWindow  *parent,
 
     /* Main dialog window */
     dialog = gtk_dialog_new_with_buttons (
-                                      "Get wallpapers from web",
-                                      parent,
-                                      flags,
-                                      "_OK",
-                                      GTK_RESPONSE_ACCEPT,
-                                      "_Cancel",
-                                      GTK_RESPONSE_REJECT,
-                                      nullptr);
+        "Get wallpapers from web",
+        parent,
+        flags,
+        "_OK",
+        GTK_RESPONSE_ACCEPT,
+        "_Cancel",
+        GTK_RESPONSE_REJECT,
+        nullptr);
     gtk_window_set_default_size (GTK_WINDOW (dialog), width, height);
 
     content_box = gtk_dialog_get_content_area (GTK_DIALOG (dialog));
@@ -160,14 +160,14 @@ add_images_folder_dialog (GtkWindow *parent)
     char      *dir = nullptr;   /* Selected folder name */
 
     dialog = gtk_file_chooser_dialog_new (
-            "Select Folder",
-            parent,
-            GTK_FILE_CHOOSER_ACTION_SELECT_FOLDER,
-            "_Cancel",
-            GTK_RESPONSE_CANCEL,
-            "_Open",
-            GTK_RESPONSE_ACCEPT,
-            nullptr);
+        "Select Folder",
+        parent,
+        GTK_FILE_CHOOSER_ACTION_SELECT_FOLDER,
+        "_Cancel",
+        GTK_RESPONSE_CANCEL,
+        "_Open",
+        GTK_RESPONSE_ACCEPT,
+        nullptr);
 
     if (gtk_dialog_run (GTK_DIALOG (dialog)) == GTK_RESPONSE_ACCEPT) {
         dir = gtk_file_chooser_get_filename (GTK_FILE_CHOOSER (dialog));
@@ -186,14 +186,15 @@ add_images_dialog (GtkWindow *parent)
     GtkWidget     *dialog;          /* File dialog */
     GSList        *files = nullptr; /* Result file list */
 
-    dialog = gtk_file_chooser_dialog_new ("Select Files",
-                                          parent,
-                                          GTK_FILE_CHOOSER_ACTION_OPEN,
-                                          "_Cancel",
-                                          GTK_RESPONSE_CANCEL,
-                                          "_Open",
-                                          GTK_RESPONSE_ACCEPT,
-                                          nullptr);
+    dialog = gtk_file_chooser_dialog_new (
+        "Select Files",
+        parent,
+        GTK_FILE_CHOOSER_ACTION_OPEN,
+        "_Cancel",
+        GTK_RESPONSE_CANCEL,
+        "_Open",
+        GTK_RESPONSE_ACCEPT,
+        nullptr);
     filter = gtk_file_filter_new ();
     gtk_file_filter_set_name (filter, "Image files");
     gtk_file_filter_add_pixbuf_formats (filter);

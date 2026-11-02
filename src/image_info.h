@@ -54,16 +54,16 @@
  */
 typedef struct
 ImageInfo {
-    char    *file_path;     /* Full file name with path */
-    char    *file_name;     /* File name only */
-    char    *file_dir;      /* File path */
-    char    *width_height;  /* Width x Height in string */
-    int      width;         /* Image width in uint */
-    int      height;        /* Image height in uint */
+    char *file_path;     /* Full file name with path */
+    char *file_name;     /* File name only */
+    char *file_dir;      /* File path */
+    char *width_height;  /* Width x Height in string */
+    int   width;         /* Image width in uint */
+    int   height;        /* Image height in uint */
 } ImageInfo;
 /*----------------------------------------------------------------------------*/
 /**
- * @fn  ImageInfo * image_info_new (void)
+ * @fn  ImageInfo *image_info_new (void)
  *
  * @brief  Create new empty ImageInfo object.
  *
@@ -76,7 +76,7 @@ ImageInfo {
  * @param[in] fname  String with file name
  * @return    File info in ImageInfo format, null if could not alloc memory
  *
- * @fn void image_info_free  (ImageInfo *info)
+ * @fn void image_info_free (ImageInfo *info)
  *
  * @brief  Free ImageInfo data.
  *
@@ -84,13 +84,13 @@ ImageInfo {
  * @return     none
  */
 /*----------------------------------------------------------------------------*/
-ImageInfo *  image_info_new            (void)
-             __attribute__ ((returns_nonnull));
+ImageInfo *image_info_new (void)
+           __attribute__ ((returns_nonnull));
 
-ImageInfo *  image_info_new_from_file  (const char       *fname)
-             __attribute__ ((nonnull (1), returns_nonnull));
+ImageInfo *image_info_new_from_file (const char *fname)
+           __attribute__ ((nonnull (1), returns_nonnull));
 
-void         image_info_free           (ImageInfo        *info);
+void image_info_free (ImageInfo *info);
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Get image info of files in list and store it in ImageInfo list.
@@ -98,7 +98,7 @@ void         image_info_free           (ImageInfo        *info);
  * @param[in]  files  File list to process
  * @return     List of ImageInfo items
  */
-GSList     * file_paths_to_image_info  (const GSList     *files);
+GSList *file_paths_to_image_info (const GSList *files);
 /*----------------------------------------------------------------------------*/
 /**
  * @fn  void image_info_set_file_path (ImageInfo *info, const char *name)
@@ -109,7 +109,7 @@ GSList     * file_paths_to_image_info  (const GSList     *files);
  * @param[in]  name  String to set as full file name
  * @return     none
  *
- * @fn  const char * image_info_get_file_path (const ImageInfo *info)
+ * @fn  const char *image_info_get_file_path (const ImageInfo *info)
  *
  * @brief  Get the full file name string (path + file name)
  *
@@ -124,7 +124,7 @@ GSList     * file_paths_to_image_info  (const GSList     *files);
  * @param[in]  name  String to set as file name
  * @return     none
  *
- * @fn  const char * image_info_get_file_name (const ImageInfo *info)
+ * @fn  const char *image_info_get_file_name (const ImageInfo *info)
  *
  * @brief  Get the file name string
  *
@@ -139,7 +139,7 @@ GSList     * file_paths_to_image_info  (const GSList     *files);
  * @param[in]  name  String to set as file path
  * @return     none
  *
- * @fn  const char * image_info_get_file_dir (const ImageInfo *info)
+ * @fn  const char *image_info_get_file_dir (const ImageInfo *info)
  *
  * @brief  Get the file dir string
  *
@@ -176,7 +176,7 @@ GSList     * file_paths_to_image_info  (const GSList     *files);
  * @param[out] info  ImageInfo object with data to get
  * @return     Height of an image
  *
- * @fn  const char * image_info_get_wxh (const ImageInfo *info)
+ * @fn  const char *image_info_get_wxh (const ImageInfo *info)
  *
  * @brief  Get string with image dimensions (width x height)
  *
@@ -184,51 +184,51 @@ GSList     * file_paths_to_image_info  (const GSList     *files);
  * @return     String with image dimensions
  */
 /*----------------------------------------------------------------------------*/
-void image_info_set_file_path (ImageInfo       *info,
-                               const char      *name)
+void image_info_set_file_path (ImageInfo  *info,
+                               const char *name)
      __attribute__ ((nonnull (2)));
 
-static inline const char * image_info_get_file_path (const ImageInfo *info) {
+static inline const char *image_info_get_file_path (const ImageInfo *info) {
      return (const char*) info->file_path;
 }
 /*----------------------------------------------------------------------------*/
-void image_info_set_file_name  (ImageInfo        *info,
-                                const char       *name)
+void image_info_set_file_name (ImageInfo  *info,
+                               const char *name)
      __attribute__ ((nonnull (2)));
 
-static inline const char * image_info_get_file_name (const ImageInfo *info) {
+static inline const char *image_info_get_file_name (const ImageInfo *info) {
      return (const char*) info->file_name;
 }
 /*----------------------------------------------------------------------------*/
-void image_info_set_file_dir  (ImageInfo        *info,
-                               const char       *name)
+void image_info_set_file_dir (ImageInfo  *info,
+                              const char *name)
      __attribute__ ((nonnull (2)));
 
-static inline const char * image_info_get_file_dir (const ImageInfo *info) {
+static inline const char *image_info_get_file_dir (const ImageInfo *info) {
      return (const char*) info->file_dir;
 }
 /*----------------------------------------------------------------------------*/
-static inline void image_info_set_width (ImageInfo        *info,
-                                         const int         width) {
+static inline void image_info_set_width (ImageInfo *info,
+                                         const int width) {
     info->width = width;
 }
-static inline int image_info_get_width  (const ImageInfo  *info) {
+static inline int image_info_get_width (const ImageInfo *info) {
     return info->width;
 }
 /*----------------------------------------------------------------------------*/
-static inline void image_info_set_height (ImageInfo        *info,
-                                          const int         height) {
+static inline void image_info_set_height (ImageInfo *info,
+                                          const int  height) {
     info->height = height;
 }
-static inline int  image_info_get_height (const ImageInfo  *info) {
+static inline int  image_info_get_height (const ImageInfo *info) {
     return info->height;
 }
 /*----------------------------------------------------------------------------*/
-void         image_info_set_wxh        (ImageInfo        *info,
-                                        const int         width,
-                                        const int         height);
+void image_info_set_wxh (ImageInfo *info,
+                         const int  width,
+                         const int  height);
 
-static inline const char * image_info_get_wxh (const ImageInfo *info) {
+static inline const char *image_info_get_wxh (const ImageInfo *info) {
     return (const char*) info->width_height;
 }
 /*----------------------------------------------------------------------------*/

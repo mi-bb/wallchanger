@@ -297,9 +297,9 @@ cfg_file_autostart_exists (void)
 int
 cfg_file_autostart_create (void)
 {
-    int   err          = ERR_OK; /* Error value to return */
-    char *path         = nullptr;   /* Autostart data file path */
-    char *buff         = nullptr;   /* Buffer for file content */
+    int   err  = ERR_OK;    /* Error value to return */
+    char *path = nullptr;   /* Autostart data file path */
+    char *buff = nullptr;   /* Buffer for file content */
     char *autostart_path = nullptr; /* User's autostart path */
 
     if ((path = cfg_file_find_app_data_path (&err)) == nullptr)

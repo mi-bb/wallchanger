@@ -99,9 +99,9 @@ dialog_data_do_config_file_stuff (DialogData *data)
 char *
 dialog_data_get_status_config_info (const DialogData *data)
 {
-    char   *result      = nullptr; /* Result string */
-    size_t  prefix_len  = 0;       /* Prefix text length */
-    size_t  config_len  = 0;       /* Config file name length */
+    char   *result     = nullptr; /* Result string */
+    size_t  prefix_len = 0;       /* Prefix text length */
+    size_t  config_len = 0;       /* Config file name length */
 
     prefix_len = strlen (STATUS_CONFIG);
     config_len = strlen (data->config_file);
