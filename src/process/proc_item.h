@@ -23,40 +23,33 @@
  */
 #ifndef PROC_ITEM_H
 #define PROC_ITEM_H
+
+#include <sys/types.h>
 /*----------------------------------------------------------------------------*/
 /**
  * @struct ProcItem
  *
  * @brief  Single process info item with its PID and name
  *
- * @var   ProcItem::s_pid
+ * @var   ProcItem::pid
  * @brief Process PID
  *
- * @var   ProcItem::s_name
+ * @var   ProcItem::name
  * @brief Process name
  */
 typedef struct
 ProcItem {
-    char *s_pid;
-    char *s_name;
+    pid_t  pid;
+    char  *name;
 } ProcItem;
 /*----------------------------------------------------------------------------*/
 /**
- * @fn  const char * proc_item_get_pid (const ProcItem *item)
+ * @fn  pid_t proc_item_get_pid (const ProcItem *item)
  *
- * @brief  Get PID string from ProcItem item.
+ * @brief  Get PID from ProcItem item.
  *
  * @param[in] item  ProcItem with PID to get
- * @return    String with PID
- *
- * @fn void proc_item_set_pid (ProcItem   *item,
- *                             const char *pid)
- *
- * @brief  Set PID in ProcItem item.
- *
- * @param[out] item  ProcItem to set PID
- * @param[in]  pid   String with PID to set
- * @return     none
+ * @return    Process PID
  *
  * @fn  const char * proc_item_get_name (const ProcItem *item)
  *
@@ -64,28 +57,15 @@ ProcItem {
  *
  * @param[in] item  ProcItem with name to get
  * @return    String with name
- *
- * @fn  void proc_item_set_name (ProcItem   *item,
- *                               const char *name)
- *
- * @brief  Set name in ProcItem item.
- *
- * @param[out] item  ProcItem to set name
- * @param[in]  name  String with name to set
- * @return     none
  */
 /*----------------------------------------------------------------------------*/
-static inline const char * proc_item_get_pid  (const ProcItem *item) {
-    return (const char *) item->s_pid;
+static inline pid_t        proc_item_get_pid  (const ProcItem *item) {
+    return item->pid;
 }
-void                       proc_item_set_pid  (ProcItem       *item,
-                                               const char     *pid);
 
 static inline const char * proc_item_get_name (const ProcItem *item) {
-    return (const char *) item->s_name;
+    return (const char *) item->name;
 }
-void                       proc_item_set_name (ProcItem       *item,
-                                               const char     *name);
 /*----------------------------------------------------------------------------*/
 /**
  * @fn  void proc_item_free (ProcItem *item)
@@ -95,44 +75,22 @@ void                       proc_item_set_name (ProcItem       *item,
  * @param[in] item  ProcItem item to free
  * @return    none
  *
- * @fn  ProcItem * proc_item_new (void)
+ * @fn  ProcItem * proc_item_new (pid_t       pid,
+ *                                const char *name)
  *
- * @brief  Create new ProcItem item.
+ * @brief  Create new ProcItem item with the given pid and a copy of name.
  *
- * @return New ProcIem item, it should be freed using proc_item_free.
- *
- * @fn  ProcItem * proc_item_new_from_data (const char *pid,
- *                                          const char *name)
- *
- * @brief  Create new ProcItem item from given pid and name string.
- *
- * @param[in] pid   String with PID
- * @param[in] name  String with name
- * @return    New ProcIem item, it should be freed using proc_item_free.
- *
- * @fn  ProcItem * proc_item_copy (const ProcItem *item)
- *
- * @brief  Copy ProcItem item and return it.
- *
- * @param[in] item  ProcItem item to copy
- * @return    New ProcIem item, it should be freed using proc_item_free.
+ * @param[in] pid   Process PID
+ * @param[in] name  Process name
+ * @return    New ProcItem item, it should be freed using proc_item_free.
  */
 /*----------------------------------------------------------------------------*/
-void         proc_item_free          (ProcItem         *item);
+void         proc_item_free (ProcItem   *item);
 
 [[nodiscard]]
-ProcItem   * proc_item_new           (void)
+ProcItem   * proc_item_new  (pid_t       pid,
+                             const char *name)
              __attribute__ ((returns_nonnull));
-
-[[nodiscard]]
-ProcItem   * proc_item_new_from_data (const char       *pid,
-                                      const char       *name)
-             __attribute__ ((returns_nonnull));
-
-[[nodiscard]]
-static inline ProcItem * proc_item_copy (const ProcItem   *item) {
-    return proc_item_new_from_data (item->s_pid, item->s_name);
-}
 /*----------------------------------------------------------------------------*/
 #endif
 

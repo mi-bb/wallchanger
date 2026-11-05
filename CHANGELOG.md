@@ -21,6 +21,24 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Changed
+
+- Window manager detection reads the process list once instead of once per
+  process name in `wms.json`, so each wallpaper change makes one pass over
+  the process list instead of up to 19.
+- Process search code cleanup: PIDs are stored as numbers, the list grows in
+  larger steps, and unused functions and the unused `cmdline` reading mode
+  were removed.
+
+### Fixed
+
+- Process names longer than the system limit (15 characters on Linux, 19 on
+  FreeBSD) never matched, which broke GNOME detection on FreeBSD.
+- On FreeBSD, a failure reading the process list closed the whole program;
+  it is now treated as an empty list, as on Linux.
+
 ## [1.7.2] - 2026-11-02
 
 ### Added

@@ -36,12 +36,16 @@
  * @var   ProcList::cnt
  * @brief ProcItem items count
  *
+ * @var   ProcList::capacity
+ * @brief Number of item slots allocated in pi_list
+ *
  * @var   ProcList::pi_list
  * @brief List with ProcItem items
  */
 typedef struct
 ProcList {
     uint_fast32_t   cnt;
+    uint_fast32_t   capacity;
     ProcItem      **pi_list;
 } ProcList;
 /*----------------------------------------------------------------------------*/
@@ -63,14 +67,15 @@ ProcList {
 void             proc_list_free     (ProcList       *list);
 
 [[nodiscard]]
-ProcList       * proc_list_new      (void);
+ProcList       * proc_list_new      (void)
+                 __attribute__ ((returns_nonnull));
 /*----------------------------------------------------------------------------*/
 /**
- * @brief  Insert ProcItem to proc_list.
+ * @brief  Insert ProcItem to proc_list, the list takes ownership of item.
  *
- * @param[out] list  ProcList list
- * @param[in]  item  ProcItem to insert
- * @return     none
+ * @param[in,out] list  ProcList list
+ * @param[in]     item  ProcItem to insert
+ * @return        none
  */
 void             proc_list_insert   (ProcList       *list,
                                      ProcItem       *item);

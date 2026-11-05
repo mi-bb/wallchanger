@@ -203,13 +203,17 @@ wms_get_current_wm (const Setting *wmlist)
     const Setting *proc_item  = nullptr; /* Setting with process name info */
     const Setting *wm         = nullptr; /* Setting with window manager info */
     const Setting *unknown_wm = nullptr; /* Setting for unknown window manager */
+    const Setting *found_wm   = nullptr; /* Window manager found running */
+    ProcList      *processes  = nullptr; /* Running user processes */
 
 #ifdef DEBUG
     printf ("Finding wm\n");
 #endif
+    /* Read the process list once and match every wm against it */
+    processes = process_get (nullptr, 0);
     wm = wmlist;
 
-    while (wm != nullptr) {
+    while (wm != nullptr && found_wm == nullptr) {
         name = setting_get_name (wm);
 #ifdef DEBUG
         printf ("%s\n", name);
@@ -225,20 +229,24 @@ wms_get_current_wm (const Setting *wmlist)
 #ifdef DEBUG
             printf (" %s", proc_name);
 #endif
-            if (process_exists_b (proc_name)) {
+            if (process_list_contains (processes, proc_name)) {
 #ifdef DEBUG
                 printf (" YES!\n");
 #endif
-                return wm;
+                found_wm = wm;
+                break;
             }
             proc_item = proc_item->next;
         }
 #ifdef DEBUG
-        printf (" nope\n");
+        if (found_wm == nullptr)
+            printf (" nope\n");
 #endif
         wm = wm->next;
     }
-    return unknown_wm;
+    proc_list_free (processes);
+
+    return found_wm != nullptr ? found_wm : unknown_wm;
 }
 /*----------------------------------------------------------------------------*/
 /**

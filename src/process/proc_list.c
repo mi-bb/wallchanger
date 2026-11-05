@@ -26,17 +26,10 @@
 #include "proc_list.h"
 /*----------------------------------------------------------------------------*/
 /**
- * @brief  Initialize ProcList item.
- *
- * @param[out] list  ProcList item
- * @return     none
+ * @var   PROC_LIST_INITIAL_CAPACITY
+ * @brief Number of item slots allocated on the first insert
  */
-static void
-proclist_init (ProcList *list)
-{
-    list->cnt = 0;
-    list->pi_list = nullptr;
-}
+constexpr uint_fast32_t PROC_LIST_INITIAL_CAPACITY = 16;
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Free ProcList list.
@@ -62,34 +55,32 @@ proc_list_new (void)
     if ((list = malloc (sizeof (ProcList))) == nullptr)
         err (EXIT_FAILURE, nullptr);
 
-    proclist_init (list);
+    list->cnt      = 0;
+    list->capacity = 0;
+    list->pi_list  = nullptr;
 
     return list;
 }
 /*----------------------------------------------------------------------------*/
 /**
- * @brief  Insert ProcItem to proc_list.
+ * @brief  Insert ProcItem to proc_list, the list takes ownership of item.
  */
 void
 proc_list_insert (ProcList *list,
                   ProcItem *item)
 {
-    ProcItem **resized = nullptr;
+    ProcItem      **resized  = nullptr;
+    uint_fast32_t   capacity = 0;
 
-    if (list->pi_list == nullptr) {
-        list->pi_list = malloc ((list->cnt + 1) * sizeof (ProcItem*));
-        if (list->pi_list == nullptr) {
-            err (EXIT_FAILURE, nullptr);
-        }
-    }
-    else {
-        resized = realloc (list->pi_list,
-                           (list->cnt + 1) * sizeof (ProcItem*));
+    if (list->cnt == list->capacity) {
+        capacity = list->capacity ? list->capacity * 2
+                                  : PROC_LIST_INITIAL_CAPACITY;
+        resized = realloc (list->pi_list, capacity * sizeof (ProcItem *));
         if (resized == nullptr) {
-            proc_list_free (list);
             err (EXIT_FAILURE, nullptr);
         }
-        list->pi_list = resized;
+        list->pi_list  = resized;
+        list->capacity = capacity;
     }
     list->pi_list [list->cnt++] = item;
 }
