@@ -30,6 +30,9 @@ and this project adheres to
   the process list instead of up to 19.
 - `wchangerd --stop` and `--restart` wait (up to 5 seconds) for the old
   daemon to exit instead of sleeping a fixed 500 ms.
+- Dropped the shortened duplicate process names (`gnome-session-b`,
+  `gnome-session-s`, `cinnamon-sessio`) from `wms.json`; long names now
+  match on their own.
 - Process search code cleanup: PIDs are stored as numbers, the list grows in
   larger steps, and unused functions and the unused `cmdline` reading mode
   were removed.
