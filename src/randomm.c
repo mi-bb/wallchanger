@@ -28,30 +28,30 @@
 /**
  * @brief  Check if number is in random numbers memory
  *
- * @param[out] rmm    RandMem object
- * @param[in]  ui_no  Number to check
+ * @param[out] mem     RandMem object
+ * @param[in]  number  Number to check
  * @return     1 if it is, 0 if it is not
  */
-static int  randomm_check_number (RandMem *rmm,
-                                  size_t   ui_no);
+static int  randomm_check_number (RandMem *mem,
+                                  size_t   number);
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Store number in random numbers memory
  *
- * @param[out] rm_mem  RandMem object
- * @param[in]  ui_no   Number to check
+ * @param[out] mem     RandMem object
+ * @param[in]  number  Number to check
  * @return     none
  */
-static void randomm_set_number   (RandMem *rm_mem,
-                                  size_t   ui_no);
+static void randomm_set_number   (RandMem *mem,
+                                  size_t   number);
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Initialize random memory object.
  *
- * @param[out] rm_mem  RandMem object
+ * @param[out] mem  RandMem object
  * @return     none
  */
-static void randomm_init         (RandMem *rm_mem);
+static void randomm_init         (RandMem *mem);
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Advance and return this object's own pseudo-random generator.
@@ -61,36 +61,36 @@ static void randomm_init         (RandMem *rm_mem);
  * independent of one another (and of any other code in the process calling
  * rand()/srand()), which a shared global generator cannot guarantee.
  *
- * @param[out] rm_mem  RandMem object
+ * @param[out] mem  RandMem object
  * @return     Next pseudo-random 32-bit value
  */
-static uint32_t randomm_next     (RandMem *rm_mem);
+static uint32_t randomm_next     (RandMem *mem);
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Check if number is in random numbers memory
  */
 static int
-randomm_check_number (RandMem *rmm,
-                      size_t   ui_no)
+randomm_check_number (RandMem *mem,
+                      size_t   number)
 {
-    size_t i_idx = ui_no / 32; /* Number position in array */
-    size_t i_pos = ui_no % 32; /* Number bit position in integer */
+    size_t word = number / 32; /* Number position in array */
+    size_t bit  = number % 32; /* Number bit position in integer */
 
-    return (i_idx < rmm->allocn) && (rmm->randm[i_idx] & (1u << i_pos)) ? 1 : 0;
+    return (word < mem->allocn) && (mem->randm[word] & (1u << bit)) ? 1 : 0;
 }
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Store number in random numbers memory
  */
 static void
-randomm_set_number (RandMem *rm_mem,
-                    size_t   ui_no)
+randomm_set_number (RandMem *mem,
+                    size_t   number)
 {
-    size_t ui_idx = ui_no / 32; /* Number position in array */
-    size_t ui_pos = ui_no % 32; /* Number bit position in integer */
+    size_t word = number / 32;  /* Number position in array */
+    size_t bit  = number % 32;  /* Number bit position in integer */
 
-    if (ui_idx < rm_mem->allocn) {
-        rm_mem->randm[ui_idx] |= (1u << ui_pos);
+    if (word < mem->allocn) {
+        mem->randm[word] |= (1u << bit);
     }
 }
 /*----------------------------------------------------------------------------*/
@@ -98,84 +98,84 @@ randomm_set_number (RandMem *rm_mem,
  * @brief  Initialize random memory object.
  */
 static void
-randomm_init (RandMem *rm_mem)
+randomm_init (RandMem *mem)
 {
     /* Disambiguates RandMem objects created within the same clock tick. */
-    static unsigned int ui_counter = 0;
+    static unsigned int counter = 0;
 
-    rm_mem->randm  = nullptr;
-    rm_mem->cnt    = 0;
-    rm_mem->allocn = 0;
-    rm_mem->range  = 0;
+    mem->randm  = nullptr;
+    mem->cnt    = 0;
+    mem->allocn = 0;
+    mem->range  = 0;
 
-    rm_mem->seed = (uint32_t) time (nullptr)
-                 ^ (uint32_t) (uintptr_t) rm_mem
-                 ^ ++ui_counter
-                 ^ 0x9E3779B9u;
+    mem->seed = (uint32_t) time (nullptr)
+              ^ (uint32_t) (uintptr_t) mem
+              ^ ++counter
+              ^ 0x9E3779B9u;
 
     /* xorshift32 needs a non-zero state to ever produce non-zero output. */
-    if (rm_mem->seed == 0)
-        rm_mem->seed = 0x9E3779B9u;
+    if (mem->seed == 0)
+        mem->seed = 0x9E3779B9u;
 }
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Advance and return this object's own pseudo-random generator.
  */
 static uint32_t
-randomm_next (RandMem *rm_mem)
+randomm_next (RandMem *mem)
 {
-    uint32_t ui_x = rm_mem->seed;
+    uint32_t x = mem->seed;
 
-    ui_x ^= ui_x << 13;
-    ui_x ^= ui_x >> 17;
-    ui_x ^= ui_x << 5;
+    x ^= x << 13;
+    x ^= x >> 17;
+    x ^= x << 5;
 
-    return rm_mem->seed = ui_x;
+    return mem->seed = x;
 }
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Reset random memory.
  */
 void
-randomm_reset (RandMem *rm_mem)
+randomm_reset (RandMem *mem)
 {
     size_t i = 0;
 
-    rm_mem->cnt = rm_mem->range;
+    mem->cnt = mem->range;
 
-    for (i = 0; i < rm_mem->allocn; ++i)
-        rm_mem->randm[i] = 0;
+    for (i = 0; i < mem->allocn; ++i)
+        mem->randm[i] = 0;
 }
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Set random numbers range.
  */
 void
-randomm_set_range (RandMem *rm_mem,
-                   size_t   ui_rng) {
+randomm_set_range (RandMem *mem,
+                   size_t   range) {
 
-    rm_mem->allocn = ui_rng / (8 * sizeof (*rm_mem->randm)) + 1;
+    mem->allocn = range / (8 * sizeof (*mem->randm)) + 1;
 
-    rm_mem->range = ui_rng;
+    mem->range = range;
 
-    if (rm_mem->randm == nullptr) {
-        rm_mem->randm = malloc (rm_mem->allocn * sizeof (*rm_mem->randm));
+    if (mem->randm == nullptr) {
+        mem->randm = malloc (mem->allocn * sizeof (*mem->randm));
 
-        if (rm_mem->randm == nullptr)
+        if (mem->randm == nullptr)
             exit (EXIT_FAILURE);
     }
     else {
-        uint32_t *pui_new = realloc (rm_mem->randm,
-                                     rm_mem->allocn * sizeof (*rm_mem->randm));
+        uint32_t *resized = realloc (mem->randm,
+                                     mem->allocn * sizeof (*mem->randm));
 
-        if (pui_new == nullptr) {
-            free (rm_mem->randm);
+        if (resized == nullptr) {
+            free (mem->randm);
             exit (EXIT_FAILURE);
         }
-        rm_mem->randm = pui_new;
+        mem->randm = resized;
     }
 
-    randomm_reset (rm_mem);
+    randomm_reset (mem);
 }
 /*----------------------------------------------------------------------------*/
 /**
@@ -184,69 +184,69 @@ randomm_set_range (RandMem *rm_mem,
 RandMem *
 randomm_new (void)
 {
-    RandMem *rm_mem;
+    RandMem *mem;
 
-    if ((rm_mem = malloc (sizeof (RandMem))) == nullptr)
+    if ((mem = malloc (sizeof (RandMem))) == nullptr)
         exit (EXIT_FAILURE);
 
-    randomm_init (rm_mem);
+    randomm_init (mem);
 
-    return rm_mem;
+    return mem;
 }
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Create new RandMem item with given range.
  */
 RandMem *
-randomm_new_with_range (size_t ui_range)
+randomm_new_with_range (size_t range)
 {
-    RandMem *rm_mem = randomm_new ();
+    RandMem *mem = randomm_new ();
 
-    randomm_set_range (rm_mem, ui_range);
+    randomm_set_range (mem, range);
 
-    return rm_mem;
+    return mem;
 }
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Free RandMem item.
  */
 void
-randomm_free (RandMem *rm_mem)
+randomm_free (RandMem *mem)
 {
-    free (rm_mem->randm);
-    free (rm_mem);
+    free (mem->randm);
+    free (mem);
 }
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Get random number
  */
 size_t
-randomm_get_number (RandMem *rm_mem)
+randomm_get_number (RandMem *mem)
 {
-    size_t ui_ret = 0; /* Random number to return */
-    size_t ui_rnd = 0; /* Randomed number position to get */
+    size_t result = 0; /* Random number to return */
+    size_t pick   = 0; /* Randomed number position to get */
     size_t      i = 0; /* i */
     size_t      j = 0; /* j */
 
-    if (rm_mem->range == 0)
+    if (mem->range == 0)
         return 0;
 
-    if (rm_mem->cnt == 0) {
-        randomm_reset (rm_mem);
+    if (mem->cnt == 0) {
+        randomm_reset (mem);
     }
-    ui_rnd = (size_t) randomm_next (rm_mem) % rm_mem->cnt + 1;
+    pick = (size_t) randomm_next (mem) % mem->cnt + 1;
 
-    for (i = 0; i < rm_mem->range; ++i) {
-        if (!randomm_check_number (rm_mem, i)) {
-            if (++j == ui_rnd) {
-                ui_ret = i;
+    for (i = 0; i < mem->range; ++i) {
+        if (!randomm_check_number (mem, i)) {
+            if (++j == pick) {
+                result = i;
                 break;
             }
         }
     }
-    --rm_mem->cnt;
+    --mem->cnt;
     /* Set number in memory */
-    randomm_set_number (rm_mem, ui_ret);
-    return ui_ret;
+    randomm_set_number (mem, result);
+    return result;
 }
 /*----------------------------------------------------------------------------*/

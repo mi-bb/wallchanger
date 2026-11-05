@@ -39,46 +39,46 @@ enum e_tree_view_columns {
 };
 /*----------------------------------------------------------------------------*/
 /**
- * @fn  static void liststore_set_item (GtkListStore    *gls_list,
- *                                      GtkTreeIter     *gti_iter,
+ * @fn  static void liststore_set_item (GtkListStore    *store,
+ *                                      GtkTreeIter     *iter,
  *                                      const ImageInfo *info)
  *
  * @brief  Set data in GtkListStore.
  *
- * Sets data from info ImageInfo to gls_list GtkListStore row pointed
- * by gti_iter GtkTreeIter.
+ * Sets data from info ImageInfo to store GtkListStore row pointed
+ * by iter GtkTreeIter.
  *
- * @param[out] gls_list GtkListStore to set data
- * @param[in]  gti_iter GtkTreeIter row address
+ * @param[out] store    GtkListStore to set data
+ * @param[in]  iter     GtkTreeIter row address
  * @param[in]  info  Data in ImageInfo object
  * @return     none
  *
- * @fn  static void treeview_add_item (GtkWidget       *gw_tview,
+ * @fn  static void treeview_add_item (GtkWidget       *tree_view,
  *                                     const ImageInfo *info)
  *
  * @brief  Insert single data item to GtkListStore.
  *
- * @param[out] gw_tview    TreeView in which data should be added
+ * @param[out] tree_view   TreeView in which data should be added
  * @param[in]  info  data in ImageInfo object
  * @return     none
  */
 /*----------------------------------------------------------------------------*/
-static void liststore_set_item    (GtkListStore    *gls_list,
-                                   GtkTreeIter     *gti_iter,
+static void liststore_set_item    (GtkListStore    *store,
+                                   GtkTreeIter     *iter,
                                    const ImageInfo *info);
 
-static void treeview_add_item     (GtkWidget       *gw_tview,
+static void treeview_add_item     (GtkWidget       *tree_view,
                                    const ImageInfo *info);
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Set data in GtkListStore.
  */
 static void
-liststore_set_item (GtkListStore    *gls_list,
-                    GtkTreeIter     *gti_iter,
+liststore_set_item (GtkListStore    *store,
+                    GtkTreeIter     *iter,
                     const ImageInfo *info)
 {
-    gtk_list_store_set (gls_list, gti_iter,
+    gtk_list_store_set (store, iter,
                         COL_FILE_PATH,    image_info_get_file_path (info),
                         COL_FILE_NAME,    image_info_get_file_name (info),
                         COL_FILE_DIR,     image_info_get_file_dir  (info),
@@ -92,39 +92,39 @@ liststore_set_item (GtkListStore    *gls_list,
  * @brief  Insert single data item to GtkListStore.
  */
 static void
-treeview_add_item (GtkWidget       *gw_tview,
+treeview_add_item (GtkWidget       *tree_view,
                    const ImageInfo *info)
 {
-    GtkListStore *gls_store;
-    GtkTreeIter   gti_iter;
+    GtkListStore *store;
+    GtkTreeIter   iter;
 
-    gls_store = GTK_LIST_STORE (gtk_tree_view_get_model (
-                GTK_TREE_VIEW (gw_tview)));
+    store = GTK_LIST_STORE (gtk_tree_view_get_model (
+                GTK_TREE_VIEW (tree_view)));
 
-    gtk_list_store_append (gls_store, &gti_iter);
-    liststore_set_item (gls_store, &gti_iter, info);
+    gtk_list_store_append (store, &iter);
+    liststore_set_item (store, &iter, info);
 }
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Insert multiple data items to GtkTreeView.
  */
 void
-treeview_add_items_glist (GtkWidget   *gw_tview,
-                          const GList *gl_files)
+treeview_add_items_glist (GtkWidget   *tree_view,
+                          const GList *files)
 {
-    const char *s_fn    = nullptr; /* String for file path */
+    const char *file    = nullptr; /* String for file path */
     ImageInfo  *info = nullptr; /* Image information */
 
-    while (gl_files != nullptr) {
+    while (files != nullptr) {
 
-        s_fn = (const char *) gl_files->data;
+        file = (const char *) files->data;
 
-        if ((info = image_info_new_from_file (s_fn)) != nullptr) {
+        if ((info = image_info_new_from_file (file)) != nullptr) {
 
-            treeview_add_item (gw_tview, info);
+            treeview_add_item (tree_view, info);
             image_info_free (info);
         }
-        gl_files = gl_files->next;
+        files = files->next;
     }
 }
 /*----------------------------------------------------------------------------*/
@@ -132,21 +132,21 @@ treeview_add_items_glist (GtkWidget   *gw_tview,
  * @brief  Insert multiple data items to GtkTreeView.
  */
 void
-treeview_add_items_gslist (GtkWidget    *gw_tview,
-                           const GSList *gl_files)
+treeview_add_items_gslist (GtkWidget    *tree_view,
+                           const GSList *files)
 {
-    const char *s_fn    = nullptr; /* String for file path */
+    const char *file    = nullptr; /* String for file path */
     ImageInfo  *info = nullptr; /* Image information */
 
-    while (gl_files != nullptr) {
+    while (files != nullptr) {
 
-        s_fn = (const char *) gl_files->data;
+        file = (const char *) files->data;
 
-        if ((info = image_info_new_from_file (s_fn)) != nullptr) {
-            treeview_add_item (gw_tview, info);
+        if ((info = image_info_new_from_file (file)) != nullptr) {
+            treeview_add_item (tree_view, info);
             image_info_free (info);
         }
-        gl_files = gl_files->next;
+        files = files->next;
     }
 }
 /*----------------------------------------------------------------------------*/
@@ -154,20 +154,20 @@ treeview_add_items_gslist (GtkWidget    *gw_tview,
  * @brief  Insert multiple data items to GtkTreeView.
  */
 void
-treeview_add_items_setting (GtkWidget     *gw_tview,
-                            const Setting *st_wallpapers)
+treeview_add_items_setting (GtkWidget     *tree_view,
+                            const Setting *wallpapers)
 {
-    const char *s_fn    = nullptr; /* File name to process */
+    const char *file    = nullptr; /* File name to process */
     ImageInfo  *info = nullptr; /* ImageInfo wallpaper info */
 
-    while (st_wallpapers != nullptr) {
-        if ((s_fn = setting_get_string (st_wallpapers)) != nullptr) {
-            if ((info = image_info_new_from_file (s_fn)) != nullptr) {
-                treeview_add_item (gw_tview, info);
+    while (wallpapers != nullptr) {
+        if ((file = setting_get_string (wallpapers)) != nullptr) {
+            if ((info = image_info_new_from_file (file)) != nullptr) {
+                treeview_add_item (tree_view, info);
                 image_info_free (info);
             }
         }
-        st_wallpapers = st_wallpapers->next;
+        wallpapers = wallpapers->next;
     }
 }
 /*----------------------------------------------------------------------------*/
@@ -175,12 +175,12 @@ treeview_add_items_setting (GtkWidget     *gw_tview,
  * @brief  Get data from GtkTreeModel to ImageInfo object.
  */
 ImageInfo *
-treemodel_get_data (GtkTreeModel *gtm_model,
-                    GtkTreeIter   gti_iter)
+treemodel_get_data (GtkTreeModel *model,
+                    GtkTreeIter   iter)
 {
     ImageInfo *info = image_info_new ();
 
-    gtk_tree_model_get (gtm_model, &gti_iter,
+    gtk_tree_model_get (model, &iter,
             COL_FILE_PATH,     &info->file_path, 
             COL_FILE_NAME,     &info->file_name,
             COL_FILE_DIR,      &info->file_dir,
@@ -195,83 +195,83 @@ treemodel_get_data (GtkTreeModel *gtm_model,
  * @brief  Get data out of TreeView.
  */
 GSList *
-treeview_get_data (GtkWidget *gw_tview)
+treeview_get_data (GtkWidget *tree_view)
 {
-    GtkTreeModel *gtm_model;         /* TreeModel */
+    GtkTreeModel *model;         /* TreeModel */
     ImageInfo    *info;           /* Wallpaper image info */
-    GtkTreeIter   gti_iter;          /* TreeIter */
+    GtkTreeIter   iter;          /* TreeIter */
     GSList       *info_list = nullptr;  /* ImageInfo return list */
-    gboolean      b_res     = FALSE; /* Find item result */
+    gboolean      valid     = FALSE; /* Find item result */
 
-    gtm_model = gtk_tree_view_get_model (GTK_TREE_VIEW (gw_tview));
-    b_res     = gtk_tree_model_get_iter_first (gtm_model, &gti_iter);
+    model = gtk_tree_view_get_model (GTK_TREE_VIEW (tree_view));
+    valid = gtk_tree_model_get_iter_first (model, &iter);
 
-    while (b_res) {
-        info = treemodel_get_data (gtm_model, gti_iter);
+    while (valid) {
+        info = treemodel_get_data (model, iter);
         info_list = g_slist_append (info_list, info);
 
-        b_res = gtk_tree_model_iter_next (gtm_model, &gti_iter);
+        valid = gtk_tree_model_iter_next (model, &iter);
     }
     return info_list;
 }
 /*----------------------------------------------------------------------------*/
 Setting *
-treeview_get_setting_data (GtkWidget *gw_tview)
+treeview_get_setting_data (GtkWidget *tree_view)
 {
-    GtkTreeModel *gtm_model;       /* TreeModel */
-    GtkTreeIter   gti_iter;        /* TreeIter */
-    Setting      *st_data = nullptr;  /* Setting item to return */
-    ImageInfo    *info = nullptr;  /* Info with wallpaper data */
-    gboolean      b_res   = FALSE; /* Find item result */
+    GtkTreeModel *model;           /* TreeModel */
+    GtkTreeIter   iter;            /* TreeIter */
+    Setting      *list  = nullptr; /* Setting item to return */
+    ImageInfo    *info  = nullptr; /* Info with wallpaper data */
+    gboolean      valid = FALSE;   /* Find item result */
 
-    gtm_model = gtk_tree_view_get_model (GTK_TREE_VIEW (gw_tview));
-    b_res     = gtk_tree_model_get_iter_first (gtm_model, &gti_iter);
+    model = gtk_tree_view_get_model (GTK_TREE_VIEW (tree_view));
+    valid = gtk_tree_model_get_iter_first (model, &iter);
 
-    while (b_res) {
-        info = treemodel_get_data (gtm_model, gti_iter);
-        st_data = settings_append (st_data,
+    while (valid) {
+        info = treemodel_get_data (model, iter);
+        list = settings_append (list,
                 setting_new_string (nullptr, image_info_get_file_path (info)));
         image_info_free (info);
 
-        b_res = gtk_tree_model_iter_next (gtm_model, &gti_iter);
+        valid = gtk_tree_model_iter_next (model, &iter);
     }
-    return st_data;
+    return list;
 }
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Find file on list and select it
  */
 void
-treeview_find_select_item (GtkWidget  *gw_tview,
-                           const char *s_file)
+treeview_find_select_item (GtkWidget  *tree_view,
+                           const char *file)
 {
-    GtkTreeModel *gtm_model;         /* TreeModel */
+    GtkTreeModel *model;             /* TreeModel */
     GtkTreePath  *path;              /* TreePath */
-    GtkTreeIter   gti_iter;          /* TreeIter */
-    gboolean      b_res     = FALSE; /* Find item result */
+    GtkTreeIter   iter;              /* TreeIter */
+    gboolean      valid     = FALSE; /* Find item result */
     GValue        value     = {0,};  /* Item value */
-    const char   *s_val     = nullptr;  /* String with value */
+    const char   *file_path = nullptr;  /* String with value */
 
-    gtm_model = gtk_tree_view_get_model (GTK_TREE_VIEW (gw_tview));
-    b_res     = gtk_tree_model_get_iter_first (gtm_model, &gti_iter);
+    model = gtk_tree_view_get_model (GTK_TREE_VIEW (tree_view));
+    valid = gtk_tree_model_get_iter_first (model, &iter);
 
-    while (b_res) {
-        gtk_tree_model_get_value (gtm_model, &gti_iter,
+    while (valid) {
+        gtk_tree_model_get_value (model, &iter,
                                   COL_FILE_PATH, &value);
 
-        s_val = (const char*) g_value_get_string (&value);
+        file_path = (const char*) g_value_get_string (&value);
 
-        if (str_compare (s_file, s_val) == 0) {
-            path = gtk_tree_model_get_path (gtm_model, &gti_iter);
-            gtk_tree_view_scroll_to_cell (GTK_TREE_VIEW (gw_tview), path, nullptr,
-                    TRUE, 0.5, 0);
-            gtk_tree_view_set_cursor (GTK_TREE_VIEW (gw_tview),
+        if (str_compare (file, file_path) == 0) {
+            path = gtk_tree_model_get_path (model, &iter);
+            gtk_tree_view_scroll_to_cell (GTK_TREE_VIEW (tree_view), path,
+                                          nullptr, TRUE, 0.5, 0);
+            gtk_tree_view_set_cursor (GTK_TREE_VIEW (tree_view),
                                       path, nullptr, FALSE);
             gtk_tree_path_free (path);
             break;
         }
         g_value_unset(&value);
-        b_res = gtk_tree_model_iter_next (gtm_model, &gti_iter);
+        valid = gtk_tree_model_iter_next (model, &iter);
     }
 }
 /*----------------------------------------------------------------------------*/
@@ -279,48 +279,48 @@ treeview_find_select_item (GtkWidget  *gw_tview,
  * @brief  Remove duplicates from TreeView file list.
  */
 void
-treeview_remove_duplicates (GtkWidget *gw_tview)
+treeview_remove_duplicates (GtkWidget *tree_view)
 {
-    GtkTreeModel *gtm_model;         /* TreeModel */
-    GtkTreeIter   gti_iter;          /* TreeIter */
-    GtkTreeIter   gti_next;          /* TreeIter */
-    GtkTreeIter   gti_act;           /* TreeIter */
-    gboolean      b_res     = FALSE; /* Getting iter result */
-    gboolean      b_res2    = FALSE; /* Getting iter result */
-    GValue        value     = {0,};  /* Value to get */
-    GValue        value2    = {0,};  /* Value to get */
-    const char   *s_val     = nullptr;  /* First string to compare */
-    const char   *s_val2    = nullptr;  /* Second string to compare*/
+    GtkTreeModel *model;              /* TreeModel */
+    GtkTreeIter   iter;               /* TreeIter */
+    GtkTreeIter   next;               /* TreeIter */
+    GtkTreeIter   current;            /* TreeIter */
+    gboolean      valid      = FALSE; /* Getting iter result */
+    gboolean      next_valid = FALSE; /* Getting iter result */
+    GValue        value      = {0,};  /* Value to get */
+    GValue        value2     = {0,};  /* Value to get */
+    const char   *file_path  = nullptr; /* First string to compare */
+    const char   *other_path = nullptr; /* Second string to compare*/
 
-    gtm_model = gtk_tree_view_get_model (GTK_TREE_VIEW (gw_tview));
-    b_res     = gtk_tree_model_get_iter_first (gtm_model, &gti_iter);
+    model = gtk_tree_view_get_model (GTK_TREE_VIEW (tree_view));
+    valid = gtk_tree_model_get_iter_first (model, &iter);
 
-    while (b_res) {
+    while (valid) {
 
-        gti_next = gti_iter;
-        b_res2 = gtk_tree_model_iter_next (gtm_model, &gti_next);
+        next = iter;
+        next_valid = gtk_tree_model_iter_next (model, &next);
 
-        gtk_tree_model_get_value (gtm_model, &gti_iter,
+        gtk_tree_model_get_value (model, &iter,
                                   COL_FILE_PATH, &value);
-        s_val = (const char*) g_value_get_string (&value);
+        file_path = (const char*) g_value_get_string (&value);
 
-        while (b_res2) {
+        while (next_valid) {
 
-            gti_act = gti_next;
-            b_res2 = gtk_tree_model_iter_next (gtm_model, &gti_next);
+            current = next;
+            next_valid = gtk_tree_model_iter_next (model, &next);
 
-            gtk_tree_model_get_value (gtm_model, &gti_act,
+            gtk_tree_model_get_value (model, &current,
                                       COL_FILE_PATH, &value2);
-            s_val2 = (const char*) g_value_get_string (&value2);
+            other_path = (const char*) g_value_get_string (&value2);
 
-            if (str_compare (s_val, s_val2) == 0) {
+            if (str_compare (file_path, other_path) == 0) {
 
-                gtk_list_store_remove (GTK_LIST_STORE (gtm_model), &gti_act);
+                gtk_list_store_remove (GTK_LIST_STORE (model), &current);
             }
             g_value_unset (&value2);
         }
         g_value_unset (&value);
-        b_res = gtk_tree_model_iter_next (gtm_model, &gti_iter);
+        valid = gtk_tree_model_iter_next (model, &iter);
     }
 }
 /*----------------------------------------------------------------------------*/
@@ -328,105 +328,105 @@ treeview_remove_duplicates (GtkWidget *gw_tview)
  * @brief  Remove selected items from TreeView
  */
 void
-treeview_remove_selected (GtkWidget *gw_tview)
+treeview_remove_selected (GtkWidget *tree_view)
 {
-    GtkTreeSelection *gts_sele;        /* TreeSelection */
-    GtkTreeModel     *gtm_model;       /* TreeModel */
-    GtkTreeIter       gti_iter;        /* TreeIter */
-    GList            *gl_list  = nullptr; /* List of selected items */
-    GList            *gl_list1 = nullptr; /* Last of selected items */
+    GtkTreeSelection *selection;       /* TreeSelection */
+    GtkTreeModel     *model;           /* TreeModel */
+    GtkTreeIter       iter;            /* TreeIter */
+    GList            *rows = nullptr;     /* List of selected items */
+    GList            *row  = nullptr;     /* Last of selected items */
 
-    gtm_model = gtk_tree_view_get_model (GTK_TREE_VIEW (gw_tview));
-    gts_sele  = gtk_tree_view_get_selection (GTK_TREE_VIEW (gw_tview));
-    gl_list   = gtk_tree_selection_get_selected_rows (gts_sele, &gtm_model);
+    model     = gtk_tree_view_get_model (GTK_TREE_VIEW (tree_view));
+    selection = gtk_tree_view_get_selection (GTK_TREE_VIEW (tree_view));
+    rows      = gtk_tree_selection_get_selected_rows (selection, &model);
 
-    gl_list1  = g_list_last (gl_list);
+    row       = g_list_last (rows);
 
-    while (gl_list1 != nullptr) {
-        if (gtk_tree_model_get_iter (gtm_model, &gti_iter, gl_list1->data)) {
-            gtk_list_store_remove (GTK_LIST_STORE (gtm_model), &gti_iter);
+    while (row != nullptr) {
+        if (gtk_tree_model_get_iter (model, &iter, row->data)) {
+            gtk_list_store_remove (GTK_LIST_STORE (model), &iter);
             }
-        gl_list1 = gl_list1->prev;
+        row = row->prev;
     }
-    g_list_free_full (gl_list, (GDestroyNotify) gtk_tree_path_free);
+    g_list_free_full (rows, (GDestroyNotify) gtk_tree_path_free);
 }
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Move up selected items in TreeView.
  */
 void
-treeview_move_up (GtkWidget *gw_tview)
+treeview_move_up (GtkWidget *tree_view)
 {
-    GtkTreeSelection *gts_sele;        /* TreeSelection */
-    GtkTreeModel     *gtm_model;       /* TreeModel */
-    GtkTreeIter       gti_iter;        /* TreeIter */
-    GtkTreeIter       gti_itern;       /* TreeIter */
-    GList            *gl_list  = nullptr; /* TreeView selected rows list */
-    GList            *gl_list1 = nullptr; /* First selected / temp list */
+    GtkTreeSelection *selection;       /* TreeSelection */
+    GtkTreeModel     *model;           /* TreeModel */
+    GtkTreeIter       iter;            /* TreeIter */
+    GtkTreeIter       other;           /* TreeIter */
+    GList            *rows = nullptr;     /* TreeView selected rows list */
+    GList            *row  = nullptr;     /* First selected / temp list */
 
-    gtm_model = gtk_tree_view_get_model (GTK_TREE_VIEW (gw_tview));
-    gts_sele  = gtk_tree_view_get_selection (GTK_TREE_VIEW (gw_tview));
-    gl_list   = gtk_tree_selection_get_selected_rows (gts_sele, &gtm_model);
+    model     = gtk_tree_view_get_model (GTK_TREE_VIEW (tree_view));
+    selection = gtk_tree_view_get_selection (GTK_TREE_VIEW (tree_view));
+    rows      = gtk_tree_selection_get_selected_rows (selection, &model);
 
-    if (gl_list == nullptr)
+    if (rows == nullptr)
         return;
 
-    gl_list1 = g_list_first (gl_list);
+    row = g_list_first (rows);
 
-    while (gl_list1 != nullptr) {
+    while (row != nullptr) {
 
-        if (gtk_tree_model_get_iter (gtm_model, &gti_iter, gl_list1->data)) {
+        if (gtk_tree_model_get_iter (model, &iter, row->data)) {
 
-            gti_itern = gti_iter;
+            other = iter;
 
-            if (gtk_tree_model_iter_previous (gtm_model, &gti_itern)) {
-                gtk_list_store_swap (GTK_LIST_STORE (gtm_model),
-                                     &gti_iter, &gti_itern);
+            if (gtk_tree_model_iter_previous (model, &other)) {
+                gtk_list_store_swap (GTK_LIST_STORE (model),
+                                     &iter, &other);
             }
             else break;
         }
-        gl_list1 = gl_list1->next;
+        row = row->next;
     }
-    g_list_free_full (gl_list, (GDestroyNotify) gtk_tree_path_free);
+    g_list_free_full (rows, (GDestroyNotify) gtk_tree_path_free);
 }
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Move down selected items in TreeView.
  */
 void
-treeview_move_down (GtkWidget *gw_tview)
+treeview_move_down (GtkWidget *tree_view)
 {
-    GtkTreeSelection *gts_sele;        /* TreeSelection */
-    GtkTreeModel     *gtm_model;       /* TreeModel */
-    GtkTreeIter       gti_iter;        /* TreeIter */
-    GtkTreeIter       gti_itern;       /* TreeIter */
-    GList            *gl_list  = nullptr; /* TreeView selected rows list */
-    GList            *gl_list1 = nullptr; /* First selected / temp list */
+    GtkTreeSelection *selection;       /* TreeSelection */
+    GtkTreeModel     *model;           /* TreeModel */
+    GtkTreeIter       iter;            /* TreeIter */
+    GtkTreeIter       other;           /* TreeIter */
+    GList            *rows = nullptr;     /* TreeView selected rows list */
+    GList            *row  = nullptr;     /* First selected / temp list */
 
-    gtm_model = gtk_tree_view_get_model (GTK_TREE_VIEW (gw_tview));
-    gts_sele  = gtk_tree_view_get_selection (GTK_TREE_VIEW (gw_tview));
-    gl_list   = gtk_tree_selection_get_selected_rows (gts_sele, &gtm_model);
+    model     = gtk_tree_view_get_model (GTK_TREE_VIEW (tree_view));
+    selection = gtk_tree_view_get_selection (GTK_TREE_VIEW (tree_view));
+    rows      = gtk_tree_selection_get_selected_rows (selection, &model);
 
-    if (gl_list == nullptr)
+    if (rows == nullptr)
         return;
 
-    gl_list1 = g_list_last (gl_list);
+    row = g_list_last (rows);
 
-    while (gl_list1 != nullptr) {
+    while (row != nullptr) {
 
-        if (gtk_tree_model_get_iter (gtm_model, &gti_iter, gl_list1->data)) {
+        if (gtk_tree_model_get_iter (model, &iter, row->data)) {
 
-            gti_itern = gti_iter;
+            other = iter;
 
-            if (gtk_tree_model_iter_next (gtm_model, &gti_itern)) {
-                gtk_list_store_swap (GTK_LIST_STORE (gtm_model),
-                                     &gti_iter, &gti_itern);
+            if (gtk_tree_model_iter_next (model, &other)) {
+                gtk_list_store_swap (GTK_LIST_STORE (model),
+                                     &iter, &other);
             }
             else break;
         }
-        gl_list1 = gl_list1->prev;
+        row = row->prev;
     }
-    g_list_free_full (gl_list, (GDestroyNotify) gtk_tree_path_free);
+    g_list_free_full (rows, (GDestroyNotify) gtk_tree_path_free);
 }
 /*----------------------------------------------------------------------------*/
 /**
@@ -435,80 +435,80 @@ treeview_move_down (GtkWidget *gw_tview)
 GtkWidget *
 create_tview (void)
 {
-    GtkWidget         *gw_tview;   /* Widget to return */
-    GtkCellRenderer   *gcr_render; /* CellRenderer*/
-    GtkListStore      *gls_list;   /* ListStore*/
-    GtkTreeSelection  *gts_sele;   /* TreeSelection*/
-    GtkTreeViewColumn *gtvc_col;   /* TreeViewColumn*/
+    GtkWidget         *tree_view;  /* Widget to return */
+    GtkCellRenderer   *renderer;   /* CellRenderer*/
+    GtkListStore      *store;      /* ListStore*/
+    GtkTreeSelection  *selection;  /* TreeSelection*/
+    GtkTreeViewColumn *column;     /* TreeViewColumn*/
 
-    gw_tview = gtk_tree_view_new ();
-    gts_sele  = gtk_tree_view_get_selection (GTK_TREE_VIEW (gw_tview));
-    gtk_tree_selection_set_mode (gts_sele, GTK_SELECTION_MULTIPLE);
+    tree_view = gtk_tree_view_new ();
+    selection = gtk_tree_view_get_selection (GTK_TREE_VIEW (tree_view));
+    gtk_tree_selection_set_mode (selection, GTK_SELECTION_MULTIPLE);
 
-    gcr_render = gtk_cell_renderer_text_new ();
-    gtvc_col   = gtk_tree_view_column_new_with_attributes ("File name",
-                                                           gcr_render,
-                                                           "text",
-                                                           COL_FILE_NAME,
-                                                           nullptr);
-    gtk_tree_view_column_set_sort_column_id (gtvc_col, COL_FILE_NAME);
-    gtk_tree_view_insert_column (GTK_TREE_VIEW (gw_tview), gtvc_col, -1);
+    renderer = gtk_cell_renderer_text_new ();
+    column   = gtk_tree_view_column_new_with_attributes ("File name",
+                                                         renderer,
+                                                         "text",
+                                                         COL_FILE_NAME,
+                                                         nullptr);
+    gtk_tree_view_column_set_sort_column_id (column, COL_FILE_NAME);
+    gtk_tree_view_insert_column (GTK_TREE_VIEW (tree_view), column, -1);
 
-    gcr_render = gtk_cell_renderer_text_new ();
-    gtvc_col   = gtk_tree_view_column_new_with_attributes ("Dimensions",
-                                                           gcr_render,
-                                                           "text",
-                                                           COL_WIDTH_HEIGHT,
-                                                           nullptr);
-    gtk_tree_view_column_set_sort_column_id (gtvc_col, COL_WIDTH_HEIGHT);
-    gtk_tree_view_insert_column (GTK_TREE_VIEW (gw_tview), gtvc_col, -1);
+    renderer = gtk_cell_renderer_text_new ();
+    column   = gtk_tree_view_column_new_with_attributes ("Dimensions",
+                                                         renderer,
+                                                         "text",
+                                                         COL_WIDTH_HEIGHT,
+                                                         nullptr);
+    gtk_tree_view_column_set_sort_column_id (column, COL_WIDTH_HEIGHT);
+    gtk_tree_view_insert_column (GTK_TREE_VIEW (tree_view), column, -1);
 
-    gcr_render = gtk_cell_renderer_text_new ();
-    gtvc_col   = gtk_tree_view_column_new_with_attributes ("Location",
-                                                           gcr_render,
-                                                           "text",
-                                                           COL_FILE_DIR,
-                                                           nullptr);
-    gtk_tree_view_column_set_sort_column_id (gtvc_col, COL_FILE_DIR);
-    gtk_tree_view_insert_column (GTK_TREE_VIEW (gw_tview), gtvc_col, -1);
+    renderer = gtk_cell_renderer_text_new ();
+    column   = gtk_tree_view_column_new_with_attributes ("Location",
+                                                         renderer,
+                                                         "text",
+                                                         COL_FILE_DIR,
+                                                         nullptr);
+    gtk_tree_view_column_set_sort_column_id (column, COL_FILE_DIR);
+    gtk_tree_view_insert_column (GTK_TREE_VIEW (tree_view), column, -1);
 
-    gtk_tree_view_set_search_column (GTK_TREE_VIEW (gw_tview), COL_FILE_NAME);
+    gtk_tree_view_set_search_column (GTK_TREE_VIEW (tree_view), COL_FILE_NAME);
 
-    gls_list = gtk_list_store_new (NUM_COLS,
-                                   G_TYPE_STRING,
-                                   G_TYPE_STRING,
-                                   G_TYPE_STRING,
-                                   G_TYPE_STRING,
-                                   G_TYPE_INT,
-                                   G_TYPE_INT);
+    store = gtk_list_store_new (NUM_COLS,
+                                G_TYPE_STRING,
+                                G_TYPE_STRING,
+                                G_TYPE_STRING,
+                                G_TYPE_STRING,
+                                G_TYPE_INT,
+                                G_TYPE_INT);
 
-    gtk_tree_view_set_model (GTK_TREE_VIEW (gw_tview),
-                             GTK_TREE_MODEL (gls_list));
+    gtk_tree_view_set_model (GTK_TREE_VIEW (tree_view),
+                             GTK_TREE_MODEL (store));
 
-    g_object_unref (gls_list);
+    g_object_unref (store);
 
-    return gw_tview;
+    return tree_view;
 }
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Get one file path from wallpaper list.
  */
 char *
-treeview_get_one_file (GtkWidget *gw_tview)
+treeview_get_one_file (GtkWidget *tree_view)
 {
-    GtkTreeModel *gtm_model;    /* TreeModel */
-    GtkTreeIter   gti_iter;     /* TreeIter */
-    int           i_cnt = 0;    /* Number of items */
-    int           i_rnd = 0;    /* Random item number */
-    char         *s_fn  = nullptr; /* File name to return */
+    GtkTreeModel *model;        /* TreeModel */
+    GtkTreeIter   iter;         /* TreeIter */
+    int           count = 0;    /* Number of items */
+    int           pick  = 0;    /* Random item number */
+    char         *file  = nullptr; /* File name to return */
 
-    gtm_model = gtk_tree_view_get_model (GTK_TREE_VIEW (gw_tview));
-    i_cnt     = gtk_tree_model_iter_n_children (gtm_model, nullptr);
-    i_rnd     = g_random_int_range (0, i_cnt);
+    model = gtk_tree_view_get_model (GTK_TREE_VIEW (tree_view));
+    count = gtk_tree_model_iter_n_children (model, nullptr);
+    pick  = g_random_int_range (0, count);
 
-    if (gtk_tree_model_iter_nth_child (gtm_model, &gti_iter, nullptr, i_rnd))
-        gtk_tree_model_get (gtm_model, &gti_iter, COL_FILE_PATH, &s_fn, -1);
-    return s_fn;
+    if (gtk_tree_model_iter_nth_child (model, &iter, nullptr, pick))
+        gtk_tree_model_get (model, &iter, COL_FILE_PATH, &file, -1);
+    return file;
 }
 /*----------------------------------------------------------------------------*/
 

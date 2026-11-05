@@ -102,436 +102,438 @@ Setting {
 } Setting;
 /*----------------------------------------------------------------------------*/
 /**
- * @fn  SetValType setting_get_type (const Setting *st_setting)
+ * @fn  SetValType setting_get_type (const Setting *setting)
  *
  * @brief  Get Setting type value
  *
- * @param[in] st_setting  Setting to get type
+ * @param[in] setting  Setting to get type
  * @return    Setting type value
  *
- * @fn  const char * setting_get_name (const Setting *st_setting)
+ * @fn  const char * setting_get_name (const Setting *setting)
  *
  * @brief  Get Setting name string
  *
- * @param[in] st_setting  Setting to get name
+ * @param[in] setting  Setting to get name
  * @return    Name string
  *
- * @fn  uint_fast32_t setting_get_hash (const Setting *st_setting)
+ * @fn  uint_fast32_t setting_get_hash (const Setting *setting)
  *
  * @brief  Get Setting hash value
  *
- * @param[in] st_setting  Setting to get hash
+ * @param[in] setting  Setting to get hash
  * @return    Hash value
  */
 /*----------------------------------------------------------------------------*/
-static inline SetValType    setting_get_type (const Setting *st_setting) {
-    return st_setting != nullptr ? st_setting->v_type : SET_VAL_NULL;
+static inline SetValType    setting_get_type (const Setting *setting) {
+    return setting != nullptr ? setting->v_type : SET_VAL_NULL;
 }
-static inline const char  * setting_get_name (const Setting *st_setting) {
-    return st_setting != nullptr ? st_setting->s_name : nullptr;
+static inline const char  * setting_get_name (const Setting *setting) {
+    return setting != nullptr ? setting->s_name : nullptr;
 }
-static inline uint_fast32_t setting_get_hash (const Setting *st_setting) {
-    return st_setting != nullptr ? st_setting->hash : 0;
+static inline uint_fast32_t setting_get_hash (const Setting *setting) {
+    return setting != nullptr ? setting->hash : 0;
 }
 /*----------------------------------------------------------------------------*/
 /**
- * @fn  Setting * setting_get_parent (const Setting *st_setting)
+ * @fn  Setting * setting_get_parent (const Setting *setting)
  *
  * @brief  Get Setting's parent Setting
  *
- * @param[in] st_setting  Setting item
+ * @param[in] setting  Setting item
  * @return    Parent Setting
  *
- * @fn  Setting * setting_get_child (const Setting *st_setting)
+ * @fn  Setting * setting_get_child (const Setting *setting)
  *
  * @brief  Get Setting's child Setting
  *
- * @param[in] st_setting  Setting item
+ * @param[in] setting  Setting item
  * @return    Child Setting
  */
 /*----------------------------------------------------------------------------*/
-static inline Setting * setting_get_parent (const Setting *st_setting) {
-    return st_setting != nullptr ? st_setting->parent : nullptr;
+static inline Setting * setting_get_parent (const Setting *setting) {
+    return setting != nullptr ? setting->parent : nullptr;
 }
 
-Setting * setting_get_child  (const Setting *st_setting);
+Setting * setting_get_child  (const Setting *setting);
 /*----------------------------------------------------------------------------*/
 /**
- * @fn  Setting * setting_next (const Setting *st_setting)
+ * @fn  Setting * setting_next (const Setting *setting)
  *
  * @brief  Get next Setting in list
  *
- * @param[in] st_setting  Setting item
+ * @param[in] setting  Setting item
  * @return    Next Setting in list or null
  *
- * @fn  Setting * setting_prev (const Setting *st_setting)
+ * @fn  Setting * setting_prev (const Setting *setting)
  *
  * @brief  Get previous Setting in list
  *
- * @param[in] st_setting  Setting item
+ * @param[in] setting  Setting item
  * @return    Previous Setting in list or null
  */
 /*----------------------------------------------------------------------------*/
-static inline Setting * setting_next (const Setting *st_setting) {
-    return st_setting != nullptr ? st_setting->next : nullptr;
+static inline Setting * setting_next (const Setting *setting) {
+    return setting != nullptr ? setting->next : nullptr;
 }
-static inline Setting * setting_prev (const Setting *st_setting) {
-    return st_setting != nullptr ? st_setting->prev : nullptr;
+static inline Setting * setting_prev (const Setting *setting) {
+    return setting != nullptr ? setting->prev : nullptr;
 }
 /*----------------------------------------------------------------------------*/
 /**
- * @fn  void setting_free (Setting *st_set)
+ * @fn  void setting_free (Setting *setting)
  *
  * @brief  Free Setting data
  *
- * @param[in]  st_set  Setting object
+ * @param[in]  setting  Setting object
  * @return     none
  *
- * @fn  void settings_free_all (Setting *st_set)
+ * @fn  void settings_free_all (Setting *setting)
  *
  * @brief  Free all settings in given Setting
  *
- * @param[in]  st_set  Setting object
+ * @param[in]  setting  Setting object
  * @return     none
  */
 /*----------------------------------------------------------------------------*/
-void setting_free      (Setting *st_set);
+void setting_free      (Setting *setting);
 
-void settings_free_all (Setting *st_set);
+void settings_free_all (Setting *setting);
 /*----------------------------------------------------------------------------*/
 /**
- * @fn  int64_t setting_get_int (const Setting *st_set)
+ * @fn  int64_t setting_get_int (const Setting *setting)
  *
  * @brief  Get integer value stored in Setting
  *
  * It is set to hold and return 64 bit integer value.
  *
- * @param[in]  st_set  Setting object
+ * @param[in]  setting  Setting object
  * @return     64 bit integer or 0 if incorrect type to get
  *
- * @fn  uint64_t setting_get_uint (const Setting *st_set)
+ * @fn  uint64_t setting_get_uint (const Setting *setting)
  *
  * @brief  Get unsigned integer value stored in Setting
  *
  * It is set to hold and return 64 bit unsigned integer value.
  *
- * @param[in]  st_set  Setting object
+ * @param[in]  setting  Setting object
  * @return     64 bit unsigned integer or 0 if incorrect type to get
  *
- * @fn  double setting_get_double (const Setting *st_set)
+ * @fn  double setting_get_double (const Setting *setting)
  *
  * @brief  Get double type value stored in Setting
  *
- * @param[in]  st_set  Setting object
+ * @param[in]  setting  Setting object
  * @return     Double value or 0 if incorrect type to get
  *
- * @fn  const char * setting_get_string (const Setting *st_set)
+ * @fn  const char * setting_get_string (const Setting *setting)
  *
  * @brief  Get text string stored in Setting
  *
- * @param[in]  st_set  Setting object
+ * @param[in]  setting  Setting object
  * @return     String or null if incorrect type to get
  */
 /*----------------------------------------------------------------------------*/
-static inline int64_t      setting_get_int    (const Setting *st_set) {
-    return setting_get_type (st_set) == SET_VAL_INT ? st_set->data.i_val : 0;
+static inline int64_t      setting_get_int    (const Setting *setting) {
+    return setting_get_type (setting) == SET_VAL_INT ? setting->data.i_val : 0;
 }
-static inline uint64_t     setting_get_uint   (const Setting *st_set) {
-    return setting_get_type (st_set) == SET_VAL_UINT ? st_set->data.ui_val : 0;
+static inline uint64_t     setting_get_uint   (const Setting *setting) {
+    return setting_get_type (setting) == SET_VAL_UINT ?
+        setting->data.ui_val : 0;
 }
-static inline double       setting_get_double (const Setting *st_set) {
-    return setting_get_type (st_set) == SET_VAL_DOUBLE ? st_set->data.d_val : 0;
+static inline double       setting_get_double (const Setting *setting) {
+    return setting_get_type (setting) == SET_VAL_DOUBLE ?
+        setting->data.d_val : 0;
 }
-static inline const char * setting_get_string (const Setting *st_set) {
-    return setting_get_type (st_set) == SET_VAL_STRING ? 
-        (const char *) st_set->data.s_val : nullptr;
+static inline const char * setting_get_string (const Setting *setting) {
+    return setting_get_type (setting) == SET_VAL_STRING ? 
+        (const char *) setting->data.s_val : nullptr;
 }
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Set setting to string type and its content to val.
  *
- * @param[in,out] st_set  Setting object
- * @param[in]     val     String value to set
+ * @param[in,out] setting  Setting object
+ * @param[in]     val      String value to set
  * @return        none
  */
-void         setting_set_string (Setting       *st_set,
+void         setting_set_string (Setting       *setting,
                                  const char    *val);
 /*----------------------------------------------------------------------------*/
 /**
- * @fn  Setting * setting_new_setting (const char *s_name)
+ * @fn  Setting * setting_new_setting (const char *name)
  * @brief      Create new Setting object, set it to be a setting type and its
- *             name to s_name.
- * @param[in]  s_name  Name of the setting (should be longer than 2 letters)
+ *             name to the given name.
+ * @param[in]  name  Name of the setting (should be longer than 2 letters)
  * @return     New Setting object
  *
- * @fn  Setting * setting_new_array (const char *s_name)
+ * @fn  Setting * setting_new_array (const char *name)
  * @brief      Create new Setting object, set it to be an array type and its
- *             name to s_name.
- * @param[in]  s_name  Name of the setting (should be longer than 2 letters)
+ *             name to the given name.
+ * @param[in]  name  Name of the setting (should be longer than 2 letters)
  * @return     New Setting object
  *
- * @fn  Setting * setting_new_int (const char *s_name, const int64_t val)
+ * @fn  Setting * setting_new_int (const char *name, const int64_t val)
  * @brief      Create new Setting object for an integer (64 bit), set its
- *             value to val and name to s_name.
- * @param[in]  s_name  Name of the setting (should be longer than 2 letters)
- * @param[in]  val     Value to store in setting
+ *             value to val and name to the given name.
+ * @param[in]  name  Name of the setting (should be longer than 2 letters)
+ * @param[in]  val   Value to store in setting
  * @return     New Setting object
  *
- * @fn  Setting * setting_new_uint (const char *s_name, const uint64_t val)
+ * @fn  Setting * setting_new_uint (const char *name, const uint64_t val)
  * @brief      Create new Setting object for an unsigned integer (64 bit),
- *             set its value to i_val and name to s_name.
- * @param[in]  s_name  Name of the setting (should be longer than 2 letters)
- * @param[in]  val     Value to store in setting
+ *             set its value to val and name to the given name.
+ * @param[in]  name  Name of the setting (should be longer than 2 letters)
+ * @param[in]  val   Value to store in setting
  * @return     New Setting object
  *
- * @fn  Setting * setting_new_double (const char *s_name, const double val)
+ * @fn  Setting * setting_new_double (const char *name, const double val)
  * @brief      Create new Setting object for a double, set its value to val
- *             and name to s_name.
- * @param[in]  s_name  Name of the setting (should be longer than 2 letters)
- * @param[in]  val     Value to store in setting
+ *             and name to the given name.
+ * @param[in]  name  Name of the setting (should be longer than 2 letters)
+ * @param[in]  val   Value to store in setting
  * @return     New Setting object
  *
- * @fn  Setting * setting_new_string (const char *s_name, const char *val)
+ * @fn  Setting * setting_new_string (const char *name, const char *val)
  * @brief      Create new Setting object for a string, set its value to val
- *             and name to s_name.
- * @param[in]  s_name  Name of the setting (should be longer than 2 letters)
- * @param[in]  val     Value to store in setting
+ *             and name to the given name.
+ * @param[in]  name  Name of the setting (should be longer than 2 letters)
+ * @param[in]  val   Value to store in setting
  * @return     New Setting object
  */
 /*----------------------------------------------------------------------------*/
 [[nodiscard]]
-Setting * setting_new_setting (const char     *s_name)
+Setting * setting_new_setting (const char     *name)
           __attribute__ ((returns_nonnull));
 
 [[nodiscard]]
-Setting * setting_new_array   (const char     *s_name)
+Setting * setting_new_array   (const char     *name)
           __attribute__ ((returns_nonnull));
 
 [[nodiscard]]
-Setting * setting_new_int     (const char     *s_name,
+Setting * setting_new_int     (const char     *name,
                                const int64_t   val)
           __attribute__ ((returns_nonnull));
 
 [[nodiscard]]
-Setting * setting_new_uint    (const char     *s_name,
+Setting * setting_new_uint    (const char     *name,
                                const uint64_t  val)
           __attribute__ ((returns_nonnull));
 
 [[nodiscard]]
-Setting * setting_new_double  (const char     *s_name,
+Setting * setting_new_double  (const char     *name,
                                const double    val)
           __attribute__ ((returns_nonnull));
 
 [[nodiscard]]
-Setting * setting_new_string  (const char     *s_name,
+Setting * setting_new_string  (const char     *name,
                                const char     *val)
           __attribute__ ((returns_nonnull));
 /*----------------------------------------------------------------------------*/
 /**
- * @fn  Setting * setting_first (Setting *st_settings)
+ * @fn  Setting * setting_first (Setting *settings)
  *
  * @brief  Find and return first item in a Setting list.
  *
- * @param[in] st_settings  List of Setting items
+ * @param[in] settings  List of Setting items
  * @return    Pointer to first element on list or null if list is empty
  *
- * @fn  Setting * setting_last (Setting *st_settings)
+ * @fn  Setting * setting_last (Setting *settings)
  *
  * @brief  Find and return last item in a Setting list.
  *
- * @param[in] st_settings  List of Setting items
+ * @param[in] settings  List of Setting items
  * @return    Pointer to last element on list or null if list is empty
  *
- * @fn  Setting * setting_get_top_parent (Setting *st_setting)
+ * @fn  Setting * setting_get_top_parent (Setting *setting)
  *
  * @brief  Get top parent Setting of given Setting item.
  *
- * @param[in] st_setting  Setting to get its top parent
+ * @param[in] setting  Setting to get its top parent
  * @return    Pointer to top parent Setting item
  *
- * @fn  Setting * settings_find (Setting *st_settings, const char *s_name)
+ * @fn  Setting * settings_find (Setting *settings, const char *name)
  *
  * @brief  Find Setting with given name in list starting at position of input
  *         Setting item.
  *
- * @param[in] st_settings  List of Setting items
- * @param[in] s_name       Name of Setting to be found
+ * @param[in] settings  List of Setting items
+ * @param[in] name      Name of Setting to be found
  * @return    Pointer to found Setting or null if not found
  *
- * @fn  Setting * setting_get_at_pos (Setting      *st_settings,
+ * @fn  Setting * setting_get_at_pos (Setting      *settings,
  *                                    const size_t  pos)
  *
- * @brief  Find and return Setting item at given posision in st_settings
+ * @brief  Find and return Setting item at given posision in settings
  *         list.
  *
- * @param[in] st_settings  List of Setting items
- * @param[in] pos          Position of setting to get
+ * @param[in] settings  List of Setting items
+ * @param[in] pos       Position of setting to get
  * @return    Pointer to Setting item or null if not found
  */
 /*----------------------------------------------------------------------------*/
-Setting * setting_first          (Setting       *st_settings);
+Setting * setting_first          (Setting       *settings);
 
-Setting * setting_last           (Setting       *st_settings);
+Setting * setting_last           (Setting       *settings);
 
-Setting * setting_get_top_parent (Setting       *st_setting);
+Setting * setting_get_top_parent (Setting       *setting);
 
-Setting * settings_find          (Setting       *st_settings,
-                                  const char    *s_name);
+Setting * settings_find          (Setting       *settings,
+                                  const char    *name);
 
-Setting * setting_get_at_pos     (Setting       *st_settings,
+Setting * setting_get_at_pos     (Setting       *settings,
                                   const size_t   pos);
 /*----------------------------------------------------------------------------*/
 /**
- * @brief  Count number of Setting items present in given st_settings list.
+ * @brief  Count number of Setting items present in given settings list.
  *
- * @param[in] st_settings  List of Setting items
- * @return    Number of Setting items in st_settings list
+ * @param[in] settings  List of Setting items
+ * @return    Number of Setting items in settings list
  */
-size_t    settings_count         (const Setting *st_settings);
+size_t    settings_count         (const Setting *settings);
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Remove Setting from list.
  *
- * @param[in] st_setting  Setting to remove
+ * @param[in] setting  Setting to remove
  * @return    Pointer to beginning of list
  */
-Setting * setting_remove         (Setting *st_setting);
+Setting * setting_remove         (Setting *setting);
 /*----------------------------------------------------------------------------*/
 /**
- * @brief  Replace Setting st_old in list with st_new.
+ * @brief  Replace Setting old_item in list with new_item.
  *
- * @param[in,out] st_old  Old Setting item to be replaced
- * @param[in,out] st_new  New Setting item to replace old one
+ * @param[in,out] old_item  Old Setting item to be replaced
+ * @param[in,out] new_item  New Setting item to replace old one
  * @return        Pointer to first element in Setting list
  */
-Setting * setting_replace        (Setting       *st_old,
-                                  Setting       *st_new);
+Setting * setting_replace        (Setting       *old_item,
+                                  Setting       *new_item);
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Find setting in list and replace.
  *
- * Function is looking in Setting list st_list for a setting with name like
- * name of st_setting Setting. After finding such setting it will be replaced
- * with st_setting and the function stops (only the first match is
+ * Function is looking in Setting list for a setting with the same
+ * name as setting. After finding such setting it will be replaced
+ * with setting and the function stops (only the first match is
  * replaced). Function returns beginning of Setting list.
  *
- * @param[in,out] st_list     List of Setting items
- * @param[in,out] st_setting  Destination Setting
+ * @param[in,out] list     List of Setting items
+ * @param[in,out] setting  Destination Setting
  * @return        Beginning of Setting list
  */
-Setting * settings_find_replace  (Setting       *st_list,
-                                  Setting       *st_setting);
+Setting * settings_find_replace  (Setting       *list,
+                                  Setting       *setting);
 /*----------------------------------------------------------------------------*/
 /**
- * @fn  void setting_add_child (Setting *st_parent,
- *                              Setting *st_child)
+ * @fn  void setting_add_child (Setting *parent,
+ *                              Setting *child)
  *
- * @brief  Append Setting st_child to child list of Setting st_parent
+ * @brief  Append Setting child to child list of Setting parent
  *
- * @param[in,out] st_parent  Parent Setting to add child Setting
- * @param[in,out] st_child   Child Setting to add to parent's list
+ * @param[in,out] parent  Parent Setting to add child Setting
+ * @param[in,out] child   Child Setting to add to parent's list
  * @return        none
  *
- * @fn  void settings_prepend (Setting *st_list,
- *                             Setting *st_setting)
+ * @fn  void settings_prepend (Setting *list,
+ *                             Setting *setting)
  *
- * @brief  Prepend st_setting item to st_list list.
+ * @brief  Prepend setting item to the list.
  *
- * @param[in]  st_list     List of Setting items
- * @param[out] st_setting  Setting item to prepend
+ * @param[in]  list     List of Setting items
+ * @param[out] setting  Setting item to prepend
  * @return     none
  *
- * @fn  void settings_append (Setting *st_list,
- *                            Setting *st_setting)
+ * @fn  void settings_append (Setting *list,
+ *                            Setting *setting)
  *
- * @brief  Append st_setting item to st_list list.
+ * @brief  Append setting item to the list.
  *
- * @param[in]  st_list     List of Setting items
- * @param[out] st_setting  Setting item to append
+ * @param[in]  list     List of Setting items
+ * @param[out] setting  Setting item to append
  * @return     none
  *
- * @fn  void settings_append_or_ignore (Setting *st_list,
- *                                      Setting *st_setting)
+ * @fn  void settings_append_or_ignore (Setting *list,
+ *                                      Setting *setting)
  *
- * @brief  Append Setting item to st_list list or ignore append if
+ * @brief  Append Setting item to the list or ignore append if
  *         setting with same name exists on it.
  *
- * @param[in]  st_list     List of Setting items
- * @param[out] st_setting  Setting item to append
+ * @param[in]  list     List of Setting items
+ * @param[out] setting  Setting item to append
  * @return     none
  *
- * @fn  void settings_append_or_replace (Setting *st_list,
- *                                       Setting *st_setting)
+ * @fn  void settings_append_or_replace (Setting *list,
+ *                                       Setting *setting)
  *
- * @brief  Append Setting item to st_list list and replace if
+ * @brief  Append Setting item to the list and replace if
  *         setting with same name exists on it.
  *
- * @param[in]  st_list     List of Setting items
- * @param[out] st_setting  Setting item to append
+ * @param[in]  list     List of Setting items
+ * @param[out] setting  Setting item to append
  * @return     none
  */
 /*----------------------------------------------------------------------------*/
-void      setting_add_child          (Setting *st_parent,
-                                      Setting *st_child);
+void      setting_add_child          (Setting *parent,
+                                      Setting *child);
 
-Setting * settings_prepend           (Setting *st_list,
-                                      Setting *st_setting);
+Setting * settings_prepend           (Setting *list,
+                                      Setting *setting);
 
-Setting * settings_append            (Setting *st_list,
-                                      Setting *st_setting);
+Setting * settings_append            (Setting *list,
+                                      Setting *setting);
 
-void      settings_append_or_ignore  (Setting *st_list,
-                                      Setting *st_setting);
+void      settings_append_or_ignore  (Setting *list,
+                                      Setting *setting);
 
-Setting * settings_append_or_replace (Setting *st_list,
-                                      Setting *st_setting);
+Setting * settings_append_or_replace (Setting *list,
+                                      Setting *setting);
 /*----------------------------------------------------------------------------*/
 /**
- * @fn  Setting * setting_get_top_level (Setting *st_setting)
+ * @fn  Setting * setting_get_top_level (Setting *setting)
  *
  * @brief  Get top level Setting on list
  *
- * @param[in]  st_setting  Setting from list
+ * @param[in]  setting  Setting from list
  * @return     Top level setting in list
  *
- * @fn  size_t setting_count_children (const Setting *st_setting)
+ * @fn  size_t setting_count_children (const Setting *setting)
  *
  * @brief  Count children in Setting object or array
  *
- * @param[in]  st_setting  Setting from list
+ * @param[in]  setting  Setting from list
  * @return     Number of items in List
  *
- * @fn  Setting * setting_find_child (const Setting *st_setting,
- *                                    const char *s_name)
+ * @fn  Setting * setting_find_child (const Setting *setting,
+ *                                    const char *name)
  *
  * @brief  Find child with given name in Setting object or array
  *
- * @param[in]  st_setting  Setting from list
- * @param[in]  s_name      Name of Setting to find
+ * @param[in]  setting  Setting from list
+ * @param[in]  name     Name of Setting to find
  * @return     Found Setting item or null of not found
  */
 /*----------------------------------------------------------------------------*/
-static inline Setting * setting_get_top_level  (Setting       *st_setting) {
-    return setting_first (setting_get_top_parent (st_setting));
+static inline Setting * setting_get_top_level  (Setting       *setting) {
+    return setting_first (setting_get_top_parent (setting));
 }
-static inline size_t    setting_count_children (const Setting *st_setting) {
-    return settings_count (setting_get_child (st_setting));
+static inline size_t    setting_count_children (const Setting *setting) {
+    return settings_count (setting_get_child (setting));
 }
-static inline Setting * setting_find_child     (const Setting *st_setting,
-                                                const char    *s_name) {
-    return settings_find (setting_get_child (st_setting), s_name);
+static inline Setting * setting_find_child     (const Setting *setting,
+                                                const char    *name) {
+    return settings_find (setting_get_child (setting), name);
 }
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Check if settings have equal names.
  *
- * @param[in]  st_set1  First setting
- * @param[in]  st_set2  Second setting
+ * @param[in]  first   First setting
+ * @param[in]  second  Second setting
  * @return     Compare result. 1 if they are qual 0 if they are not
  */
-static inline int settings_equal_names (const Setting *st_set1,
-                                        const Setting *st_set2) {
-    return st_set1->hash == st_set2->hash;
+static inline int settings_equal_names (const Setting *first,
+                                        const Setting *second) {
+    return first->hash == second->hash;
 }
 /*----------------------------------------------------------------------------*/
 #ifdef DEBUG
@@ -539,12 +541,12 @@ static inline int settings_equal_names (const Setting *st_set1,
 /**
  * @brief  Print setting info
  *
- * @param[out]  st_set  Setting object
+ * @param[out]  setting  Setting object
  * @return      none
  */
-void setting_print  (const Setting *st_set);
+void setting_print  (const Setting *setting);
 
-void settings_print (const Setting *st_set);
+void settings_print (const Setting *setting);
 /*----------------------------------------------------------------------------*/
 #endif
 #endif

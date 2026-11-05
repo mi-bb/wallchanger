@@ -29,14 +29,14 @@
 /**
  * @brief  Dialog with other settings.
  *
- * @param[in] gw_parent  Parent window
- * @param[in] s_cfg_file Path to config file
- * @param[in] s_fn       Path to sample wallpaper file
+ * @param[in] parent       Parent window
+ * @param[in] cfg_file     Path to config file
+ * @param[in] sample_file  Path to sample wallpaper file
  * @return    none
  */
-void other_settings_dialog (GtkWindow  *gw_parent,
-                            const char *s_cfg_file,
-                            const char *s_fn);
+void other_settings_dialog (GtkWindow  *parent,
+                            const char *cfg_file,
+                            const char *sample_file);
 /*----------------------------------------------------------------------------*/
 #endif
 

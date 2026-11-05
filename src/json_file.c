@@ -39,9 +39,9 @@ json_open_file (const char    *file_name,
                 uint_fast32_t *json_hash,
                 int           *err)
 {
-    json_object   *j_obj;          /* Json object made from file data */
+    json_object   *root;          /* Json object made from file data */
     char          *buff  = nullptr; /* File data buffer */
-    enum json_tokener_error j_err; /* Json error output */
+    enum json_tokener_error parse_err; /* Json error output */
 
     *err = ERR_OK;
     if (json_hash != nullptr)
@@ -54,28 +54,28 @@ json_open_file (const char    *file_name,
         return nullptr;
     }
     if (buff == nullptr || buff[0] == '\0') {
-        j_obj = json_object_new_object ();
+        root = json_object_new_object ();
     }
     else {
-        j_obj = json_tokener_parse_verbose (buff, &j_err);
-        if (j_obj == nullptr ||
-            json_object_get_type (j_obj) != json_type_object ||
-            j_err != json_tokener_success) {
+        root = json_tokener_parse_verbose (buff, &parse_err);
+        if (root == nullptr ||
+            json_object_get_type (root) != json_type_object ||
+            parse_err != json_tokener_success) {
 #ifdef DEBUG
-            printf ("Json error: %d\n", j_err);
-            printf ("Json type:  %d\n", json_object_get_type (j_obj));
+            printf ("Json error: %d\n", parse_err);
+            printf ("Json type:  %d\n", json_object_get_type (root));
             printf ("Error, wrong json file\n");
 #endif
-            if (j_obj != nullptr)
-                json_object_put (j_obj);
-            j_obj = json_object_new_object ();
+            if (root != nullptr)
+                json_object_put (root);
+            root = json_object_new_object ();
         }
     }
     if (json_hash != nullptr)
-        *json_hash = hash (json_object_to_json_string (j_obj));
+        *json_hash = hash (json_object_to_json_string (root));
 
     free (buff);
-    return j_obj;
+    return root;
 }
 /*----------------------------------------------------------------------------*/
 

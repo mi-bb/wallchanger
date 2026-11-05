@@ -50,118 +50,118 @@
 constexpr int BUFF_SIZE = 512;
 /*----------------------------------------------------------------------------*/
 /**
- * @fn  static char * read_proc_file_data (const char *s_fname,
- *                                         int        *i_err)
+ * @fn  static char * read_proc_file_data (const char *file_name,
+ *                                         int        *error)
  *
  * @brief  Read data from file and return it in string.
  *
- * @param[in]  s_fname  File name
- * @param[out] i_err    Error output
+ * @param[in]  file_name  File name
+ * @param[out] error      Error output
  * @return     New string with file content, it should be later freed using
  *             free function.
  *
- * @fn  static int string_of_numbers (const char *s_str)
+ * @fn  static int string_of_numbers (const char *str)
  *
  * @brief  Check if given string is made of numbers.
  *
- * @param[in] s_str  Input string
+ * @param[in] str  Input string
  * @return    1 if string is made of numbers, 0 if it isn't
  *
- * @fn  static uid_t file_check_uid (const char *s_path,
- *                                   int        *i_err)
+ * @fn  static uid_t file_check_uid (const char *path,
+ *                                   int        *error)
  *
  * @brief  Return file user id.
  *
- * @param[in]  s_path  File name
- * @param[out] i_err   Error output
+ * @param[in]  path   File name
+ * @param[out] error  Error output
  * @return     File UID
  *
- * @fn  static void string_remove_newline (char *s_str)
+ * @fn  static void string_remove_newline (char *str)
  *
  * @brief  Find and remove (replace with null char) new line character 0A.
  *
- * @param[in,out] s_str  Input string
+ * @param[in,out] str  Input string
  * @return         none
  */
 /*----------------------------------------------------------------------------*/
-static char * read_proc_file_data   (const char *s_fname,
-                                     int        *i_err);
+static char * read_proc_file_data   (const char *file_name,
+                                     int        *error);
 
-static int    string_of_numbers     (const char *s_str) __attribute__ ((pure));
+static int    string_of_numbers     (const char *str) __attribute__ ((pure));
 
-static uid_t  file_check_uid        (const char *s_path,
-                                     int        *i_err);
+static uid_t  file_check_uid        (const char *path,
+                                     int        *error);
 
-static void   string_remove_newline (char       *s_str);
+static void   string_remove_newline (char       *str);
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Read data from file and return it in string.
  */
 static char *
-read_proc_file_data (const char  *s_fname,
-                     int         *i_err)
+read_proc_file_data (const char  *file_name,
+                     int         *error)
 {
-    char   *s_data = nullptr;          /* Result data from file */
-    FILE   *f_file;                 /* Data file */
-    size_t  ui_count = 0;           /* Read data count */
-    char    s_buff [BUFF_SIZE + 1]; /* Buffer for data */
+    char   *data = nullptr;          /* Result data from file */
+    FILE   *file;                   /* Data file */
+    size_t  count = 0;              /* Read data count */
+    char    buffer [BUFF_SIZE + 1]; /* Buffer for data */
 
-    f_file = fopen (s_fname, "rb");
+    file = fopen (file_name, "rb");
     /* Error opening file */
-    if (f_file == nullptr) {
-        *i_err = 1;
-        /* warn ("%s", s_fname); */
+    if (file == nullptr) {
+        *error = 1;
+        /* warn ("%s", file_name); */
         return nullptr;
     }
-    ui_count = fread (s_buff, 1, BUFF_SIZE, f_file);
-    if ((s_data = malloc ((ui_count + 1) * sizeof (char))) == nullptr) {
+    count = fread (buffer, 1, BUFF_SIZE, file);
+    if ((data = malloc ((count + 1) * sizeof (char))) == nullptr) {
         err (EXIT_FAILURE, nullptr);
     }
-    memcpy (s_data, s_buff, ui_count);
-    s_data[ui_count] = '\0';
-    fclose (f_file);
-    *i_err = 0;
+    memcpy (data, buffer, count);
+    data[count] = '\0';
+    fclose (file);
+    *error = 0;
 
-    return s_data;
+    return data;
 }
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Check if given string is made of numbers.
  */
 static int
-string_of_numbers (const char * __restrict s_str)
+string_of_numbers (const char * __restrict str)
 {
-    int i_res = 0;
-    while (*s_str && (i_res = isdigit (*s_str++)));
-    return i_res;
+    int result = 0;
+    while (*str && (result = isdigit (*str++)));
+    return result;
 }
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Return file user id.
  */
 static uid_t
-file_check_uid (const char *s_path,
-                int        *i_err)
+file_check_uid (const char *path,
+                int        *error)
 {
     struct stat st;
 
-    if (stat (s_path, &st) == -1) {
+    if (stat (path, &st) == -1) {
         /* warn ("Stat error"); */
-        *i_err = 1;
+        *error = 1;
     }
     else {
-        *i_err = 0;
+        *error = 0;
         return st.st_uid;
     }
     return 0;
 }
 /*----------------------------------------------------------------------------*/
 static void
-string_remove_newline (char *s_str)
+string_remove_newline (char *str)
 {
-    char *s_p = strchr (s_str, 0x0A);
-    if (s_p != nullptr) {
-        *s_p = '\0';
+    char *newline = strchr (str, 0x0A);
+    if (newline != nullptr) {
+        *newline = '\0';
     }
 }
 /*----------------------------------------------------------------------------*/
@@ -169,84 +169,85 @@ string_remove_newline (char *s_str)
  * @brief  Get processes to ProcList list, more options function version.
  */
 ProcList *
-process_get_opt (uid_t       uid_id,
-                 const char *s_name,
-                 int         i_opt,
-                 int         i_exc_pid)
+process_get_opt (uid_t       uid,
+                 const char *name,
+                 int         opts,
+                 int         exclude_pid)
 {
-    ProcList   *pl_list = nullptr;       /* Proclist item to return */
-    const char *s_path  = "/proc/";   /* Path to proc directory */
+    ProcList   *list   = nullptr;     /* Proclist item to return */
+    const char *path   = "/proc/";    /* Path to proc directory */
     #if PROC_LINUX_CMDLINE == 1
-    const char *s_file  = "/cmdline"; /* cmdline path */
+    const char *suffix = "/cmdline";  /* cmdline path */
     #else
-    const char *s_file  = "/comm";    /* comm path */
+    const char *suffix = "/comm";     /* comm path */
     #endif
-    DIR        *dr;                   /* Dirent directory */
-    size_t      ui_plen = 0;          /* Proc path length */
-    size_t      ui_flen = 0;          /* cmdline path length */
-    size_t      ui_dlen = 0;          /* Length of dir inside proc dir */
-    int         i_err   = 0;          /* Error output */
-    char       *s_fn    = nullptr;       /* Alloced string for full cmdline path */
-    char       *s_data  = nullptr;       /* Buffer for cmdline content */
+    DIR        *dir;                  /* Dirent directory */
+    size_t      path_len   = 0;       /* Proc path length */
+    size_t      suffix_len = 0;       /* cmdline path length */
+    size_t      dir_len    = 0;       /* Length of dir inside proc dir */
+    int         error      = 0;       /* Error output */
+    char       *full_path  = nullptr; /* Alloced string for full cmdline path */
+    char       *data       = nullptr; /* Buffer for cmdline content */
     struct dirent *de;                /* Dirent struct */
 
-    pl_list = proc_list_new ();
+    list = proc_list_new ();
 
-    ui_plen = strlen (s_path);
-    ui_flen = strlen (s_file);
+    path_len   = strlen (path);
+    suffix_len = strlen (suffix);
 
-    dr = opendir (s_path);
-    if (dr == nullptr) {
-        /* warn ("%s", s_path); */
-        return pl_list;
+    dir = opendir (path);
+    if (dir == nullptr) {
+        /* warn ("%s", path); */
+        return list;
     }
-    while ((de = readdir(dr)) != nullptr) {
+    while ((de = readdir(dir)) != nullptr) {
         if (de->d_type == DT_DIR && string_of_numbers (de->d_name)) {
 
-            if (i_exc_pid && (atoi (de->d_name) == i_exc_pid))
+            if (exclude_pid && (atoi (de->d_name) == exclude_pid))
                 continue;
 
-            ui_dlen = strlen (de->d_name);
+            dir_len = strlen (de->d_name);
 
-            s_fn = malloc ((ui_plen + ui_flen + ui_dlen + 1) * sizeof (char));
-            if (s_fn == nullptr) {
+            full_path = malloc ((path_len + suffix_len + dir_len + 1) *
+                                sizeof (char));
+            if (full_path == nullptr) {
                 err (EXIT_FAILURE, nullptr);
             }
-            memcpy (s_fn, s_path, ui_plen);
-            memcpy (s_fn + ui_plen, de->d_name, ui_dlen);
-            s_fn [ui_plen + ui_dlen] = '\0';
+            memcpy (full_path, path, path_len);
+            memcpy (full_path + path_len, de->d_name, dir_len);
+            full_path [path_len + dir_len] = '\0';
 
-            if (file_check_uid (s_fn, &i_err) == uid_id && !i_err) {
-                memcpy (s_fn + ui_plen + ui_dlen, s_file, ui_flen);
-                s_fn [ui_plen + ui_dlen + ui_flen] = '\0';
+            if (file_check_uid (full_path, &error) == uid && !error) {
+                memcpy (full_path + path_len + dir_len, suffix, suffix_len);
+                full_path [path_len + dir_len + suffix_len] = '\0';
 
-                s_data = read_proc_file_data (s_fn, &i_err);
-                if (s_data != nullptr && !i_err) {
+                data = read_proc_file_data (full_path, &error);
+                if (data != nullptr && !error) {
                     #if PROC_LINUX_CMDLINE == 0
-                    string_remove_newline (s_data);
+                    string_remove_newline (data);
                     #endif
-                    if (s_name == nullptr) {
-                        proc_list_insert (pl_list,
-                                proc_item_new_from_data (de->d_name, s_data));
+                    if (name == nullptr) {
+                        proc_list_insert (list,
+                                proc_item_new_from_data (de->d_name, data));
                     }
-                    else if (strcmp (s_data, s_name) == 0) {
-                        proc_list_insert (pl_list,
-                                proc_item_new_from_data (de->d_name, s_data));
-                        if (i_opt & PROC_OPT_CHK_FIRST) {
-                            free (s_data);
-                            free (s_fn);
+                    else if (strcmp (data, name) == 0) {
+                        proc_list_insert (list,
+                                proc_item_new_from_data (de->d_name, data));
+                        if (opts & PROC_OPT_CHK_FIRST) {
+                            free (data);
+                            free (full_path);
                             break;
                         }
                     }
                 }
-                free (s_data);
+                free (data);
             }
-            free (s_fn);
+            free (full_path);
         }
     }
-    closedir (dr);
+    closedir (dir);
 
-    return pl_list;
+    return list;
 }
 #endif
 /*----------------------------------------------------------------------------*/
@@ -255,48 +256,48 @@ process_get_opt (uid_t       uid_id,
  * @brief  Get processes to ProcList list, more options function version.
  */
 ProcList *
-process_get_opt (uid_t       uid_id,
-                 const char *s_name,
-                 int         i_opt,
-                 int         i_exc_pid)
+process_get_opt (uid_t       uid,
+                 const char *name,
+                 int         opts,
+                 int         exclude_pid)
 {
-    ProcList          *pl_list = nullptr;  /* Proclist item to return */
-    unsigned int       cnt     = 0;     /* Number of found processes */
-    unsigned int       i       = 0;     /* i */
-    const char        *s_cmd   = nullptr;  /* Process command string */
+    ProcList          *list = nullptr;  /* Proclist item to return */
+    unsigned int       cnt  = 0;        /* Number of found processes */
+    unsigned int       i    = 0;        /* i */
+    const char        *cmd  = nullptr;  /* Process command string */
     struct kinfo_proc *proc;            /* kinfo_proc structure */
     struct procstat   *procstat;        /* procstat structure */
-    char               s_pidbuff [20];  /* Buffer for process pid string */
+    char               pid_buff [20];   /* Buffer for process pid string */
 
-    pl_list  = proc_list_new ();
+    list     = proc_list_new ();
     procstat = procstat_open_sysctl ();
     if (procstat == nullptr) {
         errx (EXIT_FAILURE, "error while procstat_open()");
     }
-    proc = procstat_getprocs (procstat, KERN_PROC_UID, (int) uid_id, &cnt);
+    proc = procstat_getprocs (procstat, KERN_PROC_UID, (int) uid, &cnt);
     if (proc == nullptr) {
         errx (EXIT_FAILURE, "error while procstat_getprocs()");
     }
     for (i = 0; i < cnt; i++) {
         if (proc[i].ki_stat == SZOMB)
             continue;
-        if (i_exc_pid && (i_exc_pid == proc[i].ki_pid))
+        if (exclude_pid && (exclude_pid == proc[i].ki_pid))
             continue;
-        s_cmd = proc[i].ki_comm;
-        snprintf (s_pidbuff, sizeof (s_pidbuff), "%d", proc[i].ki_pid);
-        if (s_name == nullptr) {
-            proc_list_insert (pl_list, proc_item_new_from_data (s_pidbuff, s_cmd));
+        cmd = proc[i].ki_comm;
+        snprintf (pid_buff, sizeof (pid_buff), "%d", proc[i].ki_pid);
+        if (name == nullptr) {
+            proc_list_insert (list, proc_item_new_from_data (pid_buff, cmd));
         }
-        else if (strcmp (s_cmd, s_name) == 0) {
-            proc_list_insert (pl_list, proc_item_new_from_data (s_pidbuff, s_cmd));
-            if (i_opt & PROC_OPT_CHK_FIRST) {
+        else if (strcmp (cmd, name) == 0) {
+            proc_list_insert (list, proc_item_new_from_data (pid_buff, cmd));
+            if (opts & PROC_OPT_CHK_FIRST) {
                 break;
             }
         }
     }
     procstat_freeprocs (procstat, proc);
     procstat_close (procstat);
-    return pl_list;
+    return list;
 }
 #endif
 /*----------------------------------------------------------------------------*/
@@ -304,9 +305,9 @@ process_get_opt (uid_t       uid_id,
  * @brief  Get current user processes with no options to ProcList list.
  */
 ProcList *
-process_get (const char *s_name)
+process_get (const char *name)
 {
-    return process_get_opt (getuid (), s_name, PROC_OPT_NONE, 0);
+    return process_get_opt (getuid (), name, PROC_OPT_NONE, 0);
 }
 /*----------------------------------------------------------------------------*/
 /**
@@ -314,22 +315,22 @@ process_get (const char *s_name)
  *         ProcItem item. Function with more options.
  */
 ProcItem *
-process_exists_opt (uid_t       uid_id,
-                    const char *s_name,
-                    int         i_opt,
-                    int         i_exc_pid)
+process_exists_opt (uid_t       uid,
+                    const char *name,
+                    int         opts,
+                    int         exclude_pid)
 {
-    ProcItem *pi_item = nullptr;
+    ProcItem *item = nullptr;
 
-    ProcList *pl_list = process_get_opt (uid_id,
-                                         s_name,
-                                         i_opt | PROC_OPT_CHK_FIRST,
-                                         i_exc_pid);
-    if (proc_list_get_count (pl_list) > 0) {
-        pi_item = proc_item_copy (proc_list_get_item (pl_list, 0));
+    ProcList *list = process_get_opt (uid,
+                                      name,
+                                      opts | PROC_OPT_CHK_FIRST,
+                                      exclude_pid);
+    if (proc_list_get_count (list) > 0) {
+        item = proc_item_copy (proc_list_get_item (list, 0));
     }
-    proc_list_free (pl_list);
-    return pi_item;
+    proc_list_free (list);
+    return item;
 }
 /*----------------------------------------------------------------------------*/
 /**
@@ -337,9 +338,9 @@ process_exists_opt (uid_t       uid_id,
  *         ProcItem item.
  */
 ProcItem *
-process_exists (const char *s_name)
+process_exists (const char *name)
 {
-    return process_exists_opt (getuid (), s_name, PROC_OPT_NONE, 0);
+    return process_exists_opt (getuid (), name, PROC_OPT_NONE, 0);
 }
 /*----------------------------------------------------------------------------*/
 /**
@@ -347,139 +348,139 @@ process_exists (const char *s_name)
  *         process.
  */
 bool
-process_exists_b (const char *s_name)
+process_exists_b (const char *name)
 {
-    bool      b_res = false;
-    ProcItem *pi_item;
+    bool      found = false;
+    ProcItem *item;
 
-    pi_item = process_exists_opt (getuid (), s_name, PROC_OPT_NONE, 0);
-    if (pi_item != nullptr) {
-        proc_item_free (pi_item);
-        b_res = true;
+    item = process_exists_opt (getuid (), name, PROC_OPT_NONE, 0);
+    if (item != nullptr) {
+        proc_item_free (item);
+        found = true;
     }
-    return b_res;
+    return found;
 }
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Count processes with given name. Function with more options.
  */
 int
-process_count_opt (uid_t       uid_id,
-                   const char *s_name,
-                   int         i_opt,
-                   int         i_exc_pid)
+process_count_opt (uid_t       uid,
+                   const char *name,
+                   int         opts,
+                   int         exclude_pid)
 {
-    ProcList *pl_list;
-    int       i_res = 0;
+    ProcList *list;
+    int       result = 0;
 
-    pl_list = process_get_opt (uid_id, s_name, i_opt, i_exc_pid);
-    i_res = (int) proc_list_get_count (pl_list);
-    proc_list_free (pl_list);
+    list = process_get_opt (uid, name, opts, exclude_pid);
+    result = (int) proc_list_get_count (list);
+    proc_list_free (list);
 
-    return i_res;
+    return result;
 }
 /*----------------------------------------------------------------------------*/
 /**
- * @brief  Count current user processes with name given in s_name.
+ * @brief  Count current user processes with the given name.
  */
 int
-process_count (const char *s_name)
+process_count (const char *name)
 {
-    return process_count_opt (getuid (), s_name, PROC_OPT_NONE, 0);
+    return process_count_opt (getuid (), name, PROC_OPT_NONE, 0);
 }
 /*----------------------------------------------------------------------------*/
 /**
- * @brief  Count current user processes with name given in s_name, function
+ * @brief  Count current user processes with the given name, function
  *         doesn't count current process if it is on list.
  */
 int
-process_count_except_current (const char *s_name)
+process_count_except_current (const char *name)
 {
-    return process_count_opt (getuid (), s_name, PROC_OPT_NONE, getpid ());
+    return process_count_opt (getuid (), name, PROC_OPT_NONE, getpid ());
 }
 /*----------------------------------------------------------------------------*/
 /**
- * @brief  Kill process with name passed in s_name. Function with more options.
+ * @brief  Kill process with the given name. Function with more options.
  */
 void
-process_kill_opt (uid_t       uid_id,
-                  const char *s_name,
-                  int         i_opt,
-                  int         i_exc_pid)
+process_kill_opt (uid_t       uid,
+                  const char *name,
+                  int         opts,
+                  int         exclude_pid)
 {
-    ProcItem *pi_item;
-    pid_t     pi_pid = 0;
+    ProcItem *item;
+    pid_t     pid = 0;
 
-    pi_item = process_exists_opt (uid_id, s_name, i_opt, i_exc_pid);
-    if (pi_item != nullptr) {
+    item = process_exists_opt (uid, name, opts, exclude_pid);
+    if (item != nullptr) {
         #ifdef DEBUG
         printf ("kill %s %s\n",
-                proc_item_get_name (pi_item),
-                proc_item_get_pid (pi_item));
+                proc_item_get_name (item),
+                proc_item_get_pid (item));
         #endif
-        pi_pid = atoi (proc_item_get_pid (pi_item));
-        kill (pi_pid, SIGTERM);
-        proc_item_free (pi_item);
+        pid = atoi (proc_item_get_pid (item));
+        kill (pid, SIGTERM);
+        proc_item_free (item);
     }
 }
 /*----------------------------------------------------------------------------*/
 /**
- * @brief  Kill current user process with name given in s_name string.
+ * @brief  Kill current user process with the given name.
  */
 void
-process_kill (const char *s_name)
+process_kill (const char *name)
 {
-    process_kill_opt (getuid (), s_name, PROC_OPT_NONE, 0);
+    process_kill_opt (getuid (), name, PROC_OPT_NONE, 0);
 }
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Kills process like process_kill without killing current process.
  */
 void
-process_kill_except_current (const char *s_name)
+process_kill_except_current (const char *name)
 {
-    process_kill_opt (getuid (), s_name, PROC_OPT_NONE, getpid ());
+    process_kill_opt (getuid (), name, PROC_OPT_NONE, getpid ());
 }
 /*----------------------------------------------------------------------------*/
 /**
- * @brief  Kill all process with name passed in s_name. Function with more
+ * @brief  Kill all process with the given name. Function with more
  *         options.
  */
 int
-process_kill_all_opt (uid_t       uid_id,
-                      const char *s_name,
-                      int         i_opt,
-                      int         i_exc_pid)
+process_kill_all_opt (uid_t       uid,
+                      const char *name,
+                      int         opts,
+                      int         exclude_pid)
 {
-    ProcList      *pl_list;
-    uint_fast32_t  i_cnt  = 0;
-    uint_fast32_t  i      = 0;
-    pid_t          pi_pid = 0;
+    ProcList      *list;
+    uint_fast32_t  count = 0;
+    uint_fast32_t  i     = 0;
+    pid_t          pid   = 0;
 
-    pl_list = process_get_opt (uid_id, s_name, i_opt, i_exc_pid);
-    i_cnt   = proc_list_get_count (pl_list);
+    list  = process_get_opt (uid, name, opts, exclude_pid);
+    count = proc_list_get_count (list);
 
-    for (i = 0; i < i_cnt; ++i) {
-        pi_pid = atoi (proc_item_get_pid (proc_list_get_item (pl_list, i)));
+    for (i = 0; i < count; ++i) {
+        pid = atoi (proc_item_get_pid (proc_list_get_item (list, i)));
         #ifdef DEBUG
         printf ("killing %s %s\n",
-                proc_item_get_name (proc_list_get_item (pl_list, i)),
-                proc_item_get_pid (proc_list_get_item (pl_list, i)));
+                proc_item_get_name (proc_list_get_item (list, i)),
+                proc_item_get_pid (proc_list_get_item (list, i)));
         #endif
-        kill (pi_pid, SIGTERM);
+        kill (pid, SIGTERM);
     }
-    proc_list_free (pl_list);
+    proc_list_free (list);
 
-    return (int) i_cnt;
+    return (int) count;
 }
 /*----------------------------------------------------------------------------*/
 /**
- * @brief  Kill all current user processes with name given in s_name string.
+ * @brief  Kill all current user processes with the given name.
  */
 int
-process_kill_all (const char *s_name)
+process_kill_all (const char *name)
 {
-    return process_kill_all_opt (getuid (), s_name, PROC_OPT_NONE, 0);
+    return process_kill_all_opt (getuid (), name, PROC_OPT_NONE, 0);
 }
 /*----------------------------------------------------------------------------*/
 /**
@@ -487,8 +488,8 @@ process_kill_all (const char *s_name)
  *         process.
  */
 int
-process_kill_all_except_current (const char *s_name)
+process_kill_all_except_current (const char *name)
 {
-    return process_kill_all_opt (getuid (), s_name, PROC_OPT_NONE, getpid ());
+    return process_kill_all_opt (getuid (), name, PROC_OPT_NONE, getpid ());
 }
 /*----------------------------------------------------------------------------*/

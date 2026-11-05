@@ -85,19 +85,19 @@ CacheQuery * cache_query_new               (const char *service_name,
 /**
  * @brief  Free CacheQuery item.
  *
- * @param[out] cq_query  Item to free data
+ * @param[out] cache  Item to free data
  * @return     none
  */
-void         cache_query_free              (CacheQuery *cq_query);
+void         cache_query_free              (CacheQuery *cache);
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Append SearchItem item to list.
  *
- * @param[out] cq_query  CacheQuery item
- * @param[in]  item      SearchItem item to add
+ * @param[out] cache  CacheQuery item
+ * @param[in]  item   SearchItem item to add
  * @return     none
  */
-void         cache_query_append_item       (CacheQuery *cq_query,
+void         cache_query_append_item       (CacheQuery *cache,
                                             SearchItem *item);
 /*----------------------------------------------------------------------------*/
 /**
@@ -121,10 +121,10 @@ CacheQuery * cache_query_check_query       (const char *service_name,
 /**
  * @brief  Save cached search data to a service cache file.
  *
- * @param[in] cq_query  CacheQuery item
+ * @param[in] cache  CacheQuery item
  * @return    Process status
  */
-int          cache_query_save              (CacheQuery *cq_query);
+int          cache_query_save              (CacheQuery *cache);
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Check cache query file for entries older that days and delete

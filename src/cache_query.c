@@ -90,147 +90,147 @@
 static json_object *
 cache_query_search_item_to_json (const SearchItem *item)
 {
-    json_object *j_res;  /* Result Json obj/array to return */
-    json_object *j_val;  /* Json value to add to result */
+    json_object *result; /* Result Json obj/array to return */
+    json_object *value;  /* Json value to add to result */
 
-    j_res = json_object_new_object();
+    result = json_object_new_object();
 
     if (!str_is_empty (item->id)) {
-        j_val = json_object_new_string (item->id);
-        json_object_object_add_ex (j_res, JS_ID, j_val,
+        value = json_object_new_string (item->id);
+        json_object_object_add_ex (result, JS_ID, value,
                                    JSON_C_OBJECT_ADD_KEY_IS_NEW);
     }
     if (!str_is_empty (item->author_name)) {
-        j_val = json_object_new_string (item->author_name);
-        json_object_object_add_ex (j_res, JS_AUTH_NAME, j_val,
+        value = json_object_new_string (item->author_name);
+        json_object_object_add_ex (result, JS_AUTH_NAME, value,
                                    JSON_C_OBJECT_ADD_KEY_IS_NEW);
     }
     if (!str_is_empty (item->author_url)) {
-        j_val = json_object_new_string (item->author_url);
-        json_object_object_add_ex (j_res, JS_AUTH_URL, j_val,
+        value = json_object_new_string (item->author_url);
+        json_object_object_add_ex (result, JS_AUTH_URL, value,
                                    JSON_C_OBJECT_ADD_KEY_IS_NEW);
     }
     if (!str_is_empty (item->file_name)) {
-        j_val = json_object_new_string (item->file_name);
-        json_object_object_add_ex (j_res, JS_FILE_NAME, j_val,
+        value = json_object_new_string (item->file_name);
+        json_object_object_add_ex (result, JS_FILE_NAME, value,
                                    JSON_C_OBJECT_ADD_KEY_IS_NEW);
     }
     if (!str_is_empty (item->display_name)) {
-        j_val = json_object_new_string (item->display_name);
-        json_object_object_add_ex (j_res, JS_DISP_NAME, j_val,
+        value = json_object_new_string (item->display_name);
+        json_object_object_add_ex (result, JS_DISP_NAME, value,
                                    JSON_C_OBJECT_ADD_KEY_IS_NEW);
     }
     if (!str_is_empty (item->display_markup)) {
-        j_val = json_object_new_string (item->display_markup);
-        json_object_object_add_ex (j_res, JS_DISP_MKUP, j_val,
+        value = json_object_new_string (item->display_markup);
+        json_object_object_add_ex (result, JS_DISP_MKUP, value,
                                    JSON_C_OBJECT_ADD_KEY_IS_NEW);
     }
     if (!str_is_empty (item->page_url)) {
-        j_val = json_object_new_string (item->page_url);
-        json_object_object_add_ex (j_res, JS_PAGE_URL, j_val,
+        value = json_object_new_string (item->page_url);
+        json_object_object_add_ex (result, JS_PAGE_URL, value,
                                    JSON_C_OBJECT_ADD_KEY_IS_NEW);
     }
     if (!str_is_empty (item->image_url)) {
-        j_val = json_object_new_string (item->image_url);
-        json_object_object_add_ex (j_res, JS_IMAGE_URL, j_val,
+        value = json_object_new_string (item->image_url);
+        json_object_object_add_ex (result, JS_IMAGE_URL, value,
                                    JSON_C_OBJECT_ADD_KEY_IS_NEW);
     }
     if (!str_is_empty (item->thumb_url)) {
-        j_val = json_object_new_string (item->thumb_url);
-        json_object_object_add_ex (j_res, JS_THUMB_URL, j_val,
+        value = json_object_new_string (item->thumb_url);
+        json_object_object_add_ex (result, JS_THUMB_URL, value,
                                    JSON_C_OBJECT_ADD_KEY_IS_NEW);
     }
     if (!str_is_empty (item->service_name)) {
-        j_val = json_object_new_string (item->service_name);
-        json_object_object_add_ex (j_res, JS_SERV_NAME, j_val,
+        value = json_object_new_string (item->service_name);
+        json_object_object_add_ex (result, JS_SERV_NAME, value,
                                    JSON_C_OBJECT_ADD_KEY_IS_NEW);
     }
     if (item->width > 0) {
-        j_val = json_object_new_int (item->width);
-        json_object_object_add_ex (j_res, JS_WIDTH, j_val,
+        value = json_object_new_int (item->width);
+        json_object_object_add_ex (result, JS_WIDTH, value,
                                    JSON_C_OBJECT_ADD_KEY_IS_NEW);
     }
     if (item->height > 0) {
-        j_val = json_object_new_int (item->height);
-        json_object_object_add_ex (j_res, JS_HEIGHT, j_val,
+        value = json_object_new_int (item->height);
+        json_object_object_add_ex (result, JS_HEIGHT, value,
                                    JSON_C_OBJECT_ADD_KEY_IS_NEW);
     }
-    return j_res;
+    return result;
 }
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Convert json_object to SearchItem.
  *
- * @param[in] j_obj  json_object item to convert
+ * @param[in] root  json_object item to convert
  * @return    New SearchItem with search data.
  */
 static SearchItem *
-cache_query_json_to_search_item (json_object *j_obj)
+cache_query_json_to_search_item (json_object *root)
 {
     SearchItem  *item; /* Item to return */
-    json_object *j_val;   /* Reading/checking val */
+    json_object *value;   /* Reading/checking val */
 
     item = search_item_new ();
 
-    if (json_object_object_get_ex (j_obj, JS_ID, &j_val) &&
-        json_object_get_type (j_val) == json_type_string) {
+    if (json_object_object_get_ex (root, JS_ID, &value) &&
+        json_object_get_type (value) == json_type_string) {
 
-        search_item_set_id_string (item, json_object_get_string (j_val));
+        search_item_set_id_string (item, json_object_get_string (value));
     }
-    if (json_object_object_get_ex (j_obj, JS_AUTH_NAME, &j_val) &&
-        json_object_get_type (j_val) == json_type_string) {
+    if (json_object_object_get_ex (root, JS_AUTH_NAME, &value) &&
+        json_object_get_type (value) == json_type_string) {
 
-        search_item_set_author_name (item, json_object_get_string (j_val));
+        search_item_set_author_name (item, json_object_get_string (value));
     }
-    if (json_object_object_get_ex (j_obj, JS_AUTH_URL, &j_val) &&
-        json_object_get_type (j_val) == json_type_string) {
+    if (json_object_object_get_ex (root, JS_AUTH_URL, &value) &&
+        json_object_get_type (value) == json_type_string) {
 
-        search_item_set_author_url (item, json_object_get_string (j_val));
+        search_item_set_author_url (item, json_object_get_string (value));
     }
-    if (json_object_object_get_ex (j_obj, JS_FILE_NAME, &j_val) &&
-        json_object_get_type (j_val) == json_type_string) {
+    if (json_object_object_get_ex (root, JS_FILE_NAME, &value) &&
+        json_object_get_type (value) == json_type_string) {
 
-        search_item_set_file_name (item, json_object_get_string (j_val));
+        search_item_set_file_name (item, json_object_get_string (value));
     }
-    if (json_object_object_get_ex (j_obj, JS_DISP_NAME, &j_val) &&
-        json_object_get_type (j_val) == json_type_string) {
+    if (json_object_object_get_ex (root, JS_DISP_NAME, &value) &&
+        json_object_get_type (value) == json_type_string) {
 
-        search_item_set_display_name (item, json_object_get_string (j_val));
+        search_item_set_display_name (item, json_object_get_string (value));
     }
-    if (json_object_object_get_ex (j_obj, JS_DISP_MKUP, &j_val) &&
-        json_object_get_type (j_val) == json_type_string) {
+    if (json_object_object_get_ex (root, JS_DISP_MKUP, &value) &&
+        json_object_get_type (value) == json_type_string) {
 
-        search_item_set_display_markup (item, json_object_get_string (j_val));
+        search_item_set_display_markup (item, json_object_get_string (value));
     }
-    if (json_object_object_get_ex (j_obj, JS_PAGE_URL, &j_val) &&
-        json_object_get_type (j_val) == json_type_string) {
+    if (json_object_object_get_ex (root, JS_PAGE_URL, &value) &&
+        json_object_get_type (value) == json_type_string) {
 
-        search_item_set_page_url (item, json_object_get_string (j_val));
+        search_item_set_page_url (item, json_object_get_string (value));
     }
-    if (json_object_object_get_ex (j_obj, JS_IMAGE_URL, &j_val) &&
-        json_object_get_type (j_val) == json_type_string) {
+    if (json_object_object_get_ex (root, JS_IMAGE_URL, &value) &&
+        json_object_get_type (value) == json_type_string) {
 
-        search_item_set_image_url (item, json_object_get_string (j_val));
+        search_item_set_image_url (item, json_object_get_string (value));
     }
-    if (json_object_object_get_ex (j_obj, JS_THUMB_URL, &j_val) &&
-        json_object_get_type (j_val) == json_type_string) {
+    if (json_object_object_get_ex (root, JS_THUMB_URL, &value) &&
+        json_object_get_type (value) == json_type_string) {
 
-        search_item_set_thumb_url (item, json_object_get_string (j_val));
+        search_item_set_thumb_url (item, json_object_get_string (value));
     }
-    if (json_object_object_get_ex (j_obj, JS_SERV_NAME, &j_val) &&
-        json_object_get_type (j_val) == json_type_string) {
+    if (json_object_object_get_ex (root, JS_SERV_NAME, &value) &&
+        json_object_get_type (value) == json_type_string) {
 
-        search_item_set_service_name (item, json_object_get_string (j_val));
+        search_item_set_service_name (item, json_object_get_string (value));
     }
-    if (json_object_object_get_ex (j_obj, JS_WIDTH, &j_val) &&
-        json_object_get_type (j_val) == json_type_int) {
+    if (json_object_object_get_ex (root, JS_WIDTH, &value) &&
+        json_object_get_type (value) == json_type_int) {
 
-        search_item_set_width (item, json_object_get_int (j_val));
+        search_item_set_width (item, json_object_get_int (value));
     }
-    if (json_object_object_get_ex (j_obj, JS_HEIGHT, &j_val) &&
-        json_object_get_type (j_val) == json_type_int) {
+    if (json_object_object_get_ex (root, JS_HEIGHT, &value) &&
+        json_object_get_type (value) == json_type_int) {
 
-        search_item_set_height (item, json_object_get_int (j_val));
+        search_item_set_height (item, json_object_get_int (value));
     }
 #ifdef DEBUG
     search_item_print (item);
@@ -241,59 +241,59 @@ cache_query_json_to_search_item (json_object *j_obj)
 /**
  * @brief  Convert list of SearchItem elements to json array.
  *
- * @param[in] cq_query  CacheQuery item
+ * @param[in] cache  CacheQuery item
  * @return    New json_object with converted data
  */
 static json_object *
-cache_query_search_items_to_json_array (const CacheQuery *cq_query)
+cache_query_search_items_to_json_array (const CacheQuery *cache)
 {
-    json_object *j_arr;
-    json_object *j_val;
+    json_object *array;
+    json_object *value;
     int i = 0;
 
-    j_arr = json_object_new_array ();
+    array = json_object_new_array ();
 
-    for (i = 0; i < cq_query->count; ++i) {
-        j_val = cache_query_search_item_to_json (cq_query->items[i]);
-        json_object_array_add (j_arr, j_val);
+    for (i = 0; i < cache->count; ++i) {
+        value = cache_query_search_item_to_json (cache->items[i]);
+        json_object_array_add (array, value);
     }
-    return j_arr;
+    return array;
 }
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Free CacheQuery item.
  */
 void
-cache_query_free (CacheQuery *cq_query)
+cache_query_free (CacheQuery *cache)
 {
-    for (int i = 0; i < cq_query->count; ++i) {
-        search_item_free (cq_query->items[i]);
+    for (int i = 0; i < cache->count; ++i) {
+        search_item_free (cache->items[i]);
     }
-    free (cq_query->items);
-    free (cq_query->file);
-    free (cq_query->date);
-    free (cq_query->query);
-    free (cq_query->search_opts);
-    free (cq_query);
+    free (cache->items);
+    free (cache->file);
+    free (cache->date);
+    free (cache->query);
+    free (cache->search_opts);
+    free (cache);
 }
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Init CacheQuery item.
  *
- * @param[out] cq_query  Item to init
+ * @param[out] cache  Item to init
  * @return     none
  */
 static void
-cache_query_init (CacheQuery *cq_query)
+cache_query_init (CacheQuery *cache)
 {
-    cq_query->items       = nullptr;
-    cq_query->file        = nullptr;
-    cq_query->date        = nullptr;
-    cq_query->query       = nullptr;
-    cq_query->search_opts = nullptr;
-    cq_query->page        = 0;
-    cq_query->found_cnt   = 0;
-    cq_query->count       = 0;
+    cache->items       = nullptr;
+    cache->file        = nullptr;
+    cache->date        = nullptr;
+    cache->query       = nullptr;
+    cache->search_opts = nullptr;
+    cache->page        = 0;
+    cache->found_cnt   = 0;
+    cache->count       = 0;
 }
 /*----------------------------------------------------------------------------*/
 /**
@@ -305,59 +305,59 @@ cache_query_new (const char *service_name,
                  const char *search_opts,
                  const int   page)
 {
-    CacheQuery *cq_query = nullptr; /* CacheQuery to return */
-    struct tm  *tm_time;         /* For current date string */
-    time_t      t_time;          /* For current date string */
+    CacheQuery *cache = nullptr; /* CacheQuery to return */
+    struct tm  *local_time;      /* For current date string */
+    time_t      now;             /* For current date string */
     char        date[64];       /* Current date string */
 
-    if ((cq_query = malloc (sizeof (CacheQuery))) == nullptr)
+    if ((cache = malloc (sizeof (CacheQuery))) == nullptr)
         err (EXIT_FAILURE, nullptr);
 
-    cache_query_init (cq_query);
+    cache_query_init (cache);
 
-    t_time  = time (nullptr);
-    tm_time = localtime (&t_time);
+    now        = time (nullptr);
+    local_time = localtime (&now);
 
-    strftime (date, 64, "%Y%m%d", tm_time);
+    strftime (date, 64, "%Y%m%d", local_time);
 
 #ifdef DEBUG
     printf ("%s %s %s\n", date, query, search_opts);
 #endif
 
-    cq_query->date        = strdup (date);
-    cq_query->query       = strdup (query);
-    cq_query->search_opts = strdup (search_opts);
-    cq_query->page        = page;
-    cq_query->file        = cfg_file_get_query_path ();
-    str_append (&cq_query->file, "/");
-    str_append (&cq_query->file, service_name);
-    str_append (&cq_query->file, ".json");
+    cache->date        = strdup (date);
+    cache->query       = strdup (query);
+    cache->search_opts = strdup (search_opts);
+    cache->page        = page;
+    cache->file        = cfg_file_get_query_path ();
+    str_append (&cache->file, "/");
+    str_append (&cache->file, service_name);
+    str_append (&cache->file, ".json");
 
-    return cq_query;
+    return cache;
 }
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Append SearchItem item to list.
  */
 void
-cache_query_append_item (CacheQuery *cq_query,
+cache_query_append_item (CacheQuery *cache,
                          SearchItem *item)
 {
     SearchItem **tmp        = nullptr; /* Temp pointer for malloc / realloc */
     size_t       alloc_size = 0;       /* New alloc size */
 
-    alloc_size = (size_t) (cq_query->count + 1) * sizeof (SearchItem*);
+    alloc_size = (size_t) (cache->count + 1) * sizeof (SearchItem*);
 
-    tmp = cq_query->count == 0 ?
+    tmp = cache->count == 0 ?
              malloc (alloc_size) :
-             realloc (cq_query->items, alloc_size);
+             realloc (cache->items, alloc_size);
 
     if (tmp == nullptr)
         err (EXIT_FAILURE, nullptr);
 
-    cq_query->items = tmp;
-    cq_query->items[cq_query->count] = item;
-    ++cq_query->count;
+    cache->items = tmp;
+    cache->items[cache->count] = item;
+    ++cache->count;
 }
 /*----------------------------------------------------------------------------*/
 /**
@@ -370,138 +370,138 @@ cache_query_check_query (const char *service_name,
                          const int   page,
                          int        *err)
 {
-    json_object *j_obj;            /* Json object made from file data */
-    json_object *j_date;           /* Date of search */
-    json_object *j_query;          /* Query text */
-    json_object *j_sopts;          /* Search options */
-    json_object *j_fnd_cnt;        /* For number of found images */
-    json_object *j_items;          /* Array with image info data */
-    json_object *j_val;            /* For array tith image info values */
-    CacheQuery  *cq_query = nullptr;  /* Cached query data to return */
-    SearchItem  *item     = nullptr;  /* For image info data */
-    size_t       count    = 0;     /* Number of elements in array */
-    size_t       i        = 0;     /* i */
-    int          goon     = 1;     /* Go on */
+    json_object *root;             /* Json object made from file data */
+    json_object *date_obj;         /* Date of search */
+    json_object *query_obj;        /* Query text */
+    json_object *opts_obj;         /* Search options */
+    json_object *found_obj;        /* For number of found images */
+    json_object *items_obj;        /* Array with image info data */
+    json_object *value;            /* For array tith image info values */
+    CacheQuery  *cache = nullptr;     /* Cached query data to return */
+    SearchItem  *item  = nullptr;     /* For image info data */
+    size_t       count = 0;        /* Number of elements in array */
+    size_t       i     = 0;        /* i */
+    int          goon  = 1;        /* Go on */
     char         page_str[10];     /* String with page number */
 
     *err   = ERR_OK;
-    cq_query = cache_query_new (service_name, query, search_opts, page);
-    sprintf (page_str, "%d", cq_query->page);
+    cache = cache_query_new (service_name, query, search_opts, page);
+    sprintf (page_str, "%d", cache->page);
 
-    if ((j_obj = json_open_file (cq_query->file, nullptr, err)) == nullptr) {
-        cache_query_free (cq_query);
+    if ((root = json_open_file (cache->file, nullptr, err)) == nullptr) {
+        cache_query_free (cache);
         return nullptr;
     }
 
     if (goon) {
-        goon = (json_object_object_get_ex (j_obj, cq_query->date, &j_date)
-            && json_object_get_type (j_date) == json_type_object);
+        goon = (json_object_object_get_ex (root, cache->date, &date_obj)
+            && json_object_get_type (date_obj) == json_type_object);
     }
     if (goon) {
-        goon = (json_object_object_get_ex (j_date, query, &j_query)
-                  && json_object_get_type (j_query) == json_type_object);
+        goon = (json_object_object_get_ex (date_obj, query, &query_obj)
+                  && json_object_get_type (query_obj) == json_type_object);
     }
     if (goon) {
-        goon = (json_object_object_get_ex (j_query, search_opts, &j_sopts)
-                  && json_object_get_type (j_sopts) == json_type_object);
+        goon = (json_object_object_get_ex (query_obj, search_opts, &opts_obj)
+                  && json_object_get_type (opts_obj) == json_type_object);
     }
     if (goon) {
         goon = 0;
-        if (json_object_object_get_ex (j_sopts, JS_FOUND_CNT, &j_fnd_cnt)
-            && json_object_get_type (j_fnd_cnt) == json_type_int) {
+        if (json_object_object_get_ex (opts_obj, JS_FOUND_CNT, &found_obj)
+            && json_object_get_type (found_obj) == json_type_int) {
 
-            cq_query->found_cnt = json_object_get_int (j_fnd_cnt);
+            cache->found_cnt = json_object_get_int (found_obj);
             goon = 1;
         }
     }
     if (goon) {
         goon = 0;
-        if (json_object_object_get_ex (j_sopts, page_str, &j_items) &&
-            json_object_get_type (j_items) == json_type_array) {
+        if (json_object_object_get_ex (opts_obj, page_str, &items_obj) &&
+            json_object_get_type (items_obj) == json_type_array) {
 
-            count = json_object_array_length (j_items);
+            count = json_object_array_length (items_obj);
 
             for (i = 0; i < count; ++i) {
-                j_val = json_object_array_get_idx (j_items, i);
-                if (j_val != nullptr) {
-                    item = cache_query_json_to_search_item (j_val);
-                    cache_query_append_item (cq_query, item);
+                value = json_object_array_get_idx (items_obj, i);
+                if (value != nullptr) {
+                    item = cache_query_json_to_search_item (value);
+                    cache_query_append_item (cache, item);
                 }
             }
             goon = 1;
         }
     }
-    json_object_put (j_obj);
+    json_object_put (root);
     if (!goon) {
-        cache_query_free (cq_query);
-        cq_query = nullptr;
+        cache_query_free (cache);
+        cache = nullptr;
     }
     *err = ERR_OK;
-    return cq_query;
+    return cache;
 }
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Save cached search data to a service cache file.
  */
 int
-cache_query_save (CacheQuery *cq_query)
+cache_query_save (CacheQuery *cache)
 {
-    json_object   *j_obj;             /* Json object made from file data */
-    json_object   *j_date;            /* For query date */
-    json_object   *j_query;           /* For query string */
-    json_object   *j_per_page;        /* For per page */
-    json_object   *j_val;             /* For getting values */
-    json_object   *j_arr;             /* For array with items */
+    json_object   *root;              /* Json object made from file data */
+    json_object   *date_obj;          /* For query date */
+    json_object   *query_obj;         /* For query string */
+    json_object   *page_obj;          /* For per page */
+    json_object   *value;             /* For getting values */
+    json_object   *array;             /* For array with items */
     const char    *json_buff = nullptr;  /* Json object as string */
     uint_fast32_t  file_hash = 0;        /* Json data file hash */
     int            err       = ERR_OK;  /* For error output */
     char           page_str[10];        /* Page number as string */
 
-    sprintf (page_str, "%d", cq_query->page);
+    sprintf (page_str, "%d", cache->page);
 
-    if ((j_obj = json_open_file (cq_query->file, &file_hash, &err)) == nullptr)
+    if ((root = json_open_file (cache->file, &file_hash, &err)) == nullptr)
         return err;
 
-    if (json_object_object_get_ex (j_obj, cq_query->date, &j_val) &&
-        json_object_get_type (j_val) == json_type_object) {
+    if (json_object_object_get_ex (root, cache->date, &value) &&
+        json_object_get_type (value) == json_type_object) {
 
-        j_date = j_val;
+        date_obj = value;
     }
     else {
-        j_date = json_object_new_object ();
-        json_object_object_add (j_obj, cq_query->date, j_date);
+        date_obj = json_object_new_object ();
+        json_object_object_add (root, cache->date, date_obj);
     }
 
-    if (json_object_object_get_ex (j_date, cq_query->query, &j_val) &&
-        json_object_get_type (j_val) == json_type_object) {
+    if (json_object_object_get_ex (date_obj, cache->query, &value) &&
+        json_object_get_type (value) == json_type_object) {
 
-        j_query = j_val;
-    }
-    else {
-        j_query = json_object_new_object ();
-        json_object_object_add (j_date, cq_query->query, j_query);
-    }
-    if (json_object_object_get_ex (j_query, cq_query->search_opts, &j_val) &&
-        json_object_get_type (j_val) == json_type_object) {
-
-        j_per_page = j_val;
+        query_obj = value;
     }
     else {
-        j_per_page = json_object_new_object ();
-        json_object_object_add (j_query, cq_query->search_opts, j_per_page);
+        query_obj = json_object_new_object ();
+        json_object_object_add (date_obj, cache->query, query_obj);
+    }
+    if (json_object_object_get_ex (query_obj, cache->search_opts, &value) &&
+        json_object_get_type (value) == json_type_object) {
+
+        page_obj = value;
+    }
+    else {
+        page_obj = json_object_new_object ();
+        json_object_object_add (query_obj, cache->search_opts, page_obj);
     }
 
-    j_val = json_object_new_int (cq_query->found_cnt);
-    json_object_object_add (j_per_page, JS_FOUND_CNT, j_val);
+    value = json_object_new_int (cache->found_cnt);
+    json_object_object_add (page_obj, JS_FOUND_CNT, value);
 
-    j_arr = cache_query_search_items_to_json_array (cq_query);
-    json_object_object_add (j_per_page, page_str, j_arr);
-    json_buff = json_object_to_json_string (j_obj);
+    array = cache_query_search_items_to_json_array (cache);
+    json_object_object_add (page_obj, page_str, array);
+    json_buff = json_object_to_json_string (root);
 
     if (hash (json_buff) != file_hash)
-        err = save_file_data (cq_query->file, json_buff);
+        err = save_file_data (cache->file, json_buff);
 
-    json_object_put (j_obj);
+    json_object_put (root);
 
     return err;
 }
@@ -514,9 +514,9 @@ int
 cache_query_delete_older_than (const char *service_name,
                                const int   days)
 {
-    json_object  *j_obj;            /* Json item with query info */
-    GDate        *gd_date;          /* GDate for date count */
-    time_t        t_time;           /* time_t for date count */
+    json_object  *root;             /* Json item with query info */
+    GDate        *gdate;            /* GDate for date count */
+    time_t        now;              /* time_t for date count */
     char          date_str[64];     /* Temp date string */
     char        **dates    = nullptr;  /* List of dates not to delete */
     char         *file     = nullptr;  /* Name of file with query info */
@@ -527,10 +527,10 @@ cache_query_delete_older_than (const char *service_name,
     uint_fast32_t file_hash = 0;      /* Json file content hash */
 
     /* Get current date */
-    t_time  = time (nullptr);
-    gd_date = g_date_new ();
+    now   = time (nullptr);
+    gdate = g_date_new ();
 
-    g_date_set_time_t (gd_date, t_time);
+    g_date_set_time_t (gdate, now);
 
     /* Create service config file name */
     file = cfg_file_get_query_path ();
@@ -538,7 +538,7 @@ cache_query_delete_older_than (const char *service_name,
     str_append (&file, service_name);
     str_append (&file, ".json");
     /* Open service json config file */
-    if ((j_obj = json_open_file (file, &file_hash, &err)) == nullptr) {
+    if ((root = json_open_file (file, &file_hash, &err)) == nullptr) {
         free (file);
         return err;
     }
@@ -546,20 +546,20 @@ cache_query_delete_older_than (const char *service_name,
     dates = malloc ((size_t) days * sizeof (char*));
     /* Store dates subtracting one day from a stored one */
     for (i = 0; i < days; ++i) {
-        g_date_strftime (date_str, 64, "%Y%m%d", gd_date);
+        g_date_strftime (date_str, 64, "%Y%m%d", gdate);
         dates[i] = strdup (date_str);
-        g_date_subtract_days (gd_date, 1);
+        g_date_subtract_days (gdate, 1);
     }
     /* Iterate json config file for given service, compare keys with
      * dates from list and delete key if date in config is not on list */
-    json_object_object_foreach (j_obj, key, val1) {
+    json_object_object_foreach (root, key, val1) {
         keep = 0;
         for (i = 0; i < days; ++i)
             keep |= (strcmp (key, dates[i]) == 0);
         if (!keep)
-            json_object_object_del (j_obj, key);
+            json_object_object_del (root, key);
     }
-    json_buff = json_object_to_json_string (j_obj);
+    json_buff = json_object_to_json_string (root);
     /* Compare hashes and save data if something changed */
     if (hash (json_buff) != file_hash) {
         err = save_file_data (file, json_buff);
@@ -569,8 +569,8 @@ cache_query_delete_older_than (const char *service_name,
     }
     free (file);
     free (dates);
-    json_object_put (j_obj);
-    g_date_free (gd_date);
+    json_object_put (root);
+    g_date_free (gdate);
     return err;
 }
 /*----------------------------------------------------------------------------*/

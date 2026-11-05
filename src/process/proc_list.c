@@ -28,27 +28,27 @@
 /**
  * @brief  Initialize ProcList item.
  *
- * @param[out] pl_list  ProcList item
+ * @param[out] list  ProcList item
  * @return     none
  */
 static void
-proclist_init (ProcList *pl_list)
+proclist_init (ProcList *list)
 {
-    pl_list->cnt = 0;
-    pl_list->pi_list = nullptr;
+    list->cnt = 0;
+    list->pi_list = nullptr;
 }
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Free ProcList list.
  */
 void
-proc_list_free (ProcList *pl_list)
+proc_list_free (ProcList *list)
 {
-    while (pl_list->cnt--) {
-        proc_item_free (pl_list->pi_list[pl_list->cnt]);
+    while (list->cnt--) {
+        proc_item_free (list->pi_list[list->cnt]);
     }
-    free (pl_list->pi_list);
-    free (pl_list);
+    free (list->pi_list);
+    free (list);
 }
 /*----------------------------------------------------------------------------*/
 /**
@@ -57,41 +57,41 @@ proc_list_free (ProcList *pl_list)
 ProcList *
 proc_list_new (void)
 {
-    ProcList *pl_new = nullptr;
+    ProcList *list = nullptr;
 
-    if ((pl_new = malloc (sizeof (ProcList))) == nullptr)
+    if ((list = malloc (sizeof (ProcList))) == nullptr)
         err (EXIT_FAILURE, nullptr);
 
-    proclist_init (pl_new);
+    proclist_init (list);
 
-    return pl_new;
+    return list;
 }
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Insert ProcItem to proc_list.
  */
 void
-proc_list_insert (ProcList *pl_list,
-                  ProcItem *pi_item)
+proc_list_insert (ProcList *list,
+                  ProcItem *item)
 {
-    ProcItem **pi_temp = nullptr;
+    ProcItem **resized = nullptr;
 
-    if (pl_list->pi_list == nullptr) {
-        pl_list->pi_list = malloc ((pl_list->cnt + 1) * sizeof (ProcItem*));
-        if (pl_list->pi_list == nullptr) {
+    if (list->pi_list == nullptr) {
+        list->pi_list = malloc ((list->cnt + 1) * sizeof (ProcItem*));
+        if (list->pi_list == nullptr) {
             err (EXIT_FAILURE, nullptr);
         }
     }
     else {
-        pi_temp = realloc (pl_list->pi_list,
-                           (pl_list->cnt + 1) * sizeof (ProcItem*));
-        if (pi_temp == nullptr) {
-            proc_list_free (pl_list);
+        resized = realloc (list->pi_list,
+                           (list->cnt + 1) * sizeof (ProcItem*));
+        if (resized == nullptr) {
+            proc_list_free (list);
             err (EXIT_FAILURE, nullptr);
         }
-        pl_list->pi_list = pi_temp;
+        list->pi_list = resized;
     }
-    pl_list->pi_list [pl_list->cnt++] = pi_item;
+    list->pi_list [list->cnt++] = item;
 }
 /*----------------------------------------------------------------------------*/
 

@@ -62,10 +62,10 @@ RandMem {
 /**
  * @brief  Reset random memory.
  *
- * @param[out] rm_mem  RandMem object
+ * @param[out] mem  RandMem object
  * @return     none
  */
-void      randomm_reset          (RandMem *rm_mem);
+void      randomm_reset          (RandMem *mem);
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Create new RandMem item.
@@ -76,29 +76,29 @@ RandMem * randomm_new            (void) __attribute__((malloc));
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Create new RandMem item with given range.
- * @param[in]  ui_range  Range value
+ * @param[in]  range  Range value
  *
  * @return New RandMem item
  */
-RandMem * randomm_new_with_range (size_t ui_range) __attribute__((malloc));
+RandMem * randomm_new_with_range (size_t range) __attribute__((malloc));
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Free RandMem item.
  *
- * @param[out] rm_mem  RandMem object
+ * @param[out] mem  RandMem object
  * @return     none
  */
-void      randomm_free           (RandMem *rm_mem);
+void      randomm_free           (RandMem *mem);
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Set random numbers range.
  *
- * @param[out] rm_mem  RandMem object
- * @param[in]  ui_rng  Range value
+ * @param[out] mem    RandMem object
+ * @param[in]  range  Range value
  * @return     none
  */
-void      randomm_set_range      (RandMem *rm_mem,
-                                  size_t   ui_rng);
+void      randomm_set_range      (RandMem *mem,
+                                  size_t   range);
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Get random number
@@ -111,9 +111,9 @@ void      randomm_set_range      (RandMem *rm_mem,
  * set it resets the memory of returned numbers, sets number counter to zero
  * and starts getting random numbers from the beginning.
  *
- * @param[out] rm_mem  RandMem object
+ * @param[out] mem  RandMem object
  * @return     Ranom number
  */
-size_t    randomm_get_number     (RandMem *rm_mem);
+size_t    randomm_get_number     (RandMem *mem);
 /*----------------------------------------------------------------------------*/
 #endif

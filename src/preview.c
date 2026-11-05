@@ -26,107 +26,105 @@
 #include "preview.h"
 /*----------------------------------------------------------------------------*/
 /**
- * @fn  static GdkPixbuf * make_prev_screen_pbuf (GdkRectangle *gr_rect)
+ * @fn  static GdkPixbuf * make_prev_screen_pbuf (GdkRectangle *area)
  *
  * @brief  Paint a preview screen.
  *
  * Create preview image (monitor) in GdkPixbuf format.
  *
- * @param[out] gr_rect  GdkRectangle with area where preview image can be 
- *                      painted
+ * @param[out] area  GdkRectangle with area where preview image can be
+ *                   painted
  * @return     Pixbuf with preview screeen
  *
- * @fn  static void paint_pbuf_on_pbuf (GdkPixbuf          *gp_dest,
- *                                      const GdkPixbuf    *gp_src,
- *                                      const GdkRectangle *gr_area)
+ * @fn  static void paint_pbuf_on_pbuf (GdkPixbuf          *dest,
+ *                                      const GdkPixbuf    *src,
+ *                                      const GdkRectangle *area)
  *
  * @brief  Paint pixbuf on another pixbuf.
  *
- * Paint GdkPixbuf image gp_src on GdkPixbuf gp_dest.
- * Image will be painted in rectangle described in gr_area GdkRectangle.
+ * Paint GdkPixbuf image src on GdkPixbuf dest.
+ * Image will be painted in rectangle described in area GdkRectangle.
  *
- * @param[out] gp_dest  Destination pixpuf to paint on to
- * @param[in]  gp_src   Source pixpuf to paint on destination one
- * @param[in]  gr_area  GdkRectangle with area where preview image can be 
- *                      painted
+ * @param[out] dest  Destination pixpuf to paint on to
+ * @param[in]  src   Source pixpuf to paint on destination one
+ * @param[in]  area  GdkRectangle with area where preview image can be
+ *                   painted
  * @return     none
  *
- * @fn  static GdkPixbuf * make_image_preview (const char *s_fname)
+ * @fn  static GdkPixbuf * make_image_preview (const char *file)
  *
  * @brief  Create pixbuf preview of image from path.
  *
  * Function creates GdkPixbuf with preview image (monitor) and a scaled
- * wallpaper in it. If passed s_fname is null, wallpaper will not be
+ * wallpaper in it. If passed file is null, wallpaper will not be
  * painted inside preview image.
  *
- * @param[in]  s_fname   Image path
+ * @param[in]  file  Image path
  *
  * @return     Pixbuf with preview image.
  */
 /*----------------------------------------------------------------------------*/
-static GdkPixbuf * make_prev_screen_pbuf (GdkRectangle       *gr_rect);
+static GdkPixbuf * make_prev_screen_pbuf (GdkRectangle       *area);
 
-static void        paint_pbuf_on_pbuf    (GdkPixbuf          *gp_dest,
-                                          const GdkPixbuf    *gp_src,
-                                          const GdkRectangle *gr_area);
+static void        paint_pbuf_on_pbuf    (GdkPixbuf          *dest,
+                                          const GdkPixbuf    *src,
+                                          const GdkRectangle *area);
 
-static GdkPixbuf * make_image_preview    (const char         *s_fname);
+static GdkPixbuf * make_image_preview    (const char         *file);
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Paint a preview screen.
  */
 static GdkPixbuf *
-make_prev_screen_pbuf (GdkRectangle *gr_rect)
+make_prev_screen_pbuf (GdkRectangle *area)
 {
-    GdkPixbuf *gp_bg    = nullptr; /* Result preview image (screen + wall) */
-    GdkPixbuf *gp_scr_1 = nullptr; /* Preview (monitor) part 1 (top) image*/
-    GdkPixbuf *gp_scr_2 = nullptr; /* Preview (monitor) part 1 (top) image*/
-    GdkPixbuf *gp_scr_3 = nullptr; /* Preview (monitor) part 1 (top) image*/
-    int i_screen_w = 0;   /* Screen width */
-    int i_screen_h = 0;   /* Screen height */
-    int i_pr_scr_w = 138; /* Preview width (inside screen) */
-    int i_pr_scr_h = 0;   /* Preview height (inside screen) */
-    int i_img_w    = 0;   /* Preview (monitor) image width */
-    int i_img_1_h  = 0;   /* Preview (monitor) part 1 (top) image height */
-    int i_img_2_h  = 0;   /* Preview (monitor) part 2 (middle) image height */
-    int i_img_3_h  = 0;   /* Preview (monitor) part 3 (bottom) image height */
-    int i          = 0;   /* The i */
+    GdkPixbuf *result = nullptr; /* Result preview image (screen + wall) */
+    GdkPixbuf *top    = nullptr; /* Preview (monitor) top part image */
+    GdkPixbuf *middle = nullptr; /* Preview (monitor) middle part image */
+    GdkPixbuf *bottom = nullptr; /* Preview (monitor) bottom part image */
+    int screen_w      = 0;   /* Screen width */
+    int screen_h      = 0;   /* Screen height */
+    int prev_w        = 138; /* Preview width (inside screen) */
+    int prev_h        = 0;   /* Preview height (inside screen) */
+    int img_w         = 0;   /* Preview (monitor) image width */
+    int top_h         = 0;   /* Preview (monitor) top part image height */
+    int middle_h      = 0;   /* Preview (monitor) middle part image height */
+    int bottom_h      = 0;   /* Preview (monitor) bottom part image height */
 
-    get_screen_size (&i_screen_w, &i_screen_h);
+    get_screen_size (&screen_w, &screen_h);
 
     /* Count the height of a inside monitor preview screen */
-    i_pr_scr_h = (int) ((double) i_screen_h /
-                        (double) i_screen_w * (double) i_pr_scr_w);
+    prev_h = (int) ((double) screen_h / (double) screen_w * (double) prev_w);
 
-    gr_rect->x = 7;               /* Preview left point (inside screen) */
-    gr_rect->y = 7;               /* Preview top point (inside screen) */
-    gr_rect->width = i_pr_scr_w;  /* Preview width (inside screen) */
-    gr_rect->height = i_pr_scr_h; /* Preview height (inside screen) */
+    area->x      = 7;      /* Preview left point (inside screen) */
+    area->y      = 7;      /* Preview top point (inside screen) */
+    area->width  = prev_w; /* Preview width (inside screen) */
+    area->height = prev_h; /* Preview height (inside screen) */
 
-    gp_scr_1 = get_icon (W_IMG_SCREEN_1);  /* top screen image (152x7) */
-    gp_scr_2 = get_icon (W_IMG_SCREEN_2);  /* middle screen image (152x1) */
-    gp_scr_3 = get_icon (W_IMG_SCREEN_3);  /* bottom screen image (152x45) */
+    top    = get_icon (W_IMG_SCREEN_1);  /* top screen image (152x7) */
+    middle = get_icon (W_IMG_SCREEN_2);  /* middle screen image (152x1) */
+    bottom = get_icon (W_IMG_SCREEN_3);  /* bottom screen image (152x45) */
 
     /* Get dimensions of monitor part images */
-    i_img_w = gdk_pixbuf_get_width (gp_scr_1);
-    i_img_1_h = gdk_pixbuf_get_height (gp_scr_1);
-    i_img_2_h = gdk_pixbuf_get_height (gp_scr_2);
-    i_img_3_h = gdk_pixbuf_get_height (gp_scr_3);
+    img_w    = gdk_pixbuf_get_width (top);
+    top_h    = gdk_pixbuf_get_height (top);
+    middle_h = gdk_pixbuf_get_height (middle);
+    bottom_h = gdk_pixbuf_get_height (bottom);
 
     /* Create pixbuf for the whole preview image */
-    gp_bg = gdk_pixbuf_new (GDK_COLORSPACE_RGB,
-                            TRUE,
-                            8,
-                            i_img_w,
-                            i_pr_scr_h + i_img_1_h + i_img_3_h);
+    result = gdk_pixbuf_new (GDK_COLORSPACE_RGB,
+                             TRUE,
+                             8,
+                             img_w,
+                             prev_h + top_h + bottom_h);
 
     /* Paint on the preview image upper first part of monitor */
-    gdk_pixbuf_scale (gp_scr_1,
-                      gp_bg,
+    gdk_pixbuf_scale (top,
+                      result,
                       0,
                       0,
-                      i_img_w,
-                      i_img_1_h,
+                      img_w,
+                      top_h,
                       0.0,
                       0.0,
                       1.0,
@@ -134,64 +132,64 @@ make_prev_screen_pbuf (GdkRectangle *gr_rect)
                       GDK_INTERP_HYPER);
 
     /* Paint on preview image middle parts of a monitor */
-    for (i = 0; i < i_pr_scr_h; ++i) {
-        gdk_pixbuf_scale (gp_scr_2,
-                          gp_bg,
+    for (int row = 0; row < prev_h; ++row) {
+        gdk_pixbuf_scale (middle,
+                          result,
                           0,
-                          i_img_1_h + i,
-                          i_img_w,
-                          i_img_2_h,
+                          top_h + row,
+                          img_w,
+                          middle_h,
                           0.0,
-                          i_img_1_h + i,
+                          top_h + row,
                           1.0,
                           1.0,
                           GDK_INTERP_HYPER);
     }
 
     /* Paint on the preview image bottom last part of monitor */
-    gdk_pixbuf_scale (gp_scr_3,
-                      gp_bg,
+    gdk_pixbuf_scale (bottom,
+                      result,
                       0,
-                      i_img_1_h + i_pr_scr_h,
-                      i_img_w,
-                      i_img_3_h,
+                      top_h + prev_h,
+                      img_w,
+                      bottom_h,
                       0.0,
-                      i_img_1_h + i_pr_scr_h,
+                      top_h + prev_h,
                       1.0,
                       1.0,
                       GDK_INTERP_HYPER);
 
-    g_object_unref (gp_scr_1);
-    g_object_unref (gp_scr_2);
-    g_object_unref (gp_scr_3);
+    g_object_unref (top);
+    g_object_unref (middle);
+    g_object_unref (bottom);
 
-    return gp_bg;
+    return result;
 }
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Paint pixbuf on another pixbuf.
  */
 static void
-paint_pbuf_on_pbuf (GdkPixbuf          *gp_dest,
-                    const GdkPixbuf    *gp_src,
-                    const GdkRectangle *gr_area)
+paint_pbuf_on_pbuf (GdkPixbuf          *dest,
+                    const GdkPixbuf    *src,
+                    const GdkRectangle *area)
 {
-    double d_sc_x = 0;  /* x direction scale factor */
-    double d_sc_y = 0;  /* y direction scale factor */
+    double scale_x = 0;  /* x direction scale factor */
+    double scale_y = 0;  /* y direction scale factor */
 
-    d_sc_x = (double) gr_area->width / (double) gdk_pixbuf_get_width (gp_src);
-    d_sc_y = (double) gr_area->height / (double) gdk_pixbuf_get_height (gp_src);
+    scale_x = (double) area->width / (double) gdk_pixbuf_get_width (src);
+    scale_y = (double) area->height / (double) gdk_pixbuf_get_height (src);
 
-    gdk_pixbuf_scale (gp_src,
-                      gp_dest,
-                      gr_area->x,
-                      gr_area->y,
-                      gr_area->width,
-                      gr_area->height,
-                      gr_area->x,
-                      gr_area->y,
-                      d_sc_x, 
-                      d_sc_y,
+    gdk_pixbuf_scale (src,
+                      dest,
+                      area->x,
+                      area->y,
+                      area->width,
+                      area->height,
+                      area->x,
+                      area->y,
+                      scale_x,
+                      scale_y,
                       GDK_INTERP_HYPER);
 }
 /*----------------------------------------------------------------------------*/
@@ -199,68 +197,66 @@ paint_pbuf_on_pbuf (GdkPixbuf          *gp_dest,
  * @brief  Create pixbuf preview of image from path.
  */
 static GdkPixbuf *
-make_image_preview (const char *s_fname)
+make_image_preview (const char *file)
 {
-    GdkPixbuf   *gp_prev_screen = nullptr; /* Preview image (screen) */
-    GdkPixbuf   *gp_prev        = nullptr; /* Wallpaper preview image */
-    GdkRectangle gr_area        = {0};  /* Wallpaper preview area */
+    GdkPixbuf   *screen    = nullptr; /* Preview image (screen) */
+    GdkPixbuf   *wallpaper = nullptr; /* Wallpaper preview image */
+    GdkRectangle area      = {0};     /* Wallpaper preview area */
 
     /* Create the monitor preview pixbuf */
-    gp_prev_screen = make_prev_screen_pbuf (&gr_area);
+    screen = make_prev_screen_pbuf (&area);
 
-    if (s_fname != nullptr) {
+    if (file != nullptr) {
         /* Load wallpaper image to pixbuf */
-        gp_prev = gdk_pixbuf_new_from_file (s_fname, nullptr);
+        wallpaper = gdk_pixbuf_new_from_file (file, nullptr);
 
         /* Paint wallpaper preview on the background (monitor) pixbuf */
-        paint_pbuf_on_pbuf (gp_prev_screen,
-                            gp_prev,
-                            &gr_area);
-        g_object_unref (gp_prev);
+        paint_pbuf_on_pbuf (screen, wallpaper, &area);
+        g_object_unref (wallpaper);
     }
-    return gp_prev_screen;
+    return screen;
 }
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Get screen size.
  */
 void
-get_screen_size (int *i_scr_w,
-                 int *i_scr_h)
+get_screen_size (int *width,
+                 int *height)
 {
     GdkRectangle workarea = {0};
-    GdkDisplay  *gd_disp  = gdk_display_get_default ();
-    GdkMonitor  *gm_mon   = gdk_display_get_primary_monitor (gd_disp);
+    GdkDisplay  *display  = gdk_display_get_default ();
+    GdkMonitor  *monitor  = gdk_display_get_primary_monitor (display);
 
     /* Some window managers (notably under Wayland/XWayland) don't flag
      * any monitor as "primary" - fall back to the first available one. */
-    if (gm_mon == nullptr) {
-        gm_mon = gdk_display_get_monitor (gd_disp, 0);
+    if (monitor == nullptr) {
+        monitor = gdk_display_get_monitor (display, 0);
     }
 
-    if (gm_mon != nullptr) {
-        gdk_monitor_get_workarea (gm_mon, &workarea);
+    if (monitor != nullptr) {
+        gdk_monitor_get_workarea (monitor, &workarea);
     }
 
-    *i_scr_w = workarea.width;
-    *i_scr_h = workarea.height;
+    *width  = workarea.width;
+    *height = workarea.height;
 }
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Make preview image widget of image (file path).
  */
 void
-preview_from_file (GtkWidget  *gw_img_prev,
-                   const char *s_file)
+preview_from_file (GtkWidget  *image,
+                   const char *file)
 {
     /* Create peview pixbuf (monitor + wallpaper inside) */
-    GdkPixbuf *gp_prev = make_image_preview (s_file);
+    GdkPixbuf *preview = make_image_preview (file);
 
-    if (gp_prev != nullptr) {
-        gtk_image_clear (GTK_IMAGE (gw_img_prev));
+    if (preview != nullptr) {
+        gtk_image_clear (GTK_IMAGE (image));
         /* Set new pixbuf to the image */
-        gtk_image_set_from_pixbuf (GTK_IMAGE (gw_img_prev), gp_prev);
-        g_object_unref (gp_prev);
+        gtk_image_set_from_pixbuf (GTK_IMAGE (image), preview);
+        g_object_unref (preview);
     }
 }
 /*----------------------------------------------------------------------------*/
@@ -270,30 +266,30 @@ preview_from_file (GtkWidget  *gw_img_prev,
 GtkWidget *
 create_preview_label (void)
 {
-    GtkWidget *gw_label_box;     /* Box with peview labels to return */
-    GtkWidget *gw_label_1;       /* Description label 1 */
-    GtkWidget *gw_label_2;       /* Description label 2 */
-    int        i_w          = 0; /* Screen width */
-    int        i_h          = 0; /* screen height */
-    char       s_markup[50];     /* Buffer for snprintf */
+    GtkWidget *box;            /* Box with peview labels to return */
+    GtkWidget *title;          /* "Screen resolution" label */
+    GtkWidget *resolution;     /* Label with resolution value */
+    int        width      = 0; /* Screen width */
+    int        height     = 0; /* Screen height */
+    char       markup[50];     /* Buffer for snprintf */
 
-    gw_label_box = gtk_box_new (GTK_ORIENTATION_VERTICAL, 1);
-    gw_label_1   = gtk_label_new (nullptr);
-    gw_label_2   = gtk_label_new (nullptr);
+    box        = gtk_box_new (GTK_ORIENTATION_VERTICAL, 1);
+    title      = gtk_label_new (nullptr);
+    resolution = gtk_label_new (nullptr);
 
-    gtk_label_set_xalign (GTK_LABEL (gw_label_1), 0.5);
-    gtk_label_set_xalign (GTK_LABEL (gw_label_2), 0.5);
-    get_screen_size (&i_w, &i_h);
-    snprintf (s_markup, 50, "<small>%dx%d</small>", i_w, i_h);
+    gtk_label_set_xalign (GTK_LABEL (title), 0.5);
+    gtk_label_set_xalign (GTK_LABEL (resolution), 0.5);
+    get_screen_size (&width, &height);
+    snprintf (markup, sizeof markup, "<small>%dx%d</small>", width, height);
 
-    gtk_label_set_markup (GTK_LABEL (gw_label_1), 
+    gtk_label_set_markup (GTK_LABEL (title),
                           "<small>Screen resolution :</small>");
-    gtk_label_set_markup (GTK_LABEL (gw_label_2), s_markup);
+    gtk_label_set_markup (GTK_LABEL (resolution), markup);
 
-    gtk_box_pack_start (GTK_BOX (gw_label_box), gw_label_1, FALSE, FALSE, 1);
-    gtk_box_pack_start (GTK_BOX (gw_label_box), gw_label_2, FALSE, FALSE, 1);
+    gtk_box_pack_start (GTK_BOX (box), title, FALSE, FALSE, 1);
+    gtk_box_pack_start (GTK_BOX (box), resolution, FALSE, FALSE, 1);
 
-    return gw_label_box;
+    return box;
 }
 /*----------------------------------------------------------------------------*/
 

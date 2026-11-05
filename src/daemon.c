@@ -110,8 +110,8 @@ daemon_print_status_exit (void)
 void
 daemon_start (void)
 {
-    [[maybe_unused]] int i_res = 0; /* Result of system command */
-    i_res = system ("wchangerd --start &");
+    [[maybe_unused]] int result = 0; /* Result of system command */
+    result = system ("wchangerd --start &");
 }
 /*----------------------------------------------------------------------------*/
 /**

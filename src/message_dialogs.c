@@ -27,56 +27,56 @@
  *  @brief  Error message dialog.
  */
 void
-message_dialog_error (GtkWindow  *gw_parent,
-                      const char *s_message)
+message_dialog_error (GtkWindow  *parent,
+                      const char *message)
 {
-    GtkWidget *gw_dialog;
+    GtkWidget *dialog;
 
-    gw_dialog = gtk_message_dialog_new (gw_parent,
-                                        GTK_DIALOG_DESTROY_WITH_PARENT,
-                                        GTK_MESSAGE_ERROR,
-                                        GTK_BUTTONS_CLOSE,
-                                        "%s", s_message);
-    gtk_dialog_run (GTK_DIALOG (gw_dialog));
-    gtk_widget_destroy (gw_dialog);
+    dialog = gtk_message_dialog_new (parent,
+                                     GTK_DIALOG_DESTROY_WITH_PARENT,
+                                     GTK_MESSAGE_ERROR,
+                                     GTK_BUTTONS_CLOSE,
+                                     "%s", message);
+    gtk_dialog_run (GTK_DIALOG (dialog));
+    gtk_widget_destroy (dialog);
 }
 /*----------------------------------------------------------------------------*/
 /**
  *  @brief  Warning message dialog.
  */
 void
-message_dialog_warning (GtkWindow  *gw_parent,
-                        const char *s_message)
+message_dialog_warning (GtkWindow  *parent,
+                        const char *message)
 {
-    GtkWidget *gw_dialog;
+    GtkWidget *dialog;
 
-    gw_dialog = gtk_message_dialog_new (gw_parent,
-                                        GTK_DIALOG_DESTROY_WITH_PARENT,
-                                        GTK_MESSAGE_WARNING,
-                                        GTK_BUTTONS_CLOSE,
-                                        "%s", s_message);
-    gtk_dialog_run (GTK_DIALOG (gw_dialog));
-    gtk_widget_destroy (gw_dialog);
+    dialog = gtk_message_dialog_new (parent,
+                                     GTK_DIALOG_DESTROY_WITH_PARENT,
+                                     GTK_MESSAGE_WARNING,
+                                     GTK_BUTTONS_CLOSE,
+                                     "%s", message);
+    gtk_dialog_run (GTK_DIALOG (dialog));
+    gtk_widget_destroy (dialog);
 }
 /*----------------------------------------------------------------------------*/
 /**
  *  @brief  Question message dialog.
  */
 int
-message_dialog_question (GtkWindow  *gw_parent,
-                         const char *s_message)
+message_dialog_question (GtkWindow  *parent,
+                         const char *message)
 {
-    GtkWidget *gw_dialog;
-    int i_res = 0;
+    GtkWidget *dialog;
+    int response = 0;
 
-    gw_dialog = gtk_message_dialog_new (gw_parent,
-                                        GTK_DIALOG_DESTROY_WITH_PARENT,
-                                        GTK_MESSAGE_QUESTION,
-                                        GTK_BUTTONS_YES_NO,
-                                        "%s", s_message);
-    i_res = gtk_dialog_run (GTK_DIALOG (gw_dialog));
-    gtk_widget_destroy (gw_dialog);
+    dialog = gtk_message_dialog_new (parent,
+                                     GTK_DIALOG_DESTROY_WITH_PARENT,
+                                     GTK_MESSAGE_QUESTION,
+                                     GTK_BUTTONS_YES_NO,
+                                     "%s", message);
+    response = gtk_dialog_run (GTK_DIALOG (dialog));
+    gtk_widget_destroy (dialog);
 
-    return i_res == GTK_RESPONSE_YES ? 1 : 0;
+    return response == GTK_RESPONSE_YES ? 1 : 0;
 }
 /*----------------------------------------------------------------------------*/

@@ -29,36 +29,36 @@
 /**
  * @brief  Error message dialog.
  *
- * @param[in] gw_parent  Dialog parent widget
- * @param[in] s_message  Message to show
+ * @param[in] parent   Dialog parent widget
+ * @param[in] message  Message to show
  * @return    none
  */
 /*----------------------------------------------------------------------------*/
-void     message_dialog_error     (GtkWindow    *gw_parent,
-                                   const char   *s_message)
+void     message_dialog_error     (GtkWindow    *parent,
+                                   const char   *message)
          __attribute__ ((nonnull (2)));
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Warning message dialog.
  *
- * @param[in] gw_parent  Dialog parent widget
- * @param[in] s_message  Message to show
+ * @param[in] parent   Dialog parent widget
+ * @param[in] message  Message to show
  * @return    none
  */
 /*----------------------------------------------------------------------------*/
-void     message_dialog_warning     (GtkWindow  *gw_parent,
-                                     const char *s_message)
+void     message_dialog_warning     (GtkWindow  *parent,
+                                     const char *message)
          __attribute__ ((nonnull (2)));
 /*----------------------------------------------------------------------------*/
 /**
  *  @brief  Question message dialog.
  *
- * @param[in] gw_parent  Dialog parent widget
- * @param[in] s_message  Message to show
+ * @param[in] parent   Dialog parent widget
+ * @param[in] message  Message to show
  * @return    1 if Yes pressed 0 if No
  */
-int      message_dialog_question    (GtkWindow  *gw_parent,
-                                     const char *s_message);
+int      message_dialog_question    (GtkWindow  *parent,
+                                     const char *message);
 /*----------------------------------------------------------------------------*/
 
 #endif

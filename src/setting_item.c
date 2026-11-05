@@ -33,137 +33,137 @@
 /**
  * @brief  Setting initialization.
  *
- * @param[out] st_set  Setting object
+ * @param[out] setting  Setting object
  * @return     none
  */
-static void setting_init (Setting *st_set);
+static void setting_init (Setting *setting);
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Create default Setting.
  *
- * @param[in] s_name  Setting's name
+ * @param[in] name  Setting's name
  * @return    New Setting item
  */
-static Setting * setting_new_default (const char *s_name)
+static Setting * setting_new_default (const char *name)
        __attribute__ ((returns_nonnull));
 /*----------------------------------------------------------------------------*/
 /**
- * @brief Set st_child Setting to be a child of st_parent.
+ * @brief Set child Setting to be a child of parent.
  *
- * @param[out] st_parent  Parent Setting to set child to
- * @param[out] st_child   Child setting to be assigned to st_parent Setting
+ * @param[out] parent  Parent Setting to set child to
+ * @param[out] child   Child setting to be assigned to parent Setting
  * @return     none
  */
-static void setting_set_child (Setting *st_parent,
-                               Setting *st_child);
+static void setting_set_child (Setting *parent,
+                               Setting *child);
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Set Setting type value
  *
- * @param[in] st_setting  Setting item
- * @param[in] val         Type value to set
+ * @param[in] setting  Setting item
+ * @param[in] val      Type value to set
  * @return    none
  */
 static inline void
-setting_set_type (Setting          *st_setting,
+setting_set_type (Setting          *setting,
                   const SetValType  val)
 {
-    st_setting->v_type = val;
+    setting->v_type = val;
 }
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Set Setting name string
  *
- * @param[in] st_setting  Setting item
- * @param[in] val         Name string to set
+ * @param[in] setting  Setting item
+ * @param[in] val      Name string to set
  * @return    none
  */
 static inline void
-setting_set_name (Setting    *st_setting,
+setting_set_name (Setting    *setting,
                   const char *val)
 {
-    st_setting->s_name = strdup (val);
+    setting->s_name = strdup (val);
 }
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Set Setting hash value
  *
- * @param[in] st_setting  Setting item
- * @param[in] val         Hash value to set
+ * @param[in] setting  Setting item
+ * @param[in] val      Hash value to set
  * @return    none
  */
 static inline void
-setting_set_hash (Setting       *st_setting,
+setting_set_hash (Setting       *setting,
                   uint_fast32_t  val)
 {
-    st_setting->hash = val;
+    setting->hash = val;
 }
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Free string data in Setting
  */
 static inline void
-setting_free_string (Setting *st_setting)
+setting_free_string (Setting *setting)
 {
-    free (st_setting->data.s_val);
+    free (setting->data.s_val);
 }
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Setting initialization
  */
 static void
-setting_init (Setting *st_set)
+setting_init (Setting *setting)
 {
-    st_set->prev       = nullptr;
-    st_set->next       = nullptr;
-    st_set->parent     = nullptr;
-    st_set->v_type     = SET_VAL_INT;
-    st_set->s_name     = nullptr;
-    st_set->hash       = 0;
-    st_set->data.i_val = 0;
+    setting->prev       = nullptr;
+    setting->next       = nullptr;
+    setting->parent     = nullptr;
+    setting->v_type     = SET_VAL_INT;
+    setting->s_name     = nullptr;
+    setting->hash       = 0;
+    setting->data.i_val = 0;
 }
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Free Setting data
  */
 void
-setting_free (Setting *st_set)
+setting_free (Setting *setting)
 {
-    if (st_set == nullptr)
+    if (setting == nullptr)
         return;
 
-    free (st_set->s_name);
+    free (setting->s_name);
 
-    if (setting_get_type (st_set) == SET_VAL_STRING) {
-        setting_free_string (st_set);
+    if (setting_get_type (setting) == SET_VAL_STRING) {
+        setting_free_string (setting);
     }
-    free (st_set);
+    free (setting);
 }
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Free all settings in given Setting
  */
 void
-settings_free_all (Setting *st_set)
+settings_free_all (Setting *setting)
 {
-    Setting *st_next  = nullptr;
-    Setting *st_act   = nullptr;
-    Setting *st_child = nullptr;
+    Setting *next    = nullptr;
+    Setting *current = nullptr;
+    Setting *child   = nullptr;
 
-    st_act = st_set;
+    current = setting;
 
-    while (st_act != nullptr) {
-        st_next = st_act->next;
+    while (current != nullptr) {
+        next = current->next;
 
-        if (setting_get_type (st_act) == SET_VAL_SETTING ||
-            setting_get_type (st_act) == SET_VAL_ARRAY) {
+        if (setting_get_type (current) == SET_VAL_SETTING ||
+            setting_get_type (current) == SET_VAL_ARRAY) {
 
-            if ((st_child = setting_get_child (st_act)) != nullptr)
-                settings_free_all (st_child);
+            if ((child = setting_get_child (current)) != nullptr)
+                settings_free_all (child);
         }
-        setting_free (st_act);
+        setting_free (current);
 
-        st_act = st_next;
+        current = next;
     }
 }
 /*----------------------------------------------------------------------------*/
@@ -171,361 +171,361 @@ settings_free_all (Setting *st_set)
  * @brief  Set setting to string type and its content to val.
  */
 void
-setting_set_string (Setting    *st_set,
+setting_set_string (Setting    *setting,
                     const char *val)
 {
-    if (setting_get_type (st_set) == SET_VAL_STRING)
-        setting_free_string (st_set);
+    if (setting_get_type (setting) == SET_VAL_STRING)
+        setting_free_string (setting);
 
-    setting_set_type (st_set, SET_VAL_STRING);
+    setting_set_type (setting, SET_VAL_STRING);
 
-    st_set->data.s_val = (val == nullptr) ? strdup ("") : strdup (val);
+    setting->data.s_val = (val == nullptr) ? strdup ("") : strdup (val);
 }
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Create default Setting.
  */
 static Setting *
-setting_new_default (const char *s_name)
+setting_new_default (const char *name)
 {
-    Setting *st_ret = nullptr;
+    Setting *result = nullptr;
 
-    if ((st_ret = malloc (sizeof (Setting))) == nullptr)
+    if ((result = malloc (sizeof (Setting))) == nullptr)
         err (EXIT_FAILURE, nullptr);
 
-    setting_init (st_ret);
+    setting_init (result);
 
-    /*if (s_name != NULL && s_name[0] != '\0') {*/
-    if (s_name != nullptr) {
-        setting_set_name (st_ret, s_name);
-        setting_set_hash (st_ret, hash (s_name));
+    /*if (name != NULL && name[0] != '\0') {*/
+    if (name != nullptr) {
+        setting_set_name (result, name);
+        setting_set_hash (result, hash (name));
     }
-    return st_ret;
+    return result;
 }
 /*----------------------------------------------------------------------------*/
 Setting *
-setting_new_setting (const char *s_name)
+setting_new_setting (const char *name)
 {
-    Setting *st_ret = nullptr;
+    Setting *result = nullptr;
 
-    st_ret = setting_new_default (s_name);
+    result = setting_new_default (name);
 
-    setting_set_type (st_ret, SET_VAL_SETTING);
-    st_ret->data.st_child = nullptr;
+    setting_set_type (result, SET_VAL_SETTING);
+    result->data.st_child = nullptr;
 
-    return st_ret;
+    return result;
 }
 /*----------------------------------------------------------------------------*/
 Setting *
-setting_new_array (const char *s_name)
+setting_new_array (const char *name)
 {
-    Setting *st_ret = nullptr;
+    Setting *result = nullptr;
 
-    st_ret = setting_new_default (s_name);
+    result = setting_new_default (name);
 
-    setting_set_type (st_ret, SET_VAL_ARRAY);
-    st_ret->data.st_child = nullptr;
+    setting_set_type (result, SET_VAL_ARRAY);
+    result->data.st_child = nullptr;
 
-    return st_ret;
+    return result;
 }
 /*----------------------------------------------------------------------------*/
 Setting *
-setting_new_int (const char    *s_name,
+setting_new_int (const char    *name,
                  const int64_t  val)
 {
-    Setting *st_set = nullptr;
+    Setting *setting = nullptr;
 
-    st_set = setting_new_default (s_name);
+    setting = setting_new_default (name);
 
-    setting_set_type (st_set, SET_VAL_INT);
-    st_set->data.i_val = val;
+    setting_set_type (setting, SET_VAL_INT);
+    setting->data.i_val = val;
 
-    return st_set;
+    return setting;
 }
 /*----------------------------------------------------------------------------*/
 Setting *
-setting_new_uint (const char     *s_name,
+setting_new_uint (const char     *name,
                   const uint64_t  val)
 {
-    Setting *st_set = nullptr;
+    Setting *setting = nullptr;
 
-    st_set = setting_new_default (s_name);
+    setting = setting_new_default (name);
 
-    setting_set_type (st_set, SET_VAL_UINT);
-    st_set->data.ui_val = val;
+    setting_set_type (setting, SET_VAL_UINT);
+    setting->data.ui_val = val;
 
-    return st_set;
+    return setting;
 }
 /*----------------------------------------------------------------------------*/
 Setting *
-setting_new_double (const char   *s_name,
+setting_new_double (const char   *name,
                     const double  val)
 {
-    Setting *st_set = nullptr;
+    Setting *setting = nullptr;
 
-    st_set = setting_new_default (s_name);
+    setting = setting_new_default (name);
 
-    setting_set_type (st_set, SET_VAL_DOUBLE);
-    st_set->data.d_val = val;
+    setting_set_type (setting, SET_VAL_DOUBLE);
+    setting->data.d_val = val;
 
-    return st_set;
+    return setting;
 }
 /*----------------------------------------------------------------------------*/
 Setting *
-setting_new_string (const char *s_name,
+setting_new_string (const char *name,
                     const char *val)
 {
-    Setting *st_set = nullptr;
+    Setting *setting = nullptr;
 
-    st_set = setting_new_default (s_name);
+    setting = setting_new_default (name);
 
-    setting_set_string (st_set, val);
+    setting_set_string (setting, val);
 
-    return st_set;
+    return setting;
 }
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Find and return first item in a Setting list.
  */
 Setting *
-setting_first (Setting *st_settings)
+setting_first (Setting *settings)
 {
-    Setting *st_first = nullptr;
+    Setting *first = nullptr;
 
-    if (st_settings == nullptr)
+    if (settings == nullptr)
         return nullptr;
 
-    st_first = st_settings;
+    first = settings;
 
-    while (st_first->prev != nullptr)
-        st_first = st_first->prev;
+    while (first->prev != nullptr)
+        first = first->prev;
 
-    return st_first;
+    return first;
 }
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Find and return last item in a Setting list.
  */
 Setting *
-setting_last (Setting *st_settings)
+setting_last (Setting *settings)
 {
-    Setting *st_last = nullptr;
+    Setting *last = nullptr;
 
-    if (st_settings == nullptr)
+    if (settings == nullptr)
         return nullptr;
 
-    st_last = st_settings;
+    last = settings;
 
-    while (st_last->next != nullptr)
-        st_last = st_last->next;
+    while (last->next != nullptr)
+        last = last->next;
 
-    return st_last;
+    return last;
 }
 /*----------------------------------------------------------------------------*/
 /**
- * @brief  Prepend st_setting item to st_list list.
+ * @brief  Prepend setting item to the list.
  */
 Setting *
-settings_prepend (Setting *st_list,
-                  Setting *st_setting)
+settings_prepend (Setting *list,
+                  Setting *setting)
 {
-    Setting *st_first    = nullptr;
-    Setting *st_add_last = nullptr;
+    Setting *first    = nullptr;
+    Setting *add_last = nullptr;
 
-    if (st_list == nullptr)
-        return st_setting;
+    if (list == nullptr)
+        return setting;
 
-    if (st_setting == nullptr)
-        return st_list;
+    if (setting == nullptr)
+        return list;
 
-    st_add_last = setting_last (st_setting);
-    st_first    = setting_first (st_list);
+    add_last = setting_last (setting);
+    first    = setting_first (list);
 
-    st_first->prev     = st_add_last;
-    st_add_last->next  = st_first;
-    st_setting->prev   = nullptr;
-    st_setting->parent = st_first->parent;
-    if (st_setting->parent != nullptr) {
-        st_setting->parent->data.st_child = st_setting;
+    first->prev     = add_last;
+    add_last->next  = first;
+    setting->prev   = nullptr;
+    setting->parent = first->parent;
+    if (setting->parent != nullptr) {
+        setting->parent->data.st_child = setting;
     }
-    return st_setting;
+    return setting;
 }
 /*----------------------------------------------------------------------------*/
 /**
- * @brief  Append st_setting item to st_list list.
+ * @brief  Append setting item to the list.
  */
 Setting *
-settings_append (Setting *st_list,
-                 Setting *st_setting)
+settings_append (Setting *list,
+                 Setting *setting)
 {
-    Setting *st_last      = nullptr;
-    Setting *st_add_first = nullptr;
+    Setting *last      = nullptr;
+    Setting *add_first = nullptr;
 
-    if (st_list == nullptr)
-        return st_setting;
+    if (list == nullptr)
+        return setting;
 
-    if (st_setting == nullptr)
-        return st_list;
+    if (setting == nullptr)
+        return list;
 
-    st_last      = setting_last (st_list);
-    st_add_first = setting_first (st_setting);
+    last      = setting_last (list);
+    add_first = setting_first (setting);
 
-    st_last->next        = st_add_first;
-    st_add_first->prev   = st_last;
-    st_add_first->parent = st_last->parent;
+    last->next        = add_first;
+    add_first->prev   = last;
+    add_first->parent = last->parent;
 
-    return setting_first (st_list);
+    return setting_first (list);
 }
 /*----------------------------------------------------------------------------*/
 /**
- * @brief  Replace Setting st_old in list with st_new.
+ * @brief  Replace Setting old_item in list with new_item.
  */
 Setting *
-setting_replace (Setting *st_old,
-                 Setting *st_new)
+setting_replace (Setting *old_item,
+                 Setting *new_item)
 {
-    if (st_old == nullptr || st_new == nullptr)
+    if (old_item == nullptr || new_item == nullptr)
         return nullptr;
 
-    if (st_old->prev != nullptr)
-        st_old->prev->next = st_new;
-    if (st_old->next != nullptr)
-        st_old->next->prev = st_new;
+    if (old_item->prev != nullptr)
+        old_item->prev->next = new_item;
+    if (old_item->next != nullptr)
+        old_item->next->prev = new_item;
 
-    st_new->prev   = st_old->prev;
-    st_new->next   = st_old->next;
-    st_new->parent = st_old->parent;
-    st_old->prev   = nullptr;
-    st_old->next   = nullptr;
-    settings_free_all (st_old);
+    new_item->prev   = old_item->prev;
+    new_item->next   = old_item->next;
+    new_item->parent = old_item->parent;
+    old_item->prev   = nullptr;
+    old_item->next   = nullptr;
+    settings_free_all (old_item);
 
-    return setting_first (st_new);
+    return setting_first (new_item);
 }
 /*----------------------------------------------------------------------------*/
 /**
- * @brief  Append Setting item to st_list list or ignore append if
+ * @brief  Append Setting item to the list or ignore append if
  *         setting with same name exists on it.
  */
 void
-settings_append_or_ignore (Setting *st_list,
-                           Setting *st_setting)
+settings_append_or_ignore (Setting *list,
+                           Setting *setting)
 {
-    Setting *st_item = nullptr;
+    Setting *item = nullptr;
 
-    if (st_setting == nullptr)
+    if (setting == nullptr)
         return;
 
-    st_item = st_list;
+    item = list;
 
-    while (st_item != nullptr) {
-        if (setting_get_hash (st_item) == setting_get_hash (st_setting)) {
+    while (item != nullptr) {
+        if (setting_get_hash (item) == setting_get_hash (setting)) {
             return;
         }
-        st_item = st_item->next;
+        item = item->next;
     }
-    settings_append (st_list, st_setting);
+    settings_append (list, setting);
 }
 /*----------------------------------------------------------------------------*/
 /**
- * @brief  Append Setting item to st_list list and replace if
+ * @brief  Append Setting item to the list and replace if
  *         setting with same name exists on it.
  */
 Setting *
-settings_append_or_replace (Setting *st_list,
-                            Setting *st_setting)
+settings_append_or_replace (Setting *list,
+                            Setting *setting)
 {
-    Setting *st_ret  = nullptr;
-    Setting *st_item = nullptr;
+    Setting *result = nullptr;
+    Setting *item   = nullptr;
 
-    if (st_setting == nullptr)
+    if (setting == nullptr)
         return nullptr;
 
-    st_ret  = st_list;
-    st_item = st_list;
+    result = list;
+    item   = list;
 
-    while (st_item != nullptr) {
-        if (setting_get_hash (st_item) == setting_get_hash (st_setting)) {
-            setting_replace (st_item, st_setting);
-            if (st_setting->prev == nullptr)
-                st_ret = st_setting;
-            return st_ret;
+    while (item != nullptr) {
+        if (setting_get_hash (item) == setting_get_hash (setting)) {
+            setting_replace (item, setting);
+            if (setting->prev == nullptr)
+                result = setting;
+            return result;
         }
-        st_item = st_item->next;
+        item = item->next;
     }
-    settings_append (st_list, st_setting);
-    return st_ret;
+    settings_append (list, setting);
+    return result;
 }
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Find setting in list and replace.
  */
 Setting *
-settings_find_replace (Setting *st_list,
-                       Setting *st_setting)
+settings_find_replace (Setting *list,
+                       Setting *setting)
 {
-    Setting *st_ret  = nullptr;
-    Setting *st_item = nullptr;
+    Setting *result = nullptr;
+    Setting *item   = nullptr;
 
-    if (st_setting == nullptr)
+    if (setting == nullptr)
         return nullptr;
 
-    st_ret  = st_list;
-    st_item = st_list;
+    result = list;
+    item   = list;
 
-    while (st_item != nullptr) {
-        if (setting_get_hash (st_item) == setting_get_hash (st_setting)) {
-            st_ret = setting_replace (st_item, st_setting);
+    while (item != nullptr) {
+        if (setting_get_hash (item) == setting_get_hash (setting)) {
+            result = setting_replace (item, setting);
             break;
         }
-        st_item = st_item->next;
+        item = item->next;
     }
-    return st_ret;
+    return result;
 }
 /*----------------------------------------------------------------------------*/
 /**
- * @brief Set st_child Setting to be a child of st_parent.
+ * @brief Set child Setting to be a child of parent.
  */
 static void
-setting_set_child (Setting *st_parent,
-                   Setting *st_child)
+setting_set_child (Setting *parent,
+                   Setting *child)
 {
-    st_parent->data.st_child = st_child;
+    parent->data.st_child = child;
 
-    if (st_child != nullptr) {
-        st_child->parent = st_parent;
+    if (child != nullptr) {
+        child->parent = parent;
     }
 }
 /*----------------------------------------------------------------------------*/
 Setting *
-setting_get_child (const Setting *st_setting)
+setting_get_child (const Setting *setting)
 {
-    if (setting_get_type (st_setting) == SET_VAL_SETTING ||
-        setting_get_type (st_setting) == SET_VAL_ARRAY) {
+    if (setting_get_type (setting) == SET_VAL_SETTING ||
+        setting_get_type (setting) == SET_VAL_ARRAY) {
 
-        return st_setting->data.st_child;
+        return setting->data.st_child;
     }
     return nullptr;
 }
 /*----------------------------------------------------------------------------*/
 /**
- * @brief  Append Setting st_child to child list of Setting st_parent
+ * @brief  Append Setting child to child list of Setting parent
  */
 void
-setting_add_child (Setting *st_parent,
-                   Setting *st_child)
+setting_add_child (Setting *parent,
+                   Setting *child)
 {
-    Setting *st_temp = nullptr;
+    Setting *children = nullptr;
 
-    if (st_parent == nullptr || st_child == nullptr)
+    if (parent == nullptr || child == nullptr)
         return;
 
-    if (setting_get_type (st_parent) == SET_VAL_SETTING ||
-        setting_get_type (st_parent) == SET_VAL_ARRAY) {
+    if (setting_get_type (parent) == SET_VAL_SETTING ||
+        setting_get_type (parent) == SET_VAL_ARRAY) {
 
-        if ((st_temp = setting_get_child (st_parent)) == nullptr)
-            setting_set_child (st_parent, st_child);
+        if ((children = setting_get_child (parent)) == nullptr)
+            setting_set_child (parent, child);
         else
-            settings_append (st_temp, st_child);
+            settings_append (children, child);
     }
 }
 /*----------------------------------------------------------------------------*/
@@ -533,19 +533,19 @@ setting_add_child (Setting *st_parent,
  * @brief  Get top parent Setting of given Setting item.
  */
 Setting *
-setting_get_top_parent (Setting *st_setting)
+setting_get_top_parent (Setting *setting)
 {
-    Setting *st_top = nullptr; /* Top setting to return */
+    Setting *top = nullptr; /* Top setting to return */
 
-    if (st_setting == nullptr)
+    if (setting == nullptr)
         return nullptr;
 
-    st_top = st_setting;
+    top = setting;
 
-    while (st_top->parent != nullptr)
-        st_top = st_top->parent;
+    while (top->parent != nullptr)
+        top = top->parent;
 
-    return st_top;
+    return top;
 }
 /*----------------------------------------------------------------------------*/
 /**
@@ -553,62 +553,62 @@ setting_get_top_parent (Setting *st_setting)
  *         Setting item.
  */
 Setting *
-settings_find (Setting    *st_settings,
-               const char *s_name)
+settings_find (Setting    *settings,
+               const char *name)
 {
-    Setting       *st_item = nullptr; /* Setting item to return */
-    uint_fast32_t  ui_hash = 0;    /* Hash of name to compare */
+    Setting       *item      = nullptr; /* Setting item to return */
+    uint_fast32_t  name_hash = 0;    /* Hash of name to compare */
 
-    if (st_settings == nullptr)
+    if (settings == nullptr)
         return nullptr;
 
-    if (s_name != nullptr)
-        ui_hash = hash (s_name);
+    if (name != nullptr)
+        name_hash = hash (name);
 
-    st_item = st_settings;
+    item = settings;
 
-    while (st_item != nullptr) {
+    while (item != nullptr) {
 
-        if (ui_hash == setting_get_hash (st_item)) {
-            return st_item;
+        if (name_hash == setting_get_hash (item)) {
+            return item;
         }
-        st_item = st_item->next;
+        item = item->next;
     }
     return nullptr;
 }
 /*----------------------------------------------------------------------------*/
 /**
- * @brief  Count number of Setting items present in given st_settings list.
+ * @brief  Count number of Setting items present in given settings list.
  */
 size_t
-settings_count (const Setting *st_settings)
+settings_count (const Setting *settings)
 {
-    size_t ui_cnt = 0; /* Settings count to return */
+    size_t count = 0; /* Settings count to return */
 
-    while (st_settings != nullptr) {
-        ++ui_cnt;
-        st_settings = st_settings->next;
+    while (settings != nullptr) {
+        ++count;
+        settings = settings->next;
     }
-    return ui_cnt;
+    return count;
 }
 /*----------------------------------------------------------------------------*/
 /**
- * @brief  Find and return Setting item at given posision in st_settings
+ * @brief  Find and return Setting item at given posision in settings
  *         list.
  */
 Setting *
-setting_get_at_pos (Setting      *st_settings,
+setting_get_at_pos (Setting      *settings,
                     const size_t  pos)
 {
-    Setting *st_item = nullptr; /* Setting item to return */
-    size_t   ui_cnt  = 0;    /* Number of setting in iteration */
+    Setting *item  = nullptr; /* Setting item to return */
+    size_t   count = 0;    /* Number of setting in iteration */
 
-    st_item = st_settings;
+    item = settings;
 
-    while (st_item != nullptr) {
-        if (ui_cnt++ == pos)
-            return st_item;
-        st_item = st_item->next;
+    while (item != nullptr) {
+        if (count++ == pos)
+            return item;
+        item = item->next;
     }
     return nullptr;
 }
@@ -617,37 +617,37 @@ setting_get_at_pos (Setting      *st_settings,
  * @brief  Remove Setting from list.
  */
 Setting *
-setting_remove (Setting *st_setting)
+setting_remove (Setting *setting)
 {
-    Setting *st_item = nullptr;
-    Setting *st_ret  = nullptr;
+    Setting *item   = nullptr;
+    Setting *result = nullptr;
 
-    if (st_setting == nullptr)
+    if (setting == nullptr)
         return nullptr;
 
-    if (st_setting->prev != nullptr) {
-        st_setting->prev->next = st_setting->next;
-        st_ret = setting_first (st_setting->prev);
+    if (setting->prev != nullptr) {
+        setting->prev->next = setting->next;
+        result = setting_first (setting->prev);
     }
     else
-        st_ret = st_setting->next;
+        result = setting->next;
 
-    if (st_setting->next != nullptr) {
-        st_setting->next->prev = st_setting->prev;
+    if (setting->next != nullptr) {
+        setting->next->prev = setting->prev;
     }
-    if (st_setting->parent != nullptr) {
+    if (setting->parent != nullptr) {
 
-        st_item = st_setting->prev == nullptr ?
-                  st_setting->next :
-                  setting_first (st_setting);
+        item = setting->prev == nullptr ?
+                  setting->next :
+                  setting_first (setting);
 
-        setting_set_child (st_setting->parent, st_item);
+        setting_set_child (setting->parent, item);
     }
-    if ((st_item = setting_get_child (st_setting)) != nullptr) {
-        settings_free_all (st_item);
+    if ((item = setting_get_child (setting)) != nullptr) {
+        settings_free_all (item);
     }
-    setting_free (st_setting);
-    return st_ret;
+    setting_free (setting);
+    return result;
 }
 /*----------------------------------------------------------------------------*/
 #ifdef DEBUG
@@ -656,62 +656,62 @@ setting_remove (Setting *st_setting)
  * @brief  Print setting info
  */
 void
-setting_print (const Setting *st_set)
+setting_print (const Setting *setting)
 {
-    switch (st_set->v_type) {
+    switch (setting->v_type) {
         case SET_VAL_INT:
             printf ("int, val=%ld, n=%s,",
-                    setting_get_int (st_set),
-                    setting_get_name (st_set));
-            if (st_set->parent != nullptr)
-                printf (" par=%s\n", st_set->parent->s_name);
+                    setting_get_int (setting),
+                    setting_get_name (setting));
+            if (setting->parent != nullptr)
+                printf (" par=%s\n", setting->parent->s_name);
             else
                 printf ("\n");
             break;
         case SET_VAL_UINT:
             printf ("uint, val=%ld, n=%s\n",
-                    setting_get_uint (st_set),
-                    setting_get_name (st_set));
+                    setting_get_uint (setting),
+                    setting_get_name (setting));
             break;
         case SET_VAL_DOUBLE:
             printf ("double, val=%f, n=%s\n",
-                    setting_get_double (st_set),
-                    setting_get_name (st_set));
+                    setting_get_double (setting),
+                    setting_get_name (setting));
             break;
         case SET_VAL_STRING:
             printf ("str, val=%s, n=%s",
-                    setting_get_string (st_set),
-                    setting_get_name (st_set));
-            if (st_set->parent != nullptr)
-                printf (" par=%s\n", st_set->parent->s_name);
+                    setting_get_string (setting),
+                    setting_get_name (setting));
+            if (setting->parent != nullptr)
+                printf (" par=%s\n", setting->parent->s_name);
             else
                 printf ("\n");
             break;
         case SET_VAL_SETTING:
             printf ("set, val=%s, n=%s",
-                    setting_get_string (st_set),
-                    setting_get_name (st_set));
-            if (st_set->parent != nullptr)
-                printf (" par=%s\n", st_set->parent->s_name);
+                    setting_get_string (setting),
+                    setting_get_name (setting));
+            if (setting->parent != nullptr)
+                printf (" par=%s\n", setting->parent->s_name);
             else
                 printf ("\n");
-            if (setting_get_child (st_set) != nullptr) {
+            if (setting_get_child (setting) != nullptr) {
                 printf ("[\n");
-                settings_print (setting_get_child (st_set));
+                settings_print (setting_get_child (setting));
                 printf ("]\n");
             }
             break;
         case SET_VAL_ARRAY:
             printf ("array, val=%s, n=%s",
-                    setting_get_string (st_set),
-                    setting_get_name (st_set));
-            if (st_set->parent != nullptr)
-                printf (" par=%s\n", st_set->parent->s_name);
+                    setting_get_string (setting),
+                    setting_get_name (setting));
+            if (setting->parent != nullptr)
+                printf (" par=%s\n", setting->parent->s_name);
             else
                 printf ("\n");
             printf ("[\n");
-            if (setting_get_child (st_set) != nullptr)
-                settings_print (setting_get_child (st_set));
+            if (setting_get_child (setting) != nullptr)
+                settings_print (setting_get_child (setting));
             printf ("]\n");
             break;
         case SET_VAL_NULL:
@@ -722,11 +722,11 @@ setting_print (const Setting *st_set)
 }
 /*----------------------------------------------------------------------------*/
 void
-settings_print (const Setting *st_set)
+settings_print (const Setting *setting)
 {
-    while (st_set != nullptr) {
-        setting_print (st_set);
-        st_set = st_set->next;
+    while (setting != nullptr) {
+        setting_print (setting);
+        setting = setting->next;
     }
 }
 #endif

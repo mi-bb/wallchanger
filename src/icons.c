@@ -2420,7 +2420,7 @@ static const char *check_svg =
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Make pixbuf from pure data without specific info, scale it to width
- *         of i_dim.
+ *         of dim.
  *
  * @param[in]  data  Input data
  * @param[in]  size  Size of input data

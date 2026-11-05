@@ -40,12 +40,12 @@
 void
 print_now (void)
 {
-    time_t     t_now;
-    struct tm *tm_now;
+    time_t     now;
+    struct tm *local_time;
 
-    time (&t_now);
-    tm_now = localtime (&t_now);
-    printf ("%s\n", asctime (tm_now));
+    time (&now);
+    local_time = localtime (&now);
+    printf ("%s\n", asctime (local_time));
 }
 #endif
 /*----------------------------------------------------------------------------*/
@@ -58,22 +58,22 @@ check_time_align_val (const uint32_t  change_interval,
 {
     time_t     now;                /* Time for present */
     time_t     later;              /* Time for next full hour */
-    struct tm *tm_now;             /* Struct for change */
+    struct tm *local_time;         /* Struct for change */
     uint32_t   time_diff      = 0; /* Difference between now and next hour */
     uint32_t   time_align_val = 0; /* Time align value */
 
     time (&now);
-    tm_now = localtime (&now);
+    local_time = localtime (&now);
 #ifdef DEBUG
-    printf ("%s\n", asctime (tm_now));
+    printf ("%s\n", asctime (local_time));
 #endif
-    tm_now->tm_hour += 1;
-    tm_now->tm_min   = 0;
-    tm_now->tm_sec   = 0;
+    local_time->tm_hour += 1;
+    local_time->tm_min   = 0;
+    local_time->tm_sec   = 0;
 #ifdef DEBUG
-    printf ("%s\n", asctime (tm_now));
+    printf ("%s\n", asctime (local_time));
 #endif
-    later             = mktime (tm_now);
+    later             = mktime (local_time);
     time_diff         = (uint32_t) difftime (later, now);
     *time_align_count = time_diff / change_interval;
     time_align_val    = time_diff - (*time_align_count * change_interval);

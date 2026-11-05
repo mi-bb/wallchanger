@@ -119,7 +119,8 @@ Each provider (`webflickr`, `webpixabay`, `webwallhaven`, `webabyss`) implements
 ## Style and workflow
 
 - C23 house style: `constexpr` over numeric `#define`, `nullptr`, `bool` predicates, `enum … : int`, `[[nodiscard]]` on allocating constructors and pure query helpers.
-- Doxygen `/** @file/@brief/@param/@return */` blocks on files and public functions, with `[in]`/`[out]`/`[in,out]` on `@param`; Hungarian-ish prefixes (`s_`, `i_`/`ui_`, `st_`, `dd_`); `/*----*/` rules between sections.
+- Doxygen `/** @file/@brief/@param/@return */` blocks on files and public functions, with `[in]`/`[out]`/`[in,out]` on `@param`; `/*----*/` rules between sections.
+- Plain, descriptive names for local variables and function parameters (`name`, `settings`, `tree_view`, `path_len`), not Hungarian-style type prefixes (`s_name`, `st_settings`, `gw_tview`, `ui_plen`). Struct fields still carry the old prefixes (`Setting::s_name`, `ProcItem::s_pid`, `ProcList::pi_list`); leave them alone unless doing a dedicated rename across every user.
 - GPLv3 header on every source file, and a copyright comment header on build files too (every `CMakeLists.txt`, `cmake/cmake_uninstall.cmake.in`).
 - `CHANGELOG.md` follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/): user-visible changes go under `## [Unreleased]` in an `### Added`/`### Changed`/`### Fixed` section as part of the change.
 - Work happens on `release/vX.Y.Z` branches off `master`.

@@ -186,7 +186,7 @@ flickr_create_file_name (const char *disp_name,
     size_t      slen  = 0;       /* Length of source display name */
     size_t      elen  = 0;       /* Length of extension string */
     size_t      ilen  = 0;       /* Length of id string */
-    gunichar    u_c;             /* Uni char to examine */
+    gunichar    ch;              /* Uni char to examine */
 
     slen = strlen (disp_name);
     ilen = strlen (image_id);
@@ -205,15 +205,15 @@ flickr_create_file_name (const char *disp_name,
     /* Examine name char by char */
     while (*disp_name != '\0') {
         inc = 0;
-        u_c = g_utf8_get_char (disp_name);
+        ch = g_utf8_get_char (disp_name);
         /* Copy only alphanumeric chars, convert to lowercase if needed,
          * convert spaces to underscores */
-        if (g_unichar_isalnum (u_c)) {
-            if (g_unichar_isupper (u_c))
-                u_c = g_unichar_tolower (u_c);
-            inc = (size_t) g_unichar_to_utf8 (u_c, tmp);
+        if (g_unichar_isalnum (ch)) {
+            if (g_unichar_isupper (ch))
+                ch = g_unichar_tolower (ch);
+            inc = (size_t) g_unichar_to_utf8 (ch, tmp);
         }
-        else if (g_unichar_isspace (u_c))
+        else if (g_unichar_isspace (ch))
             inc = (size_t) g_unichar_to_utf8 ('_', tmp);
 
         tmp += inc;
