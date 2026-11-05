@@ -23,6 +23,10 @@ and this project adheres to
 
 ## [Unreleased]
 
+### Added
+
+- Unit tests for the process search functions (`tests/test_process.c`).
+
 ### Changed
 
 - Window manager detection reads the process list once instead of once per

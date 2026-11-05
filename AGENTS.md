@@ -55,7 +55,12 @@ Keep it that way. On a compiler that already defaults to C23 (GCC >= 15) an impl
 
 ## Tests
 
-Single `check`-based binary exercising `setting_item.c` + `hash_djb2.c`: `build/tests/test_setting` (builds only when libcheck >= 0.15 is present, else silently skipped). Runs one suite/case via check's env vars:
+Two `check`-based binaries (built only when libcheck >= 0.15 is present, else silently skipped):
+
+- `build/tests/test_setting` — `setting_item.c` + `hash_djb2.c`.
+- `build/tests/test_process` — `src/process/` (name matching, list growth, scanning the live process list, zombie skipping, kill by name). It forks helper children; a child that must die on SIGTERM resets the signal to `SIG_DFL` first, because check's own SIGTERM handler, inherited over `fork()`, kills the whole process group.
+
+Run one suite/case via check's env vars:
 
 ```sh
 CK_RUN_SUITE="Setting" ./build/tests/test_setting
@@ -64,7 +69,7 @@ CK_FORK=no gdb ./build/tests/test_setting              # debuggable
 CK_VERBOSITY=verbose ./build/tests/test_setting        # list every test
 ```
 
-TCase names are declared in `setting_suite()` at the bottom of `tests/test_setting_item.c` (`Creation`, `Accessors`, `StringMutation`, `ListOps`, `ChildOps`, `Removal`, `Replace`, `Misc`) — add tests to the matching case rather than growing a new one per test. New test binaries go in `tests/CMakeLists.txt` with `add_test()`, gated on `BUILD_TESTING AND CHECK_FOUND` in the root file; list the `src/*.c` files under test directly in `_SOURCES` (no link against built binaries).
+TCase names are declared in `setting_suite()` at the bottom of `tests/test_setting_item.c` (`Creation`, `Accessors`, `StringMutation`, `ListOps`, `ChildOps`, `Removal`, `Replace`, `Misc`) and in `process_suite()` in `tests/test_process.c` (`Matching`, `List`, `Scan`, `Kill`) — add tests to the matching case rather than growing a new one per test. New test binaries go in `tests/CMakeLists.txt` with `add_test()`, gated on `BUILD_TESTING AND CHECK_FOUND` in the root file; list the `src/*.c` files under test directly in `_SOURCES` (no link against built binaries).
 
 ## Architecture
 
