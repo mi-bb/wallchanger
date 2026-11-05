@@ -67,9 +67,9 @@ main (int    argc,
         daemon_kill ();
         exit (EXIT_SUCCESS);
     }
-    /* Restarting daemon - stopping existing one */
-    if (options & CMD_OPT_RESTART && daemon_kill ()) {
-        sleep500 ();
+    /* Restarting daemon - stopping existing one, waits for it to exit */
+    if (options & CMD_OPT_RESTART) {
+        daemon_kill ();
     }
     /* Check wchangerd process presence, exit if it is running */
     daemon_check_exit ();

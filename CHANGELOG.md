@@ -28,14 +28,20 @@ and this project adheres to
 - Window manager detection reads the process list once instead of once per
   process name in `wms.json`, so each wallpaper change makes one pass over
   the process list instead of up to 19.
+- `wchangerd --stop` and `--restart` wait (up to 5 seconds) for the old
+  daemon to exit instead of sleeping a fixed 500 ms.
 - Process search code cleanup: PIDs are stored as numbers, the list grows in
   larger steps, and unused functions and the unused `cmdline` reading mode
   were removed.
 
 ### Fixed
 
+- `wchangerd --restart` could fail with "wchangerd is already running" when
+  the stopped daemon had exited but had not been cleaned up yet; exited
+  (zombie) processes are no longer counted on Linux.
 - Process names longer than the system limit (15 characters on Linux, 19 on
   FreeBSD) never matched, which broke GNOME detection on FreeBSD.
+- Stopping the daemon reported success even when sending the signal failed.
 - On FreeBSD, a failure reading the process list closed the whole program;
   it is now treated as an empty list, as on Linux.
 

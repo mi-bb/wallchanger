@@ -34,9 +34,9 @@ void daemon_daemonize (void);
 /**
  * @brief  Check if wchangerd runs in background.
  *
- * @return 1 if it is running 0 if not.
+ * @return true if it is running, false if not.
  */
-int daemon_check_presence (void);
+bool daemon_check_presence (void);
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Check if wchangerd runs in background exit if it is.
@@ -60,17 +60,10 @@ void daemon_check_exit (void);
 void daemon_start (void);
 /*----------------------------------------------------------------------------*/
 /**
- * @brief  Kill wchangerd process
+ * @brief  Kill wchangerd process and wait up to a few seconds for it to exit.
  *
- * @return Non 0 if daemon was killed, 0 if not found
+ * @return Number of signalled processes, 0 if none was found or stopped
  */
 int daemon_kill (void);
-/*----------------------------------------------------------------------------*/
-/**
- * @brief  Sleep for 500 milliseconds.
- *
- * @return none
- */
-void sleep500 (void);
 /*----------------------------------------------------------------------------*/
 #endif

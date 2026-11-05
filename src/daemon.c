@@ -67,12 +67,53 @@ daemon_daemonize (void)
 }
 /*----------------------------------------------------------------------------*/
 /**
+ * @var   STOP_WAIT_STEP_MS
+ * @brief Interval between checks if stopped daemon has exited, in ms
+ *
+ * @var   STOP_WAIT_MAX_MS
+ * @brief Longest time to wait for stopped daemon to exit, in ms
+ */
+constexpr long STOP_WAIT_STEP_MS = 100;
+constexpr long STOP_WAIT_MAX_MS  = 5000;
+/*----------------------------------------------------------------------------*/
+/**
+ * @brief  Sleep for the given number of milliseconds.
+ *
+ * @param[in] ms  Time to sleep in milliseconds
+ * @return    none
+ */
+static void
+sleep_ms (long ms)
+{
+    struct timespec ts = { ms / 1000, (ms % 1000) * 1000000 };
+
+    nanosleep (&ts, nullptr);
+}
+/*----------------------------------------------------------------------------*/
+/**
+ * @brief  Wait until no other wchangerd process is running.
+ *
+ * @return true if all wchangerd processes exited, false on timeout
+ */
+static bool
+daemon_wait_for_exit (void)
+{
+    for (long waited = 0; waited < STOP_WAIT_MAX_MS;
+         waited += STOP_WAIT_STEP_MS) {
+        if (!daemon_check_presence ())
+            return true;
+        sleep_ms (STOP_WAIT_STEP_MS);
+    }
+    return !daemon_check_presence ();
+}
+/*----------------------------------------------------------------------------*/
+/**
  * @brief  Check if wchangerd runs in background.
  */
-int
+bool
 daemon_check_presence (void)
 {
-    return process_count_except_current ("wchangerd");
+    return process_count_except_current ("wchangerd") > 0;
 }
 /*----------------------------------------------------------------------------*/
 /**
@@ -81,7 +122,7 @@ daemon_check_presence (void)
 void
 daemon_check_exit (void)
 {
-    if (daemon_check_presence () > 0) {
+    if (daemon_check_presence ()) {
         errx (EXIT_FAILURE, "wchangerd is already running !" );
     }
 }
@@ -92,9 +133,7 @@ daemon_check_exit (void)
 void
 daemon_print_status_exit (void)
 {
-    int cnt = 0;
-
-    if ((cnt = daemon_check_presence ()) > 0) {
+    if (daemon_check_presence ()) {
         puts ("wchangerd is running");
         exit (EXIT_SUCCESS);
     }
@@ -123,24 +162,25 @@ daemon_kill (void)
     int cnt = 0;
 
     printf ("Stopping wchangerd ... ");
+    /* Kill warnings go to stderr, keep the output in order */
+    fflush (stdout);
 
     if ((cnt = process_kill_all_except_current ("wchangerd")) > 0) {
-        printf ("Stopped\n");
+        if (daemon_wait_for_exit ()) {
+            printf ("Stopped\n");
+        }
+        else {
+            printf ("Still running after %ld seconds\n",
+                    STOP_WAIT_MAX_MS / 1000);
+        }
+    }
+    else if (daemon_check_presence ()) {
+        printf ("Could not stop wchangerd\n");
     }
     else {
         printf ("Could not find wchangerd\n");
     }
     return cnt;
-}
-/*----------------------------------------------------------------------------*/
-/**
- * @brief  Sleep for 500 milliseconds.
- */
-void sleep500 (void)
-{
-    struct timespec ts = {0, 500000000};
-
-    nanosleep(&ts, nullptr);
 }
 /*----------------------------------------------------------------------------*/
 
