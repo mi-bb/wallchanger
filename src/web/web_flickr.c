@@ -30,7 +30,7 @@
 
 #include "util/string_functions.h"
 #include "util/errors.h"
-#include "message_dialogs.h"
+#include "gui/message_dialogs.h"
 #include "cache_query.h"
 #include "search_item.h"
 #include "webwidget_common.h"

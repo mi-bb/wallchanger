@@ -31,7 +31,7 @@
 #endif
 #include "util/string_functions.h"
 #include "cache_query.h"
-#include "message_dialogs.h"
+#include "gui/message_dialogs.h"
 #include "util/errors.h"
 #include "search_item.h"
 #include "settings/settings.h"

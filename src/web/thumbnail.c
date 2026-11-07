@@ -28,7 +28,7 @@
 #include "util/string_functions.h"
 #include "util/file_dir_functions.h"
 #include "settings/cfg_file.h"
-#include "message_dialogs.h"
+#include "gui/message_dialogs.h"
 #include "thumbnail.h"
 /*----------------------------------------------------------------------------*/
 /**

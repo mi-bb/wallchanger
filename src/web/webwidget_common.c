@@ -21,10 +21,10 @@
  *
  * @author Michal Babik <michal.babik@protonmail.com>
  */
-#include "message_dialogs.h"
+#include "gui/message_dialogs.h"
 #include "thumbnail.h"
 #include "url_data.h"
-#include "icons.h"
+#include "gui/icons.h"
 #include "util/file_dir_functions.h"
 #include "util/errors.h"
 #include "cache_query.h"

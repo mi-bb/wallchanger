@@ -39,30 +39,30 @@ set(WCHANGERD_SOURCES
     defs.h)
 
 set(WCHANGERCFG_SOURCES
-    config_main.c
-    dialog_data.c   dialog_data.h
-    tree_view.c        tree_view.h
-    image_dialogs.c         image_dialogs.h
-    wallpaper_set_command_dialog.c       wallpaper_set_command_dialog.h
-    other_settings_dialog.c   other_settings_dialog.h
-    dialogs_other.c   dialogs_other.h
-    message_dialogs.c      message_dialogs.h
+    gui/config_main.c
+    gui/dialog_data.c   gui/dialog_data.h
+    gui/tree_view.c        gui/tree_view.h
+    gui/image_dialogs.c         gui/image_dialogs.h
+    gui/wallpaper_set_command_dialog.c       gui/wallpaper_set_command_dialog.h
+    gui/other_settings_dialog.c   gui/other_settings_dialog.h
+    gui/dialogs_other.c   gui/dialogs_other.h
+    gui/message_dialogs.c      gui/message_dialogs.h
     web/search_item.c   web/search_item.h
     web/url_data.c      web/url_data.h
-    image_info.c   image_info.h
+    gui/image_info.c   gui/image_info.h
     wallpaper/wallpaper_set.c        wallpaper/wallpaper_set.h
     settings/settings.c        settings/settings.h
     settings/json_file.c         settings/json_file.h
     settings/json_functions.c        settings/json_functions.h
     util/file_io.c         util/file_io.h
-    icons.c         icons.h
+    gui/icons.c         gui/icons.h
     util/randomm.c      util/randomm.h
     settings/setting_item.c      settings/setting_item.h
-    preview.c      preview.h
+    gui/preview.c      gui/preview.h
     util/string_functions.c       util/string_functions.h
     util/file_dir_functions.c         util/file_dir_functions.h
     settings/cfg_file.c      settings/cfg_file.h
-    dir_content.c      dir_content.h
+    gui/dir_content.c      gui/dir_content.h
     util/cres.c         util/cres.h
     util/hash_djb2.c      util/hash_djb2.h
     daemon/daemon.c         daemon/daemon.h
