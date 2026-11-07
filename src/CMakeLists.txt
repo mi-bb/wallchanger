@@ -48,6 +48,7 @@ set(WCHANGERCFG_SOURCES
     gui/icons.c                         gui/icons.h
     gui/image_dialogs.c                 gui/image_dialogs.h
     gui/image_info.c                    gui/image_info.h
+    gui/main_window.c                   gui/main_window.h
     gui/message_dialogs.c               gui/message_dialogs.h
     gui/other_settings_dialog.c         gui/other_settings_dialog.h
     gui/preview.c                       gui/preview.h
