@@ -24,7 +24,7 @@
 #include <inttypes.h>
 #include <err.h>
 #include "settings/settings.h"
-#include "webwidget.h"
+#include "web/webwidget.h"
 #include "image_dialogs.h"
 /*----------------------------------------------------------------------------*/
 /**

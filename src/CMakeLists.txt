@@ -47,8 +47,8 @@ set(WCHANGERCFG_SOURCES
     other_settings_dialog.c   other_settings_dialog.h
     dialogs_other.c   dialogs_other.h
     message_dialogs.c      message_dialogs.h
-    search_item.c   search_item.h
-    url_data.c      url_data.h
+    web/search_item.c   web/search_item.h
+    web/url_data.c      web/url_data.h
     image_info.c   image_info.h
     wallpaper/wallpaper_set.c        wallpaper/wallpaper_set.h
     settings/settings.c        settings/settings.h
@@ -72,15 +72,15 @@ set(WCHANGERCFG_SOURCES
     wallpaper/window_manager_info.c        wallpaper/window_manager_info.h
     util/errors.c         util/errors.h
     util/nstrings.c     util/nstrings.h
-    cache_query.c      cache_query.h
-    thumbnail.c       thumbnail.h
-    webwidget.c    webwidget.h
-    webwidget_common.c  webwidget_common.h
-    web_pixabay.c   web_pixabay.h
-    web_flickr.c    web_flickr.h
-    web_wallhaven.c web_wallhaven.h
-    web_abyss.c     web_abyss.h
-    webwidget_struct.h
+    web/cache_query.c      web/cache_query.h
+    web/thumbnail.c       web/thumbnail.h
+    web/webwidget.c    web/webwidget.h
+    web/webwidget_common.c  web/webwidget_common.h
+    web/web_pixabay.c   web/web_pixabay.h
+    web/web_flickr.c    web/web_flickr.h
+    web/web_wallhaven.c web/web_wallhaven.h
+    web/web_abyss.c     web/web_abyss.h
+    web/webwidget_struct.h
     defs.h)
 
 add_executable(wchangerd ${WCHANGERD_SOURCES})
