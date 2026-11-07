@@ -29,10 +29,10 @@
 #else
 #include <json.h>
 #endif
-#include "string_functions.h"
+#include "util/string_functions.h"
 #include "cache_query.h"
 #include "message_dialogs.h"
-#include "errors.h"
+#include "util/errors.h"
 #include "search_item.h"
 #include "settings.h"
 #include "setting_item.h"

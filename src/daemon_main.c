@@ -31,7 +31,7 @@
 #include "cmd_functions.h"
 #include "daemon.h"
 #include "wallpaper_change.h"
-#include "randomm.h"
+#include "util/randomm.h"
 /*----------------------------------------------------------------------------*/
 /**
  * @brief Main function.

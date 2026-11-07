@@ -29,7 +29,7 @@
 #include "cfg_file.h"
 #include "wallpaper_set.h"
 #include "settings.h"
-#include "errors.h"
+#include "util/errors.h"
 #include "window_manager_info.h"
 #include "wallpaper_change.h"
 #ifdef DEBUG

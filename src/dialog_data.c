@@ -22,7 +22,7 @@
  * @author Michal Babik <michal.babik@protonmail.com>
  */
 #include <err.h>
-#include "errors.h"
+#include "util/errors.h"
 #include "cfg_file.h"
 #include "dialog_data.h"
 /*----------------------------------------------------------------------------*/

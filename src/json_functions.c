@@ -33,11 +33,11 @@
 #endif
 
 #include "json_file.h"
-#include "errors.h"
+#include "util/errors.h"
 #include "setting_item.h"
-#include "file_io.h"
-#include "string_functions.h"
-#include "hash_djb2.h"
+#include "util/file_io.h"
+#include "util/string_functions.h"
+#include "util/hash_djb2.h"
 #include "json_functions.h"
 /*----------------------------------------------------------------------------*/
 /**

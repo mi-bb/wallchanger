@@ -27,7 +27,7 @@
 #include "setting_item.h"
 #include "settings.h"
 #include "cfg_file.h"
-#include "string_functions.h"
+#include "util/string_functions.h"
 #include "other_settings_dialog.h"
 /*----------------------------------------------------------------------------*/
 /**

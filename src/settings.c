@@ -28,7 +28,7 @@
 #include "json_functions.h"
 #include "setting_item.h"
 #include "settings.h"
-#include "errors.h"
+#include "util/errors.h"
 #include "defs.h"
 /*----------------------------------------------------------------------------*/
 /**

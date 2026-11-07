@@ -28,7 +28,7 @@
 #include "config.h"
 #include "webwidget_struct.h"
 //#include "webservcs.h"
-#include "nstrings.h"
+#include "util/nstrings.h"
 #include "setting_item.h"
 #include "search_item.h"
 /*----------------------------------------------------------------------------*/

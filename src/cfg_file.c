@@ -25,10 +25,10 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
-#include "errors.h"
-#include "string_functions.h"
-#include "file_dir_functions.h"
-#include "file_io.h"
+#include "util/errors.h"
+#include "util/string_functions.h"
+#include "util/file_dir_functions.h"
+#include "util/file_io.h"
 #include "cfg_file.h"
 #include "defs.h"
 /*----------------------------------------------------------------------------*/

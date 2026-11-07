@@ -25,7 +25,7 @@
 #define WEB_WALLHAVEN_H
 
 #include <gtk/gtk.h>
-#include "nstrings.h"
+#include "util/nstrings.h"
 #include "webwidget_struct.h"
 /*----------------------------------------------------------------------------*/
 /**

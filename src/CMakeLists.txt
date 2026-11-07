@@ -20,14 +20,14 @@ set(WCHANGERD_SOURCES
     settings.c     settings.h
     json_file.c      json_file.h
     json_functions.c     json_functions.h
-    file_io.c      file_io.h
-    randomm.c   randomm.h
+    util/file_io.c      util/file_io.h
+    util/randomm.c   util/randomm.h
     setting_item.c   setting_item.h
-    string_functions.c    string_functions.h
-    file_dir_functions.c      file_dir_functions.h
+    util/string_functions.c    util/string_functions.h
+    util/file_dir_functions.c      util/file_dir_functions.h
     cfg_file.c   cfg_file.h
-    cres.c      cres.h
-    hash_djb2.c   hash_djb2.h
+    util/cres.c      util/cres.h
+    util/hash_djb2.c   util/hash_djb2.h
     daemon.c      daemon.h
     process/process.c    process/process.h
     process/proc_item.c  process/proc_item.h
@@ -35,7 +35,7 @@ set(WCHANGERD_SOURCES
     cmd_functions.c     cmd_functions.h
     cmdline.c   cmdline.h
     window_manager_info.c     window_manager_info.h
-    errors.c      errors.h
+    util/errors.c      util/errors.h
     defs.h)
 
 set(WCHANGERCFG_SOURCES
@@ -54,24 +54,24 @@ set(WCHANGERCFG_SOURCES
     settings.c        settings.h
     json_file.c         json_file.h
     json_functions.c        json_functions.h
-    file_io.c         file_io.h
+    util/file_io.c         util/file_io.h
     icons.c         icons.h
-    randomm.c      randomm.h
+    util/randomm.c      util/randomm.h
     setting_item.c      setting_item.h
     preview.c      preview.h
-    string_functions.c       string_functions.h
-    file_dir_functions.c         file_dir_functions.h
+    util/string_functions.c       util/string_functions.h
+    util/file_dir_functions.c         util/file_dir_functions.h
     cfg_file.c      cfg_file.h
     dir_content.c      dir_content.h
-    cres.c         cres.h
-    hash_djb2.c      hash_djb2.h
+    util/cres.c         util/cres.h
+    util/hash_djb2.c      util/hash_djb2.h
     daemon.c         daemon.h
     process/process.c       process/process.h
     process/proc_item.c     process/proc_item.h
     process/proc_list.c     process/proc_list.h
     window_manager_info.c        window_manager_info.h
-    errors.c         errors.h
-    nstrings.c     nstrings.h
+    util/errors.c         util/errors.h
+    util/nstrings.c     util/nstrings.h
     cache_query.c      cache_query.h
     thumbnail.c       thumbnail.h
     webwidget.c    webwidget.h

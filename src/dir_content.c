@@ -25,7 +25,7 @@
 #include <string.h>
 #include <stdio.h>
 #include <err.h>
-#include "string_functions.h"
+#include "util/string_functions.h"
 #include "dir_content.h"
 /*----------------------------------------------------------------------------*/
 /**

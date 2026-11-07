@@ -24,7 +24,7 @@
 #ifndef WEB_ABYSS_H
 #define WEB_ABYSS_H
 
-#include "nstrings.h"
+#include "util/nstrings.h"
 #include "webwidget_struct.h"
 /*----------------------------------------------------------------------------*/
 /**

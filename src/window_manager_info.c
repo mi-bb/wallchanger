@@ -28,9 +28,9 @@
 #include "process/process.h"
 #include "cfg_file.h"
 #include "settings.h"
-#include "string_functions.h"
+#include "util/string_functions.h"
 #include "defs.h"
-#include "errors.h"
+#include "util/errors.h"
 #include "window_manager_info.h"
 /*----------------------------------------------------------------------------*/
 /**

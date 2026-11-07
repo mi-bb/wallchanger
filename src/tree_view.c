@@ -22,7 +22,7 @@
  * @author Michal Babik <michal.babik@protonmail.com>
  */
 #include <stdint.h>
-#include "string_functions.h"
+#include "util/string_functions.h"
 #include "tree_view.h"
 /*----------------------------------------------------------------------------*/
 /**

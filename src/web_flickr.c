@@ -28,8 +28,8 @@
 #include <flickcurl.h>
 #include <err.h>
 
-#include "string_functions.h"
-#include "errors.h"
+#include "util/string_functions.h"
+#include "util/errors.h"
 #include "message_dialogs.h"
 #include "cache_query.h"
 #include "search_item.h"

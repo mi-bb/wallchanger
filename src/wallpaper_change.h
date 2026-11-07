@@ -25,7 +25,7 @@
 #define WALLPAPER_CHANGE_H
 
 #include <stdint.h>
-#include "randomm.h"
+#include "util/randomm.h"
 /*----------------------------------------------------------------------------*/
 #ifdef DEBUG
 void print_now (void);

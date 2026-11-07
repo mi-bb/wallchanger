@@ -30,13 +30,13 @@
 #endif
 #include <time.h>
 #include <err.h>
-#include "string_functions.h"
-#include "file_io.h"
-#include "file_dir_functions.h"
-#include "errors.h"
+#include "util/string_functions.h"
+#include "util/file_io.h"
+#include "util/file_dir_functions.h"
+#include "util/errors.h"
 #include "cfg_file.h"
 #include "json_file.h"
-#include "hash_djb2.h"
+#include "util/hash_djb2.h"
 #include "cache_query.h"
 /*----------------------------------------------------------------------------*/
 /**

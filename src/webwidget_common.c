@@ -25,10 +25,10 @@
 #include "thumbnail.h"
 #include "url_data.h"
 #include "icons.h"
-#include "file_dir_functions.h"
-#include "errors.h"
+#include "util/file_dir_functions.h"
+#include "util/errors.h"
 #include "cache_query.h"
-#include "string_functions.h"
+#include "util/string_functions.h"
 #include "settings.h"
 #include "webwidget_common.h"
 /*----------------------------------------------------------------------------*/

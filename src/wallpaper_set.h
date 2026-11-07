@@ -23,7 +23,7 @@
  */
 #ifndef WALLPAPER_SET_H
 #define WALLPAPER_SET_H
-#include "randomm.h"
+#include "util/randomm.h"
 #include "setting_item.h"
 /*----------------------------------------------------------------------------*/
 /**

@@ -27,7 +27,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include <err.h>
-#include "hash_djb2.h"
+#include "util/hash_djb2.h"
 #include "setting_item.h"
 /*----------------------------------------------------------------------------*/
 /**

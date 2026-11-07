@@ -28,7 +28,7 @@
 
 #ifdef HAVE_FLICKCURL
 
-#include "nstrings.h"
+#include "util/nstrings.h"
 #include "webwidget_struct.h"
 /*----------------------------------------------------------------------------*/
 /**

@@ -25,8 +25,8 @@
 #include <ctype.h>
 #include <err.h>
 #include "url_data.h"
-#include "string_functions.h"
-#include "file_dir_functions.h"
+#include "util/string_functions.h"
+#include "util/file_dir_functions.h"
 #include "cfg_file.h"
 #include "message_dialogs.h"
 #include "thumbnail.h"

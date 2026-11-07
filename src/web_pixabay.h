@@ -24,7 +24,7 @@
 #ifndef WEB_PIXABAY_H
 #define WEB_PIXABAY_H
 
-#include "nstrings.h"
+#include "util/nstrings.h"
 #include "webwidget_struct.h"
 /*----------------------------------------------------------------------------*/
 /**
