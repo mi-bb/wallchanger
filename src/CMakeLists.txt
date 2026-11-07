@@ -14,74 +14,74 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 set(WCHANGERD_SOURCES
+    defs.h
     daemon/daemon_main.c
-    daemon/wallpaper_change.c    daemon/wallpaper_change.h
-    wallpaper/wallpaper_set.c     wallpaper/wallpaper_set.h
-    settings/settings.c     settings/settings.h
-    settings/json_file.c      settings/json_file.h
-    settings/json_functions.c     settings/json_functions.h
-    util/file_io.c      util/file_io.h
-    util/randomm.c   util/randomm.h
-    settings/setting_item.c   settings/setting_item.h
-    util/string_functions.c    util/string_functions.h
-    util/file_dir_functions.c      util/file_dir_functions.h
-    settings/cfg_file.c   settings/cfg_file.h
-    util/cres.c      util/cres.h
-    util/hash_djb2.c   util/hash_djb2.h
-    daemon/daemon.c      daemon/daemon.h
-    process/process.c    process/process.h
-    process/proc_item.c  process/proc_item.h
-    process/proc_list.c  process/proc_list.h
-    daemon/cmd_functions.c     daemon/cmd_functions.h
-    daemon/cmdline.c   daemon/cmdline.h
-    wallpaper/window_manager_info.c     wallpaper/window_manager_info.h
-    util/errors.c      util/errors.h
-    defs.h)
+    daemon/daemon.c                     daemon/daemon.h
+    daemon/wallpaper_change.c           daemon/wallpaper_change.h
+    daemon/cmd_functions.c              daemon/cmd_functions.h
+    daemon/cmdline.c                    daemon/cmdline.h
+    process/process.c                   process/process.h
+    process/proc_item.c                 process/proc_item.h
+    process/proc_list.c                 process/proc_list.h
+    settings/cfg_file.c                 settings/cfg_file.h
+    settings/json_file.c                settings/json_file.h
+    settings/json_functions.c           settings/json_functions.h
+    settings/setting_item.c             settings/setting_item.h
+    settings/settings.c                 settings/settings.h
+    util/cres.c                         util/cres.h
+    util/errors.c                       util/errors.h
+    util/file_dir_functions.c           util/file_dir_functions.h
+    util/file_io.c                      util/file_io.h
+    util/hash_djb2.c                    util/hash_djb2.h
+    util/randomm.c                      util/randomm.h
+    util/string_functions.c             util/string_functions.h
+    wallpaper/wallpaper_set.c           wallpaper/wallpaper_set.h
+    wallpaper/window_manager_info.c     wallpaper/window_manager_info.h)
 
 set(WCHANGERCFG_SOURCES
+    defs.h
+    daemon/daemon.c                     daemon/daemon.h
     gui/config_main.c
-    gui/dialog_data.c   gui/dialog_data.h
-    gui/tree_view.c        gui/tree_view.h
-    gui/image_dialogs.c         gui/image_dialogs.h
-    gui/wallpaper_set_command_dialog.c       gui/wallpaper_set_command_dialog.h
-    gui/other_settings_dialog.c   gui/other_settings_dialog.h
-    gui/dialogs_other.c   gui/dialogs_other.h
-    gui/message_dialogs.c      gui/message_dialogs.h
-    web/search_item.c   web/search_item.h
-    web/url_data.c      web/url_data.h
-    gui/image_info.c   gui/image_info.h
-    wallpaper/wallpaper_set.c        wallpaper/wallpaper_set.h
-    settings/settings.c        settings/settings.h
-    settings/json_file.c         settings/json_file.h
-    settings/json_functions.c        settings/json_functions.h
-    util/file_io.c         util/file_io.h
-    gui/icons.c         gui/icons.h
-    util/randomm.c      util/randomm.h
-    settings/setting_item.c      settings/setting_item.h
-    gui/preview.c      gui/preview.h
-    util/string_functions.c       util/string_functions.h
-    util/file_dir_functions.c         util/file_dir_functions.h
-    settings/cfg_file.c      settings/cfg_file.h
-    gui/dir_content.c      gui/dir_content.h
-    util/cres.c         util/cres.h
-    util/hash_djb2.c      util/hash_djb2.h
-    daemon/daemon.c         daemon/daemon.h
-    process/process.c       process/process.h
-    process/proc_item.c     process/proc_item.h
-    process/proc_list.c     process/proc_list.h
-    wallpaper/window_manager_info.c        wallpaper/window_manager_info.h
-    util/errors.c         util/errors.h
-    util/nstrings.c     util/nstrings.h
-    web/cache_query.c      web/cache_query.h
-    web/thumbnail.c       web/thumbnail.h
-    web/webwidget.c    web/webwidget.h
-    web/webwidget_common.c  web/webwidget_common.h
-    web/web_pixabay.c   web/web_pixabay.h
-    web/web_flickr.c    web/web_flickr.h
-    web/web_wallhaven.c web/web_wallhaven.h
-    web/web_abyss.c     web/web_abyss.h
-    web/webwidget_struct.h
-    defs.h)
+    gui/dialog_data.c                   gui/dialog_data.h
+    gui/dialogs_other.c                 gui/dialogs_other.h
+    gui/dir_content.c                   gui/dir_content.h
+    gui/icons.c                         gui/icons.h
+    gui/image_dialogs.c                 gui/image_dialogs.h
+    gui/image_info.c                    gui/image_info.h
+    gui/message_dialogs.c               gui/message_dialogs.h
+    gui/other_settings_dialog.c         gui/other_settings_dialog.h
+    gui/preview.c                       gui/preview.h
+    gui/tree_view.c                     gui/tree_view.h
+    gui/wallpaper_set_command_dialog.c  gui/wallpaper_set_command_dialog.h
+    process/process.c                   process/process.h
+    process/proc_item.c                 process/proc_item.h
+    process/proc_list.c                 process/proc_list.h
+    settings/cfg_file.c                 settings/cfg_file.h
+    settings/json_file.c                settings/json_file.h
+    settings/json_functions.c           settings/json_functions.h
+    settings/setting_item.c             settings/setting_item.h
+    settings/settings.c                 settings/settings.h
+    util/cres.c                         util/cres.h
+    util/errors.c                       util/errors.h
+    util/file_dir_functions.c           util/file_dir_functions.h
+    util/file_io.c                      util/file_io.h
+    util/hash_djb2.c                    util/hash_djb2.h
+    util/nstrings.c                     util/nstrings.h
+    util/randomm.c                      util/randomm.h
+    util/string_functions.c             util/string_functions.h
+    wallpaper/wallpaper_set.c           wallpaper/wallpaper_set.h
+    wallpaper/window_manager_info.c     wallpaper/window_manager_info.h
+    web/cache_query.c                   web/cache_query.h
+    web/search_item.c                   web/search_item.h
+    web/thumbnail.c                     web/thumbnail.h
+    web/url_data.c                      web/url_data.h
+    web/web_abyss.c                     web/web_abyss.h
+    web/web_flickr.c                    web/web_flickr.h
+    web/web_pixabay.c                   web/web_pixabay.h
+    web/web_wallhaven.c                 web/web_wallhaven.h
+    web/webwidget.c                     web/webwidget.h
+    web/webwidget_common.c              web/webwidget_common.h
+    web/webwidget_struct.h)
 
 add_executable(wchangerd ${WCHANGERD_SOURCES})
 target_link_libraries(wchangerd PRIVATE PkgConfig::JSONC)
