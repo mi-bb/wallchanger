@@ -98,28 +98,6 @@ str_replace_in (const char *src,
 }
 /*----------------------------------------------------------------------------*/
 /**
- * @brief  Make command to set wallpaper.
- */ 
-char *
-str_set_up_wallpaper_command (const char *cmd,
-                              const char *fname,
-                              const char *sign)
-{
-    char *result = nullptr; /* Result string */
-
-    if (strstr (cmd, sign) == nullptr) {
-        result = str_comb (cmd, " \"");
-        str_append (&result, fname);
-        str_append (&result, "\"");
-    }
-    else {
-        result = str_replace_in (cmd, sign, fname);
-    }
-    str_append (&result, " &");
-    return result;
-}
-/*----------------------------------------------------------------------------*/
-/**
  * @brief  Copy num chars from src to dest and add a null sign.
  */
 void

@@ -48,31 +48,15 @@
  * @param[in] from Pointer to string with "change from" text
  * @param[in] to   Pointer to string with "change to" text
  * @return    New string
- *
- * @fn  char * str_set_up_wallpaper_command (const char *cmd,
- *                                           const char *fname,
- *                                           const char *sign)
- *
- * @brief  Make wallpapet set command.
- *
- * @param[in] cmd    Wallpaper set command 
- * @param[in] fname  Wallpaper file name 
- * @param[in] sign   String to swap with wallpapet name
- * @return    String with command
  */
 /*----------------------------------------------------------------------------*/
-int    str_compare                  (const char   *a,
-                                     const char   *b)
-                                     __attribute__ ((pure));
+int    str_compare    (const char   *a,
+                       const char   *b)
+                       __attribute__ ((pure));
 
-char * str_replace_in               (const char   *src,
-                                     const char   *from,
-                                     const char   *to)
-       __attribute__ ((nonnull (1,2,3), returns_nonnull));
-
-char * str_set_up_wallpaper_command (const char   *cmd,
-                                     const char   *fname,
-                                     const char   *sign)
+char * str_replace_in (const char   *src,
+                       const char   *from,
+                       const char   *to)
        __attribute__ ((nonnull (1,2,3), returns_nonnull));
 /*----------------------------------------------------------------------------*/
 /**

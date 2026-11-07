@@ -34,6 +34,20 @@
 #include "wallpaper_set.h"
 /*----------------------------------------------------------------------------*/
 /**
+ * @fn  static char * wallpaper_set_build_command (const char *cmd,
+ *                                                 const char *fname,
+ *                                                 const char *sign)
+ *
+ * @brief  Make wallpaper set command.
+ *
+ * Replaces sign in cmd with fname, or appends the quoted fname when cmd
+ * has no sign, and adds " &" to run it in the background.
+ *
+ * @param[in] cmd    Wallpaper set command
+ * @param[in] fname  Wallpaper file name
+ * @param[in] sign   String to swap with wallpaper name
+ * @return    String with command, free it with free
+ *
  * @fn  static void wallpaper_set_file (const char *cmd,
  *                                      const char *wall)
  *
@@ -60,6 +74,11 @@
  * @return        Wallpaper file path
  */
 /*----------------------------------------------------------------------------*/
+static char *       wallpaper_set_build_command (const char *cmd,
+                                                 const char *fname,
+                                                 const char *sign)
+                    __attribute__ ((nonnull (1, 2, 3), returns_nonnull));
+
 static void         wallpaper_set_file         (const char *cmd,
                                                 const char *wall)
                     __attribute__ ((nonnull (1, 2)));
@@ -70,7 +89,29 @@ static const char * wallpaper_set_random       (Setting    *settings,
 static const char * wallpaper_set_next_in_list (Setting    *settings);
 /*----------------------------------------------------------------------------*/
 /**
- * @brief  Set given file as a wallpaper. 
+ * @brief  Make wallpaper set command.
+ */
+static char *
+wallpaper_set_build_command (const char *cmd,
+                             const char *fname,
+                             const char *sign)
+{
+    char *result = nullptr; /* Result string */
+
+    if (strstr (cmd, sign) == nullptr) {
+        result = str_comb (cmd, " \"");
+        str_append (&result, fname);
+        str_append (&result, "\"");
+    }
+    else {
+        result = str_replace_in (cmd, sign, fname);
+    }
+    str_append (&result, " &");
+    return result;
+}
+/*----------------------------------------------------------------------------*/
+/**
+ * @brief  Set given file as a wallpaper.
  */
 static void
 wallpaper_set_file (const char *cmd,
@@ -79,7 +120,7 @@ wallpaper_set_file (const char *cmd,
     char *command = nullptr;             /* Wallpaper set command */
     [[maybe_unused]] int res = 0;        /* Result of system command */
 
-    command = str_set_up_wallpaper_command (cmd, wall, "[F]");
+    command = wallpaper_set_build_command (cmd, wall, "[F]");
 
     if (command == nullptr)
         return;
