@@ -272,6 +272,34 @@ cfg_file_get_query_path (void)
 }
 /*----------------------------------------------------------------------------*/
 /**
+ * @brief  Create the cache, thumbnail and wallpaper directories.
+ */
+char *
+cfg_file_check_create_dirs (void)
+{
+    char *ret = nullptr;
+    int   err = ERR_OK;
+    int   i   = 0;
+    char *dirs[3];
+
+    dirs[0] = cfg_file_get_query_path ();
+    dirs[1] = cfg_file_get_app_thumbnails_path ();
+    dirs[2] = cfg_file_get_app_wallpapers_path ();
+
+    for (i = 0; i < 3; ++i) {
+        if ((err = dir_create_with_subdirs (dirs[i])) != ERR_OK) {
+            ret = str_comb (dirs[i], "\n");
+            str_append (&ret, err_get_message (err));
+            break;
+        }
+    }
+    for (i = 0; i < 3; ++i) {
+        free (dirs[i]);
+    }
+    return ret;
+}
+/*----------------------------------------------------------------------------*/
+/**
  * @brief  Check if wchangerd daemon desktop file exists in user's autostart
  *         directory.
  */

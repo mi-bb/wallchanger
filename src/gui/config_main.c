@@ -359,37 +359,6 @@ static GtkWidget *create_settings_widget (DialogData    *data);
 static GtkWidget *create_daemon_widget   (DialogData    *data);
 /*----------------------------------------------------------------------------*/
 /**
- * @brief  Create application directories, return error message on error.
- *
- * @return String with error info or null if there was no error.
- *         After use, it should be freed using free.
- */
-static char *
-cfg_file_check_create_dirs (void)
-{
-    char *ret = nullptr;
-    int   err = ERR_OK;
-    int   i   = 0;
-    char *dirs[3];
-
-    dirs[0] = cfg_file_get_query_path ();
-    dirs[1] = cfg_file_get_app_thumbnails_path ();
-    dirs[2] = cfg_file_get_app_wallpapers_path ();
-
-    for (i = 0; i < 3; ++i) {
-        if ((err = dir_create_with_subdirs (dirs[i])) != ERR_OK) {
-            ret = str_comb (dirs[i], "\n");
-            str_append (&ret, err_get_message (err));
-            break;
-        }
-    }
-    for (i = 0; i < 3; ++i) {
-        free (dirs[i]);
-    }
-    return ret;
-}
-/*----------------------------------------------------------------------------*/
-/**
  * @brief  Get wallpaper change minutes interval from widgets
  */
 static uint32_t

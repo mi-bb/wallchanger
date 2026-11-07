@@ -109,6 +109,15 @@ char * cfg_file_get_image_info_path (void);
 char * cfg_file_get_query_path (void);
 /*----------------------------------------------------------------------------*/
 /**
+ * @brief  Create the cache, thumbnail and wallpaper directories with their
+ *         parent directories.
+ *
+ * @return String with error info or null if there was no error.
+ *         After use, it should be freed using free.
+ */
+[[nodiscard]] char * cfg_file_check_create_dirs (void);
+/*----------------------------------------------------------------------------*/
+/**
  * @brief  Get path for default config file with window manager info.
  *
  * @param[out] err  Error output
