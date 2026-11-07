@@ -40,6 +40,13 @@ and this project adheres to
 - Process search code cleanup: PIDs are stored as numbers, the list grows in
   larger steps, and unused functions and the unused `cmdline` reading mode
   were removed.
+- Source files are grouped into one directory per subsystem under `src/`
+  (`util/`, `settings/`, `process/`, `wallpaper/`, `daemon/`, `web/`,
+  `gui/`), and the main window code moved out of `config_main.c` into
+  `gui/main_window.c`.
+- The Pixabay, Wallhaven and Wallpaper Abyss searches build their request
+  URL in their own source file and share one download function instead of
+  three copies of it.
 
 ### Fixed
 
@@ -51,6 +58,8 @@ and this project adheres to
 - Stopping the daemon reported success even when sending the signal failed.
 - On FreeBSD, a failure reading the process list closed the whole program;
   it is now treated as an empty list, as on Linux.
+- Each Pixabay, Wallhaven and Wallpaper Abyss search leaked its request URL
+  string.
 
 ## [1.7.2] - 2026-11-02
 

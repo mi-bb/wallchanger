@@ -30,12 +30,13 @@ project(wallchanger
 
 set(PACKAGE_BUGREPORT "michal.babik@protonmail.com")
 
-# The sources use C23 with GNU extensions (src/image_info.c calls strndup(),
-# which a strict -std=c23 hides).  CMake picks the spelling the compiler knows
-# (-std=gnu23 or -std=gnu2x).  CMP0128 (NEW since CMake 3.22) makes it emit
-# the flag even when the compiler's own default already matches, so libclang-based
-# tools reading compile_commands.json - clangd, clang-tidy, include-what-you-
-# use - do not fall back to gnu17 on GCC >= 15.  Do not pass -std= by hand.
+# The sources use C23 with GNU extensions (src/gui/image_info.c calls
+# strndup(), which a strict -std=c23 hides).  CMake picks the spelling the
+# compiler knows (-std=gnu23 or -std=gnu2x).  CMP0128 (NEW since CMake 3.22)
+# makes it emit the flag even when the compiler's own default already matches,
+# so libclang-based tools reading compile_commands.json - clangd, clang-tidy,
+# include-what-you-use - do not fall back to gnu17 on GCC >= 15.  Do not pass
+# -std= by hand.
 set(CMAKE_C_STANDARD 23)
 set(CMAKE_C_STANDARD_REQUIRED ON)
 set(CMAKE_C_EXTENSIONS ON)

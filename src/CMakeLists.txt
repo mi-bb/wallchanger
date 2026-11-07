@@ -95,10 +95,10 @@ foreach(target IN ITEMS wchangerd wchangercfg)
     # ${PROJECT_BINARY_DIR} holds the generated config.h.
     target_include_directories(${target}
         PRIVATE ${PROJECT_BINARY_DIR} ${CMAKE_CURRENT_SOURCE_DIR})
-    # HAVE_CONFIG_H: src/cmdline.c/.h (gengetopt output) guards its
+    # HAVE_CONFIG_H: src/daemon/cmdline.c/.h (gengetopt output) guards its
     # config.h include on it.
-    # _GNU_SOURCE: src/image_info.c needs it for strndup(). Defining it on the
-    # command line rather than in config.h also makes it immune to include
+    # _GNU_SOURCE: src/gui/image_info.c needs it for strndup(). Defining it on
+    # the command line rather than in config.h also makes it immune to include
     # ordering.
     target_compile_definitions(${target} PRIVATE HAVE_CONFIG_H _GNU_SOURCE)
     if(PROCSTAT_LIBRARY)
