@@ -24,7 +24,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <check.h>
-#include "setting_item.h"
+#include "settings/setting_item.h"
 #include "util/hash_djb2.h"
 /*----------------------------------------------------------------------------*/
 /* Creation and type accessors                                                */

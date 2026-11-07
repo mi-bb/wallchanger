@@ -23,7 +23,7 @@
  */
 #include <err.h>
 #include "util/errors.h"
-#include "cfg_file.h"
+#include "settings/cfg_file.h"
 #include "dialog_data.h"
 /*----------------------------------------------------------------------------*/
 /**

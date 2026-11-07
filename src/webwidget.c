@@ -24,13 +24,13 @@
 #include <err.h>
 #include <ctype.h>
 #include "url_data.h"
-#include "json_functions.h"
+#include "settings/json_functions.h"
 #include "search_item.h"
 #include "message_dialogs.h"
 #include "util/string_functions.h"
-#include "settings.h"
+#include "settings/settings.h"
 #include "util/errors.h"
-#include "cfg_file.h"
+#include "settings/cfg_file.h"
 #include "util/file_dir_functions.h"
 #include "defs.h"
 #include "icons.h"

@@ -17,15 +17,15 @@ set(WCHANGERD_SOURCES
     daemon_main.c
     wallpaper_change.c    wallpaper_change.h
     wallpaper_set.c     wallpaper_set.h
-    settings.c     settings.h
-    json_file.c      json_file.h
-    json_functions.c     json_functions.h
+    settings/settings.c     settings/settings.h
+    settings/json_file.c      settings/json_file.h
+    settings/json_functions.c     settings/json_functions.h
     util/file_io.c      util/file_io.h
     util/randomm.c   util/randomm.h
-    setting_item.c   setting_item.h
+    settings/setting_item.c   settings/setting_item.h
     util/string_functions.c    util/string_functions.h
     util/file_dir_functions.c      util/file_dir_functions.h
-    cfg_file.c   cfg_file.h
+    settings/cfg_file.c   settings/cfg_file.h
     util/cres.c      util/cres.h
     util/hash_djb2.c   util/hash_djb2.h
     daemon.c      daemon.h
@@ -51,17 +51,17 @@ set(WCHANGERCFG_SOURCES
     url_data.c      url_data.h
     image_info.c   image_info.h
     wallpaper_set.c        wallpaper_set.h
-    settings.c        settings.h
-    json_file.c         json_file.h
-    json_functions.c        json_functions.h
+    settings/settings.c        settings/settings.h
+    settings/json_file.c         settings/json_file.h
+    settings/json_functions.c        settings/json_functions.h
     util/file_io.c         util/file_io.h
     icons.c         icons.h
     util/randomm.c      util/randomm.h
-    setting_item.c      setting_item.h
+    settings/setting_item.c      settings/setting_item.h
     preview.c      preview.h
     util/string_functions.c       util/string_functions.h
     util/file_dir_functions.c         util/file_dir_functions.h
-    cfg_file.c      cfg_file.h
+    settings/cfg_file.c      settings/cfg_file.h
     dir_content.c      dir_content.h
     util/cres.c         util/cres.h
     util/hash_djb2.c      util/hash_djb2.h

@@ -35,8 +35,8 @@
 #include "webwidget_common.h"
 #include "message_dialogs.h"
 #include "util/string_functions.h"
-#include "setting_item.h"
-#include "settings.h"
+#include "settings/setting_item.h"
+#include "settings/settings.h"
 #include "web_pixabay.h"
 /*----------------------------------------------------------------------------*/
 /**

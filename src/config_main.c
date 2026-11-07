@@ -26,7 +26,7 @@
 #include <stdint.h>
 #include <gtk/gtk.h>
 #include "dialog_data.h"
-#include "settings.h"
+#include "settings/settings.h"
 #include "wallpaper_set.h"
 #include "icons.h"
 #include "image_dialogs.h"
@@ -40,7 +40,7 @@
 #include "preview.h"
 #include "util/string_functions.h"
 #include "util/errors.h"
-#include "cfg_file.h"
+#include "settings/cfg_file.h"
 #include "defs.h"
 #include "daemon.h"
 #include "window_manager_info.h"

@@ -29,7 +29,7 @@
 #include "webwidget_struct.h"
 //#include "webservcs.h"
 #include "util/nstrings.h"
-#include "setting_item.h"
+#include "settings/setting_item.h"
 #include "search_item.h"
 /*----------------------------------------------------------------------------*/
 /**

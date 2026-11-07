@@ -26,7 +26,7 @@
 
 #include <gtk/gtk.h>
 #include "image_info.h"
-#include "setting_item.h"
+#include "settings/setting_item.h"
 /*----------------------------------------------------------------------------*/
 /**
  * @fn  void treeview_add_items_glist (GtkWidget   *tree_view,

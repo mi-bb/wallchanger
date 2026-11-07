@@ -34,8 +34,8 @@
 #include "util/file_io.h"
 #include "util/file_dir_functions.h"
 #include "util/errors.h"
-#include "cfg_file.h"
-#include "json_file.h"
+#include "settings/cfg_file.h"
+#include "settings/json_file.h"
 #include "util/hash_djb2.h"
 #include "cache_query.h"
 /*----------------------------------------------------------------------------*/

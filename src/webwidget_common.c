@@ -29,7 +29,7 @@
 #include "util/errors.h"
 #include "cache_query.h"
 #include "util/string_functions.h"
-#include "settings.h"
+#include "settings/settings.h"
 #include "webwidget_common.h"
 /*----------------------------------------------------------------------------*/
 /**

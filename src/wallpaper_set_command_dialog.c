@@ -27,7 +27,7 @@
 #include "message_dialogs.h"
 #include "util/string_functions.h"
 #include "window_manager_info.h"
-#include "setting_item.h"
+#include "settings/setting_item.h"
 #include "wallpaper_set_command_dialog.h"
 /*----------------------------------------------------------------------------*/
 /**

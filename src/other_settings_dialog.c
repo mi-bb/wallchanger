@@ -24,9 +24,9 @@
 #include "message_dialogs.h"
 #include "dir_content.h"
 #include "daemon.h"
-#include "setting_item.h"
-#include "settings.h"
-#include "cfg_file.h"
+#include "settings/setting_item.h"
+#include "settings/settings.h"
+#include "settings/cfg_file.h"
 #include "util/string_functions.h"
 #include "other_settings_dialog.h"
 /*----------------------------------------------------------------------------*/

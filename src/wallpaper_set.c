@@ -25,10 +25,10 @@
 #include <stdlib.h>
 #include <stdint.h>
 #include <string.h>
-#include "settings.h"
+#include "settings/settings.h"
 #include "util/randomm.h"
 #include "util/string_functions.h"
-#include "setting_item.h"
+#include "settings/setting_item.h"
 #include "util/errors.h"
 #include "util/hash_djb2.h"
 #include "wallpaper_set.h"
