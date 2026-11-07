@@ -14,8 +14,8 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 set(WCHANGERD_SOURCES
-    daemon_main.c
-    wallpaper_change.c    wallpaper_change.h
+    daemon/daemon_main.c
+    daemon/wallpaper_change.c    daemon/wallpaper_change.h
     wallpaper/wallpaper_set.c     wallpaper/wallpaper_set.h
     settings/settings.c     settings/settings.h
     settings/json_file.c      settings/json_file.h
@@ -28,12 +28,12 @@ set(WCHANGERD_SOURCES
     settings/cfg_file.c   settings/cfg_file.h
     util/cres.c      util/cres.h
     util/hash_djb2.c   util/hash_djb2.h
-    daemon.c      daemon.h
+    daemon/daemon.c      daemon/daemon.h
     process/process.c    process/process.h
     process/proc_item.c  process/proc_item.h
     process/proc_list.c  process/proc_list.h
-    cmd_functions.c     cmd_functions.h
-    cmdline.c   cmdline.h
+    daemon/cmd_functions.c     daemon/cmd_functions.h
+    daemon/cmdline.c   daemon/cmdline.h
     wallpaper/window_manager_info.c     wallpaper/window_manager_info.h
     util/errors.c      util/errors.h
     defs.h)
@@ -65,7 +65,7 @@ set(WCHANGERCFG_SOURCES
     dir_content.c      dir_content.h
     util/cres.c         util/cres.h
     util/hash_djb2.c      util/hash_djb2.h
-    daemon.c         daemon.h
+    daemon/daemon.c         daemon/daemon.h
     process/process.c       process/process.h
     process/proc_item.c     process/proc_item.h
     process/proc_list.c     process/proc_list.h

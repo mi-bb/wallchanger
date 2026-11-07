@@ -42,7 +42,7 @@
 #include "util/errors.h"
 #include "settings/cfg_file.h"
 #include "defs.h"
-#include "daemon.h"
+#include "daemon/daemon.h"
 #include "wallpaper/window_manager_info.h"
 /*----------------------------------------------------------------------------*/
 /**

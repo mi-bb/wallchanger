@@ -23,7 +23,7 @@
  */
 #include "message_dialogs.h"
 #include "dir_content.h"
-#include "daemon.h"
+#include "daemon/daemon.h"
 #include "settings/setting_item.h"
 #include "settings/settings.h"
 #include "settings/cfg_file.h"
