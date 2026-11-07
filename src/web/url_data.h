@@ -83,48 +83,6 @@ void      urldata_get_to_file   (const char *url,
                                  char      **err);
 /*----------------------------------------------------------------------------*/
 /**
- * @brief  Search Pixabay for images.
- *
- * @param[in] query        Search query
- * @param[in] search_opts  Search options
- * @param[in] api_key      Pixabay API key
- * @param[in] page         Results page number
- * @return    UrlData item with downloaded data or error info
- */
-UrlData * urldata_search_pixabay (const char *query,
-                                  const char *search_opts,
-                                  const char *api_key,
-                                  const int   page);
-/*----------------------------------------------------------------------------*/
-/**
- * @brief  Search Wallhaven for images.
- *
- * @param[in] query        Search query
- * @param[in] search_opts  Search options
- * @param[in] api_key      Wallhaven API key
- * @param[in] page         Results page number
- * @return    UrlData item with downloaded data or error info
- */
-UrlData * urldata_search_wallhaven (const char *query,
-                                    const char *search_opts,
-                                    const char *api_key,
-                                    const int   page);
-/*----------------------------------------------------------------------------*/
-/**
- * @brief  Search Wallpaper Abyss for images.
- *
- * @param[in] query        Search query
- * @param[in] search_opts  Search options
- * @param[in] api_key      Wallpaper Abyss API key
- * @param[in] page         Results page number
- * @return    UrlData item with downloaded data or error info
- */
-UrlData * urldata_search_wallabyss (const char *query,
-                                   const char *search_opts,
-                                   const char *api_key,
-                                   const int   page);
-/*----------------------------------------------------------------------------*/
-/**
  * @brief  Check if UrlData's data buffer is not empty.
  *
  * @param[in] ud  UrlData item to check

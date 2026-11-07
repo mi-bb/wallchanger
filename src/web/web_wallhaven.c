@@ -21,6 +21,8 @@
  *
  * @author Michal Babik <michal.babik@protonmail.com>
  */
+#include <stdio.h>
+#include <stdlib.h>
 #include <ctype.h>
 #include <err.h>
 #include "config.h"
@@ -276,6 +278,35 @@ wallhaven_json_to_webwidget (const char *buffer,
 }
 /*----------------------------------------------------------------------------*/
 /**
+ * @brief  Build the Wallhaven search request url.
+ *
+ * @param[in] query        Search query
+ * @param[in] search_opts  Search options
+ * @param[in] api_key      Wallhaven API key
+ * @param[in] page         Results page number
+ * @return    New string with url. After use it should be freed using free.
+ */
+static char *
+wallhaven_search_url (const char *query,
+                      const char *search_opts,
+                      const char *api_key,
+                      const int   page)
+{
+    char *url = nullptr; /* Result url */
+    char  page_str[16];  /* Page number as string */
+
+    snprintf (page_str, sizeof (page_str), "%d", page);
+    url = str_comb ("https://wallhaven.cc/api/v1/search?apikey=", api_key);
+    str_append (&url, "&q=");
+    str_append (&url, query);
+    str_append (&url, "&page=");
+    str_append (&url, page_str);
+    str_append (&url, str_is_empty (search_opts) ?
+                        "&sorting=relevance" : search_opts);
+    return url;
+}
+/*----------------------------------------------------------------------------*/
+/**
  * @brief  Search in Wallhaven database.
  */
 void
@@ -285,6 +316,7 @@ wallhaven_search (WebWidget      *widget,
     UrlData    *data  = nullptr; /* For search results */
     CacheQuery *cache = nullptr; /* For cache saving */
     char       *search_query = nullptr; /* For search query */
+    char       *url          = nullptr; /* Search request url */
     int         err   = 0;       /* Error output */
 
     if (str_is_empty_warn (strings->str[0], "Wallhaven API key is not set"))
@@ -292,10 +324,12 @@ wallhaven_search (WebWidget      *widget,
 
     search_query = str_replace_in (widget->query, " ", "+");
 
-    data = urldata_search_wallhaven (search_query,
-                                        widget->search_opts,
-                                        strings->str[0],
-                                        widget->page);
+    url  = wallhaven_search_url (search_query,
+                                 widget->search_opts,
+                                 strings->str[0],
+                                 widget->page);
+    data = urldata_get_data (url);
+    free (url);
     if (data->errbuf != nullptr) {
         message_dialog_error (nullptr, data->errbuf);
     }
