@@ -138,4 +138,6 @@ wchangercfg --config [FILENAME]
 
 ## License
 
+Copyright (C) 2019-2026 Michal Babik
+
 This project is licensed under the GPL-3.0 License — see [COPYING](COPYING) for details.
