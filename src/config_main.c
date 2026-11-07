@@ -27,7 +27,7 @@
 #include <gtk/gtk.h>
 #include "dialog_data.h"
 #include "settings/settings.h"
-#include "wallpaper_set.h"
+#include "wallpaper/wallpaper_set.h"
 #include "icons.h"
 #include "image_dialogs.h"
 #include "dialogs_other.h"
@@ -43,7 +43,7 @@
 #include "settings/cfg_file.h"
 #include "defs.h"
 #include "daemon.h"
-#include "window_manager_info.h"
+#include "wallpaper/window_manager_info.h"
 /*----------------------------------------------------------------------------*/
 /**
  * @fn  static uint32_t get_wallpaper_ch_interval (const DialogData *data)

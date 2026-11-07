@@ -27,10 +27,10 @@
 #include <sysexits.h>
 #include <time.h>
 #include "settings/cfg_file.h"
-#include "wallpaper_set.h"
+#include "wallpaper/wallpaper_set.h"
 #include "settings/settings.h"
 #include "util/errors.h"
-#include "window_manager_info.h"
+#include "wallpaper/window_manager_info.h"
 #include "wallpaper_change.h"
 #ifdef DEBUG
 #include <stdio.h>

@@ -16,7 +16,7 @@
 set(WCHANGERD_SOURCES
     daemon_main.c
     wallpaper_change.c    wallpaper_change.h
-    wallpaper_set.c     wallpaper_set.h
+    wallpaper/wallpaper_set.c     wallpaper/wallpaper_set.h
     settings/settings.c     settings/settings.h
     settings/json_file.c      settings/json_file.h
     settings/json_functions.c     settings/json_functions.h
@@ -34,7 +34,7 @@ set(WCHANGERD_SOURCES
     process/proc_list.c  process/proc_list.h
     cmd_functions.c     cmd_functions.h
     cmdline.c   cmdline.h
-    window_manager_info.c     window_manager_info.h
+    wallpaper/window_manager_info.c     wallpaper/window_manager_info.h
     util/errors.c      util/errors.h
     defs.h)
 
@@ -50,7 +50,7 @@ set(WCHANGERCFG_SOURCES
     search_item.c   search_item.h
     url_data.c      url_data.h
     image_info.c   image_info.h
-    wallpaper_set.c        wallpaper_set.h
+    wallpaper/wallpaper_set.c        wallpaper/wallpaper_set.h
     settings/settings.c        settings/settings.h
     settings/json_file.c         settings/json_file.h
     settings/json_functions.c        settings/json_functions.h
@@ -69,7 +69,7 @@ set(WCHANGERCFG_SOURCES
     process/process.c       process/process.h
     process/proc_item.c     process/proc_item.h
     process/proc_list.c     process/proc_list.h
-    window_manager_info.c        window_manager_info.h
+    wallpaper/window_manager_info.c        wallpaper/window_manager_info.h
     util/errors.c         util/errors.h
     util/nstrings.c     util/nstrings.h
     cache_query.c      cache_query.h

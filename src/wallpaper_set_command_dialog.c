@@ -22,11 +22,11 @@
  * @author Michal Babik <michal.babik@protonmail.com>
  */
 #include "util/errors.h"
-#include "wallpaper_set.h"
+#include "wallpaper/wallpaper_set.h"
 #include "image_info.h"
 #include "message_dialogs.h"
 #include "util/string_functions.h"
-#include "window_manager_info.h"
+#include "wallpaper/window_manager_info.h"
 #include "settings/setting_item.h"
 #include "wallpaper_set_command_dialog.h"
 /*----------------------------------------------------------------------------*/
