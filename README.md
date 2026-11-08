@@ -42,7 +42,9 @@ The program works on GNU/Linux and FreeBSD.
 - json-c (>= 0.12.1)
 - libcurl (>= 7.68.0)
 
-To build the program, CMake (>= 3.22) is required.
+To build the program, CMake (>= 3.22) and [Ninja](https://ninja-build.org/)
+are required. The bundled presets use Ninja as the generator; without
+presets, any CMake generator works.
 
 ## Installation and running
 

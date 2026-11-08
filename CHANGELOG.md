@@ -29,6 +29,8 @@ and this project adheres to
 
 ### Changed
 
+- The CMake presets use Ninja as the generator, so Ninja is now needed to
+  build with them.
 - Window manager detection reads the process list once instead of once per
   process name in `wms.json`, so each wallpaper change makes one pass over
   the process list instead of up to 19.

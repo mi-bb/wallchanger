@@ -24,6 +24,7 @@ cmake -S . -B build -DCMAKE_C_COMPILER=gcc -DCMAKE_C_FLAGS="-march=native -O2 -p
 
 Presets (each has matching build and test presets, e.g. `cmake --build --preset debug`, `ctest --preset debug`): `default` = RelWithDebInfo in `./build`; `release` = optimized with the prefix set to `/usr`, in `build/release`; `debug` = unoptimized with `-Wall -Wextra`, in `build/debug`; `asan` = `debug` plus AddressSanitizer/UBSan, in `build/asan` (needs the `libasan`/`libubsan` runtimes). Only `default` uses `./build` itself, which is where the root `compile_commands.json` symlink points.
 
+- The presets use the Ninja generator (set on `default`, inherited by the rest), so `ninja` must be installed. A build directory already configured with another generator must be deleted before reconfiguring with a preset. Manual `cmake -S . -B build` invocations use CMake's default generator unless `-G` is given.
 - Never pass `-std=` by hand. Sources are C23; `CMakeLists.txt` sets `CMAKE_C_STANDARD 23` with `CMAKE_C_EXTENSIONS ON` and CMake emits the flag for every target. A compiler-version check errors out with a readable message if the compiler is too old for C23 (GCC >= 13 or Clang >= 16 required).
 - Sources include `config.h` unqualified and get the build directory on the include path (`target_include_directories` in `src/CMakeLists.txt`).
 - `cmake/config.h.in` is hand-maintained; every new define that `src/` reads needs a matching `#cmakedefine` there, and only the results `src/` reads should be listed.
