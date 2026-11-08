@@ -19,8 +19,6 @@
  *
  * Automatic wallpaper changer
  *
- * @version 1.7.2
- *
  * @author Michal Babik <michal.babik@protonmail.com>
  */
 #include <string.h>
