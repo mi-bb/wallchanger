@@ -46,7 +46,7 @@ Keep it that way. On a compiler that already defaults to C23 (GCC >= 15) an impl
 ### Required dependencies (checked in the root `CMakeLists.txt`)
 
 - GTK+ 3 (>= 3.22.0), json-c (>= 0.12.1), libcurl (>= 7.68.0)
-- Optional: flickcurl (>= 1.24) for Flickr search — enables `HAVE_FLICKCURL` and, if present, libxml2 (>= 2.9.4) for `HAVE_LIBXML`. Both are conditionally compiled in (`pkg_check_modules(FLICKCURL …)` / `if(FLICKCURL_FOUND …)` in the root and `src/CMakeLists.txt`).
+- Optional: flickcurl (>= 1.24) for Flickr search — enables `HAVE_FLICKCURL` and, if present, libxml2 (>= 2.9.4) for `HAVE_LIBXML`. Both are conditionally compiled in (`pkg_check_modules(FLICKCURL …)` in the root, `if(HAVE_FLICKCURL)` in `src/CMakeLists.txt`). The `WITH_FLICKR` option (default `ON`) gates the lookup; `-DWITH_FLICKR=OFF` builds without Flickr even when flickcurl is installed.
 - Optional: `check` (>= 0.15.0) to build/run the unit tests.
 - Optional: `bash-completion` — only to locate `completionsdir`; falls back to `$(sysconfdir)/bash_completion.d`.
 

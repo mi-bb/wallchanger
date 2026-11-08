@@ -26,6 +26,8 @@ and this project adheres to
 ### Added
 
 - Unit tests for the process search functions (`tests/test_process.c`).
+- `WITH_FLICKR` CMake option; `-DWITH_FLICKR=OFF` builds without Flickr
+  search even when flickcurl is installed.
 
 ### Changed
 
