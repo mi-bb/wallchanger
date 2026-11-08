@@ -23,7 +23,7 @@ cmake_minimum_required(VERSION 3.22)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 project(wallchanger
-    VERSION 1.7.2
+    VERSION 1.7.3
     DESCRIPTION "Wall Changer is an automatic wallpaper changer."
     HOMEPAGE_URL "https://www.nongnu.org/wallchanger/"
     LANGUAGES C)
@@ -148,4 +148,29 @@ set(CPACK_SOURCE_IGNORE_FILES
     "/AGENTS\\.md$"
     "/CLAUDE\\.md$"
     "compile_commands\\.json$")
+# Binary packages:  cpack -G DEB --config build/CPackConfig.cmake
+#                   cpack -G RPM --config build/CPackConfig.cmake
+set(CPACK_GENERATOR "TGZ")                      # default when -G is not given
+set(CPACK_PACKAGE_NAME ${PROJECT_NAME})
+set(CPACK_PACKAGE_VENDOR "Michał Bąbik")
+set(CPACK_PACKAGE_CONTACT "Michał Bąbik <${PACKAGE_BUGREPORT}>")
+set(CPACK_PACKAGE_DESCRIPTION_SUMMARY ${PROJECT_DESCRIPTION})
+set(CPACK_PACKAGE_HOMEPAGE_URL ${PROJECT_HOMEPAGE_URL})
+set(CPACK_RESOURCE_FILE_LICENSE ${CMAKE_SOURCE_DIR}/COPYING)
+set(CPACK_PACKAGING_INSTALL_PREFIX /usr)
+
+# Debian
+set(CPACK_DEBIAN_FILE_NAME DEB-DEFAULT)
+set(CPACK_DEBIAN_PACKAGE_SECTION x11)
+set(CPACK_DEBIAN_PACKAGE_SHLIBDEPS ON)          # needs dpkg-shlibdeps
+set(CPACK_DEBIAN_PACKAGE_RECOMMENDS feh)
+
+# RPM
+set(CPACK_RPM_FILE_NAME RPM-DEFAULT)
+set(CPACK_RPM_PACKAGE_LICENSE "GPL-3.0-or-later")
+set(CPACK_RPM_PACKAGE_GROUP "User Interface/Desktops")
+set(CPACK_RPM_PACKAGE_SUGGESTS feh)
+set(CPACK_RPM_EXCLUDE_FROM_AUTO_FILELIST_ADDITION
+    /usr/share/applications /usr/share/pixmaps
+    /usr/share/bash-completion /usr/share/bash-completion/completions)
 include(CPack)
