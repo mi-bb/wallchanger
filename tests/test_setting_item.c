@@ -24,8 +24,8 @@
 #include <stdlib.h>
 #include <string.h>
 #include <check.h>
-#include "setting_item.h"
-#include "hash_djb2.h"
+#include "settings/setting_item.h"
+#include "util/hash_djb2.h"
 /*----------------------------------------------------------------------------*/
 /* Creation and type accessors                                                */
 /*----------------------------------------------------------------------------*/
@@ -92,18 +92,18 @@ END_TEST
 /*----------------------------------------------------------------------------*/
 START_TEST (test_new_setting_and_array_start_empty)
 {
-    Setting *st_set = setting_new_setting ("obj");
-    Setting *st_arr = setting_new_array ("arr");
+    Setting *obj = setting_new_setting ("obj");
+    Setting *arr = setting_new_array ("arr");
 
-    ck_assert_int_eq (setting_get_type (st_set), SET_VAL_SETTING);
-    ck_assert_ptr_null (setting_get_child (st_set));
-    ck_assert_uint_eq (setting_count_children (st_set), 0);
+    ck_assert_int_eq (setting_get_type (obj), SET_VAL_SETTING);
+    ck_assert_ptr_null (setting_get_child (obj));
+    ck_assert_uint_eq (setting_count_children (obj), 0);
 
-    ck_assert_int_eq (setting_get_type (st_arr), SET_VAL_ARRAY);
-    ck_assert_ptr_null (setting_get_child (st_arr));
+    ck_assert_int_eq (setting_get_type (arr), SET_VAL_ARRAY);
+    ck_assert_ptr_null (setting_get_child (arr));
 
-    setting_free (st_set);
-    setting_free (st_arr);
+    setting_free (obj);
+    setting_free (arr);
 }
 END_TEST
 /*----------------------------------------------------------------------------*/
@@ -622,14 +622,14 @@ setting_suite (void)
 int
 main (void)
 {
-    int      i_failed;
+    int      failed;
     Suite   *s  = setting_suite ();
     SRunner *sr = srunner_create (s);
 
     srunner_run_all (sr, CK_NORMAL);
-    i_failed = srunner_ntests_failed (sr);
+    failed = srunner_ntests_failed (sr);
     srunner_free (sr);
 
-    return (i_failed == 0) ? EXIT_SUCCESS : EXIT_FAILURE;
+    return (failed == 0) ? EXIT_SUCCESS : EXIT_FAILURE;
 }
 /*----------------------------------------------------------------------------*/

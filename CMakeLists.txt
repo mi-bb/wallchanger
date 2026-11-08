@@ -23,19 +23,20 @@ cmake_minimum_required(VERSION 3.22)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 project(wallchanger
-    VERSION 1.7.2
+    VERSION 1.7.3
     DESCRIPTION "Wall Changer is an automatic wallpaper changer."
     HOMEPAGE_URL "https://www.nongnu.org/wallchanger/"
     LANGUAGES C)
 
 set(PACKAGE_BUGREPORT "michal.babik@protonmail.com")
 
-# The sources use C23 with GNU extensions (src/image_info.c calls strndup(),
-# which a strict -std=c23 hides).  CMake picks the spelling the compiler knows
-# (-std=gnu23 or -std=gnu2x).  CMP0128 (NEW since CMake 3.22) makes it emit
-# the flag even when the compiler's own default already matches, so libclang-based
-# tools reading compile_commands.json - clangd, clang-tidy, include-what-you-
-# use - do not fall back to gnu17 on GCC >= 15.  Do not pass -std= by hand.
+# The sources use C23 with GNU extensions (src/gui/image_info.c calls
+# strndup(), which a strict -std=c23 hides).  CMake picks the spelling the
+# compiler knows (-std=gnu23 or -std=gnu2x).  CMP0128 (NEW since CMake 3.22)
+# makes it emit the flag even when the compiler's own default already matches,
+# so libclang-based tools reading compile_commands.json - clangd, clang-tidy,
+# include-what-you-use - do not fall back to gnu17 on GCC >= 15.  Do not pass
+# -std= by hand.
 set(CMAKE_C_STANDARD 23)
 set(CMAKE_C_STANDARD_REQUIRED ON)
 set(CMAKE_C_EXTENSIONS ON)
@@ -63,17 +64,24 @@ pkg_check_modules(GTK   REQUIRED IMPORTED_TARGET gtk+-3.0>=3.22.0)
 pkg_check_modules(JSONC REQUIRED IMPORTED_TARGET json-c>=0.12.1)
 pkg_check_modules(CURL  REQUIRED IMPORTED_TARGET libcurl>=7.68.0)
 
-pkg_check_modules(FLICKCURL IMPORTED_TARGET flickcurl>=1.24)
-if(FLICKCURL_FOUND)
-    set(HAVE_FLICKCURL 1)
-    pkg_check_modules(LIBXML IMPORTED_TARGET libxml-2.0>=2.9.4)
-    if(LIBXML_FOUND)
-        set(HAVE_LIBXML 1)
+# Flickr search through flickcurl. -DWITH_FLICKR=OFF builds without it even
+# when flickcurl is installed; with ON it is used only if found.
+option(WITH_FLICKR "Build Flickr search (needs flickcurl)" ON)
+if(WITH_FLICKR)
+    pkg_check_modules(FLICKCURL IMPORTED_TARGET flickcurl>=1.24)
+    if(FLICKCURL_FOUND)
+        set(HAVE_FLICKCURL 1)
+        pkg_check_modules(LIBXML IMPORTED_TARGET libxml-2.0>=2.9.4)
+        if(LIBXML_FOUND)
+            set(HAVE_LIBXML 1)
+        else()
+            message(WARNING "libxml-2.0 not present")
+        endif()
     else()
-        message(WARNING "libxml-2.0 not present")
+        message(WARNING "flickcurl not present, Flickr search support disabled")
     endif()
 else()
-    message(WARNING "flickcurl not present, Flickr search support disabled")
+    message(STATUS "Flickr search support disabled (WITH_FLICKR=OFF)")
 endif()
 
 # Optional 'check' unit testing framework used by tests/.
@@ -147,4 +155,29 @@ set(CPACK_SOURCE_IGNORE_FILES
     "/AGENTS\\.md$"
     "/CLAUDE\\.md$"
     "compile_commands\\.json$")
+# Binary packages:  cpack -G DEB --config build/CPackConfig.cmake
+#                   cpack -G RPM --config build/CPackConfig.cmake
+set(CPACK_GENERATOR "TGZ")                      # default when -G is not given
+set(CPACK_PACKAGE_NAME ${PROJECT_NAME})
+set(CPACK_PACKAGE_VENDOR "Michał Bąbik")
+set(CPACK_PACKAGE_CONTACT "Michał Bąbik <${PACKAGE_BUGREPORT}>")
+set(CPACK_PACKAGE_DESCRIPTION_SUMMARY ${PROJECT_DESCRIPTION})
+set(CPACK_PACKAGE_HOMEPAGE_URL ${PROJECT_HOMEPAGE_URL})
+set(CPACK_RESOURCE_FILE_LICENSE ${CMAKE_SOURCE_DIR}/COPYING)
+set(CPACK_PACKAGING_INSTALL_PREFIX /usr)
+
+# Debian
+set(CPACK_DEBIAN_FILE_NAME DEB-DEFAULT)
+set(CPACK_DEBIAN_PACKAGE_SECTION x11)
+set(CPACK_DEBIAN_PACKAGE_SHLIBDEPS ON)          # needs dpkg-shlibdeps
+set(CPACK_DEBIAN_PACKAGE_RECOMMENDS feh)
+
+# RPM
+set(CPACK_RPM_FILE_NAME RPM-DEFAULT)
+set(CPACK_RPM_PACKAGE_LICENSE "GPL-3.0-or-later")
+set(CPACK_RPM_PACKAGE_GROUP "User Interface/Desktops")
+set(CPACK_RPM_PACKAGE_SUGGESTS feh)
+set(CPACK_RPM_EXCLUDE_FROM_AUTO_FILELIST_ADDITION
+    /usr/share/applications /usr/share/pixmaps
+    /usr/share/bash-completion /usr/share/bash-completion/completions)
 include(CPack)

@@ -1,0 +1,119 @@
+/**
+ * @file  randomm.h
+ * @copyright Copyright (C) 2019-2026 Michał Bąbik
+ *
+ * This file is part of Wall Changer.
+ *
+ * Wall Changer is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Wall Changer is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Wall Changer.  If not, see <https://www.gnu.org/licenses/>.
+ *
+ * @brief  Random without repeated values
+ *
+ * @author Michal Babik <michal.babik@protonmail.com>
+ */
+#ifndef RANDOMM_H
+#define RANDOMM_H
+
+#include <stdint.h>
+#include <stddef.h>
+/*----------------------------------------------------------------------------*/
+/**
+ * @struct RandMem
+ *
+ * @brief  Random memory struct
+ *
+ * @var   RandMem::randm
+ * @brief Integers to store information which number was randomed
+ *
+ * @var   RandMem::cnt
+ * @brief Number of random numbers generated in a series
+ *
+ * @var   RandMem::range
+ * @brief Max random number that will be generated
+ *
+ * @var   RandMem::allocn
+ * @brief Number of alloced integers
+ *
+ * @var   RandMem::seed
+ * @brief This object's own xorshift32 generator state, seeded once in
+ *        randomm_new()/randomm_new_with_range(). Kept per-object (instead
+ *        of relying on libc's process-global rand()/srand()) so that
+ *        separate RandMem instances never interfere with one another.
+ */
+typedef struct
+RandMem {
+    uint32_t *randm;
+    size_t    cnt;
+    size_t    range;
+    size_t    allocn;
+    uint32_t  seed;
+} RandMem;
+/*----------------------------------------------------------------------------*/
+/**
+ * @brief  Reset random memory.
+ *
+ * @param[out] mem  RandMem object
+ * @return     none
+ */
+void      randomm_reset          (RandMem *mem);
+/*----------------------------------------------------------------------------*/
+/**
+ * @brief  Create new RandMem item.
+ *
+ * @return New RandMem item
+ */
+RandMem * randomm_new            (void) __attribute__((malloc));
+/*----------------------------------------------------------------------------*/
+/**
+ * @brief  Create new RandMem item with given range.
+ * @param[in]  range  Range value
+ *
+ * @return New RandMem item
+ */
+RandMem * randomm_new_with_range (size_t range) __attribute__((malloc));
+/*----------------------------------------------------------------------------*/
+/**
+ * @brief  Free RandMem item.
+ *
+ * @param[out] mem  RandMem object
+ * @return     none
+ */
+void      randomm_free           (RandMem *mem);
+/*----------------------------------------------------------------------------*/
+/**
+ * @brief  Set random numbers range.
+ *
+ * @param[out] mem    RandMem object
+ * @param[in]  range  Range value
+ * @return     none
+ */
+void      randomm_set_range      (RandMem *mem,
+                                  size_t   range);
+/*----------------------------------------------------------------------------*/
+/**
+ * @brief  Get random number
+ *
+ * Function gets random number using standard rand function, later checks if
+ * this number was already returned in this series of "randoms".
+ * If number was previously returned it runs random again untit it gets a fresh
+ * value.
+ * When count of returned random numbers reaches the range that was previously
+ * set it resets the memory of returned numbers, sets number counter to zero
+ * and starts getting random numbers from the beginning.
+ *
+ * @param[out] mem  RandMem object
+ * @return     Ranom number
+ */
+size_t    randomm_get_number     (RandMem *mem);
+/*----------------------------------------------------------------------------*/
+#endif

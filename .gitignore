@@ -6,6 +6,7 @@ CTestTestfile.cmake
 cmake_install.cmake
 compile_commands.json
 Testing/
+aur/
 
 .cache/
 .vscode/

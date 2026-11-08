@@ -19,8 +19,6 @@
    },
    "Gnome":{
       "Proc":[
-         "gnome-session-b",
-         "gnome-session-s",
          "gnome-session-service",
          "gnome-session-binary"
       ],
@@ -28,7 +26,6 @@
    },
    "Cinnamon":{
       "Proc":[
-         "cinnamon-sessio",
          "cinnamon-session",
          "cinnamon"
       ],

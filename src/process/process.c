@@ -26,469 +26,297 @@
 #include <stdint.h>
 #if defined(__linux__)
 #include <dirent.h>
+#include <fcntl.h>
+#include <limits.h>
 #endif
 #if defined(__FreeBSD__)
 #include <sys/param.h>
 #include <sys/user.h>
 #include <sys/sysctl.h>
 #include <libprocstat.h>
-#include <pwd.h>
 #endif
 #include <err.h>
+#include <errno.h>
 #include <unistd.h>
 #include <string.h>
 #include <sys/stat.h>
 #include <signal.h>
-#include <ctype.h>
 #include "process.h"
+/*----------------------------------------------------------------------------*/
+/**
+ * @var   PROC_NAME_MAX
+ * @brief Longest process name the system reports, longer names are cut
+ *        to this length (TASK_COMM_LEN - 1 on Linux, MAXCOMLEN on FreeBSD)
+ */
+#if defined(__FreeBSD__)
+constexpr size_t PROC_NAME_MAX = MAXCOMLEN;
+#else
+constexpr size_t PROC_NAME_MAX = 15;
+#endif
+/*----------------------------------------------------------------------------*/
+/**
+ * @brief  Check if process name read from the system matches the given name.
+ *
+ * @param[in] proc_name  Process name as reported by the system
+ * @param[in] name       Name to compare with
+ * @return    true if names match, false if not
+ */
+[[nodiscard]] static bool
+process_name_matches (const char *proc_name,
+                      const char *name)
+{
+    if (strcmp (proc_name, name) == 0)
+        return true;
+
+    /* The name was cut by the system, compare the part that is left */
+    return strlen (proc_name) == PROC_NAME_MAX &&
+           strlen (name)       > PROC_NAME_MAX &&
+           strncmp (proc_name, name, PROC_NAME_MAX) == 0;
+}
 /*----------------------------------------------------------------------------*/
 #if defined(__linux__)
 /**
- * @var   BUFF_SIZE
- * @brief File read buffer size
+ * @var   STAT_BUFF_SIZE
+ * @brief Buffer size for the start of /proc/PID/stat, pid, name and state
+ *        are all within the first few dozen bytes
  */
-constexpr int BUFF_SIZE = 512;
+constexpr size_t STAT_BUFF_SIZE = 256;
 /*----------------------------------------------------------------------------*/
 /**
- * @fn  static char * read_proc_file_data (const char *s_fname,
- *                                         int        *i_err)
+ * @brief  Convert a /proc entry name to a PID.
  *
- * @brief  Read data from file and return it in string.
- *
- * @param[in]  s_fname  File name
- * @param[out] i_err    Error output
- * @return     New string with file content, it should be later freed using
- *             free function.
- *
- * @fn  static int string_of_numbers (const char *s_str)
- *
- * @brief  Check if given string is made of numbers.
- *
- * @param[in] s_str  Input string
- * @return    1 if string is made of numbers, 0 if it isn't
- *
- * @fn  static uid_t file_check_uid (const char *s_path,
- *                                   int        *i_err)
- *
- * @brief  Return file user id.
- *
- * @param[in]  s_path  File name
- * @param[out] i_err   Error output
- * @return     File UID
- *
- * @fn  static void string_remove_newline (char *s_str)
- *
- * @brief  Find and remove (replace with null char) new line character 0A.
- *
- * @param[in,out] s_str  Input string
- * @return         none
+ * @param[in]  str  /proc directory entry name
+ * @param[out] pid  Converted PID
+ * @return     true if str is made of digits only, false if not
  */
-/*----------------------------------------------------------------------------*/
-static char * read_proc_file_data   (const char *s_fname,
-                                     int        *i_err);
-
-static int    string_of_numbers     (const char *s_str) __attribute__ ((pure));
-
-static uid_t  file_check_uid        (const char *s_path,
-                                     int        *i_err);
-
-static void   string_remove_newline (char       *s_str);
-/*----------------------------------------------------------------------------*/
-/**
- * @brief  Read data from file and return it in string.
- */
-static char *
-read_proc_file_data (const char  *s_fname,
-                     int         *i_err)
+[[nodiscard]] static bool
+parse_pid (const char *str,
+           pid_t      *pid)
 {
-    char   *s_data = nullptr;          /* Result data from file */
-    FILE   *f_file;                 /* Data file */
-    size_t  ui_count = 0;           /* Read data count */
-    char    s_buff [BUFF_SIZE + 1]; /* Buffer for data */
+    const char *it = str;
 
-    f_file = fopen (s_fname, "rb");
-    /* Error opening file */
-    if (f_file == nullptr) {
-        *i_err = 1;
-        /* warn ("%s", s_fname); */
-        return nullptr;
-    }
-    ui_count = fread (s_buff, 1, BUFF_SIZE, f_file);
-    if ((s_data = malloc ((ui_count + 1) * sizeof (char))) == nullptr) {
-        err (EXIT_FAILURE, nullptr);
-    }
-    memcpy (s_data, s_buff, ui_count);
-    s_data[ui_count] = '\0';
-    fclose (f_file);
-    *i_err = 0;
+    if (*it == '\0')
+        return false;
 
-    return s_data;
+    for (; *it != '\0'; ++it) {
+        if (*it < '0' || *it > '9')
+            return false;
+    }
+    *pid = (pid_t) strtol (str, nullptr, 10);
+    return true;
 }
 /*----------------------------------------------------------------------------*/
 /**
- * @brief  Check if given string is made of numbers.
+ * @brief  Read process name and state from its /proc/PID/stat file.
+ *
+ * @param[in]  proc_fd  Open /proc directory descriptor
+ * @param[in]  pid_dir  Process directory name in /proc
+ * @param[out] buffer   Buffer of STAT_BUFF_SIZE bytes, name points into it
+ * @param[out] name     Process name
+ * @param[out] state    Process state character
+ * @return     true if data was read, false if not
  */
-static int
-string_of_numbers (const char * __restrict s_str)
+[[nodiscard]] static bool
+read_proc_stat (int          proc_fd,
+                const char  *pid_dir,
+                char        *buffer,
+                const char **name,
+                char        *state)
 {
-    int i_res = 0;
-    while (*s_str && (i_res = isdigit (*s_str++)));
-    return i_res;
-}
-/*----------------------------------------------------------------------------*/
-/**
- * @brief  Return file user id.
- */
-static uid_t
-file_check_uid (const char *s_path,
-                int        *i_err)
-{
-    struct stat st;
+    char     path [NAME_MAX + sizeof ("/stat")]; /* PID/stat path */
+    char    *open_par  = nullptr; /* Bracket opening the name */
+    char    *close_par = nullptr; /* Bracket closing the name */
+    ssize_t  count     = 0;       /* Read data count */
+    int      fd        = -1;      /* stat file descriptor */
 
-    if (stat (s_path, &st) == -1) {
-        /* warn ("Stat error"); */
-        *i_err = 1;
-    }
-    else {
-        *i_err = 0;
-        return st.st_uid;
-    }
-    return 0;
-}
-/*----------------------------------------------------------------------------*/
-static void
-string_remove_newline (char *s_str)
-{
-    char *s_p = strchr (s_str, 0x0A);
-    if (s_p != nullptr) {
-        *s_p = '\0';
-    }
+    snprintf (path, sizeof (path), "%s/stat", pid_dir);
+
+    if ((fd = openat (proc_fd, path, O_RDONLY | O_CLOEXEC)) == -1)
+        return false;
+
+    count = read (fd, buffer, STAT_BUFF_SIZE - 1);
+    close (fd);
+
+    if (count <= 0)
+        return false;
+
+    buffer[count] = '\0';
+
+    /* Line starts with "PID (name) state", the name itself may contain
+     * brackets and spaces, so it ends at the last closing bracket */
+    open_par  = strchr  (buffer, '(');
+    close_par = strrchr (buffer, ')');
+
+    if (open_par == nullptr || close_par == nullptr ||
+        close_par < open_par || close_par[1] != ' ')
+        return false;
+
+    *close_par = '\0';
+    *name  = open_par + 1;
+    *state = close_par[2];
+
+    return true;
 }
 /*----------------------------------------------------------------------------*/
 /**
- * @brief  Get processes to ProcList list, more options function version.
+ * @brief  Get running processes of the current user.
  */
 ProcList *
-process_get_opt (uid_t       uid_id,
-                 const char *s_name,
-                 int         i_opt,
-                 int         i_exc_pid)
+process_get (const char *name,
+             pid_t       exclude_pid)
 {
-    ProcList   *pl_list = nullptr;       /* Proclist item to return */
-    const char *s_path  = "/proc/";   /* Path to proc directory */
-    #if PROC_LINUX_CMDLINE == 1
-    const char *s_file  = "/cmdline"; /* cmdline path */
-    #else
-    const char *s_file  = "/comm";    /* comm path */
-    #endif
-    DIR        *dr;                   /* Dirent directory */
-    size_t      ui_plen = 0;          /* Proc path length */
-    size_t      ui_flen = 0;          /* cmdline path length */
-    size_t      ui_dlen = 0;          /* Length of dir inside proc dir */
-    int         i_err   = 0;          /* Error output */
-    char       *s_fn    = nullptr;       /* Alloced string for full cmdline path */
-    char       *s_data  = nullptr;       /* Buffer for cmdline content */
-    struct dirent *de;                /* Dirent struct */
+    ProcList      *list      = nullptr; /* Proclist item to return */
+    DIR           *dir       = nullptr; /* /proc directory */
+    struct dirent *entry     = nullptr; /* /proc directory entry */
+    const char    *proc_name = nullptr; /* Process name */
+    uid_t          uid       = getuid ();
+    pid_t          pid       = 0;       /* Process PID */
+    char           state     = 0;       /* Process state */
+    struct stat    st;                  /* Process directory info */
+    char           buffer [STAT_BUFF_SIZE]; /* Buffer for stat file data */
 
-    pl_list = proc_list_new ();
+    list = proc_list_new ();
 
-    ui_plen = strlen (s_path);
-    ui_flen = strlen (s_file);
+    if ((dir = opendir ("/proc")) == nullptr)
+        return list;
 
-    dr = opendir (s_path);
-    if (dr == nullptr) {
-        /* warn ("%s", s_path); */
-        return pl_list;
-    }
-    while ((de = readdir(dr)) != nullptr) {
-        if (de->d_type == DT_DIR && string_of_numbers (de->d_name)) {
+    while ((entry = readdir (dir)) != nullptr) {
 
-            if (i_exc_pid && (atoi (de->d_name) == i_exc_pid))
-                continue;
+        if (entry->d_type != DT_DIR || !parse_pid (entry->d_name, &pid))
+            continue;
 
-            ui_dlen = strlen (de->d_name);
+        if (pid == exclude_pid)
+            continue;
 
-            s_fn = malloc ((ui_plen + ui_flen + ui_dlen + 1) * sizeof (char));
-            if (s_fn == nullptr) {
-                err (EXIT_FAILURE, nullptr);
-            }
-            memcpy (s_fn, s_path, ui_plen);
-            memcpy (s_fn + ui_plen, de->d_name, ui_dlen);
-            s_fn [ui_plen + ui_dlen] = '\0';
+        /* Process directory is owned by the process user */
+        if (fstatat (dirfd (dir), entry->d_name, &st, 0) == -1 ||
+            st.st_uid != uid)
+            continue;
 
-            if (file_check_uid (s_fn, &i_err) == uid_id && !i_err) {
-                memcpy (s_fn + ui_plen + ui_dlen, s_file, ui_flen);
-                s_fn [ui_plen + ui_dlen + ui_flen] = '\0';
+        if (!read_proc_stat (dirfd (dir), entry->d_name, buffer,
+                             &proc_name, &state))
+            continue;
 
-                s_data = read_proc_file_data (s_fn, &i_err);
-                if (s_data != nullptr && !i_err) {
-                    #if PROC_LINUX_CMDLINE == 0
-                    string_remove_newline (s_data);
-                    #endif
-                    if (s_name == nullptr) {
-                        proc_list_insert (pl_list,
-                                proc_item_new_from_data (de->d_name, s_data));
-                    }
-                    else if (strcmp (s_data, s_name) == 0) {
-                        proc_list_insert (pl_list,
-                                proc_item_new_from_data (de->d_name, s_data));
-                        if (i_opt & PROC_OPT_CHK_FIRST) {
-                            free (s_data);
-                            free (s_fn);
-                            break;
-                        }
-                    }
-                }
-                free (s_data);
-            }
-            free (s_fn);
+        /* Skip zombie and dead processes, they have exited already */
+        if (state == 'Z' || state == 'X')
+            continue;
+
+        if (name == nullptr || process_name_matches (proc_name, name)) {
+            proc_list_insert (list, proc_item_new (pid, proc_name));
         }
     }
-    closedir (dr);
+    closedir (dir);
 
-    return pl_list;
+    return list;
 }
 #endif
 /*----------------------------------------------------------------------------*/
 #if defined(__FreeBSD__)
 /**
- * @brief  Get processes to ProcList list, more options function version.
+ * @brief  Get running processes of the current user.
  */
 ProcList *
-process_get_opt (uid_t       uid_id,
-                 const char *s_name,
-                 int         i_opt,
-                 int         i_exc_pid)
+process_get (const char *name,
+             pid_t       exclude_pid)
 {
-    ProcList          *pl_list = nullptr;  /* Proclist item to return */
-    unsigned int       cnt     = 0;     /* Number of found processes */
-    unsigned int       i       = 0;     /* i */
-    const char        *s_cmd   = nullptr;  /* Process command string */
-    struct kinfo_proc *proc;            /* kinfo_proc structure */
-    struct procstat   *procstat;        /* procstat structure */
-    char               s_pidbuff [20];  /* Buffer for process pid string */
+    ProcList          *list     = nullptr; /* Proclist item to return */
+    struct procstat   *procstat = nullptr; /* procstat structure */
+    struct kinfo_proc *procs    = nullptr; /* Found processes */
+    unsigned int       count    = 0;       /* Number of found processes */
 
-    pl_list  = proc_list_new ();
-    procstat = procstat_open_sysctl ();
-    if (procstat == nullptr) {
-        errx (EXIT_FAILURE, "error while procstat_open()");
+    list = proc_list_new ();
+
+    if ((procstat = procstat_open_sysctl ()) == nullptr)
+        return list;
+
+    procs = procstat_getprocs (procstat, KERN_PROC_UID, (int) getuid (),
+                               &count);
+    if (procs == nullptr) {
+        procstat_close (procstat);
+        return list;
     }
-    proc = procstat_getprocs (procstat, KERN_PROC_UID, (int) uid_id, &cnt);
-    if (proc == nullptr) {
-        errx (EXIT_FAILURE, "error while procstat_getprocs()");
-    }
-    for (i = 0; i < cnt; i++) {
-        if (proc[i].ki_stat == SZOMB)
+    for (unsigned int i = 0; i < count; ++i) {
+        if (procs[i].ki_stat == SZOMB || procs[i].ki_pid == exclude_pid)
             continue;
-        if (i_exc_pid && (i_exc_pid == proc[i].ki_pid))
-            continue;
-        s_cmd = proc[i].ki_comm;
-        snprintf (s_pidbuff, sizeof (s_pidbuff), "%d", proc[i].ki_pid);
-        if (s_name == nullptr) {
-            proc_list_insert (pl_list, proc_item_new_from_data (s_pidbuff, s_cmd));
-        }
-        else if (strcmp (s_cmd, s_name) == 0) {
-            proc_list_insert (pl_list, proc_item_new_from_data (s_pidbuff, s_cmd));
-            if (i_opt & PROC_OPT_CHK_FIRST) {
-                break;
-            }
+
+        if (name == nullptr || process_name_matches (procs[i].ki_comm, name)) {
+            proc_list_insert (list,
+                    proc_item_new (procs[i].ki_pid, procs[i].ki_comm));
         }
     }
-    procstat_freeprocs (procstat, proc);
+    procstat_freeprocs (procstat, procs);
     procstat_close (procstat);
-    return pl_list;
+
+    return list;
 }
 #endif
 /*----------------------------------------------------------------------------*/
 /**
- * @brief  Get current user processes with no options to ProcList list.
- */
-ProcList *
-process_get (const char *s_name)
-{
-    return process_get_opt (getuid (), s_name, PROC_OPT_NONE, 0);
-}
-/*----------------------------------------------------------------------------*/
-/**
- * @brief  Checks for process existence, returns first found process as
- *         ProcItem item. Function with more options.
- */
-ProcItem *
-process_exists_opt (uid_t       uid_id,
-                    const char *s_name,
-                    int         i_opt,
-                    int         i_exc_pid)
-{
-    ProcItem *pi_item = nullptr;
-
-    ProcList *pl_list = process_get_opt (uid_id,
-                                         s_name,
-                                         i_opt | PROC_OPT_CHK_FIRST,
-                                         i_exc_pid);
-    if (proc_list_get_count (pl_list) > 0) {
-        pi_item = proc_item_copy (proc_list_get_item (pl_list, 0));
-    }
-    proc_list_free (pl_list);
-    return pi_item;
-}
-/*----------------------------------------------------------------------------*/
-/**
- * @brief  Checks for process existence, returns first found process as
- *         ProcItem item.
- */
-ProcItem *
-process_exists (const char *s_name)
-{
-    return process_exists_opt (getuid (), s_name, PROC_OPT_NONE, 0);
-}
-/*----------------------------------------------------------------------------*/
-/**
- * @brief  Checks for process existence, returns true or false depending on
- *         process.
+ * @brief  Check if list contains a process with the given name.
  */
 bool
-process_exists_b (const char *s_name)
+process_list_contains (const ProcList *list,
+                       const char     *name)
 {
-    bool      b_res = false;
-    ProcItem *pi_item;
+    const uint_fast32_t count = proc_list_get_count (list);
 
-    pi_item = process_exists_opt (getuid (), s_name, PROC_OPT_NONE, 0);
-    if (pi_item != nullptr) {
-        proc_item_free (pi_item);
-        b_res = true;
+    for (uint_fast32_t i = 0; i < count; ++i) {
+        if (process_name_matches (
+                    proc_item_get_name (proc_list_get_item (list, i)), name))
+            return true;
     }
-    return b_res;
+    return false;
 }
 /*----------------------------------------------------------------------------*/
 /**
- * @brief  Count processes with given name. Function with more options.
+ * @brief  Count current user processes with the given name, the calling
+ *         process is not counted.
  */
 int
-process_count_opt (uid_t       uid_id,
-                   const char *s_name,
-                   int         i_opt,
-                   int         i_exc_pid)
+process_count_except_current (const char *name)
 {
-    ProcList *pl_list;
-    int       i_res = 0;
+    ProcList *list   = process_get (name, getpid ());
+    int       result = (int) proc_list_get_count (list);
 
-    pl_list = process_get_opt (uid_id, s_name, i_opt, i_exc_pid);
-    i_res = (int) proc_list_get_count (pl_list);
-    proc_list_free (pl_list);
+    proc_list_free (list);
 
-    return i_res;
+    return result;
 }
 /*----------------------------------------------------------------------------*/
 /**
- * @brief  Count current user processes with name given in s_name.
+ * @brief  Send SIGTERM to all current user processes with the given name,
+ *         except the calling process.
  */
 int
-process_count (const char *s_name)
+process_kill_all_except_current (const char *name)
 {
-    return process_count_opt (getuid (), s_name, PROC_OPT_NONE, 0);
-}
-/*----------------------------------------------------------------------------*/
-/**
- * @brief  Count current user processes with name given in s_name, function
- *         doesn't count current process if it is on list.
- */
-int
-process_count_except_current (const char *s_name)
-{
-    return process_count_opt (getuid (), s_name, PROC_OPT_NONE, getpid ());
-}
-/*----------------------------------------------------------------------------*/
-/**
- * @brief  Kill process with name passed in s_name. Function with more options.
- */
-void
-process_kill_opt (uid_t       uid_id,
-                  const char *s_name,
-                  int         i_opt,
-                  int         i_exc_pid)
-{
-    ProcItem *pi_item;
-    pid_t     pi_pid = 0;
+    ProcList       *list   = nullptr; /* Processes to kill */
+    const ProcItem *item   = nullptr; /* Process to kill */
+    uint_fast32_t   count  = 0;       /* Number of found processes */
+    int             killed = 0;       /* Number of signalled processes */
 
-    pi_item = process_exists_opt (uid_id, s_name, i_opt, i_exc_pid);
-    if (pi_item != nullptr) {
-        #ifdef DEBUG
-        printf ("kill %s %s\n",
-                proc_item_get_name (pi_item),
-                proc_item_get_pid (pi_item));
-        #endif
-        pi_pid = atoi (proc_item_get_pid (pi_item));
-        kill (pi_pid, SIGTERM);
-        proc_item_free (pi_item);
+    if (name == nullptr)
+        return 0;
+
+    list  = process_get (name, getpid ());
+    count = proc_list_get_count (list);
+
+    for (uint_fast32_t i = 0; i < count; ++i) {
+        item = proc_list_get_item (list, i);
+
+        if (kill (proc_item_get_pid (item), SIGTERM) == 0) {
+            ++killed;
+        }
+        else if (errno != ESRCH) {
+            /* ESRCH means the process has exited in the meantime */
+            warn ("Could not stop %s (PID %d)",
+                  proc_item_get_name (item),
+                  (int) proc_item_get_pid (item));
+        }
     }
-}
-/*----------------------------------------------------------------------------*/
-/**
- * @brief  Kill current user process with name given in s_name string.
- */
-void
-process_kill (const char *s_name)
-{
-    process_kill_opt (getuid (), s_name, PROC_OPT_NONE, 0);
-}
-/*----------------------------------------------------------------------------*/
-/**
- * @brief  Kills process like process_kill without killing current process.
- */
-void
-process_kill_except_current (const char *s_name)
-{
-    process_kill_opt (getuid (), s_name, PROC_OPT_NONE, getpid ());
-}
-/*----------------------------------------------------------------------------*/
-/**
- * @brief  Kill all process with name passed in s_name. Function with more
- *         options.
- */
-int
-process_kill_all_opt (uid_t       uid_id,
-                      const char *s_name,
-                      int         i_opt,
-                      int         i_exc_pid)
-{
-    ProcList      *pl_list;
-    uint_fast32_t  i_cnt  = 0;
-    uint_fast32_t  i      = 0;
-    pid_t          pi_pid = 0;
+    proc_list_free (list);
 
-    pl_list = process_get_opt (uid_id, s_name, i_opt, i_exc_pid);
-    i_cnt   = proc_list_get_count (pl_list);
+    return killed;
+}
+/*----------------------------------------------------------------------------*/
 
-    for (i = 0; i < i_cnt; ++i) {
-        pi_pid = atoi (proc_item_get_pid (proc_list_get_item (pl_list, i)));
-        #ifdef DEBUG
-        printf ("killing %s %s\n",
-                proc_item_get_name (proc_list_get_item (pl_list, i)),
-                proc_item_get_pid (proc_list_get_item (pl_list, i)));
-        #endif
-        kill (pi_pid, SIGTERM);
-    }
-    proc_list_free (pl_list);
-
-    return (int) i_cnt;
-}
-/*----------------------------------------------------------------------------*/
-/**
- * @brief  Kill all current user processes with name given in s_name string.
- */
-int
-process_kill_all (const char *s_name)
-{
-    return process_kill_all_opt (getuid (), s_name, PROC_OPT_NONE, 0);
-}
-/*----------------------------------------------------------------------------*/
-/**
- * @brief  Kills all processes like process_kill without killing current
- *         process.
- */
-int
-process_kill_all_except_current (const char *s_name)
-{
-    return process_kill_all_opt (getuid (), s_name, PROC_OPT_NONE, getpid ());
-}
-/*----------------------------------------------------------------------------*/

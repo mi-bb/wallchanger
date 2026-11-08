@@ -24,96 +24,36 @@
 #include <stdlib.h>
 #include <string.h>
 #include <err.h>
-#include "cres.h"
 #include "proc_item.h"
-/*----------------------------------------------------------------------------*/
-/**
- * @brief  Initialize ProcItem item.
- *
- * @param[out] pi_item  ProcItem item
- * @return     none
- */
-static void
-proc_item_init (ProcItem *pi_item)
-{
-    pi_item->s_pid  = nullptr;
-    pi_item->s_name = nullptr;
-}
-/*----------------------------------------------------------------------------*/
-/**
- * @brief  Set PID in ProcItem item.
- */
-void
-proc_item_set_pid (ProcItem   *pi_item,
-                   const char *s_pid)
-{
-    size_t ui_len = 0;
-
-    ui_len = strlen (s_pid);
-    cres ((void **) &pi_item->s_pid, (ui_len + 1), sizeof (char));
-
-    memcpy (pi_item->s_pid, s_pid, ui_len);
-    pi_item->s_pid [ui_len] = '\0';
-}
-/*----------------------------------------------------------------------------*/
-/**
- * @brief  Set name in ProcItem item.
- */
-void
-proc_item_set_name (ProcItem   *pi_item,
-                    const char *s_name)
-{
-    size_t ui_len = 0;
-
-    ui_len = strlen (s_name);
-    cres ((void **) &pi_item->s_name, (ui_len + 1), sizeof (char));
-
-    memcpy (pi_item->s_name, s_name, ui_len);
-    pi_item->s_name [ui_len] = '\0';
-}
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Free ProcItem item.
  */
 void
-proc_item_free (ProcItem *pi_item)
+proc_item_free (ProcItem *item)
 {
-    free (pi_item->s_pid);
-    free (pi_item->s_name);
-    free (pi_item);
+    free (item->name);
+    free (item);
 }
 /*----------------------------------------------------------------------------*/
 /**
- * @brief  Create new ProcItem item.
+ * @brief  Create new ProcItem item with the given pid and a copy of name.
  */
 ProcItem *
-proc_item_new (void)
+proc_item_new (pid_t       pid,
+               const char *name)
 {
-    ProcItem *pi_new = nullptr;
+    ProcItem *item = nullptr;
 
-    if ((pi_new = malloc (sizeof (ProcItem))) == nullptr)
+    if ((item = malloc (sizeof (ProcItem))) == nullptr)
         err (EXIT_FAILURE, nullptr);
 
-    proc_item_init (pi_new);
+    item->pid = pid;
 
-    return pi_new;
-}
-/*----------------------------------------------------------------------------*/
-/**
- * @brief  Create new ProcItem item from given pid and name string.
- */
-ProcItem *
-proc_item_new_from_data (const char *s_pid,
-                         const char *s_name)
-{
-    ProcItem *pi_new;
+    if ((item->name = strdup (name)) == nullptr)
+        err (EXIT_FAILURE, nullptr);
 
-    pi_new = proc_item_new ();
-
-    proc_item_set_pid (pi_new, s_pid);
-    proc_item_set_name (pi_new, s_name);
-
-    return pi_new;
+    return item;
 }
 /*----------------------------------------------------------------------------*/
 

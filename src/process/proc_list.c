@@ -26,29 +26,22 @@
 #include "proc_list.h"
 /*----------------------------------------------------------------------------*/
 /**
- * @brief  Initialize ProcList item.
- *
- * @param[out] pl_list  ProcList item
- * @return     none
+ * @var   PROC_LIST_INITIAL_CAPACITY
+ * @brief Number of item slots allocated on the first insert
  */
-static void
-proclist_init (ProcList *pl_list)
-{
-    pl_list->cnt = 0;
-    pl_list->pi_list = nullptr;
-}
+constexpr uint_fast32_t PROC_LIST_INITIAL_CAPACITY = 16;
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Free ProcList list.
  */
 void
-proc_list_free (ProcList *pl_list)
+proc_list_free (ProcList *list)
 {
-    while (pl_list->cnt--) {
-        proc_item_free (pl_list->pi_list[pl_list->cnt]);
+    while (list->cnt--) {
+        proc_item_free (list->pi_list[list->cnt]);
     }
-    free (pl_list->pi_list);
-    free (pl_list);
+    free (list->pi_list);
+    free (list);
 }
 /*----------------------------------------------------------------------------*/
 /**
@@ -57,41 +50,39 @@ proc_list_free (ProcList *pl_list)
 ProcList *
 proc_list_new (void)
 {
-    ProcList *pl_new = nullptr;
+    ProcList *list = nullptr;
 
-    if ((pl_new = malloc (sizeof (ProcList))) == nullptr)
+    if ((list = malloc (sizeof (ProcList))) == nullptr)
         err (EXIT_FAILURE, nullptr);
 
-    proclist_init (pl_new);
+    list->cnt      = 0;
+    list->capacity = 0;
+    list->pi_list  = nullptr;
 
-    return pl_new;
+    return list;
 }
 /*----------------------------------------------------------------------------*/
 /**
- * @brief  Insert ProcItem to proc_list.
+ * @brief  Insert ProcItem to proc_list, the list takes ownership of item.
  */
 void
-proc_list_insert (ProcList *pl_list,
-                  ProcItem *pi_item)
+proc_list_insert (ProcList *list,
+                  ProcItem *item)
 {
-    ProcItem **pi_temp = nullptr;
+    ProcItem      **resized  = nullptr;
+    uint_fast32_t   capacity = 0;
 
-    if (pl_list->pi_list == nullptr) {
-        pl_list->pi_list = malloc ((pl_list->cnt + 1) * sizeof (ProcItem*));
-        if (pl_list->pi_list == nullptr) {
+    if (list->cnt == list->capacity) {
+        capacity = list->capacity ? list->capacity * 2
+                                  : PROC_LIST_INITIAL_CAPACITY;
+        resized = realloc (list->pi_list, capacity * sizeof (ProcItem *));
+        if (resized == nullptr) {
             err (EXIT_FAILURE, nullptr);
         }
+        list->pi_list  = resized;
+        list->capacity = capacity;
     }
-    else {
-        pi_temp = realloc (pl_list->pi_list,
-                           (pl_list->cnt + 1) * sizeof (ProcItem*));
-        if (pi_temp == nullptr) {
-            proc_list_free (pl_list);
-            err (EXIT_FAILURE, nullptr);
-        }
-        pl_list->pi_list = pi_temp;
-    }
-    pl_list->pi_list [pl_list->cnt++] = pi_item;
+    list->pi_list [list->cnt++] = item;
 }
 /*----------------------------------------------------------------------------*/
 

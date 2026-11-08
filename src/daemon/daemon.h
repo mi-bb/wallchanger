@@ -1,0 +1,69 @@
+/**
+ * @file  daemon.h
+ * @copyright Copyright (C) 2019-2026 Michał Bąbik
+ *
+ * This file is part of Wall Changer.
+ *
+ * Wall Changer is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Wall Changer is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Wall Changer.  If not, see <https://www.gnu.org/licenses/>.
+ *
+ * @brief  Daemon related functions
+ *
+ * @author Michal Babik <michal.babik@protonmail.com>
+ */
+#ifndef DAEMON_H
+#define DAEMON_H
+/*----------------------------------------------------------------------------*/
+/**
+ * @brief  Daemonize current process.
+ *
+ * @return none
+ */
+void daemon_daemonize (void);
+/*----------------------------------------------------------------------------*/
+/**
+ * @brief  Check if wchangerd runs in background.
+ *
+ * @return true if it is running, false if not.
+ */
+bool daemon_check_presence (void);
+/*----------------------------------------------------------------------------*/
+/**
+ * @brief  Check if wchangerd runs in background exit if it is.
+ *
+ * @return none
+ */
+void daemon_check_exit (void);
+/*----------------------------------------------------------------------------*/
+/**
+ * @brief  Print status of wchangerd daemon and exit.
+ *
+ * @return none
+ */
+[[noreturn]] void daemon_print_status_exit (void);
+/*----------------------------------------------------------------------------*/
+/**
+ * @brief  Start wchangerd process
+ *
+ * @return none
+ */
+void daemon_start (void);
+/*----------------------------------------------------------------------------*/
+/**
+ * @brief  Kill wchangerd process and wait up to a few seconds for it to exit.
+ *
+ * @return Number of signalled processes, 0 if none was found or stopped
+ */
+int daemon_kill (void);
+/*----------------------------------------------------------------------------*/
+#endif

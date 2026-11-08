@@ -17,10 +17,24 @@
 
 add_executable(test_setting
     test_setting_item.c
-    ${PROJECT_SOURCE_DIR}/src/setting_item.c ${PROJECT_SOURCE_DIR}/src/setting_item.h
-    ${PROJECT_SOURCE_DIR}/src/hash_djb2.c ${PROJECT_SOURCE_DIR}/src/hash_djb2.h)
+    ${PROJECT_SOURCE_DIR}/src/settings/setting_item.c ${PROJECT_SOURCE_DIR}/src/settings/setting_item.h
+    ${PROJECT_SOURCE_DIR}/src/util/hash_djb2.c ${PROJECT_SOURCE_DIR}/src/util/hash_djb2.h)
 target_include_directories(test_setting
     PRIVATE ${PROJECT_BINARY_DIR} ${PROJECT_SOURCE_DIR}/src)
 target_link_libraries(test_setting PRIVATE PkgConfig::CHECK)
 
 add_test(NAME test_setting COMMAND test_setting)
+
+add_executable(test_process
+    test_process.c
+    ${PROJECT_SOURCE_DIR}/src/process/process.c   ${PROJECT_SOURCE_DIR}/src/process/process.h
+    ${PROJECT_SOURCE_DIR}/src/process/proc_item.c ${PROJECT_SOURCE_DIR}/src/process/proc_item.h
+    ${PROJECT_SOURCE_DIR}/src/process/proc_list.c ${PROJECT_SOURCE_DIR}/src/process/proc_list.h)
+target_include_directories(test_process
+    PRIVATE ${PROJECT_BINARY_DIR} ${PROJECT_SOURCE_DIR}/src)
+target_link_libraries(test_process PRIVATE PkgConfig::CHECK)
+if(PROCSTAT_LIBRARY)
+    target_link_libraries(test_process PRIVATE ${PROCSTAT_LIBRARY})
+endif()
+
+add_test(NAME test_process COMMAND test_process)

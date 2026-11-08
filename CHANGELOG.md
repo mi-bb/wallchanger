@@ -21,6 +21,55 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.7.3] - 2026-11-08
+
+### Added
+
+- Unit tests for the process search functions (`tests/test_process.c`).
+- `WITH_FLICKR` CMake option; `-DWITH_FLICKR=OFF` builds without Flickr
+  search even when flickcurl is installed.
+- GitHub Actions workflow (`.github/workflows/release.yml`) that builds
+  `.deb` (Ubuntu 24.04) and `.rpm` (Fedora) packages for amd64 and arm64
+  when a `vX.Y.Z` tag is pushed and attaches them to the GitHub release.
+
+### Changed
+
+- The `release` CMake preset no longer passes `-march=native`, so its
+  binaries run on any CPU of the target architecture.
+- The CMake presets use Ninja as the generator, so Ninja is now needed to
+  build with them.
+- Window manager detection reads the process list once instead of once per
+  process name in `wms.json`, so each wallpaper change makes one pass over
+  the process list instead of up to 19.
+- `wchangerd --stop` and `--restart` wait (up to 5 seconds) for the old
+  daemon to exit instead of sleeping a fixed 500 ms.
+- Dropped the shortened duplicate process names (`gnome-session-b`,
+  `gnome-session-s`, `cinnamon-sessio`) from `wms.json`; long names now
+  match on their own.
+- Process search code cleanup: PIDs are stored as numbers, the list grows in
+  larger steps, and unused functions and the unused `cmdline` reading mode
+  were removed.
+- Source files are grouped into one directory per subsystem under `src/`
+  (`util/`, `settings/`, `process/`, `wallpaper/`, `daemon/`, `web/`,
+  `gui/`), and the main window code moved out of `config_main.c` into
+  `gui/main_window.c`.
+- The Pixabay, Wallhaven and Wallpaper Abyss searches build their request
+  URL in their own source file and share one download function instead of
+  three copies of it.
+
+### Fixed
+
+- `wchangerd --restart` could fail with "wchangerd is already running" when
+  the stopped daemon had exited but had not been cleaned up yet; exited
+  (zombie) processes are no longer counted on Linux.
+- Process names longer than the system limit (15 characters on Linux, 19 on
+  FreeBSD) never matched, which broke GNOME detection on FreeBSD.
+- Stopping the daemon reported success even when sending the signal failed.
+- On FreeBSD, a failure reading the process list closed the whole program;
+  it is now treated as an empty list, as on Linux.
+- Each Pixabay, Wallhaven and Wallpaper Abyss search leaked its request URL
+  string.
+
 ## [1.7.2] - 2026-11-02
 
 ### Added

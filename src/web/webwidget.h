@@ -1,0 +1,61 @@
+/**
+ * @file  webwidget.h
+ * @copyright Copyright (C) 2019-2026 Michał Bąbik
+ *
+ * This file is part of Wall Changer.
+ *
+ * Wall Changer is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Wall Changer is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Wall Changer.  If not, see <https://www.gnu.org/licenses/>.
+ *
+ * @brief  Web widget
+ *
+ * @author Michal Babik <michal.babik@protonmail.com>
+ */
+#ifndef WEBWIDGET_H
+#define WEBWIDGET_H
+
+#include <gtk/gtk.h>
+#include "config.h"
+#include "webwidget_struct.h"
+#include "settings/setting_item.h"
+/*----------------------------------------------------------------------------*/
+/**
+ * @brief  Free WebWidget item.
+ *
+ * @param[out] widget  WebWidget item to free
+ * @return     none
+ */
+void        webwidget_free           (WebWidget  *widget);
+/*----------------------------------------------------------------------------*/
+/**
+ * @brief  Create WebWidget item with widgets and data for wallpaper search.
+ *
+ * @param[in] settings  Settings needed to create widgets
+ * @param[in] cfg_file  Config file path
+ * @return    WebWidget item
+ */
+WebWidget * webwidget_create         (Setting    *settings,
+                                      const char *cfg_file);
+/*----------------------------------------------------------------------------*/
+/**
+ * @brief  Save selected wallpapers in user's app share folder.
+ *
+ * @param[in] dialog  Getting wallpapers from web dialog
+ * @param[in] widget  WebWidget item
+ * @return    List with wallpapers for adding to wallpaper list.
+ */
+GList     * save_selected_wallpapers (GtkWidget  *dialog,
+                                      WebWidget  *widget);
+/*----------------------------------------------------------------------------*/
+#endif
+
