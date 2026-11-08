@@ -28,9 +28,14 @@ and this project adheres to
 - Unit tests for the process search functions (`tests/test_process.c`).
 - `WITH_FLICKR` CMake option; `-DWITH_FLICKR=OFF` builds without Flickr
   search even when flickcurl is installed.
+- GitHub Actions workflow (`.github/workflows/release.yml`) that builds
+  `.deb` (Ubuntu 24.04) and `.rpm` (Fedora) packages for amd64 and arm64
+  when a `vX.Y.Z` tag is pushed and attaches them to the GitHub release.
 
 ### Changed
 
+- The `release` CMake preset no longer passes `-march=native`, so its
+  binaries run on any CPU of the target architecture.
 - The CMake presets use Ninja as the generator, so Ninja is now needed to
   build with them.
 - Window manager detection reads the process list once instead of once per

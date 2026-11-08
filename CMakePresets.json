@@ -24,7 +24,7 @@
       "description": "Optimized build in ./build/release, installed under /usr.",
       "binaryDir": "${sourceDir}/build/release",
       "cacheVariables": {
-        "CMAKE_C_FLAGS": "-march=native -O2 -pipe",
+        "CMAKE_C_FLAGS": "-O2 -pipe",
         "CMAKE_BUILD_TYPE": "Release",
         "CMAKE_INSTALL_PREFIX": "/usr"
       }

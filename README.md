@@ -60,19 +60,24 @@ The quickest way is the bundled presets:
 ```
 cmake --preset release
 cmake --build --preset release
-sudo cmake --install build
+sudo cmake --install build/release
 ```
 
-`release` builds optimized with the prefix set to `/usr`
+`release` builds optimized with the prefix set to `/usr`, in `build/release`.
+It produces portable binaries, so it is also what the release packages are
+built with.
 
 Without presets, the equivalent commands are:
 
 ```
 cmake -S . -B build -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/usr \
-    -DCMAKE_C_FLAGS="-march=native -O2 -pipe"
+    -DCMAKE_C_FLAGS="-O2 -pipe"
 cmake --build build
 sudo cmake --install build
 ```
+
+For a build that only runs on the local machine, add `-march=native` to
+`CMAKE_C_FLAGS`.
 
 - `-march=native` — enables all instruction subsets supported by the local machine
 - `-O2` — sets the code optimization to level 2
