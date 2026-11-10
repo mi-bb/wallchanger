@@ -391,7 +391,7 @@ pixabay_search_url (const char *query,
  */
 void
 pixabay_search (WebWidget      *widget,
-                const NStrings *strings)
+                const char     *api_key)
 {
     UrlData    *data         = nullptr; /* For search results */
     CacheQuery *cache        = nullptr; /* For cache saving */
@@ -399,7 +399,7 @@ pixabay_search (WebWidget      *widget,
     char       *url          = nullptr; /* Search request url */
     int         err          = 0;       /* Error output */
 
-    if (str_is_empty_warn (strings->str[0], "Pixabay API key is not set"))
+    if (str_is_empty_warn (api_key, "Pixabay API key is not set"))
         return;
 
     search_query = str_replace_in (widget->query, " ", "+");
@@ -411,7 +411,7 @@ pixabay_search (WebWidget      *widget,
 
     url  = pixabay_search_url (search_query,
                                widget->search_opts,
-                               strings->str[0],
+                               api_key,
                                widget->page);
     data = urldata_get_data (url);
     free (url);
@@ -446,7 +446,7 @@ pixabay_search (WebWidget      *widget,
  * @brief  Dialog with Pixabay service settings.
  */
 int
-pixabay_settings_dialog (NStrings *strings)
+pixabay_settings_dialog (char **api_key)
 {
     GtkWidget *dialog;      /* Pixabay settings dialog */
     GtkWidget *content_box; /* Dialog's box */
@@ -469,7 +469,8 @@ pixabay_settings_dialog (NStrings *strings)
 
     api_entry = gtk_entry_new ();
 
-    gtk_entry_set_text (GTK_ENTRY (api_entry), strings->str[0]);
+    gtk_entry_set_text (GTK_ENTRY (api_entry),
+                        *api_key != nullptr ? *api_key : "");
 
     /* Packing dialog widgets */
     gtk_box_pack_start (GTK_BOX (content_box),
@@ -501,8 +502,8 @@ pixabay_settings_dialog (NStrings *strings)
     res = gtk_dialog_run (GTK_DIALOG (dialog));
 
     if (res == GTK_RESPONSE_ACCEPT) {
-        free (strings->str[0]);
-        strings->str[0] = strdup (
+        free (*api_key);
+        *api_key = strdup (
                 gtk_entry_get_text (GTK_ENTRY (api_entry)));
     }
     gtk_widget_destroy (dialog);

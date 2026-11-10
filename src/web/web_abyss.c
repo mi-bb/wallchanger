@@ -287,7 +287,7 @@ wallpaperabyss_search_url (const char *query,
  */
 void
 wallpaperabyss_search (WebWidget      *widget,
-                       const NStrings *strings)
+                       const char     *api_key)
 {
     UrlData    *data  = nullptr; /* For search results */
     CacheQuery *cache = nullptr; /* For cache saving */
@@ -295,7 +295,7 @@ wallpaperabyss_search (WebWidget      *widget,
     char       *url          = nullptr; /* Search request url */
     int         err    = 0;  /* Error output */
 
-    if (str_is_empty_warn (strings->str[0],
+    if (str_is_empty_warn (api_key,
                            "Wallpaper Abyss API key is not set"))
         return;
 
@@ -303,7 +303,7 @@ wallpaperabyss_search (WebWidget      *widget,
 
     url  = wallpaperabyss_search_url (search_query,
                                       widget->search_opts,
-                                      strings->str[0],
+                                      api_key,
                                       widget->page);
     data = urldata_get_data (url);
     free (url);
@@ -337,7 +337,7 @@ wallpaperabyss_search (WebWidget      *widget,
  * @brief  Dialog with Wallpaper Abyss service settings.
  */
 int
-wallpaperabyss_settings_dialog (NStrings *strings)
+wallpaperabyss_settings_dialog (char **api_key)
 {
     GtkWidget *dialog;      /* Wallpaper Abyss settings dialog */
     GtkWidget *content_box; /* Dialog's box */
@@ -360,7 +360,8 @@ wallpaperabyss_settings_dialog (NStrings *strings)
 
     api_entry = gtk_entry_new ();
 
-    gtk_entry_set_text (GTK_ENTRY (api_entry), strings->str[0]);
+    gtk_entry_set_text (GTK_ENTRY (api_entry),
+                        *api_key != nullptr ? *api_key : "");
 
     /* Packing dialog widgets */
     gtk_box_pack_start (GTK_BOX (content_box),
@@ -387,8 +388,8 @@ wallpaperabyss_settings_dialog (NStrings *strings)
     res = gtk_dialog_run (GTK_DIALOG (dialog));
 
     if (res == GTK_RESPONSE_ACCEPT) {
-        free (strings->str[0]);
-        strings->str[0] = strdup (
+        free (*api_key);
+        *api_key = strdup (
                 gtk_entry_get_text (GTK_ENTRY (api_entry)));
     }
     gtk_widget_destroy (dialog);

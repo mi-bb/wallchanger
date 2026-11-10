@@ -52,9 +52,6 @@ typedef enum IconImg : int {
     W_LOGO_PIXABAY,  /**< Pixabay logo */
     W_LOGO_WALLHAVEN,/**< Wallhaven logo */
     W_LOGO_WALLABYSS,/**< Wallpaper Abyss logo */
-#ifdef HAVE_FLICKCURL
-    W_LOGO_FLICKR,   /**< Flickr logo */
-#endif
     W_IMG_COUNT      /**< Number of images */
 } IconImg;
 /*----------------------------------------------------------------------------*/

@@ -24,26 +24,25 @@
 #ifndef WEB_ABYSS_H
 #define WEB_ABYSS_H
 
-#include "util/nstrings.h"
 #include "webwidget_struct.h"
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Search in Wallpaper Abyss database.
  *
  * @param[in,out] widget  WebWidget with widgets and search data
- * @param[in]     strings    N strings with API keys
+ * @param[in]     api_key API key of the service
  * @return        none
  */
 void   wallpaperabyss_search             (WebWidget      *widget,
-                                          const NStrings *strings);
+                                          const char     *api_key);
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Dialog with Wallpaper Abyss service settings.
  *
- * @param[in,out] strings  N strings to get and write API keys
+ * @param[in,out] api_key  API key to show, replaced on accept
  * @return        Dialog response
  */
-int    wallpaperabyss_settings_dialog    (NStrings       *strings);
+int    wallpaperabyss_settings_dialog    (char          **api_key);
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Options for image search dialog.

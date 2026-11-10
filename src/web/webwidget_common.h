@@ -25,10 +25,8 @@
 #define WEBWIDGET_COMMON_H
 
 #include <gtk/gtk.h>
-#include "config.h"
 #include "webwidget_struct.h"
 //#include "webservcs.h"
-#include "util/nstrings.h"
 #include "settings/setting_item.h"
 #include "search_item.h"
 /*----------------------------------------------------------------------------*/
@@ -39,9 +37,6 @@ enum e_wall_sites : int {
     WEB_SERV_WALLHAVEN, /**< Wallhaven */
     WEB_SERV_PIXABAY,   /**< Pixabay */
     WEB_SERV_WALLABYSS, /**< Wallpaper Abyss */
-#ifdef HAVE_FLICKCURL
-    WEB_SERV_FLICKR,    /**< Flickr */
-#endif
     WEB_SERV_CNT        /**< Services count */
 };
 /*----------------------------------------------------------------------------*/
@@ -88,26 +83,26 @@ const char *ww_opts (const int site) __attribute__ ((const));
 int ww_logo_id (const int site) __attribute__ ((const));
 /*----------------------------------------------------------------------------*/
 /**
- * @brief  Get API key data of given service from settings.
+ * @brief  Get API key of given service from settings.
  *
  * @param[in] settings  Settings item
  * @param[in] site      Image service id
- * @return    NStrings item with API key data
+ * @return    New string with the API key, empty if not set; free with free()
  */
-NStrings *ww_get_api_key_data (Setting   *settings,
-                               const int  site);
+[[nodiscard]] char *ww_get_api_key (Setting   *settings,
+                                    const int  site);
 /*----------------------------------------------------------------------------*/
 /**
- * @brief  Update API key data in settings.
+ * @brief  Update API key in settings.
  *
  * @param[in] cfg_file  Config file path
- * @param[in] key_data  NStrings item with API key data
+ * @param[in] api_key   API key value
  * @param[in] site      Image service id
  * @return    Process result
  */
-int ww_update_api_key_data (const char *cfg_file,
-                            NStrings   *key_data,
-                            const int   site);
+int ww_update_api_key (const char *cfg_file,
+                       const char *api_key,
+                       const int   site);
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Check if string str is null or empty and show message msg

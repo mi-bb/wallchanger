@@ -34,12 +34,10 @@
 #include "util/file_dir_functions.h"
 #include "defs.h"
 #include "gui/icons.h"
-#include "util/nstrings.h"
 #include "webwidget_common.h"
 #include "web_pixabay.h"
 #include "web_wallhaven.h"
 #include "web_abyss.h"
-#include "web_flickr.h"
 #include "cache_query.h"
 #include "webwidget.h"
 /*----------------------------------------------------------------------------*/
@@ -57,14 +55,11 @@ constexpr int SEL_NAME_LEN = 60;
  * @brief  Services combobox columns
  */
 enum e_services_columns {
-    WW_COMBO_ID,    /**< Service id */
-    WW_COMBO_NAME,  /**< Service name */
-    WW_COMBO_STR_1, /**< Some needed string */
-    WW_COMBO_STR_2, /**< Another string */
-    WW_COMBO_STR_3, /**< Third string */
-    WW_COMBO_STR_4, /**< Fourth string */
-    WW_COMBO_LOGO,  /**< Service logo pixbuf */
-    WW_COMBO_CNT    /**< Column count */
+    WW_COMBO_ID,      /**< Service id */
+    WW_COMBO_NAME,    /**< Service name */
+    WW_COMBO_API_KEY, /**< Service API key */
+    WW_COMBO_LOGO,    /**< Service logo pixbuf */
+    WW_COMBO_CNT      /**< Column count */
 };
 /*----------------------------------------------------------------------------*/
 /**
@@ -222,41 +217,40 @@ download_progress_window (GtkWindow *parent,
 }
 /*----------------------------------------------------------------------------*/
 /**
- * @brief  Get strings with API key values from Combobox.
+ * @brief  Get API key of the active service from Combobox.
  *
- * @param[in]  combo  Combobox
- * @param[out] nstrings   n strings to write API keys
- * @return     none
+ * @param[in] combo  Combobox
+ * @return    New string with the API key, empty if not set; free with free()
  */
-static void
-combo_get_active_strings (GtkWidget *combo,
-                          NStrings  *nstrings)
+[[nodiscard]] static char *
+combo_get_active_api_key (GtkWidget *combo)
 {
     GtkTreeModel *model;
     GtkTreeIter   iter;
+    char         *value   = nullptr; /* Key as stored in the model */
+    char         *api_key = nullptr; /* Copy to return */
 
     if (gtk_combo_box_get_active_iter (GTK_COMBO_BOX (combo), &iter)) {
 
         model = gtk_combo_box_get_model (GTK_COMBO_BOX (combo));
-        gtk_tree_model_get (model,          &iter,
-                            WW_COMBO_STR_1, &nstrings->str[0],
-                            WW_COMBO_STR_2, &nstrings->str[1],
-                            WW_COMBO_STR_3, &nstrings->str[2],
-                            WW_COMBO_STR_4, &nstrings->str[3],
-                            -1);
+        gtk_tree_model_get (model, &iter, WW_COMBO_API_KEY, &value, -1);
     }
+    api_key = strdup (value != nullptr ? value : "");
+    g_free (value);
+
+    return api_key;
 }
 /*----------------------------------------------------------------------------*/
 /**
- * @brief  Set strings with API key values to Combobox.
+ * @brief  Set API key of the active service in Combobox.
  *
- * @param[in]  combo  Combobox
- * @param[out] nstrings   n strings with API keys
- * @return     none
+ * @param[in,out] combo    Combobox
+ * @param[in]     api_key  API key value
+ * @return        none
  */
 static void
-combo_set_active_strings (GtkWidget      *combo,
-                          const NStrings *nstrings)
+combo_set_active_api_key (GtkWidget  *combo,
+                          const char *api_key)
 {
     GtkListStore *list_store;
     GtkTreeIter   iter;
@@ -266,11 +260,8 @@ combo_set_active_strings (GtkWidget      *combo,
         list_store = GTK_LIST_STORE (gtk_combo_box_get_model (
                     GTK_COMBO_BOX (combo)));
 
-        gtk_list_store_set (list_store,    &iter,
-                            WW_COMBO_STR_1, nstrings->str[0],
-                            WW_COMBO_STR_2, nstrings->str[1],
-                            WW_COMBO_STR_3, nstrings->str[2],
-                            WW_COMBO_STR_4, nstrings->str[3],
+        gtk_list_store_set (list_store, &iter,
+                            WW_COMBO_API_KEY, api_key,
                             -1);
     }
 }
@@ -371,7 +362,7 @@ sel_combo_get_list (GtkWidget *selected_combo)
 static void
 search_web (WebWidget *widget)
 {
-    NStrings *nstrings = nullptr; /* For 4 strings for API key data */
+    char *api_key = nullptr; /* API key of the active service */
 
     /* Check if there is a cached info about this search query */
     if (check_for_cached_query (widget,
@@ -380,29 +371,22 @@ search_web (WebWidget *widget)
         return;
     }
 
-    nstrings = nstrings_new (4, NS_VAL_NULL);
-
-    combo_get_active_strings (widget->combo, nstrings);
+    api_key = combo_get_active_api_key (widget->combo);
 
     switch (widget->active_service) {
         case WEB_SERV_PIXABAY:
-            pixabay_search (widget, nstrings);
+            pixabay_search (widget, api_key);
             break;
         case WEB_SERV_WALLHAVEN:
-            wallhaven_search (widget, nstrings);
+            wallhaven_search (widget, api_key);
             break;
         case WEB_SERV_WALLABYSS:
-            wallpaperabyss_search (widget, nstrings);
+            wallpaperabyss_search (widget, api_key);
             break;
-#ifdef HAVE_FLICKCURL
-        case WEB_SERV_FLICKR:
-            flickr_search (widget, nstrings);
-            break;
-#endif
         default:
             break;
     }
-    nstrings_free (nstrings);
+    free (api_key);
     update_labels (widget);
 }
 /*----------------------------------------------------------------------------*/
@@ -458,11 +442,6 @@ event_search_opts_pressed (WebWidget *widget)
         case WEB_SERV_WALLABYSS:
             search_opts = wallpaperabyss_search_opts_dialog (widget);
             break;
-#ifdef HAVE_FLICKCURL
-        case WEB_SERV_FLICKR:
-            /* flickr_search_opts_dialog (widget); */
-            break;
-#endif
         default:
             break;
     }
@@ -541,44 +520,37 @@ event_nav_entry_act (GtkWidget *entry,
 static void
 event_settings_pressed (WebWidget *widget)
 {
-    NStrings *nstrings = nullptr; /* Four strings for API key data */
-    int       err = ERR_OK; /* Error output */
-    int       id  = 0;      /* Service id */
-    int       res = 0;      /* Dialog result */
+    char *api_key = nullptr; /* API key of the active service */
+    int   err = ERR_OK;      /* Error output */
+    int   id  = 0;           /* Service id */
+    int   res = 0;           /* Dialog result */
 
-    id    = widget->active_service;
-    nstrings = nstrings_new (4, NS_VAL_NULL);
-
-    combo_get_active_strings (widget->combo, nstrings);
+    id      = widget->active_service;
+    api_key = combo_get_active_api_key (widget->combo);
 
     switch (id) {
         case WEB_SERV_PIXABAY:
-            res = pixabay_settings_dialog (nstrings);
+            res = pixabay_settings_dialog (&api_key);
             break;
         case WEB_SERV_WALLHAVEN:
-            res = wallhaven_settings_dialog (nstrings);
+            res = wallhaven_settings_dialog (&api_key);
             break;
         case WEB_SERV_WALLABYSS:
-            res = wallpaperabyss_settings_dialog (nstrings);
+            res = wallpaperabyss_settings_dialog (&api_key);
             break;
-#ifdef HAVE_FLICKCURL
-        case WEB_SERV_FLICKR:
-            res = flickr_settings_dialog (nstrings);
-            break;
-#endif
         default:
             break;
     }
     if (res == GTK_RESPONSE_ACCEPT) {
-        err = ww_update_api_key_data (widget->config_file,
-                                        nstrings,
-                                        widget->active_service);
-        combo_set_active_strings (widget->combo, nstrings);
+        err = ww_update_api_key (widget->config_file,
+                                 api_key,
+                                 widget->active_service);
+        combo_set_active_api_key (widget->combo, api_key);
     }
     if (err != ERR_OK) {
         message_dialog_error (nullptr, err_get_message (err));
     }
-    nstrings_free (nstrings);
+    free (api_key);
 }
 /*----------------------------------------------------------------------------*/
 /**
@@ -761,7 +733,7 @@ webwidget_combobox_create (Setting *settings)
     GtkListStore    *list_store;  /* ListStore for combobox data */
     GtkTreeIter      iter;        /* TreeIter */
     GdkPixbuf       *logo     = nullptr; /* Service logo */
-    NStrings        *nstrings = nullptr; /* For API keys */
+    char            *api_key  = nullptr; /* Service API key */
     int i = 0;
 
     /* Liststore for service data */
@@ -769,26 +741,20 @@ webwidget_combobox_create (Setting *settings)
                                      G_TYPE_INT,
                                      G_TYPE_STRING,
                                      G_TYPE_STRING,
-                                     G_TYPE_STRING,
-                                     G_TYPE_STRING,
-                                     G_TYPE_STRING,
                                      GDK_TYPE_PIXBUF);
 
     for (i = 0; i < WEB_SERV_CNT; ++i) {
         logo = get_icon (ww_logo_id (i));
-        nstrings = ww_get_api_key_data (settings, i);
+        api_key = ww_get_api_key (settings, i);
         gtk_list_store_append (list_store, &iter);
         gtk_list_store_set (list_store, &iter,
-                            WW_COMBO_ID,    i,
-                            WW_COMBO_NAME,  ww_name (i),
-                            WW_COMBO_STR_1, nstrings->str[0],
-                            WW_COMBO_STR_2, nstrings->str[1],
-                            WW_COMBO_STR_3, nstrings->str[2],
-                            WW_COMBO_STR_4, nstrings->str[3],
-                            WW_COMBO_LOGO,  logo,
+                            WW_COMBO_ID,      i,
+                            WW_COMBO_NAME,    ww_name (i),
+                            WW_COMBO_API_KEY, api_key,
+                            WW_COMBO_LOGO,    logo,
                             -1);
         g_object_unref (logo);
-        nstrings_free (nstrings);
+        free (api_key);
     }
     combo = gtk_combo_box_new_with_model (GTK_TREE_MODEL (list_store));
 
@@ -1079,9 +1045,6 @@ webwidget_create (Setting    *settings,
     cache_query_delete_older_than (ww_name (WEB_SERV_PIXABAY),   1);
     cache_query_delete_older_than (ww_name (WEB_SERV_WALLHAVEN), 1);
     cache_query_delete_older_than (ww_name (WEB_SERV_WALLABYSS), 1);
-#ifdef HAVE_FLICKCURL
-    cache_query_delete_older_than (ww_name (WEB_SERV_FLICKR),    1);
-#endif
 
     if ((setting = settings_find (settings,
                    get_setting_name (SETT_THUMB_QUALITY))) != nullptr) {

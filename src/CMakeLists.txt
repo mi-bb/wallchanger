@@ -77,7 +77,6 @@ set(WCHANGERCFG_SOURCES
     web/thumbnail.c                     web/thumbnail.h
     web/url_data.c                      web/url_data.h
     web/web_abyss.c                     web/web_abyss.h
-    web/web_flickr.c                    web/web_flickr.h
     web/web_pixabay.c                   web/web_pixabay.h
     web/web_wallhaven.c                 web/web_wallhaven.h
     web/webwidget.c                     web/webwidget.h
@@ -105,11 +104,5 @@ foreach(target IN ITEMS wchangerd wchangercfg)
         target_link_libraries(${target} PRIVATE ${PROCSTAT_LIBRARY})
     endif()
 endforeach()
-if(HAVE_FLICKCURL)
-    target_link_libraries(wchangercfg PRIVATE PkgConfig::FLICKCURL)
-    if(HAVE_LIBXML)
-        target_link_libraries(wchangercfg PRIVATE PkgConfig::LIBXML)
-    endif()
-endif()
 
 install(TARGETS wchangerd wchangercfg RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})

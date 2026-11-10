@@ -28,7 +28,6 @@ The program works on GNU/Linux and FreeBSD.
  - Pixabay
  - wallhaven.cc
  - Wallpaper Abyss
- - Flickr (optional, needs flickcurl)
 
 <img src="other/wallchanger.png" alt="Screenshot 1" style="width: 517px;">
 
@@ -41,8 +40,6 @@ The program works on GNU/Linux and FreeBSD.
 - GTK+ 3 (>= 3.22)
 - json-c (>= 0.12.1)
 - libcurl (>= 7.68.0)
-- Optional: flickcurl (>= 1.24) for Flickr search. It is used when found;
-  pass `-DWITH_FLICKR=OFF` to CMake to build without it.
 
 To build the program, CMake (>= 3.22) and [Ninja](https://ninja-build.org/)
 are required. The bundled presets use Ninja as the generator; without

@@ -45,10 +45,6 @@ ww_name (const int site)
             return "Wallhaven";
         case WEB_SERV_WALLABYSS:
             return "WallpaperAbyss";
-#ifdef HAVE_FLICKCURL
-        case WEB_SERV_FLICKR:
-            return "Flickr";
-#endif
         default:
             break;
     }
@@ -68,10 +64,6 @@ ww_opts (const int site)
             return "Wallhaven_opts";
         case WEB_SERV_WALLABYSS:
             return "WallpaperAbyss_opts";
-#ifdef HAVE_FLICKCURL
-        case WEB_SERV_FLICKR:
-            return "Flickr_opts";
-#endif
         default:
             break;
     }
@@ -91,10 +83,6 @@ ww_logo_id (const int site)
             return W_LOGO_WALLHAVEN;
         case WEB_SERV_WALLABYSS:
             return W_LOGO_WALLABYSS;
-#ifdef HAVE_FLICKCURL
-        case WEB_SERV_FLICKR:
-            return W_LOGO_FLICKR;
-#endif
         default:
             break;
     }
@@ -102,101 +90,64 @@ ww_logo_id (const int site)
 }
 /*----------------------------------------------------------------------------*/
 /**
- * @brief  Get settings API names.
+ * @brief  Get the name of the setting that holds a service's API key.
  *
  * @param[in] site  Site id
- * @return    NStrings item with API names
+ * @return    Setting name, or nullptr for an unknown site
  */
-static NStrings *
-ww_get_api_key_names (const int site)
+static const char *
+ww_api_key_name (const int site)
 {
-    NStrings *nstrings = nullptr;
-
-    nstrings = nstrings_new (4, NS_VAL_EMPTY);
-
     switch (site) {
         case WEB_SERV_PIXABAY:
-            str_append (&nstrings->str[0], "Pixabay api");
-            break;
+            return "Pixabay api";
         case WEB_SERV_WALLHAVEN:
-            str_append (&nstrings->str[0], "Wallhaven api");
-            break;
+            return "Wallhaven api";
         case WEB_SERV_WALLABYSS:
-            str_append (&nstrings->str[0], "Wallpaper Abyss api");
-            break;
-#ifdef HAVE_FLICKCURL
-        case WEB_SERV_FLICKR:
-            str_append (&nstrings->str[0], "Flickr client key");
-            str_append (&nstrings->str[1], "Flickr client secret");
-            str_append (&nstrings->str[2], "Flickr access token");
-            str_append (&nstrings->str[3], "Flickr access token secret");
-            break;
-#endif
+            return "Wallpaper Abyss api";
         default:
             break;
     }
-    return nstrings;
+    return nullptr;
 }
 /*----------------------------------------------------------------------------*/
 /**
- * @brief  Get API key data of given service from settings.
+ * @brief  Get API key of given service from settings.
  */
-NStrings *
-ww_get_api_key_data (Setting  *settings,
-                     const int site)
+char *
+ww_get_api_key (Setting  *settings,
+                const int site)
 {
-    NStrings   *key_names = nullptr;  /* API key names in settings */
-    NStrings   *nstrings  = nullptr;  /* Data to rerutn */
-    Setting    *setting   = nullptr;  /* For individual setting */
-    const char *api       = nullptr;  /* For API key */
+    const char *name    = ww_api_key_name (site);
+    Setting    *setting = nullptr;  /* Setting with the API key */
+    const char *api_key = nullptr;  /* API key value */
 
-    key_names = ww_get_api_key_names (site);
-    nstrings      = nstrings_new (4, NS_VAL_EMPTY);
+    if (name != nullptr)
+        setting = settings_find (settings, name);
+    if (setting != nullptr)
+        api_key = setting_get_string (setting);
 
-    for (int i = 0; i < 4; ++i) {
-        if (key_names->str[i][0] != '\0') {
-            setting = settings_find (settings, key_names->str[i]);
-            api   = setting == nullptr ? "" : setting_get_string (setting);
-            str_append (&nstrings->str[i], api);
-        }
-    }
-    nstrings_free (key_names);
-
-    return nstrings;
+    return strdup (api_key != nullptr ? api_key : "");
 }
 /*----------------------------------------------------------------------------*/
 /**
- * @brief  Update API key data in settings.
+ * @brief  Update API key in settings.
  */
 int
-ww_update_api_key_data (const char *cfg_file,
-                        NStrings   *key_data,
-                        const int   site)
+ww_update_api_key (const char *cfg_file,
+                   const char *api_key,
+                   const int   site)
 {
-    Setting  *settings;     /* Setting list for key data */
-    NStrings *key_names;    /* Key names for the site */
-    int       res = ERR_OK; /* Error output */
+    const char *name = ww_api_key_name (site);
+    Setting    *settings;     /* Setting with the API key */
+    int         res = ERR_OK; /* Error output */
 
-    /* Get api key names for a given wallpaper site */
-    key_names = ww_get_api_key_names (site);
-    /* Create Setting list with key name and key value */
-    settings = setting_new_string (key_names->str[0],
-                                   key_data->str[0]);
-#ifdef HAVE_FLICKCURL
-    if (site == WEB_SERV_FLICKR) {
-        settings = settings_append (settings,
-            setting_new_string (key_names->str[1], key_data->str[1]));
-        settings = settings_append (settings,
-            setting_new_string (key_names->str[2], key_data->str[2]));
-        settings = settings_append (settings,
-            setting_new_string (key_names->str[3], key_data->str[3]));
-    }
-#endif
-    /* Update config file with new data */
+    if (name == nullptr)
+        return ERR_OK;
+
+    settings = setting_new_string (name, api_key);
     res = setts_check_update_file (cfg_file, settings);
-
     settings_free_all (settings);
-    nstrings_free (key_names);
 
     return res;
 }

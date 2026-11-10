@@ -25,26 +25,25 @@
 #define WEB_WALLHAVEN_H
 
 #include <gtk/gtk.h>
-#include "util/nstrings.h"
 #include "webwidget_struct.h"
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Search in Wallhaven database.
  *
  * @param[in,out] widget  WebWidget with widgets and search data
- * @param[in]     strings N strings with API keys
+ * @param[in]     api_key API key of the service
  * @return        none
  */
 void wallhaven_search (WebWidget      *widget,
-                       const NStrings *strings);
+                       const char     *api_key);
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Dialog with Wallhaven service settings.
  *
- * @param[in,out] strings  N strings to get and write API keys
+ * @param[in,out] api_key  API key to show, replaced on accept
  * @return        Dialog response
  */
-int wallhaven_settings_dialog (NStrings *strings);
+int wallhaven_settings_dialog (char **api_key);
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Options for image search dialog.

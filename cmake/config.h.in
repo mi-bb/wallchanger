@@ -8,14 +8,8 @@
 /* Define to 1 if you have the <curl/curl.h> header file. */
 #cmakedefine HAVE_CURL_CURL_H
 
-/* Use flickcurl */
-#cmakedefine HAVE_FLICKCURL
-
 /* Define to 1 if you have the <json-c/json.h> header file. */
 #cmakedefine HAVE_JSON_C_JSON_H
-
-/* Use libxml */
-#cmakedefine HAVE_LIBXML
 
 /* Name of package */
 #define PACKAGE "@PROJECT_NAME@"

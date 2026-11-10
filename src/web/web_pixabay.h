@@ -24,26 +24,25 @@
 #ifndef WEB_PIXABAY_H
 #define WEB_PIXABAY_H
 
-#include "util/nstrings.h"
 #include "webwidget_struct.h"
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Search in Pixabay database.
  *
  * @param[in,out] widget  WebWidget with widgets and search data
- * @param[in]     strings N strings with API keys
+ * @param[in]     api_key API key of the service
  * @return        none
  */
 void pixabay_search (WebWidget      *widget,
-                     const NStrings *strings);
+                     const char     *api_key);
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Dialog with Pixabay service settings.
  *
- * @param[in,out] strings  N strings to get and write API keys
+ * @param[in,out] api_key  API key to show, replaced on accept
  * @return        Dialog response
  */
-int pixabay_settings_dialog (NStrings *strings);
+int pixabay_settings_dialog (char **api_key);
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Options for image search dialog.

@@ -46,7 +46,6 @@ Keep it that way. On a compiler that already defaults to C23 (GCC >= 15) an impl
 ### Required dependencies (checked in the root `CMakeLists.txt`)
 
 - GTK+ 3 (>= 3.22.0), json-c (>= 0.12.1), libcurl (>= 7.68.0)
-- Optional: flickcurl (>= 1.24) for Flickr search — enables `HAVE_FLICKCURL` and, if present, libxml2 (>= 2.9.4) for `HAVE_LIBXML`. Both are conditionally compiled in (`pkg_check_modules(FLICKCURL …)` in the root, `if(HAVE_FLICKCURL)` in `src/CMakeLists.txt`). The `WITH_FLICKR` option (default `ON`) gates the lookup; `-DWITH_FLICKR=OFF` builds without Flickr even when flickcurl is installed.
 - Optional: `check` (>= 0.15.0) to build/run the unit tests.
 - Optional: `bash-completion` — only to locate `completionsdir`; falls back to `$(sysconfdir)/bash_completion.d`.
 
@@ -122,7 +121,7 @@ Central point where a wallpaper is actually applied: builds the configured shell
 
 ### Online wallpaper search (`web/`)
 
-Each provider (`web_flickr.c`, `web_pixabay.c`, `web_wallhaven.c`, `web_abyss.c`) implements the same pattern against a shared `WebWidget` GTK widget (`webwidget.c/.h`, `webwidget_common.c` for the client-side glue, `webwidget_struct.h` for the shared struct). Each provider builds its own search request URL and fetches it with the provider-agnostic `urldata_get_data` (`url_data.c/.h`, libcurl), then parses the response with json-c; `web_flickr.c` instead goes through flickcurl/libxml2 and is compiled in only when those are detected. `search_item.c/.h` holds one search result, `cache_query.c/.h` caches query results, and `thumbnail.c/.h` fetches result thumbnails. Downloaded images are cached under `PTH_WALLP_DIR`, thumbnails under `PTH_THUMB_DIR`, and per-image metadata under `PTH_IINFO_DIR`/`PTH_QUERY_DIR` (see path defines in `defs.h`).
+Each provider (`web_pixabay.c`, `web_wallhaven.c`, `web_abyss.c`) implements the same pattern against a shared `WebWidget` GTK widget (`webwidget.c/.h`, `webwidget_common.c` for the client-side glue, `webwidget_struct.h` for the shared struct). Each provider builds its own search request URL and fetches it with the provider-agnostic `urldata_get_data` (`url_data.c/.h`, libcurl), then parses the response with json-c. `search_item.c/.h` holds one search result, `cache_query.c/.h` caches query results, and `thumbnail.c/.h` fetches result thumbnails. Downloaded images are cached under `PTH_WALLP_DIR`, thumbnails under `PTH_THUMB_DIR`, and per-image metadata under `PTH_IINFO_DIR`/`PTH_QUERY_DIR` (see path defines in `defs.h`).
 
 ### GUI structure (`gui/`)
 
