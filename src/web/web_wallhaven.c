@@ -613,7 +613,7 @@ char *
 wallhaven_search_opts_dialog (WebWidget *widget)
 {
     GtkWidget *widgets[GW_CNT]; /* Array with widgets */
-    GtkWidget *dialog;          /* Pixabay settings dialog */
+    GtkWidget *dialog;          /* Search options dialog */
     GtkWidget *content_box;     /* Dialog's box */
     GtkWidget *box;             /* Box for widgets */
     GtkWidget *hbox;            /* Horizontal box for widgets */

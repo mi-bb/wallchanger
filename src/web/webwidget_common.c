@@ -39,8 +39,6 @@ const char *
 ww_name (const int site)
 {
     switch (site) {
-        case WEB_SERV_PIXABAY:
-            return "Pixabay";
         case WEB_SERV_WALLHAVEN:
             return "Wallhaven";
         case WEB_SERV_WALLABYSS:
@@ -58,8 +56,6 @@ const char *
 ww_opts (const int site)
 {
     switch (site) {
-        case WEB_SERV_PIXABAY:
-            return "Pixabay_opts";
         case WEB_SERV_WALLHAVEN:
             return "Wallhaven_opts";
         case WEB_SERV_WALLABYSS:
@@ -77,8 +73,6 @@ int
 ww_logo_id (const int site)
 {
     switch (site) {
-        case WEB_SERV_PIXABAY:
-            return W_LOGO_PIXABAY;
         case WEB_SERV_WALLHAVEN:
             return W_LOGO_WALLHAVEN;
         case WEB_SERV_WALLABYSS:
@@ -99,8 +93,6 @@ static const char *
 ww_api_key_name (const int site)
 {
     switch (site) {
-        case WEB_SERV_PIXABAY:
-            return "Pixabay api";
         case WEB_SERV_WALLHAVEN:
             return "Wallhaven api";
         case WEB_SERV_WALLABYSS:

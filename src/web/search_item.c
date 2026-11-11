@@ -95,21 +95,6 @@ search_item_new (void)
 }
 /*----------------------------------------------------------------------------*/
 /**
- * @brief  Set SearchItem's photo id string and int value based on int value.
- */
-void
-search_item_set_id_uint (SearchItem    *item,
-                         const uint64_t val)
-{
-    char tmp[32];
-
-    sprintf (tmp, "%" PRIu64, val);
-    if (item->id != nullptr)
-        free (item->id);
-    item->id = strdup (tmp);
-}
-/*----------------------------------------------------------------------------*/
-/**
  * @brief  Set SearchItem's photo id string and int value based on string value.
  */
 void

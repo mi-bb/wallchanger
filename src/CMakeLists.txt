@@ -77,7 +77,6 @@ set(WCHANGERCFG_SOURCES
     web/thumbnail.c                     web/thumbnail.h
     web/url_data.c                      web/url_data.h
     web/web_abyss.c                     web/web_abyss.h
-    web/web_pixabay.c                   web/web_pixabay.h
     web/web_wallhaven.c                 web/web_wallhaven.h
     web/webwidget.c                     web/webwidget.h
     web/webwidget_common.c              web/webwidget_common.h

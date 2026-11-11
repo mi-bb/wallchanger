@@ -35,7 +35,6 @@
 #include "defs.h"
 #include "gui/icons.h"
 #include "webwidget_common.h"
-#include "web_pixabay.h"
 #include "web_wallhaven.h"
 #include "web_abyss.h"
 #include "cache_query.h"
@@ -374,9 +373,6 @@ search_web (WebWidget *widget)
     api_key = combo_get_active_api_key (widget->combo);
 
     switch (widget->active_service) {
-        case WEB_SERV_PIXABAY:
-            pixabay_search (widget, api_key);
-            break;
         case WEB_SERV_WALLHAVEN:
             wallhaven_search (widget, api_key);
             break;
@@ -433,9 +429,6 @@ event_search_opts_pressed (WebWidget *widget)
     id = widget->active_service;
 
     switch (id) {
-        case WEB_SERV_PIXABAY:
-            search_opts = pixabay_search_opts_dialog (widget);
-            break;
         case WEB_SERV_WALLHAVEN:
             search_opts = wallhaven_search_opts_dialog (widget);
             break;
@@ -529,9 +522,6 @@ event_settings_pressed (WebWidget *widget)
     api_key = combo_get_active_api_key (widget->combo);
 
     switch (id) {
-        case WEB_SERV_PIXABAY:
-            res = pixabay_settings_dialog (&api_key);
-            break;
         case WEB_SERV_WALLHAVEN:
             res = wallhaven_settings_dialog (&api_key);
             break;
@@ -1042,7 +1032,6 @@ webwidget_create (Setting    *settings,
 
     webwidget_init (widget);
 
-    cache_query_delete_older_than (ww_name (WEB_SERV_PIXABAY),   1);
     cache_query_delete_older_than (ww_name (WEB_SERV_WALLHAVEN), 1);
     cache_query_delete_older_than (ww_name (WEB_SERV_WALLABYSS), 1);
 

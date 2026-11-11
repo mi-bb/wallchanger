@@ -27,6 +27,7 @@ and this project adheres to
 
 - Flickr wallpaper search, together with the `WITH_FLICKR` CMake option and
   the optional flickcurl and libxml2 dependencies.
+- Pixabay wallpaper search.
 
 ## [1.7.3] - 2026-11-08
 

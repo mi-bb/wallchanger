@@ -35,7 +35,6 @@
  */
 enum e_wall_sites : int {
     WEB_SERV_WALLHAVEN, /**< Wallhaven */
-    WEB_SERV_PIXABAY,   /**< Pixabay */
     WEB_SERV_WALLABYSS, /**< Wallpaper Abyss */
     WEB_SERV_CNT        /**< Services count */
 };

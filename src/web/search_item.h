@@ -24,9 +24,6 @@
 #ifndef SEARCH_ITEM_H
 #define SEARCH_ITEM_H
 
-//#include <stdint.h>
-#include <inttypes.h>
-
 /*----------------------------------------------------------------------------*/
 /**
  * @struct SearchItem
@@ -100,16 +97,6 @@ SearchItem * search_item_new                (void);
  * @return     none
  */
 void         search_item_free               (SearchItem *item);
-/*----------------------------------------------------------------------------*/
-/**
- * @brief  Set SearchItem's photo id string and int value based on int value.
- *
- * @param[out] item  SearchItem item to set id
- * @param[in]  val   Image id to set
- * @return     none
- */
-void         search_item_set_id_uint        (SearchItem    *item,
-                                             const uint64_t val);
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Set SearchItem's photo id string and int value based on string value.
