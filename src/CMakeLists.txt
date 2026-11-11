@@ -76,7 +76,14 @@ set(WCHANGERCFG_SOURCES
     web/search_item.c                   web/search_item.h
     web/thumbnail.c                     web/thumbnail.h
     web/url_data.c                      web/url_data.h
-    web/web_abyss.c                     web/web_abyss.h
+    web/web_artic.c                     web/web_artic.h
+    web/web_commons.c                   web/web_commons.h
+    web/web_met.c                       web/web_met.h
+    web/web_nasa.c                      web/web_nasa.h
+    web/web_openverse.c                 web/web_openverse.h
+    web/web_provider.h
+    web/web_smithsonian.c               web/web_smithsonian.h
+    web/web_util.c                      web/web_util.h
     web/web_wallhaven.c                 web/web_wallhaven.h
     web/webwidget.c                     web/webwidget.h
     web/webwidget_common.c              web/webwidget_common.h

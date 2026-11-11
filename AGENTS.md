@@ -55,10 +55,12 @@ Keep it that way. On a compiler that already defaults to C23 (GCC >= 15) an impl
 
 ## Tests
 
-Two `check`-based binaries (built only when libcheck >= 0.15 is present, else silently skipped):
+Three `check`-based binaries (built only when libcheck >= 0.15 is present, else silently skipped):
 
 - `build/tests/test_setting` — `settings/setting_item.c` + `util/hash_djb2.c`.
 - `build/tests/test_process` — `src/process/` (name matching, list growth, scanning the live process list, zombie skipping, kill by name). It forks helper children; a child that must die on SIGTERM resets the signal to `SIG_DFL` first, because check's own SIGTERM handler, inherited over `fork()`, kills the whole process group.
+
+- `build/tests/test_web_parse` — the search services in `src/web/` (`web_*.c`, `search_item.c`): request URLs, response parsing, and the `web_util.c` helpers. It makes no network requests; it parses the responses saved in `tests/data/`, which are trimmed captures of real API responses extended with entries titled "Synthetic" for cases the captures lack. Links GTK only for GLib.
 
 Run one suite/case via check's env vars:
 
@@ -69,7 +71,7 @@ CK_FORK=no gdb ./build/tests/test_setting              # debuggable
 CK_VERBOSITY=verbose ./build/tests/test_setting        # list every test
 ```
 
-TCase names are declared in `setting_suite()` at the bottom of `tests/test_setting_item.c` (`Creation`, `Accessors`, `StringMutation`, `ListOps`, `ChildOps`, `Removal`, `Replace`, `Misc`) and in `process_suite()` in `tests/test_process.c` (`Matching`, `List`, `Scan`, `Kill`) — add tests to the matching case rather than growing a new one per test. New test binaries go in `tests/CMakeLists.txt` with `add_test()`, gated on `BUILD_TESTING AND CHECK_FOUND` in the root file; list the `src/*.c` files under test directly in `_SOURCES` (no link against built binaries).
+TCase names are declared in `setting_suite()` at the bottom of `tests/test_setting_item.c` (`Creation`, `Accessors`, `StringMutation`, `ListOps`, `ChildOps`, `Removal`, `Replace`, `Misc`) and in `process_suite()` in `tests/test_process.c` (`Matching`, `List`, `Scan`, `Kill`), and in `web_parse_suite()` in `tests/test_web_parse.c` (`Util`, `SearchItem`, `Urls`, `Parse`) — add tests to the matching case rather than growing a new one per test. New test binaries go in `tests/CMakeLists.txt` with `add_test()`, gated on `BUILD_TESTING AND CHECK_FOUND` in the root file; list the `src/*.c` files under test directly in `_SOURCES` (no link against built binaries).
 
 ## Architecture
 
@@ -121,7 +123,15 @@ Central point where a wallpaper is actually applied: builds the configured shell
 
 ### Online wallpaper search (`web/`)
 
-Each provider (`web_wallhaven.c`, `web_abyss.c`) implements the same pattern against a shared `WebWidget` GTK widget (`webwidget.c/.h`, `webwidget_common.c` for the client-side glue, `webwidget_struct.h` for the shared struct). Each provider builds its own search request URL and fetches it with the provider-agnostic `urldata_get_data` (`url_data.c/.h`, libcurl), then parses the response with json-c. `search_item.c/.h` holds one search result, `cache_query.c/.h` caches query results, and `thumbnail.c/.h` fetches result thumbnails. Downloaded images are cached under `PTH_WALLP_DIR`, thumbnails under `PTH_THUMB_DIR`, and per-image metadata under `PTH_IINFO_DIR`/`PTH_QUERY_DIR` (see path defines in `defs.h`).
+Every search service is described by a `const WebProvider` (`web_provider.h`) defined in its own file — `web_wallhaven.c`, `web_commons.c` (Wikimedia Commons), `web_openverse.c`, `web_artic.c` (Art Institute of Chicago), `web_met.c`, `web_nasa.c` (NASA Image and Video Library), `web_smithsonian.c` — and listed in the `providers[]` table in `webwidget_common.c`, indexed by `enum e_wall_sites` (`webwidget_common.h`). A provider is data plus pure functions: `search_url` builds the request URL and `parse` turns the JSON response into `SearchItem`s through a callback; a service whose search returns only ids (the Met) also sets `detail_url`/`parse_detail`, called once per result. Search options come from a `WebOption` list shown by the generic options dialog, or from the provider's own `opts_dialog` (Wallhaven). `web_util.c/.h` has the shared JSON, options-string, HTML-stripping and file-extension helpers.
+
+Adding a service: a new `web_<name>.c/.h` pair exporting the `WebProvider`, a line in `src/CMakeLists.txt` and `tests/CMakeLists.txt`, an `e_wall_sites` value and its `providers[]` entry, a fixture in `tests/data/` with `Parse`/`Urls` tests, and the README/`docs/wallpaper-sources.md` entries. Keep provider files free of widget code (Wallhaven's options dialog is the one exception) — `tests/test_web_parse.c` links them without `webwidget*.c`.
+
+The flow shared by all services lives in `webwidget_common.c`: `ww_search` (fetch with `urldata_get_data`, parse, add to the icon view, save to the query cache), `ww_api_key_dialog` and `ww_search_opts_dialog`. `webwidget.c/.h` builds the shared `WebWidget` GTK widget (`webwidget_struct.h`) and handles its events and downloads. `search_item.c/.h` holds one search result including title, author and license, `cache_query.c/.h` caches query results, and `thumbnail.c/.h` fetches result thumbnails.
+
+`url_data.c/.h` (libcurl) is the only HTTP code. Every request carries the program's own `User-Agent` (`wallchanger/<version> (+homepage)`); never send a browser one. Requests to `artic.edu` also carry the `AIC-User-Agent` header that museum's API asks for — its image server answers 403 without it. A HTTP status >= 400 is an error (`CURLOPT_FAILONERROR`), and query values are percent-encoded with `urldata_escape`.
+
+Downloaded images are cached under `PTH_WALLP_DIR`, thumbnails under `PTH_THUMB_DIR`, query results under `PTH_QUERY_DIR`, and each downloaded image's source, author and license as `<image file name>.json` under `PTH_IINFO_DIR` (written by `save_image_info` in `webwidget.c`; see path defines in `defs.h`). Service licensing notes and API quirks are in `docs/wallpaper-sources.md`.
 
 ### GUI structure (`gui/`)
 

@@ -24,35 +24,12 @@
 #ifndef WEB_WALLHAVEN_H
 #define WEB_WALLHAVEN_H
 
-#include <gtk/gtk.h>
-#include "webwidget_struct.h"
+#include "web_provider.h"
 /*----------------------------------------------------------------------------*/
 /**
- * @brief  Search in Wallhaven database.
- *
- * @param[in,out] widget  WebWidget with widgets and search data
- * @param[in]     api_key API key of the service
- * @return        none
+ * @var   wallhaven_provider
+ * @brief Wallhaven search service.
  */
-void wallhaven_search (WebWidget      *widget,
-                       const char     *api_key);
+extern const WebProvider wallhaven_provider;
 /*----------------------------------------------------------------------------*/
-/**
- * @brief  Dialog with Wallhaven service settings.
- *
- * @param[in,out] api_key  API key to show, replaced on accept
- * @return        Dialog response
- */
-int wallhaven_settings_dialog (char **api_key);
-/*----------------------------------------------------------------------------*/
-/**
- * @brief  Options for image search dialog.
- *
- * @param[in,out] widget  WebWidget with widgets and search data
- * @return        String with image options. After use it should be freed
- *                using free.
- */
-char *wallhaven_search_opts_dialog (WebWidget *widget);
-/*----------------------------------------------------------------------------*/
-#endif 
-
+#endif

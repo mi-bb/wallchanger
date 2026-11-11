@@ -1,0 +1,60 @@
+{
+ "result_count": 240,
+ "page_count": 12,
+ "page_size": 20,
+ "page": 1,
+ "results": [
+  {
+   "id": "c25a8620-4fdc-4ef7-b263-3573ce0065e8",
+   "title": "mountain",
+   "foreign_landing_url": "https://www.flickr.com/photos/127665714@N08/15692571170",
+   "url": "https://live.staticflickr.com/7478/15692571170_8f1a5b1a05_b.jpg",
+   "creator": "Kiwi Tom",
+   "creator_url": "https://www.flickr.com/photos/127665714@N08",
+   "license": "by",
+   "license_version": "2.0",
+   "license_url": "https://creativecommons.org/licenses/by/2.0/",
+   "provider": "flickr",
+   "source": "flickr",
+   "category": null,
+   "filesize": null,
+   "filetype": null,
+   "attribution": "\"mountain\" by Kiwi Tom is licensed under CC BY 2.0. To view a copy of this license, visit https://creativecommons.org/licenses/by/2.0/.",
+   "mature": false,
+   "height": 444,
+   "width": 1024,
+   "thumbnail": "https://api.openverse.org/v1/images/c25a8620-4fdc-4ef7-b263-3573ce0065e8/thumb/"
+  },
+  {
+   "id": "00000000-0000-4000-8000-000000000001",
+   "title": "Synthetic public domain image",
+   "foreign_landing_url": "https://example.org/pd",
+   "url": "https://example.org/image/without-extension",
+   "creator": null,
+   "creator_url": null,
+   "license": "pdm",
+   "license_version": "1.0",
+   "license_url": "https://creativecommons.org/publicdomain/mark/1.0/",
+   "filetype": "png",
+   "mature": false,
+   "height": null,
+   "width": null,
+   "thumbnail": "https://api.openverse.org/v1/images/00000000-0000-4000-8000-000000000001/thumb/"
+  },
+  {
+   "id": "00000000-0000-4000-8000-000000000002",
+   "title": "Synthetic animation",
+   "foreign_landing_url": "https://example.org/gif",
+   "url": "https://example.org/image/animation",
+   "creator": "Somebody",
+   "license": "cc0",
+   "license_version": "1.0",
+   "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+   "filetype": "gif",
+   "mature": false,
+   "height": 100,
+   "width": 100,
+   "thumbnail": "https://api.openverse.org/v1/images/00000000-0000-4000-8000-000000000002/thumb/"
+  }
+ ]
+}

@@ -34,9 +34,14 @@
  * @brief  Numbers of image search services.
  */
 enum e_wall_sites : int {
-    WEB_SERV_WALLHAVEN, /**< Wallhaven */
-    WEB_SERV_WALLABYSS, /**< Wallpaper Abyss */
-    WEB_SERV_CNT        /**< Services count */
+    WEB_SERV_WALLHAVEN,   /**< Wallhaven */
+    WEB_SERV_COMMONS,     /**< Wikimedia Commons */
+    WEB_SERV_OPENVERSE,   /**< Openverse */
+    WEB_SERV_ARTIC,       /**< Art Institute of Chicago */
+    WEB_SERV_MET,         /**< Metropolitan Museum of Art */
+    WEB_SERV_NASA,        /**< NASA Image and Video Library */
+    WEB_SERV_SMITHSONIAN, /**< Smithsonian Open Access */
+    WEB_SERV_CNT          /**< Services count */
 };
 /*----------------------------------------------------------------------------*/
 /**
@@ -54,32 +59,71 @@ enum e_img_list_columns : int {
     WEB_COL_PAGE_URL,  /**< Picture page url */
     WEB_COL_IMAGE_URL, /**< Full size image url */
     WEB_COL_THUMB_URL, /**< Thumbnail url */
+    WEB_COL_TITLE,     /**< Image title */
+    WEB_COL_LICENSE,   /**< Image license name */
+    WEB_COL_LICENSE_URL, /**< Image license url */
+    WEB_COL_SERVICE,   /**< Short name of the image's search service */
     WEB_NUM_CNT        /**< Column count */
 };
 /*----------------------------------------------------------------------------*/
 /**
- * @brief  Get webwidget name.
+ * @brief  Get the short name of a search service.
+ *
+ * It is the prefix of the downloaded image and thumbnail file names and the
+ * name of the query cache file.
  *
  * @param[in] site  Site id
- * @return    String with webwidget name
+ * @return    String with the service name, null for an unknown site
  */
 const char *ww_name (const int site) __attribute__ ((const));
 /*----------------------------------------------------------------------------*/
 /**
- * @brief  Get webwidget options name.
+ * @brief  Get the name of a search service to show to the user.
  *
  * @param[in] site  Site id
- * @return    String with webwidget name
+ * @return    String with the service label, null for an unknown site
+ */
+const char *ww_label (const int site) __attribute__ ((const));
+/*----------------------------------------------------------------------------*/
+/**
+ * @brief  Get the id of the search service with the given short name.
+ *
+ * @param[in] name  Short service name, can be null
+ * @return    Site id, -1 when there is no such service
+ */
+[[nodiscard]] int ww_site_from_name (const char *name) __attribute__ ((pure));
+/*----------------------------------------------------------------------------*/
+/**
+ * @brief  Get the name of the setting with the search options of a service.
+ *
+ * @param[in] site  Site id
+ * @return    String with the setting name, null for an unknown site
  */
 const char *ww_opts (const int site) __attribute__ ((const));
 /*----------------------------------------------------------------------------*/
 /**
- * @brief  Get webwidget logo image id based on webwidget if.
+ * @brief  Get the logo image id of a search service.
  *
  * @param[in] site  Site id
- * @return    Logo id
+ * @return    Logo id, W_IMG_COUNT when the service has no logo
  */
 int ww_logo_id (const int site) __attribute__ ((const));
+/*----------------------------------------------------------------------------*/
+/**
+ * @brief  Check if a search service uses an API key.
+ *
+ * @param[in] site  Site id
+ * @return    true if the service can be given an API key
+ */
+[[nodiscard]] bool ww_has_api_key (const int site) __attribute__ ((const));
+/*----------------------------------------------------------------------------*/
+/**
+ * @brief  Check if a search service has search options.
+ *
+ * @param[in] site  Site id
+ * @return    true if the service has a search options dialog
+ */
+[[nodiscard]] bool ww_has_search_opts (const int site) __attribute__ ((const));
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Get API key of given service from settings.
@@ -102,6 +146,40 @@ int ww_logo_id (const int site) __attribute__ ((const));
 int ww_update_api_key (const char *cfg_file,
                        const char *api_key,
                        const int   site);
+/*----------------------------------------------------------------------------*/
+/**
+ * @brief  Dialog for setting the API key of a search service.
+ *
+ * @param[in]     site     Image service id
+ * @param[in,out] api_key  API key, replaced with a new string when the
+ *                         dialog is accepted
+ * @return        Dialog response, 0 when the service does not use a key
+ */
+int ww_api_key_dialog (const int   site,
+                       char      **api_key);
+/*----------------------------------------------------------------------------*/
+/**
+ * @brief  Search options dialog of the active search service. Accepted
+ *         options are saved in the config file.
+ *
+ * @param[in] widget  WebWidget item
+ * @return    New string with search options to free with free(), null when
+ *            the dialog was cancelled or the service has no options
+ */
+[[nodiscard]] char *ww_search_opts_dialog (WebWidget *widget);
+/*----------------------------------------------------------------------------*/
+/**
+ * @brief  Search the active service for WebWidget::query and show the
+ *         WebWidget::page page of results on the image list.
+ *
+ * Found images are saved in the query cache. Errors are shown to the user.
+ *
+ * @param[in,out] widget   WebWidget item
+ * @param[in]     api_key  API key of the active service, can be empty
+ * @return        true if the results page was received and shown
+ */
+bool ww_search (WebWidget  *widget,
+                const char *api_key);
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Check if string str is null or empty and show message msg

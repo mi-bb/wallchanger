@@ -48,6 +48,12 @@
  * @brief Name of author field
  * @def   JS_AUTH_URL
  * @brief Name of author url field
+ * @def   JS_TITLE
+ * @brief Name of image title field
+ * @def   JS_LIC_NAME
+ * @brief Name of license name field
+ * @def   JS_LIC_URL
+ * @brief Name of license url field
  * @def   JS_FILE_NAME
  * @brief Name of file name field
  * @def   JS_DISP_NAME
@@ -71,6 +77,9 @@
 #define JS_ID        "id"
 #define JS_AUTH_NAME "auth_name"
 #define JS_AUTH_URL  "auth_url"
+#define JS_TITLE     "title"
+#define JS_LIC_NAME  "lic_name"
+#define JS_LIC_URL   "lic_url"
 #define JS_FILE_NAME "file_name"
 #define JS_DISP_NAME "disp_name"
 #define JS_DISP_MKUP "disp_mkup"
@@ -108,6 +117,21 @@ cache_query_search_item_to_json (const SearchItem *item)
     if (!str_is_empty (item->author_url)) {
         value = json_object_new_string (item->author_url);
         json_object_object_add_ex (result, JS_AUTH_URL, value,
+                                   JSON_C_OBJECT_ADD_KEY_IS_NEW);
+    }
+    if (!str_is_empty (item->title)) {
+        value = json_object_new_string (item->title);
+        json_object_object_add_ex (result, JS_TITLE, value,
+                                   JSON_C_OBJECT_ADD_KEY_IS_NEW);
+    }
+    if (!str_is_empty (item->license_name)) {
+        value = json_object_new_string (item->license_name);
+        json_object_object_add_ex (result, JS_LIC_NAME, value,
+                                   JSON_C_OBJECT_ADD_KEY_IS_NEW);
+    }
+    if (!str_is_empty (item->license_url)) {
+        value = json_object_new_string (item->license_url);
+        json_object_object_add_ex (result, JS_LIC_URL, value,
                                    JSON_C_OBJECT_ADD_KEY_IS_NEW);
     }
     if (!str_is_empty (item->file_name)) {
@@ -186,6 +210,21 @@ cache_query_json_to_search_item (json_object *root)
         json_object_get_type (value) == json_type_string) {
 
         search_item_set_author_url (item, json_object_get_string (value));
+    }
+    if (json_object_object_get_ex (root, JS_TITLE, &value) &&
+        json_object_get_type (value) == json_type_string) {
+
+        search_item_set_title (item, json_object_get_string (value));
+    }
+    if (json_object_object_get_ex (root, JS_LIC_NAME, &value) &&
+        json_object_get_type (value) == json_type_string) {
+
+        search_item_set_license_name (item, json_object_get_string (value));
+    }
+    if (json_object_object_get_ex (root, JS_LIC_URL, &value) &&
+        json_object_get_type (value) == json_type_string) {
+
+        search_item_set_license_url (item, json_object_get_string (value));
     }
     if (json_object_object_get_ex (root, JS_FILE_NAME, &value) &&
         json_object_get_type (value) == json_type_string) {

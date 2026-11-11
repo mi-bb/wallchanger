@@ -43,6 +43,12 @@
  * @var   WebWidget::entry
  * @brief Search query entry
  *
+ * @var   WebWidget::sett_button
+ * @brief Service settings (API key) button
+ *
+ * @var   WebWidget::opts_button
+ * @brief Search options button
+ *
  * @var   WebWidget::nav_entry
  * @brief Custom page set entry
  *
@@ -63,6 +69,15 @@
  *
  * @var   WebWidget::service_image
  * @brief Widget with image service image
+ *
+ * @var   WebWidget::service_label
+ * @brief Widget with the name of an image service that has no logo
+ *
+ * @var   WebWidget::title_label
+ * @brief Widget with image title
+ *
+ * @var   WebWidget::license_link
+ * @brief Widget with image license name and a link to the license
  *
  * @var   WebWidget::author_label
  * @brief Widget with image author name
@@ -96,6 +111,9 @@
  *
  * @var   WebWidget::thumb_quality
  * @brief Thumbnail jpg quality
+ *
+ * @var   WebWidget::searching
+ * @brief A search is in progress and a new one can not be started
  */
 typedef struct
 WebWidget {
@@ -103,6 +121,8 @@ WebWidget {
     GtkWidget *nav_box;
     GtkWidget *combo;
     GtkWidget *entry;
+    GtkWidget *sett_button;
+    GtkWidget *opts_button;
     GtkWidget *nav_entry;
     GtkWidget *img_view;
     GtkWidget *selected_combo;
@@ -110,6 +130,9 @@ WebWidget {
     GtkWidget *count_label;
     GtkWidget *image_info_widget;
     GtkWidget *service_image;
+    GtkWidget *service_label;
+    GtkWidget *title_label;
+    GtkWidget *license_link;
     GtkWidget *author_label;
     GtkWidget *page_link;
     GtkWidget *dim_label;
@@ -121,6 +144,7 @@ WebWidget {
     int        found_cnt;
     int        active_service;
     int        thumb_quality;
+    bool       searching;
 } WebWidget;
 /*----------------------------------------------------------------------------*/
 #endif

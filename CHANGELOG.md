@@ -23,11 +23,40 @@ and this project adheres to
 
 ## [Unreleased]
 
+### Added
+
+- Wallpaper search in six sources whose terms allow use in a wallpaper
+  program: Wikimedia Commons, Openverse, Art Institute of Chicago, The
+  Metropolitan Museum of Art, NASA Image and Video Library and Smithsonian
+  Open Access. None of them requires an API key; Smithsonian searches use
+  the public `DEMO_KEY` until an own api.data.gov key is set.
+- Search options for Wikimedia Commons (minimum image size), Openverse
+  (licenses, aspect ratio, size) and Smithsonian (museum collection).
+- The search dialog shows the title and the license of an image, with a
+  link to the license text.
+- The source, author and license of every downloaded image are saved in
+  `~/.cache/wchanger/iinfo/<image file name>.json`.
+- Unit tests for the search services (`tests/test_web_parse.c`).
+
+### Changed
+
+- Wallhaven search works without an API key; the key is only needed for
+  NSFW results.
+- Requests to search services identify the program with a `User-Agent`
+  header, follow redirects, and report HTTP error statuses.
+- Search queries are percent-encoded, so queries with non-ASCII letters
+  work.
+- When a results page can not be loaded, the list keeps the previous page
+  and the page number does not change.
+- A thumbnail missing on the server no longer opens an error dialog; the
+  image is left out of the results.
+
 ### Removed
 
 - Flickr wallpaper search, together with the `WITH_FLICKR` CMake option and
   the optional flickcurl and libxml2 dependencies.
 - Pixabay wallpaper search.
+- Wallpaper Abyss wallpaper search.
 
 ## [1.7.3] - 2026-11-08
 

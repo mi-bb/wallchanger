@@ -1,0 +1,141 @@
+{
+ "batchcomplete": true,
+ "query": {
+  "searchinfo": {
+   "totalhits": 68750
+  },
+  "pages": [
+   {
+    "pageid": 99421650,
+    "ns": 6,
+    "title": "File:Mountain lake, Mylgval mountain cirque, Western Caucasus.jpg",
+    "index": 3,
+    "imageinfo": [
+     {
+      "size": 15837556,
+      "width": 4912,
+      "height": 3264,
+      "thumburl": "https://thumb.wikimedia.org/wikipedia/commons/thumb/2/23/Mountain_lake%2C_Mylgval_mountain_cirque%2C_Western_Caucasus.jpg/330px-Mountain_lake%2C_Mylgval_mountain_cirque%2C_Western_Caucasus.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "url": "https://upload.wikimedia.org/wikipedia/commons/2/23/Mountain_lake%2C_Mylgval_mountain_cirque%2C_Western_Caucasus.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+      "descriptionurl": "https://commons.wikimedia.org/wiki/File:Mountain_lake,_Mylgval_mountain_cirque,_Western_Caucasus.jpg",
+      "mime": "image/jpeg",
+      "extmetadata": {
+       "Artist": {
+        "value": "<a href=\"//commons.wikimedia.org/wiki/User:Argenberg\" title=\"User:Argenberg\">Vyacheslav Argenberg</a>",
+        "source": "commons-desc-page"
+       },
+       "LicenseShortName": {
+        "value": "CC BY 4.0",
+        "source": "commons-desc-page",
+        "hidden": ""
+       },
+       "LicenseUrl": {
+        "value": "https://creativecommons.org/licenses/by/4.0",
+        "source": "commons-desc-page"
+       }
+      }
+     }
+    ]
+   },
+   {
+    "pageid": 134682226,
+    "ns": 6,
+    "title": "File:Mountains in snow, Mountain lake, Chola Valley, Nepal, Himalayas.jpg",
+    "index": 1,
+    "imageinfo": [
+     {
+      "size": 7417279,
+      "width": 4032,
+      "height": 2688,
+      "thumburl": "https://thumb.wikimedia.org/wikipedia/commons/thumb/5/5a/Mountains_in_snow%2C_Mountain_lake%2C_Chola_Valley%2C_Nepal%2C_Himalayas.jpg/330px-Mountains_in_snow%2C_Mountain_lake%2C_Chola_Valley%2C_Nepal%2C_Himalayas.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "url": "https://upload.wikimedia.org/wikipedia/commons/5/5a/Mountains_in_snow%2C_Mountain_lake%2C_Chola_Valley%2C_Nepal%2C_Himalayas.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+      "descriptionurl": "https://commons.wikimedia.org/wiki/File:Mountains_in_snow,_Mountain_lake,_Chola_Valley,_Nepal,_Himalayas.jpg",
+      "mime": "image/jpeg",
+      "extmetadata": {
+       "Artist": {
+        "value": "<a href=\"//commons.wikimedia.org/wiki/User:Argenberg\" title=\"User:Argenberg\">Vyacheslav Argenberg</a>",
+        "source": "commons-desc-page"
+       },
+       "LicenseShortName": {
+        "value": "CC BY 4.0",
+        "source": "commons-desc-page",
+        "hidden": ""
+       },
+       "LicenseUrl": {
+        "value": "https://creativecommons.org/licenses/by/4.0",
+        "source": "commons-desc-page"
+       }
+      }
+     }
+    ]
+   },
+   {
+    "pageid": 154986747,
+    "ns": 6,
+    "title": "File:Zagedan Lakes, Mountain cirque, Caucasus Mountains.jpg",
+    "index": 2,
+    "imageinfo": [
+     {
+      "size": 16445409,
+      "width": 4912,
+      "height": 3264,
+      "thumburl": "https://thumb.wikimedia.org/wikipedia/commons/thumb/8/88/Zagedan_Lakes%2C_Mountain_cirque%2C_Caucasus_Mountains.jpg/330px-Zagedan_Lakes%2C_Mountain_cirque%2C_Caucasus_Mountains.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "url": "https://upload.wikimedia.org/wikipedia/commons/8/88/Zagedan_Lakes%2C_Mountain_cirque%2C_Caucasus_Mountains.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+      "descriptionurl": "https://commons.wikimedia.org/wiki/File:Zagedan_Lakes,_Mountain_cirque,_Caucasus_Mountains.jpg",
+      "mime": "image/jpeg",
+      "extmetadata": {
+       "Artist": {
+        "value": "<a href=\"//commons.wikimedia.org/wiki/User:Argenberg\" title=\"User:Argenberg\">Vyacheslav Argenberg</a>",
+        "source": "commons-desc-page"
+       },
+       "LicenseShortName": {
+        "value": "CC BY 4.0",
+        "source": "commons-desc-page",
+        "hidden": ""
+       },
+       "LicenseUrl": {
+        "value": "https://creativecommons.org/licenses/by/4.0",
+        "source": "commons-desc-page"
+       }
+      }
+     }
+    ]
+   },
+   {
+    "pageid": 900000001,
+    "ns": 6,
+    "title": "File:Synthetic scan.tif",
+    "index": 4,
+    "imageinfo": [
+     {
+      "size": 1,
+      "width": 6000,
+      "height": 4000,
+      "thumburl": "https://example.org/thumb/scan.tif.jpg",
+      "url": "https://example.org/scan.tif",
+      "descriptionurl": "https://example.org/File:scan.tif",
+      "mime": "image/tiff",
+      "extmetadata": {}
+     }
+    ]
+   },
+   {
+    "pageid": 900000002,
+    "ns": 6,
+    "title": "File:Synthetic no metadata.png",
+    "index": 5,
+    "imageinfo": [
+     {
+      "size": 1,
+      "width": 1920,
+      "height": 1080,
+      "thumburl": "https://example.org/thumb/nometa.png",
+      "url": "https://example.org/nometa.png?utm_source=test",
+      "descriptionurl": "https://example.org/File:nometa.png",
+      "mime": "image/png"
+     }
+    ]
+   }
+  ]
+ }
+}

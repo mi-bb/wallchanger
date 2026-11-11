@@ -23,6 +23,13 @@
  */
 #include <err.h>
 #include <ctype.h>
+#include "config.h"
+#ifdef HAVE_JSON_C_JSON_H
+#include <json-c/json.h>
+#else
+#include <json.h>
+#endif
+#include "util/file_io.h"
 #include "url_data.h"
 #include "settings/json_functions.h"
 #include "search_item.h"
@@ -35,8 +42,6 @@
 #include "defs.h"
 #include "gui/icons.h"
 #include "webwidget_common.h"
-#include "web_wallhaven.h"
-#include "web_abyss.h"
 #include "cache_query.h"
 #include "webwidget.h"
 /*----------------------------------------------------------------------------*/
@@ -49,6 +54,24 @@
  */
 constexpr int NAME_LEN     = 40;
 constexpr int SEL_NAME_LEN = 60;
+/*----------------------------------------------------------------------------*/
+/**
+ * @var   INFO_TEXT_LEN
+ * @brief Width in characters of the title and author in image info widget.
+ */
+constexpr int INFO_TEXT_LEN = 28;
+/*----------------------------------------------------------------------------*/
+/**
+ * @def   IMAGE_INFO_JSON_FLAGS
+ * @brief Format of the saved image info: one member per line and, where
+ *        json-c can do it, addresses without escaped slashes.
+ */
+#ifdef JSON_C_TO_STRING_NOSLASHESCAPE
+#define IMAGE_INFO_JSON_FLAGS \
+    (JSON_C_TO_STRING_PRETTY | JSON_C_TO_STRING_NOSLASHESCAPE)
+#else
+#define IMAGE_INFO_JSON_FLAGS JSON_C_TO_STRING_PRETTY
+#endif
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Services combobox columns
@@ -72,6 +95,12 @@ enum e_selected_columns {
     WW_SELCOMBO_DISP_NAME, /**< Name of image */
     WW_SELCOMBO_FILE_NAME, /**< Name of image */
     WW_SELCOMBO_IMAGE_URL, /**< Full size image url */
+    WW_SELCOMBO_SERVICE,   /**< Name of the image's search service */
+    WW_SELCOMBO_TITLE,     /**< Image title */
+    WW_SELCOMBO_AUTHOR,    /**< Author of image */
+    WW_SELCOMBO_LICENSE,   /**< Image license name */
+    WW_SELCOMBO_LICENSE_URL, /**< Image license url */
+    WW_SELCOMBO_PAGE_URL,  /**< Picture page url */
     WW_SELCOMBO_CNT        /**< Column count */
 };
 /*----------------------------------------------------------------------------*/
@@ -85,6 +114,64 @@ static void
 event_stop_button_pressed (int *stop)
 {
     *stop = 1;
+}
+/*----------------------------------------------------------------------------*/
+/**
+ * @brief  Add a string member to a json object if the string is not empty.
+ *
+ * @param[out] obj  Json object to add member to
+ * @param[in]  key  Member name
+ * @param[in]  val  Member value, can be null
+ * @return     none
+ */
+static void
+json_add_string (json_object *obj,
+                 const char  *key,
+                 const char  *val)
+{
+    if (!str_is_empty (val))
+        json_object_object_add (obj, key, json_object_new_string (val));
+}
+/*----------------------------------------------------------------------------*/
+/**
+ * @brief  Save the source, author and license of a downloaded image in the
+ *         image info directory, in a "<image file name>.json" file.
+ *
+ * @param[in] item  SearchItem with data of the downloaded image
+ * @return    Saving status, ERR_OK or error code
+ */
+static int
+save_image_info (const SearchItem *item)
+{
+    json_object *obj  = nullptr; /* Image info to save */
+    char        *path = nullptr; /* Image info file path */
+    int          res  = ERR_OK;
+
+    path = cfg_file_get_image_info_path ();
+
+    if ((res = dir_create_with_subdirs (path)) == ERR_OK) {
+
+        obj = json_object_new_object ();
+        json_add_string (obj, "service",     item->service_name);
+        json_add_string (obj, "title",       item->title);
+        json_add_string (obj, "author",      item->author_name);
+        json_add_string (obj, "license",     item->license_name);
+        json_add_string (obj, "license_url", item->license_url);
+        json_add_string (obj, "page_url",    item->page_url);
+        json_add_string (obj, "image_url",   item->image_url);
+
+        str_append (&path, "/");
+        str_append (&path, item->file_name);
+        str_append (&path, ".json");
+
+        res = save_file_data (path,
+                              json_object_to_json_string_ext (
+                                  obj, IMAGE_INFO_JSON_FLAGS));
+        json_object_put (obj);
+    }
+    free (path);
+
+    return res;
 }
 /*----------------------------------------------------------------------------*/
 /**
@@ -113,6 +200,8 @@ download_progress_window (GtkWindow *parent,
     float       step   = 0;       /* Progress bar step */
     float       frac   = 0;       /* Fraction for progress bar to set */
     int         stop   = 0;       /* To set when stop button is pressed */
+    int         info_err = ERR_OK; /* First error of saving image info */
+    int         res    = ERR_OK;  /* Saving image info result */
     size_t      nlen   = 0;       /* Length of file name */
     char nbuff[NAME_LEN * 4 + 4];
 
@@ -199,6 +288,10 @@ download_progress_window (GtkWindow *parent,
             free (fn);
             break;
         }
+        /* The author and license have to stay known for the saved image */
+        if ((res = save_image_info (item)) != ERR_OK && info_err == ERR_OK)
+            info_err = res;
+
         gtk_progress_bar_set_fraction (GTK_PROGRESS_BAR (progress), frac);
 
         while (gtk_events_pending ())
@@ -212,6 +305,12 @@ download_progress_window (GtkWindow *parent,
 
     gtk_widget_destroy (window);
 
+    if (info_err != ERR_OK) {
+        message_dialog_error (parent,
+                "Images were downloaded, but the information about their "
+                "authors and licenses could not be saved.");
+        warnx ("saving image info: %s", err_get_message (info_err));
+    }
     return g_list_reverse (result);
 }
 /*----------------------------------------------------------------------------*/
@@ -288,32 +387,36 @@ update_labels (WebWidget *widget)
 }
 /*----------------------------------------------------------------------------*/
 /**
- * @brief  Check if image with specified id exists on selected to download list.
+ * @brief  Check if image with specified file name exists on selected to
+ *         download list.
  *
- * @param[in] model  TreeModel to check
- * @param[in] id       Image id to check
+ * Images are compared by file name, because it holds the service name next
+ * to the image id and ids of different services can be the same.
+ *
+ * @param[in] model      TreeModel to check
+ * @param[in] file_name  Image file name to check
  * @return    1 if exists, 0 if not
  */
 static int
 sel_combo_check_exist (GtkTreeModel *model,
-                       const char   *id)
+                       const char   *file_name)
 {
-    char       *read_id = nullptr;
-    gboolean    res     = FALSE;
+    char       *read_name = nullptr;
+    gboolean    res       = FALSE;
     GtkTreeIter iter;
 
     res = gtk_tree_model_get_iter_first (model, &iter);
 
     while (res) {
 
-        gtk_tree_model_get (model,      &iter,
-                            WW_SELCOMBO_ID, &read_id,
+        gtk_tree_model_get (model,                 &iter,
+                            WW_SELCOMBO_FILE_NAME, &read_name,
                             -1);
-        if (strcmp (id, read_id) == 0) {
-            free (read_id);
+        if (g_strcmp0 (file_name, read_name) == 0) {
+            free (read_name);
             return 1;
         }
-        free (read_id);
+        free (read_name);
         res = gtk_tree_model_iter_next (model, &iter);
     }
     return 0;
@@ -342,9 +445,15 @@ sel_combo_get_list (GtkWidget *selected_combo)
     while (res) {
 
         item = search_item_new ();
-        gtk_tree_model_get (model,             &iter,
-                            WW_SELCOMBO_FILE_NAME, &item->file_name,
-                            WW_SELCOMBO_IMAGE_URL, &item->image_url,
+        gtk_tree_model_get (model,               &iter,
+                            WW_SELCOMBO_FILE_NAME,   &item->file_name,
+                            WW_SELCOMBO_IMAGE_URL,   &item->image_url,
+                            WW_SELCOMBO_SERVICE,     &item->service_name,
+                            WW_SELCOMBO_TITLE,       &item->title,
+                            WW_SELCOMBO_AUTHOR,      &item->author_name,
+                            WW_SELCOMBO_LICENSE,     &item->license_name,
+                            WW_SELCOMBO_LICENSE_URL, &item->license_url,
+                            WW_SELCOMBO_PAGE_URL,    &item->page_url,
                             -1);
         result = g_list_prepend (result, item);
         res = gtk_tree_model_iter_next (model, &iter);
@@ -356,34 +465,38 @@ sel_combo_get_list (GtkWidget *selected_combo)
  * @brief  Search web for images.
  *
  * @param[in,out] widget  WebWidget with widgets and search data
- * @return        none
+ * @return        true if the page of results was found and shown, false on
+ *                error or when another search is still in progress
  */
-static void
+static bool
 search_web (WebWidget *widget)
 {
     char *api_key = nullptr; /* API key of the active service */
+    bool  res     = false;
+
+    /* Showing results runs the main loop, so the buttons work during
+     * a search */
+    if (widget->searching)
+        return false;
+
+    widget->searching = true;
 
     /* Check if there is a cached info about this search query */
     if (check_for_cached_query (widget,
                                 ww_name (widget->active_service))) {
+        res = true;
+    }
+    else {
+        api_key = combo_get_active_api_key (widget->combo);
+        res     = ww_search (widget, api_key);
+        free (api_key);
+    }
+    widget->searching = false;
+
+    if (res)
         update_labels (widget);
-        return;
-    }
 
-    api_key = combo_get_active_api_key (widget->combo);
-
-    switch (widget->active_service) {
-        case WEB_SERV_WALLHAVEN:
-            wallhaven_search (widget, api_key);
-            break;
-        case WEB_SERV_WALLABYSS:
-            wallpaperabyss_search (widget, api_key);
-            break;
-        default:
-            break;
-    }
-    free (api_key);
-    update_labels (widget);
+    return res;
 }
 /*----------------------------------------------------------------------------*/
 /**
@@ -396,6 +509,11 @@ static void
 event_search_pressed (WebWidget *widget)
 {
     const char *query = gtk_entry_get_text (GTK_ENTRY (widget->entry));
+    char       *old_query = nullptr; /* Query of the shown results */
+    int         old_page  = 0;       /* Page of the shown results */
+
+    if (widget->searching)
+        return;
 
     if (!check_unicode_warn (query,
                              "Search query is not a valid unicode text"))
@@ -406,12 +524,21 @@ event_search_pressed (WebWidget *widget)
                 query, "Sorry, only alphanumerich characters allowed"))
         return;
 
-    if (widget->query != nullptr)
-        free (widget->query);
+    old_query = widget->query;
+    old_page  = widget->page;
 
     widget->query = strdup (query);
-    widget->page = 1;
-    search_web (widget);
+    widget->page  = 1;
+
+    if (search_web (widget)) {
+        free (old_query);
+    }
+    else {
+        /* The list still shows the results of the previous query */
+        free (widget->query);
+        widget->query = old_query;
+        widget->page  = old_page;
+    }
 }
 /*----------------------------------------------------------------------------*/
 /**
@@ -424,20 +551,12 @@ static void
 event_search_opts_pressed (WebWidget *widget)
 {
     char *search_opts = nullptr; /* Search options string */
-    int   id          = 0;       /* Service id */
 
-    id = widget->active_service;
+    if (widget->searching)
+        return;
 
-    switch (id) {
-        case WEB_SERV_WALLHAVEN:
-            search_opts = wallhaven_search_opts_dialog (widget);
-            break;
-        case WEB_SERV_WALLABYSS:
-            search_opts = wallpaperabyss_search_opts_dialog (widget);
-            break;
-        default:
-            break;
-    }
+    search_opts = ww_search_opts_dialog (widget);
+
     if (search_opts != nullptr &&
         strcmp (search_opts, widget->search_opts) != 0) {
 
@@ -451,6 +570,31 @@ event_search_opts_pressed (WebWidget *widget)
 }
 /*----------------------------------------------------------------------------*/
 /**
+ * @brief  Show another page of results of the current query.
+ *
+ * @param[in,out] widget  WebWidget with widgets and search data
+ * @param[in]     page    Number of page to show
+ * @return        none
+ */
+static void
+show_page (WebWidget *widget,
+           const int  page)
+{
+    const int old_page = widget->page;
+
+    if (widget->query == nullptr || widget->searching)
+        return;
+
+    widget->page = page;
+
+    /* On error the list still shows the previous page */
+    if (!search_web (widget)) {
+        widget->page = old_page;
+        update_labels (widget);
+    }
+}
+/*----------------------------------------------------------------------------*/
+/**
  * @brief  Next page button pressed.
  *
  * @param[in,out] widget  WebWidget with widgets and search data
@@ -459,10 +603,8 @@ event_search_opts_pressed (WebWidget *widget)
 static void
 event_next_pressed (WebWidget *widget)
 {
-    if (widget->query != nullptr && widget->page < INT_MAX) {
-        ++widget->page;
-        search_web (widget);
-    }
+    if (widget->page < INT_MAX)
+        show_page (widget, widget->page + 1);
 }
 /*----------------------------------------------------------------------------*/
 /**
@@ -474,10 +616,8 @@ event_next_pressed (WebWidget *widget)
 static void
 event_prev_pressed (WebWidget *widget)
 {
-    if (widget->query != nullptr && widget->page > 1) {
-        --widget->page;
-        search_web (widget);
-    }
+    if (widget->page > 1)
+        show_page (widget, widget->page - 1);
 }
 /*----------------------------------------------------------------------------*/
 /**
@@ -494,14 +634,12 @@ event_nav_entry_act (GtkWidget *entry,
     const char    *str = nullptr; /* String from entry */
     long long int  val = 0;       /* Int value of entry string */
 
-    if (widget->query != nullptr) {
-        str = gtk_entry_get_text (GTK_ENTRY (entry));
-        val = strtoll (str, nullptr, 10);
-        if      (val < 1)       val = 1;
-        else if (val > INT_MAX) val = INT_MAX;
-        widget->page = (int) val;
-        search_web (widget);
-    }
+    str = gtk_entry_get_text (GTK_ENTRY (entry));
+    val = strtoll (str, nullptr, 10);
+    if      (val < 1)       val = 1;
+    else if (val > INT_MAX) val = INT_MAX;
+
+    show_page (widget, (int) val);
 }
 /*----------------------------------------------------------------------------*/
 /**
@@ -515,22 +653,14 @@ event_settings_pressed (WebWidget *widget)
 {
     char *api_key = nullptr; /* API key of the active service */
     int   err = ERR_OK;      /* Error output */
-    int   id  = 0;           /* Service id */
     int   res = 0;           /* Dialog result */
 
-    id      = widget->active_service;
-    api_key = combo_get_active_api_key (widget->combo);
+    if (widget->searching)
+        return;
 
-    switch (id) {
-        case WEB_SERV_WALLHAVEN:
-            res = wallhaven_settings_dialog (&api_key);
-            break;
-        case WEB_SERV_WALLABYSS:
-            res = wallpaperabyss_settings_dialog (&api_key);
-            break;
-        default:
-            break;
-    }
+    api_key = combo_get_active_api_key (widget->combo);
+    res     = ww_api_key_dialog (widget->active_service, &api_key);
+
     if (res == GTK_RESPONSE_ACCEPT) {
         err = ww_update_api_key (widget->config_file,
                                  api_key,
@@ -566,6 +696,12 @@ event_add_selected_pressed (WebWidget *widget)
     char         *file_name = nullptr; /* Image file name */
     char         *image_url = nullptr; /* Image url */
     char         *id        = nullptr; /* Image id */
+    char         *service   = nullptr; /* Short name of image's service */
+    char         *title     = nullptr; /* Image title */
+    char         *author    = nullptr; /* Image author */
+    char         *license   = nullptr; /* Image license name */
+    char         *license_url = nullptr; /* Image license url */
+    char         *page_url  = nullptr; /* Image page url */
     int           width     = 0;  /* Thumbnail width */
     int           height    = 0;  /* Thumbnail height */
     float         scaled_w  = 0;  /* Smaller thumbnail width */
@@ -603,9 +739,16 @@ event_add_selected_pressed (WebWidget *widget)
                                 WEB_COL_DISP_NAME, &disp_name,
                                 WEB_COL_FILE_NAME, &file_name,
                                 WEB_COL_IMAGE_URL, &image_url,
+                                WEB_COL_SERVICE,   &service,
+                                WEB_COL_TITLE,     &title,
+                                WEB_COL_AUTHOR,    &author,
+                                WEB_COL_LICENSE,   &license,
+                                WEB_COL_LICENSE_URL, &license_url,
+                                WEB_COL_PAGE_URL,  &page_url,
                                 -1);
 
-            if (sel_combo_check_exist (combo_model, id) == 0) {
+            if (file_name != nullptr && disp_name != nullptr &&
+                sel_combo_check_exist (combo_model, file_name) == 0) {
 
                 width = gdk_pixbuf_get_width  (pixbuf);
                 height = gdk_pixbuf_get_height (pixbuf);
@@ -638,6 +781,13 @@ event_add_selected_pressed (WebWidget *widget)
                                     WW_SELCOMBO_DISP_NAME, dname,
                                     WW_SELCOMBO_FILE_NAME, file_name,
                                     WW_SELCOMBO_IMAGE_URL, image_url,
+                                    WW_SELCOMBO_SERVICE,
+                                    ww_label (ww_site_from_name (service)),
+                                    WW_SELCOMBO_TITLE,       title,
+                                    WW_SELCOMBO_AUTHOR,      author,
+                                    WW_SELCOMBO_LICENSE,     license,
+                                    WW_SELCOMBO_LICENSE_URL, license_url,
+                                    WW_SELCOMBO_PAGE_URL,    page_url,
                                     -1);
                 g_object_unref(scaled_pixbuf);
             }
@@ -645,6 +795,12 @@ event_add_selected_pressed (WebWidget *widget)
             free (disp_name);
             free (file_name);
             free (image_url);
+            free (service);
+            free (title);
+            free (author);
+            free (license);
+            free (license_url);
+            free (page_url);
             g_object_unref(pixbuf);
         }
         node = node->next;
@@ -686,6 +842,30 @@ refresh_service_opts (WebWidget *widget)
 }
 /*----------------------------------------------------------------------------*/
 /**
+ * @brief  Make the settings and search options buttons active only when the
+ *         active search service has an API key or search options to set.
+ *
+ * @param[in,out] widget  WebWidget item
+ * @return        none
+ */
+static void
+update_service_buttons (WebWidget *widget)
+{
+    const bool has_key  = ww_has_api_key (widget->active_service);
+    const bool has_opts = ww_has_search_opts (widget->active_service);
+
+    gtk_widget_set_sensitive (widget->sett_button, has_key);
+    gtk_widget_set_tooltip_text (widget->sett_button,
+            has_key ? "Service settings" :
+                      "This service needs no settings");
+
+    gtk_widget_set_sensitive (widget->opts_button, has_opts);
+    gtk_widget_set_tooltip_text (widget->opts_button,
+            has_opts ? "Search options" :
+                       "This service has no search options");
+}
+/*----------------------------------------------------------------------------*/
+/**
  * @brief  Changed cobo box with image search service, sets active service
  *         active_service value in WebWidget.
  *
@@ -707,6 +887,7 @@ event_service_combo_changed (GtkComboBox *combo,
                 WW_COMBO_ID, &widget->active_service, -1);
 
         refresh_service_opts (widget);
+        update_service_buttons (widget);
     }
 }
 /*----------------------------------------------------------------------------*/
@@ -739,11 +920,13 @@ webwidget_combobox_create (Setting *settings)
         gtk_list_store_append (list_store, &iter);
         gtk_list_store_set (list_store, &iter,
                             WW_COMBO_ID,      i,
-                            WW_COMBO_NAME,    ww_name (i),
+                            WW_COMBO_NAME,    ww_label (i),
                             WW_COMBO_API_KEY, api_key,
                             WW_COMBO_LOGO,    logo,
                             -1);
-        g_object_unref (logo);
+        /* Not every service has a logo */
+        if (logo != nullptr)
+            g_object_unref (logo);
         free (api_key);
     }
     combo = gtk_combo_box_new_with_model (GTK_TREE_MODEL (list_store));
@@ -782,6 +965,12 @@ webwidget_selected_combobox_create (void)
                                      G_TYPE_STRING,
                                      G_TYPE_STRING,
                                      G_TYPE_STRING,
+                                     G_TYPE_STRING,
+                                     G_TYPE_STRING,
+                                     G_TYPE_STRING,
+                                     G_TYPE_STRING,
+                                     G_TYPE_STRING,
+                                     G_TYPE_STRING,
                                      G_TYPE_STRING);
 
     combo = gtk_combo_box_new_with_model (GTK_TREE_MODEL (list_store));
@@ -807,6 +996,22 @@ webwidget_selected_combobox_create (void)
 }
 /*----------------------------------------------------------------------------*/
 /**
+ * @brief  Set the text of an image info label that shortens long texts and
+ *         shows the whole text in its tooltip.
+ *
+ * @param[out] label  Label to set
+ * @param[in]  text   Text to show, can be null
+ * @return     none
+ */
+static void
+info_label_set_text (GtkWidget  *label,
+                     const char *text)
+{
+    gtk_label_set_text (GTK_LABEL (label), text != nullptr ? text : "");
+    gtk_widget_set_tooltip_text (label, str_is_empty (text) ? nullptr : text);
+}
+/*----------------------------------------------------------------------------*/
+/**
  * @brief  Image on preview list activated, get image info and set image
  *         info widgets.
  *
@@ -821,13 +1026,15 @@ event_imgview_activated (GtkIconView *iconview,
 {
     GtkTreeModel *model;
     GdkPixbuf    *logo         = nullptr;
-    char         *disp_name    = nullptr;
-    char         *file_name    = nullptr;
-    char         *image_url    = nullptr;
+    char         *title        = nullptr;
+    char         *license      = nullptr;
+    char         *license_url  = nullptr;
+    char         *service      = nullptr;
     char         *page_url     = nullptr;
     char         *image_author = nullptr;
     int           width        = 0;
     int           height       = 0;
+    int           site         = 0;
     GtkTreeIter   iter;
     char dim[128];
     dim[0] = '\0';
@@ -836,36 +1043,57 @@ event_imgview_activated (GtkIconView *iconview,
 
     if (gtk_tree_model_get_iter (model, &iter, path)) {
         gtk_tree_model_get (model, &iter,
-                            WEB_COL_WIDTH,     &width,
-                            WEB_COL_HEIGHT,    &height,
-                            WEB_COL_DISP_NAME, &disp_name,
-                            WEB_COL_AUTHOR,    &image_author,
-                            WEB_COL_FILE_NAME, &file_name,
-                            WEB_COL_PAGE_URL,  &page_url,
-                            WEB_COL_IMAGE_URL, &image_url,
+                            WEB_COL_WIDTH,       &width,
+                            WEB_COL_HEIGHT,      &height,
+                            WEB_COL_AUTHOR,      &image_author,
+                            WEB_COL_PAGE_URL,    &page_url,
+                            WEB_COL_TITLE,       &title,
+                            WEB_COL_LICENSE,     &license,
+                            WEB_COL_LICENSE_URL, &license_url,
+                            WEB_COL_SERVICE,     &service,
                             -1);
-        gtk_label_set_text (GTK_LABEL (widget->author_label),
-                            image_author != nullptr ? image_author : "");
+        info_label_set_text (widget->title_label, title);
+        info_label_set_text (widget->author_label, image_author);
+
         gtk_link_button_set_uri (GTK_LINK_BUTTON (widget->page_link),
                                  page_url != nullptr ? page_url : "");
+        gtk_widget_set_sensitive (widget->page_link, page_url != nullptr);
+
+        /* License name with a link to the license text if there is one */
+        gtk_button_set_label (GTK_BUTTON (widget->license_link),
+                              license != nullptr ? license : "Unknown");
+        gtk_link_button_set_uri (GTK_LINK_BUTTON (widget->license_link),
+                                 license_url != nullptr ? license_url : "");
+        gtk_widget_set_sensitive (widget->license_link,
+                                  license_url != nullptr);
+
         if (width && height) {
             sprintf (dim, "[%dx%d]", width, height);
         }
         gtk_label_set_text (GTK_LABEL (widget->dim_label), dim);
 
-        gtk_image_clear (GTK_IMAGE (widget->service_image));
+        /* The list can show images of other service than the active one */
+        site = ww_site_from_name (service);
+        logo = get_icon (ww_logo_id (site));
 
-        logo = get_icon (ww_logo_id (widget->active_service));
+        gtk_image_clear (GTK_IMAGE (widget->service_image));
 
         if (logo != nullptr) {
             gtk_image_set_from_pixbuf (GTK_IMAGE (widget->service_image),
                                        logo);
+            gtk_label_set_text (GTK_LABEL (widget->service_label), "");
+            g_object_unref (logo);
         }
-        g_object_unref (logo);
-        free (disp_name);
+        else {
+            gtk_label_set_text (GTK_LABEL (widget->service_label),
+                                ww_label (site) != nullptr ?
+                                ww_label (site) : "");
+        }
+        free (title);
+        free (license);
+        free (license_url);
+        free (service);
         free (image_author);
-        free (file_name);
-        free (image_url);
         free (page_url);
     }
 }
@@ -886,6 +1114,10 @@ webwidget_imgview_create (void)
                                      GDK_TYPE_PIXBUF,
                                      G_TYPE_INT,
                                      G_TYPE_INT,
+                                     G_TYPE_STRING,
+                                     G_TYPE_STRING,
+                                     G_TYPE_STRING,
+                                     G_TYPE_STRING,
                                      G_TYPE_STRING,
                                      G_TYPE_STRING,
                                      G_TYPE_STRING,
@@ -920,17 +1152,39 @@ static GtkWidget *
 webwidget_image_info_create (WebWidget *widget)
 {
     GtkWidget *result;
+    GtkWidget *service_box;
     GtkWidget *service_image;
+    GtkWidget *service_label;
+    GtkWidget *title_label;
     GtkWidget *author_label;
     GtkWidget *dim_label;
     GtkWidget *image_link;
+    GtkWidget *license_link;
     GtkWidget *grid;
 
     service_image = gtk_image_new ();
+    service_label = gtk_label_new (nullptr);
+    title_label   = gtk_label_new (nullptr);
     author_label  = gtk_label_new (nullptr);
     dim_label     = gtk_label_new (nullptr);
-    image_link    = gtk_link_button_new ("Image page");
+    image_link    = gtk_link_button_new_with_label ("", "Image page");
+    license_link  = gtk_link_button_new_with_label ("", "-");
     grid          = gtk_grid_new ();
+
+    /* Nothing to link to until an image is chosen */
+    gtk_widget_set_sensitive (image_link, FALSE);
+    gtk_widget_set_sensitive (license_link, FALSE);
+
+    /* Titles and author names can be long */
+    gtk_label_set_ellipsize (GTK_LABEL (title_label), PANGO_ELLIPSIZE_END);
+    gtk_label_set_max_width_chars (GTK_LABEL (title_label), INFO_TEXT_LEN);
+    gtk_label_set_ellipsize (GTK_LABEL (author_label), PANGO_ELLIPSIZE_END);
+    gtk_label_set_max_width_chars (GTK_LABEL (author_label), INFO_TEXT_LEN);
+
+    /* Service logo, or its name when it has no logo */
+    service_box = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 0);
+    gtk_box_pack_start (GTK_BOX (service_box), service_image, FALSE, FALSE, 0);
+    gtk_box_pack_start (GTK_BOX (service_box), service_label, FALSE, FALSE, 0);
 
     gtk_widget_set_halign (grid, GTK_ALIGN_CENTER);
     gtk_grid_set_row_spacing (GTK_GRID (grid), 8);
@@ -940,27 +1194,42 @@ webwidget_image_info_create (WebWidget *widget)
                      gtk_label_new ("Image provided by:"),
                      0,0,2,1);
     gtk_grid_attach (GTK_GRID (grid),
-                     service_image,
+                     service_box,
                      0,1,1,1);
     gtk_grid_attach (GTK_GRID (grid),
                      image_link,
                      1,1,1,1);
     gtk_grid_attach (GTK_GRID (grid),
-                     gtk_label_new ("Author:"),
+                     gtk_label_new ("Title:"),
                      2,0,1,1);
     gtk_grid_attach (GTK_GRID (grid),
-                     author_label,
+                     title_label,
                      2,1,1,1);
     gtk_grid_attach (GTK_GRID (grid),
-                     gtk_label_new ("Dimensions:"),
+                     gtk_label_new ("Author:"),
                      3,0,1,1);
     gtk_grid_attach (GTK_GRID (grid),
-                     dim_label,
+                     author_label,
                      3,1,1,1);
+    gtk_grid_attach (GTK_GRID (grid),
+                     gtk_label_new ("License:"),
+                     4,0,1,1);
+    gtk_grid_attach (GTK_GRID (grid),
+                     license_link,
+                     4,1,1,1);
+    gtk_grid_attach (GTK_GRID (grid),
+                     gtk_label_new ("Dimensions:"),
+                     5,0,1,1);
+    gtk_grid_attach (GTK_GRID (grid),
+                     dim_label,
+                     5,1,1,1);
 
     widget->service_image = service_image;
+    widget->service_label = service_label;
+    widget->title_label   = title_label;
     widget->author_label  = author_label;
     widget->page_link     = image_link;
+    widget->license_link  = license_link;
     widget->dim_label     = dim_label;
 
     result = grid;
@@ -998,6 +1267,7 @@ webwidget_init (WebWidget *widget)
     widget->found_cnt      = 0;
     widget->active_service = 0;
     widget->thumb_quality  = 0;
+    widget->searching      = false;
 }
 /*----------------------------------------------------------------------------*/
 /**
@@ -1032,8 +1302,8 @@ webwidget_create (Setting    *settings,
 
     webwidget_init (widget);
 
-    cache_query_delete_older_than (ww_name (WEB_SERV_WALLHAVEN), 1);
-    cache_query_delete_older_than (ww_name (WEB_SERV_WALLABYSS), 1);
+    for (int site = 0; site < WEB_SERV_CNT; ++site)
+        cache_query_delete_older_than (ww_name (site), 1);
 
     if ((setting = settings_find (settings,
                    get_setting_name (SETT_THUMB_QUALITY))) != nullptr) {
@@ -1059,7 +1329,6 @@ webwidget_create (Setting    *settings,
     search_button   = gtk_button_new_with_label ("Search");
     search_opts_btn = gtk_button_new_with_label ("Search opts");
     sett_button     = gtk_button_new ();
-    gtk_widget_set_tooltip_text (sett_button, "Service settings");
     pixbuf = get_icon (W_ICON_SETTING);
     img = gtk_image_new_from_pixbuf (pixbuf);
     gtk_button_set_image (GTK_BUTTON (sett_button), img);
@@ -1133,6 +1402,8 @@ webwidget_create (Setting    *settings,
     widget->search_box     = search_box;
     widget->combo          = web_combo;
     widget->entry          = search_entry;
+    widget->sett_button    = sett_button;
+    widget->opts_button    = search_opts_btn;
     widget->nav_entry      = nav_entry;
     widget->img_view       = img_view;
     widget->nav_box        = nav_box;
@@ -1143,6 +1414,7 @@ webwidget_create (Setting    *settings,
     widget->search_opts    = strdup ("");
 
     refresh_service_opts (widget);
+    update_service_buttons (widget);
 
     return widget;
 }

@@ -1,0 +1,181 @@
+{
+ "status": 200,
+ "responseCode": 1,
+ "response": {
+  "rowCount": 41,
+  "rows": [
+   {
+    "id": "ld1-1643381040022-1643381045966-0",
+    "title": "Whiteface Mountain from Lake Placid",
+    "unitCode": "SAAM",
+    "content": {
+     "descriptiveNonRepeating": {
+      "record_link": "https://americanart.si.edu/collections/search/artwork/?id=9005",
+      "guid": "http://n2t.net/ark:/65665/vk7d2d33ae9-b34b-4a66-94ec-f944c29b9f01",
+      "online_media": {
+       "media": [
+        {
+         "id": "media:SAAM-1986.78_1",
+         "guid": "http://n2t.net/ark:/65665/bj9a51de208-a74c-4a20-95aa-1129521460d4",
+         "type": "Images",
+         "idsId": "SAAM-1986.78_1",
+         "usage": {
+          "access": "CC0"
+         },
+         "width": 4160,
+         "height": 2423,
+         "content": "https://ids.si.edu/ids/deliveryService?id=SAAM-1986.78_1",
+         "maxsize": 3000,
+         "thumbnail": "https://ids.si.edu/ids/deliveryService?id=SAAM-1986.78_1",
+         "altTextAccessibility": "",
+         "extDescrAccessibility": "",
+         "resources": [
+          {
+           "label": "High-resolution TIFF",
+           "url": "https://ids.si.edu/ids/download?id=SAAM-1986.78_1.tif",
+           "width": 3000,
+           "height": 1747,
+           "dimensions": "3000x1747"
+          },
+          {
+           "label": "High-resolution JPEG",
+           "url": "https://ids.si.edu/ids/download?id=SAAM-1986.78_1.jpg",
+           "width": 3000,
+           "height": 1747,
+           "dimensions": "3000x1747"
+          },
+          {
+           "label": "Screen Image",
+           "url": "https://ids.si.edu/ids/download?id=SAAM-1986.78_1_screen"
+          },
+          {
+           "label": "Thumbnail Image",
+           "url": "https://ids.si.edu/ids/download?id=SAAM-1986.78_1_thumb"
+          }
+         ]
+        }
+       ],
+       "mediaCount": 1
+      }
+     },
+     "freetext": {
+      "name": [
+       {
+        "label": "Artist",
+        "content": "Sanford Robinson Gifford, born Greenfield, NY 1823-died New York City 1880"
+       }
+      ]
+     }
+    }
+   },
+   {
+    "id": "ld1-1643381040022-1643381061280-1",
+    "title": "[Echo Lake, North Conway, Franconia, White Mountains]",
+    "unitCode": "SAAM",
+    "content": {
+     "descriptiveNonRepeating": {
+      "record_link": "https://americanart.si.edu/collections/search/artwork/?id=34417",
+      "guid": "http://n2t.net/ark:/65665/vk76d729378-de81-4c9c-879f-83ba3d274d17",
+      "online_media": {
+       "media": [
+        {
+         "id": "media:SAAM-1994.91.199_1",
+         "guid": "http://n2t.net/ark:/65665/bj999054fbf-cd75-4c05-9abb-306e428205dd",
+         "type": "Images",
+         "idsId": "SAAM-1994.91.199_1",
+         "usage": {
+          "access": "CC0"
+         },
+         "width": 2707,
+         "height": 3520,
+         "content": "https://ids.si.edu/ids/deliveryService?id=SAAM-1994.91.199_1",
+         "maxsize": 3000,
+         "thumbnail": "https://ids.si.edu/ids/deliveryService?id=SAAM-1994.91.199_1",
+         "altTextAccessibility": "",
+         "extDescrAccessibility": "",
+         "resources": [
+          {
+           "label": "High-resolution TIFF",
+           "url": "https://ids.si.edu/ids/download?id=SAAM-1994.91.199_1.tif",
+           "width": 2307,
+           "height": 3000,
+           "dimensions": "2307x3000"
+          },
+          {
+           "label": "High-resolution JPEG",
+           "url": "https://ids.si.edu/ids/download?id=SAAM-1994.91.199_1.jpg",
+           "width": 2307,
+           "height": 3000,
+           "dimensions": "2307x3000"
+          },
+          {
+           "label": "Screen Image",
+           "url": "https://ids.si.edu/ids/download?id=SAAM-1994.91.199_1_screen"
+          },
+          {
+           "label": "Thumbnail Image",
+           "url": "https://ids.si.edu/ids/download?id=SAAM-1994.91.199_1_thumb"
+          }
+         ]
+        }
+       ],
+       "mediaCount": 1
+      }
+     },
+     "freetext": {
+      "name": [
+       {
+        "label": "Artist",
+        "content": "Unidentified"
+       }
+      ]
+     }
+    }
+   },
+   {
+    "id": "syn-1",
+    "title": "Synthetic restricted image",
+    "unitCode": "SAAM",
+    "content": {
+     "descriptiveNonRepeating": {
+      "record_link": "https://example.org/1",
+      "guid": "http://n2t.net/ark:/65665/syn1",
+      "online_media": {
+       "mediaCount": 1,
+       "media": [
+        {
+         "type": "Images",
+         "idsId": "SYN-1",
+         "usage": {
+          "access": "Usage conditions apply"
+         },
+         "content": "https://ids.si.edu/ids/deliveryService?id=SYN-1",
+         "thumbnail": "https://ids.si.edu/ids/deliveryService?id=SYN-1"
+        }
+       ]
+      }
+     },
+     "freetext": {
+      "name": [
+       {
+        "label": "Artist",
+        "content": "Somebody"
+       }
+      ]
+     }
+    }
+   },
+   {
+    "id": "syn-2",
+    "title": "Synthetic object without media",
+    "unitCode": "SAAM",
+    "content": {
+     "descriptiveNonRepeating": {
+      "record_link": "https://example.org/2"
+     },
+     "freetext": {}
+    }
+   }
+  ]
+ }
+}

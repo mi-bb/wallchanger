@@ -39,12 +39,16 @@
  *
  * @var   UrlData::errbuf
  * @brief Buffer for error information
+ *
+ * @var   UrlData::http_status
+ * @brief HTTP status of the response, 0 when there was no response
  */
 typedef struct
 UrlData {
     char   *buffer;
     size_t  size;
     char   *errbuf;
+    long    http_status;
 } UrlData;
 /*----------------------------------------------------------------------------*/
 /**
@@ -65,6 +69,9 @@ void      urldata_free          (UrlData    *url_data);
 /**
  * @brief  Get data from given url.
  *
+ * Redirects are followed and a HTTP status of 400 or more is reported as an
+ * error in UrlData::errbuf.
+ *
  * @param[in] url  Url to download data
  * @return    UrlData item with downloaded data or error info
  */
@@ -81,6 +88,14 @@ UrlData * urldata_get_data      (const char *url);
 void      urldata_get_to_file   (const char *url,
                                  const char *fn,
                                  char      **err);
+/*----------------------------------------------------------------------------*/
+/**
+ * @brief  Percent-encode a string for use as a url query value.
+ *
+ * @param[in] str  String to encode
+ * @return    New encoded string, empty on error; free with free()
+ */
+[[nodiscard]] char * urldata_escape (const char *str);
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Check if UrlData's data buffer is not empty.

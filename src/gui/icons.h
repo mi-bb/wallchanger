@@ -50,7 +50,6 @@ typedef enum IconImg : int {
     W_IMG_SCREEN_2,  /**< Preview image middle part (screen) */
     W_IMG_SCREEN_3,  /**< Preview image bottom part (screen) */
     W_LOGO_WALLHAVEN,/**< Wallhaven logo */
-    W_LOGO_WALLABYSS,/**< Wallpaper Abyss logo */
     W_IMG_COUNT      /**< Number of images */
 } IconImg;
 /*----------------------------------------------------------------------------*/

@@ -26,7 +26,20 @@ The program works on GNU/Linux and FreeBSD.
 ### Supported wallpaper search pages:
 
  - wallhaven.cc
- - Wallpaper Abyss
+ - Wikimedia Commons
+ - Openverse
+ - Art Institute of Chicago
+ - The Metropolitan Museum of Art
+ - NASA Image and Video Library
+ - Smithsonian Open Access
+
+None of them needs an API key. A Wallhaven key is only used for NSFW
+results, and Smithsonian searches use a shared demo key with a low request
+limit until you set your own free [api.data.gov](https://api.data.gov/signup/)
+key in the service settings.
+
+The author, license and source page of every downloaded image are saved in
+`~/.cache/wchanger/iinfo/<image file name>.json`.
 
 <img src="other/wallchanger.png" alt="Screenshot 1" style="width: 517px;">
 

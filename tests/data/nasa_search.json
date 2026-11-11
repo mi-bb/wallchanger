@@ -1,0 +1,221 @@
+{
+ "collection": {
+  "version": "1.1",
+  "metadata": {
+   "total_hits": 221
+  },
+  "items": [
+   {
+    "href": "https://images-assets.nasa.gov/image/s36-81-054/collection.json",
+    "data": [
+     {
+      "nasa_id": "s36-81-054",
+      "title": "Great Salt Lake, Utah, USA",
+      "center": "JSC",
+      "photographer": null,
+      "secondary_creator": null,
+      "media_type": "image"
+     }
+    ],
+    "links": [
+     {
+      "href": "https://images-assets.nasa.gov/image/s36-81-054/s36-81-054~medium.jpg",
+      "rel": "alternate",
+      "render": "image",
+      "width": 1259,
+      "size": 381000,
+      "height": 1280
+     },
+     {
+      "href": "https://images-assets.nasa.gov/image/s36-81-054/s36-81-054~small.jpg",
+      "rel": "alternate",
+      "render": "image",
+      "width": 629,
+      "size": 109000,
+      "height": 640
+     },
+     {
+      "href": "https://images-assets.nasa.gov/image/s36-81-054/s36-81-054~thumb.jpg",
+      "rel": "preview",
+      "render": "image",
+      "width": 629,
+      "size": 109000,
+      "height": 640
+     },
+     {
+      "href": "https://images-assets.nasa.gov/image/s36-81-054/s36-81-054~large.jpg",
+      "rel": "alternate",
+      "render": "image",
+      "width": 1889,
+      "size": 768000,
+      "height": 1920
+     },
+     {
+      "href": "https://images-assets.nasa.gov/image/s36-81-054/s36-81-054~orig.jpg",
+      "rel": "canonical",
+      "render": "image"
+     }
+    ]
+   },
+   {
+    "href": "https://images-assets.nasa.gov/image/iss071e014284/collection.json",
+    "data": [
+     {
+      "nasa_id": "iss071e014284",
+      "title": "Lake Tahoe and the Sierra Nevada Mountains",
+      "center": "JSC",
+      "photographer": null,
+      "secondary_creator": null,
+      "media_type": "image"
+     }
+    ],
+    "links": [
+     {
+      "href": "https://images-assets.nasa.gov/image/iss071e014284/iss071e014284~medium.jpg",
+      "rel": "alternate",
+      "render": "image",
+      "width": 1280,
+      "size": 211000,
+      "height": 853
+     },
+     {
+      "href": "https://images-assets.nasa.gov/image/iss071e014284/iss071e014284~small.jpg",
+      "rel": "alternate",
+      "render": "image",
+      "width": 640,
+      "size": 57000,
+      "height": 426
+     },
+     {
+      "href": "https://images-assets.nasa.gov/image/iss071e014284/iss071e014284~thumb.jpg",
+      "rel": "preview",
+      "render": "image",
+      "width": 640,
+      "size": 57000,
+      "height": 426
+     },
+     {
+      "href": "https://images-assets.nasa.gov/image/iss071e014284/iss071e014284~large.jpg",
+      "rel": "alternate",
+      "render": "image",
+      "width": 1920,
+      "size": 447000,
+      "height": 1280
+     },
+     {
+      "href": "https://images-assets.nasa.gov/image/iss071e014284/iss071e014284~orig.jpg",
+      "rel": "canonical",
+      "render": "image",
+      "height": 5504,
+      "width": 8256,
+      "size": 6710886
+     }
+    ]
+   },
+   {
+    "href": "https://images-assets.nasa.gov/image/sl2-102-900/collection.json",
+    "data": [
+     {
+      "nasa_id": "sl2-102-900",
+      "title": "Himalayan Mountain Range, India/Tibet",
+      "center": "JSC",
+      "photographer": null,
+      "secondary_creator": null,
+      "media_type": "image"
+     }
+    ],
+    "links": [
+     {
+      "href": "https://images-assets.nasa.gov/image/sl2-102-900/sl2-102-900~medium.jpg",
+      "rel": "alternate",
+      "render": "image",
+      "width": 1280,
+      "size": 216000,
+      "height": 847
+     },
+     {
+      "href": "https://images-assets.nasa.gov/image/sl2-102-900/sl2-102-900~small.jpg",
+      "rel": "alternate",
+      "render": "image",
+      "width": 640,
+      "size": 63000,
+      "height": 423
+     },
+     {
+      "href": "https://images-assets.nasa.gov/image/sl2-102-900/sl2-102-900~thumb.jpg",
+      "rel": "preview",
+      "render": "image",
+      "width": 640,
+      "size": 63000,
+      "height": 423
+     },
+     {
+      "href": "https://images-assets.nasa.gov/image/sl2-102-900/sl2-102-900~large.jpg",
+      "rel": "alternate",
+      "render": "image",
+      "width": 1919,
+      "size": 441000,
+      "height": 1271
+     },
+     {
+      "href": "https://images-assets.nasa.gov/image/sl2-102-900/sl2-102-900~orig.jpg",
+      "rel": "canonical",
+      "render": "image"
+     }
+    ]
+   },
+   {
+    "href": "https://example.org/collection.json",
+    "data": [
+     {
+      "nasa_id": "SYN 0001",
+      "title": "Synthetic tiff original",
+      "center": "GSFC",
+      "media_type": "image"
+     }
+    ],
+    "links": [
+     {
+      "href": "https://example.org/image/SYN 0001/SYN 0001~small.jpg",
+      "rel": "alternate",
+      "render": "image",
+      "width": 640,
+      "height": 480
+     },
+     {
+      "href": "https://example.org/image/SYN 0001/SYN 0001~large.jpg",
+      "rel": "alternate",
+      "render": "image",
+      "width": 1920,
+      "height": 1440
+     },
+     {
+      "href": "https://example.org/image/SYN 0001/SYN 0001~thumb.jpg",
+      "rel": "preview",
+      "render": "image",
+      "width": 640,
+      "height": 480
+     },
+     {
+      "href": "https://example.org/image/SYN 0001/SYN 0001~orig.tif",
+      "rel": "canonical",
+      "render": "image",
+      "width": 8000,
+      "height": 6000
+     }
+    ]
+   },
+   {
+    "href": "https://example.org/collection2.json",
+    "data": [
+     {
+      "nasa_id": "SYN0002",
+      "title": "Synthetic without links",
+      "center": "JPL",
+      "media_type": "image"
+     }
+    ]
+   }
+  ]
+ }
+}

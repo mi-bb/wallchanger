@@ -38,3 +38,28 @@ if(PROCSTAT_LIBRARY)
 endif()
 
 add_test(NAME test_process COMMAND test_process)
+
+# The image search services: request urls and response parsing. The service
+# files have no widget code, so GTK is needed for its GLib only.
+add_executable(test_web_parse
+    test_web_parse.c
+    ${PROJECT_SOURCE_DIR}/src/util/cres.c             ${PROJECT_SOURCE_DIR}/src/util/cres.h
+    ${PROJECT_SOURCE_DIR}/src/util/string_functions.c ${PROJECT_SOURCE_DIR}/src/util/string_functions.h
+    ${PROJECT_SOURCE_DIR}/src/web/search_item.c       ${PROJECT_SOURCE_DIR}/src/web/search_item.h
+    ${PROJECT_SOURCE_DIR}/src/web/url_data.c          ${PROJECT_SOURCE_DIR}/src/web/url_data.h
+    ${PROJECT_SOURCE_DIR}/src/web/web_artic.c         ${PROJECT_SOURCE_DIR}/src/web/web_artic.h
+    ${PROJECT_SOURCE_DIR}/src/web/web_commons.c       ${PROJECT_SOURCE_DIR}/src/web/web_commons.h
+    ${PROJECT_SOURCE_DIR}/src/web/web_met.c           ${PROJECT_SOURCE_DIR}/src/web/web_met.h
+    ${PROJECT_SOURCE_DIR}/src/web/web_nasa.c          ${PROJECT_SOURCE_DIR}/src/web/web_nasa.h
+    ${PROJECT_SOURCE_DIR}/src/web/web_openverse.c     ${PROJECT_SOURCE_DIR}/src/web/web_openverse.h
+    ${PROJECT_SOURCE_DIR}/src/web/web_smithsonian.c   ${PROJECT_SOURCE_DIR}/src/web/web_smithsonian.h
+    ${PROJECT_SOURCE_DIR}/src/web/web_util.c          ${PROJECT_SOURCE_DIR}/src/web/web_util.h
+    ${PROJECT_SOURCE_DIR}/src/web/web_provider.h)
+target_include_directories(test_web_parse
+    PRIVATE ${PROJECT_BINARY_DIR} ${PROJECT_SOURCE_DIR}/src)
+target_compile_definitions(test_web_parse
+    PRIVATE _GNU_SOURCE TEST_DATA_DIR="${CMAKE_CURRENT_SOURCE_DIR}/data")
+target_link_libraries(test_web_parse
+    PRIVATE PkgConfig::CHECK PkgConfig::GTK PkgConfig::JSONC PkgConfig::CURL)
+
+add_test(NAME test_web_parse COMMAND test_web_parse)

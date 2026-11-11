@@ -31,13 +31,22 @@
  * @brief  Structure for storing wallpaper search data.
  *
  * @var   SearchItem::id
- * @brief Image id in string
+ * @brief Image id in string, made of letters, digits, '-' and '_' only
+ *
+ * @var   SearchItem::title
+ * @brief Title of the image
  *
  * @var   SearchItem::author_name
  * @brief Name for image author
  *
  * @var   SearchItem::author_url
  * @brief Url to author's page
+ *
+ * @var   SearchItem::license_name
+ * @brief Short name of the image license
+ *
+ * @var   SearchItem::license_url
+ * @brief Url of the image license text
  *
  * @var   SearchItem::file_name
  * @brief Name for file save
@@ -69,8 +78,11 @@
 typedef struct
 SearchItem {
     char *id;
+    char *title;
     char *author_name;
     char *author_url;
+    char *license_name;
+    char *license_url;
     char *file_name;
     char *display_name;
     char *display_markup;
@@ -99,7 +111,12 @@ SearchItem * search_item_new                (void);
 void         search_item_free               (SearchItem *item);
 /*----------------------------------------------------------------------------*/
 /**
- * @brief  Set SearchItem's photo id string and int value based on string value.
+ * @brief  Set SearchItem's image id.
+ *
+ * The id becomes a part of the image and thumbnail file names, so every
+ * character other than a letter, a digit, '-' and '_' is replaced with '_'.
+ *
+ * Like the other string setters, a null val clears the field.
  *
  * @param[out] item  SearchItem item to set id
  * @param[in]  val   Image id to set
@@ -107,6 +124,16 @@ void         search_item_free               (SearchItem *item);
  */
 void         search_item_set_id_string      (SearchItem   *item,
                                              const char   *val);
+/*----------------------------------------------------------------------------*/
+/**
+ * @brief  Set SearchItem's image title.
+ *
+ * @param[out] item  SearchItem item to set title
+ * @param[in]  val   Title string to set
+ * @return     none
+ */
+void         search_item_set_title          (SearchItem *item,
+                                             const char *val);
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Set SearchItem's photo author name.
@@ -126,6 +153,26 @@ void         search_item_set_author_name    (SearchItem *item,
  * @return     none
  */
 void         search_item_set_author_url     (SearchItem *item,
+                                             const char *val);
+/*----------------------------------------------------------------------------*/
+/**
+ * @brief  Set SearchItem's license name.
+ *
+ * @param[out] item  SearchItem item to set license name
+ * @param[in]  val   Short license name to set, e.g. "CC BY 4.0"
+ * @return     none
+ */
+void         search_item_set_license_name   (SearchItem *item,
+                                             const char *val);
+/*----------------------------------------------------------------------------*/
+/**
+ * @brief  Set SearchItem's license url.
+ *
+ * @param[out] item  SearchItem item to set license url
+ * @param[in]  val   Url of the license text to set
+ * @return     none
+ */
+void         search_item_set_license_url    (SearchItem *item,
                                              const char *val);
 /*----------------------------------------------------------------------------*/
 /**
@@ -198,6 +245,25 @@ void         search_item_set_thumb_url      (SearchItem *item,
  */
 void         search_item_set_service_name   (SearchItem *item,
                                              const char *val);
+/*----------------------------------------------------------------------------*/
+/**
+ * @brief  Set the service name and, based on the item's id, title and size,
+ *         the file name to save the image to and the names to show on the
+ *         image list.
+ *
+ * The file name is "<service_name>_<id><ext>". The display name is the
+ * title, or the id when the item has no title, cut when it is long. The
+ * markup adds the image size when it is known. Call it after the id, title
+ * and size are set. An item without an id only gets the service name.
+ *
+ * @param[in,out] item          SearchItem item to process
+ * @param[in]     service_name  Name of the image service
+ * @param[in]     ext           Image file extension with the dot, can be null
+ * @return        none
+ */
+void         search_item_set_names          (SearchItem *item,
+                                             const char *service_name,
+                                             const char *ext);
 
 /*----------------------------------------------------------------------------*/
 /**

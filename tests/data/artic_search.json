@@ -1,0 +1,42 @@
+{
+ "pagination": {
+  "total": 62119,
+  "limit": 3,
+  "offset": 0,
+  "total_pages": 20707,
+  "current_page": 1
+ },
+ "data": [
+  {
+   "id": 102201,
+   "title": "Evening by a Mountain Lake",
+   "artist_title": "Albert Bierstadt",
+   "date_display": "n.d.",
+   "image_id": null,
+   "thumbnail": null
+  },
+  {
+   "id": 85885,
+   "title": "View of Mountain Lake",
+   "artist_title": "James \"Drunken\" Robertson",
+   "date_display": "n.d.",
+   "image_id": "42c88a5b-bd3d-460e-8bd2-49444b36f84b",
+   "thumbnail": {
+    "width": 3000,
+    "height": 1961
+   }
+  },
+  {
+   "id": 114692,
+   "title": "Mountain Lake with Boats",
+   "artist_title": "Unknown artist",
+   "date_display": "n.d.",
+   "image_id": null,
+   "thumbnail": null
+  }
+ ],
+ "config": {
+  "iiif_url": "https://www.artic.edu/iiif/2",
+  "website_url": "https://www.artic.edu"
+ }
+}

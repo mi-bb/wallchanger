@@ -26,7 +26,19 @@
 #include <err.h>
 #include <unistd.h>
 #include <curl/curl.h>
+#include "config.h"
 #include "url_data.h"
+/*----------------------------------------------------------------------------*/
+/**
+ * @def   URL_USER_AGENT
+ * @brief Value of the User-Agent header sent with every request. The program
+ *        always identifies itself, never as a web browser.
+ *
+ * @var   URL_MAX_REDIRECTS
+ * @brief Number of redirects to follow before giving up.
+ */
+#define URL_USER_AGENT PACKAGE "/" PACKAGE_VERSION " (+" PACKAGE_URL ")"
+constexpr long URL_MAX_REDIRECTS = 5;
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Create new UrlData item.
@@ -41,6 +53,7 @@ urldata_new (void)
 
     ud->size = 0;
     ud->errbuf = nullptr;
+    ud->http_status = 0;
 
     if ((ud->buffer = malloc (sizeof (char))) == nullptr)
         err (EXIT_FAILURE, nullptr);
@@ -88,6 +101,45 @@ url_write (void   *data,
 }
 /*----------------------------------------------------------------------------*/
 /**
+ * @brief  Set the options shared by every request.
+ *
+ * @param[in,out] curl    Curl handle to set up
+ * @param[in]     url     Request url
+ * @param[out]    errbuf  Buffer of CURL_ERROR_SIZE chars for error text
+ * @return        List of extra request headers or null. It has to stay alive
+ *                until the transfer ends, then be freed with
+ *                curl_slist_free_all.
+ */
+[[nodiscard]] static struct curl_slist *
+url_set_common_opts (CURL       *curl,
+                     const char *url,
+                     char       *errbuf)
+{
+    struct curl_slist *headers = nullptr;
+
+    errbuf[0] = '\0';
+    curl_easy_setopt (curl, CURLOPT_URL, url);
+    curl_easy_setopt (curl, CURLOPT_USERAGENT, URL_USER_AGENT);
+    curl_easy_setopt (curl, CURLOPT_FOLLOWLOCATION, 1L);
+    curl_easy_setopt (curl, CURLOPT_MAXREDIRS, URL_MAX_REDIRECTS);
+    curl_easy_setopt (curl, CURLOPT_FAILONERROR, 1L);
+    curl_easy_setopt (curl, CURLOPT_ERRORBUFFER, errbuf);
+#ifdef DEBUG
+    curl_easy_setopt (curl, CURLOPT_VERBOSE, 1L);
+#endif
+    /* The Art Institute of Chicago asks API clients to identify themselves
+     * with this header; its image server rejects requests without it. */
+    if (strstr (url, "://api.artic.edu/") != nullptr ||
+        strstr (url, "://www.artic.edu/") != nullptr) {
+
+        headers = curl_slist_append (headers,
+                                     "AIC-User-Agent: " URL_USER_AGENT);
+        curl_easy_setopt (curl, CURLOPT_HTTPHEADER, headers);
+    }
+    return headers;
+}
+/*----------------------------------------------------------------------------*/
+/**
  * @brief  Get data from given url.
  */
 UrlData *
@@ -97,27 +149,27 @@ urldata_get_data (const char *url)
     CURL     *curl;
     CURLcode  res;
     char      errbuf[CURL_ERROR_SIZE];
+    struct curl_slist *headers = nullptr;
 
     url_data = urldata_new ();
     curl_global_init (CURL_GLOBAL_ALL);
     curl = curl_easy_init ();
 
     if (curl) {
-        curl_easy_setopt (curl, CURLOPT_URL, url);
+        headers = url_set_common_opts (curl, url, errbuf);
         curl_easy_setopt (curl, CURLOPT_WRITEDATA, (void *) url_data);
         curl_easy_setopt (curl, CURLOPT_WRITEFUNCTION, url_write);
-        curl_easy_setopt (curl, CURLOPT_ERRORBUFFER, errbuf);
-        errbuf[0] = '\0';
-#ifdef DEBUG
-        curl_easy_setopt (curl, CURLOPT_VERBOSE, 1L);
-#endif
+
         res = curl_easy_perform (curl);
+        curl_easy_getinfo (curl, CURLINFO_RESPONSE_CODE,
+                           &url_data->http_status);
  
         if (res != CURLE_OK) {
             url_data->errbuf = strdup (strlen (errbuf) ?
                                       errbuf : curl_easy_strerror (res));
             warnx ("libcurl: (%d) %s", res, url_data->errbuf);
         }
+        curl_slist_free_all (headers);
         curl_easy_cleanup (curl);
     }
     curl_global_cleanup ();
@@ -146,6 +198,7 @@ urldata_get_to_file (const char *url,
     FILE     *file;
     CURLcode  res;
     char      errbuf[CURL_ERROR_SIZE];
+    struct curl_slist *headers = nullptr;
 
     if (access (fn, F_OK) == 0) {
         return;
@@ -155,14 +208,8 @@ urldata_get_to_file (const char *url,
     curl = curl_easy_init ();
 
     if (curl) {
-        curl_easy_setopt (curl, CURLOPT_URL, url);
-        curl_easy_setopt (curl, CURLOPT_FAILONERROR, 1L);
-#ifdef DEBUG
-        curl_easy_setopt (curl, CURLOPT_VERBOSE, 1L);
-#endif
+        headers = url_set_common_opts (curl, url, errbuf);
         curl_easy_setopt (curl, CURLOPT_WRITEFUNCTION, write_data);
-        curl_easy_setopt (curl, CURLOPT_ERRORBUFFER, errbuf);
-        errbuf[0] = '\0';
      
         file = fopen (fn, "wb");
         if (file) {
@@ -177,10 +224,32 @@ urldata_get_to_file (const char *url,
                 unlink (fn);
             }
         }
+        curl_slist_free_all (headers);
         curl_easy_cleanup (curl);
     }
     curl_global_cleanup ();
 }
 /*----------------------------------------------------------------------------*/
- 
- 
+/**
+ * @brief  Percent-encode a string for use as a url query value.
+ */
+char *
+urldata_escape (const char *str)
+{
+    CURL *curl    = nullptr; /* Handle, required by older libcurl versions */
+    char *escaped = nullptr; /* String allocated by libcurl */
+    char *result  = nullptr; /* Copy to return */
+
+    curl = curl_easy_init ();
+    if (curl != nullptr) {
+        escaped = curl_easy_escape (curl, str, 0);
+        curl_easy_cleanup (curl);
+    }
+    if ((result = strdup (escaped != nullptr ? escaped : "")) == nullptr)
+        err (EXIT_FAILURE, nullptr);
+
+    curl_free (escaped);
+
+    return result;
+}
+/*----------------------------------------------------------------------------*/

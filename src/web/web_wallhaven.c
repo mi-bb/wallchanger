@@ -23,23 +23,14 @@
  */
 #include <stdio.h>
 #include <stdlib.h>
-#include <ctype.h>
-#include <err.h>
-#include "config.h"
-#ifdef HAVE_JSON_C_JSON_H
-#include <json-c/json.h>
-#else
-#include <json.h>
-#endif
+#include <string.h>
 #include "util/string_functions.h"
-#include "cache_query.h"
-#include "gui/message_dialogs.h"
-#include "util/errors.h"
 #include "search_item.h"
 #include "settings/settings.h"
 #include "settings/setting_item.h"
 #include "url_data.h"
 #include "webwidget_common.h"
+#include "web_util.h"
 #include "web_wallhaven.h"
 /*----------------------------------------------------------------------------*/
 /**
@@ -95,47 +86,6 @@ static const char *toprange[] = {
 };
 /*----------------------------------------------------------------------------*/
 /**
- * @brief  Process SearchIem item with image data and create name for icon view
- *         and for image file to save.
- *
- * @param[in,out] item  SearchItem item to process.
- * @return        none
- */
-static void
-wallhaven_process_item_set_names (SearchItem *item)
-{
-    //char *base_name = NULL; /* Base name for processing */
-    char *file_name = nullptr; /* Name for file to save */
-    char *disp_name = nullptr; /* Name to display on list */
-    char *ext = nullptr;       /* Pointer to extension */
-    const char *format = "%s\n<span font_size=\"small\">[%dx%d]</span>";
-
-    if (item->id == nullptr)
-        return;
-    else if (item->image_url == nullptr)
-        return;
-
-    /* Create file name, add image extension to base name */
-    ext = strrchr (item->image_url, '.');
-    if (ext != nullptr) {
-        file_name = str_comb (ww_name (WEB_SERV_WALLHAVEN), "_");
-        str_append (&file_name, item->id);
-        str_append (&file_name, ext);
-    }
-    /* Display name to show on image list */
-    disp_name = item->id;
-
-    /* Save names in SearchItem */
-    search_item_set_file_name    (item, file_name);
-    search_item_set_display_name (item, disp_name);
-    /* search_item_set_display_markup (item, disp_name); */
-    item->display_markup = g_markup_printf_escaped (
-            format, disp_name, item->width, item->height);
-
-    free (file_name);
-}
-/*----------------------------------------------------------------------------*/
-/**
  * @brief  Convert Wallhaven json image info to SearchItem item.
  *
  * @param[in] obj  Json object to convert
@@ -144,137 +94,64 @@ wallhaven_process_item_set_names (SearchItem *item)
 static SearchItem *
 wallhaven_json_obj_to_search_item (json_object *obj)
 {
-    json_object *val;
-    json_object *val2;
-
     SearchItem *item = search_item_new ();
 
-    search_item_set_service_name (item, ww_name (WEB_SERV_WALLHAVEN));
+    search_item_set_id_string (item, web_json_str (obj, "id"));
+    search_item_set_width     (item, web_json_int (obj, "dimension_x"));
+    search_item_set_height    (item, web_json_int (obj, "dimension_y"));
+    search_item_set_page_url  (item, web_json_str (obj, "url"));
+    search_item_set_image_url (item, web_json_str (obj, "path"));
+    search_item_set_thumb_url (item,
+            web_json_str (web_json_get (obj, "thumbs", json_type_object),
+                          "small"));
+    /* Images are uploaded by users and have no license information */
+    search_item_set_license_name (item, "Not specified");
 
-    if (json_object_object_get_ex (obj, "id", &val) &&
-        json_object_get_type (val) == json_type_string) {
-
-        search_item_set_id_string (item, json_object_get_string (val));
-#ifdef DEBUG
-        printf ("photo id : %s\n", item->id);
-#endif
-    }
-    if (json_object_object_get_ex (obj, "dimension_x", &val) &&
-        json_object_get_type (val) == json_type_int) {
-
-        search_item_set_width (item, json_object_get_int (val));
-#ifdef DEBUG
-        printf ("width : %d\n", json_object_get_int (val));
-#endif
-    }
-    if (json_object_object_get_ex (obj, "dimension_y", &val) &&
-        json_object_get_type (val) == json_type_int) {
-
-        search_item_set_height (item, json_object_get_int (val));
-#ifdef DEBUG
-        printf ("height : %d\n", json_object_get_int (val));
-#endif
-    }
-    if (json_object_object_get_ex (obj, "url", &val) &&
-        json_object_get_type (val) == json_type_string) {
-
-        search_item_set_page_url (item, json_object_get_string (val));
-#ifdef DEBUG
-        printf ("url : %s\n", json_object_get_string (val));
-#endif
-    }
-    if (json_object_object_get_ex (obj, "path", &val) &&
-        json_object_get_type (val) == json_type_string) {
-
-        search_item_set_image_url (item, json_object_get_string (val));
-#ifdef DEBUG
-        printf ("image url : %s\n", json_object_get_string (val));
-#endif
-    }
-    if (json_object_object_get_ex (obj, "thumbs", &val) &&
-        json_object_get_type (val) == json_type_object) {
-
-        if (json_object_object_get_ex (val, "small", &val2) &&
-            json_object_get_type (val2) == json_type_string) {
-
-            search_item_set_thumb_url (item, json_object_get_string (val2));
-#ifdef DEBUG
-            printf ("thumb url : %s\n", json_object_get_string (val2));
-#endif
-        }
-    }
-    wallhaven_process_item_set_names (item);
-
+    search_item_set_names (item, wallhaven_provider.name,
+                           web_ext_from_url (item->image_url));
     return item;
 }
 /*----------------------------------------------------------------------------*/
 /**
- * @brief  Analyze Wallhaven json search response and add results to image list.
+ * @brief  Parse the Wallhaven search response.
  *
- * @param[in]  buffer  String with json data
- * @param[out] widget  Webwidget to set data
- * @param[out] cache   CacheQuery item to insert SearchItem items
- * @return     none
+ * @param[in]  json       String with json data
+ * @param[out] found_cnt  Number of found images
+ * @param[in]  add_item   Function to pass found images to
+ * @param[in]  user_data  Data for add_item
+ * @return     false if json is not a Wallhaven search response
  */
-static void
-wallhaven_json_to_webwidget (const char *buffer,
-                             WebWidget  *widget,
-                             CacheQuery *cache)
+static bool
+wallhaven_parse (const char  *json,
+                 int         *found_cnt,
+                 WebItemFunc  add_item,
+                 void        *user_data)
 {
-    json_object *obj;  /* Json with search data */
-    json_object *val;  /* Some value */
-    json_object *val2; /* Some value */
-    json_object *arr;  /* For array data */
-    enum json_tokener_error json_err; /* Json error output */
-    SearchItem *item = nullptr;  /* For image info */
-    size_t      cnt  = 0;  /* Elements in array */
-    size_t      i    = 0;
+    json_object *obj  = web_json_parse (json);
+    json_object *arr  = web_json_get (obj, "data", json_type_array);
+    SearchItem  *item = nullptr; /* For image info */
+    size_t       cnt  = 0;       /* Elements in array */
 
-    obj = json_tokener_parse_verbose (buffer, &json_err);
-    if (obj == nullptr ||
-        json_object_get_type (obj) != json_type_object ||
-        json_err != json_tokener_success) {
-#ifdef DEBUG
-        printf ("Json error: %d\n", json_err);
-        printf ("Json type:  %d\n", json_object_get_type (obj));
-        printf ("Error converting json to stlist, wrong json file\n");
-#endif
+    if (arr == nullptr) {
         if (obj != nullptr)
             json_object_put (obj);
+        return false;
     }
-    else {
-        if (json_object_object_get_ex (obj, "meta", &val) &&
-            json_object_get_type (val) == json_type_object) {
+    *found_cnt = web_json_int (web_json_get (obj, "meta", json_type_object),
+                               "total");
+    cnt = json_object_array_length (arr);
 
-            if (json_object_object_get_ex (val, "total", &val2) &&
-                json_object_get_type (val2) == json_type_int) {
+    for (size_t i = 0; i < cnt; ++i) {
+        item = wallhaven_json_obj_to_search_item (web_json_idx (arr, i));
 
-                widget->found_cnt = json_object_get_int (val2);
-#ifdef DEBUG
-                printf ("found images : %d\n", widget->found_cnt);
-#endif
-            }
-        }
-
-        if (json_object_object_get_ex (obj, "data", &arr) &&
-            json_object_get_type (arr) == json_type_array) {
-
-            cnt = json_object_array_length (arr);
-
-            for (i = 0; i < cnt; ++i) {
-                if ((val = json_object_array_get_idx (arr, i)) != nullptr) {
-                    item = wallhaven_json_obj_to_search_item (val);
-                    add_search_item_to_img_view (widget->img_view,
-                                                 item,
-                                                 widget->wallpaper_dir,
-                                                 ww_name (WEB_SERV_WALLHAVEN),
-                                                 widget->thumb_quality);
-                    cache_query_append_item (cache, item);
-                }
-            }
-        }
-        json_object_put (obj);
+        if (item->id != nullptr && item->image_url != nullptr)
+            add_item (item, user_data);
+        else
+            search_item_free (item);
     }
+    json_object_put (obj);
+
+    return true;
 }
 /*----------------------------------------------------------------------------*/
 /**
@@ -282,7 +159,7 @@ wallhaven_json_to_webwidget (const char *buffer,
  *
  * @param[in] query        Search query
  * @param[in] search_opts  Search options
- * @param[in] api_key      Wallhaven API key
+ * @param[in] api_key      Wallhaven API key, can be empty
  * @param[in] page         Results page number
  * @return    New string with url. After use it should be freed using free.
  */
@@ -292,132 +169,28 @@ wallhaven_search_url (const char *query,
                       const char *api_key,
                       const int   page)
 {
-    char *url = nullptr; /* Result url */
-    char  page_str[16];  /* Page number as string */
+    char *url     = nullptr; /* Result url */
+    char *escaped = nullptr; /* Percent-encoded query or API key */
+    char  page_str[16];      /* Page number as string */
 
     snprintf (page_str, sizeof (page_str), "%d", page);
-    url = str_comb ("https://wallhaven.cc/api/v1/search?apikey=", api_key);
-    str_append (&url, "&q=");
-    str_append (&url, query);
+
+    escaped = urldata_escape (query);
+    url = str_comb ("https://wallhaven.cc/api/v1/search?q=", escaped);
+    free (escaped);
+
+    /* The key is optional, it only gives access to the NSFW images */
+    if (!str_is_empty (api_key)) {
+        escaped = urldata_escape (api_key);
+        str_append (&url, "&apikey=");
+        str_append (&url, escaped);
+        free (escaped);
+    }
     str_append (&url, "&page=");
     str_append (&url, page_str);
     str_append (&url, str_is_empty (search_opts) ?
                         "&sorting=relevance" : search_opts);
     return url;
-}
-/*----------------------------------------------------------------------------*/
-/**
- * @brief  Search in Wallhaven database.
- */
-void
-wallhaven_search (WebWidget      *widget,
-                  const char     *api_key)
-{
-    UrlData    *data  = nullptr; /* For search results */
-    CacheQuery *cache = nullptr; /* For cache saving */
-    char       *search_query = nullptr; /* For search query */
-    char       *url          = nullptr; /* Search request url */
-    int         err   = 0;       /* Error output */
-
-    if (str_is_empty_warn (api_key, "Wallhaven API key is not set"))
-        return;
-
-    search_query = str_replace_in (widget->query, " ", "+");
-
-    url  = wallhaven_search_url (search_query,
-                                 widget->search_opts,
-                                 api_key,
-                                 widget->page);
-    data = urldata_get_data (url);
-    free (url);
-    if (data->errbuf != nullptr) {
-        message_dialog_error (nullptr, data->errbuf);
-    }
-    else if (urldata_full (data)) {
-        cache = cache_query_new (ww_name (WEB_SERV_WALLHAVEN),
-                                    widget->query,
-                                    widget->search_opts,
-                                    widget->page);
-
-        gtk_list_store_clear (GTK_LIST_STORE (gtk_icon_view_get_model (
-                    GTK_ICON_VIEW (widget->img_view))));
-
-        wallhaven_json_to_webwidget (data->buffer, widget, cache);
-        cache->found_cnt = widget->found_cnt;
-
-        err = cache_query_save (cache);
-
-        if (err != ERR_OK) {
-            message_dialog_error (nullptr, err_get_message (err));
-        }
-        cache_query_free (cache);
-    }
-    urldata_free (data);
-    free (search_query);
-}
-/*----------------------------------------------------------------------------*/
-/**
- * @brief  Dialog with Wallhaven service settings.
- */
-int
-wallhaven_settings_dialog (char **api_key)
-{
-    GtkWidget *dialog;      /* Wallhaven settings dialog */
-    GtkWidget *content_box; /* Dialog's box */
-    GtkWidget *api_entry;   /* Entry for API key */
-    int        res = 0;     /* Dialog result */
-
-    GtkDialogFlags flags = GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT;
-
-    dialog = gtk_dialog_new_with_buttons ("Wallhaven configuration",
-                                             nullptr,
-                                             flags,
-                                             "_OK",
-                                             GTK_RESPONSE_ACCEPT,
-                                             "_Cancel",
-                                             GTK_RESPONSE_REJECT,
-                                             nullptr);
-
-    content_box = gtk_dialog_get_content_area (GTK_DIALOG (dialog));
-    gtk_container_set_border_width (GTK_CONTAINER (content_box), 8);
-
-    api_entry = gtk_entry_new ();
-
-    gtk_entry_set_text (GTK_ENTRY (api_entry),
-                        *api_key != nullptr ? *api_key : "");
-
-    /* Packing dialog widgets */
-    gtk_box_pack_start (GTK_BOX (content_box),
-                        gtk_label_new ("Wallhaven API key:"),
-                        FALSE, FALSE, 4);
-    gtk_box_pack_start (GTK_BOX (content_box),
-                        api_entry,
-                        FALSE, FALSE, 4);
-    gtk_box_pack_start (GTK_BOX (content_box),
-                        gtk_separator_new (GTK_ORIENTATION_HORIZONTAL),
-                        FALSE, FALSE, 4);
-    gtk_box_pack_start (GTK_BOX (content_box),
-                        gtk_label_new (
-    "To get your API key, you need to be registered on the Wallhaven website "
-    " and paste API key from: "),
-                        FALSE, FALSE, 4);
-    gtk_box_pack_start (GTK_BOX (content_box),
-                        gtk_link_button_new (
-                            "https://wallhaven.cc/settings/account"),
-                        FALSE, FALSE, 4);
-
-    gtk_widget_show_all (content_box);
-
-    res = gtk_dialog_run (GTK_DIALOG (dialog));
-
-    if (res == GTK_RESPONSE_ACCEPT) {
-        free (*api_key);
-        *api_key = strdup (
-                gtk_entry_get_text (GTK_ENTRY (api_entry)));
-    }
-    gtk_widget_destroy (dialog);
-
-    return res;
 }
 /*----------------------------------------------------------------------------*/
 /**
@@ -608,8 +381,11 @@ get_search_opts (GtkWidget **widgets)
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Options for image search dialog.
+ *
+ * @param[in] widget  WebWidget with config file path
+ * @return    String with search options or null if dialog was cancelled
  */
-char *
+static char *
 wallhaven_search_opts_dialog (WebWidget *widget)
 {
     GtkWidget *widgets[GW_CNT]; /* Array with widgets */
@@ -827,4 +603,22 @@ wallhaven_search_opts_dialog (WebWidget *widget)
     return result;
 }
 /*----------------------------------------------------------------------------*/
-
+/**
+ * @var   wallhaven_provider
+ * @brief Wallhaven search service.
+ */
+const WebProvider wallhaven_provider = {
+    .name         = "Wallhaven",
+    .label        = "Wallhaven",
+    .opts_name    = "Wallhaven_opts",
+    .api_key_name = "Wallhaven api",
+    .api_key_info = "The API key is optional. It is only needed to search "
+                    "for NSFW images. Registered users can copy their key "
+                    "from the account settings page:",
+    .api_key_url  = "https://wallhaven.cc/settings/account",
+    .logo         = W_LOGO_WALLHAVEN,
+    .search_url   = wallhaven_search_url,
+    .parse        = wallhaven_parse,
+    .opts_dialog  = wallhaven_search_opts_dialog
+};
+/*----------------------------------------------------------------------------*/

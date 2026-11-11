@@ -70,10 +70,15 @@ pixbuf_from_url (const char *url)
     url_data = urldata_get_data (url);
 
     if (url_data->errbuf != nullptr) {
-        txt = str_comb ("Getting image error:\n",
-                          url_data->errbuf);
-        message_dialog_error (nullptr, txt);
-        free (txt);
+        /* A thumbnail the server does not have (HTTP error status) only
+         * leaves its image out of the list. Showing a dialog for each one
+         * would bury the results; the error is already printed to stderr. */
+        if (url_data->http_status < 400) {
+            txt = str_comb ("Getting image error:\n",
+                              url_data->errbuf);
+            message_dialog_error (nullptr, txt);
+            free (txt);
+        }
     }
     else if (urldata_full (url_data)) {
         pbuf = pixbuf_from_data ((unsigned char *) url_data->buffer,
