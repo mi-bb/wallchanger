@@ -1243,6 +1243,18 @@ main_window_create (GtkApplication *app,
     GdkPixbuf *pixbuf  = nullptr; /* Default widget icon */
     char      *err_msg = nullptr; /* For error output */
     int        err     = 0;       /* For error output */
+    GtkStack *stack;
+    GtkStackSwitcher *switcher;
+//    GValue iconval1 = G_VALUE_INIT;
+//    GValue iconval2 = G_VALUE_INIT;
+    GtkLabel *label2;
+    stack  = GTK_STACK(gtk_stack_new ());
+    switcher = GTK_STACK_SWITCHER(gtk_stack_switcher_new ());
+    label2 = GTK_LABEL(gtk_label_new("Stack Page 2"));
+
+//    g_value_init (&iconval1, G_TYPE_STRING);
+//    g_value_init (&iconval2, G_TYPE_STRING);
+
 
     /* Find config file and set config file name */
     dialog_data_do_config_file_stuff (data);
@@ -1317,14 +1329,29 @@ main_window_create (GtkApplication *app,
                         box_prev,
                         FALSE, FALSE, 4);
 
+    gtk_stack_add_titled(stack, GTK_WIDGET(box_list_btns), "Local", "Local");
+    gtk_stack_add_titled(stack, GTK_WIDGET(label2), "Remote", "Remote");
+    gtk_widget_set_halign (GTK_WIDGET(switcher), GTK_ALIGN_CENTER);
+//    g_value_set_string(&iconval1, "zoom-in-symbolic.symbolic");
+//    g_value_set_string(&iconval2, "zoom-out-symbolic.symbolic");
+//    gtk_container_child_set_property(GTK_CONTAINER(stack), GTK_WIDGET(box_list_btns), "icon-name", &iconval1);
+//    gtk_container_child_set_property(GTK_CONTAINER(stack), GTK_WIDGET(label2), "icon-name", &iconval2);
+    gtk_stack_switcher_set_stack (switcher, stack);
+
     /* Pack in main box title and box with list, buttons and preview */
     box_main = gtk_box_new (GTK_ORIENTATION_VERTICAL, 4);
     gtk_box_pack_start (GTK_BOX (box_main),
                         title_widget,
                         FALSE, FALSE, 4);
+    //gtk_box_pack_start (GTK_BOX (box_main),
+    //                    box_list_btns,
+    //                    TRUE, TRUE, 4);
     gtk_box_pack_start (GTK_BOX (box_main),
-                        box_list_btns,
-                        TRUE, TRUE, 4);
+                        GTK_WIDGET(switcher),
+                        FALSE, FALSE, 4);
+    gtk_box_pack_start (GTK_BOX (box_main),
+                        GTK_WIDGET(stack),
+                        TRUE,TRUE, 4);
 
     /* Pack in main box separator and settings */
     gtk_box_pack_start (GTK_BOX (box_main),
