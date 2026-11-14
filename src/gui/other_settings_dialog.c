@@ -46,6 +46,8 @@ e_sett_dial_widgets {
     GW_SETT_CONF_SIZE_LABEL,  /**< Configuration size */
     GW_SETT_WALL_PATH_LABEL,  /**< Wallpapers dir label */
     GW_SETT_WALL_SIZE_LABEL,  /**< Wallpapers dir size */
+    GW_SETT_LIVE_PATH_LABEL,  /**< Remote live wallpapers dir label */
+    GW_SETT_LIVE_SIZE_LABEL,  /**< Remote live wallpapers dir size */
     GW_SETT_CNT               /**< Number of Widgets */
 };
 /*----------------------------------------------------------------------------*/
@@ -134,6 +136,26 @@ event_delete_thumb_data (GtkWidget **widgets)
     delete_dir_content (path);
     size = g_format_size ((guint64) get_dir_size (path));
     gtk_label_set_text (GTK_LABEL (widgets[GW_SETT_THUMB_SIZE_LABEL]), size);
+    free (size);
+}
+/*----------------------------------------------------------------------------*/
+/**
+ * @brief  Deleting cached remote live wallpapers.
+ *
+ * @param[in,out] widgets  Array with widgets
+ * @return        none
+ */
+static void
+event_delete_live_data (GtkWidget **widgets)
+{
+    char       *size = nullptr;   /* String with size of dir after delete */
+    const char *path = nullptr;   /* Directory path */
+
+    path = gtk_label_get_text (
+            GTK_LABEL (widgets[GW_SETT_LIVE_PATH_LABEL]));
+    delete_dir_content (path);
+    size = g_format_size ((guint64) get_dir_size (path));
+    gtk_label_set_text (GTK_LABEL (widgets[GW_SETT_LIVE_SIZE_LABEL]), size);
     free (size);
 }
 /*----------------------------------------------------------------------------*/
@@ -228,6 +250,8 @@ other_settings_dialog (GtkWindow  *parent,
     GtkWidget *query_clear_btn;     /* Query clear button */
     GtkWidget *conf_clear_btn;      /* Config delete button */
     GtkWidget *wall_clear_btn;      /* Wallpapers delete button */
+    GtkWidget *live_open_btn;       /* Live wallpapers open button */
+    GtkWidget *live_clear_btn;      /* Live wallpapers clear button */
     GtkWidget *jpg_spin;            /* Spinbuton for jpg quality */
     GtkWidget *orig_image  = nullptr;  /* Original thumb image */
     GtkWidget *jpg_image   = nullptr;  /* JPG thumb image */
@@ -243,6 +267,8 @@ other_settings_dialog (GtkWindow  *parent,
     char      *conf_size   = nullptr;  /* Size of config dir */
     char      *wall_path   = nullptr;  /* Wallpapers directory */
     char      *wall_size   = nullptr;  /* Size of wallpapers dir */
+    char      *live_path   = nullptr;  /* Live wallpapers directory */
+    char      *live_size   = nullptr;  /* Size of live wallpapers dir */
     int        error_code  = 0;     /* Error output */
     int        jpg_quality = 96;    /* JPG quality val */
     GtkAdjustment *adjustment;      /* Adjustment for jpg quality */
@@ -281,6 +307,8 @@ other_settings_dialog (GtkWindow  *parent,
     query_size = g_format_size ((guint64) get_dir_size (query_path));
     conf_size  = g_format_size ((guint64) get_dir_size (conf_path));
     wall_size  = g_format_size ((guint64) get_dir_size (wall_path));
+    live_path  = cfg_file_get_live_wallpapers_path ();
+    live_size  = g_format_size ((guint64) get_dir_size (live_path));
     widgets[GW_SETT_THUMB_PATH_LABEL] = gtk_label_new (thumb_path);
     widgets[GW_SETT_THUMB_SIZE_LABEL] = gtk_label_new (thumb_size);
     widgets[GW_SETT_QUERY_PATH_LABEL] = gtk_label_new (query_path);
@@ -289,6 +317,8 @@ other_settings_dialog (GtkWindow  *parent,
     widgets[GW_SETT_CONF_SIZE_LABEL]  = gtk_label_new (conf_size);
     widgets[GW_SETT_WALL_PATH_LABEL]  = gtk_label_new (wall_path);
     widgets[GW_SETT_WALL_SIZE_LABEL]  = gtk_label_new (wall_size);
+    widgets[GW_SETT_LIVE_PATH_LABEL]  = gtk_label_new (live_path);
+    widgets[GW_SETT_LIVE_SIZE_LABEL]  = gtk_label_new (live_size);
     thumb_open_btn  = gtk_button_new_with_label ("Open");
     query_open_btn  = gtk_button_new_with_label ("Open");
     conf_open_btn   = gtk_button_new_with_label ("Open");
@@ -297,6 +327,12 @@ other_settings_dialog (GtkWindow  *parent,
     query_clear_btn = gtk_button_new_with_label ("Clear");
     conf_clear_btn  = gtk_button_new_with_label ("Delete");
     wall_clear_btn  = gtk_button_new_with_label ("Delete");
+    live_open_btn   = gtk_button_new_with_label ("Open");
+    live_clear_btn  = gtk_button_new_with_label ("Clear");
+    gtk_widget_set_tooltip_text (live_open_btn,
+                                 "Open remote live wallpaper cache directory");
+    gtk_widget_set_tooltip_text (live_clear_btn,
+                                 "Clear remote live wallpaper cache");
     gtk_widget_set_tooltip_text (thumb_open_btn,
                                  "Open thumbnail cache directory");
     gtk_widget_set_tooltip_text (query_open_btn,
@@ -318,6 +354,8 @@ other_settings_dialog (GtkWindow  *parent,
     free (conf_size);
     free (wall_path);
     free (wall_size);
+    free (live_path);
+    free (live_size);
 
     g_signal_connect_swapped (thumb_open_btn, "clicked",
                               G_CALLBACK (event_open_dir_from_label),
@@ -336,6 +374,13 @@ other_settings_dialog (GtkWindow  *parent,
                                   GTK_LABEL (
                                       widgets[GW_SETT_WALL_PATH_LABEL]));
 
+    g_signal_connect_swapped (live_open_btn, "clicked",
+                              G_CALLBACK (event_open_dir_from_label),
+                                  GTK_LABEL (
+                                      widgets[GW_SETT_LIVE_PATH_LABEL]));
+    g_signal_connect_swapped (live_clear_btn, "clicked",
+                              G_CALLBACK (event_delete_live_data),
+                              widgets);
     g_signal_connect_swapped (thumb_clear_btn, "clicked",
                               G_CALLBACK (event_delete_thumb_data),
                               widgets);
@@ -440,42 +485,58 @@ other_settings_dialog (GtkWindow  *parent,
     gtk_grid_attach (GTK_GRID (grid),
                      thumb_clear_btn,
                      4,3,1,1);
+    /* Remote live wallpaper cache */
+    gtk_grid_attach (GTK_GRID (grid),
+                     gtk_label_new ("Live wallpapers:"),
+                     0,4,1,1);
+    gtk_grid_attach (GTK_GRID (grid),
+                     widgets[GW_SETT_LIVE_PATH_LABEL],
+                     1,4,1,1);
+    gtk_grid_attach (GTK_GRID (grid),
+                     widgets[GW_SETT_LIVE_SIZE_LABEL],
+                     2,4,1,1);
+    gtk_grid_attach (GTK_GRID (grid),
+                     live_open_btn,
+                     3,4,1,1);
+    gtk_grid_attach (GTK_GRID (grid),
+                     live_clear_btn,
+                     4,4,1,1);
     /* Wallpapers */
     gtk_grid_attach (GTK_GRID (grid),
                      gtk_separator_new (GTK_ORIENTATION_HORIZONTAL),
                      //gtk_label_new ("Application data directories"),
-                     0,4,4,1);
+                     0,5,4,1);
     gtk_grid_attach (GTK_GRID (grid),
                      gtk_label_new ("Wallpapers:"),
-                     0,5,1,1);
+                     0,6,1,1);
     gtk_grid_attach (GTK_GRID (grid),
                      widgets[GW_SETT_WALL_PATH_LABEL],
-                     1,5,1,1);
+                     1,6,1,1);
     gtk_grid_attach (GTK_GRID (grid),
                      widgets[GW_SETT_WALL_SIZE_LABEL],
-                     2,5,1,1);
+                     2,6,1,1);
     gtk_grid_attach (GTK_GRID (grid),
                      wall_open_btn,
-                     3,5,1,1);
+                     3,6,1,1);
     gtk_grid_attach (GTK_GRID (grid),
                      wall_clear_btn,
-                     4,5,1,1);
+                     4,6,1,1);
     /* Config */
     gtk_grid_attach (GTK_GRID (grid),
                      gtk_label_new ("Config files:"),
-                     0,6,1,1);
+                     0,7,1,1);
     gtk_grid_attach (GTK_GRID (grid),
                      widgets[GW_SETT_CONF_PATH_LABEL],
-                     1,6,1,1);
+                     1,7,1,1);
     gtk_grid_attach (GTK_GRID (grid),
                      widgets[GW_SETT_CONF_SIZE_LABEL],
-                     2,6,1,1);
+                     2,7,1,1);
     gtk_grid_attach (GTK_GRID (grid),
                      conf_open_btn,
-                     3,6,1,1);
+                     3,7,1,1);
     gtk_grid_attach (GTK_GRID (grid),
                      conf_clear_btn,
-                     4,6,1,1);
+                     4,7,1,1);
 
     gtk_box_pack_start (GTK_BOX (content_box),
                         grid,

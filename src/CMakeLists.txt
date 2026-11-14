@@ -20,6 +20,11 @@ set(WCHANGERD_SOURCES
     daemon/wallpaper_change.c           daemon/wallpaper_change.h
     daemon/cmd_functions.c              daemon/cmd_functions.h
     daemon/cmdline.c                    daemon/cmdline.h
+    live/live.c                         live/live.h
+    live/live_bing.c                    live/live_bing.h
+    live/live_commons.c                 live/live_commons.h
+    live/live_source.c                  live/live_source.h
+    live/live_wallhaven.c               live/live_wallhaven.h
     process/process.c                   process/process.h
     process/proc_item.c                 process/proc_item.h
     process/proc_list.c                 process/proc_list.h
@@ -36,7 +41,9 @@ set(WCHANGERD_SOURCES
     util/randomm.c                      util/randomm.h
     util/string_functions.c             util/string_functions.h
     wallpaper/wallpaper_set.c           wallpaper/wallpaper_set.h
-    wallpaper/window_manager_info.c     wallpaper/window_manager_info.h)
+    wallpaper/window_manager_info.c     wallpaper/window_manager_info.h
+    web/url_data.c                      web/url_data.h
+    web/web_util.c                      web/web_util.h)
 
 set(WCHANGERCFG_SOURCES
     defs.h
@@ -52,8 +59,14 @@ set(WCHANGERCFG_SOURCES
     gui/message_dialogs.c               gui/message_dialogs.h
     gui/other_settings_dialog.c         gui/other_settings_dialog.h
     gui/preview.c                       gui/preview.h
+    gui/remote_page.c                   gui/remote_page.h
     gui/tree_view.c                     gui/tree_view.h
     gui/wallpaper_set_command_dialog.c  gui/wallpaper_set_command_dialog.h
+    live/live.c                         live/live.h
+    live/live_bing.c                    live/live_bing.h
+    live/live_commons.c                 live/live_commons.h
+    live/live_source.c                  live/live_source.h
+    live/live_wallhaven.c               live/live_wallhaven.h
     process/process.c                   process/process.h
     process/proc_item.c                 process/proc_item.h
     process/proc_list.c                 process/proc_list.h
@@ -90,7 +103,7 @@ set(WCHANGERCFG_SOURCES
     web/webwidget_struct.h)
 
 add_executable(wchangerd ${WCHANGERD_SOURCES})
-target_link_libraries(wchangerd PRIVATE PkgConfig::JSONC)
+target_link_libraries(wchangerd PRIVATE PkgConfig::JSONC PkgConfig::CURL)
 
 add_executable(wchangercfg ${WCHANGERCFG_SOURCES})
 target_compile_definitions(wchangercfg PRIVATE G_DISABLE_DEPRECATED)

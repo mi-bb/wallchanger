@@ -1,0 +1,84 @@
+{
+ "data": [
+  {
+   "id": "0wz88r",
+   "url": "https://wallhaven.cc/w/0wz88r",
+   "purity": "sfw",
+   "category": "general",
+   "dimension_x": 1920,
+   "dimension_y": 1080,
+   "resolution": "1920x1080",
+   "ratio": "1.78",
+   "file_type": "image/jpeg",
+   "path": "https://w.wallhaven.cc/full/0w/wallhaven-0wz88r.jpg"
+  },
+  {
+   "id": "8xx5w2",
+   "url": "https://wallhaven.cc/w/8xx5w2",
+   "purity": "sfw",
+   "category": "general",
+   "dimension_x": 1920,
+   "dimension_y": 1080,
+   "resolution": "1920x1080",
+   "ratio": "1.78",
+   "file_type": "image/jpeg",
+   "path": "https://w.wallhaven.cc/full/8x/wallhaven-8xx5w2.jpg"
+  },
+  {
+   "id": "4gom7l",
+   "url": "https://wallhaven.cc/w/4gom7l",
+   "purity": "sfw",
+   "category": "general",
+   "dimension_x": 2560,
+   "dimension_y": 1600,
+   "resolution": "2560x1600",
+   "ratio": "1.6",
+   "file_type": "image/jpeg",
+   "path": "https://w.wallhaven.cc/full/4g/wallhaven-4gom7l.jpg"
+  },
+  {
+   "id": "j88dwm",
+   "url": "https://wallhaven.cc/w/j88dwm",
+   "purity": "sfw",
+   "category": "general",
+   "dimension_x": 1920,
+   "dimension_y": 1200,
+   "resolution": "1920x1200",
+   "ratio": "1.6",
+   "file_type": "image/jpeg",
+   "path": "https://w.wallhaven.cc/full/j8/wallhaven-j88dwm.jpg"
+  },
+  {
+   "id": "synth01",
+   "url": "https://wallhaven.cc/w/synth01",
+   "purity": "sfw",
+   "category": "general",
+   "dimension_x": 2560,
+   "dimension_y": 1440,
+   "resolution": "2560x1440",
+   "ratio": "1.78",
+   "file_type": "image/png",
+   "path": "https://w.wallhaven.cc/full/sy/wallhaven-synth01.png"
+  },
+  {
+   "id": "synth02",
+   "url": "https://wallhaven.cc/w/synth02",
+   "purity": "sfw",
+   "category": "general",
+   "dimension_x": 1080,
+   "dimension_y": 1920,
+   "resolution": "1080x1920",
+   "ratio": "0.56",
+   "file_type": "image/jpeg",
+   "path": "https://w.wallhaven.cc/full/sy/wallhaven-synth02.jpg"
+  }
+ ],
+ "meta": {
+  "current_page": 1,
+  "last_page": 750,
+  "per_page": 24,
+  "total": 6,
+  "query": "mountains",
+  "seed": "do794m"
+ }
+}

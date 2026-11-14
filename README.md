@@ -41,6 +41,24 @@ key in the service settings.
 The author, license and source page of every downloaded image are saved in
 `~/.cache/wchanger/iinfo/<image file name>.json`.
 
+### Remote live wallpapers
+
+Instead of a list of chosen images, the "Remote live" page lets the daemon
+get every wallpaper from online services by itself:
+
+ - Bing image of the day
+ - Wikimedia Commons picture of the day
+ - Wallhaven random wallpaper, optionally narrowed with keywords
+
+With "Random wallpaper change" every change uses a randomly chosen service,
+without it the selected services are used one after another. The image size
+is chosen for the screen size, which the configuration window detects and
+saves. Downloaded images are kept in `~/.cache/wchanger/wallpapers` (the 100
+newest), so an image of the day is downloaded only once. When no service can
+be reached the present wallpaper stays and the daemon tries again a minute
+later. The page visible when settings are saved is the wallpaper source the
+daemon uses.
+
 <img src="other/wallchanger.png" alt="Screenshot 1" style="width: 517px;">
 
 <img src="other/wallchanger_web.jpg" alt="Screenshot 2" style="width: 517px;">

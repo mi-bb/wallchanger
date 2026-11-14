@@ -69,6 +69,18 @@
  *
  * @var   DEFAULT_THUMB_QUALITY
  * @brief Default thumbnail jpg quality
+ *
+ * @def   WALL_SOURCE_LOCAL
+ * @brief Wallpaper source setting value: wallpapers from the user's list
+ *
+ * @def   WALL_SOURCE_REMOTE
+ * @brief Wallpaper source setting value: wallpapers from remote services
+ *
+ * @var   DEFAULT_SCREEN_WIDTH
+ * @brief Screen width assumed when the configuration dialog did not save one
+ *
+ * @var   DEFAULT_SCREEN_HEIGHT
+ * @brief Screen height assumed when the configuration dialog did not save one
  */
 /*----------------------------------------------------------------------------*/
 #define DEFAULT_BG_CMD               "feh --bg-fill \"[F]\""
@@ -78,6 +90,31 @@ constexpr int DEFAULT_RANDOM_OPT     = 0;
 constexpr int DEFAULT_TIME_ALIGN_OPT = 0;
 #define DEFAULT_LAST_USED_WM         "Unknown"
 constexpr int DEFAULT_THUMB_QUALITY  = 96;
+#define WALL_SOURCE_LOCAL            "local"
+#define WALL_SOURCE_REMOTE           "remote"
+constexpr int DEFAULT_SCREEN_WIDTH   = 1920;
+constexpr int DEFAULT_SCREEN_HEIGHT  = 1080;
+/*----------------------------------------------------------------------------*/
+/**
+ * @var   LIVE_CACHE_MAX
+ * @brief Number of remote live wallpapers kept in the cache, older ones are
+ *        deleted
+ *
+ * @var   LIVE_DAILY_CHECK_SEC
+ * @brief Seconds after which a daily wallpaper service is asked again for
+ *        its image
+ *
+ * @var   LIVE_RETRY_SEC
+ * @brief Seconds before the daemon tries again after remote services failed
+ *
+ * @var   LIVE_RETRY_CNT
+ * @brief Number of quick retries before the daemon waits a whole interval
+ */
+/*----------------------------------------------------------------------------*/
+constexpr int LIVE_CACHE_MAX       = 100;
+constexpr int LIVE_DAILY_CHECK_SEC = 3600;
+constexpr int LIVE_RETRY_SEC       = 60;
+constexpr int LIVE_RETRY_CNT       = 3;
 /*----------------------------------------------------------------------------*/
 /**
  * @var   IMGS_ON_PAGE
@@ -148,6 +185,9 @@ constexpr int DEFAULT_WEB_DLG_HEIGHT = 800;
  *
  * @def   PTH_QUERY_DIR
  * @brief Directory for image information.
+ *
+ * @def   PTH_LIVE_STATE_FILE
+ * @brief File in the cache directory with the remote live wallpaper state.
  */
 /*----------------------------------------------------------------------------*/
 #define PTH_SEP            "/"
@@ -161,6 +201,7 @@ constexpr int DEFAULT_WEB_DLG_HEIGHT = 800;
 #define PTH_THUMB_DIR      "thumbnails"
 #define PTH_IINFO_DIR      "iinfo"
 #define PTH_QUERY_DIR      "query"
+#define PTH_LIVE_STATE_FILE "live.json"
 /*----------------------------------------------------------------------------*/
 #endif
 

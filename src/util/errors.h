@@ -36,7 +36,9 @@ enum e_error_values : int {
     ERR_FILE_EX, /**< File does not exist */
     ERR_ALLOC,   /**< Alloc error */
     ERR_TYPE,    /**< Wrong type */
-    ERR_CFG_NOF  /**< No config file found */
+    ERR_CFG_NOF,    /**< No config file found */
+    ERR_LIVE_NOSRC, /**< No remote live wallpaper service selected */
+    ERR_LIVE_NET    /**< No remote live wallpaper service gave a wallpaper */
 };
 /*----------------------------------------------------------------------------*/
 /* The GNU __attribute__ spellings used here and in file_dir_functions.h,

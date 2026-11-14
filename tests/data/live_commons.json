@@ -1,0 +1,76 @@
+{
+ "batchcomplete": true,
+ "query": {
+  "pages": [
+   {
+    "pageid": 1,
+    "ns": 6,
+    "title": "File:Synthetic video.webm",
+    "imagerepository": "local",
+    "imageinfo": [
+     {
+      "size": 100,
+      "width": 1920,
+      "height": 1080,
+      "thumburl": "https://upload.wikimedia.org/synthetic.webm.jpg",
+      "thumbwidth": 1920,
+      "thumbheight": 1080,
+      "url": "https://upload.wikimedia.org/synthetic.webm",
+      "descriptionurl": "https://commons.wikimedia.org/wiki/File:Synthetic_video.webm",
+      "mime": "video/webm"
+     }
+    ]
+   },
+   {
+    "pageid": 143437840,
+    "ns": 6,
+    "title": "File:Eastern quoll (Dasyurus viverrinus) fawn morph Esk Valley.jpg",
+    "imagerepository": "local",
+    "imageinfo": [
+     {
+      "size": 12729439,
+      "width": 5865,
+      "height": 3910,
+      "thumburl": "https://thumb.wikimedia.org/wikipedia/commons/thumb/b/bd/Eastern_quoll_%28Dasyurus_viverrinus%29_fawn_morph_Esk_Valley.jpg/1920px-Eastern_quoll_%28Dasyurus_viverrinus%29_fawn_morph_Esk_Valley.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "thumbwidth": 1920,
+      "thumbheight": 1280,
+      "responsiveUrls": {
+       "2": "https://thumb.wikimedia.org/wikipedia/commons/thumb/b/bd/Eastern_quoll_%28Dasyurus_viverrinus%29_fawn_morph_Esk_Valley.jpg/3840px-Eastern_quoll_%28Dasyurus_viverrinus%29_fawn_morph_Esk_Valley.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail"
+      },
+      "thumbattribs": {
+       "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/b/bd/Eastern_quoll_%28Dasyurus_viverrinus%29_fawn_morph_Esk_Valley.jpg/1920px-Eastern_quoll_%28Dasyurus_viverrinus%29_fawn_morph_Esk_Valley.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+       "decoding": "async",
+       "loading": "lazy",
+       "width": 1920,
+       "height": 1280,
+       "srcset": "https://thumb.wikimedia.org/wikipedia/commons/thumb/b/bd/Eastern_quoll_%28Dasyurus_viverrinus%29_fawn_morph_Esk_Valley.jpg/3840px-Eastern_quoll_%28Dasyurus_viverrinus%29_fawn_morph_Esk_Valley.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail 2x"
+      },
+      "url": "https://upload.wikimedia.org/wikipedia/commons/b/bd/Eastern_quoll_%28Dasyurus_viverrinus%29_fawn_morph_Esk_Valley.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+      "descriptionurl": "https://commons.wikimedia.org/wiki/File:Eastern_quoll_(Dasyurus_viverrinus)_fawn_morph_Esk_Valley.jpg",
+      "descriptionshorturl": "https://commons.wikimedia.org/w/index.php?curid=143437840",
+      "extmetadata": {
+       "ObjectName": {
+        "value": "Eastern quoll (Dasyurus viverrinus) fawn morph Esk Valley",
+        "source": "mediawiki-metadata"
+       },
+       "Artist": {
+        "value": "<bdi><a href=\"https://www.wikidata.org/wiki/Q54800218\" class=\"extiw\" title=\"d:Q54800218\"><span title=\"Scottish wildlife photographer\">Charles J. Sharp</span></a></bdi>",
+        "source": "commons-desc-page"
+       },
+       "LicenseShortName": {
+        "value": "CC BY-SA 4.0",
+        "source": "commons-desc-page",
+        "hidden": ""
+       },
+       "LicenseUrl": {
+        "value": "https://creativecommons.org/licenses/by-sa/4.0",
+        "source": "commons-desc-page"
+       }
+      },
+      "mime": "image/jpeg"
+     }
+    ]
+   }
+  ]
+ }
+}

@@ -44,6 +44,10 @@ enum e_setting_values : int {
     SETT_WEB_DLG_WIDTH,  /**< Web dialog width */
     SETT_WEB_DLG_HEIGHT, /**< Web dialog height */
     SETT_THUMB_QUALITY,  /**< Thumbnail jpg quality */
+    SETT_WALL_SOURCE,    /**< Wallpapers from list or remote services */
+    SETT_LIVE_SERVICES,  /**< Array with enabled remote service names */
+    SETT_SCREEN_WIDTH,   /**< Screen width for remote wallpapers */
+    SETT_SCREEN_HEIGHT,  /**< Screen height for remote wallpapers */
 };
 /*----------------------------------------------------------------------------*/
 /**
@@ -133,6 +137,27 @@ int setts_update_web_dlg_size  (const char *cfg_file,
 
 int setts_update_thumb_quality (const char *cfg_file,
                                 const int   jpgq);
+/*----------------------------------------------------------------------------*/
+/**
+ * @brief  Update screen size in config file, used by the daemon to choose
+ *         the size of remote wallpapers.
+ *
+ * @param[in] cfg_file  Config file path
+ * @param[in] w         Screen width
+ * @param[in] h         Screen height
+ * @return    Status of data update
+ */
+int setts_update_screen_size   (const char *cfg_file,
+                                const int   w,
+                                const int   h);
+/*----------------------------------------------------------------------------*/
+/**
+ * @brief  Check if settings select wallpapers from remote services.
+ *
+ * @param[in] settings  List of Setting items
+ * @return    true for remote services, false for the wallpaper list
+ */
+[[nodiscard]] bool setts_is_remote (Setting *settings);
 
 /*----------------------------------------------------------------------------*/
 /**

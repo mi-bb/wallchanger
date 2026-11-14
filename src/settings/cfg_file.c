@@ -272,28 +272,58 @@ cfg_file_get_query_path (void)
 }
 /*----------------------------------------------------------------------------*/
 /**
+ * @brief  Get directory with wallpapers downloaded from remote live services.
+ */
+char *
+cfg_file_get_live_wallpapers_path (void)
+{
+    char *path = nullptr; /* Result directory path */
+
+    path = dir_get_cache ();
+    str_append (&path, PTH_SEP PTH_APP_SHORT PTH_SEP PTH_WALLP_DIR);
+
+    return path;
+}
+/*----------------------------------------------------------------------------*/
+/**
+ * @brief  Get path of the file with the remote live wallpaper state.
+ */
+char *
+cfg_file_get_live_state_path (void)
+{
+    char *path = nullptr; /* Result file path */
+
+    path = dir_get_cache ();
+    str_append (&path, PTH_SEP PTH_APP_SHORT PTH_SEP PTH_LIVE_STATE_FILE);
+
+    return path;
+}
+/*----------------------------------------------------------------------------*/
+/**
  * @brief  Create the cache, thumbnail and wallpaper directories.
  */
 char *
 cfg_file_check_create_dirs (void)
 {
+    constexpr int dir_cnt = 4;
     char *ret = nullptr;
     int   err = ERR_OK;
     int   i   = 0;
-    char *dirs[3];
+    char *dirs[dir_cnt];
 
     dirs[0] = cfg_file_get_query_path ();
     dirs[1] = cfg_file_get_app_thumbnails_path ();
     dirs[2] = cfg_file_get_app_wallpapers_path ();
+    dirs[3] = cfg_file_get_live_wallpapers_path ();
 
-    for (i = 0; i < 3; ++i) {
+    for (i = 0; i < dir_cnt; ++i) {
         if ((err = dir_create_with_subdirs (dirs[i])) != ERR_OK) {
             ret = str_comb (dirs[i], "\n");
             str_append (&ret, err_get_message (err));
             break;
         }
     }
-    for (i = 0; i < 3; ++i) {
+    for (i = 0; i < dir_cnt; ++i) {
         free (dirs[i]);
     }
     return ret;
