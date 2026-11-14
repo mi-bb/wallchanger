@@ -21,6 +21,7 @@
  */
 #include <stdint.h>
 #include <gtk/gtk.h>
+#include <string.h>
 #include "dialog_data.h"
 #include "settings/settings.h"
 #include "wallpaper/wallpaper_set.h"
@@ -41,6 +42,9 @@
 #include "daemon/daemon.h"
 #include "wallpaper/window_manager_info.h"
 #include "main_window.h"
+/*----------------------------------------------------------------------------*/
+static const gchar* page_local = "local";
+static const gchar* page_remote = "remote";
 /*----------------------------------------------------------------------------*/
 /**
  * @fn  static uint32_t get_wallpaper_ch_interval (const DialogData *data)
@@ -741,6 +745,37 @@ event_autostart_toggled (GtkToggleButton *togglebutton,
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  On main window delete, check settings.
+ *
+ * @param[in]     object    Object that received the signal
+ * @param[in]     pspec     The GParamSpec of the property which changed.
+ * @param[in,out] user_data Pointer to user data
+ * @return        None
+ */
+static void
+on_stack_page_changed (GObject    *object,
+                       GParamSpec *pspec,
+                       gpointer    user_data)
+{
+ //@param[in,out] user_data Pointer to user dataDialogData object with widgets and settings info
+    GtkStack    *stack = GTK_STACK (object);
+    GtkWidget   *child = gtk_stack_get_visible_child (stack);
+    const gchar *name  = gtk_stack_get_visible_child_name (stack);
+    DialogData *data = (DialogData *) user_data;
+
+    g_print ("Page changed to: %s (%p)\n", name ? name : "(unnamed)", (void *) child);
+    g_print ("DialogData info: %s\n", data->config_file);
+    if (strcmp(name, page_local) == 0)
+    {
+        g_print ("Local selected");
+    }
+    else if (strcmp(name, page_remote) == 0)
+    {
+        g_print ("Remote selected");
+    }
+}
+/*----------------------------------------------------------------------------*/
+/**
+ * @brief  On main window delete, check settings.
  */
 static gboolean
 event_on_delete (GtkWidget        *window,
@@ -1219,6 +1254,7 @@ create_daemon_widget (DialogData *data)
 
     return widget;
 }
+
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Build and show the main settings window.
@@ -1243,18 +1279,9 @@ main_window_create (GtkApplication *app,
     GdkPixbuf *pixbuf  = nullptr; /* Default widget icon */
     char      *err_msg = nullptr; /* For error output */
     int        err     = 0;       /* For error output */
-    GtkStack *stack;
+    GtkStack  *stack;
+    GtkLabel  *label2;
     GtkStackSwitcher *switcher;
-//    GValue iconval1 = G_VALUE_INIT;
-//    GValue iconval2 = G_VALUE_INIT;
-    GtkLabel *label2;
-    stack  = GTK_STACK(gtk_stack_new ());
-    switcher = GTK_STACK_SWITCHER(gtk_stack_switcher_new ());
-    label2 = GTK_LABEL(gtk_label_new("Stack Page 2"));
-
-//    g_value_init (&iconval1, G_TYPE_STRING);
-//    g_value_init (&iconval2, G_TYPE_STRING);
-
 
     /* Find config file and set config file name */
     dialog_data_do_config_file_stuff (data);
@@ -1329,13 +1356,14 @@ main_window_create (GtkApplication *app,
                         box_prev,
                         FALSE, FALSE, 4);
 
-    gtk_stack_add_titled(stack, GTK_WIDGET(box_list_btns), "Local", "Local");
-    gtk_stack_add_titled(stack, GTK_WIDGET(label2), "Remote", "Remote");
+    /* Stack pages and switcher */
+    stack    = GTK_STACK(gtk_stack_new ());
+    switcher = GTK_STACK_SWITCHER(gtk_stack_switcher_new ());
+    label2   = GTK_LABEL(gtk_label_new("Stack Page 2"));
+    gtk_stack_add_titled(stack, GTK_WIDGET(box_list_btns), page_local, "Local pictures");
+    gtk_stack_add_titled(stack, GTK_WIDGET(label2), page_remote, "Remote live");
+    gtk_stack_set_transition_type(stack, GTK_STACK_TRANSITION_TYPE_SLIDE_LEFT_RIGHT);
     gtk_widget_set_halign (GTK_WIDGET(switcher), GTK_ALIGN_CENTER);
-//    g_value_set_string(&iconval1, "zoom-in-symbolic.symbolic");
-//    g_value_set_string(&iconval2, "zoom-out-symbolic.symbolic");
-//    gtk_container_child_set_property(GTK_CONTAINER(stack), GTK_WIDGET(box_list_btns), "icon-name", &iconval1);
-//    gtk_container_child_set_property(GTK_CONTAINER(stack), GTK_WIDGET(label2), "icon-name", &iconval2);
     gtk_stack_switcher_set_stack (switcher, stack);
 
     /* Pack in main box title and box with list, buttons and preview */
@@ -1408,5 +1436,8 @@ main_window_create (GtkApplication *app,
 
     gtk_window_set_application (GTK_WINDOW (window), GTK_APPLICATION (app));
     gtk_widget_show_all (window);
+
+    g_signal_connect (stack, "notify::visible-child",
+                  G_CALLBACK (on_stack_page_changed), data);
 }
 /*----------------------------------------------------------------------------*/
