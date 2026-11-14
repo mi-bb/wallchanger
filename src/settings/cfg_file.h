@@ -109,6 +109,22 @@ char * cfg_file_get_image_info_path (void);
 char * cfg_file_get_query_path (void);
 /*----------------------------------------------------------------------------*/
 /**
+ * @brief  Get directory with wallpapers downloaded from remote live services.
+ *
+ * @return String with remote live wallpaper cache directory.
+ *         After use it should be freed using free.
+ */
+char * cfg_file_get_live_wallpapers_path (void);
+/*----------------------------------------------------------------------------*/
+/**
+ * @brief  Get path of the file with the remote live wallpaper state.
+ *
+ * @return String with the state file path.
+ *         After use it should be freed using free.
+ */
+char * cfg_file_get_live_state_path (void);
+/*----------------------------------------------------------------------------*/
+/**
  * @brief  Create the cache, thumbnail and wallpaper directories with their
  *         parent directories.
  *

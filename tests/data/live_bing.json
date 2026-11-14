@@ -1,0 +1,37 @@
+{
+ "images": [
+  {
+   "startdate": "20261115",
+   "enddate": "20261116",
+   "url": "/th?id=OHR.SyntheticNoWallpaper_EN-US0000000000_1920x1080.jpg&pid=hp",
+   "urlbase": "/th?id=OHR.SyntheticNoWallpaper_EN-US0000000000",
+   "copyright": "Victoria Harbour, Hong Kong, China (© Juan Romero/Cavan Images)",
+   "copyrightlink": "https://www.bing.com/search?q=Victoria+Harbour+Hong+Kong&form=hpcapt",
+   "title": "Synthetic: not available as wallpaper",
+   "wp": false,
+   "hsh": "e6a644b48555c5ec9dee21a65aebac01"
+  },
+  {
+   "startdate": "20261114",
+   "enddate": "20261115",
+   "url": "/th?id=OHR.BlueHK_ROW5600938316_1920x1080.jpg&rf=LaDigue_1920x1080.jpg&pid=hp",
+   "urlbase": "/th?id=OHR.BlueHK_ROW5600938316",
+   "copyright": "Victoria Harbour, Hong Kong, China (© Juan Romero/Cavan Images)",
+   "copyrightlink": "https://www.bing.com/search?q=Victoria+Harbour+Hong+Kong&form=hpcapt",
+   "title": "Info",
+   "wp": true,
+   "hsh": "e6a644b48555c5ec9dee21a65aebac01"
+  },
+  {
+   "startdate": "20261113",
+   "enddate": "20261114",
+   "url": "/th?id=OHR.AbrahamCanada_ROW4975668347_1920x1080.jpg&rf=LaDigue_1920x1080.jpg&pid=hp",
+   "urlbase": "/th?id=OHR.AbrahamCanada_ROW4975668347",
+   "copyright": "Abraham Lake in Alberta, Canada (© Guang Cao/Getty Images)",
+   "copyrightlink": "https://www.bing.com/search?q=Abraham+Lake+Alberta&form=hpcapt",
+   "title": "Info",
+   "wp": true,
+   "hsh": "74b1708540676365196e26d4987d6de2"
+  }
+ ]
+}

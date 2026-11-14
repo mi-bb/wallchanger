@@ -37,6 +37,20 @@ and this project adheres to
 - The source, author and license of every downloaded image are saved in
   `~/.cache/wchanger/iinfo/<image file name>.json`.
 - Unit tests for the search services (`tests/test_web_parse.c`).
+- Remote live wallpaper mode: the daemon gets every wallpaper from Bing
+  image of the day, Wikimedia Commons picture of the day or a random
+  Wallhaven wallpaper (with optional keywords) instead of the wallpaper
+  list. Services are used in turn or randomly, following the "Random
+  wallpaper change" option; the image size fits the screen size saved by
+  `wchangercfg`. Images are cached in `~/.cache/wchanger/wallpapers`
+  (newest 100 kept) and an image already there is not downloaded again.
+  When no service can be reached the daemon keeps the present wallpaper
+  and retries after a minute instead of exiting.
+- "Local pictures" / "Remote live" pages in `wchangercfg`; the visible page
+  is the wallpaper source saved in the config (`Wallpaper source`).
+- Size, Open and Clear for the remote live wallpaper cache in "Other
+  settings".
+- Unit tests for the remote live services (`tests/test_live.c`).
 
 ### Changed
 
@@ -50,6 +64,12 @@ and this project adheres to
   and the page number does not change.
 - A thumbnail missing on the server no longer opens an error dialog; the
   image is left out of the results.
+- The "Save settings", "Other settings", "About" and "Exit" buttons and the
+  daemon control moved to a new section at the bottom of the main window,
+  so they are reachable from both wallpaper source pages.
+- `wchangerd` now links libcurl.
+- Network requests time out when the connection can not be made in 20
+  seconds or stalls for a minute, instead of waiting forever.
 
 ### Removed
 

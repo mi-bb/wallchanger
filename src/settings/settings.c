@@ -123,6 +123,22 @@ get_setting_name (const int val)
             res = "Thumbnail quality";
             break;
 
+        case SETT_WALL_SOURCE:
+            res = "Wallpaper source";
+            break;
+
+        case SETT_LIVE_SERVICES:
+            res = "Remote services";
+            break;
+
+        case SETT_SCREEN_WIDTH:
+            res = "Screen width";
+            break;
+
+        case SETT_SCREEN_HEIGHT:
+            res = "Screen height";
+            break;
+
         default:
             break;
     }
@@ -223,6 +239,10 @@ setts_check_defaults (Setting *settings)
         {SETT_WEB_DLG_WIDTH,  SET_VAL_INT,    DEFAULT_WEB_DLG_WIDTH, 0, ""},
         {SETT_WEB_DLG_HEIGHT, SET_VAL_INT,    DEFAULT_WEB_DLG_HEIGHT, 0, ""},
         {SETT_THUMB_QUALITY,  SET_VAL_INT,    DEFAULT_THUMB_QUALITY, 0, ""},
+        {SETT_WALL_SOURCE,    SET_VAL_STRING, 0, 0, WALL_SOURCE_LOCAL},
+        {SETT_LIVE_SERVICES,  SET_VAL_ARRAY,  0, 0, ""},
+        {SETT_SCREEN_WIDTH,   SET_VAL_INT,    DEFAULT_SCREEN_WIDTH, 0, ""},
+        {SETT_SCREEN_HEIGHT,  SET_VAL_INT,    DEFAULT_SCREEN_HEIGHT, 0, ""},
         {-1, 0, 0, 0, ""}
     };
 
@@ -331,6 +351,43 @@ setts_update_thumb_quality (const char *cfg_file,
     res = json_settings_check_update_file (settings, cfg_file);
     settings_free_all (settings);
     return res;
+}
+/*----------------------------------------------------------------------------*/
+/**
+ * @brief  Update screen size in config file.
+ */
+int
+setts_update_screen_size (const char *cfg_file,
+                          const int   w,
+                          const int   h)
+{
+    Setting  *settings = nullptr;
+    int       res = ERR_OK;
+
+    settings = settings_append (settings,
+                     setting_new_int (get_setting_name (SETT_SCREEN_WIDTH),
+                                      (int64_t) w));
+    settings = settings_append (settings,
+                     setting_new_int (get_setting_name (SETT_SCREEN_HEIGHT),
+                                      (int64_t) h));
+
+    res = json_settings_check_update_file (settings, cfg_file);
+    settings_free_all (settings);
+    return res;
+}
+/*----------------------------------------------------------------------------*/
+/**
+ * @brief  Check if settings select wallpapers from remote services.
+ */
+bool
+setts_is_remote (Setting *settings)
+{
+    const char *source = nullptr;
+
+    source = setting_get_string (
+            settings_find (settings, get_setting_name (SETT_WALL_SOURCE)));
+
+    return source != nullptr && strcmp (source, WALL_SOURCE_REMOTE) == 0;
 }
 /*----------------------------------------------------------------------------*/
 /**

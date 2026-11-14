@@ -30,6 +30,7 @@
 #include "daemon.h"
 #include "wallpaper_change.h"
 #include "util/randomm.h"
+#include "defs.h"
 /*----------------------------------------------------------------------------*/
 /**
  * @brief Main function.
@@ -50,6 +51,8 @@ main (int    argc,
     uint32_t  new_change_interval = 0;  /* New change interval value */
     int       options             = 0;  /* Command line options */
     int       time_align_option   = 0;  /* Time align option */
+    int       retries             = 0;  /* Quick retries done */
+    bool      retry               = false; /* Remote services failed */
     char     *config_file         = nullptr; /* Config file path */
     RandMem  *rand_mem            = nullptr; /* Random memory */
 
@@ -78,7 +81,8 @@ main (int    argc,
     /* Init random number structure */
     rand_mem = randomm_new ();
     /* Load settings and set wallpaper */
-    change_interval = chk_setts_ch_wall (config_file, rand_mem, &time_align_option);
+    change_interval = chk_setts_ch_wall (config_file, rand_mem,
+                                         &time_align_option, &retry);
     /* Exiting after first wallpaper change, --once option */
     if (options & CMD_OPT_ONCE) {
         randomm_free (rand_mem);
@@ -91,17 +95,30 @@ main (int    argc,
         daemon_daemonize ();
     }
     while (1) {
-        sleep_time = change_interval;
-        /* Time align enabled
-         * If counter is 0 count align sleep time and
-         * number of standard interval sleeps before getting
-         * to full hour */
-        if (time_align_option && time_align_count-- == 0) {
-            sleep_time = check_time_align_val (change_interval, &time_align_count);
+        if (retry && retries < LIVE_RETRY_CNT) {
+            /* Remote services failed, e.g. the network is not up yet after
+             * login. Try again soon, then count the time align again. */
+            ++retries;
+            sleep_time       = LIVE_RETRY_SEC;
+            time_align_count = 0;
+        }
+        else {
+            retries    = 0;
+            sleep_time = change_interval;
+            /* Time align enabled
+             * If counter is 0 count align sleep time and
+             * number of standard interval sleeps before getting
+             * to full hour */
+            if (time_align_option && time_align_count-- == 0) {
+                sleep_time = check_time_align_val (change_interval,
+                                                   &time_align_count);
+            }
         }
         if (sleep_time) {
             sleep (sleep_time);
-            new_change_interval = chk_setts_ch_wall (config_file, rand_mem, &time_align_option);
+            new_change_interval = chk_setts_ch_wall (config_file, rand_mem,
+                                                     &time_align_option,
+                                                     &retry);
         }
         if (new_change_interval != change_interval) {
             change_interval = new_change_interval;

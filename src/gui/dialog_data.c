@@ -61,6 +61,8 @@ dialog_data_init (DialogData *data)
     data->daemon_label   = nullptr;
     data->status_bar     = nullptr;
     data->img_preview    = nullptr;
+    data->stack          = nullptr;
+    data->remote_page    = nullptr;
     data->config_file    = nullptr;
 }
 /*----------------------------------------------------------------------------*/

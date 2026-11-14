@@ -54,6 +54,12 @@
  * @brief Status bar
  * @var   DialogData::img_preview
  * @brief Wallpaper preview image
+ *
+ * @var   DialogData::stack
+ * @brief Stack with wallpaper source pages, the visible one is the source
+ *
+ * @var   DialogData::remote_page
+ * @brief Remote live wallpaper services page
  * @var   DialogData::config_file
  * @brief Config file path
  */
@@ -70,6 +76,8 @@ DialogData {
     GtkWidget *daemon_label;   /* Daemon info label */
     GtkWidget *status_bar;     /* Status bar */
     GtkWidget *img_preview;    /* Wallpaper preview image */
+    GtkWidget *stack;          /* Wallpaper source pages */
+    GtkWidget *remote_page;    /* Remote live services page */
     char      *config_file;    /* Config file path */
 } DialogData;
 /*----------------------------------------------------------------------------*/

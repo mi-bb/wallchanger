@@ -36,9 +36,18 @@
  *
  * @var   URL_MAX_REDIRECTS
  * @brief Number of redirects to follow before giving up.
+ *
+ * @var   URL_CONNECT_TIMEOUT
+ * @brief Seconds to wait for a connection to the server.
+ *
+ * @var   URL_STALL_TIME
+ * @brief Seconds without any received data after which a transfer is
+ *        aborted, so a stalled connection can not block the program forever.
  */
 #define URL_USER_AGENT PACKAGE "/" PACKAGE_VERSION " (+" PACKAGE_URL ")"
-constexpr long URL_MAX_REDIRECTS = 5;
+constexpr long URL_MAX_REDIRECTS   = 5;
+constexpr long URL_CONNECT_TIMEOUT = 20;
+constexpr long URL_STALL_TIME      = 60;
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Create new UrlData item.
@@ -124,6 +133,10 @@ url_set_common_opts (CURL       *curl,
     curl_easy_setopt (curl, CURLOPT_MAXREDIRS, URL_MAX_REDIRECTS);
     curl_easy_setopt (curl, CURLOPT_FAILONERROR, 1L);
     curl_easy_setopt (curl, CURLOPT_ERRORBUFFER, errbuf);
+    curl_easy_setopt (curl, CURLOPT_CONNECTTIMEOUT, URL_CONNECT_TIMEOUT);
+    curl_easy_setopt (curl, CURLOPT_LOW_SPEED_LIMIT, 1L);
+    curl_easy_setopt (curl, CURLOPT_LOW_SPEED_TIME, URL_STALL_TIME);
+    curl_easy_setopt (curl, CURLOPT_NOSIGNAL, 1L);
 #ifdef DEBUG
     curl_easy_setopt (curl, CURLOPT_VERBOSE, 1L);
 #endif

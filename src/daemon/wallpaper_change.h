@@ -68,14 +68,21 @@ void check_config_file (char **config_file);
  * needed and changes wallpaper.
  * Function returns wallpaper change interval to use with main loop.
  *
+ * In remote live mode the enabled services take the place of the wallpaper
+ * list. When none of them gives a wallpaper the daemon does not exit, it
+ * keeps the present wallpaper and sets retry.
+ *
  * @param[in,out] config_file  Config file path
  * @param[in,out] rand_mem     RandMem object
  * @param[in,out] time_align_option  For time align option value
+ * @param[out]    retry        Set to true when the change should be tried
+ *                             again soon, because remote services failed
  * @return    Wallpaper change interval
  */
 uint32_t chk_setts_ch_wall (char     *config_file,
                             RandMem  *rand_mem,
-                            int      *time_align_option);
+                            int      *time_align_option,
+                            bool     *retry);
 /*----------------------------------------------------------------------------*/
 #endif
 

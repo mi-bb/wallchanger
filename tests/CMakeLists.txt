@@ -63,3 +63,23 @@ target_link_libraries(test_web_parse
     PRIVATE PkgConfig::CHECK PkgConfig::GTK PkgConfig::JSONC PkgConfig::CURL)
 
 add_test(NAME test_web_parse COMMAND test_web_parse)
+
+add_executable(test_live
+    test_live.c
+    ${PROJECT_SOURCE_DIR}/src/live/live_bing.c        ${PROJECT_SOURCE_DIR}/src/live/live_bing.h
+    ${PROJECT_SOURCE_DIR}/src/live/live_commons.c     ${PROJECT_SOURCE_DIR}/src/live/live_commons.h
+    ${PROJECT_SOURCE_DIR}/src/live/live_source.c      ${PROJECT_SOURCE_DIR}/src/live/live_source.h
+    ${PROJECT_SOURCE_DIR}/src/live/live_wallhaven.c   ${PROJECT_SOURCE_DIR}/src/live/live_wallhaven.h
+    ${PROJECT_SOURCE_DIR}/src/util/cres.c             ${PROJECT_SOURCE_DIR}/src/util/cres.h
+    ${PROJECT_SOURCE_DIR}/src/util/randomm.c          ${PROJECT_SOURCE_DIR}/src/util/randomm.h
+    ${PROJECT_SOURCE_DIR}/src/util/string_functions.c ${PROJECT_SOURCE_DIR}/src/util/string_functions.h
+    ${PROJECT_SOURCE_DIR}/src/web/url_data.c          ${PROJECT_SOURCE_DIR}/src/web/url_data.h
+    ${PROJECT_SOURCE_DIR}/src/web/web_util.c          ${PROJECT_SOURCE_DIR}/src/web/web_util.h)
+target_include_directories(test_live
+    PRIVATE ${PROJECT_BINARY_DIR} ${PROJECT_SOURCE_DIR}/src)
+target_compile_definitions(test_live
+    PRIVATE _GNU_SOURCE TEST_DATA_DIR="${CMAKE_CURRENT_SOURCE_DIR}/data")
+target_link_libraries(test_live
+    PRIVATE PkgConfig::CHECK PkgConfig::JSONC PkgConfig::CURL)
+
+add_test(NAME test_live COMMAND test_live)

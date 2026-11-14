@@ -41,10 +41,8 @@
 #include "defs.h"
 #include "daemon/daemon.h"
 #include "wallpaper/window_manager_info.h"
+#include "remote_page.h"
 #include "main_window.h"
-/*----------------------------------------------------------------------------*/
-static const gchar* page_local = "local";
-static const gchar* page_remote = "remote";
 /*----------------------------------------------------------------------------*/
 /**
  * @fn  static uint32_t get_wallpaper_ch_interval (const DialogData *data)
@@ -296,6 +294,14 @@ static gboolean daemon_monitor (gpointer user_data);
  * @param[in,out] data  DialogData object with widgets and settings info
  * @return        Result widget
  *
+ * @fn  static GtkWidget * create_main_buttons_widget (DialogData *data)
+ *
+ * @brief  Create the row with the buttons for the whole window: save
+ *         settings, other settings, about and exit.
+ *
+ * @param[in,out] data  DialogData object with widgets and settings info
+ * @return        Result widget
+ *
  * @fn  static GtkWidget * create_settings_widget (DialogData *data)
  *
  * @brief  Creates widget with settings for wallpaper changing.
@@ -318,6 +324,8 @@ static GtkWidget *create_image_button    (const char    *label,
                                           const IconImg  icon);
 
 static GtkWidget *create_buttons_widget  (DialogData    *data);
+
+static GtkWidget *create_main_buttons_widget (DialogData *data);
 
 static GtkWidget *create_settings_widget (DialogData    *data);
 
@@ -410,6 +418,15 @@ widgets_get_settings (const DialogData *data)
     settings_append (settings,
             setting_new_string (get_setting_name (SETT_BG_CMD), str));
 
+    /* Get wallpaper source, the visible stack page */
+    str = gtk_stack_get_visible_child_name (GTK_STACK (data->stack));
+    settings_append (settings,
+            setting_new_string (get_setting_name (SETT_WALL_SOURCE),
+                                str != nullptr ? str : WALL_SOURCE_LOCAL));
+
+    /* Get remote live services and their keywords */
+    settings_append (settings, remote_page_get_settings (data->remote_page));
+
     return settings;
 }
 /*----------------------------------------------------------------------------*/
@@ -493,6 +510,38 @@ widgets_set_settings (const DialogData *data,
         preview_from_file (data->img_preview, lastused);
         treeview_find_select_item (data->view, lastused);
     }
+    /* Set remote live services and show the present wallpaper */
+    remote_page_set_settings (data->remote_page, settings);
+    remote_page_show_wallpaper (data->remote_page, lastused);
+
+    /* Show the page of the wallpaper source in use */
+    gtk_stack_set_visible_child_full (GTK_STACK (data->stack),
+            setts_is_remote (settings) ? WALL_SOURCE_REMOTE : WALL_SOURCE_LOCAL,
+            GTK_STACK_TRANSITION_TYPE_NONE);
+}
+/*----------------------------------------------------------------------------*/
+/**
+ * @brief  Check that remote live mode has a service to use.
+ *
+ * @param[in] data  DialogData object with settings and widget data
+ * @return    false and shows an error when remote live mode is selected
+ *            without any service
+ */
+static bool
+check_remote_services (const DialogData *data)
+{
+    const char *page = gtk_stack_get_visible_child_name (
+            GTK_STACK (data->stack));
+
+    if (page != nullptr && strcmp (page, WALL_SOURCE_REMOTE) == 0 &&
+        !remote_page_has_service (data->remote_page)) {
+
+        message_dialog_error (data->window,
+                              "Select at least one remote wallpaper service "
+                              "or switch to local pictures.");
+        return false;
+    }
+    return true;
 }
 /*----------------------------------------------------------------------------*/
 /**
@@ -607,6 +656,9 @@ event_save_settings_pressed (const DialogData *data)
 {
     Setting *settings; /* List of settings */
     int      err = 0;  /* Error value */
+
+    if (!check_remote_services (data))
+        return;
 
     settings = widgets_get_settings (data);
     err = setts_check_update_file (dialog_data_get_cfg_file (data),
@@ -741,37 +793,6 @@ event_autostart_toggled (GtkToggleButton *togglebutton,
     gtk_toggle_button_get_active (togglebutton) ?
         cfg_file_autostart_create () :
         cfg_file_autostart_remove ();
-}
-/*----------------------------------------------------------------------------*/
-/**
- * @brief  On main window delete, check settings.
- *
- * @param[in]     object    Object that received the signal
- * @param[in]     pspec     The GParamSpec of the property which changed.
- * @param[in,out] user_data Pointer to user data
- * @return        None
- */
-static void
-on_stack_page_changed (GObject    *object,
-                       GParamSpec *pspec,
-                       gpointer    user_data)
-{
- //@param[in,out] user_data Pointer to user dataDialogData object with widgets and settings info
-    GtkStack    *stack = GTK_STACK (object);
-    GtkWidget   *child = gtk_stack_get_visible_child (stack);
-    const gchar *name  = gtk_stack_get_visible_child_name (stack);
-    DialogData *data = (DialogData *) user_data;
-
-    g_print ("Page changed to: %s (%p)\n", name ? name : "(unnamed)", (void *) child);
-    g_print ("DialogData info: %s\n", data->config_file);
-    if (strcmp(name, page_local) == 0)
-    {
-        g_print ("Local selected");
-    }
-    else if (strcmp(name, page_remote) == 0)
-    {
-        g_print ("Remote selected");
-    }
 }
 /*----------------------------------------------------------------------------*/
 /**
@@ -1011,10 +1032,24 @@ create_buttons_widget (DialogData *data)
                               "clicked",
                               G_CALLBACK (event_set_wallpaper_pressed),
                               data);
+    return widget;
+}
+/*----------------------------------------------------------------------------*/
+/**
+ * @brief  Create the row with the buttons for the whole window.
+ */
+static GtkWidget *
+create_main_buttons_widget (DialogData *data)
+{
+    GtkWidget *widget; /* Widget to return */
+    GtkWidget *button; /* For buttons */
+
+    widget = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 4);
+
     button = create_image_button (nullptr, "Save settings", W_ICON_FLOPPY);
     gtk_box_pack_start (GTK_BOX (widget),
                         button,
-                        FALSE, FALSE, 4);
+                        FALSE, FALSE, 2);
     g_signal_connect_swapped (button,
                               "clicked",
                               G_CALLBACK (event_save_settings_pressed),
@@ -1022,7 +1057,7 @@ create_buttons_widget (DialogData *data)
     button = create_image_button (nullptr, "Other settings", W_ICON_SETTING);
     gtk_box_pack_start (GTK_BOX (widget),
                         button,
-                        FALSE, FALSE, 4);
+                        FALSE, FALSE, 2);
     g_signal_connect_swapped (button,
                               "clicked",
                               G_CALLBACK (event_other_settings_pressed),
@@ -1030,7 +1065,7 @@ create_buttons_widget (DialogData *data)
     button = create_image_button (nullptr, "About Wall Changer", W_ICON_INFO);
     gtk_box_pack_start (GTK_BOX (widget),
                         button,
-                        FALSE, FALSE, 4);
+                        FALSE, FALSE, 2);
     g_signal_connect_swapped (button,
                               "clicked",
                               G_CALLBACK (about_app_dialog),
@@ -1043,7 +1078,9 @@ create_buttons_widget (DialogData *data)
                               data->window);
     gtk_box_pack_start (GTK_BOX (widget),
                         button,
-                        FALSE, FALSE, 4);
+                        FALSE, FALSE, 2);
+    gtk_widget_set_halign (widget, GTK_ALIGN_CENTER);
+
     return widget;
 }
 /*----------------------------------------------------------------------------*/
@@ -1068,10 +1105,12 @@ create_settings_widget (DialogData *data)
 
     /* Random wallpaper change button */
     random_button = gtk_check_button_new ();
-    gtk_widget_set_tooltip_markup (random_button, 
+    gtk_widget_set_tooltip_markup (random_button,
         "When <b>enabled</b> wallpaper images will be selected randomly.\n"
         "When <b>disabled</b> wallpapers will be set in the same order as "
-        "they appear on the list");
+        "they appear on the list.\n"
+        "With remote live wallpapers the same applies to the selected "
+        "services.");
     gtk_button_set_label (GTK_BUTTON (random_button),
                           "Random wallpaper change");
 
@@ -1204,6 +1243,18 @@ create_settings_widget (DialogData *data)
     gtk_grid_attach_next_to (GTK_GRID (widget),
                              autostart_button, button_selectlast,
                              GTK_POS_BOTTOM, 1, 1);
+
+    /* Separator for window buttons and daemon control */
+    gtk_grid_attach (GTK_GRID (widget),
+                     gtk_separator_new (GTK_ORIENTATION_VERTICAL),
+                     6, 0, 1, 3);
+
+    /* Window buttons and below them daemon control, shown with every
+     * wallpaper source page */
+    gtk_grid_attach (GTK_GRID (widget),
+                     create_main_buttons_widget (data), 7, 0, 1, 1);
+    gtk_grid_attach (GTK_GRID (widget),
+                     create_daemon_widget (data), 7, 1, 1, 1);
     return widget;
 }
 /*----------------------------------------------------------------------------*/
@@ -1217,44 +1268,38 @@ create_daemon_widget (DialogData *data)
     GtkWidget *button; /* For buttons */
     GtkWidget *label;  /* Daemon label */
 
-    /* Grid to pack widgets */
-    widget = gtk_grid_new ();
-    gtk_grid_set_row_spacing (GTK_GRID (widget), 4);
-    gtk_grid_set_column_spacing (GTK_GRID (widget), 4);
+    /* Box to pack widgets in one line */
+    widget = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 4);
 
     /* Daemon name label */
-    label = gtk_label_new ("wchangerd");
-    gtk_label_set_xalign (GTK_LABEL (label), 0.5);
-
-    gtk_grid_attach (GTK_GRID (widget), label, 0, 0, 2, 1);
+    label = gtk_label_new ("wchangerd :");
+    gtk_box_pack_start (GTK_BOX (widget), label, FALSE, FALSE, 2);
 
     /* Daemon run status label */
     data->daemon_label = gtk_label_new (" ");
-    gtk_label_set_xalign (GTK_LABEL (data->daemon_label), 0.5);
-
-    gtk_grid_attach (GTK_GRID (widget), data->daemon_label, 0, 1, 2, 1);
+    gtk_label_set_width_chars (GTK_LABEL (data->daemon_label), 8);
+    gtk_box_pack_start (GTK_BOX (widget), data->daemon_label,
+                        FALSE, FALSE, 2);
 
     /* Start daemon button */
     button = create_image_button (nullptr, "Start wchangerd daemon",
                                      W_ICON_PLAY);
     g_signal_connect_swapped (button, "clicked",
                               G_CALLBACK (event_start_daemon_pressed), data);
-
-    gtk_grid_attach (GTK_GRID (widget), button, 0, 2, 1, 1);
+    gtk_box_pack_start (GTK_BOX (widget), button, FALSE, FALSE, 2);
 
     /* Stop daemon button */
     button = create_image_button (nullptr, "Stop wchangerd daemon",
                                      W_ICON_STOP);
     g_signal_connect_swapped (button, "clicked",
                               G_CALLBACK (event_stop_daemon_pressed), data);
-
-    gtk_grid_attach (GTK_GRID (widget), button, 1, 2, 1, 1);
+    gtk_box_pack_start (GTK_BOX (widget), button, FALSE, FALSE, 2);
 
     gtk_widget_set_halign (widget, GTK_ALIGN_CENTER);
+    gtk_widget_set_valign (widget, GTK_ALIGN_CENTER);
 
     return widget;
 }
-
 /*----------------------------------------------------------------------------*/
 /**
  * @brief  Build and show the main settings window.
@@ -1279,9 +1324,10 @@ main_window_create (GtkApplication *app,
     GdkPixbuf *pixbuf  = nullptr; /* Default widget icon */
     char      *err_msg = nullptr; /* For error output */
     int        err     = 0;       /* For error output */
-    GtkStack  *stack;
-    GtkLabel  *label2;
-    GtkStackSwitcher *switcher;
+    int        screen_w = 0;      /* Screen width */
+    int        screen_h = 0;      /* Screen height */
+    GtkWidget *stack;             /* Wallpaper source pages */
+    GtkWidget *switcher;          /* Wallpaper source page switcher */
 
     /* Find config file and set config file name */
     dialog_data_do_config_file_stuff (data);
@@ -1337,9 +1383,6 @@ main_window_create (GtkApplication *app,
     gtk_box_pack_start (GTK_BOX (box_prev),
                         create_preview_label (),
                         FALSE, FALSE, 4);
-    gtk_box_pack_start (GTK_BOX (box_prev),
-                        create_daemon_widget (data),
-                        FALSE, FALSE, 4);
 
     /* Pack file list, button box, separatr and wallpaper preview */
     box_list_btns = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 4);
@@ -1356,30 +1399,38 @@ main_window_create (GtkApplication *app,
                         box_prev,
                         FALSE, FALSE, 4);
 
-    /* Stack pages and switcher */
-    stack    = GTK_STACK(gtk_stack_new ());
-    switcher = GTK_STACK_SWITCHER(gtk_stack_switcher_new ());
-    label2   = GTK_LABEL(gtk_label_new("Stack Page 2"));
-    gtk_stack_add_titled(stack, GTK_WIDGET(box_list_btns), page_local, "Local pictures");
-    gtk_stack_add_titled(stack, GTK_WIDGET(label2), page_remote, "Remote live");
-    gtk_stack_set_transition_type(stack, GTK_STACK_TRANSITION_TYPE_SLIDE_LEFT_RIGHT);
-    gtk_widget_set_halign (GTK_WIDGET(switcher), GTK_ALIGN_CENTER);
-    gtk_stack_switcher_set_stack (switcher, stack);
+    /* Remote live wallpaper services page */
+    data->remote_page = remote_page_new (data);
+
+    /* Wallpaper source pages and switcher, the page visible when settings
+     * are saved is the wallpaper source the daemon uses. Pages have to be
+     * visible to be set as the visible page before the window is shown. */
+    stack = gtk_stack_new ();
+    data->stack = stack;
+    gtk_stack_add_titled (GTK_STACK (stack), box_list_btns,
+                          WALL_SOURCE_LOCAL, "Local pictures");
+    gtk_stack_add_titled (GTK_STACK (stack), data->remote_page,
+                          WALL_SOURCE_REMOTE, "Remote live");
+    gtk_stack_set_transition_type (GTK_STACK (stack),
+                                   GTK_STACK_TRANSITION_TYPE_SLIDE_LEFT_RIGHT);
+    gtk_widget_show_all (stack);
+
+    switcher = gtk_stack_switcher_new ();
+    gtk_widget_set_halign (switcher, GTK_ALIGN_CENTER);
+    gtk_stack_switcher_set_stack (GTK_STACK_SWITCHER (switcher),
+                                  GTK_STACK (stack));
 
     /* Pack in main box title and box with list, buttons and preview */
     box_main = gtk_box_new (GTK_ORIENTATION_VERTICAL, 4);
     gtk_box_pack_start (GTK_BOX (box_main),
                         title_widget,
                         FALSE, FALSE, 4);
-    //gtk_box_pack_start (GTK_BOX (box_main),
-    //                    box_list_btns,
-    //                    TRUE, TRUE, 4);
     gtk_box_pack_start (GTK_BOX (box_main),
-                        GTK_WIDGET(switcher),
+                        switcher,
                         FALSE, FALSE, 4);
     gtk_box_pack_start (GTK_BOX (box_main),
-                        GTK_WIDGET(stack),
-                        TRUE,TRUE, 4);
+                        stack,
+                        TRUE, TRUE, 4);
 
     /* Pack in main box separator and settings */
     gtk_box_pack_start (GTK_BOX (box_main),
@@ -1415,6 +1466,12 @@ main_window_create (GtkApplication *app,
     }
     settings = setts_check_defaults (settings);
 
+    /* Save screen size for the daemon to choose remote wallpaper sizes */
+    remote_page_get_screen_size (data->remote_page, &screen_w, &screen_h);
+    if (screen_w > 0 && screen_h > 0) {
+        setts_update_screen_size (dialog_data_get_cfg_file (data),
+                                  screen_w, screen_h);
+    }
     widgets_set_settings (data, settings, wm, &err);
 
     settings_free_all (wm);
@@ -1436,8 +1493,5 @@ main_window_create (GtkApplication *app,
 
     gtk_window_set_application (GTK_WINDOW (window), GTK_APPLICATION (app));
     gtk_widget_show_all (window);
-
-    g_signal_connect (stack, "notify::visible-child",
-                  G_CALLBACK (on_stack_page_changed), data);
 }
 /*----------------------------------------------------------------------------*/

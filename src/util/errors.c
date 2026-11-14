@@ -72,6 +72,15 @@ err_get_message (const int err)
             result = "Could not find a config file";
             break;
 
+        case ERR_LIVE_NOSRC:
+            result = "No remote wallpaper service is selected";
+            break;
+
+        case ERR_LIVE_NET:
+            result = "Could not get a wallpaper from any selected remote "
+                     "service";
+            break;
+
         default:
            break;
     }
@@ -110,6 +119,12 @@ err_ex_code (const int err)
             result = EXIT_FAILURE;
             break;
         case ERR_CFG_NOF:
+            result = EX_UNAVAILABLE;
+            break;
+        case ERR_LIVE_NOSRC:
+            result = EX_CONFIG;
+            break;
+        case ERR_LIVE_NET:
             result = EX_UNAVAILABLE;
             break;
         default:

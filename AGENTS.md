@@ -6,7 +6,7 @@ Guidance for coding agents working in this repository. General usage: `README.md
 
 Wall Changer is an automatic wallpaper changer for GNU/Linux and FreeBSD, written in C with GTK+3. It builds two executables from one `src/` tree:
 
-- `wchangerd` — background daemon that switches the wallpaper on a configured interval (`--start`, `--stop`, `--restart`, `--once`, `--config FILE`). Links only json-c — shared helpers must not pull in GTK or libcurl.
+- `wchangerd` — background daemon that switches the wallpaper on a configured interval (`--start`, `--stop`, `--restart`, `--once`, `--config FILE`), from the user's wallpaper list or from remote live services. Links json-c and libcurl — shared helpers must not pull in GTK or GLib.
 - `wchangercfg` — GTK+3 configuration GUI (links GTK/json-c/libcurl) for managing the wallpaper list, change interval, per-window-manager wallpaper-set command, and online wallpaper search/download.
 
 Config is read from `~/.config/wchanger/config.json` (falling back to `~/.config/wchanger.json` / `~/.config/wchanger/wchanger.json`), or an explicit path via `--config`.
@@ -55,11 +55,12 @@ Keep it that way. On a compiler that already defaults to C23 (GCC >= 15) an impl
 
 ## Tests
 
-Three `check`-based binaries (built only when libcheck >= 0.15 is present, else silently skipped):
+Four `check`-based binaries (built only when libcheck >= 0.15 is present, else silently skipped):
 
 - `build/tests/test_setting` — `settings/setting_item.c` + `util/hash_djb2.c`.
 - `build/tests/test_process` — `src/process/` (name matching, list growth, scanning the live process list, zombie skipping, kill by name). It forks helper children; a child that must die on SIGTERM resets the signal to `SIG_DFL` first, because check's own SIGTERM handler, inherited over `fork()`, kills the whole process group.
 
+- `build/tests/test_live` — the remote live services in `src/live/` (`live_<name>.c`, `live_source.c`): request URLs, response parsing against `tests/data/live_*.json`, file names, and service picking. No network requests.
 - `build/tests/test_web_parse` — the search services in `src/web/` (`web_*.c`, `search_item.c`): request URLs, response parsing, and the `web_util.c` helpers. It makes no network requests; it parses the responses saved in `tests/data/`, which are trimmed captures of real API responses extended with entries titled "Synthetic" for cases the captures lack. Links GTK only for GLib.
 
 Run one suite/case via check's env vars:
@@ -71,7 +72,7 @@ CK_FORK=no gdb ./build/tests/test_setting              # debuggable
 CK_VERBOSITY=verbose ./build/tests/test_setting        # list every test
 ```
 
-TCase names are declared in `setting_suite()` at the bottom of `tests/test_setting_item.c` (`Creation`, `Accessors`, `StringMutation`, `ListOps`, `ChildOps`, `Removal`, `Replace`, `Misc`) and in `process_suite()` in `tests/test_process.c` (`Matching`, `List`, `Scan`, `Kill`), and in `web_parse_suite()` in `tests/test_web_parse.c` (`Util`, `SearchItem`, `Urls`, `Parse`) — add tests to the matching case rather than growing a new one per test. New test binaries go in `tests/CMakeLists.txt` with `add_test()`, gated on `BUILD_TESTING AND CHECK_FOUND` in the root file; list the `src/*.c` files under test directly in `_SOURCES` (no link against built binaries).
+TCase names are declared in `setting_suite()` at the bottom of `tests/test_setting_item.c` (`Creation`, `Accessors`, `StringMutation`, `ListOps`, `ChildOps`, `Removal`, `Replace`, `Misc`) and in `process_suite()` in `tests/test_process.c` (`Matching`, `List`, `Scan`, `Kill`), in `web_parse_suite()` in `tests/test_web_parse.c` (`Util`, `SearchItem`, `Urls`, `Parse`), and in `live_suite()` in `tests/test_live.c` (`Urls`, `Parse`, `Pick`) — add tests to the matching case rather than growing a new one per test. New test binaries go in `tests/CMakeLists.txt` with `add_test()`, gated on `BUILD_TESTING AND CHECK_FOUND` in the root file; list the `src/*.c` files under test directly in `_SOURCES` (no link against built binaries).
 
 ## Architecture
 
@@ -86,12 +87,13 @@ TCase names are declared in `setting_suite()` at the bottom of `tests/test_setti
 | `process/` | process-list scanning and kill by name | both |
 | `wallpaper/` | applying a wallpaper, window-manager command presets | both |
 | `daemon/` | `wchangerd` entry point, daemon start/stop, change loop, CLI parsing | `daemon.c` both, the rest `wchangerd` |
-| `web/` | online search: `WebWidget`, providers, HTTP, query cache, thumbnails | `wchangercfg` |
+| `live/` | remote live wallpaper services and their download/cache flow | both |
+| `web/` | online search: `WebWidget`, providers, HTTP, query cache, thumbnails | `wchangercfg`, except `url_data.c` and `web_util.c` (both) |
 | `gui/` | `wchangercfg` entry point, main window, dialogs, tree view, preview, icons | `wchangercfg` |
 
 `defs.h` (app-wide constants and paths) stays at the top of `src/`.
 
-`util/`, `settings/`, `process/`, `wallpaper/` and `daemon/` end up in `wchangerd`, so they must not include GTK, GLib or libcurl headers. Code that needs GLib (`gui/image_info.c`, `gui/dir_content.c`) lives in `gui/` even when it is not a widget.
+`util/`, `settings/`, `process/`, `wallpaper/`, `daemon/` and `live/` end up in `wchangerd`, so they must not include GTK or GLib headers; libcurl is used only through `web/url_data.c`, which (with `web/web_util.c`) is the GLib-free part of `web/` linked into the daemon. Code that needs GLib (`gui/image_info.c`, `gui/dir_content.c`) lives in `gui/` even when it is not a widget.
 
 Conventions for the directories:
 
@@ -129,13 +131,21 @@ Adding a service: a new `web_<name>.c/.h` pair exporting the `WebProvider`, a li
 
 The flow shared by all services lives in `webwidget_common.c`: `ww_search` (fetch with `urldata_get_data`, parse, add to the icon view, save to the query cache), `ww_api_key_dialog` and `ww_search_opts_dialog`. `webwidget.c/.h` builds the shared `WebWidget` GTK widget (`webwidget_struct.h`) and handles its events and downloads. `search_item.c/.h` holds one search result including title, author and license, `cache_query.c/.h` caches query results, and `thumbnail.c/.h` fetches result thumbnails.
 
-`url_data.c/.h` (libcurl) is the only HTTP code. Every request carries the program's own `User-Agent` (`wallchanger/<version> (+homepage)`); never send a browser one. Requests to `artic.edu` also carry the `AIC-User-Agent` header that museum's API asks for — its image server answers 403 without it. A HTTP status >= 400 is an error (`CURLOPT_FAILONERROR`), and query values are percent-encoded with `urldata_escape`.
+`url_data.c/.h` (libcurl) is the only HTTP code. Every request carries the program's own `User-Agent` (`wallchanger/<version> (+homepage)`); never send a browser one. Requests to `artic.edu` also carry the `AIC-User-Agent` header that museum's API asks for — its image server answers 403 without it. A HTTP status >= 400 is an error (`CURLOPT_FAILONERROR`), and query values are percent-encoded with `urldata_escape`. Requests give up after a 20 s connect timeout or 60 s without data, so a stalled server can not hang the daemon. `url_data.c` and `web_util.c` are linked into `wchangerd`, so they must stay free of GLib.
 
 Downloaded images are cached under `PTH_WALLP_DIR`, thumbnails under `PTH_THUMB_DIR`, query results under `PTH_QUERY_DIR`, and each downloaded image's source, author and license as `<image file name>.json` under `PTH_IINFO_DIR` (written by `save_image_info` in `webwidget.c`; see path defines in `defs.h`). Service licensing notes and API quirks are in `docs/wallpaper-sources.md`.
 
+### Remote live wallpapers (`live/`)
+
+The "Wallpaper source" setting (`local` or `remote`, `WALL_SOURCE_*` in `defs.h`) selects between the wallpaper list and remote live services; in `wchangercfg` it is the name of the visible `GtkStack` page. In remote mode `chk_setts_ch_wall` counts the enabled services (`Remote services` array) instead of the list, and `live_wallpaper_get` (`live.c`) picks a service — the next after the last used, or randomly through the daemon's `RandMem` with "Random wallpaper" — and falls through to the others when it fails. A daily service asked less than `LIVE_DAILY_CHECK_SEC` ago reuses its last file without a request; any image whose cache file already exists is not downloaded again. Downloads go to `<name>.part` and are renamed when complete. Files live in `~/.cache/wchanger/wallpapers` (`cfg_file_get_live_wallpapers_path`, not the data-dir `PTH_WALLP_DIR` used by search downloads), pruned to `LIVE_CACHE_MAX`; info is written to `PTH_IINFO_DIR` in the same format as `save_image_info`; per-service state (last service, check time, file) is in `~/.cache/wchanger/live.json`. When every service fails the daemon keeps the wallpaper and the main loop retries after `LIVE_RETRY_SEC` (up to `LIVE_RETRY_CNT` times) instead of exiting.
+
+The screen size the services size images for comes from the `Screen width`/`Screen height` settings, which `wchangercfg` detects (monitor geometry × scale factor) and saves at startup, since the daemon links no display library.
+
+Every service is a `const LiveSource` (`live_source.h`) in its own `live_<name>.c/.h` — `live_bing.c`, `live_commons.c`, `live_wallhaven.c` — listed in `sources[]` in `live.c`: `request_url` and `parse` are pure functions filling a `LiveImage`, whose `file_name` must be stable for the same image so the cache works. A service with keywords names its setting in `keywords_setting`, and `gui/remote_page.c` adds an entry for it. Adding a service: the `live_<name>.c/.h` pair, its `sources[]` entry, a line in both source lists in `src/CMakeLists.txt` and in `tests/CMakeLists.txt`, a `tests/data/live_<name>.json` fixture with `Urls`/`Parse` tests, and the README/`docs/wallpaper-sources.md` entries. No GLib in these files.
+
 ### GUI structure (`gui/`)
 
-`config_main.c` is the `wchangercfg` entry point: `main` and the `GApplication` signal handlers. Its `activate` calls `main_window_create` (`main_window.c/.h`), which builds the main settings window and holds all of its widget builders and event handlers. `dialog_data.c/.h` (`DialogData`) bundles the window's widgets and current settings state, passed around to the get/set-from-widgets helper functions in each dialog source file (`image_dialogs.c`, `message_dialogs.c`, `dialogs_other.c`, `other_settings_dialog.c`, `wallpaper_set_command_dialog.c`). `tree_view.c/.h` manages the GtkTreeView showing the selected wallpaper list, with `image_info.c/.h` as its per-image data; `preview.c/.h` handles the image preview, `dir_content.c/.h` lists, sizes and empties directories, and `icons.c/.h` holds the embedded icons.
+`config_main.c` is the `wchangercfg` entry point: `main` and the `GApplication` signal handlers. Its `activate` calls `main_window_create` (`main_window.c/.h`), which builds the main settings window and holds all of its widget builders and event handlers. `dialog_data.c/.h` (`DialogData`) bundles the window's widgets and current settings state, passed around to the get/set-from-widgets helper functions in each dialog source file (`image_dialogs.c`, `message_dialogs.c`, `dialogs_other.c`, `other_settings_dialog.c`, `wallpaper_set_command_dialog.c`). `tree_view.c/.h` manages the GtkTreeView showing the selected wallpaper list, with `image_info.c/.h` as its per-image data; `remote_page.c/.h` builds the "Remote live" stack page (service checks, keywords, "Set wallpaper now" run in a `GTask` thread, preview with attribution), `preview.c/.h` handles the image preview, `dir_content.c/.h` lists, sizes and empties directories, and `icons.c/.h` holds the embedded icons.
 
 ### Shared low-level utilities (`util/`)
 

@@ -26,6 +26,8 @@
 #include <stdint.h>
 #include <sysexits.h>
 #include <time.h>
+#include <unistd.h>
+#include "live/live.h"
 #include "settings/cfg_file.h"
 #include "wallpaper/wallpaper_set.h"
 #include "settings/settings.h"
@@ -160,22 +162,113 @@ free_and_exit (char       *config_file,
 }
 /*----------------------------------------------------------------------------*/
 /**
+ * @brief  Set a wallpaper from the remote live services.
+ *
+ * When no service gives a wallpaper the present one is kept, at startup the
+ * last used or the newest cached one is set, and retry is set so the daemon
+ * tries again soon.
+ *
+ * @param[in,out] settings     Program settings
+ * @param[in,out] rand_mem     Random memory
+ * @param[in]     config_file  Config file path
+ * @param[in]     startup      true for the first change after start
+ * @param[out]    retry        Set to true when no service gave a wallpaper
+ * @return        Error code
+ */
+static int
+live_change (Setting    *settings,
+             RandMem    *rand_mem,
+             const char *config_file,
+             const bool  startup,
+             bool       *retry)
+{
+    const char *cmd       = nullptr; /* Wallpaper set command */
+    const char *last_used = nullptr; /* Last used wallpaper */
+    char       *file      = nullptr; /* Wallpaper to set */
+    int         err_code  = ERR_OK;
+
+    *retry = false;
+    cmd = setting_get_string (settings_find (settings,
+                                             get_setting_name (SETT_BG_CMD)));
+    last_used = setting_get_string (
+            settings_find (settings, get_setting_name (SETT_LAST_USED_STR)));
+
+    if (cmd == nullptr)
+        return ERR_OK;
+
+    if (startup && last_used != nullptr && access (last_used, R_OK) == 0 &&
+        setting_get_int (settings_find (
+                settings, get_setting_name (SETT_LAST_USED_OPT)))) {
+
+        wallpaper_test_set (cmd, last_used);
+        return ERR_OK;
+    }
+    err_code = live_wallpaper_get (settings, rand_mem, &file);
+
+    if (err_code == ERR_OK) {
+        err_code = wallpaper_dialog_set (cmd, file, config_file);
+    }
+    else if (err_code == ERR_LIVE_NET) {
+        warnx ("%s", err_get_message (err_code));
+        err_code = ERR_OK;
+        *retry   = true;
+
+        /* Without any wallpaper at startup use one set before */
+        if (startup) {
+            if (last_used != nullptr && access (last_used, R_OK) == 0)
+                wallpaper_test_set (cmd, last_used);
+            else if ((file = live_newest_cached ()) != nullptr)
+                wallpaper_test_set (cmd, file);
+        }
+    }
+    free (file);
+
+    return err_code;
+}
+/*----------------------------------------------------------------------------*/
+/**
+ * @brief  Set a wallpaper from the wallpaper list.
+ *
+ * @param[in,out] settings     Program settings
+ * @param[in,out] rand_mem     Random memory
+ * @param[in]     config_file  Config file path
+ * @param[in]     startup      true for the first change after start
+ * @return        Error code
+ */
+static int
+list_change (Setting    *settings,
+             RandMem    *rand_mem,
+             const char *config_file,
+             const bool  startup)
+{
+    return startup ? wallpaper_set_startup_set (settings, rand_mem, config_file)
+                   : wallpaper_set_change (settings, rand_mem, config_file);
+}
+/*----------------------------------------------------------------------------*/
+/**
  * @brief  Loads settings, checks for changes in wallpaper list length and
  *         changes wallpaper, returns change interval.
  */
 uint32_t
 chk_setts_ch_wall (char     *config_file,
                    RandMem  *rand_mem,
-                   int      *time_align_option)
+                   int      *time_align_option,
+                   bool     *retry)
 {
-    static uint32_t  wallpaper_list_len = 0; /* Wallpaper list length */
+    static uint32_t  wallpaper_list_len = 0; /* Wallpaper list or enabled
+                                                service count */
+    static bool      started            = false; /* First change done */
+    static bool      prev_remote        = false; /* Previous wallpaper source */
     int              err_code           = 0; /* Error output */
     uint32_t         actual_len         = 0; /* Actual wallpaper list length */
     uint32_t         change_interval    = 0; /* Result change interval */
+    bool             remote             = false; /* Remote live wallpapers */
     Setting         *settings           = nullptr; /* For setting list */
     Setting         *wm_info            = nullptr; /* Window manager info */
     Setting         *setting_item       = nullptr; /* For particular setting */
     char            *cmd                = nullptr; /* For wallpaper change command */
+
+    *retry = false;
 
     /* Read settings, check for empty config file, set defaults */
     settings = setts_read (config_file, &err_code);
@@ -194,12 +287,22 @@ chk_setts_ch_wall (char     *config_file,
     /* Check settings, set default values if some are missing */
     settings = setts_check_defaults (settings);
 
-    /* Get number of wallpapers in list */
-    actual_len = (uint32_t) setting_count_children (
-            settings_find (settings, get_setting_name (SETT_WALL_ARRAY)));
-    if (actual_len == 0) {
-        free_and_exit (config_file, rand_mem, settings, wm_info,
-                       EX_DATAERR, "Empty wallpaper list");
+    /* Get number of wallpapers in list or of enabled remote services */
+    remote = setts_is_remote (settings);
+    if (remote) {
+        actual_len = (uint32_t) live_enabled_count (settings);
+        if (actual_len == 0) {
+            free_and_exit (config_file, rand_mem, settings, wm_info,
+                           EX_CONFIG, err_get_message (ERR_LIVE_NOSRC));
+        }
+    }
+    else {
+        actual_len = (uint32_t) setting_count_children (
+                settings_find (settings, get_setting_name (SETT_WALL_ARRAY)));
+        if (actual_len == 0) {
+            free_and_exit (config_file, rand_mem, settings, wm_info,
+                           EX_DATAERR, "Empty wallpaper list");
+        }
     }
     /* Get wallpaper set command depending on used window manager */
     cmd = wms_get_wallpaper_command (config_file, settings, wm_info, &err_code);
@@ -221,34 +324,21 @@ chk_setts_ch_wall (char     *config_file,
     if (setting_item != nullptr) {
         change_interval = (uint32_t) setting_get_int (setting_item);
     }
-    if (wallpaper_list_len == actual_len) {
-        /* Wallpaper list length did not changed, change wallpaper */
-        if ((err_code = wallpaper_set_change (settings, rand_mem, config_file)) != ERR_OK) {
-            free_and_exit (config_file, rand_mem, settings, wm_info,
-                           err_ex_code (err_code), nullptr);
-        }
-    }
-    else {
-        /* Wallpaper list length changed, reinit random, change wallpaper */
+    /* Wallpaper count or source changed, reinit random */
+    if (wallpaper_list_len != actual_len || prev_remote != remote) {
         randomm_set_range (rand_mem, (size_t) actual_len);
-
-        if (wallpaper_list_len == 0) {
-            /* Program startup, previous wallpaper count was 0 */
-            err_code = wallpaper_set_startup_set (settings, rand_mem, config_file);
-            if (err_code != ERR_OK) {
-                free_and_exit (config_file, rand_mem, settings, wm_info,
-                               err_ex_code (err_code), nullptr);
-            }
-        }
-        else {
-            /* Change during program work, previous wallpaper count was not 0 */
-            if ((err_code = wallpaper_set_change (settings, rand_mem, config_file)) != ERR_OK) {
-                free_and_exit (config_file, rand_mem, settings, wm_info,
-                               err_ex_code (err_code), nullptr);
-            }
-        }
         wallpaper_list_len = actual_len;
+        prev_remote        = remote;
     }
+    err_code = remote ?
+        live_change (settings, rand_mem, config_file, !started, retry) :
+        list_change (settings, rand_mem, config_file, !started);
+
+    if (err_code != ERR_OK) {
+        free_and_exit (config_file, rand_mem, settings, wm_info,
+                       err_ex_code (err_code), nullptr);
+    }
+    started = true;
     settings_free_all (wm_info);
     settings_free_all (settings);
 
